@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor;
+package com.mammb.code.editor.syntax;
 
-import com.mammb.code.editor.ui.EditorPane;
-import javafx.application.Application;
-import javafx.stage.Stage;
+import com.mammb.code.editor.model.Decorated;
 
 /**
- * The Application.
+ * DecorateTo.
+ * Type to Decorated mapper function.
  * @author Naotsugu Kobayashi
  */
-public class App extends Application {
+public interface DecorateTo {
 
-    @Override
-    public void start(Stage stage) {
-        new EditorPane(stage).show();
-    }
+    /** The empty DecorateTo. */
+    DecorateTo empty = type -> null;
 
-    public static void main(String[] args) {
-        System.setProperty(
-            "java.util.logging.SimpleFormatter.format",
-            "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
-        launch();
-    }
+    /**
+     * Get the Decorating from the type.
+     * @param type the type
+     * @return the decorated
+     */
+    Decorated apply(int type);
 
 }

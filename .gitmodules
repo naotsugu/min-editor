@@ -1,0 +1,3 @@
+[submodule "piecetable"]
+	path = piecetable
+	url = https://github.com/naotsugu/piecetable

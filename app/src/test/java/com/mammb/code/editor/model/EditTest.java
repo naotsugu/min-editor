@@ -13,28 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor;
+package com.mammb.code.editor.model;
 
-import com.mammb.code.editor.ui.EditorPane;
-import javafx.application.Application;
-import javafx.stage.Stage;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * The Application.
+ * Test of {@link Edit}.
  * @author Naotsugu Kobayashi
  */
-public class App extends Application {
+class EditTest {
 
-    @Override
-    public void start(Stage stage) {
-        new EditorPane(stage).show();
-    }
+    @Test void merge() {
+        var e1 = Edit.insert(1, 2, "ab");
+        var e2 = Edit.insert(1, 4, "cd");
 
-    public static void main(String[] args) {
-        System.setProperty(
-            "java.util.logging.SimpleFormatter.format",
-            "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
-        launch();
+        assertTrue(e1.canMerge(e2));
+        assertFalse(e2.canMerge(e1));
+
+        var merged = e1.merge(e2);
+        assertEquals(new OffsetPoint(1, 2), merged.offsetPoint());
+        assertEquals("abcd", merged.string());
+
     }
 
 }
+

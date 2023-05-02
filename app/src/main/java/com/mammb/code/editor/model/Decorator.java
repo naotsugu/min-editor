@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor;
+package com.mammb.code.editor.model;
 
-import com.mammb.code.editor.ui.EditorPane;
-import javafx.application.Application;
-import javafx.stage.Stage;
+import java.util.List;
 
 /**
- * The Application.
+ * Decorator.
  * @author Naotsugu Kobayashi
  */
-public class App extends Application {
+public interface Decorator {
 
-    @Override
-    public void start(Stage stage) {
-        new EditorPane(stage).show();
-    }
-
-    public static void main(String[] args) {
-        System.setProperty(
-            "java.util.logging.SimpleFormatter.format",
-            "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
-        launch();
-    }
+    /**
+     * Apply decoration
+     * @param origin the row point
+     * @param string the string
+     * @return the decorated text
+     */
+    List<DecoratedText> apply(RowPoint origin, String string);
 
 }

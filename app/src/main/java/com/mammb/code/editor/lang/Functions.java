@@ -13,28 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor;
-
-import com.mammb.code.editor.ui.EditorPane;
-import javafx.application.Application;
-import javafx.stage.Stage;
+package com.mammb.code.editor.lang;
 
 /**
- * The Application.
+ * Function utility.
  * @author Naotsugu Kobayashi
  */
-public class App extends Application {
+public class Functions {
 
-    @Override
-    public void start(Stage stage) {
-        new EditorPane(stage).show();
+    /**
+     * Get a runnable that performs, in sequence.
+     * @param before the operation to perform before this operation
+     * @param after the operation to perform after this operation
+     * @return a composed Runnable that performs in sequence
+     */
+    public static Runnable and(Runnable before, Runnable after) {
+        return () -> {
+            if (before != null) before.run();
+            if (after  != null) after.run();
+        };
     }
 
-    public static void main(String[] args) {
-        System.setProperty(
-            "java.util.logging.SimpleFormatter.format",
-            "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
-        launch();
+
+    /**
+     * Get a empty runnable.
+     * @return a empty runnable
+     */
+    public static Runnable empty() {
+        return () -> { };
     }
 
 }
