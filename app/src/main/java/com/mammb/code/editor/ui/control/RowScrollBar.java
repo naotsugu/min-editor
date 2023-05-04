@@ -19,6 +19,7 @@ import com.mammb.code.editor.ui.util.Colors;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Point2D;
 import javafx.scene.AccessibleRole;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -68,9 +69,14 @@ public class RowScrollBar extends StackPane {
      * Initialize listener.
      */
     private void initListener() {
+
         max.addListener((os, ov, nv) -> thumb.lengthProperty().set(computeThumbHeight()));
         visibleAmount.addListener((os, ov, nv) -> thumb.lengthProperty().set(computeThumbHeight()));
         value.addListener(this::handleValueChanged);
+
+        setOnMouseEntered(e -> thumb.activeProperty().set(true));
+        setOnMouseExited(e  -> thumb.activeProperty().set(thumb.dragProperty().get()));
+
     }
 
 

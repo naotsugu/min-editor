@@ -41,7 +41,6 @@ public class Scrolling extends Region {
         this.rowScroll = new RowScrollBar();
         this.colScroll = new ColScrollBar();
         getChildren().addAll(rowScroll, colScroll);
-
         initListener(screenBound);
     }
 
