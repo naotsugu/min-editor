@@ -70,6 +70,9 @@ public class TextPane extends StackPane {
     /** The rows panel. */
     private final RowsPanel rowsPanel;
 
+    /** The scroll bar pane. */
+    private final ScrollBar scrollBar;
+
     /** The overlay pane. */
     private final Overlay overlay;
 
@@ -91,6 +94,7 @@ public class TextPane extends StackPane {
         this.pointing = new Pointing(textFlow);
         this.screenBound = new ScreenBound(this, textFlow);
         this.rowsPanel = new RowsPanel(textFlow, screenBound);
+        this.scrollBar = new ScrollBar(screenBound);
 
         setFocusTraversable(true);
         setAccessibleRole(AccessibleRole.TEXT_AREA);
@@ -98,8 +102,7 @@ public class TextPane extends StackPane {
         setMinSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         setAlignment(Pos.TOP_LEFT);
 
-        Scrolling scrolling = new Scrolling(screenBound);
-        getChildren().addAll(textFlow, pointing, scrolling);
+        getChildren().addAll(textFlow, pointing, scrollBar);
         initHandler();
         initListener();
 

@@ -22,10 +22,10 @@ import javafx.geometry.Bounds;
 import javafx.scene.layout.Region;
 
 /**
- * Scrolling.
+ * ScrollBar.
  * @author Naotsugu Kobayashi
  */
-public class Scrolling extends Region {
+public class ScrollBar extends Region {
 
     /** The row scroll bar. */
     private final RowScrollBar rowScroll;
@@ -37,7 +37,7 @@ public class Scrolling extends Region {
     /**
      * Constructor.
      */
-    public Scrolling(ScreenBound screenBound) {
+    public ScrollBar(ScreenBound screenBound) {
         this.rowScroll = new RowScrollBar();
         this.colScroll = new ColScrollBar();
         getChildren().addAll(rowScroll, colScroll);

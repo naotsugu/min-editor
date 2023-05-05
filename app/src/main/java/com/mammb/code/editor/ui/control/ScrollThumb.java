@@ -24,7 +24,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.AccessibleRole;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
-
 import java.util.function.Function;
 
 /**

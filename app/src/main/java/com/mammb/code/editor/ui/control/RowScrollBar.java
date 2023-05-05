@@ -98,7 +98,8 @@ public class RowScrollBar extends StackPane {
      * @param oldValue the old value
      * @param newValue the new value
      */
-    private void handleValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void handleValueChanged(
+            ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         double val = clamp(newValue.intValue());
         double y = getHeight() * (val - min.get()) / max.get() - min.get();
         thumb.setY(y);
