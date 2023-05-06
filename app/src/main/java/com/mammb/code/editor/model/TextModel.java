@@ -192,6 +192,15 @@ public class TextModel {
 
 
     /**
+     * Get the max row number.
+     * @return the max row number
+     */
+    public int maxRowSize() {
+        return textSlice.maxRowSize();
+    }
+
+
+    /**
      * Gets whether this text is dirty.
      * @return {@code true} if text is dirty.
      */

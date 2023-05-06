@@ -15,12 +15,13 @@
  */
 package com.mammb.code.editor.ui.control;
 
+import com.mammb.code.editor.lang.EventListener;
 import com.mammb.code.editor.ui.util.Colors;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Point2D;
 import javafx.scene.AccessibleRole;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
@@ -48,6 +49,9 @@ public class RowScrollBar extends StackPane {
 
     /** The visible amount. */
     private final IntegerProperty visibleAmount = new SimpleIntegerProperty(100);
+
+    /** The handler. */
+    private EventListener<ScrollBarChange> handler;
 
 
     /**
@@ -77,6 +81,35 @@ public class RowScrollBar extends StackPane {
         setOnMouseEntered(e -> thumb.activeProperty().set(true));
         setOnMouseExited(e  -> thumb.activeProperty().set(thumb.dragProperty().get()));
 
+        thumb.dragPointProperty().addListener(this::handleThumbDragged);
+        setOnMouseClicked(this::handleTruckClicked);
+    }
+
+
+    private void handleThumbDragged(
+            ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+
+        if (!thumb.dragProperty().get() || handler == null) {
+            return;
+        }
+        double delta = newValue.doubleValue() - oldValue.doubleValue();
+        handler.handle(ScrollBarChange.rowThumbMovedOf(
+            Math.round((max.get() - min.get()) * delta / getHeight())));
+    }
+
+
+    private void handleTruckClicked(MouseEvent event) {
+        if (event.isSynthesized()) {
+            event.consume();
+            return;
+        }
+        if (event.getY() >= thumb.getY() &&
+                event.getY() <= thumb.getY() + thumb.getHeight()) {
+            event.consume();
+            return;
+        }
+        handler.handle(ScrollBarChange.rowTruckClickedOf(event.getY() - thumb.getY()));
+        event.consume();
     }
 
 
@@ -107,21 +140,30 @@ public class RowScrollBar extends StackPane {
 
 
     /**
-     * Set the layout height.
-     * @param height the layout height
-     */
-    public void setLayoutHeight(double height) {
-        setHeight(height);
-    }
-
-
-    /**
      * Clamp the value.
      * @param value the value
      * @return the clamped value
      */
     private int clamp(int value) {
         return Math.min(Math.max(min.get(), value), max.get());
+    }
+
+
+    /**
+     * Set the handler.
+     * @param handler the handler
+     */
+    public void setHandler(EventListener<ScrollBarChange> handler) {
+        this.handler = handler;
+    }
+
+
+    /**
+     * Set the layout height.
+     * @param height the layout height
+     */
+    public void setLayoutHeight(double height) {
+        setHeight(height);
     }
 
 

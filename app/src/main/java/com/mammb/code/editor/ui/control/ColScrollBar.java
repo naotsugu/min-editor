@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.control;
 
+import com.mammb.code.editor.lang.EventListener;
 import com.mammb.code.editor.ui.util.Colors;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -47,6 +48,9 @@ public class ColScrollBar extends StackPane {
 
     /** The visible amount. */
     private final DoubleProperty visibleAmount = new SimpleDoubleProperty(100);
+
+    /** The handler. */
+    private EventListener<ScrollBarChange> handler;
 
 
     /**
@@ -100,15 +104,6 @@ public class ColScrollBar extends StackPane {
 
 
     /**
-     * Set the layout width.
-     * @param width the layout width
-     */
-    public void setLayoutWidth(double width) {
-        setWidth(width);
-    }
-
-
-    /**
      * Clamp the value.
      * @param value the value
      * @return the clamped value
@@ -116,6 +111,25 @@ public class ColScrollBar extends StackPane {
     private double clamp(double value) {
         return Math.min(Math.max(min.get(), value), max.get());
     }
+
+
+    /**
+     * Set the handler.
+     * @param handler the handler
+     */
+    public void setHandler(EventListener<ScrollBarChange> handler) {
+        this.handler = handler;
+    }
+
+
+    /**
+     * Set the layout width.
+     * @param width the layout width
+     */
+    public void setLayoutWidth(double width) {
+        setWidth(width);
+    }
+
 
     public DoubleProperty maxProperty() { return max; }
     public DoubleProperty visibleAmountProperty() { return visibleAmount; }

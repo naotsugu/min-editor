@@ -169,6 +169,34 @@ public class ScrollBehavior {
      * @param countOfRow the number of row
      */
     public void scrollNext(int countOfRow) {
+        for (int i = 0; i < countOfRow / model.maxRowSize(); i++) {
+            scrollNextUnit(model.maxRowSize());
+        }
+        scrollNextUnit(countOfRow % model.maxRowSize());
+    }
+
+
+    /**
+     * Scroll previous.
+     * @param countOfRow the number of row
+     * @return shifted offset
+     */
+    public int scrollPrev(int countOfRow) {
+        int ret = 0;
+        for (int i = 0; i < countOfRow / model.maxRowSize(); i++) {
+            ret += scrollPrevUnit(model.maxRowSize());
+        }
+        ret += scrollPrevUnit(countOfRow % model.maxRowSize());
+        return ret;
+    }
+
+
+    /**
+     * Scroll next.
+     * @param countOfRow the number of row
+     */
+    private void scrollNextUnit(int countOfRow) {
+        if (countOfRow <= 0) return;
         int shiftedOffset = model.scrollNext(countOfRow);
         scroll(-shiftedOffset);
     }
@@ -179,7 +207,8 @@ public class ScrollBehavior {
      * @param countOfRow the number of row
      * @return shifted offset
      */
-    public int scrollPrev(int countOfRow) {
+    private int scrollPrevUnit(int countOfRow) {
+        if (countOfRow <= 0) return 0;
         int shiftedOffset = model.scrollPrev(countOfRow);
         scroll(shiftedOffset);
         return shiftedOffset;

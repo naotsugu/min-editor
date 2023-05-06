@@ -15,8 +15,10 @@
  */
 package com.mammb.code.editor.ui;
 
+import com.mammb.code.editor.lang.EventListener;
 import com.mammb.code.editor.ui.control.ColScrollBar;
 import com.mammb.code.editor.ui.control.RowScrollBar;
+import com.mammb.code.editor.ui.control.ScrollBarChange;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.scene.layout.Region;
@@ -69,6 +71,15 @@ public class ScrollBar extends Region {
 
     }
 
+
+    /**
+     * Set the handler.
+     * @param handler the handler
+     */
+    public void setHandler(EventListener<ScrollBarChange> handler) {
+        rowScroll.setHandler(handler);
+        colScroll.setHandler(handler);
+    }
 
     // -- private -------------------------------------------------------------
 
