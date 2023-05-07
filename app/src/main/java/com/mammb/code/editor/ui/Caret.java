@@ -164,6 +164,7 @@ public class Caret extends Path {
                     offset++;
                 }
                 moveToOffset();
+                syncLogicalToPhysical();
             }
         } else {
             moveToPoint(0, physicalY);

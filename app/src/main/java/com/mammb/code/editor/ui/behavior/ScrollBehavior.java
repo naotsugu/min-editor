@@ -109,49 +109,51 @@ public class ScrollBehavior {
 
     /**
      * Scroll down to the next page.
+     * @param followCaret whether to follow the caret
      */
-    public void pageDown() {
+    public void pageDown(boolean followCaret) {
 
         if (!model.hasNextSlice() &&
             textFlow.wrappedLines() - textFlow.translatedLineOffset() <= 0) {
-            pointing.tail();
+            if (followCaret) pointing.tail();
             return;
         }
 
         final double caretY = pointing.caretTop();
-        pointing.clearSelection();
+        if (followCaret) pointing.clearSelection();
 
         final int rows = textFlow.rowSize();
         if (textFlow.wrappedLines() == 0) {
             // if the text is not wrapped
             boolean shift = model.tailRowIndex() + rows - 2 > model.totalRowSize();
             scrollNext(rows - 2);
-            pointing.caretRawAt(caretY);
+            if (followCaret) pointing.caretRawAt(caretY);
             if (shift) {
                 scrollNext(); scrollNext();
                 pointing.down(); pointing.down();
             }
         } else {
             for (int i = 2; i < rows; i++) scrollNext();
-            pointing.caretRawAt(caretY);
+            if (followCaret) pointing.caretRawAt(caretY);
         }
     }
 
 
     /**
      * Scroll up to the previous page.
+     * @param followCaret whether to follow the caret
      */
-    public void pageUp() {
+    public void pageUp(boolean followCaret) {
 
         if (textFlow.translatedLineOffset() == 0 && model.originRowIndex() == 0) {
             // If it is already located at the top of the page,
             // only move the caret to the origin
-            pointing.clear();
+            if (followCaret) pointing.clear();
             return;
         }
 
         double caretY = pointing.caretTop();
-        pointing.clearSelection();
+        if (followCaret) pointing.clearSelection();
 
         int rows = textFlow.rowSize();
         if (rows == textFlow.lineSize()) {
@@ -160,7 +162,7 @@ public class ScrollBehavior {
         } else {
             for (int i = 2; i < rows; i++) scrollPrev();
         }
-        pointing.caretRawAt(caretY);
+        if (followCaret) pointing.caretRawAt(caretY);
     }
 
 

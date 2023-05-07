@@ -27,10 +27,11 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
-tasks.compileJava.configure { options.encoding = Charsets.UTF_8.name() }
-tasks.compileTestJava.configure { options.encoding = Charsets.UTF_8.name() }
-
 javafx {
     version = "20"
     modules("javafx.controls")
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = Charsets.UTF_8.name()
 }

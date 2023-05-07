@@ -80,9 +80,9 @@ public class ThumbHandler implements EventListener<ScrollBarChange> {
 
     private void handleRowTruckClicked(int delta) {
         if (delta < 0) {
-            behavior.pageUp();
+            behavior.pageUp(false);
         } else if (delta > 0) {
-            behavior.pageDown();
+            behavior.pageDown(false);
         }
     }
 
