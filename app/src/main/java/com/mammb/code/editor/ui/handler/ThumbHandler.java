@@ -87,13 +87,14 @@ public class ThumbHandler implements EventListener<ScrollBarChange> {
     }
 
 
-    private void handleColTruckClicked(double delta) {
-
-    }
-
-
     private void handleColThumbMoved(double delta) {
-
+        behavior.scrollCol(delta);
     }
+
+
+    private void handleColTruckClicked(double delta) {
+        behavior.scrollCol(delta);
+    }
+
 
 }

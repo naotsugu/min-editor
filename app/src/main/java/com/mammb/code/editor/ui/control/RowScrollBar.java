@@ -86,6 +86,12 @@ public class RowScrollBar extends StackPane {
     }
 
 
+    /**
+     * The thumb dragged handler.
+     * @param observable the ObservableValue which value changed
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
     private void handleThumbDragged(
             ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 
@@ -94,10 +100,14 @@ public class RowScrollBar extends StackPane {
         }
         double delta = newValue.doubleValue() - oldValue.doubleValue();
         handler.handle(ScrollBarChange.rowThumbMovedOf(
-            Math.round((max.get() - min.get()) * delta / getHeight())));
+            Math.round((max.get() - min.get() - visibleAmount.get()) * delta / getHeight())));
     }
 
 
+    /**
+     * The truck clicked handler.
+     * @param event the MouseEvent
+     */
     private void handleTruckClicked(MouseEvent event) {
         if (event.isSynthesized()) {
             event.consume();
