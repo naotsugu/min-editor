@@ -241,4 +241,13 @@ public class ScrollBehavior {
         }
     }
 
+
+    /**
+     * Scroll horizontally to display.
+     * @param delta the scroll delta
+     */
+    public void scrollCol(double delta) {
+        textFlow.translateCol(delta);
+    }
+
 }

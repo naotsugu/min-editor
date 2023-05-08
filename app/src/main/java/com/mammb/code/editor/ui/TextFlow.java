@@ -231,6 +231,15 @@ public class TextFlow extends javafx.scene.text.TextFlow implements ScreenText {
 
 
     /**
+     * Scroll horizontally to display.
+     * @param delta the scroll delta
+     */
+    public void translateCol(double delta) {
+        setTranslateX(getTranslateX() + delta);
+    }
+
+
+    /**
      * Toggle text wrap.
      */
     public void toggleTextWrap() {
