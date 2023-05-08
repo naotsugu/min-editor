@@ -73,7 +73,7 @@ public class ThumbHandler implements EventListener<ScrollBarChange> {
         if (delta > 0) {
             behavior.scrollNext(delta);
         } else if (delta < 0) {
-            behavior.scrollPrev(delta);
+            behavior.scrollPrev(Math.abs(delta));
         }
     }
 
