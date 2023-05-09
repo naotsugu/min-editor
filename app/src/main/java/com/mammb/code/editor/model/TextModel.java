@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.model;
 
+import com.mammb.code.editor.lang.LineEnding;
 import com.mammb.code.editor.syntax.DecoratorImpl;
 import com.mammb.code.editor.lang.Paths;
 import java.nio.file.Path;
@@ -60,6 +61,15 @@ public class TextModel {
      */
     public TextModel() {
         this(new TextSlice(new TextSource(new ContentImpl())));
+    }
+
+
+    /**
+     * Create text view.
+     * @param lineEnding the line ending
+     */
+    TextModel(LineEnding lineEnding) {
+        this(new TextSlice(new TextSource(new ContentImpl(lineEnding))));
     }
 
 
