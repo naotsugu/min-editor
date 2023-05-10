@@ -3,5 +3,5 @@ plugins {
 }
 
 rootProject.name = "min-editor"
-include("app", ":piecetable")
+include("app", "javafx", ":piecetable")
 project(":piecetable").projectDir = file("piecetable/lib")
