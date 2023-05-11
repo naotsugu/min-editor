@@ -169,15 +169,6 @@ public class TextFlow extends javafx.scene.text.TextFlow implements ScreenText {
 
 
     /**
-     * Get the total height of text.
-     * @return the total height of text
-     */
-    public double totalHeight() {
-        return metrics().totalHeight();
-    }
-
-
-    /**
      * Get the number of lines containing wrapped text.
      * @return the number of lines containing wrapped text
      */
