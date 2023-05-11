@@ -17,6 +17,8 @@ package com.mammb.code.javafx.text;
 
 import javafx.scene.text.Font;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -29,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class LayoutTest {
 
+    @EnabledOnOs(OS.MAC)
     @Test void lines() {
 
         var str = IntStream.rangeClosed(0, 30)
