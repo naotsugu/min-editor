@@ -1,5 +1,6 @@
 # Min Editor
 
+Minimal text editor.
 
 ## Usage
 
