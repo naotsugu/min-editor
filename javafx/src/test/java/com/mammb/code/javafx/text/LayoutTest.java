@@ -48,4 +48,22 @@ class LayoutTest {
         assertEquals("27 28 29 30 ", lines[4]);
     }
 
+    @EnabledOnOs(OS.WINDOWS)
+    @Test void linesWin() {
+
+        var str = IntStream.rangeClosed(0, 30)
+            .mapToObj(i -> i + " ")
+            .collect(Collectors.joining());
+
+        var layout = Layout.of(Font.font("System Regular", 13), 100);
+        String[] lines = layout.lines(str);
+
+        assertEquals("0 1 2 3 4 5 6 7 8 ", lines[0]);
+        assertEquals("9 10 11 12 13 14 ", lines[1]);
+        assertEquals("15 16 17 18 19 ", lines[2]);
+        assertEquals("20 21 22 23 24 ", lines[3]);
+        assertEquals("25 26 27 28 29 ", lines[4]);
+        assertEquals("30 ", lines[5]);
+    }
+
 }
