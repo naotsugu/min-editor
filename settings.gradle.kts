@@ -8,10 +8,10 @@ include("app")
 
 // git submodule
 include(":piecetable")
-project(":piecetable").projectDir = file("module/piecetable/lib")
+project(":piecetable").projectDir = file("modules/piecetable/lib")
 
 // other module
-include("javafx", "text-model")
+include("javafx", "model-core", "model-text", "model-edit")
 for (project in rootProject.children.filterNot { it.name == "app" || it.name == "piecetable" }) {
-    project.projectDir = file("module/${project.name}")
+    project.projectDir = file("modules/${project.name}")
 }
