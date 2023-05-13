@@ -23,6 +23,9 @@ import com.mammb.code.editor2.model.core.PointText;
  */
 public interface Edit {
 
+    /** The empty edit. */
+    Edit empty = new EmptyEdit();
+
     /**
      * Get the edit type.
      * @return the edit type.
