@@ -15,14 +15,59 @@
  */
 package com.mammb.code.editor2.model.text;
 
+import com.mammb.code.editor2.model.text.impl.StringText;
+
 /**
  * RowSupplier.
  * @author Naotsugu Kobayashi
  */
 public interface RowSupplier {
 
+    /**
+     * Get the row string at the specified codepoint offset.
+     * <pre>
+     *  |a|b|😀|c|\n|
+     *  |d|e|😀|f|\n|
+     *  |g|h|😀|i|
+     *
+     *   text.at(-1) -> null
+     *   text.at(0)  -> |a|b|😀|c|\n|
+     *   text.at(5)  -> |d|e|😀|f|\n|
+     *   text.at(10) -> |g|h|😀|i|
+     *   text.at(14) -> null
+     * </pre>
+     * @param cpOffset the codepoint offset
+     * @return the row string
+     */
     String at(int cpOffset);
 
+
+    /**
+     * Get the row string before the specified codepoint offset.
+     * <pre>
+     *  |a|b|😀|c|\n|
+     *  |d|e|😀|f|\n|
+     *  |g|h|😀|i|
+     *
+     *   text.before(0)  -> null
+     *   text.before(5)  -> |a|b|😀|c|\n|
+     *   text.before(10) -> |d|e|😀|f|\n|
+     *   text.before(14) -> |g|h|😀|i|
+     *   text.before(15) -> null
+     * </pre>
+     * @param cpOffset the codepoint offset
+     * @return the row string
+     */
     String before(int cpOffset);
+
+
+    /**
+     * Create a new RowSupplier from the specified text.
+     * @param text the string.
+     * @return the created RowSupplier
+     */
+    static RowSupplier stringOf(String text) {
+        return new StringText(text);
+    }
 
 }

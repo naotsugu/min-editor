@@ -15,20 +15,18 @@
  */
 package com.mammb.code.editor2.model.text;
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
- * RowSlice.
+ * Test of {@link RowSlice}.
  * @author Naotsugu Kobayashi
  */
-public interface RowSlice {
+class RowSliceTest {
 
-    /**
-     * Create a new RowSlice from the specified size and rowSupplier.
-     * @param maxRowSize the row size of slice
-     * @param rowSupplier the row supplier
-     * @return the created RowSlice
-     */
-    static RowSlice of(int maxRowSize, RowSupplier rowSupplier) {
-        return new com.mammb.code.editor2.model.text.impl.RowSlice(maxRowSize, rowSupplier);
+    @Test void of() {
+        var slice = RowSlice.of(5, RowSupplier.stringOf("abc"));
+        // TODO add test
     }
-
 }
