@@ -16,15 +16,18 @@
 package com.mammb.code.editor2.model.edit;
 
 import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.edit.impl.EmptyEdit;
+import com.mammb.code.editor2.model.edit.impl.MonoEdit;
 
 /**
  * Edit.
  * @author Naotsugu Kobayashi
  */
-public interface Edit {
+public interface Edit extends PointText {
 
     /** The empty edit. */
     Edit empty = new EmptyEdit();
+
 
     /**
      * Get the edit type.
@@ -79,5 +82,21 @@ public interface Edit {
     static Edit delete(PointText pointText) {
         return new MonoEdit(EditType.DELETE, pointText, System.currentTimeMillis());
     }
+
+
+    /**
+     * Get whether other edit can be merged into this edit.
+     * @param other the merging edit
+     * @return {@code true} if other edit can be merged into this edit.
+     */
+    boolean canMerge(Edit other);
+
+
+    /**
+     * Merge other edit into this edit.
+     * @param other the merging edit
+     * @return the merged edit
+     */
+    Edit merge(Edit other);
 
 }

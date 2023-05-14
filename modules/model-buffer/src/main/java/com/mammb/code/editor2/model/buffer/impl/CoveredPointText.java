@@ -13,36 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.edit;
+package com.mammb.code.editor2.model.buffer.impl;
+
+import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.core.PointText;
 
 /**
- * CompoundEdit.
+ * CoveredPointText.
  * @author Naotsugu Kobayashi
  */
-public class CompoundEdit implements Edit {
-
-    /** The occurred on. */
-    private final long occurredOn;
-
-
-    /**
-     * Constructor,
-     * @param occurredOn the occurred on
-     */
-    CompoundEdit(long occurredOn) {
-        this.occurredOn = occurredOn;
-    }
-
+public record CoveredPointText(PointText pear, OffsetPoint delta) implements PointText {
 
     @Override
-    public EditType type() {
-        return null;
+    public OffsetPoint point() {
+        return pear.point().plus(delta);
     }
-
 
     @Override
-    public long occurredOn() {
-        return occurredOn;
+    public String text() {
+        return pear.text();
     }
-
 }

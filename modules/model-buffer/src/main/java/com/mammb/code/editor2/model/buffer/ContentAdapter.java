@@ -13,33 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.text;
+package com.mammb.code.editor2.model.buffer;
 
-import com.mammb.code.editor2.model.core.PointText;
-
-import java.util.List;
+import com.mammb.code.editor2.model.buffer.impl.Until;
+import com.mammb.code.editor2.model.text.RowSupplier;
 
 /**
- * RowSlice.
+ * ContentAdapter.
  * @author Naotsugu Kobayashi
  */
-public interface RowSlice {
+public record ContentAdapter(Content content) implements RowSupplier {
 
-    /**
-     * Get the text lines.
-     * @return the text lines
-     */
-    List<PointText> texts();
+    @Override
+    public String at(int cpOffset) {
+        return new String(content.bytes(cpOffset, Until.lfInclusive()), content.charset());
+    }
 
-
-    /**
-     * Create a new RowSlice from the specified size and rowSupplier.
-     * @param maxRowSize the row size of slice
-     * @param rowSupplier the row supplier
-     * @return the created RowSlice
-     */
-    static RowSlice of(int maxRowSize, RowSupplier rowSupplier) {
-        return new com.mammb.code.editor2.model.text.impl.RowSlice(maxRowSize, rowSupplier);
+    @Override
+    public String before(int cpOffset) {
+        return new String(content.bytesBefore(cpOffset, Until.lf()), content.charset());
     }
 
 }

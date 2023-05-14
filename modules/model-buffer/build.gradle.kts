@@ -5,4 +5,6 @@ plugins {
 dependencies {
     implementation(project(":model-core"))
     implementation(project(":model-text"))
+    implementation(project(":model-edit"))
+    implementation(project(":piecetable"))
 }

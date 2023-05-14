@@ -13,46 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.edit;
+package com.mammb.code.editor2.model.edit.impl;
 
-import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.edit.EditType;
 
 /**
- * Mono Edit.
+ * The empty edit.
  * @author Naotsugu Kobayashi
  */
-public class MonoEdit implements Edit {
-
-    /** The type of edit. */
-    private final EditType type;
-
-    /** The offset point of edit. */
-    private final PointText pointText;
-
-    /** The occurred on. */
-    private final long occurredOn;
-
-
-    /**
-     * Constructor.
-     * @param type the type of edit
-     */
-    MonoEdit(EditType type, PointText pointText, long occurredOn) {
-        this.type = type;
-        this.pointText = pointText;
-        this.occurredOn = occurredOn;
-    }
-
+public record EmptyEdit() implements Edit {
 
     @Override
     public EditType type() {
-        return type;
+        return EditType.NIL;
     }
 
 
     @Override
     public long occurredOn() {
-        return occurredOn;
+        return 0;
+    }
+
+
+    @Override
+    public boolean canMerge(Edit other) {
+        return true;
+    }
+
+
+    @Override
+    public Edit merge(Edit other) {
+        return other;
+    }
+
+
+    @Override
+    public OffsetPoint point() {
+        return OffsetPoint.zero;
+    }
+
+
+    @Override
+    public String text() {
+        return "";
     }
 
 }

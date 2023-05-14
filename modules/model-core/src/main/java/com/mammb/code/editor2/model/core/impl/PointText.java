@@ -13,33 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.text;
+package com.mammb.code.editor2.model.core.impl;
 
-import com.mammb.code.editor2.model.core.PointText;
-
-import java.util.List;
+import com.mammb.code.editor2.model.core.OffsetPoint;
 
 /**
- * RowSlice.
+ * PointText.
+ * @param point the offset point.
+ * @param text the text string.
  * @author Naotsugu Kobayashi
  */
-public interface RowSlice {
-
-    /**
-     * Get the text lines.
-     * @return the text lines
-     */
-    List<PointText> texts();
-
-
-    /**
-     * Create a new RowSlice from the specified size and rowSupplier.
-     * @param maxRowSize the row size of slice
-     * @param rowSupplier the row supplier
-     * @return the created RowSlice
-     */
-    static RowSlice of(int maxRowSize, RowSupplier rowSupplier) {
-        return new com.mammb.code.editor2.model.text.impl.RowSlice(maxRowSize, rowSupplier);
-    }
-
+public record PointText(OffsetPoint point, String text) implements com.mammb.code.editor2.model.core.PointText {
 }

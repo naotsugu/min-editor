@@ -37,6 +37,16 @@ public record OffsetPoint(int row, int offset, int cpOffset) {
 
 
     /**
+     * Plus the offset.
+     * @param that the offset
+     * @return the offset
+     */
+    public OffsetPoint plus(OffsetPoint that) {
+        return new OffsetPoint(row + that.row, offset + that.offset, cpOffset + that.cpOffset);
+    }
+
+
+    /**
      * Plus offset.
      * @param str the text string
      * @return the new offset point

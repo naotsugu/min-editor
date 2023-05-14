@@ -17,26 +17,46 @@ package com.mammb.code.editor2.model.core;
 
 /**
  * PointText.
- * @param point the offset point.
- * @param text the text string.
  * @author Naotsugu Kobayashi
  */
-public record PointText(OffsetPoint point, String text) {
+public interface PointText {
+
+    /**
+     * Get the offset point.
+     * @return the offset point.
+     */
+    OffsetPoint point();
+
+    /**
+     * Get the text string.
+     * @return the text string.
+     */
+    String text();
 
     /**
      * Get the offset of tail.
      * @return the offset of tail.
      */
-    public int tailOffset() {
-        return point.offset() + text.length();
+    default int tailOffset() {
+        return point().offset() + text().length();
     }
 
     /**
      * Get the coed point offset of tail.
      * @return the coed point offset of tail.
      */
-    public int tailCpOffset() {
-        return point.cpOffset() + Character.codePointCount(text, 0, text.length());
+    default int tailCpOffset() {
+        return point().cpOffset() + Character.codePointCount(text(), 0, text().length());
+    }
+
+    /**
+     * Create a new PointText
+     * @param point the offset point
+     * @param text the text string
+     * @return a new PointText
+     */
+    static PointText of(OffsetPoint point, String text) {
+        return new com.mammb.code.editor2.model.core.impl.PointText(point, text);
     }
 
 }

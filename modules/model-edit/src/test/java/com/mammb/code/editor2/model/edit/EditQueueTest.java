@@ -15,21 +15,24 @@
  */
 package com.mammb.code.editor2.model.edit;
 
+import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.core.PointText;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
- * The empty edit.
+ * The test of {@link EditQueue}.
  * @author Naotsugu Kobayashi
  */
-public record EmptyEdit() implements Edit {
+class EditQueueTest {
 
-    @Override
-    public EditType type() {
-        return EditType.NIL;
-    }
+    @Test void peekAll() {
+        var queue = EditQueue.of();
+        queue.push(Edit.insert(PointText.of(OffsetPoint.zero, "abc")));
 
-
-    @Override
-    public long occurredOn() {
-        return 0;
+        var sb = new StringBuilder();
+        queue.peekAll(e -> sb.append(e.text()));
+        assertEquals("abc", sb.toString());
     }
 
 }

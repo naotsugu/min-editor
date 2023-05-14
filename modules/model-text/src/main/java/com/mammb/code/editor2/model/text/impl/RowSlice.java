@@ -30,7 +30,7 @@ import com.mammb.code.editor2.model.text.RowSupplier;
 public class RowSlice implements com.mammb.code.editor2.model.text.RowSlice {
 
     /** The row list. */
-    private final List<PointText> list = new LinkedList<>();
+    private final List<PointText> texts = new LinkedList<>();
 
     /** The row supplier. */
     private RowSupplier rowSupplier;
@@ -51,15 +51,16 @@ public class RowSlice implements com.mammb.code.editor2.model.text.RowSlice {
     }
 
 
-    public static RowSlice of(int maxRowSize, RowSupplier rowSupplier) {
-        return new RowSlice(maxRowSize, rowSupplier);
+    @Override
+    public List<PointText> texts() {
+        return texts;
     }
 
 
     public void refresh(int rowNumber) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).point().row() >= rowNumber) {
-                list.subList(i, list.size()).clear();
+        for (int i = 0; i < texts.size(); i++) {
+            if (texts.get(i).point().row() >= rowNumber) {
+                texts.subList(i, texts.size()).clear();
                 break;
             }
         }
@@ -68,66 +69,66 @@ public class RowSlice implements com.mammb.code.editor2.model.text.RowSlice {
 
 
     public void clear() {
-        list.clear();
+        texts.clear();
         pushEmptyIf();
     }
 
 
     private void fill() {
         pushEmptyIf();
-        while (list.size() <= maxRowSize) {
-            PointText tail = list.get(list.size() - 1);
+        while (texts.size() <= maxRowSize) {
+            PointText tail = texts.get(texts.size() - 1);
             OffsetPoint next = tail.point().plus(tail.text());
 
             String str = rowSupplier.at(next.cpOffset());
             if (str == null) break;
-            list.add(new PointText(next, str));
+            texts.add(PointText.of(next, str));
         }
     }
 
 
     public void prev(int n) {
         for (int i = 0; i < n; i++) {
-            PointText head = list.get(0);
+            PointText head = texts.get(0);
             int cpOffset = head.point().cpOffset();
             if (cpOffset == 0) break;
 
             String str = rowSupplier.before(cpOffset);
-            pushFirst(new PointText(head.point().minus(str), str));
+            pushFirst(PointText.of(head.point().minus(str), str));
         }
     }
 
 
     public void next(int n) {
         for (int i = 0; i < n; i++) {
-            PointText tail = list.get(list.size() - 1);
+            PointText tail = texts.get(texts.size() - 1);
             OffsetPoint next = tail.point().plus(tail.text());
 
             String str = rowSupplier.at(next.cpOffset());
             if (str == null) break;
-            pushLast(new PointText(next, str));
+            pushLast(PointText.of(next, str));
         }
     }
 
 
     private void pushFirst(PointText... rows) {
-        list.addAll(0, Arrays.asList(rows));
-        while (list.size() > maxRowSize) {
-            list.remove(list.size() - 1);
+        texts.addAll(0, Arrays.asList(rows));
+        while (texts.size() > maxRowSize) {
+            texts.remove(texts.size() - 1);
         }
     }
 
 
     private void pushLast(PointText... rows) {
-        list.addAll(Arrays.asList(rows));
-        while (list.size() > maxRowSize) {
-            list.remove(0);
+        texts.addAll(Arrays.asList(rows));
+        while (texts.size() > maxRowSize) {
+            texts.remove(0);
         }
     }
 
 
     private void pushEmptyIf() {
-        if (list.isEmpty()) list.add(new PointText(OffsetPoint.zero, ""));
+        if (texts.isEmpty()) texts.add(PointText.of(OffsetPoint.zero, ""));
     }
 
 }

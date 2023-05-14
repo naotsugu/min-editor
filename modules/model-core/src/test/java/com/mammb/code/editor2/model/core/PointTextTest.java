@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class PointTextTest {
 
     @Test void testPointText() {
-        var p = new PointText(OffsetPoint.zero, "a😀b\n");
+        var p = PointText.of(OffsetPoint.zero, "a😀b\n");
         assertEquals(5, p.tailOffset());
         assertEquals(4, p.tailCpOffset());
     }

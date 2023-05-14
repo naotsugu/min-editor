@@ -15,22 +15,39 @@
  */
 package com.mammb.code.editor2.model.edit;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.function.Consumer;
 
 /**
  * The edit queue.
  * @author Naotsugu Kobayashi
  */
-public class EditQueue {
+public interface EditQueue {
 
-    /** The undo queue. */
-    private final Deque<Edit> undo = new ArrayDeque<>();
+    /**
+     * Push the edit.
+     * @param edit the edit
+     */
+    void push(Edit edit);
 
-    /** The redo queue. */
-    private final Deque<Edit> redo = new ArrayDeque<>();
+    /**
+     * Actions are applied to elements in this queue on a first-in, first-out basis.
+     * No elements are deleted by this operation.
+     * @param action the action
+     */
+    void peekAll(Consumer<Edit> action);
 
-    /** The buffered edit. */
-    private Edit buffer = Edit.empty;
+    /**
+     * Get whether this edit queue is empty.
+     * @return {@code true} if this edit queue is empty.
+     */
+    boolean isEmpty();
+
+    /**
+     * Create the edit queue.
+     * @return the edit queue.
+     */
+    static EditQueue of() {
+        return new com.mammb.code.editor2.model.edit.impl.EditQueue();
+    }
 
 }

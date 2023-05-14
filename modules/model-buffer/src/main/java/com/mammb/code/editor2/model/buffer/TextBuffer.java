@@ -19,5 +19,6 @@ package com.mammb.code.editor2.model.buffer;
  * The text buffer.
  * @author Naotsugu Kobayashi
  */
-public class TextBuffer {
+public interface TextBuffer {
+
 }
