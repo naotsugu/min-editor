@@ -16,9 +16,9 @@
 package com.mammb.code.editor2.model.buffer;
 
 /**
- * The text buffer.
+ * The edit buffer.
  * @author Naotsugu Kobayashi
  */
-public interface TextBuffer {
+public interface EditBuffer {
 
 }

@@ -16,7 +16,6 @@
 package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.edit.Edit;
-
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.function.Consumer;

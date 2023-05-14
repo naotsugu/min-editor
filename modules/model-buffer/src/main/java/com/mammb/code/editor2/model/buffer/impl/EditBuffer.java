@@ -19,7 +19,6 @@ import com.mammb.code.editor2.model.buffer.ContentAdapter;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.EditQueue;
 import com.mammb.code.editor2.model.text.RowSlice;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,16 +26,28 @@ import java.util.List;
  * TextBuffer.
  * @author Naotsugu Kobayashi
  */
-public class EditBuffer implements com.mammb.code.editor2.model.buffer.TextBuffer, RowSlice {
+public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffer, RowSlice {
 
+    /** The pear slice. */
     private final RowSlice slice;
+
+    /** The content. */
     private final Content content;
+
+    /** The edit queue. */
     private final EditQueue editQueue = EditQueue.of();
 
+
+    /**
+     * Constructor.
+     * @param content the content
+     * @param maxRowSize the row size of slice
+     */
     public EditBuffer(Content content, int maxRowSize) {
         this.content = content;
         this.slice = RowSlice.of(maxRowSize, new ContentAdapter(content));
     }
+
 
     @Override
     public List<PointText> texts() {
@@ -45,6 +56,9 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.TextBuffe
         }
 
         List<PointText> ret = new ArrayList<>();
+        for (PointText text : slice.texts()) {
+            // If the edit queue contains deleted edits, the retrieved text may be insufficient.
+        }
         // TODO
         return ret;
     }
