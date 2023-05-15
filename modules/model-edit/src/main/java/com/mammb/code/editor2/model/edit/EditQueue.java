@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.edit;
 
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * The edit queue.
@@ -30,16 +31,36 @@ public interface EditQueue {
     void push(Edit edit);
 
     /**
+     *
+     * @return
+     */
+    Edit peek();
+
+    /**
      * Actions are applied to elements in this queue on a first-in, first-out basis.
      * No elements are deleted by this operation.
      * @param action the action
      */
-    void peekAll(Consumer<Edit> action);
+    void peekEach(Consumer<Edit> action);
+
+
+    /**
+     * Get a sequential {@code Stream} with this collection as its edit.
+     * @return a sequential {@code Stream} over the elements in this collection
+     */
+    Stream<Edit> stream();
+
 
     /**
      * Clear edit queue.
      */
     void clear();
+
+    /**
+     * Get the edit queue size.
+     * @return the edit queue size
+     */
+    int size();
 
     /**
      * Get whether this edit queue is empty.

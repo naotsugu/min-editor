@@ -16,7 +16,10 @@
 package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
+
+import java.util.List;
 
 /**
  * DeleteEdit.
@@ -34,6 +37,16 @@ public record DeleteEdit(
     @Override
     public Edit flip() {
         return new InsertEdit(point, text, occurredOn);
+    }
+
+
+    @Override
+    public PointText affectTranslate(PointText pointText) {
+        if (!isSingleEdit()) {
+            throw new UnsupportedOperationException();
+        }
+        // TODO
+        return pointText;
     }
 
 
@@ -60,6 +73,11 @@ public record DeleteEdit(
             point,
             text + delete.text(),
             other.occurredOn());
+    }
+
+    @Override
+    public boolean isSingleEdit() {
+        return text.indexOf('\n') == -1;
     }
 
 }

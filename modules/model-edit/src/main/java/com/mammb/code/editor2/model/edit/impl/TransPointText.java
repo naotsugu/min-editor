@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.buffer.impl;
+package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
@@ -22,7 +22,7 @@ import com.mammb.code.editor2.model.core.PointText;
  * CoveredPointText.
  * @author Naotsugu Kobayashi
  */
-public record CoveredPointText(PointText pear, OffsetPoint delta) implements PointText {
+public record TransPointText(PointText pear, OffsetPoint delta) implements PointText {
 
     @Override
     public OffsetPoint point() {

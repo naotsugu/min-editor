@@ -17,10 +17,13 @@ package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.ContentAdapter;
 import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
 import com.mammb.code.editor2.model.text.RowSlice;
-import java.util.ArrayList;
+
 import java.util.List;
+
+import static java.util.function.Predicate.not;
 
 /**
  * TextBuffer.
@@ -55,11 +58,14 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffe
             return slice.texts();
         }
 
-        List<PointText> ret = new ArrayList<>();
-        for (PointText text : slice.texts()) {
-            // If the edit queue contains deleted edits, the retrieved text may be insufficient.
+        if (editQueue.size() > 1 || editQueue.stream().anyMatch(not(Edit::isSingleEdit))) {
+            // if the edit queue contains multiline deleted edits,
+            // the retrieved text may be insufficient.
+            editQueue.flush();
         }
-        // TODO
-        return ret;
+
+        Edit edit = editQueue.isEmpty() ? Edit.empty : editQueue.peek();
+        return slice.texts().stream().map(edit::affectTranslate).toList();
     }
+
 }

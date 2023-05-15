@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * EditQueueImpl.
@@ -57,8 +58,20 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
 
 
     @Override
-    public void peekAll(Consumer<Edit> action) {
+    public Edit peek() {
+        return deque.peek();
+    }
+
+
+    @Override
+    public void peekEach(Consumer<Edit> action) {
         deque.forEach(action);
+    }
+
+
+    @Override
+    public Stream<Edit> stream() {
+        return deque.stream();
     }
 
 
@@ -67,6 +80,12 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
         flush();
         undo.clear();
         redo.clear();
+    }
+
+
+    @Override
+    public int size() {
+        return deque.size();
     }
 
 

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
+import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 
 /**
@@ -31,6 +32,16 @@ public record EmptyEdit() implements Edit {
     @Override
     public Edit flip() {
         return this;
+    }
+
+    @Override
+    public PointText affectTranslate(PointText pointText) {
+        return pointText;
+    }
+
+    @Override
+    public boolean isSingleEdit() {
+        return true;
     }
 
 }

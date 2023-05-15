@@ -16,7 +16,10 @@
 package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
+
+import java.util.List;
 
 /**
  * ReplaceEdit.
@@ -35,6 +38,20 @@ public record ReplaceEdit(
     @Override
     public Edit flip() {
         return new ReplaceEdit(point, afterTText, beforeText, occurredOn);
+    }
+
+    @Override
+    public PointText affectTranslate(PointText pointText) {
+        if (!isSingleEdit()) {
+            throw new UnsupportedOperationException();
+        }
+        // TODO
+        return null;
+    }
+
+    @Override
+    public boolean isSingleEdit() {
+        return beforeText.indexOf('\n') == -1 && afterTText.indexOf('\n') == -1;
     }
 
 }

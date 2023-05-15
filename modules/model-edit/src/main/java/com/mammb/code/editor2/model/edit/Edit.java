@@ -16,7 +16,10 @@
 package com.mammb.code.editor2.model.edit;
 
 import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.impl.*;
+
+import java.util.List;
 
 /**
  * Edit.
@@ -28,13 +31,11 @@ public sealed interface Edit
     /** The empty edit. */
     Edit empty = new EmptyEdit();
 
-
     /**
      * Get the occurredOn.
      * @return the occurredOn.
      */
     long occurredOn();
-
 
     /**
      * Flip the edit.
@@ -42,6 +43,12 @@ public sealed interface Edit
      */
     Edit flip();
 
+    /**
+     *
+     * @param pointText
+     * @return
+     */
+    PointText affectTranslate(PointText pointText);
 
     /**
      * Get whether other edit can be merged into this edit.
@@ -51,7 +58,6 @@ public sealed interface Edit
     default boolean canMerge(Edit other) {
         return other instanceof EmptyEdit;
     }
-
 
     /**
      * Merge other edit into this edit.
@@ -66,12 +72,17 @@ public sealed interface Edit
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    boolean isSingleEdit();
 
     /**
-     * Create the insert edit.
+     * Create the insertion edit.
      * @param point the offset point text
      * @param text the insertion text
-     * @return the insert edit
+     * @return the insertion edit
      */
     static Edit insert(OffsetPoint point, String text) {
         return new InsertEdit(point, text, System.currentTimeMillis());
@@ -79,10 +90,10 @@ public sealed interface Edit
 
 
     /**
-     * Create the delete edit.
+     * Create the deletion edit.
      * @param point the offset point text
      * @param text the deletion text
-     * @return the delete edit
+     * @return the deletion edit
      */
     static Edit delete(OffsetPoint point, String text) {
         return new DeleteEdit(point, text, System.currentTimeMillis());

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
+import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,15 @@ public record CompoundEdit(
     @Override
     public Edit flip() {
         return new CompoundEdit(edits.stream().map(Edit::flip).toList(), occurredOn);
+    }
+
+    @Override
+    public PointText affectTranslate(PointText pointText) {
+        if (!isSingleEdit()) {
+            throw new UnsupportedOperationException();
+        }
+        // TODO
+        return pointText;
     }
 
 
@@ -66,6 +76,12 @@ public record CompoundEdit(
             merged.add(edits.get(i).merge(compound.edits.get(0)));
         }
         return new CompoundEdit(merged, other.occurredOn());
+    }
+
+
+    @Override
+    public boolean isSingleEdit() {
+        return edits.size() == 1 && edits.get(0).isSingleEdit();
     }
 
 }
