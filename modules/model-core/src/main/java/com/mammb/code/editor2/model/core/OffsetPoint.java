@@ -16,24 +16,21 @@
 package com.mammb.code.editor2.model.core;
 
 /**
- * OffsetPoint.
- * <pre>
- * 1: |a|b|c|    OffsetPoint(0, 0, 0)
- * 2: |d|e|f|    OffsetPoint(1, 3, 3)
- *    |g|😀|     OffsetPoint(1, 6, 6)
- * 3: |i|j|k|    OffsetPoint(2, 9, 8)
- * </pre>
+ * Represents a position in the content.
  *
- * @param row the number of row(zero based)
- * @param offset the offset of content(char base)
- * @param cpOffset the code point offset of content
+ * <pre>
+ *  1: |a|b|c|    OffsetPoint(row:0, offset:0, cpOffset:0)
+ *  2: |d|e|f|    OffsetPoint(row:1, offset:3, cpOffset:3)
+ *     |g|😀|     OffsetPoint(row:1, offset:6, cpOffset:6)
+ *  3: |i|j|k|    OffsetPoint(row:2, offset:9, cpOffset:8)
+ * </pre>
  *
  * @author Naotsugu Kobayashi
  */
-public record OffsetPoint(int row, int offset, int cpOffset) {
+public interface OffsetPoint {
 
     /** zero. */
-    public static OffsetPoint zero = new OffsetPoint(0, 0, 0);
+    OffsetPoint zero = of(0, 0, 0);
 
 
     /**
@@ -41,9 +38,7 @@ public record OffsetPoint(int row, int offset, int cpOffset) {
      * @param that the offset
      * @return the offset
      */
-    public OffsetPoint plus(OffsetPoint that) {
-        return new OffsetPoint(row + that.row, offset + that.offset, cpOffset + that.cpOffset);
-    }
+    OffsetPoint plus(OffsetPoint that);
 
 
     /**
@@ -51,12 +46,7 @@ public record OffsetPoint(int row, int offset, int cpOffset) {
      * @param str the text string
      * @return the new offset point
      */
-    public OffsetPoint plus(String str) {
-        return new OffsetPoint(
-            row + countRow(str),
-            offset + str.length(),
-            cpOffset + Character.codePointCount(str, 0, str.length()));
-    }
+    OffsetPoint plus(String str);
 
 
     /**
@@ -64,21 +54,39 @@ public record OffsetPoint(int row, int offset, int cpOffset) {
      * @param str the text string
      * @return the new offset point
      */
-    public OffsetPoint minus(String str) {
-        return new OffsetPoint(
-            row - countRow(str),
-            offset - str.length(),
-            cpOffset - Character.codePointCount(str, 0, str.length()));
-    }
+    OffsetPoint minus(String str);
 
 
     /**
-     * Count the number of line feed in the specified char sequence.
-     * @param cs the specified char sequence
-     * @return the number of line feed
+     * Get the number of row(zero based).
+     * @return the number of row
      */
-    private static int countRow(CharSequence cs) {
-        return (cs == null) ? 0 : (int) cs.chars().filter(c -> c == '\n').count();
+    int row();
+
+
+    /**
+     * Get the offset of content(char base).
+     * @return the offset of content
+     */
+    int offset();
+
+
+    /**
+     * Get the code point offset of content.
+     * @return the code point offset of content
+     */
+    int cpOffset();
+
+
+    /**
+     * Create a new OffsetPoint.
+     * @param row the number of row(zero based)
+     * @param offset the offset of content(char base)
+     * @param cpOffset the code point offset of content
+     * @return a new OffsetPoint
+     */
+    static OffsetPoint of(int row, int offset, int cpOffset) {
+        return new com.mammb.code.editor2.model.core.impl.OffsetPoint(row, offset, cpOffset);
     }
 
 }
