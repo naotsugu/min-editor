@@ -37,10 +37,32 @@ public interface EditQueue {
     void peekAll(Consumer<Edit> action);
 
     /**
+     * Clear edit queue.
+     */
+    void clear();
+
+    /**
      * Get whether this edit queue is empty.
      * @return {@code true} if this edit queue is empty.
      */
     boolean isEmpty();
+
+    /**
+     * Flush edit queue.
+     */
+    void flush();
+
+    /**
+     * Undo.
+     * @return the undone edit.
+     */
+    Edit undo();
+
+    /**
+     * Redo.
+     * @return the redone edit.
+     */
+    Edit redo();
 
     /**
      * Create the edit queue.

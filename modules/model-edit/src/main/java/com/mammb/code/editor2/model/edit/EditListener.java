@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.edit.impl;
-
-import com.mammb.code.editor2.model.edit.Edit;
+package com.mammb.code.editor2.model.edit;
 
 /**
- * EmptyEdit.
+ * EditListener.
  * @author Naotsugu Kobayashi
  */
-public record EmptyEdit() implements Edit {
+public interface EditListener {
 
-    @Override
-    public long occurredOn() {
-        return 0;
-    }
-
-    @Override
-    public Edit flip() {
-        return this;
-    }
+    /**
+     * Invoked when a specific edit event for which this handler is registered happens.
+     * @param edit the edit event which occurred
+     */
+    void handle(Edit edit);
 
 }

@@ -16,8 +16,11 @@
 package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.edit.EditListener;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -34,6 +37,9 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
 
     /** The redo queue. */
     private final Deque<Edit> redo = new ArrayDeque<>();
+
+    /** The edit listeners. */
+    private final List<EditListener> listeners = new ArrayList<>();
 
 
     /**
@@ -57,8 +63,49 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
 
 
     @Override
+    public void clear() {
+        flush();
+        undo.clear();
+        redo.clear();
+    }
+
+
+    @Override
     public boolean isEmpty() {
         return deque.isEmpty();
+    }
+
+
+    @Override
+    public void flush() {
+        while (!deque.isEmpty()) {
+            Edit edit = deque.pop();
+            listeners.forEach(l -> l.handle(edit));
+            undo.push(edit.flip());
+            redo.clear();
+        }
+    }
+
+
+    @Override
+    public Edit undo() {
+        flush();
+        if (undo.isEmpty()) return Edit.empty;
+        Edit edit = undo.pop();
+        listeners.forEach(l -> l.handle(edit));
+        redo.push(edit.flip());
+        return edit;
+    }
+
+
+    @Override
+    public Edit redo() {
+        flush();
+        if (redo.isEmpty()) return Edit.empty;
+        Edit edit = redo.pop();
+        listeners.forEach(l -> l.handle(edit));
+        undo.push(edit.flip());
+        return edit;
     }
 
 }

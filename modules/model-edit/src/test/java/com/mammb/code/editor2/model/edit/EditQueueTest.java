@@ -17,6 +17,7 @@ package com.mammb.code.editor2.model.edit;
 
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.edit.impl.InsertEdit;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,10 +29,10 @@ class EditQueueTest {
 
     @Test void peekAll() {
         var queue = EditQueue.of();
-        queue.push(Edit.insert(PointText.of(OffsetPoint.zero, "abc")));
+        queue.push(Edit.insert(OffsetPoint.zero, "abc"));
 
         var sb = new StringBuilder();
-        queue.peekAll(e -> sb.append(e.text()));
+        queue.peekAll(e -> sb.append(((InsertEdit)e).text()));
         assertEquals("abc", sb.toString());
     }
 

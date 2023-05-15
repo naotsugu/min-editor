@@ -15,25 +15,18 @@
  */
 package com.mammb.code.editor2.model.edit;
 
-import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.edit.impl.EmptyEdit;
-import com.mammb.code.editor2.model.edit.impl.MonoEdit;
+import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.edit.impl.*;
 
 /**
  * Edit.
  * @author Naotsugu Kobayashi
  */
-public interface Edit extends PointText {
+public sealed interface Edit
+        permits InsertEdit, DeleteEdit, ReplaceEdit, CompoundEdit, EmptyEdit {
 
     /** The empty edit. */
     Edit empty = new EmptyEdit();
-
-
-    /**
-     * Get the edit type.
-     * @return the edit type.
-     */
-    EditType type();
 
 
     /**
@@ -44,44 +37,10 @@ public interface Edit extends PointText {
 
 
     /**
-     * Get whether this edit is insert type.
-     * @return {@code true}, if this edit is insert type
+     * Flip the edit.
+     * @return the flipped edit.
      */
-    default boolean isInsert() { return type().isInsert(); }
-
-
-    /**
-     * Get whether this edit is delete type.
-     * @return {@code true}, if this edit is delete type
-     */
-    default boolean isDelete() { return type().isDelete(); }
-
-
-    /**
-     * Get whether this edit is nil type.
-     * @return {@code true}, if this edit is nil type
-     */
-    default boolean isEmpty() { return type().isNil(); }
-
-
-    /**
-     * Create the insert edit.
-     * @param pointText the point text
-     * @return the Edit
-     */
-    static Edit insert(PointText pointText) {
-        return new MonoEdit(EditType.INSERT, pointText, System.currentTimeMillis());
-    }
-
-
-    /**
-     * Create the deleted edit.
-     * @param pointText the point text
-     * @return the Edit
-     */
-    static Edit delete(PointText pointText) {
-        return new MonoEdit(EditType.DELETE, pointText, System.currentTimeMillis());
-    }
+    Edit flip();
 
 
     /**
@@ -89,7 +48,9 @@ public interface Edit extends PointText {
      * @param other the merging edit
      * @return {@code true} if other edit can be merged into this edit.
      */
-    boolean canMerge(Edit other);
+    default boolean canMerge(Edit other) {
+        return other instanceof EmptyEdit;
+    }
 
 
     /**
@@ -97,6 +58,46 @@ public interface Edit extends PointText {
      * @param other the merging edit
      * @return the merged edit
      */
-    Edit merge(Edit other);
+    default Edit merge(Edit other) {
+        if (other instanceof EmptyEdit) {
+            return this;
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+
+    /**
+     * Create the insert edit.
+     * @param point the offset point text
+     * @param text the insertion text
+     * @return the insert edit
+     */
+    static Edit insert(OffsetPoint point, String text) {
+        return new InsertEdit(point, text, System.currentTimeMillis());
+    }
+
+
+    /**
+     * Create the delete edit.
+     * @param point the offset point text
+     * @param text the deletion text
+     * @return the delete edit
+     */
+    static Edit delete(OffsetPoint point, String text) {
+        return new DeleteEdit(point, text, System.currentTimeMillis());
+    }
+
+
+    /**
+     * Create the replacement edit.
+     * @param point the offset point text
+     * @param beforeText the before text string
+     * @param afterTText the after text string
+     * @return the replacement edit
+     */
+    static Edit replace(OffsetPoint point, String beforeText, String afterTText) {
+        return new ReplaceEdit(point, beforeText, afterTText, System.currentTimeMillis());
+    }
 
 }

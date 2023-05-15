@@ -15,22 +15,26 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
+import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.edit.Edit;
 
 /**
- * EmptyEdit.
+ * ReplaceEdit.
+ * @param point the offset point of edit.
+ * @param beforeText the before text string
+ * @param afterTText the after text string
+ * @param occurredOn the occurredOn.
  * @author Naotsugu Kobayashi
  */
-public record EmptyEdit() implements Edit {
-
-    @Override
-    public long occurredOn() {
-        return 0;
-    }
+public record ReplaceEdit(
+        OffsetPoint point,
+        String beforeText,
+        String afterTText,
+        long occurredOn) implements Edit {
 
     @Override
     public Edit flip() {
-        return this;
+        return new ReplaceEdit(point, afterTText, beforeText, occurredOn);
     }
 
 }

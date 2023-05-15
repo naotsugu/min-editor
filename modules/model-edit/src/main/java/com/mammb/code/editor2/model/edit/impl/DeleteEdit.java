@@ -15,24 +15,25 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
+import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.edit.Edit;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * CompoundEdit.
- * @param edits the elements of compound edit
+ * DeleteEdit.
+ * @param point the offset point of edit.
+ * @param text the deletion text
  * @param occurredOn the occurredOn.
  * @author Naotsugu Kobayashi
  */
-public record CompoundEdit(
-        List<Edit> edits,
+public record DeleteEdit(
+        OffsetPoint point,
+        String text,
         long occurredOn) implements Edit {
 
 
     @Override
     public Edit flip() {
-        return new CompoundEdit(edits.stream().map(Edit::flip).toList(), occurredOn);
+        return new InsertEdit(point, text, occurredOn);
     }
 
 
@@ -41,17 +42,11 @@ public record CompoundEdit(
         if (other instanceof EmptyEdit) {
             return true;
         }
-        if (other instanceof CompoundEdit compound &&
-                edits.size() == compound.edits.size()) {
-            for (int i = 0; i < edits.size(); i++) {
-                // can all elements merge
-                if (!edits.get(i).canMerge(compound.edits.get(0))) {
-                    return false;
-                }
-            }
-            return true;
+        if (other.occurredOn() - occurredOn > 2000) {
+            return false;
         }
-        return false;
+        return (other instanceof DeleteEdit delete) &&
+            point.offset() == delete.point().offset();
     }
 
 
@@ -60,12 +55,11 @@ public record CompoundEdit(
         if (other instanceof EmptyEdit) {
             return this;
         }
-        CompoundEdit compound = (CompoundEdit) other;
-        List<Edit> merged = new ArrayList<>();
-        for (int i = 0; i < edits.size(); i++) {
-            merged.add(edits.get(i).merge(compound.edits.get(0)));
-        }
-        return new CompoundEdit(merged, other.occurredOn());
+        DeleteEdit delete = (DeleteEdit) other;
+        return new DeleteEdit(
+            point,
+            text + delete.text(),
+            other.occurredOn());
     }
 
 }
