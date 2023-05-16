@@ -19,8 +19,6 @@ import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 
-import java.util.List;
-
 /**
  * InsertEdit.
  * @param point the offset point of edit.
@@ -45,21 +43,19 @@ public record InsertEdit(
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }
-        // |0|1|      tailOffset:2
-        // |2|3|4|5|  tailOffset:6
-        // |6|
-        if (pointText.tailOffset() <= point.offset()) {
-            return pointText;
-        } else if (pointText.tailOffset() > point.offset() &&
-                pointText.point().offset() <= point.offset()) {
-            StringBuilder sb = new StringBuilder(pointText.text());
-            sb.insert(point.offset() - pointText.point().offset(), text);
-            return PointText.of(pointText.point(), sb.toString());
-        } else {
-            OffsetPoint delta = OffsetPoint.of(
-                0, text.length(), Character.codePointCount(text, 0, text.length()));
-            return PointText.of(pointText.point().plus(delta), pointText.text());
-        }
+        return switch (pointText.compareOffsetRangeTo(point.offset())) {
+            case -1 -> {
+                OffsetPoint delta = OffsetPoint.of(
+                    0, text.length(), Character.codePointCount(text, 0, text.length()));
+                yield  PointText.of(pointText.point().plus(delta), pointText.text());
+            }
+            case  0 -> {
+                StringBuilder sb = new StringBuilder(pointText.text());
+                sb.insert(point.offset() - pointText.point().offset(), text);
+                yield PointText.of(pointText.point(), sb.toString());
+            }
+            default -> pointText;
+        };
     }
 
 

@@ -19,8 +19,6 @@ import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 
-import java.util.List;
-
 /**
  * ReplaceEdit.
  * @param point the offset point of edit.
@@ -40,14 +38,32 @@ public record ReplaceEdit(
         return new ReplaceEdit(point, afterTText, beforeText, occurredOn);
     }
 
+
     @Override
     public PointText affectTranslate(PointText pointText) {
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }
-        // TODO
-        return null;
+        return switch (pointText.compareOffsetRangeTo(point.offset())) {
+            case -1 -> {
+                OffsetPoint delta = OffsetPoint.of(
+                    0,
+                    afterTText.length() - beforeText.length(),
+                    Character.codePointCount(afterTText, 0, afterTText.length())
+                        - Character.codePointCount(beforeText, 0, beforeText.length()));
+                yield PointText.of(pointText.point().plus(delta), pointText.text());
+            }
+            case  0 -> {
+                StringBuilder sb = new StringBuilder(pointText.text());
+                int start = point.offset() - pointText.point().offset();
+                int end = start + beforeText.length();
+                sb.replace(start, end, afterTText);
+                yield PointText.of(pointText.point(), sb.toString());
+            }
+            default -> pointText;
+        };
     }
+
 
     @Override
     public boolean isSingleEdit() {

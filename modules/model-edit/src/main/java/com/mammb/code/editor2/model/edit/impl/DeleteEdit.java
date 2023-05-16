@@ -19,8 +19,6 @@ import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 
-import java.util.List;
-
 /**
  * DeleteEdit.
  * @param point the offset point of edit.
@@ -45,8 +43,23 @@ public record DeleteEdit(
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }
-        // TODO
-        return pointText;
+        return switch (pointText.compareOffsetRangeTo(point.offset())) {
+            case -1 -> {
+                OffsetPoint delta = OffsetPoint.of(
+                    0,
+                        -text.length(),
+                        -Character.codePointCount(text, 0, text.length()));
+                yield PointText.of(pointText.point().plus(delta), pointText.text());
+            }
+            case  0 -> {
+                StringBuilder sb = new StringBuilder(pointText.text());
+                int start = point.offset() - pointText.point().offset();
+                int end = start + text.length();
+                sb.replace(start, end, "");
+                yield PointText.of(pointText.point(), sb.toString());
+            }
+            default -> pointText;
+        };
     }
 
 

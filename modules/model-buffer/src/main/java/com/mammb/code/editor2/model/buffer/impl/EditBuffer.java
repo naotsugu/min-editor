@@ -67,5 +67,5 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffe
         Edit edit = editQueue.isEmpty() ? Edit.empty : editQueue.peek();
         return slice.texts().stream().map(edit::affectTranslate).toList();
     }
-
+    
 }

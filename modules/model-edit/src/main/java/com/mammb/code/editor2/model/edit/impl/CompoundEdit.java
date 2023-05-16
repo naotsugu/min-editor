@@ -41,8 +41,7 @@ public record CompoundEdit(
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }
-        // TODO
-        return pointText;
+        return edits.get(0).affectTranslate(pointText);
     }
 
 

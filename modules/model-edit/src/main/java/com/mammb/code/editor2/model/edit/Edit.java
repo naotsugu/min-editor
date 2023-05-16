@@ -19,8 +19,6 @@ import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.impl.*;
 
-import java.util.List;
-
 /**
  * Edit.
  * @author Naotsugu Kobayashi
