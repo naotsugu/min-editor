@@ -19,5 +19,6 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.syntax.base {
+    requires code.editor.model.core;
     exports com.mammb.code.editor2.syntax;
 }
