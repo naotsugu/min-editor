@@ -37,5 +37,6 @@ tasks.withType<Javadoc>().configureEach {
 tasks.jar {
     manifest {
         attributes("Add-Exports" to "javafx.graphics/com.sun.javafx.tk javafx.graphics/com.sun.javafx.scene.text")
+        attributes("Automatic-Module-Name" to "code.editor.javafx")
     }
 }
