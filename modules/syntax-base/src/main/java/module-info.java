@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.buffer;
-
-import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.text.RowSlice;
-import java.util.List;
 
 /**
- * The edit buffer.
+ * The base syntax module.
  * @author Naotsugu Kobayashi
  */
-public interface EditBuffer extends RowSlice {
-
-    @Override
-    List<PointText> texts();
-
+module code.editor.syntax.base {
+    exports com.mammb.code.editor2.syntax;
 }

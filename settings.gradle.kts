@@ -11,7 +11,7 @@ include(":piecetable")
 project(":piecetable").projectDir = file("modules/piecetable/lib")
 
 // other module
-include("javafx", "model-core", "model-text", "model-edit", "model-buffer")
+include("javafx", "model-core", "model-text", "model-edit", "model-buffer", "syntax-base")
 for (project in rootProject.children.filterNot { it.name == "app" || it.name == "piecetable" }) {
     project.projectDir = file("modules/${project.name}")
 }
