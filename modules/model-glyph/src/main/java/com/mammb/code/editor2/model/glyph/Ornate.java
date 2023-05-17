@@ -16,9 +16,27 @@
 package com.mammb.code.editor2.model.glyph;
 
 /**
- * Style.
+ * The ornate.
  * @author Naotsugu Kobayashi
  */
-public enum Style {
-    REGULAR, BOLD, ITALIC
+public interface Ornate {
+
+    /**
+     * The font.
+     * @return the font
+     */
+    Font font();
+
+    /**
+     * The color.
+     * @return the color
+     */
+    Color color();
+
+    /**
+     * The decoration.
+     * @return the decoration
+     */
+    Decoration decoration();
+
 }

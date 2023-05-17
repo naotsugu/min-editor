@@ -1,6 +1,6 @@
 plugins {
     id("code.editor.base")
-    application
+    java
     id("org.openjfx.javafxplugin") version "0.0.14"
 }
 
@@ -40,3 +40,4 @@ tasks.jar {
         attributes("Automatic-Module-Name" to "code.editor.javafx")
     }
 }
+

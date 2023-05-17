@@ -20,5 +20,6 @@
  */
 module code.editor.model.glyph {
     requires code.editor.javafx;
+    requires code.editor.model.core;
     exports com.mammb.code.editor2.model.glyph;
 }

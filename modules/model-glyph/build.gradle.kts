@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":model-core"))
     implementation(project(":javafx", "archives"))
 }

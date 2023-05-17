@@ -16,11 +16,9 @@
 package com.mammb.code.editor2.model.glyph;
 
 /**
- * Font.
- * @param name the font name
- * @param size the size of font
- * @param weight the weight of font(normal:400 bold:700)
- * @param posture the posture of font
- * @author Naotsugu Kobayashi
+ * Color
+ * @param colorString the string representation of color
+ * @param opacity the opacity of color
  */
-public record Font(String name, double size, int weight, String posture) { }
+public record Color(String colorString, double opacity) {
+}
