@@ -15,14 +15,12 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
-import com.mammb.code.editor2.model.buffer.ContentAdapter;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
 import com.mammb.code.editor2.model.text.RowSlice;
-
+import com.mammb.code.editor2.model.buffer.Content;
 import java.util.List;
-
 import static java.util.function.Predicate.not;
 
 /**

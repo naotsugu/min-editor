@@ -24,7 +24,7 @@ import java.util.List;
  * TextWrapBuffer.
  * @author Naotsugu Kobayashi
  */
-public class TextWrapBuffer implements EditBuffer {
+public class WrapBuffer implements EditBuffer {
 
     /** The EditBuffer. */
     private final EditBuffer editBuffer;
@@ -41,7 +41,7 @@ public class TextWrapBuffer implements EditBuffer {
     private List<PointText> lines = new ArrayList<>();
 
 
-    public TextWrapBuffer(EditBuffer editBuffer, boolean textWrap) {
+    public WrapBuffer(EditBuffer editBuffer, boolean textWrap) {
         this.editBuffer = editBuffer;
         this.textWrap = textWrap;
     }

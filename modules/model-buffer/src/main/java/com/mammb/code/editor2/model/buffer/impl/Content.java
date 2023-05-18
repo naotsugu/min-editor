@@ -43,6 +43,7 @@ public class Content implements com.mammb.code.editor2.model.buffer.Content {
         this(LineEnding.platform());
     }
 
+
     /**
      * Constructor.
      * @param lineEnding the line ending
