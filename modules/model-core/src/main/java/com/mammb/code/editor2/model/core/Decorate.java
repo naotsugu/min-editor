@@ -21,13 +21,13 @@ import java.util.List;
  * Decorate.
  * @author Naotsugu Kobayashi
  */
-public interface Decorate {
+public interface Decorate<I, O> {
 
     /**
      * Apply decoration
-     * @param text the point text
-     * @return the decorated text
+     * @param texts the point texts
+     * @return the decorated texts
      */
-    List<PointText> apply(PointText text);
+    List<O> apply(List<I> texts);
 
 }
