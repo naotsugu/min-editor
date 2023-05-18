@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.glyph;
+package com.mammb.code.editor2.model.glyph.impl;
+
+import com.mammb.code.editor2.model.glyph.Color;
+import com.mammb.code.editor2.model.glyph.Decoration;
+import com.mammb.code.editor2.model.glyph.Font;
+import com.mammb.code.editor2.model.glyph.Ornate;
 
 /**
- * Color
- * @param colorString the string representation of color
- * @param opacity the opacity of color
+ * OrnateRecord
+ * @param font the font
+ * @param color the color
+ * @param decoration the decoration
  * @author Naotsugu Kobayashi
  */
-public record Color(String colorString, double opacity) {
-}
+public record OrnateRecord(Font font, Color color, Decoration decoration) implements Ornate {}

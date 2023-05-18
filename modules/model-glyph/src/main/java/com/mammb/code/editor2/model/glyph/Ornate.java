@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor2.model.glyph;
 
+import com.mammb.code.editor2.model.glyph.impl.OrnateRecord;
+
 /**
  * The ornate.
  * @author Naotsugu Kobayashi
@@ -38,5 +40,16 @@ public interface Ornate {
      * @return the decoration
      */
     Decoration decoration();
+
+    /**
+     * Create a new Ornate.
+     * @param font the font
+     * @param color the color
+     * @param decoration the decoration
+     * @return a new Ornate
+     */
+    static Ornate of(Font font, Color color, Decoration decoration) {
+        return new OrnateRecord(font, color, decoration);
+    }
 
 }
