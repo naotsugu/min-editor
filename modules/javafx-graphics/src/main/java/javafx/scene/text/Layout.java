@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.javafx.text;
+package javafx.scene.text;
 
 import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.scene.text.TextLine;
 import com.sun.javafx.tk.Toolkit;
-import javafx.scene.text.Font;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -83,12 +82,24 @@ public class Layout {
 
 
     /**
+     * Create a new Layout.
+     * @param name the base font name
+     * @param size the base font size
+     * @param wrapWidth the wrap width for the layout
+     * @return the created Layout
+     */
+    public static Layout of(String name, double size, float wrapWidth) {
+        return new Layout(Font.font(name, size), wrapWidth, 4);
+    }
+
+
+    /**
      * Get the layout line text
      * @param str the source string
      * @return the layout line text
      */
-    public String[] lines(String str) {
-        return lines(str, nativeFonts.get(baseFont));
+    public String[] wrapLines(String str) {
+        return wrapLines(str, nativeFonts.get(baseFont));
     }
 
 
@@ -98,8 +109,8 @@ public class Layout {
      * @param font the font
      * @return the layout line text
      */
-    public String[] lines(String str, Font font) {
-        return lines(str, nativeFonts.computeIfAbsent(font, FontHelper::getNativeFont));
+    public String[] wrapLines(String str, Font font) {
+        return wrapLines(str, nativeFonts.computeIfAbsent(font, FontHelper::getNativeFont));
     }
 
 
@@ -109,7 +120,7 @@ public class Layout {
      * @param font the native font
      * @return the layout line text
      */
-    private String[] lines(String str, Object font) {
+    private String[] wrapLines(String str, Object font) {
 
         if (wrapWidth <= 0) {
             return new String[] { str };
@@ -162,5 +173,6 @@ public class Layout {
     public boolean setTabSize(int spaces) {
         return textLayout.setTabSize(spaces);
     }
+
 
 }
