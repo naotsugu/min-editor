@@ -15,23 +15,28 @@
  */
 package com.mammb.code.editor2.model.core.impl;
 
+import com.mammb.code.editor2.model.core.OffsetPoint;
+
 /**
- * The implementation of {@link com.mammb.code.editor2.model.core.OffsetPoint}.
+ * The implementation of {@link OffsetPoint}.
  *
  * @param row the number of row(zero based)
  * @param offset the offset of content(char base)
  * @param cpOffset the code point offset of content
  * @author Naotsugu Kobayashi
  */
-public record OffsetPoint(int row, int offset, int cpOffset) implements com.mammb.code.editor2.model.core.OffsetPoint {
+public record OffsetPointRecord(
+        int row,
+        int offset,
+        int cpOffset) implements OffsetPoint {
 
     /**
      * Plus the offset.
      * @param that the offset
      * @return the offset
      */
-    public OffsetPoint plus(com.mammb.code.editor2.model.core.OffsetPoint that) {
-        return new OffsetPoint(row + that.row(), offset + that.offset(), cpOffset + that.cpOffset());
+    public OffsetPointRecord plus(OffsetPoint that) {
+        return new OffsetPointRecord(row + that.row(), offset + that.offset(), cpOffset + that.cpOffset());
     }
 
 
@@ -40,8 +45,8 @@ public record OffsetPoint(int row, int offset, int cpOffset) implements com.mamm
      * @param str the text string
      * @return the new offset point
      */
-    public OffsetPoint plus(String str) {
-        return new OffsetPoint(
+    public OffsetPointRecord plus(String str) {
+        return new OffsetPointRecord(
             row + countRow(str),
             offset + str.length(),
             cpOffset + Character.codePointCount(str, 0, str.length()));
@@ -53,8 +58,8 @@ public record OffsetPoint(int row, int offset, int cpOffset) implements com.mamm
      * @param str the text string
      * @return the new offset point
      */
-    public OffsetPoint minus(String str) {
-        return new OffsetPoint(
+    public OffsetPointRecord minus(String str) {
+        return new OffsetPointRecord(
             row - countRow(str),
             offset - str.length(),
             cpOffset - Character.codePointCount(str, 0, str.length()));

@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor2.model.core;
 
+import com.mammb.code.editor2.model.core.impl.OffsetPointRecord;
+
 /**
  * Represents a position in the content.
  *
@@ -31,6 +33,27 @@ public interface OffsetPoint {
 
     /** zero. */
     OffsetPoint zero = of(0, 0, 0);
+
+
+    /**
+     * Get the number of row(zero based).
+     * @return the number of row
+     */
+    int row();
+
+
+    /**
+     * Get the offset of content(char base).
+     * @return the offset of content
+     */
+    int offset();
+
+
+    /**
+     * Get the code point offset of content.
+     * @return the code point offset of content
+     */
+    int cpOffset();
 
 
     /**
@@ -58,27 +81,6 @@ public interface OffsetPoint {
 
 
     /**
-     * Get the number of row(zero based).
-     * @return the number of row
-     */
-    int row();
-
-
-    /**
-     * Get the offset of content(char base).
-     * @return the offset of content
-     */
-    int offset();
-
-
-    /**
-     * Get the code point offset of content.
-     * @return the code point offset of content
-     */
-    int cpOffset();
-
-
-    /**
      * Create a new OffsetPoint.
      * @param row the number of row(zero based)
      * @param offset the offset of content(char base)
@@ -86,7 +88,7 @@ public interface OffsetPoint {
      * @return a new OffsetPoint
      */
     static OffsetPoint of(int row, int offset, int cpOffset) {
-        return new com.mammb.code.editor2.model.core.impl.OffsetPoint(row, offset, cpOffset);
+        return new OffsetPointRecord(row, offset, cpOffset);
     }
 
 }

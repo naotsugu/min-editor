@@ -15,23 +15,19 @@
  */
 package com.mammb.code.editor2.model.core;
 
+import com.mammb.code.editor2.model.core.impl.PointTextRecord;
+
 /**
  * PointText.
  * @author Naotsugu Kobayashi
  */
-public interface PointText {
+public interface PointText extends Textual {
 
     /**
      * Get the offset point.
      * @return the offset point.
      */
     OffsetPoint point();
-
-    /**
-     * Get the text string.
-     * @return the text string.
-     */
-    String text();
 
     /**
      * Get the offset of tail.
@@ -81,7 +77,7 @@ public interface PointText {
      * @return a new PointText
      */
     static PointText of(OffsetPoint point, String text) {
-        return new com.mammb.code.editor2.model.core.impl.PointText(point, text);
+        return new PointTextRecord(point, text);
     }
 
 }

@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core.impl;
-
-import com.mammb.code.editor2.model.core.OffsetPoint;
+package com.mammb.code.editor2.model.core;
 
 /**
- * PointText.
- * @param point the offset point.
- * @param text the text string.
+ * Textual.
  * @author Naotsugu Kobayashi
  */
-public record PointText(OffsetPoint point, String text) implements com.mammb.code.editor2.model.core.PointText {
+public interface Textual {
+
+    /**
+     * Get the text string.
+     * @return the text string.
+     */
+    String text();
+
 }
