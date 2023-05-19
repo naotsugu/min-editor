@@ -42,9 +42,9 @@ class InsertEditTest {
 
         var edit = new InsertEdit(OffsetPoint.of(1, 2, 2), "xx", 0);
 
-        assertEquals(lines.get(0), edit.affectTranslate(lines.get(0)));
-        assertEquals(pointText(1, 2, 2, "xx23\n"), edit.affectTranslate(lines.get(1)));
-        assertEquals(pointText(2, 7, 7, "56"), edit.affectTranslate(lines.get(2)));
+        assertEquals(lines.get(0), edit.applyTo(lines.get(0)));
+        assertEquals(pointText(1, 2, 2, "xx23\n"), edit.applyTo(lines.get(1)));
+        assertEquals(pointText(2, 7, 7, "56"), edit.applyTo(lines.get(2)));
     }
 
     @Test void testAffectTranslateMidInsert() {
@@ -59,9 +59,9 @@ class InsertEditTest {
 
         var edit = new InsertEdit(OffsetPoint.of(1, 3, 3), "xx", 0);
 
-        assertEquals(lines.get(0), edit.affectTranslate(lines.get(0)));
-        assertEquals(pointText(1, 2, 2, "2xx3\n"), edit.affectTranslate(lines.get(1)));
-        assertEquals(pointText(2, 7, 7, "56"), edit.affectTranslate(lines.get(2)));
+        assertEquals(lines.get(0), edit.applyTo(lines.get(0)));
+        assertEquals(pointText(1, 2, 2, "2xx3\n"), edit.applyTo(lines.get(1)));
+        assertEquals(pointText(2, 7, 7, "56"), edit.applyTo(lines.get(2)));
     }
 
     @Test void testAffectTranslateTailInsert() {
@@ -76,9 +76,9 @@ class InsertEditTest {
 
         var edit = new InsertEdit(OffsetPoint.of(1, 4, 4), "xx", 0);
 
-        assertEquals(lines.get(0), edit.affectTranslate(lines.get(0)));
-        assertEquals(pointText(1, 2, 2, "23xx\n"), edit.affectTranslate(lines.get(1)));
-        assertEquals(pointText(2, 7, 7, "56"), edit.affectTranslate(lines.get(2)));
+        assertEquals(lines.get(0), edit.applyTo(lines.get(0)));
+        assertEquals(pointText(1, 2, 2, "23xx\n"), edit.applyTo(lines.get(1)));
+        assertEquals(pointText(2, 7, 7, "56"), edit.applyTo(lines.get(2)));
     }
 
     private static List<PointText> pointTexts(String string) {

@@ -16,10 +16,13 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.core.Translate;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
 import com.mammb.code.editor2.model.text.RowSlice;
 import com.mammb.code.editor2.model.buffer.Content;
+
+import java.util.ArrayList;
 import java.util.List;
 import static java.util.function.Predicate.not;
 
@@ -34,6 +37,9 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffe
 
     /** The content. */
     private final Content content;
+
+    /** The PointText translate. */
+    private final List<Translate<PointText, PointText>> translates = new ArrayList<>();
 
     /** The edit queue. */
     private final EditQueue editQueue = EditQueue.of();
@@ -52,6 +58,7 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffe
 
     @Override
     public List<PointText> texts() {
+
         if (editQueue.isEmpty()) {
             return slice.texts();
         }
@@ -62,8 +69,21 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffe
             editQueue.flush();
         }
 
-        Edit edit = editQueue.isEmpty() ? Edit.empty : editQueue.peek();
-        return slice.texts().stream().map(edit::affectTranslate).toList();
+        Edit edit = editQueue.isEmpty()
+                ? Edit.empty
+                : editQueue.peek();
+
+        return slice.texts().stream()
+                .map(edit::applyTo)
+                .toList();
+    }
+
+
+    private PointText applyTranslate(PointText text) {
+        for (var translate : translates) {
+            text = translate.applyTo(text);
+        }
+        return text;
     }
 
 }

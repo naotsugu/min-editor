@@ -13,35 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.edit.impl;
+package com.mammb.code.editor2.syntax;
 
+import com.mammb.code.editor2.model.core.Translate;
 import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.edit.Edit;
 
 /**
- * EmptyEdit.
+ * SyntaxTranslate.
  * @author Naotsugu Kobayashi
  */
-public record EmptyEdit() implements Edit {
+public class SyntaxTranslate implements Translate<PointText, PointText> {
 
     @Override
-    public long occurredOn() {
-        return 0;
-    }
-
-    @Override
-    public Edit flip() {
-        return this;
-    }
-
-    @Override
-    public PointText applyTo(PointText pointText) {
-        return pointText;
-    }
-
-    @Override
-    public boolean isSingleEdit() {
-        return true;
+    public PointText applyTo(PointText texts) {
+        return texts;
     }
 
 }

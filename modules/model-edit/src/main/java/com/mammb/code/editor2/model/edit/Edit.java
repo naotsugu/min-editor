@@ -23,7 +23,7 @@ import com.mammb.code.editor2.model.edit.impl.*;
  * Edit.
  * @author Naotsugu Kobayashi
  */
-public sealed interface Edit
+public sealed interface Edit extends TextTranslate
         permits InsertEdit, DeleteEdit, ReplaceEdit, CompoundEdit, EmptyEdit {
 
     /** The empty edit. */
@@ -40,13 +40,6 @@ public sealed interface Edit
      * @return the flipped edit.
      */
     Edit flip();
-
-    /**
-     *
-     * @param pointText
-     * @return
-     */
-    PointText affectTranslate(PointText pointText);
 
     /**
      * Get whether other edit can be merged into this edit.

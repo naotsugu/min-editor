@@ -42,9 +42,9 @@ class DeleteEditTest {
 
         var edit = new DeleteEdit(OffsetPoint.of(1, 2, 2), "23", 0);
 
-        assertEquals(lines.get(0), edit.affectTranslate(lines.get(0)));
-        assertEquals(pointText(1, 2, 2, "\n"), edit.affectTranslate(lines.get(1)));
-        assertEquals(pointText(2, 3, 3, "56"), edit.affectTranslate(lines.get(2)));
+        assertEquals(lines.get(0), edit.applyTo(lines.get(0)));
+        assertEquals(pointText(1, 2, 2, "\n"), edit.applyTo(lines.get(1)));
+        assertEquals(pointText(2, 3, 3, "56"), edit.applyTo(lines.get(2)));
     }
 
     @Test void testAffectTranslateMidDelete() {
@@ -59,9 +59,9 @@ class DeleteEditTest {
 
         var edit = new DeleteEdit(OffsetPoint.of(1, 3, 3), "2", 0);
 
-        assertEquals(lines.get(0), edit.affectTranslate(lines.get(0)));
-        assertEquals(pointText(1, 2, 2, "2\n"), edit.affectTranslate(lines.get(1)));
-        assertEquals(pointText(2, 4, 4, "56"), edit.affectTranslate(lines.get(2)));
+        assertEquals(lines.get(0), edit.applyTo(lines.get(0)));
+        assertEquals(pointText(1, 2, 2, "2\n"), edit.applyTo(lines.get(1)));
+        assertEquals(pointText(2, 4, 4, "56"), edit.applyTo(lines.get(2)));
     }
 
 

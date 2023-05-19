@@ -39,7 +39,7 @@ public record DeleteEdit(
 
 
     @Override
-    public PointText affectTranslate(PointText pointText) {
+    public PointText applyTo(PointText pointText) {
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }

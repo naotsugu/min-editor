@@ -15,19 +15,17 @@
  */
 package com.mammb.code.editor2.model.core;
 
-import java.util.List;
-
 /**
- * Decorate.
+ * Translate.
  * @author Naotsugu Kobayashi
  */
-public interface Decorate<I, O> {
+public interface Translate<I, O> {
 
     /**
-     * Apply decoration
-     * @param texts the point texts
-     * @return the decorated texts
+     * Apply to translate.
+     * @param input the input element
+     * @return the output element
      */
-    List<O> apply(List<I> texts);
+    O applyTo(I input);
 
 }

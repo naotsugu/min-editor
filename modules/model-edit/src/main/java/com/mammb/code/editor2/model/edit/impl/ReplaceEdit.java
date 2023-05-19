@@ -40,7 +40,7 @@ public record ReplaceEdit(
 
 
     @Override
-    public PointText affectTranslate(PointText pointText) {
+    public PointText applyTo(PointText pointText) {
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }

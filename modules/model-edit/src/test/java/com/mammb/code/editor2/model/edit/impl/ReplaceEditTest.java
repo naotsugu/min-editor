@@ -40,9 +40,9 @@ class ReplaceEditTest {
 
         var edit = new ReplaceEdit(OffsetPoint.of(1, 2, 2), "23", "x", 0);
 
-        assertEquals(lines.get(0), edit.affectTranslate(lines.get(0)));
-        assertEquals(pointText(1, 2, 2, "x\n"), edit.affectTranslate(lines.get(1)));
-        assertEquals(pointText(2, 4, 4, "56"), edit.affectTranslate(lines.get(2)));
+        assertEquals(lines.get(0), edit.applyTo(lines.get(0)));
+        assertEquals(pointText(1, 2, 2, "x\n"), edit.applyTo(lines.get(1)));
+        assertEquals(pointText(2, 4, 4, "56"), edit.applyTo(lines.get(2)));
     }
 
     @Test void testAffectTranslateMidReplace() {
@@ -57,9 +57,9 @@ class ReplaceEditTest {
 
         var edit = new ReplaceEdit(OffsetPoint.of(1, 3, 3), "3", "x", 0);
 
-        assertEquals(lines.get(0), edit.affectTranslate(lines.get(0)));
-        assertEquals(pointText(1, 2, 2, "2x\n"), edit.affectTranslate(lines.get(1)));
-        assertEquals(pointText(2, 5, 5, "56"), edit.affectTranslate(lines.get(2)));
+        assertEquals(lines.get(0), edit.applyTo(lines.get(0)));
+        assertEquals(pointText(1, 2, 2, "2x\n"), edit.applyTo(lines.get(1)));
+        assertEquals(pointText(2, 5, 5, "56"), edit.applyTo(lines.get(2)));
     }
 
 

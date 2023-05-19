@@ -37,11 +37,11 @@ public record CompoundEdit(
     }
 
     @Override
-    public PointText affectTranslate(PointText pointText) {
+    public PointText applyTo(PointText pointText) {
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }
-        return edits.get(0).affectTranslate(pointText);
+        return edits.get(0).applyTo(pointText);
     }
 
 
