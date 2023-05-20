@@ -16,20 +16,21 @@
 package com.mammb.code.editor2.model.text;
 
 import com.mammb.code.editor2.model.core.PointText;
-
+import com.mammb.code.editor2.model.core.Textual;
 import java.util.List;
 
 /**
  * RowSlice.
+ * @param <T> type of row content
  * @author Naotsugu Kobayashi
  */
-public interface RowSlice {
+public interface RowSlice<T extends Textual> {
 
     /**
      * Get the text lines.
      * @return the text lines
      */
-    List<PointText> texts();
+    List<T> texts();
 
 
     /**
@@ -38,7 +39,7 @@ public interface RowSlice {
      * @param rowSupplier the row supplier
      * @return the created RowSlice
      */
-    static RowSlice of(int maxRowSize, RowSupplier rowSupplier) {
+    static RowSlice<PointText> of(int maxRowSize, RowSupplier rowSupplier) {
         return new com.mammb.code.editor2.model.text.impl.RowSlice(maxRowSize, rowSupplier);
     }
 

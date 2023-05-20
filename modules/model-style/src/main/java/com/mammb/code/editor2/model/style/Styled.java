@@ -29,4 +29,17 @@ public interface Styled {
      */
     List<StyleSpan> styles();
 
+
+    /**
+     * Gets an array of starting positions for a specified style.
+     * @param filter specified style
+     * @return an array of starting positions for a specified style
+     */
+    default int[] points(Class<? extends Style> filter) {
+        return styles().stream()
+            .filter(s -> filter.isAssignableFrom(s.style().getClass()))
+            .mapToInt(StyleSpan::point)
+            .toArray();
+    }
+
 }

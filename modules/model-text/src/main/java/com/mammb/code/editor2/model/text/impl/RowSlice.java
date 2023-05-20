@@ -27,7 +27,7 @@ import com.mammb.code.editor2.model.text.RowSupplier;
  * RowSlice.
  * @author Naotsugu Kobayashi
  */
-public class RowSlice implements com.mammb.code.editor2.model.text.RowSlice {
+public class RowSlice implements com.mammb.code.editor2.model.text.RowSlice<PointText> {
 
     /** The row list. */
     private final List<PointText> texts = new LinkedList<>();

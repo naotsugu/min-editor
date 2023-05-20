@@ -15,31 +15,14 @@
  */
 package com.mammb.code.editor2.model.style;
 
-import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * StyledText.
  * @author Naotsugu Kobayashi
  */
-public record StyledText(
-        PointText pointText,
-        List<StyleSpan> styles) implements PointText, Styled {
+public interface StyledText extends PointText, Styled {
 
-    public StyledText(PointText pointText) {
-        this(pointText, new ArrayList<>());
-    }
-
-    @Override
-    public OffsetPoint point() {
-        return pointText.point();
-    }
-
-    @Override
-    public String text() {
-        return pointText.text();
-    }
+    void putStyle(StyleSpan style);
 
 }

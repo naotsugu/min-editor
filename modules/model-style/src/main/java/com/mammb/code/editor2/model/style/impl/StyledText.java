@@ -13,19 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.buffer;
+package com.mammb.code.editor2.model.style.impl;
 
+import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.text.RowSlice;
+import com.mammb.code.editor2.model.style.StyleSpan;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The edit buffer.
+ * StyledText.
  * @author Naotsugu Kobayashi
  */
-public interface SliceBuffer extends RowSlice {
+public record StyledText(
+        PointText pointText,
+        List<StyleSpan> styles) implements com.mammb.code.editor2.model.style.StyledText {
+
+    public StyledText(PointText pointText) {
+        this(pointText, new ArrayList<>());
+    }
 
     @Override
-    List<PointText> texts();
+    public OffsetPoint point() {
+        return pointText.point();
+    }
+
+    @Override
+    public String text() {
+        return pointText.text();
+    }
+
+    @Override
+    public void putStyle(StyleSpan style) {
+        styles.add(style);
+    }
 
 }

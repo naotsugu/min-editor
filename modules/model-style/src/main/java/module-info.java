@@ -21,4 +21,5 @@
 module code.editor.model.style {
     requires code.editor.model.core;
     exports com.mammb.code.editor2.model.style;
+    exports com.mammb.code.editor2.model.style.impl;
 }
