@@ -15,22 +15,22 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
+import com.mammb.code.editor2.model.buffer.SliceBuffer;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.core.Translate;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
 import com.mammb.code.editor2.model.text.RowSlice;
 import com.mammb.code.editor2.model.buffer.Content;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import static java.util.function.Predicate.not;
 
 /**
- * TextBuffer.
+ * EditBuffer.
  * @author Naotsugu Kobayashi
  */
-public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffer {
+public class EditBuffer implements SliceBuffer {
 
     /** The pear slice. */
     private final RowSlice slice;
@@ -39,7 +39,7 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffe
     private final Content content;
 
     /** The PointText translate. */
-    private final List<Translate<PointText, PointText>> translates = new ArrayList<>();
+    private final Translate<PointText, PointText> syntaxTranslate;
 
     /** The edit queue. */
     private final EditQueue editQueue = EditQueue.of();
@@ -50,9 +50,12 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffe
      * @param content the content
      * @param maxRowSize the row size of slice
      */
-    public EditBuffer(Content content, int maxRowSize) {
+    public EditBuffer(Content content, int maxRowSize, Translate<PointText, PointText> syntaxTranslate) {
         this.content = content;
         this.slice = RowSlice.of(maxRowSize, new ContentAdapter(content));
+        this.syntaxTranslate = Objects.isNull(syntaxTranslate)
+                ? Translate.passThrough()
+                : syntaxTranslate;
     }
 
 
@@ -75,15 +78,9 @@ public class EditBuffer implements com.mammb.code.editor2.model.buffer.EditBuffe
 
         return slice.texts().stream()
                 .map(edit::applyTo)
+                .map(syntaxTranslate::applyTo)
                 .toList();
     }
 
-
-    private PointText applyTranslate(PointText text) {
-        for (var translate : translates) {
-            text = translate.applyTo(text);
-        }
-        return text;
-    }
 
 }

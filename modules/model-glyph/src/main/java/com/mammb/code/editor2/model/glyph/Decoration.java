@@ -19,5 +19,5 @@ package com.mammb.code.editor2.model.glyph;
  * Decoration.
  * @author Naotsugu Kobayashi
  */
-public record Decoration(boolean underLine) {
+public record Decoration(boolean underLine, boolean strike) {
 }

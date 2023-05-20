@@ -13,24 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core;
 
 /**
- * Translate.
+ * The style model module.
  * @author Naotsugu Kobayashi
  */
-public interface Translate<I, O> {
-
-    /**
-     * Apply to translate.
-     * @param input the input element
-     * @return the output element
-     */
-    O applyTo(I input);
-
-
-    static <T> Translate<T, T> passThrough() {
-        return in -> in;
-    }
-
+module code.editor.model.style {
+    requires code.editor.model.core;
+    exports com.mammb.code.editor2.model.style;
 }

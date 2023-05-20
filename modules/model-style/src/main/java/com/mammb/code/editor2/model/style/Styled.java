@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.buffer;
+package com.mammb.code.editor2.model.style;
 
-import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.text.RowSlice;
 import java.util.List;
 
 /**
- * The edit buffer.
+ * Styled.
  * @author Naotsugu Kobayashi
  */
-public interface EditBuffer extends RowSlice {
+public interface Styled {
 
-    @Override
-    List<PointText> texts();
+    /**
+     * Get the style span list.
+     * @return the style span list
+     */
+    List<StyleSpan> styles();
 
 }

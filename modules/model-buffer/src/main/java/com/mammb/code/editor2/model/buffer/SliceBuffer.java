@@ -13,24 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core;
+package com.mammb.code.editor2.model.buffer;
+
+import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.text.RowSlice;
+import java.util.List;
 
 /**
- * Translate.
+ * The edit buffer.
  * @author Naotsugu Kobayashi
  */
-public interface Translate<I, O> {
+public interface SliceBuffer extends RowSlice {
 
-    /**
-     * Apply to translate.
-     * @param input the input element
-     * @return the output element
-     */
-    O applyTo(I input);
-
-
-    static <T> Translate<T, T> passThrough() {
-        return in -> in;
-    }
+    @Override
+    List<PointText> texts();
 
 }

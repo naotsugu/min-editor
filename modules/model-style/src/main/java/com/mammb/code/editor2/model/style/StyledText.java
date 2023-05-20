@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core;
+package com.mammb.code.editor2.model.style;
+
+import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.core.PointText;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Translate.
+ * StyledText.
  * @author Naotsugu Kobayashi
  */
-public interface Translate<I, O> {
+public record StyledText(
+        PointText pointText,
+        List<StyleSpan> styles) implements PointText, Styled {
 
-    /**
-     * Apply to translate.
-     * @param input the input element
-     * @return the output element
-     */
-    O applyTo(I input);
+    public StyledText(PointText pointText) {
+        this(pointText, new ArrayList<>());
+    }
 
+    @Override
+    public OffsetPoint point() {
+        return pointText.point();
+    }
 
-    static <T> Translate<T, T> passThrough() {
-        return in -> in;
+    @Override
+    public String text() {
+        return pointText.text();
     }
 
 }

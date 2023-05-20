@@ -13,24 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core;
+package com.mammb.code.editor2.model.style;
+
+import java.util.Objects;
 
 /**
- * Translate.
+ * StyleSpan.
+ * @param style the style
+ * @param point the point of start
+ * @param length the length of style
  * @author Naotsugu Kobayashi
  */
-public interface Translate<I, O> {
+public record StyleSpan(Style style, int point, int length) {
+
+    public StyleSpan {
+        if (length < 0 ||
+            (length == 0 && !(style instanceof Style.ZeroLength)))
+            throw new IllegalArgumentException();
+        Objects.requireNonNull(style);
+    }
 
     /**
-     * Apply to translate.
-     * @param input the input element
-     * @return the output element
+     * Constructor.
+     * @param style the style
+     * @param point the point of start
      */
-    O applyTo(I input);
-
-
-    static <T> Translate<T, T> passThrough() {
-        return in -> in;
+    public StyleSpan(Style.ZeroLength style, int point) {
+        this(style, point, 0);
     }
 
 }

@@ -16,23 +16,25 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.buffer.EditBuffer;
+import com.mammb.code.editor2.model.buffer.SliceBuffer;
+import com.mammb.code.editor2.model.core.Translate;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TextWrapBuffer.
+ * WrapBuffer.
  * @author Naotsugu Kobayashi
  */
-public class WrapBuffer implements EditBuffer {
+public class WrapBuffer implements SliceBuffer {
 
     /** The EditBuffer. */
-    private final EditBuffer editBuffer;
+    private final SliceBuffer sliceBuffer;
 
     private int lineOffset = 0;
 
-    /** textWrap?. */
-    private boolean textWrap = true;
+    /** The wrap width for the layout. */
+    private float wrapWidth = 0;
 
     /** The text rows. */
     private List<PointText> rows = new ArrayList<>();
@@ -40,16 +42,21 @@ public class WrapBuffer implements EditBuffer {
     /** The text lines(text wrapped). */
     private List<PointText> lines = new ArrayList<>();
 
+    /** The wrap strategy. */
+    private final Translate<List<PointText>, List<PointText>> wrapStrategy;
 
-    public WrapBuffer(EditBuffer editBuffer, boolean textWrap) {
-        this.editBuffer = editBuffer;
-        this.textWrap = textWrap;
+
+    public WrapBuffer(SliceBuffer sliceBuffer, float wrapWidth,
+                Translate<List<PointText>, List<PointText>> wrapStrategy) {
+        this.sliceBuffer = sliceBuffer;
+        this.wrapWidth = wrapWidth;
+        this.wrapStrategy = wrapStrategy;
     }
 
 
     @Override
     public List<PointText> texts() {
-        if (textWrap) {
+        if (wrapWidth > 0) {
             return null;
         } else {
             return rows;
@@ -58,13 +65,13 @@ public class WrapBuffer implements EditBuffer {
 
 
     private void pull() {
-        rows = editBuffer.texts();
+        rows = sliceBuffer.texts();
 
     }
 
 
-    public void textWrap(boolean enable) {
-        textWrap = enable;
+    public void setWrapWidth(float wrapWidth) {
+        this.wrapWidth = wrapWidth;
         lineOffset = 0;
     }
 
