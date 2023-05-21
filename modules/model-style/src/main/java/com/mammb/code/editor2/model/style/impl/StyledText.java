@@ -23,12 +23,18 @@ import java.util.List;
 
 /**
  * StyledText.
+ * @param pointText the point text
+ * @param styles the styles
  * @author Naotsugu Kobayashi
  */
 public record StyledText(
         PointText pointText,
         List<StyleSpan> styles) implements com.mammb.code.editor2.model.style.StyledText {
 
+    /**
+     * Create a new empty styled text.
+     * @param pointText the point text
+     */
     public StyledText(PointText pointText) {
         this(pointText, new ArrayList<>());
     }

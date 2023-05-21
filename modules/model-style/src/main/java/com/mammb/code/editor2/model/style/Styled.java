@@ -31,6 +31,18 @@ public interface Styled {
 
 
     /**
+     * Get the styles for a specified style.
+     * @param filter specified style
+     * @return the styles for a specified style
+     */
+    default List<StyleSpan> styles(Class<? extends Style> filter) {
+        return styles().stream()
+            .filter(s -> filter.isAssignableFrom(s.style().getClass()))
+            .toList();
+    }
+
+
+    /**
      * Gets an array of starting positions for a specified style.
      * @param filter specified style
      * @return an array of starting positions for a specified style

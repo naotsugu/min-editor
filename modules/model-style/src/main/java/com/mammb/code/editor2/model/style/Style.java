@@ -38,7 +38,9 @@ public sealed interface Style {
      * @param colorString the string representation of color
      * @param opacity the opacity of color
      */
-    record Color(String colorString, double opacity) implements Style {}
+    record Color(String colorString, double opacity) implements Style {
+        public Color(String colorString) { this(colorString, 1); };
+    }
 
     /**
      * Wrap break point.

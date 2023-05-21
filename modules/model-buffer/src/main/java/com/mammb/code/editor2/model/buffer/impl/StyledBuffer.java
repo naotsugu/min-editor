@@ -21,6 +21,7 @@ import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.core.Translate;
 import com.mammb.code.editor2.model.style.Style;
 import com.mammb.code.editor2.model.style.StyledText;
+import com.mammb.code.editor2.model.style.impl.StyledSubText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
@@ -65,19 +66,27 @@ public class StyledBuffer implements StyledTextBuffer {
             .map(stylingTranslate::applyTo)
             .toList();
         lines = rows.stream()
-            .map(this::breakLine)
+            .map(this::breakToLine)
             .flatMap(Collection::stream)
             .toList();
     }
 
 
-    private List<StyledText> breakLine(StyledText row) {
+    private List<StyledText> breakToLine(StyledText row) {
 
         int[] breakPoints = row.points(Style.BreakPoint.class);
-        for (int i = 0; i < row.text().length(); i++) {
-            // TODO
+        if (breakPoints.length == 0) {
+            return List.of(row);
         }
-        return List.of(row);
+
+        List<StyledText> lines = new ArrayList<>();
+        int start = 0;
+        for (int i = 0; i < breakPoints.length; i++) {
+            var sub = StyledSubText.of(row, start, breakPoints[i] - start);
+            lines.add(sub);
+            start = breakPoints[i];
+        }
+        return lines;
     }
 
 }

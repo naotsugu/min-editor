@@ -27,7 +27,7 @@ import java.util.List;
 public class StyledSubText implements com.mammb.code.editor2.model.style.StyledText {
 
     /** The source text. */
-    private StyledText styledText;
+    private com.mammb.code.editor2.model.style.StyledText styledText;
 
     /** The start index of sub text. */
     private int start;
@@ -35,15 +35,25 @@ public class StyledSubText implements com.mammb.code.editor2.model.style.StyledT
     /** The length of sub text. */
     private int length;
 
-    /** The cache of sub OffsetPoint */
+    /** The cache of sub OffsetPoint. */
     private OffsetPoint subPoint;
 
+    /** The cache of sub StyleSpan. */
+    private List<StyleSpan> subStyles;
 
-    private StyledSubText(StyledText styledText, int start, int length) {
+
+    /**
+     * Constructor.
+     * @param styledText the source text
+     * @param start the start index of sub text
+     * @param length the length of sub text
+     */
+    private StyledSubText(com.mammb.code.editor2.model.style.StyledText styledText, int start, int length) {
         this.styledText = styledText;
         this.start = start;
         this.length = length;
     }
+
 
     /**
      * Create a sub StyledText.
@@ -52,7 +62,7 @@ public class StyledSubText implements com.mammb.code.editor2.model.style.StyledT
      * @param length the length of sub text
      * @return a sub StyledText
      */
-    public static StyledSubText of(StyledText styledText, int start, int length) {
+    public static StyledSubText of(com.mammb.code.editor2.model.style.StyledText styledText, int start, int length) {
         return new StyledSubText(styledText, start, length);
     }
 
@@ -73,19 +83,31 @@ public class StyledSubText implements com.mammb.code.editor2.model.style.StyledT
         return styledText.text().substring(start, start + length);
     }
 
+
     @Override
     public List<StyleSpan> styles() {
-        List<StyleSpan> ret = new ArrayList<>();
-        for (StyleSpan styleSpan : styles()) {
-            ret.add(styleSpan);
-            // TODO split style
+        if (subStyles == null) {
+            List<StyleSpan> sub = new ArrayList<>();
+            for (StyleSpan styleSpan : styledText.styles()) {
+                if (!styleSpan.inRange(start, length)) continue;
+                int newEnd = Math.min(styleSpan.endExclusive() - start, length);
+                int newStart = Math.max(styleSpan.point() - start, 0);
+                StyleSpan subStyle = new StyleSpan(
+                    styleSpan.style(),
+                    newStart,
+                    newEnd - newStart);
+                sub.add(subStyle);
+            }
+            subStyles = sub;
         }
-        return ret;
+        return subStyles;
     }
+
 
     @Override
     public void putStyle(StyleSpan style) {
         styledText.putStyle(style);
+        subStyles = null; // clear cache
     }
 
 }
