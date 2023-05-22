@@ -22,7 +22,7 @@ module code.editor.model.buffer {
     requires transitive code.editor.model.core;
     requires transitive code.editor.model.style;
     requires transitive code.editor.model.edit;
-    requires transitive code.editor.model.text;
+    requires code.editor.model.text;
     requires com.mammb.code.piecetable;
 
     exports com.mammb.code.editor2.model.buffer;

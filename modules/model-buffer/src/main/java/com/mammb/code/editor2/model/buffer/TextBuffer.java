@@ -24,9 +24,8 @@ import java.util.List;
  * The edit buffer.
  * @author Naotsugu Kobayashi
  */
-public interface TextBuffer<T extends PointText> extends RowSlice<T> {
+public interface TextBuffer<T extends PointText> {
 
-    @Override
     List<T> texts();
 
     void push(Edit edit);
