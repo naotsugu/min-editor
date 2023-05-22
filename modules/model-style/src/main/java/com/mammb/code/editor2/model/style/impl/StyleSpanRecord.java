@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.style;
-
-import com.mammb.code.editor2.model.style.impl.StyleSpanRecord;
+package com.mammb.code.editor2.model.style.impl;
 
 import java.util.Objects;
+import com.mammb.code.editor2.model.style.Style;
+import com.mammb.code.editor2.model.style.StyleSpan;
 
 /**
  * StyleSpan.
@@ -26,32 +26,35 @@ import java.util.Objects;
  * @param length the length of style
  * @author Naotsugu Kobayashi
  */
-public interface StyleSpan {
+public record StyleSpanRecord(Style style, int point, int length) implements StyleSpan {
+
+    public StyleSpanRecord {
+        if (length < 0 ||
+            (length == 0 && !(style instanceof Style.ZeroLength)))
+            throw new IllegalArgumentException();
+        Objects.requireNonNull(style);
+    }
+
 
     /**
-     * Get the style.
-     * @return the style
+     * Create a new zero length style span.
+     * @param style the style
+     * @param point the point of start
      */
-    Style style();
+    public StyleSpanRecord(Style.ZeroLength style, int point) {
+        this(style, point, 0);
+    }
 
-    /**
-     * Get the point of start.
-     * @return the point of start
-     */
-    int point();
-
-    /**
-     * Get the length of style.
-     * @return the length of style
-     */
-    int length();
 
     /**
      * Gets whether the specified index is included in the range of this span.
      * @param index the specified index
      * @return {@code true} if the specified index is included in the range of this span
      */
-    boolean inRange(int index);
+    public boolean inRange(int index) {
+        return point <= index && index < point + length;
+    }
+
 
     /**
      * Gets whether the specified range is included in the range of this span.
@@ -59,32 +62,21 @@ public interface StyleSpan {
      * @param thatLength the length
      * @return {@code true} if the specified range is included in the range of this span
      */
-    boolean inRange(int thatPoint, int thatLength);
+    public boolean inRange(int thatPoint, int thatLength) {
+        final int thisStart = point;
+        final int thisEnd   = point + length - 1;
+        final int thatStart = thatPoint;
+        final int thatEnd   = thatPoint + thatLength - 1;
+        return thisStart <= thatEnd && thisEnd >= thatStart;
+    }
+
 
     /**
      * Get the ending index, exclusive.
      * @return the ending index, exclusive
      */
-    int endExclusive();
-
-
-    /**
-     * Create a new StyleSpan.
-     * @param style the style
-     * @param point the point of start
-     * @param length the length of style
-     */
-    static StyleSpan of(Style style, int point, int length) {
-        return new StyleSpanRecord(style, point, length);
-    }
-
-    /**
-     * Create a new zero length style span.
-     * @param style the style
-     * @param point the point of start
-     */
-    static StyleSpan of(Style.ZeroLength style, int point) {
-        return new StyleSpanRecord(style, point);
+    public int endExclusive() {
+        return point + length;
     }
 
 }

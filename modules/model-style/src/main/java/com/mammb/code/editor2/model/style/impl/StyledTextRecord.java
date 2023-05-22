@@ -18,6 +18,7 @@ package com.mammb.code.editor2.model.style.impl;
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.style.StyleSpan;
+import com.mammb.code.editor2.model.style.StyledText;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +28,15 @@ import java.util.List;
  * @param styles the styles
  * @author Naotsugu Kobayashi
  */
-public record StyledText(
+public record StyledTextRecord(
         PointText pointText,
-        List<StyleSpan> styles) implements com.mammb.code.editor2.model.style.StyledText {
+        List<StyleSpan> styles) implements StyledText {
 
     /**
      * Create a new empty styled text.
      * @param pointText the point text
      */
-    public StyledText(PointText pointText) {
+    public StyledTextRecord(PointText pointText) {
         this(pointText, new ArrayList<>());
     }
 
@@ -45,7 +46,7 @@ public record StyledText(
     }
 
     @Override
-    public com.mammb.code.editor2.model.style.StyledText subText(int start, int length) {
+    public StyledText subText(int start, int length) {
         return StyledSubText.of(this, start, length);
     }
 

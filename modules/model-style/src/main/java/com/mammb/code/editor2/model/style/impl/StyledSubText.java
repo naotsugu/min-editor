@@ -18,7 +18,6 @@ package com.mammb.code.editor2.model.style.impl;
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.style.StyleSpan;
 import com.mammb.code.editor2.model.style.StyledText;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +93,7 @@ public class StyledSubText implements com.mammb.code.editor2.model.style.StyledT
                 if (!styleSpan.inRange(start, length)) continue;
                 int newEnd = Math.min(styleSpan.endExclusive() - start, length);
                 int newStart = Math.max(styleSpan.point() - start, 0);
-                StyleSpan subStyle = new StyleSpan(
+                StyleSpan subStyle = StyleSpan.of(
                     styleSpan.style(),
                     newStart,
                     newEnd - newStart);

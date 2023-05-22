@@ -17,6 +17,7 @@ package com.mammb.code.editor2.model.style;
 
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.core.Translate;
+import com.mammb.code.editor2.model.style.impl.StyledTextRecord;
 
 /**
  * The styling translate.
@@ -29,7 +30,7 @@ public interface StylingTranslate extends Translate<PointText, StyledText> {
      * @return the pass through translate
      */
     static StylingTranslate passThrough() {
-        return com.mammb.code.editor2.model.style.impl.StyledText::new;
+        return StyledTextRecord::new;
     }
 
 }

@@ -5,7 +5,7 @@ plugins {
 dependencies {
     api(project(":model-core"))
     api(project(":model-style"))
-    implementation(project(":model-text"))
-    implementation(project(":model-edit"))
+    api(project(":model-edit"))
+    api(project(":model-text"))
     implementation(project(":piecetable"))
 }

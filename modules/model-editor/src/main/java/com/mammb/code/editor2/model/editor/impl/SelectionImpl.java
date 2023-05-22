@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.editor;
+package com.mammb.code.editor2.model.editor.impl;
 
 import com.mammb.code.editor2.model.core.OffsetPoint;
-
-import java.util.List;
+import com.mammb.code.editor2.model.editor.Selection;
 
 /**
- * ViewModel.
+ * Selection.
  * @author Naotsugu Kobayashi
  */
-public interface ViewModel {
-
-    OffsetPoint caret();
-
-    List<Selection> selections();
+public class SelectionImpl implements Selection {
+    private OffsetPoint point;
+    private int length;
 }

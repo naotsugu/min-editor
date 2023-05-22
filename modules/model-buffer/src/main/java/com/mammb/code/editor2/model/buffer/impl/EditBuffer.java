@@ -73,4 +73,9 @@ public class EditBuffer implements TextBuffer<PointText> {
                 .toList();
     }
 
+    @Override
+    public void push(Edit edit) {
+        editQueue.push(edit);
+    }
+
 }

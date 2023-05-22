@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.buffer;
 
 import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.text.RowSlice;
 import java.util.List;
 
@@ -28,5 +29,6 @@ public interface TextBuffer<T extends PointText> extends RowSlice<T> {
     @Override
     List<T> texts();
 
+    void push(Edit edit);
 
 }

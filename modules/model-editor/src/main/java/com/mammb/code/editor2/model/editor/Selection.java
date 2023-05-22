@@ -15,17 +15,9 @@
  */
 package com.mammb.code.editor2.model.editor;
 
-import com.mammb.code.editor2.model.core.OffsetPoint;
-
-import java.util.List;
-
 /**
- * ViewModel.
+ * Selection.
  * @author Naotsugu Kobayashi
  */
-public interface ViewModel {
-
-    OffsetPoint caret();
-
-    List<Selection> selections();
+public interface Selection {
 }

@@ -13,19 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.editor;
+package com.mammb.code.editor2.model.editor.impl;
 
+import com.mammb.code.editor2.model.buffer.Buffers;
+import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.core.OffsetPoint;
-
+import com.mammb.code.editor2.model.editor.Selection;
+import com.mammb.code.editor2.model.editor.ViewModel;
+import com.mammb.code.editor2.model.style.StyledText;
 import java.util.List;
 
 /**
  * ViewModel.
  * @author Naotsugu Kobayashi
  */
-public interface ViewModel {
+public class ViewModelImpl implements ViewModel {
 
-    OffsetPoint caret();
+    private TextBuffer<StyledText> buffer;
 
-    List<Selection> selections();
+    private OffsetPoint caret;
+
+    private List<Selection> selections;
+
+    public ViewModelImpl() {
+        this.buffer = Buffers.of(25);
+    }
+
+
+    @Override
+    public OffsetPoint caret() {
+        return caret;
+    }
+
+    @Override
+    public List<Selection> selections() {
+        return selections;
+    }
+
 }

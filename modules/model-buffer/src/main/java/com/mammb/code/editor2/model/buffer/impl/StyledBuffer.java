@@ -18,6 +18,7 @@ package com.mammb.code.editor2.model.buffer.impl;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.core.Translate;
+import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.style.Style;
 import com.mammb.code.editor2.model.style.StyledText;
 import java.util.ArrayList;
@@ -56,6 +57,11 @@ public class StyledBuffer implements TextBuffer<StyledText> {
     @Override
     public List<StyledText> texts() {
         return lines;
+    }
+
+    @Override
+    public void push(Edit edit) {
+        buffer.push(edit);
     }
 
 

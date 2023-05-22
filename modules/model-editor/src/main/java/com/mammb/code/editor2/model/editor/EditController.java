@@ -15,17 +15,38 @@
  */
 package com.mammb.code.editor2.model.editor;
 
-import com.mammb.code.editor2.model.core.OffsetPoint;
-
-import java.util.List;
-
 /**
- * ViewModel.
+ * EditController.
  * @author Naotsugu Kobayashi
  */
-public interface ViewModel {
+public interface EditController {
 
-    OffsetPoint caret();
+    /**
+     * input
+     * @param value
+     */
+    void input(String value);
 
-    List<Selection> selections();
+    /**
+     * Delete.
+     * @return the deleted string
+     */
+    String delete();
+
+    /**
+     * Backspace.
+     * @return the deleted string
+     */
+    String backspace();
+
+    /**
+     * Undo.
+     */
+    void undo();
+
+    /**
+     * Redo.
+     */
+    void redo();
+
 }
