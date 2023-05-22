@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":model-core"))
+    api(project(":model-core"))
+    api(project(":model-style"))
     implementation(project(":model-text"))
     implementation(project(":model-edit"))
-    implementation(project(":model-style"))
     implementation(project(":piecetable"))
 }

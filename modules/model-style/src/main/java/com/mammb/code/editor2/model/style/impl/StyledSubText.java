@@ -17,6 +17,8 @@ package com.mammb.code.editor2.model.style.impl;
 
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.style.StyleSpan;
+import com.mammb.code.editor2.model.style.StyledText;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +103,12 @@ public class StyledSubText implements com.mammb.code.editor2.model.style.StyledT
             subStyles = sub;
         }
         return subStyles;
+    }
+
+
+    @Override
+    public StyledText subText(int start, int length) {
+        return StyledSubText.of(this, start, length);
     }
 
 

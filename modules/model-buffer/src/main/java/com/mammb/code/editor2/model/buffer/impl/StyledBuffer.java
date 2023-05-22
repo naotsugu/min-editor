@@ -15,13 +15,11 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
-import com.mammb.code.editor2.model.buffer.StyledTextBuffer;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.core.Translate;
 import com.mammb.code.editor2.model.style.Style;
 import com.mammb.code.editor2.model.style.StyledText;
-import com.mammb.code.editor2.model.style.impl.StyledSubText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Collection;
@@ -30,7 +28,7 @@ import java.util.Collection;
  * StyledBuffer.
  * @author Naotsugu Kobayashi
  */
-public class StyledBuffer implements StyledTextBuffer {
+public class StyledBuffer implements TextBuffer<StyledText> {
 
     /** The pear slice. */
     private final TextBuffer<PointText> buffer;
@@ -82,7 +80,7 @@ public class StyledBuffer implements StyledTextBuffer {
         List<StyledText> lines = new ArrayList<>();
         int start = 0;
         for (int i = 0; i < breakPoints.length; i++) {
-            var sub = StyledSubText.of(row, start, breakPoints[i] - start);
+            var sub = row.subText(start, breakPoints[i] - start);
             lines.add(sub);
             start = breakPoints[i];
         }

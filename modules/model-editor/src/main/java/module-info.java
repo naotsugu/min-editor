@@ -13,31 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.glyph;
 
 /**
- * The ornate.
+ * The editor model module.
  * @author Naotsugu Kobayashi
  */
-public record OrnateText(String text, Ornate ornate) implements Ornate {
-
-    public OrnateText(String text, Font font, Color color, Decoration decoration) {
-        this(text, Ornate.of(font, color, decoration));
-    }
-
-    @Override
-    public Font font() {
-        return ornate.font();
-    }
-
-    @Override
-    public Color color() {
-        return ornate.color();
-    }
-
-    @Override
-    public Decoration decoration() {
-        return ornate.decoration();
-    }
-
+module code.editor.model.editor {
+    requires code.editor.model.buffer;
+    exports com.mammb.code.editor2.model.editor;
 }

@@ -34,6 +34,8 @@ public interface StyledText extends PointText, Styled {
     @Override
     List<StyleSpan> styles();
 
+    StyledText subText(int start, int length);
+
     void putStyle(StyleSpan style);
 
 }

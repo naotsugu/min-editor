@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.glyph;
+package com.mammb.code.editor2.model.style;
+
+import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.core.Translate;
 
 /**
- * Color
- * @param colorString the string representation of color
- * @param opacity the opacity of color
+ * The styling translate.
  * @author Naotsugu Kobayashi
  */
-public record Color(String colorString, double opacity) {
+public interface StylingTranslate extends Translate<PointText, StyledText> {
+
+    /**
+     * Create the pass through translate.
+     * @return the pass through translate
+     */
+    static StylingTranslate passThrough() {
+        return com.mammb.code.editor2.model.style.impl.StyledText::new;
+    }
+
 }

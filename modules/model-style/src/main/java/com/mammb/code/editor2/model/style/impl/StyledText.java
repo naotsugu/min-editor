@@ -45,6 +45,11 @@ public record StyledText(
     }
 
     @Override
+    public com.mammb.code.editor2.model.style.StyledText subText(int start, int length) {
+        return StyledSubText.of(this, start, length);
+    }
+
+    @Override
     public String text() {
         return pointText.text();
     }

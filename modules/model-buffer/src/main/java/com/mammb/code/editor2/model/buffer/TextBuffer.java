@@ -28,4 +28,5 @@ public interface TextBuffer<T extends PointText> extends RowSlice<T> {
     @Override
     List<T> texts();
 
+
 }
