@@ -19,7 +19,7 @@ import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
-import com.mammb.code.editor2.model.text.RowSlice;
+import com.mammb.code.editor2.model.text.Slice;
 import com.mammb.code.editor2.model.buffer.Content;
 import java.util.List;
 import static java.util.function.Predicate.not;
@@ -31,7 +31,7 @@ import static java.util.function.Predicate.not;
 public class EditBuffer implements TextBuffer<PointText> {
 
     /** The pear slice. */
-    private final RowSlice<PointText> slice;
+    private final Slice<PointText> slice;
 
     /** The content. */
     private final Content content;
@@ -47,7 +47,7 @@ public class EditBuffer implements TextBuffer<PointText> {
      */
     public EditBuffer(Content content, int maxRowSize) {
         this.content = content;
-        this.slice = RowSlice.of(maxRowSize, new ContentAdapter(content));
+        this.slice = Slice.of(maxRowSize, new RawAdapter(content));
     }
 
 

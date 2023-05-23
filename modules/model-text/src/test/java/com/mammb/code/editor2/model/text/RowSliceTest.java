@@ -17,16 +17,14 @@ package com.mammb.code.editor2.model.text;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 /**
- * Test of {@link RowSlice}.
+ * Test of {@link Slice}.
  * @author Naotsugu Kobayashi
  */
 class RowSliceTest {
 
     @Test void of() {
-        var slice = RowSlice.of(5, RowSupplier.stringOf("abc"));
+        var slice = Slice.of(5, RowSupplier.stringOf("abc"));
         // TODO add test
     }
 }

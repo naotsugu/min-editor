@@ -22,17 +22,18 @@ import java.util.Objects;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.text.RowSupplier;
+import com.mammb.code.editor2.model.text.Slice;
 
 /**
  * RowSlice.
  * @author Naotsugu Kobayashi
  */
-public class RowSlice implements com.mammb.code.editor2.model.text.RowSlice<PointText> {
+public class RowSlice implements Slice<PointText> {
 
     /** The row list. */
     private final List<PointText> texts = new LinkedList<>();
 
-    /** The row supplier. */
+    /** The row source. */
     private RowSupplier rowSupplier;
 
     /** The row size of slice. */
@@ -42,7 +43,7 @@ public class RowSlice implements com.mammb.code.editor2.model.text.RowSlice<Poin
     /**
      * Constructor.
      * @param maxRowSize the row size of slice
-     * @param rowSupplier the row supplier
+     * @param rowSupplier the row source
      */
     public RowSlice(int maxRowSize, RowSupplier rowSupplier) {
         pushEmptyIf();
@@ -54,6 +55,12 @@ public class RowSlice implements com.mammb.code.editor2.model.text.RowSlice<Poin
     @Override
     public List<PointText> texts() {
         return texts;
+    }
+
+
+    @Override
+    public int capacity() {
+        return maxRowSize;
     }
 
 

@@ -22,7 +22,7 @@ import com.mammb.code.editor2.model.text.RowSupplier;
  * ContentAdapter.
  * @author Naotsugu Kobayashi
  */
-public record ContentAdapter(Content content) implements RowSupplier {
+public record RawAdapter(Content content) implements RowSupplier {
 
     @Override
     public String at(int cpOffset) {

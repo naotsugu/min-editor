@@ -59,6 +59,7 @@ public class StyledBuffer implements TextBuffer<StyledText> {
         return lines;
     }
 
+
     @Override
     public void push(Edit edit) {
         buffer.push(edit);

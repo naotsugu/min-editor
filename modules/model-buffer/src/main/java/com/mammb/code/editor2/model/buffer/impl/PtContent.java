@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
+import com.mammb.code.editor2.model.buffer.Content;
 import com.mammb.code.editor2.model.core.LineEnding;
 import com.mammb.code.piecetable.PieceTable;
 import java.nio.file.Path;
@@ -24,7 +25,7 @@ import java.util.function.Predicate;
  * Content.
  * @author Naotsugu Kobayashi
  */
-public class Content implements com.mammb.code.editor2.model.buffer.Content {
+public class PtContent implements Content {
 
     /** The content path. */
     private Path path;
@@ -39,7 +40,7 @@ public class Content implements com.mammb.code.editor2.model.buffer.Content {
     /**
      * Constructor.
      */
-    public Content() {
+    public PtContent() {
         this(LineEnding.platform());
     }
 
@@ -48,7 +49,7 @@ public class Content implements com.mammb.code.editor2.model.buffer.Content {
      * Constructor.
      * @param lineEnding the line ending
      */
-    public Content(LineEnding lineEnding) {
+    public PtContent(LineEnding lineEnding) {
         this.pt = PieceTable.of("");
         this.lineEnding = lineEnding;
     }
@@ -58,7 +59,7 @@ public class Content implements com.mammb.code.editor2.model.buffer.Content {
      * Create content for specified path.
      * @param path the content path
      */
-    public Content(Path path) {
+    public PtContent(Path path) {
         this.pt = PieceTable.of(path);
         this.path = path;
         this.lineEnding = LineEnding.LF; // TODO

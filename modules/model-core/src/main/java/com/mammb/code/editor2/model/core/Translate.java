@@ -29,12 +29,15 @@ public interface Translate<I, O> {
     O applyTo(I input);
 
 
+    /**
+     * This Translate is combined with the other Translate specified in the argument.
+     * @param that the other Translate
+     * @return the combined Translate
+     * @param <X> the translated type
+     */
     default <X> Translate<I, X> compound(Translate<O, X> that) {
         return in -> that.applyTo(applyTo(in));
     }
 
-    static <T> Translate<T, T> passThrough() {
-        return in -> in;
-    }
 
 }

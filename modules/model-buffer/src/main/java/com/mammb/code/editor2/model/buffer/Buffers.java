@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor2.model.buffer;
 
-import com.mammb.code.editor2.model.buffer.impl.Content;
+import com.mammb.code.editor2.model.buffer.impl.PtContent;
 import com.mammb.code.editor2.model.buffer.impl.EditBuffer;
 import com.mammb.code.editor2.model.buffer.impl.StyledBuffer;
 import com.mammb.code.editor2.model.core.PointText;
@@ -37,12 +37,15 @@ public final class Buffers {
     }
 
     public static TextBuffer<StyledText> of(int maxRowSize, Path path) {
-        return new StyledBuffer(editBuffer(maxRowSize, path), StylingTranslate.passThrough());
+        return new StyledBuffer(
+            editBuffer(maxRowSize, path),
+            StylingTranslate.passThrough());
     }
 
     private static TextBuffer<PointText> editBuffer(int maxRowSize, Path path) {
-        var content = Objects.isNull(path) ? new Content() : new Content(path);
-        return new EditBuffer(content, maxRowSize);
+        return new EditBuffer(
+            Objects.isNull(path) ? new PtContent() : new PtContent(path),
+            maxRowSize);
     }
 
 }
