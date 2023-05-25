@@ -19,7 +19,7 @@ tasks.named<Test>("test") {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(20))
+        languageVersion.set(JavaLanguageVersion.of(19))
     }
 }
 

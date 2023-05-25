@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package javafx.scene.text;
 
 /**
- * The javafx module.
- * IntelliJ IDEA will report the error.
+ * Version.
  * @author Naotsugu Kobayashi
  */
-module code.editor.javafx {
-    requires transitive javafx.base;
-    requires transitive javafx.graphics;
-    exports com.mammb.code.javafx;
+public class Version {
+    public static final String value = "v0.1.0";
+   
 }

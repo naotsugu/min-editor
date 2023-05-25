@@ -15,12 +15,11 @@
  */
 
 /**
- * The javafx module.
- * IntelliJ IDEA will report the error.
+ * The ui pane module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.javafx {
-    requires transitive javafx.base;
-    requires transitive javafx.graphics;
-    exports com.mammb.code.javafx;
+module code.editor.ui.pane {
+    requires code.editor.javafx;
+    requires code.editor.model.editor;
+    exports com.mammb.code.editor2.ui.pane;
 }
