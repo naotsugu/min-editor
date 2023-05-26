@@ -4,6 +4,13 @@ plugins {
 
 rootProject.name = "min-editor"
 
+// composite build
+includeBuild("modules/javafx") {
+    dependencySubstitution {
+        substitute(module("com.mammb.code:javafx"))
+    }
+}
+
 // main module
 include("app")
 // git submodule
@@ -12,10 +19,10 @@ project(":piecetable").projectDir = file("modules/piecetable/lib")
 // other module
 include("model-core", "model-text", "model-edit", "model-buffer", "model-style", "model-editor")
 include("syntax-base")
-include("javafx", "javafx-base", "javafx-graphics")
 include("ui-pane")
 
 for (project in rootProject.children.filterNot {
         it.name == "app" || it.name == "piecetable" }) {
     project.projectDir = file("modules/${project.name}")
 }
+

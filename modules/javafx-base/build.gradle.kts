@@ -1,5 +1,5 @@
 plugins {
-    java
+    `java-library`
     id("org.openjfx.javafxplugin") version "0.0.14"
 }
 
@@ -7,15 +7,19 @@ repositories {
     mavenCentral()
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(20))
-    }
-    modularity.inferModulePath.set(false)
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
 }
 
-tasks.compileJava {
-    modularity.inferModulePath.set(false)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(19))
+    }
+    withSourcesJar()
+}
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 javafx {
@@ -35,3 +39,4 @@ tasks.named<Jar>("jar") {
     from(sourceSets.main.get().output)
 }
 
+group = "com.mammb.code"

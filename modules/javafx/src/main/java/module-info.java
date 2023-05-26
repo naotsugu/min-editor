@@ -16,11 +16,10 @@
 
 /**
  * The javafx module.
- * IntelliJ IDEA will report the error.
  * @author Naotsugu Kobayashi
  */
 module code.editor.javafx {
     requires transitive javafx.base;
     requires transitive javafx.graphics;
     exports com.mammb.code.javafx;
-}
+    }

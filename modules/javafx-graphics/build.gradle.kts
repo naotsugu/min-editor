@@ -1,5 +1,5 @@
 plugins {
-    java
+    `java-library`
     id("org.openjfx.javafxplugin") version "0.0.14"
 }
 
@@ -7,14 +7,19 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+}
+
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(20))
+        languageVersion.set(JavaLanguageVersion.of(19))
     }
-    modularity.inferModulePath.set(false)
+    withSourcesJar()
 }
-tasks.compileJava {
-    modularity.inferModulePath.set(false)
+
+tasks.named<Test>("test") {
+    useJUnitPlatform()
 }
 
 javafx {
@@ -34,23 +39,4 @@ tasks.named<Jar>("jar") {
     from(sourceSets.main.get().output)
 }
 
-//tasks.register<Jar>("uberJar") {
-//    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-//    dependsOn(configurations.runtimeClasspath)
-//    from({
-//        configurations.runtimeClasspath.get()
-//          .filter { it.name.endsWith("jar") }
-//          .filter { it.name.startsWith("javafx-graphics") }
-//          .map { zipTree(it) }
-//    })
-//    from(sourceSets.main.get().output)
-//    manifest {
-//        attributes("Automatic-Module-Name" to "javafx.graphics")
-//    }
-//    mustRunAfter("assemble")
-//}
-//
-//tasks.build {
-//  dependsOn("uberJar")
-//}
-
+group = "com.mammb.code"
