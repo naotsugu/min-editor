@@ -12,7 +12,8 @@ java {
     }
 }
 
-val idea = System.getenv("XPC_SERVICE_NAME").contains("intellij")
+val idea = System.getProperty("idea.active") == "true" ||
+           System.getProperty("idea.sync.active") == "true"
 
 tasks.build {
     if (!idea) {

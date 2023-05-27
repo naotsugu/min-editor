@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.ui.pane;
-
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 /**
- * EditorPane.
+ * The bootstrap module.
  * @author Naotsugu Kobayashi
  */
-public class EditorPane extends StackPane {
-
-    public EditorPane(Stage stage) {
-        Text text = new Text("hello");
-        getChildren().add(text);
-    }
+module code.editor.ui.app {
+    requires code.editor.javafx;
+    requires code.editor.ui.pane;
+    exports com.mammb.code.editor2.ui.app;
 
 }
