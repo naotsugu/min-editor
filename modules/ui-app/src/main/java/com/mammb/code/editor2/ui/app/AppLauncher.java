@@ -15,26 +15,18 @@
  */
 package com.mammb.code.editor2.ui.app;
 
-import com.mammb.code.editor2.ui.pane.EditorPane;
-import javafx.application.Application;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 /**
- * The Application.
+ * The Launcher.
  * @author Naotsugu Kobayashi
  */
-public class App extends Application {
+public class AppLauncher {
 
-    @Override
-    public void start(Stage stage) throws Exception {
-
-        AppContext context = AppContext.of(getParameters());
-        Parent parent = new EditorPane(context.width, context.height);
-        Scene scene = new Scene(parent, context.width, context.height);
-        stage.setScene(scene);
-        stage.show();
+    /**
+     * Launch the application.
+     * @param args the arguments
+     */
+    public void launch(String[] args) {
+        App.launch(App.class, args);
     }
 
 }

@@ -7,8 +7,11 @@ repositories {
     mavenCentral()
 }
 
+val copySources: Configuration by configurations.creating
+
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    copySources("org.openjfx:javafx-base:20:sources")
 }
 
 java {
@@ -37,6 +40,12 @@ tasks.named<Jar>("jar") {
             .map { zipTree(it) }
     })
     from(sourceSets.main.get().output)
+}
+
+tasks.named<Jar>("sourcesJar") {
+    from({
+        copySources.map { zipTree(it) }
+    })
 }
 
 group = "com.mammb.code"

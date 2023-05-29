@@ -15,9 +15,11 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 /**
  * EditorPane.
@@ -25,9 +27,20 @@ import javafx.stage.Stage;
  */
 public class EditorPane extends StackPane {
 
-    public EditorPane(Stage stage) {
-        Text text = new Text("hello");
-        getChildren().add(text);
+    private Canvas canvas;
+    private GraphicsContext gc;
+
+    public EditorPane(double width, double height) {
+        setWidth(width);
+        setHeight(height);
+        canvas = new Canvas(width, height);
+        gc = canvas.getGraphicsContext2D();
+
+        gc.setFont(new Font(20));
+        gc.setFill(Color.GRAY);
+        gc.fillText("hello", 10, 25);
+
+        getChildren().add(canvas);
     }
 
 }
