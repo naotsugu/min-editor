@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.model.layout;
 
 /**
- * The javafx module.
+ * HitAt.
  * @author Naotsugu Kobayashi
  */
-module code.editor.javafx {
-    requires transitive javafx.base;
-    requires transitive javafx.graphics;
-    exports javafx;
-}
+public record HitAt(
+    int charIndex,
+    int insertionIndex,
+    boolean leading) { }

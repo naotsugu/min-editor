@@ -8,9 +8,7 @@ repositories {
 }
 
 val copySources: Configuration by configurations.creating
-
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     copySources("org.openjfx:javafx-base:20:sources")
 }
 
@@ -21,17 +19,12 @@ java {
     withSourcesJar()
 }
 
-tasks.named<Test>("test") {
-    useJUnitPlatform()
-}
-
 javafx {
     version = "20"
     modules("javafx.base")
 }
 
 tasks.named<Jar>("jar") {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     dependsOn(configurations.runtimeClasspath)
     from({
         configurations.runtimeClasspath.get()
@@ -39,13 +32,10 @@ tasks.named<Jar>("jar") {
             .filter { it.name.startsWith("javafx-base") }
             .map { zipTree(it) }
     })
-    from(sourceSets.main.get().output)
 }
 
 tasks.named<Jar>("sourcesJar") {
-    from({
-        copySources.map { zipTree(it) }
-    })
+    from({ copySources.map { zipTree(it) } })
 }
 
 group = "com.mammb.code"

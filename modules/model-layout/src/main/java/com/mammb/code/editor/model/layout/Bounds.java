@@ -13,13 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.model.layout;
 
 /**
- * The javafx module.
+ * Bounds.
  * @author Naotsugu Kobayashi
  */
-module code.editor.javafx {
-    requires transitive javafx.base;
-    requires transitive javafx.graphics;
-    exports javafx;
+public interface Bounds {
+    float minX();
+    float minY();
+    default float minZ()  { return 0.0f; }
+    float maxX();
+    float maxY();
+    default float maxZ() {
+        return 0.0f;
+    }
+    default float width() {
+        return maxX() - minX();
+    }
+    default float height() {
+        return maxY() - minY();
+    }
+    default  float depth() {
+        return maxZ() - minZ();
+    }
 }

@@ -15,11 +15,9 @@
  */
 
 /**
- * The javafx module.
+ * The layout model module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.javafx {
-    requires transitive javafx.base;
-    requires transitive javafx.graphics;
-    exports javafx;
+module code.editor.model.layout {
+    exports com.mammb.code.editor.model.layout;
 }

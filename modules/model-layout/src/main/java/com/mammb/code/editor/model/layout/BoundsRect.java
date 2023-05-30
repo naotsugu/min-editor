@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.model.layout;
 
 /**
- * The javafx module.
+ * BoundsRect.
  * @author Naotsugu Kobayashi
  */
-module code.editor.javafx {
-    requires transitive javafx.base;
-    requires transitive javafx.graphics;
-    exports javafx;
-}
+public record BoundsRect(
+    float minX,
+    float maxX,
+    float minY,
+    float maxY) implements Bounds { }

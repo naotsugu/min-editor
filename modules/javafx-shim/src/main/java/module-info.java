@@ -15,11 +15,11 @@
  */
 
 /**
- * The javafx module.
+ * The bootstrap module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.javafx {
-    requires transitive javafx.base;
-    requires transitive javafx.graphics;
-    exports javafx;
+module code.editor.javafx.shim {
+    requires code.editor.javafx;
+    requires transitive code.editor.model.layout;
+    exports com.mammb.code.javafx.scene.text;
 }

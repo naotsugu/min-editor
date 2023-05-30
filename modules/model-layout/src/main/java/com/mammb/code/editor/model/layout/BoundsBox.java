@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.model.layout;
 
 /**
- * The javafx module.
+ * BoundsBox.
  * @author Naotsugu Kobayashi
  */
-module code.editor.javafx {
-    requires transitive javafx.base;
-    requires transitive javafx.graphics;
-    exports javafx;
-}
+public record BoundsBox(
+    float minX,
+    float maxX,
+    float minY,
+    float maxY,
+    float minZ,
+    float maxZ) implements Bounds { }

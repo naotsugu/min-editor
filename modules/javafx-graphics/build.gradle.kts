@@ -8,9 +8,7 @@ repositories {
 }
 
 val copySources: Configuration by configurations.creating
-
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     copySources("org.openjfx:javafx-graphics:20:sources")
 }
 
@@ -21,31 +19,45 @@ java {
     withSourcesJar()
 }
 
-tasks.named<Test>("test") {
-    useJUnitPlatform()
-}
-
 javafx {
     version = "20"
     modules("javafx.graphics")
 }
 
 tasks.named<Jar>("jar") {
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     dependsOn(configurations.runtimeClasspath)
     from({
         configurations.runtimeClasspath.get()
             .filter { it.name.endsWith("jar") }
             .filter { it.name.startsWith("javafx-graphics") }
             .map { zipTree(it) }
-    })
-    from(sourceSets.main.get().output)
+    }) {
+        exclude("module-info.class")
+    }
+    exclude("**/dummy.class")
 }
 
 tasks.named<Jar>("sourcesJar") {
-    from({
-        copySources.map { zipTree(it) }
-    })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from({ copySources.map { zipTree(it) } })
 }
 
 group = "com.mammb.code"
+
+tasks.register("initModule") {
+    doLast {
+        val regex = """exports (.+)[;| ]""".toRegex()
+        regex.findAll(file("src/main/java/module-info.java").readText()).forEach {
+            val name = it.groups[1]?.value
+            val path = "src/main/java/${name?.replace('.','/')}/"
+            file(path).mkdirs()
+            file("$path/dummy.java").writeText("""
+                package $name;
+                public class dummy {}
+                """.trimIndent())
+        }
+    }
+}
+tasks.named<JavaCompile>("compileJava") {
+    dependsOn("initModule")
+}
