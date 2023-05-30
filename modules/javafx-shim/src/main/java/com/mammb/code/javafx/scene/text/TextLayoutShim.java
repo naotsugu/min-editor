@@ -15,7 +15,9 @@
  */
 package com.mammb.code.javafx.scene.text;
 
-import com.mammb.code.editor.model.layout.HitAt;
+import com.mammb.code.editor.model.layout.GlyphRun;
+import com.mammb.code.editor.model.layout.HitOn;
+import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
 
@@ -27,6 +29,7 @@ public class TextLayoutShim {
 
     /** The delegated text layout. */
     private final TextLayout textLayout;
+
 
     public TextLayoutShim() {
         this.textLayout = Toolkit.getToolkit().getTextLayoutFactory().createLayout();
@@ -69,9 +72,9 @@ public class TextLayoutShim {
         return textLayout.setLineSpacing(spacing);
     }
 
+
     /**
      * Sets the tab size for the TextLayout.
-     *
      * @param spaces the number of spaces represented by a tab. Default is 8.
      * Minimum is 1, lower values will be clamped to 1.
      * @return returns true if the call modifies the layout internal state.
@@ -80,9 +83,21 @@ public class TextLayoutShim {
         return textLayout.setTabSize(spaces);
     }
 
-    public HitAt getHitInfo(float x, float y) {
+
+    /**
+     * Returns the GlyphList of text layout.
+     * The runs are returned order visually (rendering order), starting from the first line.
+     * @return the runs
+     */
+    public GlyphRun[] getRuns() {
+        GlyphList[] runs = textLayout.getRuns();
+        return null;
+    }
+
+
+    public HitOn getHitInfo(float x, float y) {
         TextLayout.Hit hit = textLayout.getHitInfo(x, y);
-        return new HitAt(
+        return new HitOn(
             hit.getCharIndex(),
             hit.getInsertionIndex(),
             hit.isLeading());

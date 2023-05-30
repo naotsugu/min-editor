@@ -16,10 +16,13 @@
 package com.mammb.code.editor.model.layout;
 
 /**
- * HitAt.
+ * HitOn.
+ * @param charIndex
+ * @param insertionIndex
+ * @param leading
  * @author Naotsugu Kobayashi
  */
-public record HitAt(
+public record HitOn(
     int charIndex,
     int insertionIndex,
     boolean leading) { }

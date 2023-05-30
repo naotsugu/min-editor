@@ -20,6 +20,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextFlow;
 
 /**
  * EditorPane.
@@ -41,6 +42,7 @@ public class EditorPane extends StackPane {
         gc.fillText("hello", 10, 25);
 
         getChildren().add(canvas);
+        TextFlow flow = new TextFlow();
     }
 
 }
