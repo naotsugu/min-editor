@@ -16,33 +16,12 @@
 package com.mammb.code.editor.model.layout;
 
 /**
- * GlyphRun.
+ * GlyphSpanRun.
+ * @param <T> the type of span figure
  * @author Naotsugu Kobayashi
  */
-public interface GlyphRun {
+public interface GlyphSpanRun<T> extends GlyphRun {
 
-    /**
-     * Get the number of glyphs in GlyphRun.
-     * @return the number of glyphs in GlyphRun
-     */
-    int glyphCount();
-
-    /**
-     * The width of the {@code GlyphRun}.
-     * @return the width of the {@code GlyphRun}
-     */
-    float width();
-
-    /**
-     * The height of the {@code GlyphRun}.
-     * @return the height of the {@code GlyphRun}
-     */
-    float height();
-
-    /**
-     * The top-left location of the GlyphRun relative to
-     * the origin of the Text Layout.
-     */
-    Point location();
+    Span<T> span();
 
 }

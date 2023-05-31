@@ -18,6 +18,7 @@ package com.mammb.code.javafx.scene.text;
 import com.mammb.code.editor.model.layout.GlyphRun;
 import com.mammb.code.editor.model.layout.HitPosition;
 import com.mammb.code.editor.model.layout.LayoutLine;
+import com.mammb.code.editor.model.layout.Span;
 import com.mammb.code.javafx.scene.text.impl.GlyphRunImpl;
 import com.mammb.code.javafx.scene.text.impl.HitPositionImpl;
 import com.mammb.code.javafx.scene.text.impl.LayoutLineImpl;
@@ -59,6 +60,17 @@ public class TextLayoutShim {
     public boolean setContent(String string, Font font) {
         return textLayout.setContent(string,
             nativeFonts.computeIfAbsent(font, FontHelper::getNativeFont));
+    }
+
+
+    /**
+     * Sets the content for the TextLayout.
+     * Supports multiple spans (rich text).
+     * @return {@code true} is the call modifies the layout internal state.
+     */
+    public boolean setContent(Span[] spans) {
+        // TODO
+        return false;
     }
 
 
@@ -130,7 +142,7 @@ public class TextLayoutShim {
      * The runs are returned order visually (rendering order), starting from the first line.
      * @return the GlyphRun of text layout
      */
-    public GlyphRun<?>[] getRuns() {
+    public GlyphRun[] getRuns() {
         GlyphList[] runs = textLayout.getRuns();
         GlyphRun[] ret = new GlyphRun[runs.length];
         for (int i = 0; i < runs.length; i++) {

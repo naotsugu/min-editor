@@ -15,34 +15,12 @@
  */
 package com.mammb.code.editor.model.layout;
 
-/**
- * GlyphRun.
- * @author Naotsugu Kobayashi
- */
-public interface GlyphRun {
+public interface FontSpan<T> extends Span<FontFace<T>> {
 
-    /**
-     * Get the number of glyphs in GlyphRun.
-     * @return the number of glyphs in GlyphRun
-     */
-    int glyphCount();
+    @Override
+    String text();
 
-    /**
-     * The width of the {@code GlyphRun}.
-     * @return the width of the {@code GlyphRun}
-     */
-    float width();
-
-    /**
-     * The height of the {@code GlyphRun}.
-     * @return the height of the {@code GlyphRun}
-     */
-    float height();
-
-    /**
-     * The top-left location of the GlyphRun relative to
-     * the origin of the Text Layout.
-     */
-    Point location();
+    @Override
+    FontFace<T> figure();
 
 }

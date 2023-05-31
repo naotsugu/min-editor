@@ -16,47 +16,27 @@
 package com.mammb.code.javafx.scene.text.impl;
 
 import com.mammb.code.editor.model.layout.GlyphRun;
-import com.mammb.code.editor.model.layout.Point;
+import com.mammb.code.editor.model.layout.GlyphSpanRun;
+import com.mammb.code.editor.model.layout.Span;
 import com.sun.javafx.scene.text.GlyphList;
 
 /**
- * GlyphRunImpl.
+ * GlyphSpanRunImpl.
  * @author Naotsugu Kobayashi
  */
-public class GlyphRunImpl implements GlyphRun {
+public class GlyphSpanRunImpl extends GlyphRunImpl implements GlyphSpanRun<FxFontSpan> {
 
-    private final GlyphList pear;
-
-    protected GlyphRunImpl(GlyphList pear) {
-        this.pear = pear;
+    private GlyphSpanRunImpl(GlyphList pear) {
+        super(pear);
     }
 
     public static GlyphRun of(GlyphList pear) {
-        return new GlyphRunImpl(pear);
-    }
-
-    protected GlyphList pear() {
-        return pear;
+        return new GlyphSpanRunImpl(pear);
     }
 
     @Override
-    public int glyphCount() {
-        return pear.getGlyphCount();
-    }
-
-    @Override
-    public float width() {
-        return pear.getWidth();
-    }
-
-    @Override
-    public float height() {
-        return pear.getHeight();
-    }
-
-    @Override
-    public Point location() {
-        return new PointImpl(pear.getLocation());
+    public Span<FxFontSpan> span() {
+        return null;
     }
 
 }

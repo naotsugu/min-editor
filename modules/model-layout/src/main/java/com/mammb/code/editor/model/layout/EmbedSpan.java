@@ -15,34 +15,14 @@
  */
 package com.mammb.code.editor.model.layout;
 
-/**
- * GlyphRun.
- * @author Naotsugu Kobayashi
- */
-public interface GlyphRun {
+public interface EmbedSpan extends Span<Bounds> {
 
-    /**
-     * Get the number of glyphs in GlyphRun.
-     * @return the number of glyphs in GlyphRun
-     */
-    int glyphCount();
+    @Override
+    default String text() {
+        return "\uFFFC";
+    }
 
-    /**
-     * The width of the {@code GlyphRun}.
-     * @return the width of the {@code GlyphRun}
-     */
-    float width();
-
-    /**
-     * The height of the {@code GlyphRun}.
-     * @return the height of the {@code GlyphRun}
-     */
-    float height();
-
-    /**
-     * The top-left location of the GlyphRun relative to
-     * the origin of the Text Layout.
-     */
-    Point location();
+    @Override
+    Bounds figure();
 
 }
