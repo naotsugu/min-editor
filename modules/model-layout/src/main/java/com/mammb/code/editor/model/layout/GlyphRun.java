@@ -19,7 +19,7 @@ package com.mammb.code.editor.model.layout;
  * GlyphRun.
  * @author Naotsugu Kobayashi
  */
-public interface GlyphRun {
+public interface GlyphRun<F> {
 
     /**
      * The width of the {@code GlyphRun}.
@@ -37,6 +37,23 @@ public interface GlyphRun {
      * The top-left location of the GlyphRun relative to
      * the origin of the Text Layout.
      */
-    Point2d location();
+    Point location();
+
+    /**
+     * Get the text for the span, can be empty but not {@code null}.
+     * @return the text for the span, can be empty but not {@code null}
+     */
+    String getText();
+
+    /**
+     * The font for the span, if null the span is handled as embedded object.
+     */
+    FontFace<F> getFont();
+
+    /**
+     * The bounds for embedded object, only used the font returns null.
+     * The text for a embedded object should be a single char ("\uFFFC" is recommended).
+     */
+    Bounds getBounds();
 
 }

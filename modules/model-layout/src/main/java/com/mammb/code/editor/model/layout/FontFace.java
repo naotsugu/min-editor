@@ -16,25 +16,22 @@
 package com.mammb.code.editor.model.layout;
 
 /**
- * Bounds.
+ * FontFace.
  * @author Naotsugu Kobayashi
  */
-public interface Bounds {
-    float minX();
-    float minY();
-    default float minZ()  { return 0.0f; }
-    float maxX();
-    float maxY();
-    default float maxZ() {
-        return 0.0f;
-    }
-    default float width() {
-        return maxX() - minX();
-    }
-    default float height() {
-        return maxY() - minY();
-    }
-    default float depth() {
-        return maxZ() - minZ();
-    }
+public interface FontFace<T> {
+
+    /**
+     * Get the full font name.
+     * This name includes both the family name and the style variant within that family.
+     * @return the full font name
+     */
+    String fullName();
+
+    /**
+     * Get the platform font.
+     * @return the platform font
+     */
+    T font();
+
 }

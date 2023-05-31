@@ -13,28 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.model.layout;
+package com.mammb.code.javafx.scene.text.impl;
+
+import com.mammb.code.editor.model.layout.FontFace;
+import com.sun.javafx.font.PGFont;
 
 /**
- * Bounds.
+ * FontFaceImpl.
  * @author Naotsugu Kobayashi
  */
-public interface Bounds {
-    float minX();
-    float minY();
-    default float minZ()  { return 0.0f; }
-    float maxX();
-    float maxY();
-    default float maxZ() {
-        return 0.0f;
+public class NativeFontFace implements FontFace<PGFont> {
+
+    private final PGFont pear;
+
+    public NativeFontFace(PGFont pear) {
+        this.pear = pear;
     }
-    default float width() {
-        return maxX() - minX();
+
+    public static FontFace<PGFont> of(PGFont font) {
+        return new NativeFontFace(font);
     }
-    default float height() {
-        return maxY() - minY();
+
+    public static FontFace<PGFont> of(Object font) {
+        return of((PGFont) font);
     }
-    default float depth() {
-        return maxZ() - minZ();
+
+    @Override
+    public String fullName() {
+        return pear.getFullName();
     }
+
+
+    @Override
+    public PGFont font() {
+        return pear;
+    }
+
 }

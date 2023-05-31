@@ -16,13 +16,22 @@
 package com.mammb.code.editor.model.layout;
 
 /**
- * BoundsBox.
+ * The {@code Point} class defines a point representing
+ * a location in {@code (x,y)} coordinate space.
  * @author Naotsugu Kobayashi
  */
-public record BoundsBox(
-    float minX,
-    float maxX,
-    float minY,
-    float maxY,
-    float minZ,
-    float maxZ) implements Bounds { }
+public interface Point {
+
+    /**
+     * Get the X coordinate of this {@code CoordPoint}.
+     * @return the X coordinate of this {@code CoordPoint}
+     */
+    float x();
+
+    /**
+     * Get the Y coordinate of this {@code CoordPoint}.
+     * @return the Y coordinate of this {@code CoordPoint}
+     */
+    float y();
+
+}

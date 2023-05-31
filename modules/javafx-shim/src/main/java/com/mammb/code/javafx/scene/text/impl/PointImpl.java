@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.model.layout;
+package com.mammb.code.javafx.scene.text.impl;
+
+import com.mammb.code.editor.model.layout.Point;
+import com.sun.javafx.geom.Point2D;
 
 /**
- * BoundsRect.
+ * CoordPointImpl.
  * @author Naotsugu Kobayashi
  */
-public record BoundsRect(
-    float minX,
-    float maxX,
-    float minY,
-    float maxY) implements Bounds { }
+public record PointImpl(float x, float y) implements Point {
+
+    public PointImpl(Point2D point2D) {
+        this(point2D.x, point2D.y);
+    }
+
+}

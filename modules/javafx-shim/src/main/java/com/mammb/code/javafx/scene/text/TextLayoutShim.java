@@ -16,10 +16,20 @@
 package com.mammb.code.javafx.scene.text;
 
 import com.mammb.code.editor.model.layout.GlyphRun;
-import com.mammb.code.editor.model.layout.HitOn;
+import com.mammb.code.editor.model.layout.HitPosition;
+import com.mammb.code.editor.model.layout.LayoutLine;
+import com.mammb.code.javafx.scene.text.impl.GlyphRunImpl;
+import com.mammb.code.javafx.scene.text.impl.HitPositionImpl;
+import com.mammb.code.javafx.scene.text.impl.LayoutLineImpl;
+import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
+import com.sun.javafx.scene.text.TextLine;
 import com.sun.javafx.tk.Toolkit;
+import javafx.scene.text.Font;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * TextLayoutShim.
@@ -30,6 +40,9 @@ public class TextLayoutShim {
     /** The delegated text layout. */
     private final TextLayout textLayout;
 
+    /** The native font map. */
+    private final Map<Font, Object> nativeFonts = new HashMap<>();
+
 
     public TextLayoutShim() {
         this.textLayout = Toolkit.getToolkit().getTextLayoutFactory().createLayout();
@@ -37,11 +50,25 @@ public class TextLayoutShim {
 
 
     /**
-     * Sets the content for the TextLayout. Shorthand for single span text
-     * (no rich text).
-     * @return returns true is the call modifies the layout internal state.
+     * Sets the content for the TextLayout.
+     * Shorthand for single span text (no rich text).
+     * @param string the text
+     * @param font the font
+     * @return {@code true} is the call modifies the layout internal state.
      */
-    public boolean setContent(String string, Object font) {
+    public boolean setContent(String string, Font font) {
+        return textLayout.setContent(string,
+            nativeFonts.computeIfAbsent(font, FontHelper::getNativeFont));
+    }
+
+
+    /**
+     * Sets the content for the TextLayout.
+     * @param string the text
+     * @param font the native font
+     * @return {@code true} is the call modifies the layout internal state.
+     */
+    private boolean setContent(String string, Object font) {
         return textLayout.setContent(string, font);
     }
 
@@ -85,22 +112,41 @@ public class TextLayoutShim {
 
 
     /**
-     * Returns the GlyphList of text layout.
-     * The runs are returned order visually (rendering order), starting from the first line.
-     * @return the runs
+     * Gets the lines of text layout.
+     * @return the lines of text layout
      */
-    public GlyphRun[] getRuns() {
-        GlyphList[] runs = textLayout.getRuns();
-        return null;
+    public LayoutLine[] getLines() {
+        TextLine[] lines = textLayout.getLines();
+        LayoutLine[] ret = new LayoutLine[lines.length];
+        for (int i = 0; i < lines.length; i++) {
+            ret[i] = LayoutLineImpl.of(lines[i]);
+        }
+        return ret;
     }
 
 
-    public HitOn getHitInfo(float x, float y) {
-        TextLayout.Hit hit = textLayout.getHitInfo(x, y);
-        return new HitOn(
-            hit.getCharIndex(),
-            hit.getInsertionIndex(),
-            hit.isLeading());
+    /**
+     * Gets the GlyphRun of text layout.
+     * The runs are returned order visually (rendering order), starting from the first line.
+     * @return the GlyphRun of text layout
+     */
+    public GlyphRun<?>[] getRuns() {
+        GlyphList[] runs = textLayout.getRuns();
+        GlyphRun[] ret = new GlyphRun[runs.length];
+        for (int i = 0; i < runs.length; i++) {
+            ret[i] = GlyphRunImpl.of(runs[i]);
+        }
+        return ret;
+    }
+
+    /**
+     * Get the hit information in the text plane.
+     * @param x the specified point x to be tested
+     * @param y the specified point y to be tested
+     * @return the hit position
+     */
+    public HitPosition getHitInfo(float x, float y) {
+        return new HitPositionImpl(textLayout.getHitInfo(x, y));
     }
 
 }

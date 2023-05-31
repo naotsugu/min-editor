@@ -16,13 +16,28 @@
 package com.mammb.code.editor.model.layout;
 
 /**
- * HitOn.
- * @param charIndex
- * @param insertionIndex
- * @param leading
+ * Represents the hit information in the text plane.
  * @author Naotsugu Kobayashi
  */
-public record HitOn(
-    int charIndex,
-    int insertionIndex,
-    boolean leading) { }
+public interface HitPosition {
+
+    /**
+     * Gets the index of the character which this hit information refers to.
+     * @return the index of the character which this hit information refers to
+     */
+    int charIndex();
+
+    /**
+     * Gets the indicates whether the hit is on the leading edge of the character.
+     * If it is false, it represents the trailing edge.
+     * @return {@code true}, if the hit is on the leading edge of the character
+     */
+    boolean leading();
+
+    /**
+     * Gets the index of the insertion position.
+     * @return the index of the insertion position
+     */
+    int insertionIndex();
+
+}

@@ -13,13 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.model.layout;
+package com.mammb.code.javafx.scene.text.impl;
+
+import com.mammb.code.editor.model.layout.FontFace;
+import javafx.scene.text.Font;
 
 /**
- * The {@code Point2d} class defines a point representing
- * a location in {@code (x,y)} coordinate space.
- * @param x the X coordinate of this {@code Point2d}.
- * @param y the Y coordinate of this {@code Point2d}.
+ * FxFontFace.
  * @author Naotsugu Kobayashi
  */
-public record Point2d(float x, float y) { }
+public class FxFontFace implements FontFace<Font> {
+
+    private final Font pear;
+
+    public FxFontFace(Font pear) {
+        this.pear = pear;
+    }
+
+    public static FontFace<Font> of(Font font) {
+        return new FxFontFace(font);
+    }
+
+    @Override
+    public String fullName() {
+        return pear.getName();
+    }
+
+    @Override
+    public Font font() {
+        return pear;
+    }
+}
