@@ -26,12 +26,22 @@ import com.sun.javafx.scene.text.GlyphList;
  */
 public class TextLineImpl implements TextLine {
 
+    /** The pear. */
     private final com.sun.javafx.scene.text.TextLine pear;
 
+    /**
+     * Constructor.
+     * @param textLine the TextLine of javafx
+     */
     public TextLineImpl(com.sun.javafx.scene.text.TextLine textLine) {
         pear = textLine;
     }
 
+    /**
+     * Create a new TextLine.
+     * @param textLine the TextLine of javafx
+     * @return a created TextLine
+     */
     public static TextLine of(com.sun.javafx.scene.text.TextLine textLine) {
         return new TextLineImpl(textLine);
     }
@@ -60,4 +70,5 @@ public class TextLineImpl implements TextLine {
     public int length() {
         return pear.getLength();
     }
+
 }

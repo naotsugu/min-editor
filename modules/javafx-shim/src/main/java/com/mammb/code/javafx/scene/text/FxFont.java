@@ -18,5 +18,9 @@ package com.mammb.code.javafx.scene.text;
 import com.mammb.code.editor.model.layout.FontFace;
 import javafx.scene.text.Font;
 
+/**
+ * FxFont.
+ * @author Naotsugu Kobayashi
+ */
 public interface FxFont extends FontFace<Font> {
 }

@@ -95,7 +95,7 @@ public class TextLayoutShim {
      * @param font the native font
      * @return {@code true} is the call modifies the layout internal state.
      */
-    private boolean setContent(String string, Object font) {
+    boolean setContent(String string, Object font) {
         return textLayout.setContent(string, font);
     }
 

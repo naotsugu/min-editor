@@ -17,25 +17,9 @@ package com.mammb.code.javafx.scene.text.impl;
 
 import com.mammb.code.javafx.scene.text.FxFont;
 import com.mammb.code.javafx.scene.text.TextSpan;
-import javafx.scene.text.Font;
 
-public class TextSpanImpl implements TextSpan {
-
-    private final String text;
-    private final FxFont font;
-
-    public TextSpanImpl(String text, Font font) {
-        this.text = text;
-        this.font = new FxFontImpl(font);
-    }
-
-    @Override
-    public String text() {
-        return text;
-    }
-
-    @Override
-    public FxFont figure() {
-        return font;
-    }
-}
+/**
+ * TextSpan.
+ * @author Naotsugu Kobayashi
+ */
+public record TextSpanImpl(String text, FxFont figure) implements TextSpan { }
