@@ -17,12 +17,18 @@ java {
         languageVersion.set(JavaLanguageVersion.of(19))
     }
     withSourcesJar()
+    modularity.inferModulePath.set(false)
 }
 
 javafx {
     version = "20"
     modules("javafx.graphics")
 }
+
+tasks.compileJava {
+    modularity.inferModulePath.set(false)
+}
+
 
 tasks.named<Jar>("jar") {
     dependsOn(configurations.runtimeClasspath)
