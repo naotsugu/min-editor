@@ -17,15 +17,14 @@ package com.mammb.code.javafx.scene.text;
 
 import com.mammb.code.editor.model.layout.GlyphRun;
 import com.mammb.code.editor.model.layout.HitPosition;
-import com.mammb.code.editor.model.layout.LayoutLine;
-import com.mammb.code.editor.model.layout.Span;
+import com.mammb.code.editor.model.layout.TextLine;
+import com.mammb.code.javafx.scene.text.impl.FxTextSpan;
 import com.mammb.code.javafx.scene.text.impl.GlyphRunImpl;
 import com.mammb.code.javafx.scene.text.impl.HitPositionImpl;
-import com.mammb.code.javafx.scene.text.impl.LayoutLineImpl;
+import com.mammb.code.javafx.scene.text.impl.TextLineImpl;
 import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
-import com.sun.javafx.scene.text.TextLine;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
 
@@ -45,6 +44,9 @@ public class TextLayoutShim {
     private final Map<Font, Object> nativeFonts = new HashMap<>();
 
 
+    /**
+     * Create a new TextLayoutShim.
+     */
     public TextLayoutShim() {
         this.textLayout = Toolkit.getToolkit().getTextLayoutFactory().createLayout();
     }
@@ -66,11 +68,24 @@ public class TextLayoutShim {
     /**
      * Sets the content for the TextLayout.
      * Supports multiple spans (rich text).
-     * @return {@code true} is the call modifies the layout internal state.
+     * @return {@code true} if the call modifies the layout internal state.
      */
-    public boolean setContent(Span[] spans) {
-        // TODO
-        return false;
+    public boolean setContent(TextSpan[] spans) {
+        FxTextSpan[] textSpans = new FxTextSpan[spans.length];
+        for (int i = 0; i < spans.length; i++) {
+            textSpans[i] = new FxTextSpan(spans[i]);
+        }
+        return textLayout.setContent(textSpans);
+    }
+
+
+    /**
+     * Sets the content for the TextLayout.
+     * Supports multiple spans (rich text).
+     * @return {@code true} if the call modifies the layout internal state.
+     */
+    boolean setContent(com.sun.javafx.scene.text.TextSpan[] spans) {
+        return textLayout.setContent(spans);
     }
 
 
@@ -127,11 +142,11 @@ public class TextLayoutShim {
      * Gets the lines of text layout.
      * @return the lines of text layout
      */
-    public LayoutLine[] getLines() {
-        TextLine[] lines = textLayout.getLines();
-        LayoutLine[] ret = new LayoutLine[lines.length];
+    public TextLine[] getLines() {
+        com.sun.javafx.scene.text.TextLine[] lines = textLayout.getLines();
+        TextLine[] ret = new TextLine[lines.length];
         for (int i = 0; i < lines.length; i++) {
-            ret[i] = LayoutLineImpl.of(lines[i]);
+            ret[i] = TextLineImpl.of(lines[i]);
         }
         return ret;
     }

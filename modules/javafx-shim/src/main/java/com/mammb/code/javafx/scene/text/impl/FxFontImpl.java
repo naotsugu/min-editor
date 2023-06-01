@@ -15,28 +15,32 @@
  */
 package com.mammb.code.javafx.scene.text.impl;
 
-import com.mammb.code.editor.model.layout.GlyphRun;
-import com.mammb.code.editor.model.layout.GlyphSpanRun;
-import com.mammb.code.editor.model.layout.Span;
-import com.sun.javafx.scene.text.GlyphList;
+import com.mammb.code.javafx.scene.text.FxFont;
+import javafx.scene.text.Font;
 
 /**
- * GlyphSpanRunImpl.
+ * FxFontFace.
  * @author Naotsugu Kobayashi
  */
-public class GlyphSpanRunImpl extends GlyphRunImpl implements GlyphSpanRun<FxFontSpan> {
+public class FxFontImpl implements FxFont {
 
-    private GlyphSpanRunImpl(GlyphList pear) {
-        super(pear);
+    private final Font pear;
+
+    public FxFontImpl(Font pear) {
+        this.pear = pear;
     }
 
-    public static GlyphRun of(GlyphList pear) {
-        return new GlyphSpanRunImpl(pear);
+    public static FxFont of(Font font) {
+        return new FxFontImpl(font);
     }
 
     @Override
-    public Span<FxFontSpan> span() {
-        return null;
+    public String fullName() {
+        return pear.getName();
     }
 
+    @Override
+    public Font font() {
+        return pear;
+    }
 }

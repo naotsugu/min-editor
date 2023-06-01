@@ -45,6 +45,16 @@ public class GlyphRunImpl implements GlyphRun {
     }
 
     @Override
+    public float posX(int glyphIndex) {
+        return pear.getPosX(glyphIndex);
+    }
+
+    @Override
+    public float posY(int glyphIndex) {
+        return pear.getPosY(glyphIndex);
+    }
+
+    @Override
     public float width() {
         return pear.getWidth();
     }

@@ -28,6 +28,20 @@ public interface GlyphRun {
     int glyphCount();
 
     /**
+     * Get the x position for the given glyphIndex relative the GlyphRun.
+     * @param glyphIndex the index number of glyphs in GlyphRun
+     * @return the x position for the given glyphIndex relative the GlyphRun
+     */
+    float posX(int glyphIndex);
+
+    /**
+     * Get the y position for the given glyphIndex relative the GlyphRun.
+     * @param glyphIndex the index number of glyphs in GlyphRun
+     * @return the y position for the given glyphIndex relative the GlyphRun
+     */
+    float posY(int glyphIndex);
+
+    /**
      * The width of the {@code GlyphRun}.
      * @return the width of the {@code GlyphRun}
      */

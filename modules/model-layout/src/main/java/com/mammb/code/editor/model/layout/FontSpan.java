@@ -15,12 +15,16 @@
  */
 package com.mammb.code.editor.model.layout;
 
-public interface FontSpan<T> extends Span<FontFace<T>> {
+/**
+ * FontSpan.
+ * @author Naotsugu Kobayashi
+ */
+public interface FontSpan<T extends FontFace<?>> extends Span<T> {
 
     @Override
     String text();
 
     @Override
-    FontFace<T> figure();
+    T figure();
 
 }

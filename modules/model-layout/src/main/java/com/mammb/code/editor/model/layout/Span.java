@@ -15,6 +15,11 @@
  */
 package com.mammb.code.editor.model.layout;
 
+/**
+ * Span.
+ * @param <T> the type of figure
+ * @author Naotsugu Kobayashi
+ */
 public interface Span<T> {
     String text();
     T figure();

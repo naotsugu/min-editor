@@ -15,6 +15,10 @@
  */
 package com.mammb.code.editor.model.layout;
 
+/**
+ * EmbedSpan.
+ * @author Naotsugu Kobayashi
+ */
 public interface EmbedSpan extends Span<Bounds> {
 
     @Override

@@ -13,40 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.javafx.scene.text.impl;
+package com.mammb.code.javafx.scene.text;
 
 import com.mammb.code.editor.model.layout.FontFace;
-import com.sun.javafx.font.PGFont;
+import javafx.scene.text.Font;
 
-/**
- * FontFaceImpl.
- * @author Naotsugu Kobayashi
- */
-public class NativeFontFace implements FontFace<PGFont> {
-
-    private final PGFont pear;
-
-    public NativeFontFace(PGFont pear) {
-        this.pear = pear;
-    }
-
-    public static FontFace<PGFont> of(PGFont font) {
-        return new NativeFontFace(font);
-    }
-
-    public static FontFace<PGFont> of(Object font) {
-        return of((PGFont) font);
-    }
-
-    @Override
-    public String fullName() {
-        return pear.getFullName();
-    }
-
-
-    @Override
-    public PGFont font() {
-        return pear;
-    }
-
+public interface FxFont extends FontFace<Font> {
 }

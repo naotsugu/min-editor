@@ -17,24 +17,23 @@ package com.mammb.code.javafx.scene.text.impl;
 
 import com.mammb.code.editor.model.layout.Bounds;
 import com.mammb.code.editor.model.layout.GlyphRun;
-import com.mammb.code.editor.model.layout.LayoutLine;
+import com.mammb.code.editor.model.layout.TextLine;
 import com.sun.javafx.scene.text.GlyphList;
-import com.sun.javafx.scene.text.TextLine;
 
 /**
  * LayoutLine.
  * @author Naotsugu Kobayashi
  */
-public class LayoutLineImpl implements LayoutLine {
+public class TextLineImpl implements TextLine {
 
-    private final TextLine pear;
+    private final com.sun.javafx.scene.text.TextLine pear;
 
-    public LayoutLineImpl(TextLine textLine) {
+    public TextLineImpl(com.sun.javafx.scene.text.TextLine textLine) {
         pear = textLine;
     }
 
-    public static LayoutLine of(TextLine textLine) {
-        return new LayoutLineImpl(textLine);
+    public static TextLine of(com.sun.javafx.scene.text.TextLine textLine) {
+        return new TextLineImpl(textLine);
     }
 
     @Override

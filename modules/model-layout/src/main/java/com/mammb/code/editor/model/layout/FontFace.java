@@ -17,6 +17,7 @@ package com.mammb.code.editor.model.layout;
 
 /**
  * FontFace.
+ * @param <T> the type of the platform font
  * @author Naotsugu Kobayashi
  */
 public interface FontFace<T> {
