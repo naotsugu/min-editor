@@ -23,13 +23,10 @@ tasks.build {
 }
 
 dependencies {
-    if (!idea) {
-        api("com.mammb.code:javafx-base")
-        api("com.mammb.code:javafx-graphics")
-    } else {
-        api(files("../javafx-base/build/libs/javafx-base.jar"))
-        api(files("../javafx-graphics/build/libs/javafx-graphics.jar"))
-    }
+    //api("com.mammb.code:javafx-base")
+    //api("com.mammb.code:javafx-graphics")
+    api(files("../javafx-base/build/libs/javafx-base.jar"))
+    api(files("../javafx-graphics/build/libs/javafx-graphics.jar"))
 }
 
 group = "com.mammb.code"

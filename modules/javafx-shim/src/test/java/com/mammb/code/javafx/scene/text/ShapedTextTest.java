@@ -15,18 +15,15 @@
  */
 package com.mammb.code.javafx.scene.text;
 
-import com.mammb.code.editor.model.layout.FontSpan;
-import com.mammb.code.javafx.scene.text.impl.FxFontImpl;
-import com.mammb.code.javafx.scene.text.impl.TextSpanImpl;
-import javafx.scene.text.Font;
+import org.junit.jupiter.api.Test;
 
 /**
- * TextSpan.
+ * The test of {@link ShapedText}.
  * @author Naotsugu Kobayashi
  */
-public interface TextSpan extends FontSpan<Font> {
+class ShapedTextTest {
 
-    static TextSpan of(String text, Font font) {
-        return new TextSpanImpl(text, new FxFontImpl(font));
+    @Test void test() {
+        var font = new ShapedText();
     }
 }

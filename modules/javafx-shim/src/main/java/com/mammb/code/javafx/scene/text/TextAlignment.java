@@ -15,6 +15,10 @@
  */
 package com.mammb.code.javafx.scene.text;
 
+/**
+ * TextAlignment.
+ * @author Naotsugu Kobayashi
+ */
 public enum TextAlignment {
     ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT, ALIGN_JUSTIFY;
 }
