@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor2.model.layout.fx;
 
-import com.mammb.code.editor.model.layout.ShapedText;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.javafx.scene.text.TextLayoutShim;
 import com.mammb.code.javafx.scene.text.FxTextSpan;

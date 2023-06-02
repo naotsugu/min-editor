@@ -19,44 +19,38 @@ import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.core.Translate;
 import com.mammb.code.editor2.model.edit.Edit;
-import com.mammb.code.editor2.model.style.Style;
 import com.mammb.code.editor2.model.style.StyledText;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collection;
 
 /**
- * StyledBuffer.
+ * StyledTextBuffer.
  * @author Naotsugu Kobayashi
  */
-public class StyledBuffer implements TextBuffer<StyledText> {
+public class StyledTextBuffer implements TextBuffer<StyledText> {
 
     /** The pear slice. */
     private final TextBuffer<PointText> buffer;
 
     /** The styling translate. */
-    private final Translate<PointText, StyledText> stylingTranslate;
-
-    private int lineOffset = 0;
+    private final Translate<PointText, StyledText> translator;
 
     /** The text rows. */
-    private List<StyledText> rows = new ArrayList<>();
-
-    /** The text lines(text wrapped). */
-    private List<StyledText> lines = new ArrayList<>();
+    private List<StyledText> texts = new ArrayList<>();
 
 
-    public StyledBuffer(
+    public StyledTextBuffer(
             TextBuffer<PointText> buffer,
-            Translate<PointText, StyledText> stylingTranslate) {
+            Translate<PointText, StyledText> stylingTranslator) {
         this.buffer = buffer;
-        this.stylingTranslate = stylingTranslate;
+        this.translator = stylingTranslator;
     }
 
 
     @Override
     public List<StyledText> texts() {
-        return lines;
+        return texts;
     }
 
 
@@ -67,31 +61,9 @@ public class StyledBuffer implements TextBuffer<StyledText> {
 
 
     private void pullRows() {
-        rows = buffer.texts().stream()
-            .map(stylingTranslate::applyTo)
+        texts = buffer.texts().stream()
+            .map(translator::applyTo)
             .toList();
-        lines = rows.stream()
-            .map(this::breakToLine)
-            .flatMap(Collection::stream)
-            .toList();
-    }
-
-
-    private List<StyledText> breakToLine(StyledText row) {
-
-        int[] breakPoints = row.points(Style.BreakPoint.class);
-        if (breakPoints.length == 0) {
-            return List.of(row);
-        }
-
-        List<StyledText> lines = new ArrayList<>();
-        int start = 0;
-        for (int i = 0; i < breakPoints.length; i++) {
-            var sub = row.subText(start, breakPoints[i] - start);
-            lines.add(sub);
-            start = breakPoints[i];
-        }
-        return lines;
     }
 
 }

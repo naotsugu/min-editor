@@ -1,4 +1,4 @@
-package com.mammb.code.editor.model.layout;
+package com.mammb.code.editor2.model.layout.fx;
 
 /**
  * Like a Paragraph in Skia.

@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor2.model.core;
+
+import java.util.List;
 
 /**
- * The javafx layout model module.
+ * The list of textual.
  * @author Naotsugu Kobayashi
  */
-module code.editor.model.layout.fx {
-    requires code.editor.javafx;
-    requires code.editor.javafx.shim;
-    requires transitive code.editor.model.layout;
-    requires transitive code.editor.model.style;
-    exports com.mammb.code.editor2.model.layout.fx;
+public interface TextList<T extends Textual> {
+
+    /**
+     * Get the text lines.
+     * @return the text lines
+     */
+    List<T> texts();
+
 }

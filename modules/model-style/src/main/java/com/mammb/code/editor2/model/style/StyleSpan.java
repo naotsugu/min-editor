@@ -17,13 +17,8 @@ package com.mammb.code.editor2.model.style;
 
 import com.mammb.code.editor2.model.style.impl.StyleSpanRecord;
 
-import java.util.Objects;
-
 /**
  * StyleSpan.
- * @param style the style
- * @param point the point of start
- * @param length the length of style
  * @author Naotsugu Kobayashi
  */
 public interface StyleSpan {

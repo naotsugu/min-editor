@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.text;
 
 import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.core.TextList;
 import com.mammb.code.editor2.model.core.Textual;
 import com.mammb.code.editor2.model.text.impl.RowSlice;
 
@@ -26,12 +27,9 @@ import java.util.List;
  * @param <T> type of row content
  * @author Naotsugu Kobayashi
  */
-public interface Slice<T extends Textual> {
+public interface Slice<T extends Textual> extends TextList<T> {
 
-    /**
-     * Get the text lines.
-     * @return the text lines
-     */
+    @Override
     List<T> texts();
 
     /**

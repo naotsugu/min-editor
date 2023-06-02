@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.buffer;
 
 import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.core.TextList;
 import com.mammb.code.editor2.model.edit.Edit;
 
 import java.util.List;
@@ -24,8 +25,9 @@ import java.util.List;
  * The edit buffer.
  * @author Naotsugu Kobayashi
  */
-public interface TextBuffer<T extends PointText> {
+public interface TextBuffer<T extends PointText> extends TextList<T> {
 
+    @Override
     List<T> texts();
 
     void push(Edit edit);

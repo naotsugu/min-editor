@@ -17,7 +17,7 @@ package com.mammb.code.editor2.model.buffer;
 
 import com.mammb.code.editor2.model.buffer.impl.PtContent;
 import com.mammb.code.editor2.model.buffer.impl.EditBuffer;
-import com.mammb.code.editor2.model.buffer.impl.StyledBuffer;
+import com.mammb.code.editor2.model.buffer.impl.StyledTextBuffer;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
@@ -37,7 +37,7 @@ public final class Buffers {
     }
 
     public static TextBuffer<StyledText> of(int maxRowSize, Path path) {
-        return new StyledBuffer(
+        return new StyledTextBuffer(
             editBuffer(maxRowSize, path),
             StylingTranslate.passThrough());
     }
