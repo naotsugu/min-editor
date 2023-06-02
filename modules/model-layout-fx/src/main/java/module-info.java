@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.javafx.scene.text;
-
-import org.junit.jupiter.api.Test;
 
 /**
- * The test of {@link ShapedText}.
+ * The javafx layout model module.
  * @author Naotsugu Kobayashi
  */
-class ShapedTextTest {
-
-    @Test void test() {
-        var font = new ShapedText();
-    }
+module code.editor.model.layout.fx {
+    requires code.editor.javafx;
+    requires code.editor.javafx.shim;
+    requires transitive code.editor.model.layout;
+    exports com.mammb.code.editor2.model.layout.fx;
 }

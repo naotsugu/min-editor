@@ -19,7 +19,7 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.javafx.shim {
-    requires code.editor.javafx;
+    requires transitive code.editor.javafx;
     requires transitive code.editor.model.layout;
     exports com.mammb.code.javafx.scene.text;
 }

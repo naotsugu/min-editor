@@ -18,7 +18,7 @@ package com.mammb.code.javafx.scene.text;
 import com.mammb.code.editor.model.layout.GlyphRun;
 import com.mammb.code.editor.model.layout.HitPosition;
 import com.mammb.code.editor.model.layout.TextLine;
-import com.mammb.code.javafx.scene.text.impl.FxTextSpan;
+import com.mammb.code.javafx.scene.text.impl.TextSpanImpl;
 import com.mammb.code.javafx.scene.text.impl.GlyphRunImpl;
 import com.mammb.code.javafx.scene.text.impl.HitPositionImpl;
 import com.mammb.code.javafx.scene.text.impl.TextLineImpl;
@@ -70,10 +70,10 @@ public class TextLayoutShim {
      * Supports multiple spans (rich text).
      * @return {@code true} if the call modifies the layout internal state.
      */
-    public boolean setContent(TextSpan[] spans) {
-        FxTextSpan[] textSpans = new FxTextSpan[spans.length];
+    public boolean setContent(FxTextSpan[] spans) {
+        TextSpanImpl[] textSpans = new TextSpanImpl[spans.length];
         for (int i = 0; i < spans.length; i++) {
-            textSpans[i] = new FxTextSpan(spans[i]);
+            textSpans[i] = new TextSpanImpl(spans[i]);
         }
         return textLayout.setContent(textSpans);
     }

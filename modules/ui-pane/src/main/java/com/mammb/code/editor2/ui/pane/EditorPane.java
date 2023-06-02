@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.layout.fx.FxShapedText;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
@@ -34,6 +35,11 @@ public class EditorPane extends StackPane {
     public EditorPane(double width, double height) {
         setWidth(width);
         setHeight(height);
+
+        FxShapedText shaped = new FxShapedText();
+        shaped.setWrapWidth((float) width);
+
+
         canvas = new Canvas(width, height);
         gc = canvas.getGraphicsContext2D();
 

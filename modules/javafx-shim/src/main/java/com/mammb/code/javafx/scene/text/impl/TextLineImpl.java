@@ -58,7 +58,17 @@ public class TextLineImpl implements TextLine {
 
     @Override
     public Bounds bounds() {
-        return BoundsRect.of(pear.getBounds());
+        return RectBounds.of(pear.getBounds());
+    }
+
+    @Override
+    public float getLeftSideBearing() {
+        return pear.getLeftSideBearing();
+    }
+
+    @Override
+    public float getRightSideBearing() {
+        return pear.getRightSideBearing();
     }
 
     @Override

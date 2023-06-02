@@ -16,22 +16,21 @@
 package com.mammb.code.javafx.scene.text.impl;
 
 import com.mammb.code.editor.model.layout.Bounds;
-import com.sun.javafx.geom.RectBounds;
 
 /**
- * BoundsRect.
+ * RectBoundsAdapter.
  * @author Naotsugu Kobayashi
  */
-public class BoundsRect implements Bounds {
+public class RectBounds implements Bounds {
 
-    private final RectBounds pear;
+    private final com.sun.javafx.geom.RectBounds pear;
 
-    private BoundsRect(RectBounds rectBounds) {
+    private RectBounds(com.sun.javafx.geom.RectBounds rectBounds) {
         this.pear = rectBounds;
     }
 
-    public static BoundsRect of(RectBounds rectBounds) {
-        return new BoundsRect(rectBounds);
+    public static RectBounds of(com.sun.javafx.geom.RectBounds rectBounds) {
+        return new RectBounds(rectBounds);
     }
 
     @Override

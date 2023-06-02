@@ -13,26 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.model.layout;
+package com.mammb.code.javafx.scene.text.impl;
+
+import com.mammb.code.javafx.scene.text.FxFont;
+import com.mammb.code.javafx.scene.text.FxTextSpan;
 
 /**
- * Span.
- * @param <T> the type of figure
+ * TextSpan.
  * @author Naotsugu Kobayashi
  */
-public interface Span<T> {
-
-    /**
-     * Get the text.
-     * @return the text
-     */
-    String text();
-
-    /**
-     * Get the figure.
-     * @return the figure
-     */
-    T figure();
-
-}
-
+public record FxTextSpanImpl(String text, FxFont figure) implements FxTextSpan { }

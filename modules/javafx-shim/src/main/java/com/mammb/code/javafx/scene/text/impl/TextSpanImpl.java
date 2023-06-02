@@ -15,11 +15,76 @@
  */
 package com.mammb.code.javafx.scene.text.impl;
 
-import com.mammb.code.javafx.scene.text.FxFont;
-import com.mammb.code.javafx.scene.text.TextSpan;
+import com.mammb.code.editor.model.layout.Bounds;
+import com.mammb.code.editor.model.layout.EmbedSpan;
+import com.mammb.code.editor.model.layout.FontSpan;
+import com.mammb.code.editor.model.layout.Span;
+import com.sun.javafx.geom.RectBounds;
+import com.sun.javafx.scene.text.FontHelper;
+import com.sun.javafx.scene.text.TextSpan;
+import javafx.scene.text.Font;
+
+import java.util.Map;
 
 /**
- * TextSpan.
+ * FxTextSpan.
+ * Adapter of Span to com.sun.javafx.scene.text.TextSpan
  * @author Naotsugu Kobayashi
  */
-public record TextSpanImpl(String text, FxFont figure) implements TextSpan { }
+public class TextSpanImpl implements TextSpan {
+
+    private final Span<?> pear;
+
+    private final Map<Font, Object> nativeFonts;
+
+
+    public TextSpanImpl(Span<?> span) {
+        this(span, null);
+    }
+
+
+    public TextSpanImpl(Span<?> span, Map<Font, Object> nativeFonts) {
+        this.pear = span;
+        this.nativeFonts = nativeFonts;
+    }
+
+
+    @Override
+    public String getText() {
+        return pear.text();
+    }
+
+
+    @Override
+    public Object getFont() {
+        // TODO rewrite to Pattern Matching for switch
+        if (pear instanceof FontSpan<?> fontSpan) {
+            Object font = fontSpan.figure().font();
+            if (font instanceof Font fxFont) {
+                return (nativeFonts == null)
+                    ? FontHelper.getNativeFont(fxFont)
+                    : nativeFonts.computeIfAbsent(fxFont, FontHelper::getNativeFont);
+            } else {
+                return font;
+            }
+        } else {
+            return null;
+        }
+    }
+
+
+    @Override
+    public RectBounds getBounds() {
+        if (pear instanceof EmbedSpan embedSpan) {
+            Bounds bounds = embedSpan.figure();
+            return new RectBounds(
+                bounds.minX(),
+                bounds.minY(),
+                bounds.maxX(),
+                bounds.maxY());
+        } else {
+            return null;
+        }
+    }
+
+}

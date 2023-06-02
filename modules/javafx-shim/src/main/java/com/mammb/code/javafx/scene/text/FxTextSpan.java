@@ -17,16 +17,16 @@ package com.mammb.code.javafx.scene.text;
 
 import com.mammb.code.editor.model.layout.FontSpan;
 import com.mammb.code.javafx.scene.text.impl.FxFontImpl;
-import com.mammb.code.javafx.scene.text.impl.TextSpanImpl;
+import com.mammb.code.javafx.scene.text.impl.FxTextSpanImpl;
 import javafx.scene.text.Font;
 
 /**
  * TextSpan.
  * @author Naotsugu Kobayashi
  */
-public interface TextSpan extends FontSpan<Font> {
+public interface FxTextSpan extends FontSpan<Font> {
 
-    static TextSpan of(String text, Font font) {
-        return new TextSpanImpl(text, new FxFontImpl(font));
+    static FxTextSpan of(String text, Font font) {
+        return new FxTextSpanImpl(text, new FxFontImpl(font));
     }
 }

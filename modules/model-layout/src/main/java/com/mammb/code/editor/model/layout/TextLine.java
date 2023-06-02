@@ -49,6 +49,18 @@ public interface TextLine {
     Bounds bounds();
 
     /**
+     * Get the left side bearing of the line (negative).
+     * @return the left side bearing of the line (negative)
+     */
+    float getLeftSideBearing();
+
+    /**
+     * Get the right side bearing of the line (positive).
+     * @return the right side bearing of the line (positive).
+     */
+    float getRightSideBearing();
+
+    /**
      * Gets the line start offset.
      * @return the line start offset
      */

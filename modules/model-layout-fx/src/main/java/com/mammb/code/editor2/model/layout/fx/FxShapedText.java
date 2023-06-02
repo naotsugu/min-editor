@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.javafx.scene.text;
+package com.mammb.code.editor2.model.layout.fx;
 
-import com.mammb.code.editor.model.layout.FontFace;
-import com.mammb.code.editor.model.layout.FontSpan;
+import com.mammb.code.editor.model.layout.ShapedText;
+import com.mammb.code.editor.model.layout.TextLine;
+import com.mammb.code.javafx.scene.text.TextLayoutShim;
+import com.mammb.code.javafx.scene.text.FxTextSpan;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,37 +28,45 @@ import java.util.List;
  * ShapedText.
  * @author Naotsugu Kobayashi
  */
-public class ShapedText implements com.mammb.code.editor.model.layout.ShapedText {
+public class FxShapedText implements ShapedText {
 
     private final TextLayoutShim textLayout;
 
-    private final List<TextSpan> spans;
+    private final List<FxTextSpan> spans;
 
-    public ShapedText() {
+    private TextLine[] lines;
+
+    public FxShapedText() {
         this.textLayout = new TextLayoutShim();
         this.spans = new ArrayList<>();
     }
 
     @Override
-    public com.mammb.code.editor.model.layout.ShapedText add(String text, FontFace<?> fontFace) {
-        return this;
-    }
-
-    @Override
-    public com.mammb.code.editor.model.layout.ShapedText add(FontSpan<?> span) {
-        //spans.add(span);
+    public ShapedText add(String text, String fontName) {
+        spans.add(FxTextSpan.of(text, Font.font(fontName)));
         return this;
     }
 
 
     @Override
     public void layout() {
-        textLayout.setContent(spans.toArray(TextSpan[]::new));
+        textLayout.setContent(spans.toArray(FxTextSpan[]::new));
+        lines = textLayout.getLines();
     }
 
     @Override
     public void reset() {
         spans.clear();
+    }
+
+    @Override
+    public void setWrapWidth(float wrapWidth) {
+        if (wrapWidth >= 0) {
+            textLayout.setWrapWidth(wrapWidth);
+            if (lines != null) {
+                layout();
+            }
+        }
     }
 
 }
