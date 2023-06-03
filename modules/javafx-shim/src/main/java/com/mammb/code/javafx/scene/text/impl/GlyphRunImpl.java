@@ -55,6 +55,11 @@ public class GlyphRunImpl implements GlyphRun {
     }
 
     @Override
+    public int charOffset(int glyphIndex) {
+        return pear.getCharOffset(glyphIndex);
+    }
+
+    @Override
     public float width() {
         return pear.getWidth();
     }

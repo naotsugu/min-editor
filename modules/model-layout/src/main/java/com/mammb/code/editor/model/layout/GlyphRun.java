@@ -42,6 +42,13 @@ public interface GlyphRun {
     float posY(int glyphIndex);
 
     /**
+     * Maps the given glyph index to the char offset.
+     * @param glyphIndex the number of glyphs in GlyphRun
+     * @return the number of character offset
+     */
+    int charOffset(int glyphIndex);
+
+    /**
      * The width of the {@code GlyphRun}.
      * @return the width of the {@code GlyphRun}
      */

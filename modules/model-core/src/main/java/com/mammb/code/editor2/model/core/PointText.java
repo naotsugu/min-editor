@@ -23,6 +23,9 @@ import com.mammb.code.editor2.model.core.impl.PointTextRecord;
  */
 public interface PointText extends Textual {
 
+    @Override
+    String text();
+
     /**
      * Get the offset point.
      * @return the offset point.
