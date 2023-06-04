@@ -62,7 +62,6 @@ public interface StyleSpan {
      */
     int endExclusive();
 
-
     /**
      * Create a new StyleSpan.
      * @param style the style

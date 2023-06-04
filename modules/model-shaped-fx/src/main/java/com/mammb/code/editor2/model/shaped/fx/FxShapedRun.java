@@ -70,7 +70,7 @@ public class FxShapedRun implements ShapedRun<Font, Color> {
 
     @Override
     public int length() {
-        return 0;//glyphRun.charOffset(glyphRun.glyphCount()) - glyphRun.charOffset(0) + 1;
+        return glyphRun.charOffset(glyphRun.glyphCount()) - glyphRun.charOffset(0) + 1;
     }
 
 }
