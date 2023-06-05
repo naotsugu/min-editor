@@ -17,7 +17,11 @@ package com.mammb.code.editor2.model.style;
 
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.core.PointText;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * StyledText.
@@ -37,5 +41,33 @@ public interface StyledText extends PointText, Styled {
     StyledText subText(int start, int length);
 
     void putStyle(StyleSpan style);
+
+    default List<StyledText> spans() {
+
+        final List<StyleSpan> styles = styles();
+        final String text = text();
+
+        List<StyledText> spans = new ArrayList<>();
+
+        int offset = 0;
+        Set<Style> prev = Set.of();
+        for (int i = 0; i < text.length(); i++) {
+            int index = i;
+            Set<Style> current = styles.stream()
+                .filter(style -> style.inRange(index))
+                .map(StyleSpan::style)
+                .collect(Collectors.toSet());
+            if (!prev.equals(current)) {
+                prev = current;
+                if (i > 0) {
+                    spans.add(subText(offset, i));
+                    offset = i;
+                }
+            }
+        }
+        spans.add(subText(offset, text.length()));
+
+        return spans;
+    }
 
 }

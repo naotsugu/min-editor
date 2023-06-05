@@ -15,14 +15,18 @@
  */
 package com.mammb.code.editor2.model.shaped.fx;
 
+import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.shaped.ShapedText;
+import com.mammb.code.editor2.model.style.Style;
+import com.mammb.code.editor2.model.style.StyleSpan;
 import com.mammb.code.editor2.model.style.StyledText;
+import com.mammb.code.javafx.scene.text.FxTextSpan;
 import com.mammb.code.javafx.scene.text.TextLayoutShim;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collection;
 
 /**
  * FxShapedText.
@@ -34,6 +38,7 @@ public class FxShapedText implements ShapedText<Font, Color> {
 
     private final List<StyledText> sources;
 
+    private OffsetPoint baseOrigin;
 
     public FxShapedText() {
         textLayout = new TextLayoutShim();
@@ -41,11 +46,39 @@ public class FxShapedText implements ShapedText<Font, Color> {
     }
 
     public void add(List<StyledText> texts) {
+        if (baseOrigin == null) {
+            baseOrigin = texts.get(0).point();
+        }
         sources.addAll(texts);
     }
 
+
     public void layout() {
-        //textLayout.setContent();
+        FxTextSpan[] spans = sources.stream()
+            .map(StyledText::spans)
+            .flatMap(Collection::stream)
+            .map(this::asTextSpan)
+            .toArray(FxTextSpan[]::new);
+        textLayout.setContent(spans);
     }
 
+
+    private FxTextSpan asTextSpan(StyledText styledText) {
+        String fontName = "System";
+        double fontSize = -1;
+        for (StyleSpan ss : styledText.styles()) {
+            if (ss.style() instanceof Style.FontFamily ff) {
+                fontName = ff.name();
+            } else if (ss.style() instanceof Style.FontSize fs) {
+                fontSize = fs.size();
+            }
+        }
+        return FxTextSpan.of(styledText.text(), Font.font(fontName, fontSize));
+    }
+
+
+    public void clear() {
+        sources.clear();
+        baseOrigin = null;
+    }
 }
