@@ -21,7 +21,7 @@ import com.mammb.code.editor2.model.core.PointText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.TreeSet;
 
 /**
  * StyledText.
@@ -44,29 +44,22 @@ public interface StyledText extends PointText, Styled {
 
     default List<StyledText> spans() {
 
-        final List<StyleSpan> styles = styles();
-        final String text = text();
-
-        List<StyledText> spans = new ArrayList<>();
-
-        int offset = 0;
-        Set<Style> prev = Set.of();
-        for (int i = 0; i < text.length(); i++) {
-            int index = i;
-            Set<Style> current = styles.stream()
-                .filter(style -> style.inRange(index))
-                .map(StyleSpan::style)
-                .collect(Collectors.toSet());
-            if (!prev.equals(current)) {
-                prev = current;
-                if (i > 0) {
-                    spans.add(subText(offset, i));
-                    offset = i;
-                }
+        Set<Integer> indices = new TreeSet<>();
+        for (StyleSpan style : styles()) {
+            indices.add(style.point());
+            if (style.length() > 0) {
+                indices.add(style.length() - 1);
             }
         }
-        spans.add(subText(offset, text.length()));
+        indices.add(text().length() - 1);
 
+        List<StyledText> spans = new ArrayList<>();
+        int prev = 0;
+        for (int i : indices) {
+            if (i == 0) continue;
+            spans.add(subText(prev, i + 1));
+            prev = i;
+        }
         return spans;
     }
 
