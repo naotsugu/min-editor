@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public class TextSpanImpl implements TextSpan {
 
-    private final Span<?> pear;
+    private final Span<?> peer;
 
     private final Map<Font, Object> nativeFonts;
 
@@ -44,21 +44,21 @@ public class TextSpanImpl implements TextSpan {
 
 
     public TextSpanImpl(Span<?> span, Map<Font, Object> nativeFonts) {
-        this.pear = span;
+        this.peer = span;
         this.nativeFonts = nativeFonts;
     }
 
 
     @Override
     public String getText() {
-        return pear.text();
+        return peer.text();
     }
 
 
     @Override
     public Object getFont() {
         // TODO rewrite to Pattern Matching for switch
-        if (pear instanceof FontSpan<?> fontSpan) {
+        if (peer instanceof FontSpan<?> fontSpan) {
             Object font = fontSpan.figure().font();
             if (font instanceof Font fxFont) {
                 return (nativeFonts == null)
@@ -75,7 +75,7 @@ public class TextSpanImpl implements TextSpan {
 
     @Override
     public RectBounds getBounds() {
-        if (pear instanceof EmbedSpan embedSpan) {
+        if (peer instanceof EmbedSpan embedSpan) {
             Bounds bounds = embedSpan.figure();
             return new RectBounds(
                 bounds.minX(),

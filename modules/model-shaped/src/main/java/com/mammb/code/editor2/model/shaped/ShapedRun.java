@@ -15,13 +15,18 @@
  */
 package com.mammb.code.editor2.model.shaped;
 
+import com.mammb.code.editor2.model.core.Textual;
+
 /**
  * ShapedRun.
  * @param <F> the type of font
  * @param <C> the type of color
  * @author Naotsugu Kobayashi
  */
-public interface ShapedRun<F, C> extends Shaped<F, C> {
+public interface ShapedRun<F, C> extends Shaped<F, C>, Textual {
+
+    @Override
+    String text();
 
     @Override
     F font();
@@ -52,12 +57,6 @@ public interface ShapedRun<F, C> extends Shaped<F, C> {
      * @return the height of the {@code GlyphRun}
      */
     float height();
-
-    /**
-     * Gets the line start offset.
-     * @return the line start offset
-     */
-    int offset();
 
     /**
      * Gets the line length in character.

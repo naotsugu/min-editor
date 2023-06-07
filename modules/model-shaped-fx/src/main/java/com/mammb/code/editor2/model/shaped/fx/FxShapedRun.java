@@ -27,15 +27,20 @@ import javafx.scene.text.Font;
  */
 public class FxShapedRun implements ShapedRun<Font, Color> {
 
-    private final GlyphRun glyphRun;
+    private final GlyphRun<Font> glyphRun;
 
-    public FxShapedRun(StyledText parent, GlyphRun glyphRun) {
+    public FxShapedRun(StyledText parent, GlyphRun<Font> glyphRun) {
         this.glyphRun = glyphRun;
     }
 
     @Override
+    public String text() {
+        return glyphRun.getText();
+    }
+
+    @Override
     public Font font() {
-        return null;
+        return glyphRun.getFont();
     }
 
     @Override
@@ -64,13 +69,8 @@ public class FxShapedRun implements ShapedRun<Font, Color> {
     }
 
     @Override
-    public int offset() {
-        return glyphRun.charOffset(0);
-    }
-
-    @Override
     public int length() {
-        return glyphRun.charOffset(glyphRun.glyphCount()) - glyphRun.charOffset(0) + 1;
+        return glyphRun.getText().length();
     }
 
 }

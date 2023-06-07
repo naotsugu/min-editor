@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor2.model.shaped.fx;
 
+import com.mammb.code.editor.model.layout.GlyphRun;
+import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.shaped.ShapedText;
 import com.mammb.code.editor2.model.style.Style;
@@ -24,9 +26,10 @@ import com.mammb.code.javafx.scene.text.FxTextSpan;
 import com.mammb.code.javafx.scene.text.TextLayoutShim;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * FxShapedText.
@@ -39,6 +42,7 @@ public class FxShapedText implements ShapedText<Font, Color> {
     private final List<StyledText> sources;
 
     private OffsetPoint baseOrigin;
+    private List<FxShapedLine> shapedLines;
 
     public FxShapedText() {
         textLayout = new TextLayoutShim();
@@ -60,6 +64,12 @@ public class FxShapedText implements ShapedText<Font, Color> {
             .map(this::asTextSpan)
             .toArray(FxTextSpan[]::new);
         textLayout.setContent(spans);
+
+        for (TextLine<Font> line : textLayout.getLines()) {
+            for (GlyphRun<Font> run : line.runs()) {
+
+            }
+        }
     }
 
 
@@ -80,5 +90,7 @@ public class FxShapedText implements ShapedText<Font, Color> {
     public void clear() {
         sources.clear();
         baseOrigin = null;
+        shapedLines = null;
     }
+
 }

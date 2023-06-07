@@ -19,13 +19,13 @@ package com.mammb.code.editor.model.layout;
  * LayoutLine.
  * @author Naotsugu Kobayashi
  */
-public interface TextLine {
+public interface TextLine<F> {
 
     /**
      * Get the list of GlyphRun in the line. The list is visually ordered.
      * @return the array of GlyphRun in the line. The list is visually ordered.
      */
-    GlyphRun[] runs();
+    GlyphRun<F>[] runs();
 
     /**
      * Returns metrics information about the line as follows:

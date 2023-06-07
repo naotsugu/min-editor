@@ -24,10 +24,10 @@ import javafx.scene.text.Font;
  */
 public class FxFontImpl implements FxFont {
 
-    private final Font pear;
+    private final Font peer;
 
-    public FxFontImpl(Font pear) {
-        this.pear = pear;
+    public FxFontImpl(Font peer) {
+        this.peer = peer;
     }
 
     public static FxFont of(Font font) {
@@ -36,11 +36,11 @@ public class FxFontImpl implements FxFont {
 
     @Override
     public String fullName() {
-        return pear.getName();
+        return peer.getName();
     }
 
     @Override
     public Font font() {
-        return pear;
+        return peer;
     }
 }

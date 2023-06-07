@@ -18,67 +18,62 @@ package com.mammb.code.javafx.scene.text.impl;
 import com.mammb.code.editor.model.layout.Bounds;
 import com.mammb.code.editor.model.layout.GlyphRun;
 import com.mammb.code.editor.model.layout.TextLine;
-import com.sun.javafx.scene.text.GlyphList;
+import javafx.scene.text.Font;
 
 /**
  * LayoutLine.
  * @author Naotsugu Kobayashi
  */
-public class TextLineImpl implements TextLine {
+public class TextLineImpl implements TextLine<Font> {
 
-    /** The pear. */
-    private final com.sun.javafx.scene.text.TextLine pear;
+    /** The peer. */
+    private final com.sun.javafx.scene.text.TextLine peer;
+
+    /** The array of GlyphRun. */
+    private final GlyphRun<Font>[] runs;
+
 
     /**
      * Constructor.
      * @param textLine the TextLine of javafx
+     * @param runs the array of GlyphRun
      */
-    public TextLineImpl(com.sun.javafx.scene.text.TextLine textLine) {
-        pear = textLine;
+    public TextLineImpl(
+            com.sun.javafx.scene.text.TextLine textLine,
+            GlyphRun<Font>[] runs) {
+        this.peer = textLine;
+        this.runs = runs;
     }
 
-    /**
-     * Create a new TextLine.
-     * @param textLine the TextLine of javafx
-     * @return a created TextLine
-     */
-    public static TextLine of(com.sun.javafx.scene.text.TextLine textLine) {
-        return new TextLineImpl(textLine);
-    }
 
     @Override
-    public GlyphRun[] runs() {
-        GlyphList[] runs = pear.getRuns();
-        GlyphRun[] ret = new GlyphRun[runs.length];
-        for (int i = 0; i < runs.length; i++) {
-            ret[i] = GlyphRunImpl.of(runs[i]);
-        }
-        return ret;
+    public GlyphRun<Font>[] runs() {
+        return runs;
     }
 
     @Override
     public Bounds bounds() {
-        return RectBounds.of(pear.getBounds());
+        return RectBounds.of(peer.getBounds());
     }
 
     @Override
     public float getLeftSideBearing() {
-        return pear.getLeftSideBearing();
+        return peer.getLeftSideBearing();
     }
 
     @Override
     public float getRightSideBearing() {
-        return pear.getRightSideBearing();
+        return peer.getRightSideBearing();
     }
 
     @Override
     public int startOffset() {
-        return pear.getStart();
+        return peer.getStart();
     }
 
     @Override
     public int length() {
-        return pear.getLength();
+        return peer.getLength();
     }
 
 }

@@ -18,60 +18,71 @@ package com.mammb.code.javafx.scene.text.impl;
 import com.mammb.code.editor.model.layout.GlyphRun;
 import com.mammb.code.editor.model.layout.Point;
 import com.sun.javafx.scene.text.GlyphList;
+import javafx.scene.text.Font;
 
 /**
  * GlyphRunImpl.
  * @author Naotsugu Kobayashi
  */
-public class GlyphRunImpl implements GlyphRun {
+public class GlyphRunImpl implements GlyphRun<Font> {
 
-    private final GlyphList pear;
+    private final GlyphList peer;
+    private final String text;
+    private final Font font;
 
-    protected GlyphRunImpl(GlyphList pear) {
-        this.pear = pear;
-    }
-
-    public static GlyphRun of(GlyphList pear) {
-        return new GlyphRunImpl(pear);
+    public GlyphRunImpl(GlyphList peer, String text, Font font) {
+        this.peer = peer;
+        this.text = text;
+        this.font = font;
     }
 
     protected GlyphList pear() {
-        return pear;
+        return peer;
     }
 
     @Override
     public int glyphCount() {
-        return pear.getGlyphCount();
+        return peer.getGlyphCount();
     }
 
     @Override
     public float posX(int glyphIndex) {
-        return pear.getPosX(glyphIndex);
+        return peer.getPosX(glyphIndex);
     }
 
     @Override
     public float posY(int glyphIndex) {
-        return pear.getPosY(glyphIndex);
+        return peer.getPosY(glyphIndex);
     }
 
     @Override
     public int charOffset(int glyphIndex) {
-        return pear.getCharOffset(glyphIndex);
+        return peer.getCharOffset(glyphIndex);
     }
 
     @Override
     public float width() {
-        return pear.getWidth();
+        return peer.getWidth();
     }
 
     @Override
     public float height() {
-        return pear.getHeight();
+        return peer.getHeight();
     }
 
     @Override
     public Point location() {
-        return new PointImpl(pear.getLocation());
+        return new PointImpl(peer.getLocation());
+    }
+
+    @Override
+    public String getText() {
+        return text;
+    }
+
+    @Override
+    public Font getFont() {
+        return font;
     }
 
 }

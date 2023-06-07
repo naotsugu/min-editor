@@ -31,10 +31,10 @@ import java.util.List;
 public class FxShapedLine implements ShapedLine<Font, Color> {
 
     private final StyledText styledText;
-    private final TextLine textLine;
+    private final TextLine<Font> textLine;
     private final List<FxShapedRun> runs;
 
-    public FxShapedLine(int baseOrigin, StyledText styledText, TextLine textLine) {
+    public FxShapedLine(int baseOrigin, StyledText styledText, TextLine<Font> textLine) {
         int start = textLine.startOffset() - (styledText.point().offset() - baseOrigin);
         this.styledText = styledText.subText(start, start + textLine.length());
         this.textLine = textLine;

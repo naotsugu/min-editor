@@ -23,10 +23,10 @@ import com.mammb.code.editor.model.layout.Bounds;
  */
 public class RectBounds implements Bounds {
 
-    private final com.sun.javafx.geom.RectBounds pear;
+    private final com.sun.javafx.geom.RectBounds peer;
 
     private RectBounds(com.sun.javafx.geom.RectBounds rectBounds) {
-        this.pear = rectBounds;
+        this.peer = rectBounds;
     }
 
     public static RectBounds of(com.sun.javafx.geom.RectBounds rectBounds) {
@@ -35,22 +35,22 @@ public class RectBounds implements Bounds {
 
     @Override
     public float minX() {
-        return pear.getMinX();
+        return peer.getMinX();
     }
 
     @Override
     public float minY() {
-        return pear.getMinY();
+        return peer.getMinY();
     }
 
     @Override
     public float maxX() {
-        return pear.getMaxX();
+        return peer.getMaxX();
     }
 
     @Override
     public float maxY() {
-        return pear.getMaxX();
+        return peer.getMaxX();
     }
 
 }

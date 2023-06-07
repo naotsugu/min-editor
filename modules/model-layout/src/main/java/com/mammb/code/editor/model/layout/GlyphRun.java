@@ -19,7 +19,7 @@ package com.mammb.code.editor.model.layout;
  * GlyphRun.
  * @author Naotsugu Kobayashi
  */
-public interface GlyphRun {
+public interface GlyphRun<F> {
 
     /**
      * Get the number of glyphs in GlyphRun.
@@ -65,5 +65,25 @@ public interface GlyphRun {
      * the origin of the Text Layout.
      */
     Point location();
+
+    /**
+     * Get the text for this GlyphRun.
+     * @return the text
+     */
+    String getText();
+
+    /**
+     * Get the font for this GlyphRun.
+     * @return the font
+     */
+    F getFont();
+
+    /**
+     * Get the character length.
+     * @return the character length
+     */
+    default int charLength() {
+        return charOffset(glyphCount()) - charOffset(0);
+    }
 
 }

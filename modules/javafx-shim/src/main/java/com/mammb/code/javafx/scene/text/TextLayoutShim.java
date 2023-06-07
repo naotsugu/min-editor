@@ -15,22 +15,19 @@
  */
 package com.mammb.code.javafx.scene.text;
 
-import com.mammb.code.editor.model.layout.GlyphRun;
 import com.mammb.code.editor.model.layout.HitPosition;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.javafx.scene.text.impl.GlyphRunImpl;
 import com.mammb.code.javafx.scene.text.impl.HitPositionImpl;
 import com.mammb.code.javafx.scene.text.impl.TextLineImpl;
 import com.mammb.code.javafx.scene.text.impl.TextSpanImpl;
-import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.scene.text.TextSpan;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * TextLayoutShim.
@@ -42,29 +39,18 @@ public class TextLayoutShim {
     private final TextLayout textLayout;
 
     /** The native font map. */
-    private final Map<Font, Object> nativeFonts = new HashMap<>();
+    private final TreeMap<Integer, Font> fonts = new TreeMap<>();
+
+    private String text = "";
 
 
     /**
      * Create a new TextLayoutShim.
      */
     public TextLayoutShim() {
-        this.textLayout = Toolkit.getToolkit().getTextLayoutFactory().createLayout();
+        textLayout = Toolkit.getToolkit().getTextLayoutFactory().getLayout();
+        textLayout.setTabSize(4);
     }
-
-
-    /**
-     * Sets the content for the TextLayout.
-     * Shorthand for single span text (no rich text).
-     * @param string the text
-     * @param font the font
-     * @return {@code true} is the call modifies the layout internal state.
-     */
-    public boolean setContent(String string, Font font) {
-        return textLayout.setContent(string,
-            nativeFonts.computeIfAbsent(font, FontHelper::getNativeFont));
-    }
-
 
     /**
      * Sets the content for the TextLayout.
@@ -72,32 +58,16 @@ public class TextLayoutShim {
      * @return {@code true} if the call modifies the layout internal state.
      */
     public boolean setContent(FxTextSpan[] spans) {
+        StringBuilder sb = new StringBuilder();
+        fonts.clear();
         TextSpan[] textSpans = new TextSpan[spans.length];
         for (int i = 0; i < spans.length; i++) {
+            fonts.put(sb.length(), spans[i].figure().font());
+            sb.append(spans[i].text());
             textSpans[i] = new TextSpanImpl(spans[i]);
         }
+        text = sb.toString();
         return textLayout.setContent(textSpans);
-    }
-
-
-    /**
-     * Sets the content for the TextLayout.
-     * Supports multiple spans (rich text).
-     * @return {@code true} if the call modifies the layout internal state.
-     */
-    boolean setContent(TextSpan[] spans) {
-        return textLayout.setContent(spans);
-    }
-
-
-    /**
-     * Sets the content for the TextLayout.
-     * @param string the text
-     * @param font the native font
-     * @return {@code true} is the call modifies the layout internal state.
-     */
-    boolean setContent(String string, Object font) {
-        return textLayout.setContent(string, font);
     }
 
 
@@ -143,29 +113,27 @@ public class TextLayoutShim {
      * Gets the lines of text layout.
      * @return the lines of text layout
      */
-    public TextLine[] getLines() {
+    public TextLine<Font>[] getLines() {
         com.sun.javafx.scene.text.TextLine[] lines = textLayout.getLines();
-        TextLine[] ret = new TextLine[lines.length];
+        TextLineImpl[] ret = new TextLineImpl[lines.length];
+        int offset = 0;
         for (int i = 0; i < lines.length; i++) {
-            ret[i] = TextLineImpl.of(lines[i]);
+            com.sun.javafx.scene.text.TextLine line = lines[i];
+            GlyphList[] runs = line.getRuns();
+            GlyphRunImpl[] glyphRuns = new GlyphRunImpl[runs.length];
+            for (int j = 0; j < runs.length; j++) {
+                GlyphList run = runs[j];
+                int start = offset;
+                offset += run.getCharOffset(run.getGlyphCount());
+                String str = text.substring(start, offset);
+                Font font = fonts.ceilingEntry(start).getValue();
+                glyphRuns[j] = new GlyphRunImpl(run, str, font);
+            }
+            ret[i] = new TextLineImpl(line, glyphRuns);
         }
         return ret;
     }
 
-
-    /**
-     * Gets the GlyphRun of text layout.
-     * The runs are returned order visually (rendering order), starting from the first line.
-     * @return the GlyphRun of text layout
-     */
-    public GlyphRun[] getRuns() {
-        GlyphList[] runs = textLayout.getRuns();
-        GlyphRun[] ret = new GlyphRun[runs.length];
-        for (int i = 0; i < runs.length; i++) {
-            ret[i] = GlyphRunImpl.of(runs[i]);
-        }
-        return ret;
-    }
 
     /**
      * Get the hit information in the text plane.
