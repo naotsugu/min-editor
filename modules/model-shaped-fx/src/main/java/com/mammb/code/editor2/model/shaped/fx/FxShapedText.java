@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor2.model.shaped.fx;
 
-import com.mammb.code.editor.model.layout.GlyphRun;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor2.model.core.OffsetPoint;
 import com.mammb.code.editor2.model.shaped.ShapedText;
@@ -30,6 +29,7 @@ import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.TreeMap;
 
 /**
  * FxShapedText.
@@ -39,37 +39,41 @@ public class FxShapedText implements ShapedText<Font, Color> {
 
     private final TextLayoutShim textLayout;
 
-    private final List<StyledText> sources;
+    private final TreeMap<Integer, StyledText> sources;
 
     private OffsetPoint baseOrigin;
     private List<FxShapedLine> shapedLines;
 
     public FxShapedText() {
         textLayout = new TextLayoutShim();
-        sources = new ArrayList<>();
+        sources = new TreeMap<>();
     }
 
     public void add(List<StyledText> texts) {
         if (baseOrigin == null) {
             baseOrigin = texts.get(0).point();
         }
-        sources.addAll(texts);
+        texts.forEach(text -> sources.put(text.point().offset() - baseOrigin.offset(), text));
+
     }
 
 
     public void layout() {
-        FxTextSpan[] spans = sources.stream()
+
+        FxTextSpan[] spans = sources.values().stream()
             .map(StyledText::spans)
             .flatMap(Collection::stream)
             .map(this::asTextSpan)
             .toArray(FxTextSpan[]::new);
         textLayout.setContent(spans);
 
+        int offset = 0;
+        List<FxShapedLine> shapedLines = new ArrayList<>();
         for (TextLine<Font> line : textLayout.getLines()) {
-            for (GlyphRun<Font> run : line.runs()) {
-
-            }
+            shapedLines.add(new FxShapedLine(baseOrigin.offset(), sources.floorEntry(offset).getValue(), line));
+            offset += line.length();
         }
+        this.shapedLines = shapedLines;
     }
 
 
