@@ -15,9 +15,10 @@
  */
 package com.mammb;
 
+import com.sun.javafx.geom.Point2D;
 import com.sun.javafx.geom.RectBounds;
+import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
-import com.sun.javafx.scene.text.TextLine;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
 
@@ -25,6 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * LayoutBuilder.
+ * @author Naotsugu Kobayashi
+ */
 public class LayoutBuilder {
 
     /** The delegated text layout. */
@@ -33,9 +38,9 @@ public class LayoutBuilder {
     /** The native font map. */
     private final TreeMap<Integer, Font> fonts = new TreeMap<>();
 
-    private final List<Span<?>> spans = new ArrayList<>();
+    private final List<Span> spans = new ArrayList<>();
 
-    private StringBuilder text = new StringBuilder();
+    private final StringBuilder text = new StringBuilder();
 
 
     /**
@@ -47,25 +52,59 @@ public class LayoutBuilder {
     }
 
 
-    public void add(List<Span<?>> spans) {
+    /**
+     * Add spans
+     * @param spans
+     */
+    public void add(List<Span> spans) {
         this.spans.addAll(spans);
+        spans.stream().map(Span::text).forEach(text::append);
     }
 
 
-    public void layout() {
-        record TextSpan(String getText, Object getFont, RectBounds getBounds)
+    public List<TextLine> layout() {
+        record TextSpan(String getText, Object getFont, RectBounds getBounds, Span peer)
             implements com.sun.javafx.scene.text.TextSpan { }
         TextSpan[] textSpans = new TextSpan[spans.size()];
         for (int i = 0; i < spans.size(); i++) {
-            Span<?> span = spans.get(i);
-            textSpans[i] = new TextSpan(span.text(), span.font(), null);
+            Span span = spans.get(i);
+            textSpans[i] = new TextSpan(span.text(), span.style().font(), null, span);
         }
-        textLayout.setContent(textSpans);
-        TextLine[] textLines = textLayout.getLines();
 
+        textLayout.setContent(textSpans);
+
+        List<TextLine> textLines = new ArrayList<>();
+        int offset = 0;
+        for (com.sun.javafx.scene.text.TextLine textLine : textLayout.getLines()) {
+            List<TextRun> textRuns = new ArrayList<>();
+            for (GlyphList glyphList : textLine.getRuns()) {
+
+                Point2D location = glyphList.getLocation();
+                RectBounds rectBounds = glyphList.getLineBounds();
+                TextSpan textSpan = (TextSpan) glyphList.getTextSpan();
+                int endOffset = glyphList.getCharOffset(glyphList.getGlyphCount());
+
+                double baselineOffset = -rectBounds.getMinY();
+                Layout layout = Layout.of(
+                    location.x, baselineOffset + location.y,
+                    rectBounds.getWidth(), rectBounds.getHeight());
+
+                String runText = text.substring(offset, endOffset);
+                offset = endOffset;
+
+                Style style = textSpan.peer().style();
+
+                textRuns.add(TextRun.of(layout, runText, style));
+            }
+            textLines.add(TextLine.of(textRuns));
+        }
+        return textLines;
     }
 
 
+    /**
+     * Clear.
+     */
     public void clear() {
         spans.clear();
         text.setLength(0);

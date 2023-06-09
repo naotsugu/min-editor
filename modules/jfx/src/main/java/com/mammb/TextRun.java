@@ -16,21 +16,32 @@
 package com.mammb;
 
 /**
- * Span.
+ * TextRun.
  * @author Naotsugu Kobayashi
  */
-public interface Span {
+public interface TextRun {
 
     /**
-     * Get the text of span.
-     * @return the text of span
+     * Get the layout.
+     * @return the layout
+     */
+    Layout layout();
+
+    /**
+     * Get the text.
+     * @return the text
      */
     String text();
 
     /**
-     * Get the style of span
-     * @return the style of span
+     * Get the style
+     * @return the style
      */
     Style style();
+
+    static TextRun of(Layout layout, String text, Style style) {
+        record TextRunRecord(Layout layout, String text, Style style) implements TextRun { }
+        return new TextRunRecord(layout, text, style);
+    }
 
 }

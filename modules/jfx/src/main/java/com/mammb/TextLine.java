@@ -15,22 +15,19 @@
  */
 package com.mammb;
 
+import java.util.List;
+
 /**
- * Span.
+ * TextLine.
  * @author Naotsugu Kobayashi
  */
-public interface Span {
+public interface TextLine {
 
-    /**
-     * Get the text of span.
-     * @return the text of span
-     */
-    String text();
+    List<TextRun> runs();
 
-    /**
-     * Get the style of span
-     * @return the style of span
-     */
-    Style style();
+    static TextLine of(List<TextRun> runs) {
+        record TextLineRecord(List<TextRun> runs) implements TextLine { }
+        return new TextLineRecord(runs);
+    }
 
 }

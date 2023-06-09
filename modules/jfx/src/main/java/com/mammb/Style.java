@@ -15,22 +15,18 @@
  */
 package com.mammb;
 
+import javafx.scene.text.Font;
+
 /**
- * Span.
+ * Style.
  * @author Naotsugu Kobayashi
  */
-public interface Span {
+public interface Style {
 
     /**
-     * Get the text of span.
-     * @return the text of span
+     * Get the font.
+     * @return the font
      */
-    String text();
-
-    /**
-     * Get the style of span
-     * @return the style of span
-     */
-    Style style();
+    Font font();
 
 }
