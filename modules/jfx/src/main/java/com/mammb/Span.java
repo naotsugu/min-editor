@@ -33,4 +33,10 @@ public interface Span {
      */
     Style style();
 
+
+    static Span of(String text, Style style) {
+        record SpanRecord(String text, Style style) implements Span { }
+        return new SpanRecord(text, style);
+    }
+
 }

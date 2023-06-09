@@ -15,6 +15,7 @@
  */
 package com.mammb;
 
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
@@ -28,5 +29,23 @@ public interface Style {
      * @return the font
      */
     Font font();
+
+
+    static Style of(Font font) {
+        record StyleRecord(Font font) implements Style { }
+        return new StyleRecord(font);
+    }
+
+
+    static Style of(Font font, Color color) {
+        record StyleRecord(Font font, Color color) implements Style { }
+        return new StyleRecord(font, color);
+    }
+
+
+    static Style of(Font font, Color color, Color bgColor) {
+        record StyleRecord(Font font, Color color, Color bgColor) implements Style { }
+        return new StyleRecord(font, color, bgColor);
+    }
 
 }
