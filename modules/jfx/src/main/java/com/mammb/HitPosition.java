@@ -1,0 +1,50 @@
+/*
+ * Copyright 2019-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mammb;
+
+import com.sun.javafx.scene.text.TextLayout;
+
+/**
+ * Represents the hit information in the text plane.
+ * @author Naotsugu Kobayashi
+ */
+public interface HitPosition {
+
+    /**
+     * Get the index of the character which this hit information refers to.
+     * @return the index of the character which this hit information refers to
+     */
+    int charIndex();
+
+    /**
+     * Get the index of the insertion position.
+     * @return the index of the insertion position
+     */
+    int insertionIndex();
+
+    /**
+     * Get the indicates whether the hit is on the leading edge of the character.
+     * @return the indicates whether the hit is on the leading edge of the character
+     */
+    boolean leading();
+
+
+    static HitPosition of(TextLayout.Hit hit) {
+        record HitPositionRecord(int charIndex, int insertionIndex, boolean leading) implements HitPosition { }
+        return new HitPositionRecord(hit.getCharIndex(), hit.getInsertionIndex(), hit.isLeading());
+    }
+
+}

@@ -28,6 +28,7 @@ include(
 include("syntax-base")
 include("ui-app", "ui-pane")
 include("javafx-shim")
+include("jfx")
 
 for (project in rootProject.children.filterNot {
         it.name == "app" || it.name == "piecetable" }) {
