@@ -22,22 +22,21 @@ package com.mammb.code.editor.model.layout;
 public interface HitPosition {
 
     /**
-     * Gets the index of the character which this hit information refers to.
+     * Get the index of the character which this hit information refers to.
      * @return the index of the character which this hit information refers to
      */
     int charIndex();
 
     /**
-     * Gets the indicates whether the hit is on the leading edge of the character.
-     * If it is false, it represents the trailing edge.
-     * @return {@code true}, if the hit is on the leading edge of the character
-     */
-    boolean leading();
-
-    /**
-     * Gets the index of the insertion position.
+     * Get the index of the insertion position.
      * @return the index of the insertion position
      */
     int insertionIndex();
+
+    /**
+     * Get the indicates whether the hit is on the leading edge of the character.
+     * @return the indicates whether the hit is on the leading edge of the character
+     */
+    boolean leading();
 
 }

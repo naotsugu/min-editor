@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation("com.mammb.code:javafx")
-    implementation(project(":model-layout-fx"))
+    implementation(project(":javafx"))
     implementation(project(":model-editor"))
 }

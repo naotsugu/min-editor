@@ -20,7 +20,6 @@
  */
 module code.editor.ui.pane {
     requires code.editor.javafx;
-    requires code.editor.model.layout.fx;
     requires code.editor.model.editor;
     exports com.mammb.code.editor2.ui.pane;
 }

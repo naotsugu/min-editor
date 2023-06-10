@@ -17,22 +17,31 @@ package com.mammb.code.editor.model.layout;
 
 /**
  * Span.
- * @param <T> the type of figure
  * @author Naotsugu Kobayashi
  */
-public interface Span<T> {
+public interface Span {
 
     /**
-     * Get the text.
-     * @return the text
+     * Get the text of span.
+     * @return the text of span
      */
     String text();
 
     /**
-     * Get the figure.
-     * @return the figure
+     * Get the style of span.
+     * @return the style of span
      */
-    T figure();
+    Style style();
+
+    /**
+     * Create a new Span.
+     * @param text the text of span
+     * @param style the style of span
+     * @return a created Span
+     */
+    static Span of(String text, Style style) {
+        record SpanRecord(String text, Style style) implements Span { }
+        return new SpanRecord(text, style);
+    }
 
 }
-

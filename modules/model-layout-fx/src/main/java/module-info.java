@@ -18,10 +18,7 @@
  * The javafx layout model module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.model.layout.fx {
+module code.editor.javafx.layout {
     requires code.editor.javafx;
-    requires code.editor.javafx.shim;
-    requires transitive code.editor.model.layout;
-    requires transitive code.editor.model.style;
-    exports com.mammb.code.editor2.model.layout.fx;
+    requires code.editor.model.layout;
 }

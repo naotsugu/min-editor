@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.model.layout;
 
 /**
- * The bootstrap module.
+ * Style.
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui.app {
-    requires code.editor.javafx;
-    requires code.editor.ui.pane;
-    exports com.mammb.code.editor2.ui.app;
+public interface Style {
 }

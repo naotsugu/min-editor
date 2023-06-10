@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation("com.mammb.code:javafx")
+    implementation(project(":javafx"))
     implementation(project(":ui-pane"))
 }

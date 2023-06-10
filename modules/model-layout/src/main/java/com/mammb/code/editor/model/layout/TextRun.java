@@ -15,25 +15,40 @@
  */
 package com.mammb.code.editor.model.layout;
 
-import java.util.List;
-
 /**
- * TextLine.
+ * TextRun.
  * @author Naotsugu Kobayashi
  */
-public interface TextLine {
-
-    /** The text runs. */
-    List<TextRun> runs();
+public interface TextRun {
 
     /**
-     * Create a new TextLine.
-     * @param runs the text runs
-     * @return a created TextLine
+     * Get the layout.
+     * @return the layout
      */
-    static TextLine of(List<TextRun> runs) {
-        record TextLineRecord(List<TextRun> runs) implements TextLine { }
-        return new TextLineRecord(runs);
+    Layout layout();
+
+    /**
+     * Get the text.
+     * @return the text
+     */
+    String text();
+
+    /**
+     * Get the style.
+     * @return the style
+     */
+    Style style();
+
+    /**
+     * Create a new TextRun.
+     * @param layout the layout
+     * @param text the text
+     * @param style the style
+     * @return a created TextRun
+     */
+    static TextRun of(Layout layout, String text, Style style) {
+        record TextRunRecord(Layout layout, String text, Style style) implements TextRun { }
+        return new TextRunRecord(layout, text, style);
     }
 
 }

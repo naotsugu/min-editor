@@ -1,9 +1,10 @@
 plugins {
+    `java-library`
     id("code.editor.base")
 }
 
 dependencies {
-    implementation(project(":javafx-shim"))
-    api(project(":model-layout"))
-    api(project(":model-style"))
+    implementation(project(":javafx"))
+    implementation(project(":model-layout"))
 }
+
