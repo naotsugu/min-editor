@@ -28,12 +28,17 @@ public interface Span {
     String text();
 
     /**
-     * Get the style of span
+     * Get the style of span.
      * @return the style of span
      */
     Style style();
 
-
+    /**
+     * Create a new Span.
+     * @param text the text of span
+     * @param style the style of span
+     * @return a created Span
+     */
     static Span of(String text, Style style) {
         record SpanRecord(String text, Style style) implements Span { }
         return new SpanRecord(text, style);

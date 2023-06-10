@@ -38,8 +38,10 @@ public class LayoutBuilder {
     /** The native font map. */
     private final TreeMap<Integer, Font> fonts = new TreeMap<>();
 
+    /** The spans. */
     private final List<Span> spans = new ArrayList<>();
 
+    /** The text of spans. */
     private final StringBuilder text = new StringBuilder();
 
 
@@ -53,8 +55,8 @@ public class LayoutBuilder {
 
 
     /**
-     * Add spans
-     * @param spans
+     * Add spans.
+     * @param spans the adding spans
      */
     public void add(List<Span> spans) {
         this.spans.addAll(spans);
@@ -62,6 +64,10 @@ public class LayoutBuilder {
     }
 
 
+    /**
+     * Layout.
+     * @return
+     */
     public List<TextLine> layout() {
         record TextSpan(String getText, Object getFont, RectBounds getBounds, Span peer)
             implements com.sun.javafx.scene.text.TextSpan { }

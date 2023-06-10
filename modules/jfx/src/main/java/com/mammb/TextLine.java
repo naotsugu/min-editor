@@ -23,8 +23,14 @@ import java.util.List;
  */
 public interface TextLine {
 
+    /** The text runs. */
     List<TextRun> runs();
 
+    /**
+     * Create a new TextLine.
+     * @param runs the text runs
+     * @return a created TextLine
+     */
     static TextLine of(List<TextRun> runs) {
         record TextLineRecord(List<TextRun> runs) implements TextLine { }
         return new TextLineRecord(runs);

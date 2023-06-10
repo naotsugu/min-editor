@@ -41,7 +41,11 @@ public interface HitPosition {
      */
     boolean leading();
 
-
+    /**
+     * Create a new HitPosition.
+     * @param hit the hit
+     * @return a created HitPosition
+     */
     static HitPosition of(TextLayout.Hit hit) {
         record HitPositionRecord(int charIndex, int insertionIndex, boolean leading) implements HitPosition { }
         return new HitPositionRecord(hit.getCharIndex(), hit.getInsertionIndex(), hit.isLeading());

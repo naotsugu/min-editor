@@ -15,11 +15,15 @@ val artifact = when {
 }
 
 val javafxBase: Configuration by configurations.creating
+val javafxBaseSources: Configuration by configurations.creating
 val javafxGraphics: Configuration by configurations.creating
+val javafxGraphicsSources: Configuration by configurations.creating
 
 dependencies {
     javafxBase("org.openjfx:javafx-base:20.0.1:${artifact}")
+    javafxBaseSources("org.openjfx:javafx-base:20.0.1:sources")
     javafxGraphics("org.openjfx:javafx-graphics:20.0.1:${artifact}")
+    javafxGraphicsSources("org.openjfx:javafx-graphics:20.0.1:sources")
     api(files("${buildDir}/libs/javafx-base.jar"))
     api(files("${buildDir}/libs/javafx-graphics.jar"))
 }
@@ -43,4 +47,22 @@ tasks.register<Jar>("graphicsJar") {
 tasks.withType<JavaCompile>().configureEach {
     dependsOn("baseJar")
     dependsOn("graphicsJar")
+}
+
+
+java.withSourcesJar()
+
+tasks.register<Jar>("baseSourcesJar") {
+    archiveBaseName.set("javafx-base-sources")
+    from({ javafxBaseSources.map { zipTree(it) } })
+}
+
+tasks.register<Jar>("graphicsSourcesJar") {
+    archiveBaseName.set("javafx-graphics-sources")
+    from({ javafxGraphicsSources.map { zipTree(it) } })
+}
+
+tasks.named<Jar>("sourcesJar") {
+    dependsOn("baseSourcesJar")
+    dependsOn("graphicsSourcesJar")
 }

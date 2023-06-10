@@ -34,11 +34,18 @@ public interface TextRun {
     String text();
 
     /**
-     * Get the style
+     * Get the style.
      * @return the style
      */
     Style style();
 
+    /**
+     * Create a new TextRun.
+     * @param layout the layout
+     * @param text the text
+     * @param style the style
+     * @return a created TextRun
+     */
     static TextRun of(Layout layout, String text, Style style) {
         record TextRunRecord(Layout layout, String text, Style style) implements TextRun { }
         return new TextRunRecord(layout, text, style);

@@ -30,19 +30,34 @@ public interface Style {
      */
     Font font();
 
-
+    /**
+     * Create a new Style.
+     * @param font the font
+     * @return a created Style
+     */
     static Style of(Font font) {
         record StyleRecord(Font font) implements Style { }
         return new StyleRecord(font);
     }
 
-
+    /**
+     * Create a new Style.
+     * @param font the font
+     * @param color the color
+     * @return a created Style
+     */
     static Style of(Font font, Color color) {
         record StyleRecord(Font font, Color color) implements Style { }
         return new StyleRecord(font, color);
     }
 
-
+    /**
+     * Create a new Style.
+     * @param font the font
+     * @param color the color
+     * @param bgColor the background color
+     * @return a created Style
+     */
     static Style of(Font font, Color color, Color bgColor) {
         record StyleRecord(Font font, Color color, Color bgColor) implements Style { }
         return new StyleRecord(font, color, bgColor);
