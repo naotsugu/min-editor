@@ -19,7 +19,7 @@ import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.core.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
-import com.mammb.code.editor2.model.text.Slice;
+import com.mammb.code.editor2.model.slice.Slice;
 import com.mammb.code.editor2.model.buffer.Content;
 import java.util.List;
 import static java.util.function.Predicate.not;

@@ -13,25 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.buffer.impl;
-
-import com.mammb.code.editor2.model.buffer.Content;
-import com.mammb.code.editor2.model.slice.RowSupplier;
+package com.mammb.code.editor2.model.layout;
 
 /**
- * ContentAdapter.
+ * Style.
  * @author Naotsugu Kobayashi
  */
-public record RawAdapter(Content content) implements RowSupplier {
-
-    @Override
-    public String at(int cpOffset) {
-        return new String(content.bytes(cpOffset, Until.lfInclusive()), content.charset());
-    }
-
-    @Override
-    public String before(int cpOffset) {
-        return new String(content.bytesBefore(cpOffset, Until.lf()), content.charset());
-    }
-
+public interface Style {
 }

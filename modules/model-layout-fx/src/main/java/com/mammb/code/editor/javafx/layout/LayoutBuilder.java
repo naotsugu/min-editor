@@ -15,13 +15,12 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor.model.layout.HitPosition;
-import com.mammb.code.editor.model.layout.Layout;
-import com.mammb.code.editor.model.layout.Span;
-import com.mammb.code.editor.model.layout.Style;
-import com.mammb.code.editor.model.layout.Alignment;
-import com.mammb.code.editor.model.layout.TextLine;
-import com.mammb.code.editor.model.layout.TextRun;
+import com.mammb.code.editor2.model.layout.Alignment;
+import com.mammb.code.editor2.model.layout.HitPosition;
+import com.mammb.code.editor2.model.layout.Layout;
+import com.mammb.code.editor2.model.layout.Span;
+import com.mammb.code.editor2.model.layout.TextLine;
+import com.mammb.code.editor2.model.layout.TextRun;
 import com.sun.javafx.geom.Point2D;
 import com.sun.javafx.geom.RectBounds;
 import com.sun.javafx.scene.text.GlyphList;
@@ -37,7 +36,7 @@ import java.util.TreeMap;
  * LayoutBuilder.
  * @author Naotsugu Kobayashi
  */
-public class LayoutBuilder implements com.mammb.code.editor.model.layout.LayoutBuilder {
+public class LayoutBuilder implements com.mammb.code.editor2.model.layout.LayoutBuilder {
 
     /** The delegated text layout. */
     private final TextLayout textLayout;
@@ -60,16 +59,20 @@ public class LayoutBuilder implements com.mammb.code.editor.model.layout.LayoutB
         textLayout.setTabSize(4);
     }
 
+
     @Override
     public void add(List<Span> spans) {
         this.spans.addAll(spans);
         spans.stream().map(Span::text).forEach(text::append);
     }
 
+
     @Override
     public List<TextLine> layout() {
+
         record TextSpan(String getText, Object getFont, RectBounds getBounds, Span peer)
             implements com.sun.javafx.scene.text.TextSpan { }
+
         TextSpan[] textSpans = new TextSpan[spans.size()];
         for (int i = 0; i < spans.size(); i++) {
             Span span = spans.get(i);
@@ -98,20 +101,20 @@ public class LayoutBuilder implements com.mammb.code.editor.model.layout.LayoutB
                 String runText = text.substring(offset, endOffset);
                 offset = endOffset;
 
-                Style style = textSpan.peer().style();
-
-                textRuns.add(TextRun.of(layout, runText, style));
+                textRuns.add(TextRun.of(layout, runText, textSpan.peer()));
             }
             textLines.add(TextLine.of(textRuns));
         }
         return textLines;
     }
 
+
     @Override
     public void clear() {
         spans.clear();
         text.setLength(0);
     }
+
 
     @Override
     public HitPosition hitInfo(float x, float y) {
@@ -120,20 +123,24 @@ public class LayoutBuilder implements com.mammb.code.editor.model.layout.LayoutB
         return new HitPositionRecord(hit.getCharIndex(), hit.getInsertionIndex(), hit.isLeading());
     }
 
+
     @Override
     public boolean setAlignment(Alignment alignment) {
         return textLayout.setAlignment(alignment.ordinal());
     }
+
 
     @Override
     public boolean setWrapWidth(float wrapWidth) {
         return textLayout.setWrapWidth(wrapWidth);
     }
 
+
     @Override
     public boolean setLineSpacing(float spacing) {
         return textLayout.setLineSpacing(spacing);
     }
+
 
     @Override
     public boolean setTabSize(int spaces) {

@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.buffer.impl;
+package com.mammb.code.editor2.model.layout;
 
-import com.mammb.code.editor2.model.buffer.Content;
-import com.mammb.code.editor2.model.slice.RowSupplier;
+import java.util.List;
 
 /**
- * ContentAdapter.
+ * TextLine.
  * @author Naotsugu Kobayashi
  */
-public record RawAdapter(Content content) implements RowSupplier {
+public interface TextLine {
 
-    @Override
-    public String at(int cpOffset) {
-        return new String(content.bytes(cpOffset, Until.lfInclusive()), content.charset());
-    }
+    /** The text runs. */
+    List<TextRun> runs();
 
-    @Override
-    public String before(int cpOffset) {
-        return new String(content.bytesBefore(cpOffset, Until.lf()), content.charset());
+
+    /**
+     * Create a new TextLine.
+     * @param runs the text runs
+     * @return a created TextLine
+     */
+    static TextLine of(List<TextRun> runs) {
+        record TextLineRecord(List<TextRun> runs) implements TextLine { }
+        return new TextLineRecord(runs);
     }
 
 }

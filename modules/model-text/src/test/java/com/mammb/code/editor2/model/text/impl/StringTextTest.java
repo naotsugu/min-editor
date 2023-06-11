@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.text.impl;
 
+import com.mammb.code.editor2.model.slice.impl.StringText;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

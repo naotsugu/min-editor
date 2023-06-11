@@ -19,5 +19,5 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.model.layout {
-    exports com.mammb.code.editor.model.layout;
+    exports com.mammb.code.editor2.model.layout;
 }

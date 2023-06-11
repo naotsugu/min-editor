@@ -13,25 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.buffer.impl;
-
-import com.mammb.code.editor2.model.buffer.Content;
-import com.mammb.code.editor2.model.slice.RowSupplier;
+package com.mammb.code.editor2.model.layout;
 
 /**
- * ContentAdapter.
+ * Span.
  * @author Naotsugu Kobayashi
  */
-public record RawAdapter(Content content) implements RowSupplier {
+public interface Span {
 
-    @Override
-    public String at(int cpOffset) {
-        return new String(content.bytes(cpOffset, Until.lfInclusive()), content.charset());
-    }
+    /**
+     * Get the text of span.
+     * @return the text of span
+     */
+    String text();
 
-    @Override
-    public String before(int cpOffset) {
-        return new String(content.bytesBefore(cpOffset, Until.lf()), content.charset());
+    /**
+     * Get the style of span.
+     * @return the style of span
+     */
+    Style style();
+
+    /**
+     * Create a new Span.
+     * @param text the text of span
+     * @param style the style of span
+     * @return a created Span
+     */
+    static Span of(String text, Style style) {
+        record SpanRecord(String text, Style style) implements Span { }
+        return new SpanRecord(text, style);
     }
 
 }

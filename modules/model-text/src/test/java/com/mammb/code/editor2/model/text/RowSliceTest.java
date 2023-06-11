@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor2.model.text;
 
+import com.mammb.code.editor2.model.slice.RowSupplier;
+import com.mammb.code.editor2.model.slice.Slice;
 import org.junit.jupiter.api.Test;
 
 /**

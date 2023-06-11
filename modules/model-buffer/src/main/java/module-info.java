@@ -19,10 +19,10 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.model.buffer {
-    requires transitive code.editor.model.core;
-    requires transitive code.editor.model.style;
-    requires transitive code.editor.model.edit;
+    requires code.editor.model.core;
+    requires code.editor.model.edit;
     requires code.editor.model.text;
+    requires code.editor.model.layout;
     requires com.mammb.code.piecetable;
 
     exports com.mammb.code.editor2.model.buffer;
