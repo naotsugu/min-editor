@@ -20,5 +20,5 @@
  */
 module code.editor.javafx.layout {
     requires code.editor.javafx;
-    requires code.editor.model.layout;
+    requires code.editor.model.text;
 }

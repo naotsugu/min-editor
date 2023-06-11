@@ -18,7 +18,7 @@ package com.mammb.code.editor2.model.buffer;
 import com.mammb.code.editor2.model.buffer.impl.PtContent;
 import com.mammb.code.editor2.model.buffer.impl.EditBuffer;
 import com.mammb.code.editor2.model.buffer.impl.StyledBuffer;
-import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.text.PointText;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import java.nio.file.Path;

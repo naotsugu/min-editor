@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.Content;
-import com.mammb.code.editor2.model.core.LineEnding;
+import com.mammb.code.editor2.model.text.LineEnding;
 import com.mammb.code.piecetable.PieceTable;
 import java.nio.file.Path;
 import java.util.function.Predicate;

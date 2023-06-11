@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.text.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
 import com.mammb.code.editor2.model.slice.Slice;

@@ -19,7 +19,6 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.model.edit {
-    requires code.editor.model.core;
     requires code.editor.model.text;
 
     exports com.mammb.code.editor2.model.edit;

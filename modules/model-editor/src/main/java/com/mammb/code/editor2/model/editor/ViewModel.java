@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor2.model.editor;
 
-import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 
 import java.util.List;
 

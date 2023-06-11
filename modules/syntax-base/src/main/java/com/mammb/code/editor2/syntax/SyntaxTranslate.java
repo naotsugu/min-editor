@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor2.syntax;
 
-import com.mammb.code.editor2.model.core.Translate;
-import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.text.Translate;
+import com.mammb.code.editor2.model.text.PointText;
 
 /**
  * SyntaxTranslate.

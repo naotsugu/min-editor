@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core.impl;
+package com.mammb.code.editor2.model.text.impl;
 
-import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 
 /**
  * The implementation of {@link OffsetPoint}.

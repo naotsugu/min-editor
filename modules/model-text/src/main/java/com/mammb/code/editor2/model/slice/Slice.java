@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor2.model.slice;
 
-import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.core.TextList;
-import com.mammb.code.editor2.model.core.Textual;
+import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.TextList;
+import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.slice.impl.RowSlice;
 
 import java.util.List;

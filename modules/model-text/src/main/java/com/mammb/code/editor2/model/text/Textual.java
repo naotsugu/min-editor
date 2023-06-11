@@ -13,31 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core;
+package com.mammb.code.editor2.model.text;
 
 /**
- * Translate.
+ * Textual.
  * @author Naotsugu Kobayashi
  */
-public interface Translate<I, O> {
+public interface Textual {
 
     /**
-     * Apply to translate.
-     * @param input the input element
-     * @return the output element
+     * Get the text string.
+     * @return the text string.
      */
-    O applyTo(I input);
-
-
-    /**
-     * This Translate is combined with the other Translate specified in the argument.
-     * @param that the other Translate
-     * @return the combined Translate
-     * @param <X> the translated type
-     */
-    default <X> Translate<I, X> compound(Translate<O, X> that) {
-        return in -> that.applyTo(applyTo(in));
-    }
-
+    String text();
 
 }

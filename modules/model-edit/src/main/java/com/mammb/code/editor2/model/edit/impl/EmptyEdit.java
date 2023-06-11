@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
-import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.text.PointText;
 import com.mammb.code.editor2.model.edit.Edit;
 
 /**

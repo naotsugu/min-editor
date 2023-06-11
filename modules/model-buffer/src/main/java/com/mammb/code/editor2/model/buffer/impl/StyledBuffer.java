@@ -16,8 +16,8 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.core.Translate;
+import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Translate;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.style.StyledText;
 

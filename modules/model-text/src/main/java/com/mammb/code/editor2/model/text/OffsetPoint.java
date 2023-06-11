@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core;
+package com.mammb.code.editor2.model.text;
 
-import com.mammb.code.editor2.model.core.impl.OffsetPointRecord;
+import com.mammb.code.editor2.model.text.impl.OffsetPointRecord;
 
 /**
  * Represents a position in the content.

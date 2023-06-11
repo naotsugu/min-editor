@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import com.mammb.code.editor2.model.core.PointText;
-import com.mammb.code.editor2.model.core.OffsetPoint;
+import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.slice.RowSupplier;
 import com.mammb.code.editor2.model.slice.Slice;
 

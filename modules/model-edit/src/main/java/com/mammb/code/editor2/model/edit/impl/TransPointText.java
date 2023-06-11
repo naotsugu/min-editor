@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
-import com.mammb.code.editor2.model.core.OffsetPoint;
-import com.mammb.code.editor2.model.core.PointText;
+import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.model.text.PointText;
 
 /**
  * CoveredPointText.

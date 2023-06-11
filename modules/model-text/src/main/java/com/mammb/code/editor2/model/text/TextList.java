@@ -13,18 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core.impl;
+package com.mammb.code.editor2.model.text;
 
-import com.mammb.code.editor2.model.core.OffsetPoint;
-import com.mammb.code.editor2.model.core.PointText;
+import java.util.List;
 
 /**
- * PointTextRecord.
- * @param point the offset point.
- * @param text the text string.
+ * The list of textual.
  * @author Naotsugu Kobayashi
  */
-public record PointTextRecord(
-        OffsetPoint point,
-        String text) implements PointText {
+public interface TextList<T extends Textual> {
+
+    /**
+     * Get the text lines.
+     * @return the text lines
+     */
+    List<T> texts();
+
 }

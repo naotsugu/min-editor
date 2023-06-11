@@ -19,7 +19,6 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.model.editor {
-    requires code.editor.model.core;
     requires code.editor.model.text;
     requires code.editor.model.buffer;
     requires code.editor.model.edit;

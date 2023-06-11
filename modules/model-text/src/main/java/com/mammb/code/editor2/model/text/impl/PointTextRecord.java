@@ -13,28 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.core;
+package com.mammb.code.editor2.model.text.impl;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
+import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.model.text.PointText;
 
 /**
- * Test of {@link OffsetPoint}.
+ * PointTextRecord.
+ * @param point the offset point.
+ * @param text the text string.
  * @author Naotsugu Kobayashi
  */
-class OffsetPointTest {
-
-    @Test void testOffsetPoint() {
-
-        var p = OffsetPoint.zero.plus("a😀b\n");
-        assertEquals(1, p.row());
-        assertEquals(5, p.offset());
-        assertEquals(4, p.cpOffset());
-
-        p = p.minus("a😀b\n");
-        assertEquals(OffsetPoint.zero, p);
-
-    }
-
+public record PointTextRecord(
+        OffsetPoint point,
+        String text) implements PointText {
 }
