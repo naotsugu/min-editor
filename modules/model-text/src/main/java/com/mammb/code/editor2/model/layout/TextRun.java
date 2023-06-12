@@ -37,7 +37,7 @@ public interface TextRun {
      * Get the style.
      * @return the style
      */
-    default Style style() {
+    default LayoutStyle style() {
         return source().style();
     }
 

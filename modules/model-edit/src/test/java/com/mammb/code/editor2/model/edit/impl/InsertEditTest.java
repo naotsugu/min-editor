@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ class InsertEditTest {
         // 0: | 0 | 1 |
         // 1: |@2 | 3 | 4 |
         // 2: | 5 | 6 |
-        List<PointText> lines = pointTexts("""
+        List<Textual> lines = pointTexts("""
             0
             23
             56""");
@@ -52,7 +52,7 @@ class InsertEditTest {
         // 0: | 0 | 1 |
         // 1: | 2 |@3 | 4 |
         // 2: | 5 | 6 |
-        List<PointText> lines = pointTexts("""
+        List<Textual> lines = pointTexts("""
             0
             23
             56""");
@@ -69,7 +69,7 @@ class InsertEditTest {
         // 0: | 0 | 1 |
         // 1: | 2 | 3 |@4 |
         // 2: | 5 | 6 |
-        List<PointText> lines = pointTexts("""
+        List<Textual> lines = pointTexts("""
             0
             23
             56""");
@@ -81,20 +81,20 @@ class InsertEditTest {
         assertEquals(pointText(2, 7, 7, "56"), edit.applyTo(lines.get(2)));
     }
 
-    private static List<PointText> pointTexts(String string) {
+    private static List<Textual> pointTexts(String string) {
         String[] lines = string.split("(?<=\n)");
-        List<PointText> ret = new ArrayList<>();
+        List<Textual> ret = new ArrayList<>();
         for (int i = 0, offset = 0, cpOffset = 0; i < lines.length; i++) {
             String line = lines[i];
-            ret.add(PointText.of(OffsetPoint.of(i, offset, cpOffset), line));
+            ret.add(Textual.of(OffsetPoint.of(i, offset, cpOffset), line));
             offset += line.length();
             cpOffset += Character.codePointCount(line, 0, line.length());
         }
         return ret;
     }
 
-    private static PointText pointText(int row, int offset, int cpOffset, String text) {
-        return PointText.of(OffsetPoint.of(row, offset, cpOffset), text);
+    private static Textual pointText(int row, int offset, int cpOffset, String text) {
+        return Textual.of(OffsetPoint.of(row, offset, cpOffset), text);
     }
 
 }

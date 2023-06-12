@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.model.style;
 
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.TreeSet;
  * StyledText.
  * @author Naotsugu Kobayashi
  */
-public interface StyledText extends PointText, Styled {
+public interface StyledText extends Textual, Styled {
 
     @Override
     String text();

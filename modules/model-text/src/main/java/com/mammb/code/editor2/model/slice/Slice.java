@@ -15,10 +15,9 @@
  */
 package com.mammb.code.editor2.model.slice;
 
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.slice.impl.RowSlice;
 import com.mammb.code.editor2.model.text.TextList;
 import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor2.model.slice.impl.RowSlice;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public interface Slice<T extends Textual> extends TextList<T> {
      * @param rowSupplier the row supplier
      * @return the created RowSlice
      */
-    static Slice<PointText> of(int maxRowSize, RowSupplier rowSupplier) {
+    static Slice<Textual> of(int maxRowSize, RowSupplier rowSupplier) {
         return new RowSlice(maxRowSize, rowSupplier);
     }
 

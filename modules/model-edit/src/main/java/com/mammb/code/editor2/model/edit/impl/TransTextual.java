@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.text.impl;
+package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 
 /**
- * PointTextRecord.
- * @param point the offset point.
- * @param text the text string.
+ * CoveredPointText.
  * @author Naotsugu Kobayashi
  */
-public record PointTextRecord(
-        OffsetPoint point,
-        String text) implements PointText {
+public record TransTextual(Textual pear, OffsetPoint delta) implements Textual {
+
+    @Override
+    public OffsetPoint point() {
+        return pear.point().plus(delta);
+    }
+
+    @Override
+    public String text() {
+        return pear.text();
+    }
 }

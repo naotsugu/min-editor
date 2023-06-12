@@ -13,35 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.layout;
+package com.mammb.code.editor2.model.text;
 
 /**
- * Span.
+ * Text.
  * @author Naotsugu Kobayashi
  */
-public interface Span {
+public interface Text {
 
     /**
-     * Get the text of span.
-     * @return the text of span
+     * Get the text string.
+     * @return the text string.
      */
     String text();
-
-    /**
-     * Get the style of span.
-     * @return the style of span
-     */
-    LayoutStyle style();
-
-    /**
-     * Create a new Span.
-     * @param text the text of span
-     * @param layoutStyle the style of span
-     * @return a created Span
-     */
-    static Span of(String text, LayoutStyle layoutStyle) {
-        record SpanRecord(String text, LayoutStyle style) implements Span { }
-        return new SpanRecord(text, layoutStyle);
-    }
 
 }

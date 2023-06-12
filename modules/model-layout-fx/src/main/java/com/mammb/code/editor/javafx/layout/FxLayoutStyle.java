@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.Style;
+import com.mammb.code.editor2.model.layout.LayoutStyle;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -23,7 +23,7 @@ import javafx.scene.text.Font;
  * Style.
  * @author Naotsugu Kobayashi
  */
-public interface FxStyle extends Style {
+public interface FxLayoutStyle extends LayoutStyle {
 
     /**
      * Get the font.
@@ -36,9 +36,9 @@ public interface FxStyle extends Style {
      * @param font the font
      * @return a created Style
      */
-    static FxStyle of(Font font) {
-        record StyleRecord(Font font) implements FxStyle { }
-        return new StyleRecord(font);
+    static FxLayoutStyle of(Font font) {
+        record LayoutStyleRecord(Font font) implements FxLayoutStyle { }
+        return new LayoutStyleRecord(font);
     }
 
     /**
@@ -47,9 +47,9 @@ public interface FxStyle extends Style {
      * @param color the color
      * @return a created Style
      */
-    static FxStyle of(Font font, Color color) {
-        record StyleRecord(Font font, Color color) implements FxStyle { }
-        return new StyleRecord(font, color);
+    static FxLayoutStyle of(Font font, Color color) {
+        record LayoutStyleRecord(Font font, Color color) implements FxLayoutStyle { }
+        return new LayoutStyleRecord(font, color);
     }
 
     /**
@@ -59,9 +59,9 @@ public interface FxStyle extends Style {
      * @param bgColor the background color
      * @return a created Style
      */
-    static FxStyle of(Font font, Color color, Color bgColor) {
-        record StyleRecord(Font font, Color color, Color bgColor) implements FxStyle { }
-        return new StyleRecord(font, color, bgColor);
+    static FxLayoutStyle of(Font font, Color color, Color bgColor) {
+        record LayoutStyleRecord(Font font, Color color, Color bgColor) implements FxLayoutStyle { }
+        return new LayoutStyleRecord(font, color, bgColor);
     }
 
 }

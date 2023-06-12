@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor2.model.style;
 
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
 import com.mammb.code.editor2.model.style.impl.StyledTextRecord;
 
@@ -23,7 +23,7 @@ import com.mammb.code.editor2.model.style.impl.StyledTextRecord;
  * The styling translate.
  * @author Naotsugu Kobayashi
  */
-public interface StylingTranslate extends Translate<PointText, StyledText> {
+public interface StylingTranslate extends Translate<Textual, StyledText> {
 
     /**
      * Create the pass through translate.

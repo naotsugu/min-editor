@@ -15,23 +15,24 @@
  */
 package com.mammb.code.editor2.model.slice.impl;
 
+import com.mammb.code.editor2.model.slice.RowSupplier;
+import com.mammb.code.editor2.model.slice.Slice;
+import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.model.text.Textual;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import com.mammb.code.editor2.model.text.PointText;
-import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.slice.RowSupplier;
-import com.mammb.code.editor2.model.slice.Slice;
 
 /**
  * RowSlice.
  * @author Naotsugu Kobayashi
  */
-public class RowSlice implements Slice<PointText> {
+public class RowSlice implements Slice<Textual> {
 
     /** The row list. */
-    private final List<PointText> texts = new LinkedList<>();
+    private final List<Textual> texts = new LinkedList<>();
 
     /** The row source. */
     private RowSupplier rowSupplier;
@@ -53,7 +54,7 @@ public class RowSlice implements Slice<PointText> {
 
 
     @Override
-    public List<PointText> texts() {
+    public List<Textual> texts() {
         return texts;
     }
 
@@ -84,41 +85,41 @@ public class RowSlice implements Slice<PointText> {
     private void fill() {
         pushEmptyIf();
         while (texts.size() <= maxRowSize) {
-            PointText tail = texts.get(texts.size() - 1);
+            Textual tail = texts.get(texts.size() - 1);
             OffsetPoint next = tail.point().plus(tail.text());
 
             String str = rowSupplier.at(next.cpOffset());
             if (str == null) break;
-            texts.add(PointText.of(next, str));
+            texts.add(Textual.of(next, str));
         }
     }
 
 
     public void prev(int n) {
         for (int i = 0; i < n; i++) {
-            PointText head = texts.get(0);
+            Textual head = texts.get(0);
             int cpOffset = head.point().cpOffset();
             if (cpOffset == 0) break;
 
             String str = rowSupplier.before(cpOffset);
-            pushFirst(PointText.of(head.point().minus(str), str));
+            pushFirst(Textual.of(head.point().minus(str), str));
         }
     }
 
 
     public void next(int n) {
         for (int i = 0; i < n; i++) {
-            PointText tail = texts.get(texts.size() - 1);
+            Textual tail = texts.get(texts.size() - 1);
             OffsetPoint next = tail.point().plus(tail.text());
 
             String str = rowSupplier.at(next.cpOffset());
             if (str == null) break;
-            pushLast(PointText.of(next, str));
+            pushLast(Textual.of(next, str));
         }
     }
 
 
-    private void pushFirst(PointText... rows) {
+    private void pushFirst(Textual... rows) {
         texts.addAll(0, Arrays.asList(rows));
         while (texts.size() > maxRowSize) {
             texts.remove(texts.size() - 1);
@@ -126,7 +127,7 @@ public class RowSlice implements Slice<PointText> {
     }
 
 
-    private void pushLast(PointText... rows) {
+    private void pushLast(Textual... rows) {
         texts.addAll(Arrays.asList(rows));
         while (texts.size() > maxRowSize) {
             texts.remove(0);
@@ -135,7 +136,7 @@ public class RowSlice implements Slice<PointText> {
 
 
     private void pushEmptyIf() {
-        if (texts.isEmpty()) texts.add(PointText.of(OffsetPoint.zero, ""));
+        if (texts.isEmpty()) texts.add(Textual.of(OffsetPoint.zero, ""));
     }
 
 }

@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.style.StyledText;
@@ -31,18 +31,18 @@ import java.util.List;
 public class StyledBuffer implements TextBuffer<StyledText> {
 
     /** The pear slice. */
-    private final TextBuffer<PointText> buffer;
+    private final TextBuffer<Textual> buffer;
 
     /** The styling translate. */
-    private final Translate<PointText, StyledText> translator;
+    private final Translate<Textual, StyledText> translator;
 
     /** The text rows. */
     private List<StyledText> texts = new ArrayList<>();
 
 
     public StyledBuffer(
-            TextBuffer<PointText> buffer,
-            Translate<PointText, StyledText> stylingTranslator) {
+            TextBuffer<Textual> buffer,
+            Translate<Textual, StyledText> stylingTranslator) {
         this.buffer = buffer;
         this.translator = stylingTranslator;
     }

@@ -16,16 +16,16 @@
 package com.mammb.code.editor2.syntax;
 
 import com.mammb.code.editor2.model.text.Translate;
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 
 /**
  * SyntaxTranslate.
  * @author Naotsugu Kobayashi
  */
-public class SyntaxTranslate implements Translate<PointText, PointText> {
+public class SyntaxTranslate implements Translate<Textual, Textual> {
 
     @Override
-    public PointText applyTo(PointText texts) {
+    public Textual applyTo(Textual texts) {
         return texts;
     }
 

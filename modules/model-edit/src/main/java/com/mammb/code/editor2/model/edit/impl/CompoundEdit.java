@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +37,11 @@ public record CompoundEdit(
     }
 
     @Override
-    public PointText applyTo(PointText pointText) {
+    public Textual applyTo(Textual textual) {
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }
-        return edits.get(0).applyTo(pointText);
+        return edits.get(0).applyTo(textual);
     }
 
 

@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
 import com.mammb.code.editor2.model.slice.Slice;
@@ -28,10 +28,10 @@ import static java.util.function.Predicate.not;
  * EditBuffer.
  * @author Naotsugu Kobayashi
  */
-public class EditBuffer implements TextBuffer<PointText> {
+public class EditBuffer implements TextBuffer<Textual> {
 
     /** The pear slice. */
-    private final Slice<PointText> slice;
+    private final Slice<Textual> slice;
 
     /** The content. */
     private final Content content;
@@ -52,7 +52,7 @@ public class EditBuffer implements TextBuffer<PointText> {
 
 
     @Override
-    public List<PointText> texts() {
+    public List<Textual> texts() {
 
         if (editQueue.isEmpty()) {
             return slice.texts();

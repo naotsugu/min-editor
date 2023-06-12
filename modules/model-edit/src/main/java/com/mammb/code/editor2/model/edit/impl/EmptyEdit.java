@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 
 /**
@@ -35,8 +35,8 @@ public record EmptyEdit() implements Edit {
     }
 
     @Override
-    public PointText applyTo(PointText pointText) {
-        return pointText;
+    public Textual applyTo(Textual textual) {
+        return textual;
     }
 
     @Override

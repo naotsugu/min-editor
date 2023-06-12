@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.text.PointText;
+import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 
 /**
@@ -40,27 +40,27 @@ public record ReplaceEdit(
 
 
     @Override
-    public PointText applyTo(PointText pointText) {
+    public Textual applyTo(Textual textual) {
         if (!isSingleEdit()) {
             throw new UnsupportedOperationException();
         }
-        return switch (pointText.compareOffsetRangeTo(point.offset())) {
+        return switch (textual.compareOffsetRangeTo(point.offset())) {
             case -1 -> {
                 OffsetPoint delta = OffsetPoint.of(
                     0,
                     afterTText.length() - beforeText.length(),
                     Character.codePointCount(afterTText, 0, afterTText.length())
                         - Character.codePointCount(beforeText, 0, beforeText.length()));
-                yield PointText.of(pointText.point().plus(delta), pointText.text());
+                yield Textual.of(textual.point().plus(delta), textual.text());
             }
             case  0 -> {
-                StringBuilder sb = new StringBuilder(pointText.text());
-                int start = point.offset() - pointText.point().offset();
+                StringBuilder sb = new StringBuilder(textual.text());
+                int start = point.offset() - textual.point().offset();
                 int end = start + beforeText.length();
                 sb.replace(start, end, afterTText);
-                yield PointText.of(pointText.point(), sb.toString());
+                yield Textual.of(textual.point(), sb.toString());
             }
-            default -> pointText;
+            default -> textual;
         };
     }
 

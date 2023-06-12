@@ -16,8 +16,8 @@
 package com.mammb.code.editor2.model.layout;
 
 /**
- * Style.
+ * LayoutStyle.
  * @author Naotsugu Kobayashi
  */
-public interface Style {
+public interface LayoutStyle {
 }
