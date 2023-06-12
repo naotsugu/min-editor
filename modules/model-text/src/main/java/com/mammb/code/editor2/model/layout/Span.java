@@ -15,33 +15,36 @@
  */
 package com.mammb.code.editor2.model.layout;
 
+import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.model.text.Textual;
+
 /**
  * Span.
  * @author Naotsugu Kobayashi
  */
-public interface Span {
+public interface Span extends Textual {
 
-    /**
-     * Get the text of span.
-     * @return the text of span
-     */
+    @Override
     String text();
+
+    @Override
+    OffsetPoint point();
 
     /**
      * Get the style of span.
      * @return the style of span
      */
-    LayoutStyle style();
+    SpanStyle style();
 
     /**
      * Create a new Span.
-     * @param text the text of span
-     * @param layoutStyle the style of span
+     * @param textual the text of span
+     * @param spanStyle the style of span
      * @return a created Span
      */
-    static Span of(String text, LayoutStyle layoutStyle) {
-        record SpanRecord(String text, LayoutStyle style) implements Span { }
-        return new SpanRecord(text, layoutStyle);
+    static Span of(Textual textual, SpanStyle spanStyle) {
+        record SpanRecord(String text, OffsetPoint point, SpanStyle style) implements Span { }
+        return new SpanRecord(textual.text(), textual.point(), spanStyle);
     }
 
 }

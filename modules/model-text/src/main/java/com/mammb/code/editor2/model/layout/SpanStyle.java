@@ -16,8 +16,8 @@
 package com.mammb.code.editor2.model.layout;
 
 /**
- * LayoutStyle.
+ * SpanStyle.
  * @author Naotsugu Kobayashi
  */
-public interface LayoutStyle {
+public interface SpanStyle {
 }

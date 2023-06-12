@@ -21,6 +21,7 @@ import com.mammb.code.editor2.model.layout.Layout;
 import com.mammb.code.editor2.model.layout.Span;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.sun.javafx.geom.Point2D;
 import com.sun.javafx.geom.RectBounds;
 import com.sun.javafx.scene.text.GlyphList;
@@ -76,9 +77,11 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
         TextSpan[] textSpans = new TextSpan[spans.size()];
         for (int i = 0; i < spans.size(); i++) {
             Span span = spans.get(i);
-            FxLayoutStyle fxStyle = (FxLayoutStyle) span.style();
+            FxSpanStyle fxStyle = (FxSpanStyle) span.style();
             textSpans[i] = new TextSpan(span.text(), fxStyle.font(), null, span);
         }
+
+        OffsetPoint point = textSpans.length > 0 ? spans.get(0).point() : OffsetPoint.zero;
 
         textLayout.setContent(textSpans);
 
@@ -86,6 +89,7 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
         int offset = 0;
         for (com.sun.javafx.scene.text.TextLine textLine : textLayout.getLines()) {
             List<TextRun> textRuns = new ArrayList<>();
+
             for (GlyphList glyphList : textLine.getRuns()) {
 
                 Point2D location = glyphList.getLocation();
@@ -103,7 +107,9 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
 
                 textRuns.add(TextRun.of(layout, runText, textSpan.peer()));
             }
-            textLines.add(TextLine.of(textRuns));
+            TextLine line = TextLine.of(point, textRuns);
+            point = point.plus(line.text());
+            textLines.add(line);
         }
         return textLines;
     }

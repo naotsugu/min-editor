@@ -15,32 +15,63 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
-import com.mammb.code.editor2.model.layout.LayoutBuilder;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
+import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.layout.LayoutBuilder;
+import com.mammb.code.editor2.model.layout.Span;
+import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.style.StyledText;
+import com.mammb.code.editor2.model.text.Translate;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class ShapedBuffer {
+public class ShapedBuffer implements TextBuffer<TextLine> {
 
     /** The pear slice. */
     private final TextBuffer<StyledText> buffer;
 
+    /** The styling translate. */
+    private final Translate<StyledText, Span> translator;
+
     private final LayoutBuilder layoutBuilder;
 
+    private List<TextLine> lines;
 
-    public ShapedBuffer(TextBuffer<StyledText> buffer, LayoutBuilder layoutBuilder) {
+
+    public ShapedBuffer(
+            TextBuffer<StyledText> buffer,
+            LayoutBuilder layoutBuilder,
+            Translate<StyledText, Span> translator) {
         this.buffer = buffer;
         this.layoutBuilder = layoutBuilder;
-    }
-
-    public void foo() {
-        List<StyledText> texts = new ArrayList<>();
-
-//        layoutBuilder.add();
+        this.translator = translator;
     }
 
 
+    @Override
+    public List<TextLine> texts() {
+        if (lines == null) {
+            pullLines();
+        }
+        return lines;
+    }
+
+
+    @Override
+    public void push(Edit edit) {
+        buffer.push(edit);
+    }
+
+
+    private void pullLines() {
+        List<Span> spans = buffer.texts().stream()
+            .map(StyledText::spans)
+            .flatMap(Collection::stream)
+            .map(translator::applyTo)
+            .toList();
+        layoutBuilder.add(spans);
+        lines = layoutBuilder.layout();
+    }
 
 }

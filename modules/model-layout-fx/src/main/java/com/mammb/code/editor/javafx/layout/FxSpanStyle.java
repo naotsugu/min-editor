@@ -15,15 +15,15 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.LayoutStyle;
+import com.mammb.code.editor2.model.layout.SpanStyle;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
- * Style.
+ * FxSpanStyle.
  * @author Naotsugu Kobayashi
  */
-public interface FxLayoutStyle extends LayoutStyle {
+public interface FxSpanStyle extends SpanStyle {
 
     /**
      * Get the font.
@@ -36,9 +36,9 @@ public interface FxLayoutStyle extends LayoutStyle {
      * @param font the font
      * @return a created Style
      */
-    static FxLayoutStyle of(Font font) {
-        record LayoutStyleRecord(Font font) implements FxLayoutStyle { }
-        return new LayoutStyleRecord(font);
+    static FxSpanStyle of(Font font) {
+        record SpanStyleRecord(Font font) implements FxSpanStyle { }
+        return new SpanStyleRecord(font);
     }
 
     /**
@@ -47,9 +47,9 @@ public interface FxLayoutStyle extends LayoutStyle {
      * @param color the color
      * @return a created Style
      */
-    static FxLayoutStyle of(Font font, Color color) {
-        record LayoutStyleRecord(Font font, Color color) implements FxLayoutStyle { }
-        return new LayoutStyleRecord(font, color);
+    static FxSpanStyle of(Font font, Color color) {
+        record SpanStyleRecord(Font font, Color color) implements FxSpanStyle { }
+        return new SpanStyleRecord(font, color);
     }
 
     /**
@@ -59,9 +59,9 @@ public interface FxLayoutStyle extends LayoutStyle {
      * @param bgColor the background color
      * @return a created Style
      */
-    static FxLayoutStyle of(Font font, Color color, Color bgColor) {
-        record LayoutStyleRecord(Font font, Color color, Color bgColor) implements FxLayoutStyle { }
-        return new LayoutStyleRecord(font, color, bgColor);
+    static FxSpanStyle of(Font font, Color color, Color bgColor) {
+        record SpanStyleRecord(Font font, Color color, Color bgColor) implements FxSpanStyle { }
+        return new SpanStyleRecord(font, color, bgColor);
     }
 
 }

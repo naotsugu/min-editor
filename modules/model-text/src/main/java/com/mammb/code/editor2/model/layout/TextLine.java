@@ -15,13 +15,25 @@
  */
 package com.mammb.code.editor2.model.layout;
 
+import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.model.text.Textual;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * TextLine.
  * @author Naotsugu Kobayashi
  */
-public interface TextLine {
+public interface TextLine extends Textual {
+
+    @Override
+    default String text() {
+        return runs().stream().map(TextRun::text).collect(Collectors.joining());
+    }
+
+    @Override
+    OffsetPoint point();
 
     /** The text runs. */
     List<TextRun> runs();
@@ -29,12 +41,13 @@ public interface TextLine {
 
     /**
      * Create a new TextLine.
+     * @param point the OffsetPoint
      * @param runs the text runs
      * @return a created TextLine
      */
-    static TextLine of(List<TextRun> runs) {
-        record TextLineRecord(List<TextRun> runs) implements TextLine { }
-        return new TextLineRecord(runs);
+    static TextLine of(OffsetPoint point, List<TextRun> runs) {
+        record TextLineRecord(OffsetPoint point, List<TextRun> runs) implements TextLine { }
+        return new TextLineRecord(point, runs);
     }
 
 }
