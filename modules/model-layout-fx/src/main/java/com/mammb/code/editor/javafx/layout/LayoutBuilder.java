@@ -50,9 +50,6 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
     /** The spans. */
     private final List<Span> spans = new ArrayList<>();
 
-    /** The text of spans. */
-    private final StringBuilder text = new StringBuilder();
-
 
     /**
      * Create a new Layout.
@@ -66,7 +63,6 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
     @Override
     public void add(List<Span> spans) {
         this.spans.addAll(spans);
-        spans.stream().map(Span::text).forEach(text::append);
     }
 
 
@@ -89,6 +85,7 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
         textLayout.setContent(textSpans);
 
         List<TextLine> textLines = new ArrayList<>();
+        TextSpan currentSpan = null;
         int offset = 0;
         for (com.sun.javafx.scene.text.TextLine textLine : textLayout.getLines()) {
             List<TextRun> textRuns = new ArrayList<>();
@@ -98,15 +95,20 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
                 Point2D location = glyphList.getLocation();
                 RectBounds rectBounds = glyphList.getLineBounds();
                 TextSpan textSpan = (TextSpan) glyphList.getTextSpan();
-                int endOffset = glyphList.getCharOffset(glyphList.getGlyphCount());
 
                 double baselineOffset = -rectBounds.getMinY();
                 Layout layout = Layout.of(
                     location.x, baselineOffset + location.y,
                     rectBounds.getWidth(), rectBounds.getHeight());
 
-                String runText = text.substring(offset, offset + endOffset);
-                offset += endOffset;
+                if (currentSpan != textSpan) {
+                    currentSpan = textSpan;
+                    offset = 0;
+                }
+
+                int start = offset;
+                offset += glyphList.getCharOffset(glyphList.getGlyphCount());
+                String runText = textSpan.getText().substring(start, offset);
 
                 textRuns.add(TextRun.of(layout, runText, textSpan.peer()));
             }
@@ -121,13 +123,12 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
     @Override
     public void clear() {
         spans.clear();
-        text.setLength(0);
     }
 
 
     @Override
-    public HitPosition hitInfo(float x, float y) {
-        TextLayout.Hit hit = textLayout.getHitInfo(x, y);
+    public HitPosition hitInfo(double x, double y) {
+        TextLayout.Hit hit = textLayout.getHitInfo((float) x, (float) y);
         record HitPositionRecord(int charIndex, int insertionIndex, boolean leading) implements HitPosition { }
         return new HitPositionRecord(hit.getCharIndex(), hit.getInsertionIndex(), hit.isLeading());
     }
@@ -140,14 +141,14 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
 
 
     @Override
-    public boolean setWrapWidth(float wrapWidth) {
-        return textLayout.setWrapWidth(wrapWidth);
+    public boolean setWrapWidth(double wrapWidth) {
+        return textLayout.setWrapWidth((float) wrapWidth);
     }
 
 
     @Override
-    public boolean setLineSpacing(float spacing) {
-        return textLayout.setLineSpacing(spacing);
+    public boolean setLineSpacing(double spacing) {
+        return textLayout.setLineSpacing((float) spacing);
     }
 
 

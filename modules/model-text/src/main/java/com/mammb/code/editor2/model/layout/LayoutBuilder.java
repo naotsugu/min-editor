@@ -46,7 +46,7 @@ public interface LayoutBuilder {
      * @param y the specified point y to be tested
      * @return the hit position
      */
-    HitPosition hitInfo(float x, float y);
+    HitPosition hitInfo(double x, double y);
 
     /**
      * Sets the alignment for the TextLayout.
@@ -58,13 +58,13 @@ public interface LayoutBuilder {
      * Sets the wrap width for the TextLayout.
      * @return returns true is the call modifies the layout internal state.
      */
-    boolean setWrapWidth(float wrapWidth);
+    boolean setWrapWidth(double wrapWidth);
 
     /**
      * Sets the line spacing for the TextLayout.
      * @return returns true is the call modifies the layout internal state.
      */
-    boolean setLineSpacing(float spacing);
+    boolean setLineSpacing(double spacing);
 
     /**
      * Sets the tab size for the TextLayout.

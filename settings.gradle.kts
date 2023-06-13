@@ -18,6 +18,8 @@ include("syntax-base")
 include("ui-app", "ui-pane")
 
 include("javafx")
+include("javafx-peep")
+
 include("model-layout-fx")
 
 

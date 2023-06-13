@@ -32,7 +32,7 @@ import java.util.Objects;
 public class RowSlice implements Slice<Textual> {
 
     /** The row list. */
-    private final List<Textual> texts = new LinkedList<>();
+    private List<Textual> texts = new LinkedList<>();
 
     /** The row source. */
     private RowSupplier rowSupplier;
@@ -47,9 +47,9 @@ public class RowSlice implements Slice<Textual> {
      * @param rowSupplier the row source
      */
     public RowSlice(int maxRowSize, RowSupplier rowSupplier) {
-        pushEmptyIf();
         this.rowSupplier = Objects.requireNonNull(rowSupplier);
         this.maxRowSize = Math.max(maxRowSize, 1);
+        fill();
     }
 
 
