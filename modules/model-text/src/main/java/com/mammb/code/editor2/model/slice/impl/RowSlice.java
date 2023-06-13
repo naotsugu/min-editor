@@ -89,6 +89,7 @@ public class RowSlice implements Slice<Textual> {
             OffsetPoint next = tail.point().plus(tail.text());
 
             String str = rowSupplier.at(next.cpOffset());
+
             if (str == null) break;
             texts.add(Textual.of(next, str));
         }

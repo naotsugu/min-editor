@@ -65,11 +65,13 @@ public class ShapedBuffer implements TextBuffer<TextLine> {
 
 
     private void pullLines() {
+
         List<Span> spans = buffer.texts().stream()
             .map(StyledText::spans)
             .flatMap(Collection::stream)
             .map(translator::applyTo)
             .toList();
+
         layoutBuilder.add(spans);
         lines = layoutBuilder.layout();
     }

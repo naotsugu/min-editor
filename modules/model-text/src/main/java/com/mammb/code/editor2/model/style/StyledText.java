@@ -44,6 +44,10 @@ public interface StyledText extends Textual, Styled {
 
     default List<StyledText> spans() {
 
+        if (styles().isEmpty()) {
+            return List.of(this);
+        }
+
         Set<Integer> indices = new TreeSet<>();
         for (StyleSpan style : styles()) {
             indices.add(style.point());
