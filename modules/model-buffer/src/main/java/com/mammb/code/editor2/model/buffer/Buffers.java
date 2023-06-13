@@ -15,12 +15,18 @@
  */
 package com.mammb.code.editor2.model.buffer;
 
-import com.mammb.code.editor2.model.buffer.impl.PtContent;
 import com.mammb.code.editor2.model.buffer.impl.EditBuffer;
+import com.mammb.code.editor2.model.buffer.impl.PtContent;
+import com.mammb.code.editor2.model.buffer.impl.ShapedBuffer;
 import com.mammb.code.editor2.model.buffer.impl.StyledBuffer;
-import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor2.model.layout.LayoutBuilder;
+import com.mammb.code.editor2.model.layout.Span;
+import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
+import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor2.model.text.Translate;
+
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -30,6 +36,11 @@ import java.util.Objects;
  */
 public final class Buffers {
     private Buffers() { }
+
+    public static TextBuffer<TextLine> of(int maxRowSize, Path path,
+            LayoutBuilder layoutBuilder, Translate<StyledText, Span> translator) {
+        return new ShapedBuffer(of(maxRowSize, path), layoutBuilder, translator);
+    }
 
 
     public static TextBuffer<StyledText> of(int maxRowSize) {

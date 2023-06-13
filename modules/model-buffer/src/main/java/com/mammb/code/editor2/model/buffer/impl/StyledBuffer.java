@@ -16,12 +16,11 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor2.model.text.Translate;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.style.StyledText;
+import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor2.model.text.Translate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,7 +36,7 @@ public class StyledBuffer implements TextBuffer<StyledText> {
     private final Translate<Textual, StyledText> translator;
 
     /** The text rows. */
-    private List<StyledText> texts = new ArrayList<>();
+    private List<StyledText> texts;
 
 
     public StyledBuffer(
@@ -50,6 +49,9 @@ public class StyledBuffer implements TextBuffer<StyledText> {
 
     @Override
     public List<StyledText> texts() {
+        if (texts == null) {
+            pullRows();
+        }
         return texts;
     }
 

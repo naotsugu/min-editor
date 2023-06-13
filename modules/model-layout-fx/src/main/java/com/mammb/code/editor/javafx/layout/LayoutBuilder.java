@@ -24,14 +24,16 @@ import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.sun.javafx.geom.Point2D;
 import com.sun.javafx.geom.RectBounds;
+import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
 
 /**
  * LayoutBuilder.
@@ -43,7 +45,7 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
     private final TextLayout textLayout;
 
     /** The native font map. */
-    private final TreeMap<Integer, Font> fonts = new TreeMap<>();
+    private final Map<Font, Object> fonts = new HashMap<>();
 
     /** The spans. */
     private final List<Span> spans = new ArrayList<>();
@@ -78,7 +80,8 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
         for (int i = 0; i < spans.size(); i++) {
             Span span = spans.get(i);
             FxSpanStyle fxStyle = (FxSpanStyle) span.style();
-            textSpans[i] = new TextSpan(span.text(), fxStyle.font(), null, span);
+            Object font = fonts.computeIfAbsent(fxStyle.font(), FontHelper::getNativeFont);
+            textSpans[i] = new TextSpan(span.text(), font, null, span);
         }
 
         OffsetPoint point = textSpans.length > 0 ? spans.get(0).point() : OffsetPoint.zero;
@@ -102,8 +105,8 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
                     location.x, baselineOffset + location.y,
                     rectBounds.getWidth(), rectBounds.getHeight());
 
-                String runText = text.substring(offset, endOffset);
-                offset = endOffset;
+                String runText = text.substring(offset, offset + endOffset);
+                offset += endOffset;
 
                 textRuns.add(TextRun.of(layout, runText, textSpan.peer()));
             }
