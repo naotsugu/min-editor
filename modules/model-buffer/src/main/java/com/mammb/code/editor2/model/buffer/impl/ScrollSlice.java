@@ -13,39 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.buffer;
+package com.mammb.code.editor2.model.buffer.impl;
 
-import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor2.model.text.TextList;
-import com.mammb.code.editor2.model.edit.Edit;
-
-import java.util.List;
+import com.mammb.code.editor2.model.buffer.Scroll;
+import com.mammb.code.editor2.model.slice.Slice;
 
 /**
- * The edit buffer.
+ * ScrollSlice.
  * @author Naotsugu Kobayashi
  */
-public interface TextBuffer<T extends Textual> extends TextList<T> {
+class ScrollSlice implements Scroll {
+
+    private final Slice<?> target;
+
+    ScrollSlice(Slice<?> target) {
+        this.target = target;
+    }
+
+    static Scroll of(Slice<?> target) {
+        return new ScrollSlice(target);
+    }
 
     @Override
-    List<T> texts();
+    public void prev(int n) {
+        target.prev(n);
+    }
 
-    /**
-     * Set the size of lines.
-     * @param maxSize the size of lines
-     */
-    void setLineSize(int maxSize);
-
-    /**
-     * Push the edit.
-     * @param edit the edit
-     */
-    void push(Edit edit);
-
-    /**
-     * Get the scroll.
-     * @return the scroll
-     */
-    Scroll scroll();
+    @Override
+    public void next(int n) {
+        target.next(n);
+    }
 
 }

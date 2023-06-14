@@ -60,8 +60,15 @@ public class RowSlice implements Slice<Textual> {
 
 
     @Override
-    public int capacity() {
+    public int maxRowSize() {
         return maxRowSize;
+    }
+
+
+    @Override
+    public void setMaxRowSize(int capacity) {
+        this.maxRowSize = capacity;
+        fill();
     }
 
 
@@ -96,6 +103,7 @@ public class RowSlice implements Slice<Textual> {
     }
 
 
+    @Override
     public void prev(int n) {
         for (int i = 0; i < n; i++) {
             Textual head = texts.get(0);
@@ -108,6 +116,7 @@ public class RowSlice implements Slice<Textual> {
     }
 
 
+    @Override
     public void next(int n) {
         for (int i = 0; i < n; i++) {
             Textual tail = texts.get(texts.size() - 1);

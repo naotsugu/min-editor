@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
+import com.mammb.code.editor2.model.buffer.Scroll;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.layout.LayoutBuilder;
@@ -22,23 +23,34 @@ import com.mammb.code.editor2.model.layout.Span;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.text.Translate;
-
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * ShapedBuffer.
+ * @author Naotsugu Kobayashi
+ */
 public class ShapedBuffer implements TextBuffer<TextLine> {
 
-    /** The pear slice. */
+    /** The peer slice. */
     private final TextBuffer<StyledText> buffer;
 
     /** The styling translate. */
     private final Translate<StyledText, Span> translator;
 
+    /** The layout builder. */
     private final LayoutBuilder layoutBuilder;
 
+    /** The buffer of wrapped lines. */
     private List<TextLine> lines;
 
 
+    /**
+     * Constructor.
+     * @param buffer the peer buffer
+     * @param layoutBuilder the layout builder
+     * @param translator the styling translate
+     */
     public ShapedBuffer(
             TextBuffer<StyledText> buffer,
             LayoutBuilder layoutBuilder,
@@ -57,10 +69,21 @@ public class ShapedBuffer implements TextBuffer<TextLine> {
         return lines;
     }
 
+    @Override
+    public void setLineSize(int maxSize) {
+        buffer.setLineSize(maxSize);
+    }
+
 
     @Override
     public void push(Edit edit) {
         buffer.push(edit);
+    }
+
+
+    @Override
+    public Scroll scroll() {
+        return buffer.scroll()
     }
 
 

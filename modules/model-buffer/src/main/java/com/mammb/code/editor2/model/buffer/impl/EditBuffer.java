@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
+import com.mammb.code.editor2.model.buffer.Scroll;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
@@ -36,6 +37,9 @@ public class EditBuffer implements TextBuffer<Textual> {
     /** The content. */
     private final Content content;
 
+    /** The scroll. */
+    private final Scroll scroll;
+
     /** The edit queue. */
     private final EditQueue editQueue = EditQueue.of();
 
@@ -48,6 +52,7 @@ public class EditBuffer implements TextBuffer<Textual> {
     public EditBuffer(Content content, int maxRowSize) {
         this.content = content;
         this.slice = Slice.of(maxRowSize, new RawAdapter(content));
+        scroll = ScrollSlice.of(slice);
     }
 
 
@@ -74,8 +79,18 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public void setLineSize(int maxSize) {
+        slice.setMaxRowSize(maxSize);
+    }
+
+    @Override
     public void push(Edit edit) {
         editQueue.push(edit);
+    }
+
+    @Override
+    public Scroll scroll() {
+        return scroll;
     }
 
 }

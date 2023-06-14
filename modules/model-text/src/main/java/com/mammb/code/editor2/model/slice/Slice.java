@@ -35,7 +35,25 @@ public interface Slice<T extends Textual> extends TextList<T> {
      * Get the capacity of row.
      * @return the capacity of row
      */
-    int capacity();
+    int maxRowSize();
+
+    /**
+     * Set the capacity of row.
+     * @param capacity the capacity of row
+     */
+    void setMaxRowSize(int capacity);
+
+    /**
+     * Scroll previous line.
+     * @param n the number of line
+     */
+    void prev(int n);
+
+    /**
+     * Scroll next line.
+     * @param n the number of line
+     */
+    void next(int n);
 
     /**
      * Create a new RowSlice from the specified size and rowSupplier.

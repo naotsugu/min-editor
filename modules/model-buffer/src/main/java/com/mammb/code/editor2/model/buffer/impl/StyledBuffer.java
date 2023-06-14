@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
+import com.mammb.code.editor2.model.buffer.Scroll;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.style.StyledText;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public class StyledBuffer implements TextBuffer<StyledText> {
 
-    /** The pear slice. */
+    /** The peer slice. */
     private final TextBuffer<Textual> buffer;
 
     /** The styling translate. */
@@ -39,6 +40,11 @@ public class StyledBuffer implements TextBuffer<StyledText> {
     private List<StyledText> texts;
 
 
+    /**
+     * Constructor.
+     * @param buffer the peer slice
+     * @param stylingTranslator the styling translate
+     */
     public StyledBuffer(
             TextBuffer<Textual> buffer,
             Translate<Textual, StyledText> stylingTranslator) {
@@ -55,10 +61,21 @@ public class StyledBuffer implements TextBuffer<StyledText> {
         return texts;
     }
 
+    @Override
+    public void setLineSize(int maxSize) {
+        buffer.setLineSize(maxSize);
+    }
+
 
     @Override
     public void push(Edit edit) {
         buffer.push(edit);
+    }
+
+
+    @Override
+    public Scroll scroll() {
+        return buffer.scroll();
     }
 
 
