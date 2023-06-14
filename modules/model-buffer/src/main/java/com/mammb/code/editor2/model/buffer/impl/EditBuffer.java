@@ -79,6 +79,11 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public int lineSize() {
+        return slice.maxRowSize();
+    }
+
+    @Override
     public void setLineSize(int maxSize) {
         slice.setMaxRowSize(maxSize);
     }

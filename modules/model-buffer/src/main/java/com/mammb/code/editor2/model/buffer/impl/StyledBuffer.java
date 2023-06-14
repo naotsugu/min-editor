@@ -62,6 +62,11 @@ public class StyledBuffer implements TextBuffer<StyledText> {
     }
 
     @Override
+    public int lineSize() {
+        return buffer.lineSize();
+    }
+
+    @Override
     public void setLineSize(int maxSize) {
         buffer.setLineSize(maxSize);
     }

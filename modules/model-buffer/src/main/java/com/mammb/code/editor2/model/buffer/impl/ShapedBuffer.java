@@ -17,12 +17,14 @@ package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.Scroll;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
+import com.mammb.code.editor2.model.buffer.Wrap;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.layout.LayoutBuilder;
 import com.mammb.code.editor2.model.layout.Span;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.text.Translate;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +32,7 @@ import java.util.List;
  * ShapedBuffer.
  * @author Naotsugu Kobayashi
  */
-public class ShapedBuffer implements TextBuffer<TextLine> {
+public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
 
     /** The peer slice. */
     private final TextBuffer<StyledText> buffer;
@@ -43,6 +45,12 @@ public class ShapedBuffer implements TextBuffer<TextLine> {
 
     /** The buffer of wrapped lines. */
     private List<TextLine> lines;
+
+    /** The wrap width. */
+    private double wrapWidth = 0;
+
+    /** The line offset. */
+    private int lineOffset = 0;
 
 
     /**
@@ -66,7 +74,12 @@ public class ShapedBuffer implements TextBuffer<TextLine> {
         if (lines == null) {
             pullLines();
         }
-        return lines;
+        return lines.subList(lineOffset, Math.min(lineOffset + buffer.lineSize(), lines.size()));
+    }
+
+    @Override
+    public int lineSize() {
+        return buffer.lineSize();
     }
 
     @Override
@@ -83,9 +96,38 @@ public class ShapedBuffer implements TextBuffer<TextLine> {
 
     @Override
     public Scroll scroll() {
-        return buffer.scroll()
+        if (wrapWidth < 0) {
+            return buffer.scroll();
+        }
+        return new Scroll() {
+
+            @Override
+            public void prev(int n) {
+                if (lineOffset - n >= 0) {
+                    lineOffset -= n;
+                } else {
+                    // TODO
+                }
+            }
+
+            @Override
+            public void next(int n) {
+                if (lines.size() >= lineOffset + lineSize() + n) {
+                    lineOffset += n;
+                } else {
+                    // TODO
+                }
+
+            }
+        };
     }
 
+    @Override
+    public void setWrapWidth(double wrapWidth) {
+        if (layoutBuilder.setWrapWidth(wrapWidth)) {
+            this.wrapWidth = wrapWidth;
+        }
+    }
 
     private void pullLines() {
 
