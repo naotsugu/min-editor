@@ -49,12 +49,6 @@ public interface LayoutBuilder {
     HitPosition hitInfo(double x, double y);
 
     /**
-     * Sets the alignment for the TextLayout.
-     * @return returns true is the call modifies the layout internal state.
-     */
-    boolean setAlignment(Alignment alignment);
-
-    /**
      * Sets the wrap width for the TextLayout.
      * @return returns true is the call modifies the layout internal state.
      */

@@ -135,12 +135,6 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
 
 
     @Override
-    public boolean setAlignment(Alignment alignment) {
-        return textLayout.setAlignment(alignment.ordinal());
-    }
-
-
-    @Override
     public boolean setWrapWidth(double wrapWidth) {
         return textLayout.setWrapWidth((float) wrapWidth);
     }
