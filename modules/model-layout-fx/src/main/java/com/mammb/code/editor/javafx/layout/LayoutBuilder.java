@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.Alignment;
 import com.mammb.code.editor2.model.layout.HitPosition;
 import com.mammb.code.editor2.model.layout.Layout;
 import com.mammb.code.editor2.model.layout.Span;
@@ -29,7 +28,6 @@ import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
