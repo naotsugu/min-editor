@@ -50,13 +50,13 @@ public interface LayoutBuilder {
 
     /**
      * Sets the wrap width for the TextLayout.
-     * @return returns true is the call modifies the layout internal state.
+     * @return {@code true} is the call modifies the layout internal state.
      */
     boolean setWrapWidth(double wrapWidth);
 
     /**
      * Sets the line spacing for the TextLayout.
-     * @return returns true is the call modifies the layout internal state.
+     * @return {@code true} is the call modifies the layout internal state.
      */
     boolean setLineSpacing(double spacing);
 
@@ -64,7 +64,7 @@ public interface LayoutBuilder {
      * Sets the tab size for the TextLayout.
      * @param spaces the number of spaces represented by a tab. Default is 8.
      * Minimum is 1, lower values will be clamped to 1.
-     * @return returns true if the call modifies the layout internal state.
+     * @return {@code true} if the call modifies the layout internal state.
      */
     boolean setTabSize(int spaces);
 

@@ -53,8 +53,18 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
      * Create a new Layout.
      */
     public LayoutBuilder() {
+        this(-1);
+    }
+
+
+    /**
+     * Create a new Layout.
+     * @param wrapWidth the wrap width
+     */
+    public LayoutBuilder(double wrapWidth) {
         textLayout = Toolkit.getToolkit().getTextLayoutFactory().getLayout();
         textLayout.setTabSize(4);
+        textLayout.setWrapWidth((float) wrapWidth);
     }
 
 
