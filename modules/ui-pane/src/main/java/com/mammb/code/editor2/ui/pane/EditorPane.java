@@ -28,7 +28,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextFlow;
 
 import java.nio.file.Path;
 
@@ -45,13 +44,9 @@ public class EditorPane extends StackPane {
         setWidth(width);
         setHeight(height);
 
-
-        LayoutBuilder layoutBuilder = new LayoutBuilder();
-        layoutBuilder.setWrapWidth(400);
-
         var buffer = Buffers.of(30,
             Path.of("build.gradle.kts"),
-            layoutBuilder,
+            new LayoutBuilder(width),
             new Translate<StyledText, Span>() {
                 public Span applyTo(StyledText input) {
                     return Span.of(input, FxSpanStyle.of(Font.getDefault()));
@@ -69,10 +64,9 @@ public class EditorPane extends StackPane {
                 gc.fillText(run.text(), run.layout().x(), run.layout().y());
             }
         }
-        //gc.fillText("hello", 10, 25);
 
         getChildren().add(canvas);
-        TextFlow flow = new TextFlow();
+
     }
 
 }

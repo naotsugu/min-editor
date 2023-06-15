@@ -17,10 +17,11 @@ package com.mammb.code.editor2.model.editor.impl;
 
 import com.mammb.code.editor2.model.buffer.Buffers;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.editor.Selection;
 import com.mammb.code.editor2.model.editor.ViewModel;
-import com.mammb.code.editor2.model.style.StyledText;
+import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.model.text.Textual;
+
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public class ViewModelImpl implements ViewModel {
 
-    private TextBuffer<StyledText> buffer;
+    private TextBuffer<? extends Textual> buffer;
 
     private OffsetPoint caret;
 
