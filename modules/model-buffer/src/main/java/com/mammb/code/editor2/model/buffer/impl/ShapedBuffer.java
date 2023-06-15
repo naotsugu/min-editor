@@ -106,7 +106,10 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
                 if (lineOffset - n >= 0) {
                     lineOffset -= n;
                 } else {
-                    // TODO
+                    buffer.scroll().prev(n);
+                    pullLines();
+                    int scrolledLines = headLinesOfRow(n);
+                    lineOffset = lineOffset + scrolledLines - n;
                 }
             }
 
@@ -115,9 +118,10 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
                 if (lines.size() >= lineOffset + lineSize() + n) {
                     lineOffset += n;
                 } else {
-                    // TODO
+                    int scrolledLines = headLinesOfRow(n);
+                    buffer.scroll().next(n);
+                    lineOffset = lineOffset - scrolledLines + n;
                 }
-
             }
         };
     }
@@ -131,14 +135,29 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
 
     private void pullLines() {
 
-        List<Span> spans = buffer.texts().stream()
+        List<StyledText> sources = buffer.texts();
+        List<Span> spans = sources.stream()
             .map(StyledText::spans)
             .flatMap(Collection::stream)
             .map(translator::applyTo)
             .toList();
-
         layoutBuilder.add(spans);
+
         lines = layoutBuilder.layout();
     }
+
+    private int headLinesOfRow(int n) {
+        if (n < 1 || lines.isEmpty()) {
+            return 0;
+        }
+        int to = lines.get(0).point().row() + n;
+        int count = 0;
+        for (var line : lines) {
+            if (line.point().row() >= to) break;
+            count++;
+        }
+        return count;
+    }
+
 
 }
