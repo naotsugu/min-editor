@@ -1,5 +1,6 @@
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor.javafx.layout.LayoutBuilder;
 import com.mammb.code.editor2.model.buffer.Buffers;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 public class EditorModel {
 
     private FxFontStyle fontStyle;
+
     private TextBuffer<TextLine> buffer;
 
 
@@ -28,8 +30,9 @@ public class EditorModel {
 
     public EditorModel(double width, double height, Path path) {
         fontStyle = FxFontStyle.of(Font.font(20));
+        int rows = (int) Math.ceil(height / new FxFontMetrics(fontStyle.font()).lineHeight());
         Translate<StyledText, Span> translate = in -> Span.of(in, fontStyle);
-        buffer = Buffers.of(30, path, new LayoutBuilder(width), translate);
+        buffer = Buffers.of(rows, path, new LayoutBuilder(width), translate);
     }
 
 
