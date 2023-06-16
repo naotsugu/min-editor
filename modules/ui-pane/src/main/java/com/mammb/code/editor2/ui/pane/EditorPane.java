@@ -15,20 +15,10 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
-import com.mammb.code.editor.javafx.layout.FxSpanStyle;
-import com.mammb.code.editor.javafx.layout.LayoutBuilder;
-import com.mammb.code.editor2.model.buffer.Buffers;
-import com.mammb.code.editor2.model.layout.Span;
-import com.mammb.code.editor2.model.layout.TextLine;
-import com.mammb.code.editor2.model.layout.TextRun;
-import com.mammb.code.editor2.model.style.StyledText;
-import com.mammb.code.editor2.model.text.Translate;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-
+import javafx.scene.AccessibleRole;
 import java.nio.file.Path;
 
 /**
@@ -39,34 +29,35 @@ public class EditorPane extends StackPane {
 
     private Canvas canvas;
     private GraphicsContext gc;
+    private EditorModel editorModel;
 
     public EditorPane(double width, double height) {
         setWidth(width);
         setHeight(height);
-
-        var buffer = Buffers.of(30,
-            Path.of("build.gradle.kts"),
-            new LayoutBuilder(width),
-            new Translate<StyledText, Span>() {
-                public Span applyTo(StyledText input) {
-                    return Span.of(input, FxSpanStyle.of(Font.getDefault()));
-                }
-            });
-
+        editorModel = new EditorModel(width, height);
         canvas = new Canvas(width, height);
         gc = canvas.getGraphicsContext2D();
-
-        gc.setFont(Font.getDefault());
-        gc.setFill(Color.BLACK);
-
-        for (TextLine textLine : buffer.texts()) {
-            for (TextRun run : textLine.runs()) {
-                gc.fillText(run.text(), run.layout().x(), run.layout().y());
-            }
-        }
-
+        setFocusTraversable(true);
+        setAccessibleRole(AccessibleRole.TEXT_AREA);
         getChildren().add(canvas);
+        initHandler();
+    }
 
+    /**
+     * Initialize handler.
+     */
+    private void initHandler() {
+        setOnDragOver(DragDrop.dragOverHandler());
+        setOnDragDropped(DragDrop.droppedHandler(this::open));
+    }
+
+    /**
+     * Open the file content path.
+     * @param path the content file path
+     */
+    public void open(Path path) {
+        editorModel = new EditorModel(getWidth(), getHeight(), path);
+        editorModel.draw(gc);
     }
 
 }

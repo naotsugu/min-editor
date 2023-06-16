@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.SpanStyle;
+import com.mammb.code.editor2.model.layout.FontStyle;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -23,7 +23,7 @@ import javafx.scene.text.Font;
  * FxSpanStyle.
  * @author Naotsugu Kobayashi
  */
-public interface FxSpanStyle extends SpanStyle {
+public interface FxFontStyle extends FontStyle {
 
     /**
      * Get the font.
@@ -36,9 +36,9 @@ public interface FxSpanStyle extends SpanStyle {
      * @param font the font
      * @return a created Style
      */
-    static FxSpanStyle of(Font font) {
-        record SpanStyleRecord(Font font) implements FxSpanStyle { }
-        return new SpanStyleRecord(font);
+    static FxFontStyle of(Font font) {
+        record FontStyleRecord(Font font) implements FxFontStyle { }
+        return new FontStyleRecord(font);
     }
 
     /**
@@ -47,9 +47,9 @@ public interface FxSpanStyle extends SpanStyle {
      * @param color the color
      * @return a created Style
      */
-    static FxSpanStyle of(Font font, Color color) {
-        record SpanStyleRecord(Font font, Color color) implements FxSpanStyle { }
-        return new SpanStyleRecord(font, color);
+    static FxFontStyle of(Font font, Color color) {
+        record FontStyleRecord(Font font, Color color) implements FxFontStyle { }
+        return new FontStyleRecord(font, color);
     }
 
     /**
@@ -59,9 +59,9 @@ public interface FxSpanStyle extends SpanStyle {
      * @param bgColor the background color
      * @return a created Style
      */
-    static FxSpanStyle of(Font font, Color color, Color bgColor) {
-        record SpanStyleRecord(Font font, Color color, Color bgColor) implements FxSpanStyle { }
-        return new SpanStyleRecord(font, color, bgColor);
+    static FxFontStyle of(Font font, Color color, Color bgColor) {
+        record FontStyleRecord(Font font, Color color, Color bgColor) implements FxFontStyle { }
+        return new FontStyleRecord(font, color, bgColor);
     }
 
 }

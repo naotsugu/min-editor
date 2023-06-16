@@ -34,17 +34,17 @@ public interface Span extends Textual {
      * Get the style of span.
      * @return the style of span
      */
-    SpanStyle style();
+    FontStyle style();
 
     /**
      * Create a new Span.
      * @param textual the text of span
-     * @param spanStyle the style of span
+     * @param fontStyle the style of span
      * @return a created Span
      */
-    static Span of(Textual textual, SpanStyle spanStyle) {
-        record SpanRecord(String text, OffsetPoint point, SpanStyle style) implements Span { }
-        return new SpanRecord(textual.text(), textual.point(), spanStyle);
+    static Span of(Textual textual, FontStyle fontStyle) {
+        record SpanRecord(String text, OffsetPoint point, FontStyle style) implements Span { }
+        return new SpanRecord(textual.text(), textual.point(), fontStyle);
     }
 
 }

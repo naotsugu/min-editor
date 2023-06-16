@@ -83,7 +83,7 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
         TextSpan[] textSpans = new TextSpan[spans.size()];
         for (int i = 0; i < spans.size(); i++) {
             Span span = spans.get(i);
-            FxSpanStyle fxStyle = (FxSpanStyle) span.style();
+            FxFontStyle fxStyle = (FxFontStyle) span.style();
             Object font = fonts.computeIfAbsent(fxStyle.font(), FontHelper::getNativeFont);
             textSpans[i] = new TextSpan(span.text(), font, null, span);
         }
