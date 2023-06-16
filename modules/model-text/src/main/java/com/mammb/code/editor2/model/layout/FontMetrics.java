@@ -18,6 +18,7 @@ package com.mammb.code.editor2.model.layout;
 /**
  * FontMetrics.
  * @param <F> the type of font
+ * @author Naotsugu Kobayashi
  */
 public interface FontMetrics<F> {
 

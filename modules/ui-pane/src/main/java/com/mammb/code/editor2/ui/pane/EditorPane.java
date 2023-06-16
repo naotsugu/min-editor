@@ -31,6 +31,7 @@ public class EditorPane extends StackPane {
     private GraphicsContext gc;
     private EditorModel editorModel;
 
+
     public EditorPane(double width, double height) {
         setWidth(width);
         setHeight(height);
@@ -43,13 +44,15 @@ public class EditorPane extends StackPane {
         initHandler();
     }
 
+
     /**
      * Initialize handler.
      */
     private void initHandler() {
-        setOnDragOver(DragDrop.dragOverHandler());
-        setOnDragDropped(DragDrop.droppedHandler(this::open));
+        setOnDragOver(DragDrops.dragOverHandler());
+        setOnDragDropped(DragDrops.droppedHandler(this::open));
     }
+
 
     /**
      * Open the file content path.

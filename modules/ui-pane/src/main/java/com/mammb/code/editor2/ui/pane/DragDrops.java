@@ -25,10 +25,10 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * DragDrop.
+ * DragDrops.
  * @author Naotsugu Kobayashi
  */
-public class DragDrop {
+public class DragDrops {
 
     /**
      * Get the drag over handler.
