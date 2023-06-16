@@ -23,7 +23,7 @@ import javafx.scene.text.Font;
  * FxSpanStyle.
  * @author Naotsugu Kobayashi
  */
-public interface FxFontStyle extends FontStyle {
+public interface FxFontStyle extends FontStyle<Font, Color> {
 
     /**
      * Get the font.
@@ -37,8 +37,7 @@ public interface FxFontStyle extends FontStyle {
      * @return a created Style
      */
     static FxFontStyle of(Font font) {
-        record FontStyleRecord(Font font) implements FxFontStyle { }
-        return new FontStyleRecord(font);
+        return of(font, Color.BLACK, Color.TRANSPARENT);
     }
 
     /**
@@ -48,20 +47,19 @@ public interface FxFontStyle extends FontStyle {
      * @return a created Style
      */
     static FxFontStyle of(Font font, Color color) {
-        record FontStyleRecord(Font font, Color color) implements FxFontStyle { }
-        return new FontStyleRecord(font, color);
+        return of(font, color, Color.TRANSPARENT);
     }
 
     /**
      * Create a new Style.
      * @param font the font
      * @param color the color
-     * @param bgColor the background color
+     * @param background the background color
      * @return a created Style
      */
-    static FxFontStyle of(Font font, Color color, Color bgColor) {
-        record FontStyleRecord(Font font, Color color, Color bgColor) implements FxFontStyle { }
-        return new FontStyleRecord(font, color, bgColor);
+    static FxFontStyle of(Font font, Color color, Color background) {
+        record FontStyleRecord(Font font, Color color, Color background) implements FxFontStyle { }
+        return new FontStyleRecord(font, color, background);
     }
 
 }

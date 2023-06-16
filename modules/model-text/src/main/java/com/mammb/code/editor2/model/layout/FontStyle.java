@@ -17,7 +17,15 @@ package com.mammb.code.editor2.model.layout;
 
 /**
  * FontStyle.
+ * @param <F> the type of font
  * @author Naotsugu Kobayashi
  */
-public interface FontStyle {
+public interface FontStyle<F, C> {
+
+    F font();
+
+    C color();
+
+    C background();
+
 }
