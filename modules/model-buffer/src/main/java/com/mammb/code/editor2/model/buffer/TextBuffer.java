@@ -54,4 +54,20 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      */
     Scroll scroll();
 
+
+    static <T extends Textual> TextBuffer<T> empty() {
+        return new TextBuffer<T>() {
+            @Override public List<T> texts() { return List.of(); }
+            @Override public int lineSize() { return 0; }
+            @Override public void setLineSize(int maxSize) { }
+            @Override public void push(Edit edit) { }
+            @Override public Scroll scroll() {
+                return new Scroll() {
+                    @Override public void prev(int n) { }
+                    @Override public void next(int n) { }
+                };
+            }
+        };
+    }
+
 }

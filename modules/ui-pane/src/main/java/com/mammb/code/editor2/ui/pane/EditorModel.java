@@ -35,7 +35,7 @@ import java.nio.file.Path;
  */
 public class EditorModel {
 
-    private FxFontStyle fontStyle;
+    private FxFontStyle fontStyle = FxFontStyle.of(Font.font(20));
 
     private TextBuffer<TextLine> buffer;
 
@@ -46,7 +46,6 @@ public class EditorModel {
 
 
     public EditorModel(double width, double height, Path path) {
-        fontStyle = FxFontStyle.of(Font.font(20));
         int rows = (int) Math.ceil(height / new FxFontMetrics(fontStyle.font()).lineHeight());
         Translate<StyledText, Span> translate = in -> Span.of(in, fontStyle);
         buffer = Buffers.of(rows, path, new LayoutBuilder(width), translate);
@@ -57,10 +56,9 @@ public class EditorModel {
 
         for (TextLine textLine : buffer.texts()) {
             for (TextRun run : textLine.runs()) {
-                if (run.style() instanceof FxFontStyle fs) {
-                    if (!gc.getFont().equals(fs.font())) {
-                        gc.setFont(fontStyle.font());
-                    }
+                if (run.style().font() instanceof Font font &&
+                    !gc.getFont().equals(font)) {
+                    gc.setFont(fontStyle.font());
                 }
                 gc.fillText(run.text(), run.layout().x(), run.layout().y());
             }
