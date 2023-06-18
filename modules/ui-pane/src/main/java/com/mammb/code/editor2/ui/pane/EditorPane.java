@@ -74,6 +74,7 @@ public class EditorPane extends StackPane {
             case UP         -> editorModel.up(1);
             case DOWN       -> editorModel.down(1);
         }
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         editorModel.draw(gc);
     }
 

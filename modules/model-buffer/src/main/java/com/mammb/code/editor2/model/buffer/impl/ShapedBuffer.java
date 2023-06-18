@@ -122,6 +122,7 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
                 } else {
                     int scrolledLines = headLinesOfRow(n);
                     buffer.scroll().next(n);
+                    pullLines();
                     lineOffset = lineOffset - scrolledLines + n;
                 }
             }
@@ -143,6 +144,7 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
             .flatMap(Collection::stream)
             .map(translator::applyTo)
             .toList();
+        layoutBuilder.clear();
         layoutBuilder.add(spans);
         lines = layoutBuilder.layout();
 

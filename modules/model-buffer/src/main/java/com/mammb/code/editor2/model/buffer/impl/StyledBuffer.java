@@ -55,9 +55,7 @@ public class StyledBuffer implements TextBuffer<StyledText> {
 
     @Override
     public List<StyledText> texts() {
-        if (texts == null) {
-            pullRows();
-        }
+        pullRows();
         return texts;
     }
 
