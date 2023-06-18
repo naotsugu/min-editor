@@ -74,17 +74,17 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
         if (lines == null) {
             pullLines();
         }
-        return lines.subList(lineOffset, Math.min(lineOffset + buffer.lineSize(), lines.size()));
+        return lines.subList(lineOffset, Math.min(lineOffset + buffer.maxLineSize(), lines.size()));
     }
 
     @Override
-    public int lineSize() {
-        return buffer.lineSize();
+    public int maxLineSize() {
+        return buffer.maxLineSize();
     }
 
     @Override
-    public void setLineSize(int maxSize) {
-        buffer.setLineSize(maxSize);
+    public void setMaxLineSize(int maxSize) {
+        buffer.setMaxLineSize(maxSize);
     }
 
 
@@ -96,9 +96,11 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
 
     @Override
     public Scroll scroll() {
+
         if (wrapWidth < 0) {
             return buffer.scroll();
         }
+
         return new Scroll() {
 
             @Override
@@ -115,7 +117,7 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
 
             @Override
             public void next(int n) {
-                if (lines.size() >= lineOffset + lineSize() + n) {
+                if (lines.size() > lineOffset + maxLineSize() + n + 1) {
                     lineOffset += n;
                 } else {
                     int scrolledLines = headLinesOfRow(n);
@@ -142,11 +144,12 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
             .map(translator::applyTo)
             .toList();
         layoutBuilder.add(spans);
-
         lines = layoutBuilder.layout();
+
     }
 
     private int headLinesOfRow(int n) {
+
         if (n < 1 || lines.isEmpty()) {
             return 0;
         }
@@ -158,6 +161,5 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
         }
         return count;
     }
-
 
 }

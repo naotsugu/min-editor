@@ -15,10 +15,12 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import javafx.scene.AccessibleRole;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.AccessibleRole;
+
 import java.nio.file.Path;
 
 /**
@@ -40,8 +42,9 @@ public class EditorPane extends StackPane {
         gc = canvas.getGraphicsContext2D();
         setFocusTraversable(true);
         setAccessibleRole(AccessibleRole.TEXT_AREA);
-        getChildren().add(canvas);
         initHandler();
+        getChildren().add(canvas);
+
     }
 
 
@@ -49,6 +52,7 @@ public class EditorPane extends StackPane {
      * Initialize handler.
      */
     private void initHandler() {
+        setOnKeyPressed(this::handle);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
     }
@@ -60,6 +64,16 @@ public class EditorPane extends StackPane {
      */
     public void open(Path path) {
         editorModel = new EditorModel(getWidth(), getHeight(), path);
+        editorModel.draw(gc);
+        requestFocus();
+    }
+
+
+    public void handle(KeyEvent e) {
+        switch (e.getCode()) {
+            case UP         -> editorModel.up(1);
+            case DOWN       -> editorModel.down(1);
+        }
         editorModel.draw(gc);
     }
 

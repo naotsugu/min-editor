@@ -34,13 +34,13 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      * Get the capacity of lines.
      * @return the capacity of lines
      */
-    int lineSize();
+    int maxLineSize();
 
     /**
      * Set the capacity of lines.
      * @param maxSize the capacity of lines
      */
-    void setLineSize(int maxSize);
+    void setMaxLineSize(int maxSize);
 
     /**
      * Push the edit.
@@ -58,8 +58,8 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
     static <T extends Textual> TextBuffer<T> empty() {
         return new TextBuffer<T>() {
             @Override public List<T> texts() { return List.of(); }
-            @Override public int lineSize() { return 0; }
-            @Override public void setLineSize(int maxSize) { }
+            @Override public int maxLineSize() { return 0; }
+            @Override public void setMaxLineSize(int maxSize) { }
             @Override public void push(Edit edit) { }
             @Override public Scroll scroll() {
                 return new Scroll() {

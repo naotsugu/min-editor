@@ -90,16 +90,22 @@ public class RowSlice implements Slice<Textual> {
 
 
     private void fill() {
-        pushEmptyIf();
+
         while (texts.size() <= maxRowSize) {
-            Textual tail = texts.get(texts.size() - 1);
-            OffsetPoint next = tail.point().plus(tail.text());
+
+            OffsetPoint next;
+            if (texts.isEmpty()) {
+                next = OffsetPoint.zero;
+            } else {
+                Textual tail = texts.get(texts.size() - 1);
+                next = tail.point().plus(texts.get(texts.size() - 1).text());
+            }
 
             String str = rowSupplier.at(next.cpOffset());
-
             if (str == null) break;
             texts.add(Textual.of(next, str));
         }
+
     }
 
 

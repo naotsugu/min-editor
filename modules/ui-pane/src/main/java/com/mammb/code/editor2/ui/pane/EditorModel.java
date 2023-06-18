@@ -65,4 +65,7 @@ public class EditorModel {
         }
     }
 
+    public void up(int n) { buffer.scroll().prev(n); }
+    public void down(int n) { buffer.scroll().next(n); }
+
 }

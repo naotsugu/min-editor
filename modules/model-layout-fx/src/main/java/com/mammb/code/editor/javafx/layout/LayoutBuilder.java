@@ -116,11 +116,20 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
 
                 int start = offset;
                 offset += glyphList.getCharOffset(glyphList.getGlyphCount());
+                if (start == offset) {
+                    if (textSpan.getText().length() > offset &&
+                        textSpan.getText().charAt(offset) == '\r') offset++;
+                    if (textSpan.getText().length() > offset &&
+                        textSpan.getText().charAt(offset) == '\n') offset++;
+                }
                 String runText = textSpan.getText().substring(start, offset);
-
                 textRuns.add(TextRun.of(layout, runText, textSpan.peer()));
             }
-            TextLine line = TextLine.of(point, textRuns);
+            OffsetPoint p = OffsetPoint.of(
+                textRuns.get(0).source().point().row(),
+                point.offset(),
+                point.cpOffset());
+            TextLine line = TextLine.of(p, textRuns);
             point = point.plus(line.text());
             textLines.add(line);
         }
