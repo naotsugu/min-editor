@@ -15,14 +15,15 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
-import com.mammb.code.editor2.model.buffer.Scroll;
+import com.mammb.code.editor2.model.buffer.Content;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
 import com.mammb.code.editor2.model.slice.Slice;
-import com.mammb.code.editor2.model.buffer.Content;
+import com.mammb.code.editor2.model.text.Textual;
+
 import java.util.List;
+
 import static java.util.function.Predicate.not;
 
 /**
@@ -37,9 +38,6 @@ public class EditBuffer implements TextBuffer<Textual> {
     /** The content. */
     private final Content content;
 
-    /** The scroll. */
-    private final Scroll scroll;
-
     /** The edit queue. */
     private final EditQueue editQueue = EditQueue.of();
 
@@ -52,7 +50,6 @@ public class EditBuffer implements TextBuffer<Textual> {
     public EditBuffer(Content content, int maxRowSize) {
         this.content = content;
         this.slice = Slice.of(maxRowSize, new RawAdapter(content));
-        scroll = ScrollSlice.of(slice);
     }
 
 
@@ -94,8 +91,9 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
-    public Scroll scroll() {
-        return scroll;
-    }
+    public void prev(int n) { slice.prev(n); }
+
+    @Override
+    public void next(int n) { slice.next(n); }
 
 }

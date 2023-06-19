@@ -19,6 +19,8 @@ import javafx.scene.AccessibleRole;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 
 import java.nio.file.Path;
@@ -53,6 +55,8 @@ public class EditorPane extends StackPane {
      */
     private void initHandler() {
         setOnKeyPressed(this::handle);
+        setOnKeyTyped(this::handle);
+        setOnMouseClicked(this::handle);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
     }
@@ -76,6 +80,35 @@ public class EditorPane extends StackPane {
         }
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         editorModel.draw(gc);
+    }
+
+//    public void handle(KeyEvent e) {
+//
+//        if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
+//            e.getCode().isArrowKey() || e.getCode().isModifierKey() ||
+//            e.getCode().isMediaKey() || !Keys.controlKeysFilter.test(e) ||
+//            e.getCharacter().length() == 0) {
+//            return;
+//        }
+//        int ascii = e.getCharacter().getBytes()[0];
+//        if (ascii < 32 || ascii == 127) {
+//            // 127:DEL
+//            if (ascii != 9 && ascii != 10 && ascii != 13) {
+//                // 9:HT 10:LF 13:CR
+//                return;
+//            }
+//        }
+//        //editBehavior.input(e.getCharacter());
+//
+//    }
+
+
+    public void handle(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+            //caretBehavior.click(event.getSceneX(), event.getSceneY());
+        } else if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+            //caretBehavior.clickDouble(event.getSceneX(), event.getSceneY());
+        }
     }
 
 }

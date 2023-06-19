@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
-import com.mammb.code.editor2.model.buffer.Scroll;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.style.StyledText;
@@ -23,6 +22,7 @@ import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * StyledBuffer.
@@ -36,9 +36,6 @@ public class StyledBuffer implements TextBuffer<StyledText> {
     /** The styling translate. */
     private final Translate<Textual, StyledText> translator;
 
-    /** The text rows. */
-    private List<StyledText> texts;
-
 
     /**
      * Constructor.
@@ -48,15 +45,15 @@ public class StyledBuffer implements TextBuffer<StyledText> {
     public StyledBuffer(
             TextBuffer<Textual> buffer,
             Translate<Textual, StyledText> stylingTranslator) {
-        this.buffer = buffer;
-        this.translator = stylingTranslator;
+        this.buffer = Objects.requireNonNull(buffer);
+        this.translator = Objects.requireNonNull(stylingTranslator);
     }
-
 
     @Override
     public List<StyledText> texts() {
-        pullRows();
-        return texts;
+        return buffer.texts().stream()
+            .map(translator::applyTo)
+            .toList();
     }
 
     @Override
@@ -69,23 +66,19 @@ public class StyledBuffer implements TextBuffer<StyledText> {
         buffer.setMaxLineSize(maxSize);
     }
 
-
     @Override
     public void push(Edit edit) {
         buffer.push(edit);
     }
 
-
     @Override
-    public Scroll scroll() {
-        return buffer.scroll();
+    public void prev(int n) {
+        buffer.prev(n);
     }
 
-
-    private void pullRows() {
-        texts = buffer.texts().stream()
-            .map(translator::applyTo)
-            .toList();
+    @Override
+    public void next(int n) {
+        buffer.next(n);
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor2.model.buffer.impl;
 
-import com.mammb.code.editor2.model.buffer.Scroll;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.buffer.Wrap;
 import com.mammb.code.editor2.model.edit.Edit;
@@ -95,38 +94,36 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
 
 
     @Override
-    public Scroll scroll() {
-
+    public void prev(int n) {
         if (wrapWidth < 0) {
-            return buffer.scroll();
+            buffer.prev(n);
+            return;
         }
 
-        return new Scroll() {
+        if (lineOffset - n >= 0) {
+            lineOffset -= n;
+        } else {
+            buffer.prev(n);
+            pullLines();
+            int scrolledLines = headLinesOfRow(n);
+            lineOffset = lineOffset + scrolledLines - n;
+        }
+    }
 
-            @Override
-            public void prev(int n) {
-                if (lineOffset - n >= 0) {
-                    lineOffset -= n;
-                } else {
-                    buffer.scroll().prev(n);
-                    pullLines();
-                    int scrolledLines = headLinesOfRow(n);
-                    lineOffset = lineOffset + scrolledLines - n;
-                }
-            }
-
-            @Override
-            public void next(int n) {
-                if (lines.size() > lineOffset + maxLineSize() + n + 1) {
-                    lineOffset += n;
-                } else {
-                    int scrolledLines = headLinesOfRow(n);
-                    buffer.scroll().next(n);
-                    pullLines();
-                    lineOffset = lineOffset - scrolledLines + n;
-                }
-            }
-        };
+    @Override
+    public void next(int n) {
+        if (wrapWidth < 0) {
+            buffer.next(n);
+            return;
+        }
+        if (lines.size() > lineOffset + maxLineSize() + n + 1) {
+            lineOffset += n;
+        } else {
+            int scrolledLines = headLinesOfRow(n);
+            buffer.next(n);
+            pullLines();
+            lineOffset = lineOffset - scrolledLines + n;
+        }
     }
 
     @Override
@@ -137,7 +134,6 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
     }
 
     private void pullLines() {
-
         List<StyledText> sources = buffer.texts();
         List<Span> spans = sources.stream()
             .map(StyledText::spans)
@@ -147,7 +143,6 @@ public class ShapedBuffer implements TextBuffer<TextLine>, Wrap {
         layoutBuilder.clear();
         layoutBuilder.add(spans);
         lines = layoutBuilder.layout();
-
     }
 
     private int headLinesOfRow(int n) {

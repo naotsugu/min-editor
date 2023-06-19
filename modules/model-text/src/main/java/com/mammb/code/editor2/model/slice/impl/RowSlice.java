@@ -20,7 +20,7 @@ import com.mammb.code.editor2.model.slice.Slice;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -110,41 +110,47 @@ public class RowSlice implements Slice<Textual> {
 
 
     @Override
-    public void prev(int n) {
+    public List<Textual> prev(int n) {
+        List<Textual> added = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             Textual head = texts.get(0);
             int cpOffset = head.point().cpOffset();
             if (cpOffset == 0) break;
 
             String str = rowSupplier.before(cpOffset);
-            pushFirst(Textual.of(head.point().minus(str), str));
+            added.add(0, Textual.of(head.point().minus(str), str));
         }
+        pushFirst(added);
+        return added;
     }
 
 
     @Override
-    public void next(int n) {
+    public List<Textual> next(int n) {
+        List<Textual> added = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             Textual tail = texts.get(texts.size() - 1);
             OffsetPoint next = tail.point().plus(tail.text());
 
             String str = rowSupplier.at(next.cpOffset());
             if (str == null) break;
-            pushLast(Textual.of(next, str));
+            added.add(Textual.of(next, str));
         }
+        pushLast(added);
+        return added;
     }
 
 
-    private void pushFirst(Textual... rows) {
-        texts.addAll(0, Arrays.asList(rows));
+    private void pushFirst(List<Textual> rows) {
+        texts.addAll(0, rows);
         while (texts.size() > maxRowSize) {
             texts.remove(texts.size() - 1);
         }
     }
 
 
-    private void pushLast(Textual... rows) {
-        texts.addAll(Arrays.asList(rows));
+    private void pushLast(List<Textual> rows) {
+        texts.addAll(rows);
         while (texts.size() > maxRowSize) {
             texts.remove(0);
         }

@@ -46,14 +46,16 @@ public interface Slice<T extends Textual> extends TextList<T> {
     /**
      * Scroll previous line.
      * @param n the number of line
+     * @return the added lines
      */
-    void prev(int n);
+    List<T> prev(int n);
 
     /**
      * Scroll next line.
      * @param n the number of line
+     * @return the added lines
      */
-    void next(int n);
+    List<T> next(int n);
 
     /**
      * Create a new RowSlice from the specified size and rowSupplier.

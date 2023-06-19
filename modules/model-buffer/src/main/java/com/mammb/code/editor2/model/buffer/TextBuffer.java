@@ -49,10 +49,16 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
     void push(Edit edit);
 
     /**
-     * Get the scroll.
-     * @return the scroll
+     * Scroll previous line.
+     * @param n the number of line
      */
-    Scroll scroll();
+    void prev(int n);
+
+    /**
+     * Scroll next line.
+     * @param n the number of line
+     */
+    void next(int n);
 
 
     static <T extends Textual> TextBuffer<T> empty() {
@@ -61,12 +67,8 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
             @Override public int maxLineSize() { return 0; }
             @Override public void setMaxLineSize(int maxSize) { }
             @Override public void push(Edit edit) { }
-            @Override public Scroll scroll() {
-                return new Scroll() {
-                    @Override public void prev(int n) { }
-                    @Override public void next(int n) { }
-                };
-            }
+            @Override public void prev(int n) { }
+            @Override public void next(int n) { }
         };
     }
 
