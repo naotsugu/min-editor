@@ -46,7 +46,6 @@ public class EditorPane extends StackPane {
         setAccessibleRole(AccessibleRole.TEXT_AREA);
         initHandler();
         getChildren().add(canvas);
-
     }
 
 

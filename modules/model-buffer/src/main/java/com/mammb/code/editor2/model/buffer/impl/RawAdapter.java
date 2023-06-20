@@ -31,7 +31,7 @@ public record RawAdapter(Content content) implements RowSupplier {
 
     @Override
     public String before(int cpOffset) {
-        return new String(content.bytesBefore(cpOffset, Until.lf()), content.charset());
+        return new String(content.bytesBefore(cpOffset, Until.lf(2)), content.charset());
     }
 
 }

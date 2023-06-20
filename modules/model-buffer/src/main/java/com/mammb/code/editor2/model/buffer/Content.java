@@ -44,7 +44,7 @@ public interface Content {
      * <pre>
      *     | a | b | c | d | a |
      *                       L startPos
-     *      L  until [a] appears [a, b, c]
+     *      L  until [a] appears [a, b, c, d]
      * </pre>
      * @param cpOffset start position(code point index), exclusive
      * @param until the until predicate, exclusive

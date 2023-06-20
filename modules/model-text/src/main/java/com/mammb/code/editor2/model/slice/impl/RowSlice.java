@@ -91,7 +91,7 @@ public class RowSlice implements Slice<Textual> {
 
     private void fill() {
 
-        while (texts.size() <= maxRowSize) {
+        while (texts.size() < maxRowSize) {
 
             OffsetPoint next;
             if (texts.isEmpty()) {

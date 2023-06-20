@@ -27,7 +27,9 @@ import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
+import javafx.scene.shape.PathElement;
 import javafx.scene.text.Font;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -150,6 +152,13 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
         return new HitPositionRecord(hit.getCharIndex(), hit.getInsertionIndex(), hit.isLeading());
     }
 
+    public PathElement[] caretShape(int offset, boolean isLeading) {
+        return textLayout.getCaretShape(offset, isLeading, 0.0F, 0.0F);
+    }
+
+    public PathElement[] rangeShape(int start, int end) {
+        return textLayout.getRange(start, end, 1, 0.0F, 0.0F);
+    }
 
     @Override
     public boolean setWrapWidth(double wrapWidth) {
