@@ -29,17 +29,16 @@ import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.Font;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * LayoutBuilder.
+ * FxLayoutBuilder.
  * @author Naotsugu Kobayashi
  */
-public class LayoutBuilder implements com.mammb.code.editor2.model.layout.LayoutBuilder {
+public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.LayoutBuilder {
 
     /** The delegated text layout. */
     private final TextLayout textLayout;
@@ -54,7 +53,7 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
     /**
      * Create a new Layout.
      */
-    public LayoutBuilder() {
+    public FxLayoutBuilder() {
         this(-1);
     }
 
@@ -63,7 +62,7 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
      * Create a new Layout.
      * @param wrapWidth the wrap width
      */
-    public LayoutBuilder(double wrapWidth) {
+    public FxLayoutBuilder(double wrapWidth) {
         textLayout = Toolkit.getToolkit().getTextLayoutFactory().getLayout();
         textLayout.setTabSize(4);
         textLayout.setWrapWidth((float) wrapWidth);
@@ -152,8 +151,8 @@ public class LayoutBuilder implements com.mammb.code.editor2.model.layout.Layout
         return new HitPositionRecord(hit.getCharIndex(), hit.getInsertionIndex(), hit.isLeading());
     }
 
-    public PathElement[] caretShape(int offset, boolean isLeading) {
-        return textLayout.getCaretShape(offset, isLeading, 0.0F, 0.0F);
+    public PathElement[] caretShape(int offset) {
+        return textLayout.getCaretShape(offset, true, 0.0F, 0.0F);
     }
 
     public PathElement[] rangeShape(int start, int end) {

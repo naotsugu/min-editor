@@ -17,16 +17,16 @@ package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
-import com.mammb.code.editor.javafx.layout.LayoutBuilder;
+import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
 import com.mammb.code.editor2.model.buffer.Buffers;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.layout.Span;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
-import com.mammb.code.editor2.model.style.StyledText;
-import com.mammb.code.editor2.model.text.Translate;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.text.Font;
+
 import java.nio.file.Path;
 
 /**
@@ -39,6 +39,10 @@ public class EditorModel {
 
     private TextBuffer<TextLine> buffer;
 
+    private final FxLayoutBuilder layout;
+
+    private OffsetPoint caretPoint = OffsetPoint.zero;
+
 
     public EditorModel(double width, double height) {
         this(width, height, null);
@@ -46,9 +50,12 @@ public class EditorModel {
 
 
     public EditorModel(double width, double height, Path path) {
-        int rows = (int) Math.ceil(height / new FxFontMetrics(fontStyle.font()).lineHeight());
-        Translate<StyledText, Span> translate = in -> Span.of(in, fontStyle);
-        buffer = Buffers.of(rows, path, new LayoutBuilder(width), translate);
+        layout = new FxLayoutBuilder(width);
+        buffer = Buffers.of(
+            screenRowSize(height),
+            path,
+            layout,
+            in -> Span.of(in, fontStyle));
     }
 
 
@@ -68,5 +75,13 @@ public class EditorModel {
     public void up(int n) { buffer.prev(n); }
 
     public void down(int n) { buffer.next(n); }
+
+
+    // -- private
+
+    private int screenRowSize(double height) {
+        var fontMetrics = new FxFontMetrics(fontStyle.font());
+        return (int) Math.ceil(height / fontMetrics.lineHeight());
+    }
 
 }
