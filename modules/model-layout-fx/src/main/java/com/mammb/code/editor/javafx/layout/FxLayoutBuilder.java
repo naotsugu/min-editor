@@ -17,6 +17,7 @@ package com.mammb.code.editor.javafx.layout;
 
 import com.mammb.code.editor2.model.layout.HitPosition;
 import com.mammb.code.editor2.model.layout.Layout;
+import com.mammb.code.editor2.model.layout.LineLayout;
 import com.mammb.code.editor2.model.layout.Span;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
@@ -38,7 +39,7 @@ import java.util.Map;
  * FxLayoutBuilder.
  * @author Naotsugu Kobayashi
  */
-public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.LayoutBuilder {
+public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.LayoutBuilder, LineLayout {
 
     /** The delegated text layout. */
     private final TextLayout textLayout;
@@ -176,4 +177,10 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
         return textLayout.setTabSize(spaces);
     }
 
+    @Override
+    public List<TextLine> layout(Span span) {
+        clear();
+        add(List.of(span));
+        return layout();
+    }
 }

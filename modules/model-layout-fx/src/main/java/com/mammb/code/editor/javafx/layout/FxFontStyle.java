@@ -33,6 +33,14 @@ public interface FxFontStyle extends FontStyle<Font, Color> {
 
     /**
      * Create a new Style.
+     * @return a created Style
+     */
+    static FxFontStyle of() {
+        return of(Font.font(20));
+    }
+
+    /**
+     * Create a new Style.
      * @param font the font
      * @return a created Style
      */

@@ -15,11 +15,15 @@
  */
 package com.mammb.code.editor2.model.buffer;
 
-import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor2.model.text.TextList;
+import com.mammb.code.editor2.model.buffer.impl.EditBuffer;
+import com.mammb.code.editor2.model.buffer.impl.PtContent;
 import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.text.TextList;
+import com.mammb.code.editor2.model.text.Textual;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The edit buffer.
@@ -51,13 +55,22 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
     /**
      * Scroll previous line.
      * @param n the number of line
+     * @return the added lines
      */
-    void prev(int n);
+    List<T> prev(int n);
 
     /**
      * Scroll next line.
      * @param n the number of line
+     * @return the added lines
      */
-    void next(int n);
+    List<T> next(int n);
+
+
+    static TextBuffer<Textual> editBuffer(int maxRowSize, Path path) {
+        return new EditBuffer(
+            Objects.isNull(path) ? new PtContent() : new PtContent(path),
+            maxRowSize);
+    }
 
 }

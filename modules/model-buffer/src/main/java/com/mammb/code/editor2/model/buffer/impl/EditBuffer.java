@@ -91,9 +91,15 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
-    public void prev(int n) { slice.prev(n); }
+    public List<Textual> prev(int n) {
+        editQueue.flush();
+        return slice.prev(n);
+    }
 
     @Override
-    public void next(int n) { slice.next(n); }
+    public List<Textual> next(int n) {
+        editQueue.flush();
+        return slice.next(n);
+    }
 
 }

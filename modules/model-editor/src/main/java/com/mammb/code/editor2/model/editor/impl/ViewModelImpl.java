@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor2.model.editor.impl;
 
-import com.mammb.code.editor2.model.buffer.Buffers;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.editor.Selection;
 import com.mammb.code.editor2.model.editor.ViewModel;
@@ -37,7 +36,6 @@ public class ViewModelImpl implements ViewModel {
     private List<Selection> selections;
 
     public ViewModelImpl() {
-        this.buffer = Buffers.of(25);
     }
 
 

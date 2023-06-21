@@ -34,13 +34,11 @@ public class FxFontMetrics implements com.mammb.code.editor2.model.layout.FontMe
     private final FontLoader fontLoader;
     private Font base;
 
-
     public FxFontMetrics(Font font) {
         fontLoader = Toolkit.getToolkit().getFontLoader();
         base = Objects.requireNonNull(font);
         metrics.put(base, fontLoader.getFontMetrics(font));
     }
-
 
     @Override
     public void setDefault(Font font) {

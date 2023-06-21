@@ -17,16 +17,8 @@ package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
-import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
-import com.mammb.code.editor2.model.buffer.Buffers;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.layout.Span;
-import com.mammb.code.editor2.model.layout.TextLine;
-import com.mammb.code.editor2.model.layout.TextRun;
-import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.text.Font;
-
 import java.nio.file.Path;
 
 /**
@@ -35,14 +27,7 @@ import java.nio.file.Path;
  */
 public class EditorModel {
 
-    private FxFontStyle fontStyle = FxFontStyle.of(Font.font(20));
-
-    private TextBuffer<TextLine> buffer;
-
-    private final FxLayoutBuilder layout;
-
-    private OffsetPoint caretPoint = OffsetPoint.zero;
-
+    private Screen screen;
 
     public EditorModel(double width, double height) {
         this(width, height, null);
@@ -50,37 +35,23 @@ public class EditorModel {
 
 
     public EditorModel(double width, double height, Path path) {
-        layout = new FxLayoutBuilder(width);
-        buffer = Buffers.of(
-            screenRowSize(height),
-            path,
-            layout,
-            in -> Span.of(in, fontStyle));
+        screen = new Screen(TextBuffer.editBuffer(screenRowSize(height), path));
     }
 
 
     public void draw(GraphicsContext gc) {
-
-        for (TextLine textLine : buffer.texts()) {
-            for (TextRun run : textLine.runs()) {
-                if (run.style().font() instanceof Font font &&
-                    !gc.getFont().equals(font)) {
-                    gc.setFont(fontStyle.font());
-                }
-                gc.fillText(run.text(), run.layout().x(), run.layout().y());
-            }
-        }
+        screen.draw(gc);
     }
 
-    public void up(int n) { buffer.prev(n); }
+    public void up(int n) { screen.up(n); }
 
-    public void down(int n) { buffer.next(n); }
+    public void down(int n) { screen.down(n); }
 
 
     // -- private
 
     private int screenRowSize(double height) {
-        var fontMetrics = new FxFontMetrics(fontStyle.font());
+        var fontMetrics = new FxFontMetrics(FxFontStyle.of().font());
         return (int) Math.ceil(height / fontMetrics.lineHeight());
     }
 

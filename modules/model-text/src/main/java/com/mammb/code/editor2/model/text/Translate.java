@@ -39,5 +39,4 @@ public interface Translate<I, O> {
         return in -> that.applyTo(applyTo(in));
     }
 
-
 }
