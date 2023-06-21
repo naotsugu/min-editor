@@ -13,38 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.layout;
+package com.mammb.code.editor2.model.layout.impl;
 
-import com.mammb.code.editor2.model.layout.impl.SpanRecord;
+import com.mammb.code.editor2.model.layout.TextLine;
+import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.text.Textual;
+import java.util.List;
 
 /**
- * Span.
+ * TextLineRecord.
+ * @param point the OffsetPoint
+ * @param runs the text runs
  * @author Naotsugu Kobayashi
  */
-public interface Span extends Textual {
-
-    @Override
-    String text();
-
-    @Override
-    OffsetPoint point();
-
-    /**
-     * Get the style of span.
-     * @return the style of span
-     */
-    FontStyle<?, ?> style();
-
-    /**
-     * Create a new Span.
-     * @param textual the text of span
-     * @param fontStyle the style of span
-     * @return a created Span
-     */
-    static Span of(Textual textual, FontStyle<?, ?> fontStyle) {
-        return new SpanRecord(textual.text(), textual.point(), fontStyle);
-    }
-
+public record TextLineRecord(OffsetPoint point, List<TextRun> runs) implements TextLine {
 }

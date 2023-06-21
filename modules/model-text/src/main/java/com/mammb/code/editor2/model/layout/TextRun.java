@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor2.model.layout;
 
+import com.mammb.code.editor2.model.layout.impl.TextRunRecord;
+
 /**
  * TextRun.
  * @author Naotsugu Kobayashi
@@ -56,7 +58,6 @@ public interface TextRun {
      * @return a created TextRun
      */
     static TextRun of(Layout layout, String text, Span source) {
-        record TextRunRecord(Layout layout, String text, Span source) implements TextRun { }
         return new TextRunRecord(layout, text, source);
     }
 

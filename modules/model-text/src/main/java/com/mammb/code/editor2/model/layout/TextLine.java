@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.layout;
 
+import com.mammb.code.editor2.model.layout.impl.TextLineRecord;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 
@@ -35,7 +36,10 @@ public interface TextLine extends Textual {
     @Override
     OffsetPoint point();
 
-    /** The text runs. */
+    /**
+     * Get the text runs.
+     * @return the text runs
+     */
     List<TextRun> runs();
 
 
@@ -46,7 +50,6 @@ public interface TextLine extends Textual {
      * @return a created TextLine
      */
     static TextLine of(OffsetPoint point, List<TextRun> runs) {
-        record TextLineRecord(OffsetPoint point, List<TextRun> runs) implements TextLine { }
         return new TextLineRecord(point, runs);
     }
 

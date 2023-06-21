@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor2.model.layout;
 
+import com.mammb.code.editor2.model.layout.impl.LayoutRecord;
+
 /**
  * Layout.
  * @author Naotsugu Kobayashi
@@ -54,7 +56,6 @@ public interface Layout {
      * @return a created Layout
      */
     static Layout of(double x, double y, double width, double height) {
-        record LayoutRecord(double x, double y, double width, double height) implements Layout { }
         return new LayoutRecord(x, y, width, height);
     }
 
