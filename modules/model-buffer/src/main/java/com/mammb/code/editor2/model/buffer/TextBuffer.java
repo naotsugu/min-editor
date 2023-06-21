@@ -60,16 +60,4 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      */
     void next(int n);
 
-
-    static <T extends Textual> TextBuffer<T> empty() {
-        return new TextBuffer<T>() {
-            @Override public List<T> texts() { return List.of(); }
-            @Override public int maxLineSize() { return 0; }
-            @Override public void setMaxLineSize(int maxSize) { }
-            @Override public void push(Edit edit) { }
-            @Override public void prev(int n) { }
-            @Override public void next(int n) { }
-        };
-    }
-
 }

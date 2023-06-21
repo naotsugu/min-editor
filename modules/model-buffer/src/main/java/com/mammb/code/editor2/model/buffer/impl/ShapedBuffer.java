@@ -23,7 +23,6 @@ import com.mammb.code.editor2.model.layout.Span;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.text.Translate;
-
 import java.util.Collection;
 import java.util.List;
 

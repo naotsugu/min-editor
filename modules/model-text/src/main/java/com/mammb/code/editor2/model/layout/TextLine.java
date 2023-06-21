@@ -18,7 +18,6 @@ package com.mammb.code.editor2.model.layout;
 import com.mammb.code.editor2.model.layout.impl.TextLineRecord;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
