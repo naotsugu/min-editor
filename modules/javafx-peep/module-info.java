@@ -88,6 +88,7 @@ module javafx.graphics {
         javafx.controls,
         javafx.swing;
     exports com.sun.javafx.text to
+        code.editor.javafx.layout,
         javafx.web;
     exports com.sun.javafx.tk to
         code.editor.javafx.layout,

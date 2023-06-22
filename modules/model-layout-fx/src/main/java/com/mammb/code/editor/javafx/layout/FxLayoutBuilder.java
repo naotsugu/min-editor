@@ -15,12 +15,7 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.HitPosition;
-import com.mammb.code.editor2.model.layout.Layout;
-import com.mammb.code.editor2.model.layout.LineLayout;
-import com.mammb.code.editor2.model.layout.Span;
-import com.mammb.code.editor2.model.layout.TextLine;
-import com.mammb.code.editor2.model.layout.TextRun;
+import com.mammb.code.editor2.model.layout.*;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.sun.javafx.geom.Point2D;
 import com.sun.javafx.geom.RectBounds;
@@ -30,6 +25,7 @@ import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.shape.PathElement;
 import javafx.scene.text.Font;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,11 +96,11 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
         for (com.sun.javafx.scene.text.TextLine textLine : textLayout.getLines()) {
             List<TextRun> textRuns = new ArrayList<>();
 
-            for (GlyphList glyphList : textLine.getRuns()) {
-
-                Point2D location = glyphList.getLocation();
-                RectBounds rectBounds = glyphList.getLineBounds();
-                TextSpan textSpan = (TextSpan) glyphList.getTextSpan();
+            //for (com.sun.javafx.text.TextRun run : (com.sun.javafx.text.TextRun[]) textLine.getRuns()) {
+            for (GlyphList run : textLine.getRuns()) {
+                Point2D location = run.getLocation();
+                RectBounds rectBounds = run.getLineBounds();
+                TextSpan textSpan = (TextSpan) run.getTextSpan();
 
                 double baselineOffset = -rectBounds.getMinY();
                 Layout layout = Layout.of(
@@ -117,12 +113,14 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
                 }
 
                 int start = offset;
-                offset += glyphList.getCharOffset(glyphList.getGlyphCount());
+                offset += run.getCharOffset(run.getGlyphCount());
                 if (start == offset) {
                     if (textSpan.getText().length() > offset &&
                         textSpan.getText().charAt(offset) == '\r') offset++;
                     if (textSpan.getText().length() > offset &&
                         textSpan.getText().charAt(offset) == '\n') offset++;
+                    if (textSpan.getText().length() > offset &&
+                        textSpan.getText().charAt(offset) == '\t') offset++;
                 }
                 String runText = textSpan.getText().substring(start, offset);
                 textRuns.add(TextRun.of(layout, runText, textSpan.peer()));
