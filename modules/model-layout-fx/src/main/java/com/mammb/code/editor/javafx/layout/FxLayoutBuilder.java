@@ -180,7 +180,8 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
     private boolean needless(com.sun.javafx.scene.text.TextLine textLine) {
         return textLine.getLength() == 1 &&
             textLine.getRuns().length == 1 &&
-            ((com.sun.javafx.text.TextRun) textLine.getRuns()[0]).getLength() == 0;
+            textLine.getRuns()[0] instanceof com.sun.javafx.text.TextRun run &&
+            run.getLength() == 0;
     }
 
 }
