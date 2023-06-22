@@ -20,7 +20,6 @@ import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.sun.javafx.geom.Point2D;
 import com.sun.javafx.geom.RectBounds;
 import com.sun.javafx.scene.text.FontHelper;
-import com.sun.javafx.scene.text.GlyphList;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.shape.PathElement;
@@ -94,10 +93,12 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
         TextSpan currentSpan = null;
         int offset = 0;
         for (com.sun.javafx.scene.text.TextLine textLine : textLayout.getLines()) {
-            List<TextRun> textRuns = new ArrayList<>();
 
-            //for (com.sun.javafx.text.TextRun run : (com.sun.javafx.text.TextRun[]) textLine.getRuns()) {
-            for (GlyphList run : textLine.getRuns()) {
+            if (needless(textLine)) continue;
+
+            List<TextRun> textRuns = new ArrayList<>();
+            for (com.sun.javafx.text.TextRun run : (com.sun.javafx.text.TextRun[]) textLine.getRuns()) {
+            //for (GlyphList run : textLine.getRuns()) {
                 Point2D location = run.getLocation();
                 RectBounds rectBounds = run.getLineBounds();
                 TextSpan textSpan = (TextSpan) run.getTextSpan();
@@ -114,17 +115,10 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
 
                 int start = offset;
                 offset += run.getCharOffset(run.getGlyphCount());
-                if (start == offset) {
-                    if (textSpan.getText().length() > offset &&
-                        textSpan.getText().charAt(offset) == '\r') offset++;
-                    if (textSpan.getText().length() > offset &&
-                        textSpan.getText().charAt(offset) == '\n') offset++;
-                    if (textSpan.getText().length() > offset &&
-                        textSpan.getText().charAt(offset) == '\t') offset++;
-                }
                 String runText = textSpan.getText().substring(start, offset);
                 textRuns.add(TextRun.of(layout, runText, textSpan.peer()));
             }
+
             OffsetPoint p = OffsetPoint.of(
                 textRuns.get(0).source().point().row(),
                 point.offset(),
@@ -181,4 +175,12 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
         add(List.of(span));
         return layout();
     }
+
+
+    private boolean needless(com.sun.javafx.scene.text.TextLine textLine) {
+        return textLine.getLength() == 1 &&
+            textLine.getRuns().length == 1 &&
+            ((com.sun.javafx.text.TextRun) textLine.getRuns()[0]).getLength() == 0;
+    }
+
 }
