@@ -17,6 +17,8 @@ package com.mammb.code.editor2.model.layout;
 
 import com.mammb.code.editor2.model.layout.impl.TextRunRecord;
 
+import java.util.function.Function;
+
 /**
  * TextRun.
  * @author Naotsugu Kobayashi
@@ -34,6 +36,10 @@ public interface TextRun {
      * @return the text
      */
     String text();
+
+
+    Function<Integer, Float> offsetToX();
+
 
     /**
      * Get the style.
@@ -55,10 +61,11 @@ public interface TextRun {
      * @param layout the layout
      * @param text the text
      * @param source the source span
+     * @param offsetToX the offset to x function
      * @return a created TextRun
      */
-    static TextRun of(Layout layout, String text, Span source) {
-        return new TextRunRecord(layout, text, source);
+    static TextRun of(Layout layout, String text, Span source, Function<Integer, Float> offsetToX) {
+        return new TextRunRecord(layout, text, source, offsetToX);
     }
 
 }

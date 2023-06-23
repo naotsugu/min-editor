@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * FxLayoutBuilder.
@@ -92,9 +93,17 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
         List<TextLine> textLines = new ArrayList<>();
         TextSpan currentSpan = null;
         int offset = 0;
-        for (com.sun.javafx.scene.text.TextLine textLine : textLayout.getLines()) {
 
-            if (needless(textLine)) continue;
+        com.sun.javafx.scene.text.TextLine[] lines = textLayout.getLines();
+        for (int i = 0; i < lines.length; i++) {
+            com.sun.javafx.scene.text.TextLine textLine = lines[i];
+
+            boolean skip = textLine.getLength() == 1 &&
+                textLine.getRuns().length == 1 &&
+                textLine.getRuns()[0] instanceof com.sun.javafx.text.TextRun run &&
+                run.getLength() == 0 &&
+                i != lines.length - 1;
+            if (skip) continue;
 
             List<TextRun> textRuns = new ArrayList<>();
             for (com.sun.javafx.text.TextRun run : (com.sun.javafx.text.TextRun[]) textLine.getRuns()) {
@@ -116,7 +125,12 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
                 int start = offset;
                 offset += run.getCharOffset(run.getGlyphCount());
                 String runText = textSpan.getText().substring(start, offset);
-                textRuns.add(TextRun.of(layout, runText, textSpan.peer()));
+                Function<Integer, Float> offsetToX = off -> run.getXAtOffset(off, true);
+                textRuns.add(TextRun.of(
+                    layout,
+                    runText,
+                    textSpan.peer(),
+                    offsetToX));
             }
 
             OffsetPoint p = OffsetPoint.of(
@@ -174,14 +188,6 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
         clear();
         add(List.of(span));
         return layout();
-    }
-
-
-    private boolean needless(com.sun.javafx.scene.text.TextLine textLine) {
-        return textLine.getLength() == 1 &&
-            textLine.getRuns().length == 1 &&
-            textLine.getRuns()[0] instanceof com.sun.javafx.text.TextRun run &&
-            run.getLength() == 0;
     }
 
 }

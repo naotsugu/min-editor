@@ -18,7 +18,9 @@ package com.mammb.code.editor2.ui.pane;
 import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+
 import java.nio.file.Path;
 
 /**
@@ -40,6 +42,12 @@ public class EditorModel {
 
 
     public void draw(GraphicsContext gc) {
+        screen.draw(gc);
+    }
+
+    public void clearAndDraw(GraphicsContext gc) {
+        Canvas canvas = gc.getCanvas();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         screen.draw(gc);
     }
 

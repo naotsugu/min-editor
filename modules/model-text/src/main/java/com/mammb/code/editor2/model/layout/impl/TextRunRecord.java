@@ -18,13 +18,15 @@ package com.mammb.code.editor2.model.layout.impl;
 import com.mammb.code.editor2.model.layout.Layout;
 import com.mammb.code.editor2.model.layout.Span;
 import com.mammb.code.editor2.model.layout.TextRun;
+import java.util.function.Function;
 
 /**
  * TextRunRecord.
  * @param layout the layout
  * @param text the text
  * @param source the source span
+ * @param offsetToX the offset to x function
  * @author Naotsugu Kobayashi
  */
-public record TextRunRecord(Layout layout, String text, Span source) implements TextRun {
+public record TextRunRecord(Layout layout, String text, Span source, Function<Integer, Float> offsetToX) implements TextRun {
 }

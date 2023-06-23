@@ -139,7 +139,6 @@ public class RowSlice implements Slice<Textual> {
             added.add(textual);
             pushLast(textual);
         }
-        pushLast(added);
         return added;
     }
 

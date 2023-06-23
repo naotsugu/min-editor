@@ -22,6 +22,7 @@ import com.mammb.code.editor2.model.layout.LayoutTranslate;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.style.StylingTranslate;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
 import javafx.scene.canvas.GraphicsContext;
@@ -36,12 +37,15 @@ public class Screen {
     private final Translate<Textual, TextLine> translator;
     private final FxLayoutBuilder layout;
     private List<TextLine> lines = new LinkedList<>();
+    private OffsetPoint caretPoint = OffsetPoint.zero;
+
 
     public Screen(TextBuffer<Textual> editBuffer) {
         this.editBuffer = editBuffer;
         this.layout = new FxLayoutBuilder();
         this.translator = translator();
     }
+
 
     public void draw(GraphicsContext gc) {
         double offsetY = 0;
@@ -55,6 +59,7 @@ public class Screen {
             offsetY += textLine.runs().get(0).layout().height();
         }
     }
+
 
     public void clear() {
         lines.clear();
