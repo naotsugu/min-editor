@@ -118,9 +118,10 @@ public class RowSlice implements Slice<Textual> {
             if (cpOffset == 0) break;
 
             String str = rowSupplier.before(cpOffset);
-            added.add(0, Textual.of(head.point().minus(str), str));
+            Textual textual = Textual.of(head.point().minus(str), str);
+            added.add(0, textual);
+            pushFirst(textual);
         }
-        pushFirst(added);
         return added;
     }
 
@@ -134,7 +135,9 @@ public class RowSlice implements Slice<Textual> {
 
             String str = rowSupplier.at(next.cpOffset());
             if (str == null) break;
-            added.add(Textual.of(next, str));
+            Textual textual = Textual.of(next, str);
+            added.add(textual);
+            pushLast(textual);
         }
         pushLast(added);
         return added;
@@ -143,17 +146,23 @@ public class RowSlice implements Slice<Textual> {
 
     private void pushFirst(List<Textual> rows) {
         texts.addAll(0, rows);
-        while (texts.size() > maxRowSize) {
-            texts.remove(texts.size() - 1);
-        }
+        while (texts.size() > maxRowSize) texts.remove(texts.size() - 1);
+    }
+
+    private void pushFirst(Textual row) {
+        texts.add(0, row);
+        while (texts.size() > maxRowSize) texts.remove(texts.size() - 1);
     }
 
 
     private void pushLast(List<Textual> rows) {
         texts.addAll(rows);
-        while (texts.size() > maxRowSize) {
-            texts.remove(0);
-        }
+        while (texts.size() > maxRowSize) texts.remove(0);
+    }
+
+    private void pushLast(Textual row) {
+        texts.add(row);
+        while (texts.size() > maxRowSize) texts.remove(0);
     }
 
 

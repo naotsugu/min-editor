@@ -21,6 +21,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 
 import java.nio.file.Path;
@@ -55,6 +56,7 @@ public class EditorPane extends StackPane {
     private void initHandler() {
         setOnKeyPressed(this::handle);
         setOnKeyTyped(this::handle);
+        setOnScroll(this::handle);
         setOnMouseClicked(this::handle);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
@@ -69,6 +71,20 @@ public class EditorPane extends StackPane {
         editorModel = new EditorModel(getWidth(), getHeight(), path);
         editorModel.draw(gc);
         requestFocus();
+    }
+
+
+    public void handle(ScrollEvent e) {
+
+        if (e.getEventType() == ScrollEvent.SCROLL) {
+            if (e.getDeltaY() > 0) {
+                editorModel.up(Math.min((int) e.getDeltaY(), 3));
+            } else if (e.getDeltaY() < 0) {
+                editorModel.down(Math.min(Math.abs((int) e.getDeltaY()), 3));
+            }
+            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            editorModel.draw(gc);
+        }
     }
 
 

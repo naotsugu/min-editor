@@ -19,6 +19,7 @@ include("ui-app", "ui-pane")
 
 include("javafx")
 include("javafx-peep")
+include("javafx-original")
 
 include("model-layout-fx")
 
