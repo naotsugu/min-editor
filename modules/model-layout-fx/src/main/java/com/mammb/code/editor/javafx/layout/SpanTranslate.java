@@ -31,10 +31,10 @@ public class SpanTranslate implements Translate<StyledText, Span> {
 
     /**
      * Constructor.
-     * @param font the font
+     * @param fontStyle the fontStyle
      */
-    private SpanTranslate(Font font) {
-        this.fontStyle = FxFontStyle.of(font);
+    private SpanTranslate(FxFontStyle fontStyle) {
+        this.fontStyle = fontStyle;
     }
 
     /**
@@ -43,7 +43,7 @@ public class SpanTranslate implements Translate<StyledText, Span> {
      * @return a new translation
      */
     public static Translate<StyledText, Span> of(Font font) {
-        return new SpanTranslate(font);
+        return new SpanTranslate(FxFontStyle.of(font));
     }
 
     /**
@@ -51,7 +51,7 @@ public class SpanTranslate implements Translate<StyledText, Span> {
      * @return a new translation
      */
     public static Translate<StyledText, Span> of() {
-        return of(Font.font(20));
+        return new SpanTranslate(FxFontStyle.of());
     }
 
     @Override

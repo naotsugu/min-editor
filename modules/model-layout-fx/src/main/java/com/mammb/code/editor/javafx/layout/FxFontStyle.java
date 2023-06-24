@@ -36,7 +36,7 @@ public interface FxFontStyle extends FontStyle<Font, Color> {
      * @return a created Style
      */
     static FxFontStyle of() {
-        return of(Font.font(20));
+        return of(Font.font("Consolas", 18));
     }
 
     /**

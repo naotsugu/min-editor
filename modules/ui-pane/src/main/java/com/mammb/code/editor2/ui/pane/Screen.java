@@ -25,7 +25,9 @@ import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,8 +39,9 @@ public class Screen {
     private final Translate<Textual, TextLine> translator;
     private final FxLayoutBuilder layout;
     private List<TextLine> lines = new LinkedList<>();
-    private OffsetPoint caretPoint = OffsetPoint.zero;
+    private int caretOffset = 0;
 
+    double margin = 5;
 
     public Screen(TextBuffer<Textual> editBuffer) {
         this.editBuffer = editBuffer;
@@ -51,12 +54,28 @@ public class Screen {
         double offsetY = 0;
         for (TextLine textLine : lines()) {
             for (TextRun run : textLine.runs()) {
+                drawCaret(gc, offsetY, textLine, run);
                 if (run.style().font() instanceof Font font && !gc.getFont().equals(font)) {
                     gc.setFont(font);
                 }
-                gc.fillText(run.text(), run.layout().x(), run.layout().y() + offsetY);
+                double y = run.layout().y() + offsetY;
+                gc.setTextBaseline(VPos.CENTER);
+                gc.fillText(run.text(), run.layout().x() + margin, y);
             }
-            offsetY += textLine.runs().get(0).layout().height();
+            offsetY += textLine.height();
+        }
+    }
+
+
+    public void drawCaret(GraphicsContext gc, double offsetY, TextLine textLine, TextRun run) {
+        OffsetPoint runPoint = run.source().point();
+        if (runPoint.offset() <= caretOffset && caretOffset <= runPoint.offset() + run.text().length()) {
+            double x = run.offsetToX().apply(caretOffset - runPoint.offset());
+            gc.save();
+            gc.setStroke(Color.ORANGE);
+            gc.setLineWidth(3);
+            gc.strokeLine(x + margin, offsetY, x + margin, offsetY + textLine.height());
+            gc.restore();
         }
     }
 
@@ -79,6 +98,11 @@ public class Screen {
         lines.addAll(list);
         for (int i = 0; i < list.size(); i++)
             lines.remove(0);
+    }
+
+    public void moveCaret(int delta) {
+        caretOffset += delta;
+        if (caretOffset < 0) caretOffset = 0;
     }
 
     private List<TextLine> lines() {

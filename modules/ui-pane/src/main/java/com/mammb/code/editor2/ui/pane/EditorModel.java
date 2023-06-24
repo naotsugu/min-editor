@@ -20,7 +20,6 @@ import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-
 import java.nio.file.Path;
 
 /**
@@ -55,6 +54,7 @@ public class EditorModel {
 
     public void down(int n) { screen.down(n); }
 
+    public void moveCaret(int delta) { screen.moveCaret(delta); }
 
     // -- private
 

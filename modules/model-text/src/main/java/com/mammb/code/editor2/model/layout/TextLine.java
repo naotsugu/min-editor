@@ -41,15 +41,21 @@ public interface TextLine extends Textual {
      */
     List<TextRun> runs();
 
+    /**
+     * Get the height.
+     * @return the height
+     */
+    double height();
 
     /**
      * Create a new TextLine.
      * @param point the OffsetPoint
      * @param runs the text runs
+     * @param height the height
      * @return a created TextLine
      */
-    static TextLine of(OffsetPoint point, List<TextRun> runs) {
-        return new TextLineRecord(point, runs);
+    static TextLine of(OffsetPoint point, List<TextRun> runs, double height) {
+        return new TextLineRecord(point, runs, height);
     }
 
 }

@@ -24,7 +24,8 @@ import java.util.List;
  * TextLineRecord.
  * @param point the OffsetPoint
  * @param runs the text runs
+ * @param height the height
  * @author Naotsugu Kobayashi
  */
-public record TextLineRecord(OffsetPoint point, List<TextRun> runs) implements TextLine {
+public record TextLineRecord(OffsetPoint point, List<TextRun> runs, double height) implements TextLine {
 }
