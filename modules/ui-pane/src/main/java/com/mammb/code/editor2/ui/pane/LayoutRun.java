@@ -13,29 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.layout.impl;
+package com.mammb.code.editor2.ui.pane;
 
-import com.mammb.code.editor2.model.layout.Layout;
-import com.mammb.code.editor2.model.layout.Span;
-import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
-import java.util.function.Function;
 
 /**
- * TextRunRecord.
- * @param layout the layout
- * @param text the text
- * @param textLine the textLine to which this run belongs
- * @param source the source span
- * @param offsetToX the offset to x function
- * @param xToOffset the x to offset function
+ * LayoutRun.
  * @author Naotsugu Kobayashi
  */
-public record TextRunRecord(
-    Layout layout,
-    String text,
-    TextLine textLine,
-    Span source,
-    Function<Integer, Float> offsetToX,
-    Function<Double, Integer> xToOffset) implements TextRun {
+public record LayoutRun(TextRun run, double offsetY, double marginX, double marginY) {
+
+    double y() {
+        return offsetY + marginY;
+    }
 }

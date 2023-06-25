@@ -31,7 +31,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
+/**
+ * Screen.
+ * @author Naotsugu Kobayashi
+ */
 public class Screen {
 
     private final TextBuffer<Textual> editBuffer;
@@ -43,6 +48,7 @@ public class Screen {
 
     double margin = 5;
 
+
     public Screen(TextBuffer<Textual> editBuffer) {
         this.editBuffer = editBuffer;
         this.layout = new FxLayoutBuilder();
@@ -51,35 +57,70 @@ public class Screen {
 
 
     public void draw(GraphicsContext gc) {
+        eachRun(layoutRun -> {
+            drawCaret(gc, layoutRun);
+            drawTextRun(gc, layoutRun);
+        });
+    }
+
+
+    private void drawTextRun(GraphicsContext gc, LayoutRun layoutRun) {
+        if (layoutRun.run().style().font() instanceof Font font && !gc.getFont().equals(font)) {
+            gc.setFont(font);
+        }
+        double x = layoutRun.run().layout().x() + layoutRun.marginX();
+        double y = layoutRun.run().layout().y() + layoutRun.y();
+        gc.setTextBaseline(VPos.CENTER);
+        gc.fillText(layoutRun.run().text(), x, y);
+    }
+
+
+    private void drawCaret(GraphicsContext gc, LayoutRun layoutRun) {
+        if (contains(layoutRun.run(), caretOffset)) {
+            double x = layoutRun.run().offsetToX().apply(
+                caretOffset - layoutRun.run().source().point().offset()) + layoutRun.marginX();
+            double y = layoutRun.y();
+            gc.save();
+            gc.setStroke(Color.ORANGE);
+            gc.setLineWidth(2);
+            gc.strokeLine(x, y, x, y + layoutRun.run().textLine().height());
+            gc.restore();
+        }
+    }
+
+
+    private void eachRun(Consumer<LayoutRun> consumer) {
         double offsetY = 0;
         for (TextLine textLine : lines()) {
             for (TextRun run : textLine.runs()) {
-                drawCaret(gc, offsetY, textLine, run);
-                drawTextRun(gc, offsetY, run);
+                consumer.accept(new LayoutRun(run, offsetY, margin, margin));
             }
             offsetY += textLine.height();
         }
     }
 
-    public void drawTextRun(GraphicsContext gc, double offsetY, TextRun run) {
-        if (run.style().font() instanceof Font font && !gc.getFont().equals(font)) {
-            gc.setFont(font);
+
+    private LayoutRun runAtCaret() {
+        double offsetY = 0;
+        for (TextLine textLine : lines()) {
+            if (textLine.point().offset() >= caretOffset) {
+                for (TextRun run : textLine.runs()) {
+                    if (contains(run, caretOffset)) {
+                        return new LayoutRun(run, offsetY, margin, margin);
+                    }
+                }
+                return null;
+            }
+            offsetY += textLine.height();
         }
-        double y = run.layout().y() + offsetY;
-        gc.setTextBaseline(VPos.CENTER);
-        gc.fillText(run.text(), run.layout().x() + margin, y);
+        return null;
     }
 
-    public void drawCaret(GraphicsContext gc, double offsetY, TextLine textLine, TextRun run) {
+
+    private static boolean contains(TextRun run, int caretOffset) {
         OffsetPoint runPoint = run.source().point();
-        if (runPoint.offset() <= caretOffset && caretOffset <= runPoint.offset() + run.text().length()) {
-            double x = run.offsetToX().apply(caretOffset - runPoint.offset());
-            gc.save();
-            gc.setStroke(Color.ORANGE);
-            gc.setLineWidth(2);
-            gc.strokeLine(x + margin, offsetY, x + margin, offsetY + textLine.height());
-            gc.restore();
-        }
+        return runPoint.offset() <= caretOffset &&
+            caretOffset <= runPoint.offset() + run.text().length();
     }
 
 

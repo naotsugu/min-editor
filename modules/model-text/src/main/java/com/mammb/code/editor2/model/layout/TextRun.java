@@ -43,6 +43,12 @@ public interface TextRun {
     Function<Integer, Float> offsetToX();
 
     /**
+     * The x to offset function.
+     * @return the x to offset function
+     */
+    Function<Double, Integer> xToOffset();
+
+    /**
      * Get the textLine to which this run belongs.
      * @return the textLine to which this run belongs
      */
@@ -69,10 +75,12 @@ public interface TextRun {
      * @param text the text
      * @param source the source span
      * @param offsetToX the offset to x function
+     * @param xToOffset the x to offset function
      * @return a created TextRun
      */
-    static TextRun of(Layout layout, String text, Span source, Function<Integer, Float> offsetToX) {
-        return new TextRunRecord(layout, text, null, source, offsetToX);
+    static TextRun of(Layout layout, String text, Span source,
+            Function<Integer, Float> offsetToX, Function<Double, Integer> xToOffset) {
+        return new TextRunRecord(layout, text, null, source, offsetToX, xToOffset);
     }
 
     /**
@@ -82,7 +90,7 @@ public interface TextRun {
      * @return a created TextRun
      */
     static TextRun of(TextLine textLine, TextRun textRun) {
-        return new TextRunRecord(textRun.layout(), textRun.text(), textLine, textRun.source(), textRun.offsetToX());
+        return new TextRunRecord(textRun.layout(), textRun.text(), textLine, textRun.source(), textRun.offsetToX(), textRun.xToOffset());
     }
 
 }

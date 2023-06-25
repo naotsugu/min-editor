@@ -34,7 +34,7 @@ import java.util.function.Function;
  * FxLayoutBuilder.
  * @author Naotsugu Kobayashi
  */
-public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.LayoutBuilder, LineLayout {
+public class FxLayoutBuilder implements LineLayout {
 
     /** The delegated text layout. */
     private final TextLayout textLayout;
@@ -65,13 +65,11 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
     }
 
 
-    @Override
     public void add(List<Span> spans) {
         this.spans.addAll(spans);
     }
 
 
-    @Override
     public List<TextLine> layout() {
 
         record TextSpan(String getText, Object getFont, RectBounds getBounds, Span peer)
@@ -124,18 +122,23 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
                 offset += run.getCharOffset(run.getGlyphCount());
                 String runText = textSpan.getText().substring(start, offset);
                 Function<Integer, Float> offsetToX = off -> run.getXAtOffset(off, true);
+                Function<Double, Integer> xToOffset = x -> run.getOffsetAtX(x.floatValue(), new int[1]);
                 textRuns.add(TextRun.of(
                     layout,
                     runText,
                     textSpan.peer(),
-                    offsetToX));
+                    offsetToX,
+                    xToOffset));
             }
 
-            OffsetPoint p = OffsetPoint.of(
+            OffsetPoint offsetPoint = OffsetPoint.of(
                 textRuns.get(0).source().point().row(),
                 point.offset(),
                 point.cpOffset());
-            TextLine line = TextLine.of(p, textLine.getBounds().getHeight(), textRuns);
+            TextLine line = TextLine.of(
+                offsetPoint,
+                textLine.getBounds().getHeight(),
+                textRuns);
             point = point.plus(line.text());
             textLines.add(line);
         }
@@ -143,13 +146,11 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
     }
 
 
-    @Override
     public void clear() {
         spans.clear();
     }
 
 
-    @Override
     public HitPosition hitInfo(double x, double y) {
         TextLayout.Hit hit = textLayout.getHitInfo((float) x, (float) y);
         record HitPositionRecord(int charIndex, int insertionIndex, boolean leading) implements HitPosition { }
