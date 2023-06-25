@@ -15,9 +15,10 @@
  */
 package com.mammb.code.editor2.model.layout;
 
-import com.mammb.code.editor2.model.layout.impl.TextLineRecord;
+import com.mammb.code.editor2.model.layout.impl.TextLineImpl;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,26 +37,26 @@ public interface TextLine extends Textual {
     OffsetPoint point();
 
     /**
-     * Get the text runs.
-     * @return the text runs
-     */
-    List<TextRun> runs();
-
-    /**
      * Get the height.
      * @return the height
      */
     double height();
 
     /**
+     * Get the text runs.
+     * @return the text runs
+     */
+    List<TextRun> runs();
+
+    /**
      * Create a new TextLine.
      * @param point the OffsetPoint
-     * @param runs the text runs
      * @param height the height
+     * @param textRuns the text runs
      * @return a created TextLine
      */
-    static TextLine of(OffsetPoint point, List<TextRun> runs, double height) {
-        return new TextLineRecord(point, runs, height);
+    static TextLine of(OffsetPoint point, double height, List<TextRun> textRuns) {
+        return new TextLineImpl(point, height, textRuns);
     }
 
 }

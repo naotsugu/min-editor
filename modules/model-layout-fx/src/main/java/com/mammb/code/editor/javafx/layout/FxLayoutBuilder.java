@@ -135,7 +135,7 @@ public class FxLayoutBuilder implements com.mammb.code.editor2.model.layout.Layo
                 textRuns.get(0).source().point().row(),
                 point.offset(),
                 point.cpOffset());
-            TextLine line = TextLine.of(p, textRuns, textLine.getBounds().getHeight());
+            TextLine line = TextLine.of(p, textLine.getBounds().getHeight(), textRuns);
             point = point.plus(line.text());
             textLines.add(line);
         }

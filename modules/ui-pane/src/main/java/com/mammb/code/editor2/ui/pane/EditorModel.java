@@ -50,9 +50,9 @@ public class EditorModel {
         screen.draw(gc);
     }
 
-    public void up(int n) { screen.up(n); }
+    public void up(int n) { screen.scrollPrev(n); }
 
-    public void down(int n) { screen.down(n); }
+    public void down(int n) { screen.scrollNext(n); }
 
     public void moveCaret(int delta) { screen.moveCaret(delta); }
 

@@ -55,17 +55,20 @@ public class Screen {
         for (TextLine textLine : lines()) {
             for (TextRun run : textLine.runs()) {
                 drawCaret(gc, offsetY, textLine, run);
-                if (run.style().font() instanceof Font font && !gc.getFont().equals(font)) {
-                    gc.setFont(font);
-                }
-                double y = run.layout().y() + offsetY;
-                gc.setTextBaseline(VPos.CENTER);
-                gc.fillText(run.text(), run.layout().x() + margin, y);
+                drawTextRun(gc, offsetY, run);
             }
             offsetY += textLine.height();
         }
     }
 
+    public void drawTextRun(GraphicsContext gc, double offsetY, TextRun run) {
+        if (run.style().font() instanceof Font font && !gc.getFont().equals(font)) {
+            gc.setFont(font);
+        }
+        double y = run.layout().y() + offsetY;
+        gc.setTextBaseline(VPos.CENTER);
+        gc.fillText(run.text(), run.layout().x() + margin, y);
+    }
 
     public void drawCaret(GraphicsContext gc, double offsetY, TextLine textLine, TextRun run) {
         OffsetPoint runPoint = run.source().point();
@@ -73,7 +76,7 @@ public class Screen {
             double x = run.offsetToX().apply(caretOffset - runPoint.offset());
             gc.save();
             gc.setStroke(Color.ORANGE);
-            gc.setLineWidth(3);
+            gc.setLineWidth(2);
             gc.strokeLine(x + margin, offsetY, x + margin, offsetY + textLine.height());
             gc.restore();
         }
@@ -84,20 +87,20 @@ public class Screen {
         lines.clear();
     }
 
-    public void up(int n) {
+    public void scrollPrev(int n) {
         List<TextLine> list = editBuffer.prev(n).stream()
             .map(translator::applyTo).toList();
+        if (list.isEmpty()) return;
         lines.addAll(0, list);
-        for (int i = 0; i < list.size(); i++)
-            lines.remove(lines.size() - 1);
+        lines.subList(lines.size() - list.size(), lines.size()).clear();
     }
 
-    public void down(int n) {
+    public void scrollNext(int n) {
         List<TextLine> list = editBuffer.next(n).stream()
             .map(translator::applyTo).toList();
+        if (list.isEmpty()) return;
         lines.addAll(list);
-        for (int i = 0; i < list.size(); i++)
-            lines.remove(0);
+        lines.subList(0, list.size()).clear();
     }
 
     public void moveCaret(int delta) {
