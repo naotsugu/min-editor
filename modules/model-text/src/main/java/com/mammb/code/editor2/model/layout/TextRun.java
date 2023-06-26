@@ -31,10 +31,32 @@ public interface TextRun {
     Layout layout();
 
     /**
+     * Get the start char index at the source span.
+     * @return the start char index at the source span
+     */
+    int start();
+
+    /**
+     * Get the char length of this text run.
+     * @return the char length of this text run
+     */
+    int length();
+
+    /**
+     * Get the end char index at the source span.
+     * @return the start char index at the source span
+     */
+    default int end() {
+        return start() + length();
+    }
+
+    /**
      * Get the text.
      * @return the text
      */
-    String text();
+    default String text() {
+        return source().text().substring(start(), end());
+    }
 
     /**
      * The offset to x function.
@@ -72,15 +94,16 @@ public interface TextRun {
     /**
      * Create a new TextRun.
      * @param layout the layout
-     * @param text the text
+     * @param start the start char index at the source span
+     * @param length the char length of this text run
      * @param source the source span
      * @param offsetToX the offset to x function
      * @param xToOffset the x to offset function
      * @return a created TextRun
      */
-    static TextRun of(Layout layout, String text, Span source,
-            Function<Integer, Float> offsetToX, Function<Double, Integer> xToOffset) {
-        return new TextRunRecord(layout, text, null, source, offsetToX, xToOffset);
+    static TextRun of(Layout layout, int start, int length, Span source,
+                      Function<Integer, Float> offsetToX, Function<Double, Integer> xToOffset) {
+        return new TextRunRecord(layout, start, length, null, source, offsetToX, xToOffset);
     }
 
     /**
@@ -90,7 +113,7 @@ public interface TextRun {
      * @return a created TextRun
      */
     static TextRun of(TextLine textLine, TextRun textRun) {
-        return new TextRunRecord(textRun.layout(), textRun.text(), textLine, textRun.source(), textRun.offsetToX(), textRun.xToOffset());
+        return new TextRunRecord(textRun.layout(), textRun.start(), textRun.length(), textLine, textRun.source(), textRun.offsetToX(), textRun.xToOffset());
     }
 
 }

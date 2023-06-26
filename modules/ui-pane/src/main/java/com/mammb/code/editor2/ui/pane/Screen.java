@@ -22,13 +22,13 @@ import com.mammb.code.editor2.model.layout.LayoutTranslate;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.style.StylingTranslate;
-import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -44,9 +44,15 @@ public class Screen {
     private final Translate<Textual, TextLine> translator;
     private final FxLayoutBuilder layout;
     private List<TextLine> lines = new LinkedList<>();
-    private int caretOffset = 0;
+
 
     double margin = 5;
+
+    /** The caret offset */
+    private int caretOffset = 0;
+    /** The logical caret position x. */
+    private double caretLogicalX = margin;
+
 
 
     public Screen(TextBuffer<Textual> editBuffer) {
@@ -57,8 +63,8 @@ public class Screen {
 
 
     public void draw(GraphicsContext gc) {
+        drawCaret(gc);
         eachRun(layoutRun -> {
-            drawCaret(gc, layoutRun);
             drawTextRun(gc, layoutRun);
         });
     }
@@ -75,10 +81,11 @@ public class Screen {
     }
 
 
-    private void drawCaret(GraphicsContext gc, LayoutRun layoutRun) {
-        if (contains(layoutRun.run(), caretOffset)) {
-            double x = layoutRun.run().offsetToX().apply(
-                caretOffset - layoutRun.run().source().point().offset()) + layoutRun.marginX();
+    private void drawCaret(GraphicsContext gc) {
+        LayoutRun layoutRun = layoutRunAt(caretOffset);
+        if (layoutRun != null) {
+            int runStart = layoutRun.run().source().point().offset() + layoutRun.run().start();
+            double x = layoutRun.run().offsetToX().apply(caretOffset - runStart) + layoutRun.marginX();
             double y = layoutRun.y();
             gc.save();
             gc.setStroke(Color.ORANGE);
@@ -97,30 +104,6 @@ public class Screen {
             }
             offsetY += textLine.height();
         }
-    }
-
-
-    private LayoutRun runAtCaret() {
-        double offsetY = 0;
-        for (TextLine textLine : lines()) {
-            if (textLine.point().offset() >= caretOffset) {
-                for (TextRun run : textLine.runs()) {
-                    if (contains(run, caretOffset)) {
-                        return new LayoutRun(run, offsetY, margin, margin);
-                    }
-                }
-                return null;
-            }
-            offsetY += textLine.height();
-        }
-        return null;
-    }
-
-
-    private static boolean contains(TextRun run, int caretOffset) {
-        OffsetPoint runPoint = run.source().point();
-        return runPoint.offset() <= caretOffset &&
-            caretOffset <= runPoint.offset() + run.text().length();
     }
 
 
@@ -149,6 +132,10 @@ public class Screen {
         if (caretOffset < 0) caretOffset = 0;
     }
 
+    public void moveCaretRight() {
+
+    }
+
     private List<TextLine> lines() {
         if (lines.isEmpty()) {
             List<TextLine> list = editBuffer.texts().stream()
@@ -156,6 +143,33 @@ public class Screen {
             lines.addAll(list);
         }
         return lines;
+    }
+
+
+    private LayoutRun layoutRunAt(int charOffset) {
+        double offsetY = 0;
+        for (TextLine textLine : lines()) {
+            int start = textLine.point().offset();
+            int end   = start + textLine.length();
+            if (start <= charOffset && charOffset < end) {
+                for (TextRun run : textLine.runs()) {
+                    if (within(run, charOffset)) {
+                        return new LayoutRun(run, offsetY, margin, margin);
+                    }
+                }
+                return null;
+            }
+            offsetY += textLine.height();
+        }
+        return null;
+    }
+
+
+    private static boolean within(TextRun run, int caretOffset) {
+        if (run.length() == 0) return false;
+        int runStart = run.source().point().offset() + run.start();
+        int runEnd = runStart + run.length();
+        return runStart <= caretOffset && caretOffset < runEnd;
     }
 
     private Translate<Textual, TextLine> translator() {

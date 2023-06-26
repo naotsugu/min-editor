@@ -88,6 +88,7 @@ public class FxLayoutBuilder implements LineLayout {
         textLayout.setContent(textSpans);
 
         List<TextLine> textLines = new ArrayList<>();
+
         TextSpan currentSpan = null;
         int offset = 0;
 
@@ -95,40 +96,32 @@ public class FxLayoutBuilder implements LineLayout {
         for (int i = 0; i < lines.length; i++) {
             com.sun.javafx.scene.text.TextLine textLine = lines[i];
 
-            boolean skip = textLine.getLength() == 1 &&
-                textLine.getRuns().length == 1 &&
-                textLine.getRuns()[0] instanceof com.sun.javafx.text.TextRun run &&
-                run.getLength() == 0 &&
-                i != lines.length - 1;
-            if (skip) continue;
-
             List<TextRun> textRuns = new ArrayList<>();
             for (com.sun.javafx.text.TextRun run : (com.sun.javafx.text.TextRun[]) textLine.getRuns()) {
-            //for (GlyphList run : textLine.getRuns()) {
+
                 Point2D location = run.getLocation();
                 RectBounds rectBounds = run.getLineBounds();
-                TextSpan textSpan = (TextSpan) run.getTextSpan();
+                if (currentSpan != run.getTextSpan()) {
+                    currentSpan = (TextSpan) run.getTextSpan();
+                    offset = 0;
+                }
+
                 double baseline = -rectBounds.getMinY();
                 Layout layout = Layout.of(
                     location.x, baseline + location.y,
                     rectBounds.getWidth(), rectBounds.getHeight());
 
-                if (currentSpan != textSpan) {
-                    currentSpan = textSpan;
-                    offset = 0;
-                }
-
-                int start = offset;
-                offset += run.getCharOffset(run.getGlyphCount());
-                String runText = textSpan.getText().substring(start, offset);
-                Function<Integer, Float> offsetToX = off -> run.getXAtOffset(off, true);
+                Function<Integer, Float> offsetToX = off -> run.getXAtOffset(off, true) + location.x;
                 Function<Double, Integer> xToOffset = x -> run.getOffsetAtX(x.floatValue(), new int[1]);
+
                 textRuns.add(TextRun.of(
                     layout,
-                    runText,
-                    textSpan.peer(),
+                    offset,
+                    run.getLength(),
+                    currentSpan.peer(),
                     offsetToX,
                     xToOffset));
+                offset += run.getLength();
             }
 
             OffsetPoint offsetPoint = OffsetPoint.of(
@@ -137,6 +130,7 @@ public class FxLayoutBuilder implements LineLayout {
                 point.cpOffset());
             TextLine line = TextLine.of(
                 offsetPoint,
+                textLine.getLength(),
                 textLine.getBounds().getHeight(),
                 textRuns);
             point = point.plus(line.text());

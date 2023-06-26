@@ -37,6 +37,12 @@ public interface TextLine extends Textual {
     OffsetPoint point();
 
     /**
+     * Get the char length.
+     * @return the char length
+     */
+    int length();
+
+    /**
      * Get the height.
      * @return the height
      */
@@ -51,12 +57,13 @@ public interface TextLine extends Textual {
     /**
      * Create a new TextLine.
      * @param point the OffsetPoint
+     * @param length the char length
      * @param height the height
      * @param textRuns the text runs
      * @return a created TextLine
      */
-    static TextLine of(OffsetPoint point, double height, List<TextRun> textRuns) {
-        return new TextLineImpl(point, height, textRuns);
+    static TextLine of(OffsetPoint point, int length, double height, List<TextRun> textRuns) {
+        return new TextLineImpl(point, length, height, textRuns);
     }
 
 }
