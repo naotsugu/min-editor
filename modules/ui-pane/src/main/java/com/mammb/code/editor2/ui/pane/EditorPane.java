@@ -90,8 +90,8 @@ public class EditorPane extends StackPane {
         switch (e.getCode()) {
             case RIGHT      -> editorModel.moveCaretRight();
             case LEFT       -> editorModel.moveCaretLeft();
-            case UP         -> editorModel.up(1);
-            case DOWN       -> editorModel.down(1);
+            case UP         -> editorModel.moveCaretUp();
+            case DOWN       -> editorModel.moveCaretDown();
         }
         editorModel.clearAndDraw(gc);
     }

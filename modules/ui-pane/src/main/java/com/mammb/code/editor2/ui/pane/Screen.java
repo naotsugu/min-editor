@@ -140,13 +140,6 @@ public class Screen {
     }
 
 
-    public void moveCaret(int delta) {
-        caretOffset += delta;
-        if (caretOffset < 0) caretOffset = 0;
-        calcCaret();
-    }
-
-
     public void moveCaretRight() {
         double oldX = caretX;
         double oldY = caretY;
@@ -173,6 +166,36 @@ public class Screen {
         caretLogicalX = caretX;
     }
 
+    public void moveCaretDown() {
+        LayoutRun run = layoutRunAt(caretLogicalX, caretY + caretHeight + 1);
+        double x = caretLogicalX - run.run().layout().x();
+        int offset = run.run().xToOffset().apply(x);
+        TextLine textLine = run.run().textLine();
+        offset += textLine.point().offset();
+        for (TextRun textRun : textLine.runs()) {
+            if (textRun == run.run()) break;
+            offset += textRun.length();
+        }
+        caretOffset = offset;
+        calcCaret();
+    }
+
+    public void moveCaretUp() {
+        if (caretY - 1 < margin) {
+            return;
+        }
+        LayoutRun run = layoutRunAt(caretLogicalX, caretY - 1 - margin);
+        double x = caretLogicalX - run.run().layout().x();
+        int offset = run.run().xToOffset().apply(x);
+        TextLine textLine = run.run().textLine();
+        offset += textLine.point().offset();
+        for (TextRun textRun : textLine.runs()) {
+            if (textRun == run.run()) break;
+            offset += textRun.length();
+        }
+        caretOffset = offset;
+        calcCaret();
+    }
 
     private List<TextLine> lines() {
         if (lines.isEmpty()) {
