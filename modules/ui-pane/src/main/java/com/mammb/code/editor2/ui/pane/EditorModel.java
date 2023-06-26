@@ -55,6 +55,8 @@ public class EditorModel {
     public void down(int n) { screen.scrollNext(n); }
 
     public void moveCaret(int delta) { screen.moveCaret(delta); }
+    public void moveCaretRight() { screen.moveCaretRight(); }
+    public void moveCaretLeft() { screen.moveCaretLeft(); }
 
     // -- private
 

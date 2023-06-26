@@ -88,8 +88,8 @@ public class EditorPane extends StackPane {
 
     public void handle(KeyEvent e) {
         switch (e.getCode()) {
-            case RIGHT      -> editorModel.moveCaret(1);
-            case LEFT       -> editorModel.moveCaret(-1);
+            case RIGHT      -> editorModel.moveCaretRight();
+            case LEFT       -> editorModel.moveCaretLeft();
             case UP         -> editorModel.up(1);
             case DOWN       -> editorModel.down(1);
         }
