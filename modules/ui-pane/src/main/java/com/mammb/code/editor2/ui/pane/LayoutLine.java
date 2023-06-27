@@ -15,59 +15,42 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
-import com.mammb.code.editor2.model.layout.Layout;
-import com.mammb.code.editor2.model.layout.Span;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
-import java.util.function.Function;
+import com.mammb.code.editor2.model.text.OffsetPoint;
+import java.util.List;
 
 /**
- * LayoutRun.
+ * LayoutLine.
+ * @param line the TextLine
+ * @param offsetY the offset of position y
  * @author Naotsugu Kobayashi
  */
-public record LayoutRun(TextRun run, double offsetY) implements TextRun {
-
-    public double x() {
-        return run.layout().x();
-    }
-
-    public double y() {
-        return run.layout().y() + offsetY();
-    }
+public record LayoutLine(TextLine line, double offsetY) implements TextLine {
 
     @Override
-    public Layout layout() {
-        return run.layout();
-    }
-
-    @Override
-    public int start() {
-        return run.start();
+    public OffsetPoint point() {
+        return line.point();
     }
 
     @Override
     public int length() {
-        return run.length();
+        return line.length();
     }
 
     @Override
-    public Function<Integer, Float> offsetToX() {
-        return run.offsetToX();
+    public double height() {
+        return line.height();
     }
 
     @Override
-    public Function<Double, Integer> xToOffset() {
-        return run.xToOffset();
+    public List<TextRun> runs() {
+        return line.runs();
     }
 
-    @Override
-    public TextLine textLine() {
-        return run.textLine();
-    }
-
-    @Override
-    public Span source() {
-        return run.source();
+    public List<LayoutRun> layoutRuns() {
+        return line.runs().stream()
+            .map(run -> new LayoutRun(run, offsetY)).toList();
     }
 
 }

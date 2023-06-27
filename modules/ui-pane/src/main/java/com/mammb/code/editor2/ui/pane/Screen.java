@@ -100,6 +100,13 @@ public class Screen {
         }
     }
 
+    private void eachLine(Consumer<LayoutLine> consumer) {
+        double offsetY = 0;
+        for (TextLine line : lines()) {
+            consumer.accept(new LayoutLine(line, offsetY));
+            offsetY += line.height();
+        }
+    }
 
     public void clear() {
         lines.clear();

@@ -29,7 +29,9 @@ public interface TextLine extends Textual {
 
     @Override
     default String text() {
-        return runs().stream().map(TextRun::text).collect(Collectors.joining());
+        return runs().stream()
+            .map(TextRun::text)
+            .collect(Collectors.joining());
     }
 
     @Override
