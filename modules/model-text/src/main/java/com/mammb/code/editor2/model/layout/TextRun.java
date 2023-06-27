@@ -84,6 +84,14 @@ public interface TextRun {
     Span source();
 
     /**
+     * Get the offset char index.
+     * @return the offset char index
+     */
+    default int offset() {
+        return source().point().offset() + start();
+    }
+
+    /**
      * Get the style.
      * @return the style
      */

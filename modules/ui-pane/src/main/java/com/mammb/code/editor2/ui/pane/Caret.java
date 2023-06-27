@@ -46,6 +46,10 @@ public class Caret {
         logicalX = x;
     }
 
+    public boolean equalPoint(Caret other) {
+        return this.x == other.x && this.y == other.y;
+    }
+
     public int charOffset() {
         return charOffset;
     }

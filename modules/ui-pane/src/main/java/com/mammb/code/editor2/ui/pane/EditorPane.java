@@ -34,13 +34,17 @@ public class EditorPane extends StackPane {
     private Canvas canvas;
     private GraphicsContext gc;
     private EditorModel editorModel;
-
+    double margin = 5;
 
     public EditorPane(double width, double height) {
         setWidth(width);
         setHeight(height);
-        editorModel = new EditorModel(width, height);
-        canvas = new Canvas(width, height);
+        double canvasWidth = width - margin;
+        double canvasHeight = height - margin;
+        editorModel = new EditorModel(canvasWidth, canvasHeight);
+        canvas = new Canvas(canvasWidth, canvasHeight);
+        canvas.setLayoutX(margin);
+        canvas.setLayoutY(margin);
         gc = canvas.getGraphicsContext2D();
         setFocusTraversable(true);
         setAccessibleRole(AccessibleRole.TEXT_AREA);

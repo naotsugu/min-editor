@@ -15,15 +15,60 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.layout.Layout;
+import com.mammb.code.editor2.model.layout.Span;
+import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
+
+import java.util.function.Function;
 
 /**
  * LayoutRun.
  * @author Naotsugu Kobayashi
  */
-public record LayoutRun(TextRun run, double offsetY, double marginX, double marginY) {
+public record LayoutRun(TextRun run, double offsetY) implements TextRun {
 
-    double y() {
-        return offsetY + marginY;
+    public double x() {
+        return run.layout().x();
     }
+
+    public double y() {
+        return run.layout().y() + offsetY();
+    }
+
+    @Override
+    public Layout layout() {
+        return run.layout();
+    }
+
+    @Override
+    public int start() {
+        return run.start();
+    }
+
+    @Override
+    public int length() {
+        return run.length();
+    }
+
+    @Override
+    public Function<Integer, Float> offsetToX() {
+        return run.offsetToX();
+    }
+
+    @Override
+    public Function<Double, Integer> xToOffset() {
+        return run.xToOffset();
+    }
+
+    @Override
+    public TextLine textLine() {
+        return run.textLine();
+    }
+
+    @Override
+    public Span source() {
+        return run.source();
+    }
+
 }
