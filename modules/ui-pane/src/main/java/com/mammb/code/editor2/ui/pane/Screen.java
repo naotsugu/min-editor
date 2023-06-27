@@ -48,17 +48,7 @@ public class Screen {
 
     double margin = 5;
 
-    /** The caret offset */
-    private int caretOffset = 0;
-    /** The caret position x. */
-    private double caretX = margin;
-    /** The caret position y. */
-    private double caretY = margin;
-    /** The caret height. */
-    private double caretHeight = 0;
-    /** The logical caret position x. */
-    private double caretLogicalX = margin;
-
+    private Caret caret = new Caret();
 
 
     public Screen(TextBuffer<Textual> editBuffer) {
@@ -86,22 +76,24 @@ public class Screen {
 
 
     private void drawCaret(GraphicsContext gc) {
-        if (caretHeight == 0) calcCaret();
+        if (caret.height() == 0) calcCaret();
         gc.save();
         gc.setStroke(Color.ORANGE);
         gc.setLineWidth(2);
-        gc.strokeLine(caretX, caretY, caretX, caretY + caretHeight);
+        gc.strokeLine(caret.x(), caret.y(), caret.x(), caret.y2());
         gc.restore();
     }
 
 
     private void calcCaret() {
-        LayoutRun layoutRun = layoutRunAt(caretOffset);
+        LayoutRun layoutRun = layoutRunAt(caret.charOffset());
         if (layoutRun != null) {
             int runStart = layoutRun.run().source().point().offset() + layoutRun.run().start();
-            caretX = layoutRun.run().offsetToX().apply(caretOffset - runStart) + layoutRun.marginX();
-            caretY = layoutRun.y();
-            caretHeight = layoutRun.run().textLine().height();
+            caret.moveTo(
+                layoutRun.run().offsetToX().apply(caret.charOffset() - runStart) + layoutRun.marginX(),
+                layoutRun.y(),
+                layoutRun.run().textLine().height()
+            );
         }
     }
 
@@ -141,34 +133,32 @@ public class Screen {
 
 
     public void moveCaretRight() {
-        double oldX = caretX;
-        double oldY = caretY;
-        caretOffset++;
+        Caret old = caret.copy();
+        caret.plusOffset();
         calcCaret();
-        if (oldX == caretX && oldY == caretY) {
-            caretOffset++;
+        if (old.x() == caret.x() && old.y() == caret.y()) {
+            caret.plusOffset();
             calcCaret();
         }
-        caretLogicalX = caretX;
+        caret.syncLogical();
     }
 
 
     public void moveCaretLeft() {
-        if (caretOffset == 0) return;
-        double oldX = caretX;
-        double oldY = caretY;
-        caretOffset--;
+        if (caret.charOffset() == 0) return;
+        Caret old = caret.copy();
+        caret.minusOffset();
         calcCaret();
-        if (oldX == caretX && oldY == caretY && caretOffset > 0) {
-            caretOffset--;
+        if (old.x() == caret.x() && old.y() == caret.y() && caret.charOffset() > 0) {
+            caret.minusOffset();
             calcCaret();
         }
-        caretLogicalX = caretX;
+        caret.syncLogical();
     }
 
     public void moveCaretDown() {
-        LayoutRun run = layoutRunAt(caretLogicalX, caretY + caretHeight + 1);
-        double x = caretLogicalX - run.run().layout().x();
+        LayoutRun run = layoutRunAt(caret.logicalX(), caret.y2() + 1);
+        double x = caret.logicalX() - run.run().layout().x();
         int offset = run.run().xToOffset().apply(x);
         TextLine textLine = run.run().textLine();
         offset += textLine.point().offset();
@@ -176,16 +166,16 @@ public class Screen {
             if (textRun == run.run()) break;
             offset += textRun.length();
         }
-        caretOffset = offset;
+        caret.moveTo(offset);
         calcCaret();
     }
 
     public void moveCaretUp() {
-        if (caretY - 1 < margin) {
+        if (caret.y() - 1 < margin) {
             return;
         }
-        LayoutRun run = layoutRunAt(caretLogicalX, caretY - 1 - margin);
-        double x = caretLogicalX - run.run().layout().x();
+        LayoutRun run = layoutRunAt(caret.logicalX(), caret.y() - 1 - margin);
+        double x = caret.logicalX() - run.run().layout().x();
         int offset = run.run().xToOffset().apply(x);
         TextLine textLine = run.run().textLine();
         offset += textLine.point().offset();
@@ -193,7 +183,7 @@ public class Screen {
             if (textRun == run.run()) break;
             offset += textRun.length();
         }
-        caretOffset = offset;
+        caret.moveTo(offset);
         calcCaret();
     }
 
