@@ -71,6 +71,7 @@ public class PtContent implements Content {
         return pt.bytes(startPos, until);
     }
 
+
     @Override
     public byte[] bytesBefore(int startPos, Predicate<byte[]> until) {
         return pt.bytesBefore(startPos, until);

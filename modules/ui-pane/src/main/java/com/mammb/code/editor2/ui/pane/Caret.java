@@ -20,6 +20,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import java.util.function.Function;
 
+/**
+ * Caret.
+ * @author Naotsugu Kobayashi
+ */
 public class Caret {
 
     /** The caret (char) offset */
@@ -36,14 +40,23 @@ public class Caret {
     /** dirty?. */
     private boolean dirty = true;
 
+    /** The offset to layout line function. */
     private Function<Integer, LayoutLine> offsetToLine;
 
 
+    /**
+     * Constructor.
+     * @param offsetToLine the offset to layout line function
+     */
     public Caret(Function<Integer, LayoutLine> offsetToLine) {
         this.offsetToLine = offsetToLine;
     }
 
 
+    /**
+     * Draw caret,
+     * @param gc the graphics context
+     */
     public void draw(GraphicsContext gc) {
         if (ensureLayout() == null) return;
         gc.setStroke(Color.ORANGE);
@@ -53,6 +66,9 @@ public class Caret {
     }
 
 
+    /**
+     * Mark the caret to dirty.
+     */
     public void markDirty() {
         dirty = true;
         line = null;
@@ -60,6 +76,9 @@ public class Caret {
     }
 
 
+    /**
+     * Move the caret to the right.
+     */
     public void right() {
         if (ensureLayout() == null) return;
 
@@ -77,6 +96,9 @@ public class Caret {
     }
 
 
+    /**
+     * Move the caret to the left.
+     */
     public void left() {
         if (ensureLayout() == null) return;
 
@@ -94,6 +116,9 @@ public class Caret {
     }
 
 
+    /**
+     * Move the caret to the up.
+     */
     public void up() {
         if (ensureLayout() == null) return;
         if (line.point().offset() == 0) {
@@ -109,6 +134,9 @@ public class Caret {
     }
 
 
+    /**
+     * Move the caret to the down.
+     */
     public void down() {
         if (ensureLayout() == null) return;
         // TODO return if the last line
@@ -120,6 +148,10 @@ public class Caret {
         y = next.offsetY();
     }
 
+
+    public int offset() {
+        return offset;
+    }
 
     private TextLine ensureLayout() {
         if (!dirty) return line;

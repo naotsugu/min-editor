@@ -100,17 +100,6 @@ public class Screen {
 
     // -- scroll behavior  ----------------------------------------------------
 
-    public void scrollNext(int n) {
-
-        List<TextLine> added = editBuffer.next(n).stream()
-            .map(translator::applyTo).toList();
-        if (added.isEmpty()) return;
-
-        lines.addAll(added);
-        lines.subList(0, added.size()).clear(); // TODO if it is the last line, add an empty TextLine
-        caret.markDirty();
-    }
-
     public void scrollPrev(int n) {
 
         List<TextLine> list = editBuffer.prev(n).stream()
@@ -122,25 +111,50 @@ public class Screen {
         caret.markDirty();
     }
 
+    public void scrollNext(int n) {
+
+        List<TextLine> added = editBuffer.next(n).stream()
+            .map(translator::applyTo).toList();
+        if (added.isEmpty()) return;
+
+        lines.addAll(added);
+        lines.subList(0, added.size()).clear(); // TODO if it is the last line, add an empty TextLine
+        caret.markDirty();
+    }
+
+    private void scrollToCaret() {
+        int size = lines().size();
+        int head = lines.get(0).start();
+        int tail = lines.get(Math.min(size - 1, size - 2)).end();
+        if (head <= caret.offset() && caret.offset() < tail) {
+            return;
+        }
+        if (caret.offset() < head) {
+            scrollPrev(0); // TODO
+        } else {
+            scrollNext(0); // TODO
+        }
+    }
+
     // -- arrow behavior ------------------------------------------------------
 
     public void moveCaretRight() {
-        // TODO scroll to the caret position if the caret is not located in the screen
+        scrollToCaret();
         caret.right();
     }
 
     public void moveCaretLeft() {
-        // TODO scroll to the caret position if the caret is not located in the screen
+        scrollToCaret();
         caret.left();
     }
 
     public void moveCaretUp() {
-        // TODO scroll to the caret position if the caret is not located in the screen
+        scrollToCaret();
         caret.up();
     }
 
     public void moveCaretDown() {
-        // TODO scroll to the caret position if the caret is not located in the screen
+        scrollToCaret();
         caret.down();
     }
 
