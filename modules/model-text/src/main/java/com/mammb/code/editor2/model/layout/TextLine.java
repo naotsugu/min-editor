@@ -56,26 +56,73 @@ public interface TextLine extends Textual {
     List<TextRun> runs();
 
     /**
+     * Get the start char (total) offset.
+     * @return the start char (total) offset
+     */
+    default int start() {
+        return point().offset();
+    }
+
+    /**
+     * Get the end char (total) offset.
+     * @return the end char (total) offset
+     */
+    default int end() {
+        return point().offset() + length();
+    }
+
+    /**
      * Get the x position from the specified x offset.
      * @param offset the specified char offset(total)
      * @return the x position from the specified x offset
      */
     default double offsetToX(int offset) {
-        int start = point().offset();
-        int end   = start + length();
-        if (start > offset || offset >= end) {
+        TextRun run = textRunAt(offset);
+        return run.offsetToX().apply(offset - run.offset());
+    }
+
+    /**
+     * Get the char at offset position.
+     * @param offset the char (total) offset
+     * @return the char at offset position
+     */
+    default char charAt(int offset) {
+        TextRun run = textRunAt(offset);
+        int runStart = run.source().point().offset() + run.start();
+        return run.source().text().charAt(offset - runStart);
+    }
+
+    /**
+     * Get the text run at offset position.
+     * @param offset the char (total) offset
+     * @return the text run at offset position
+     */
+    default TextRun textRunAt(int offset) {
+        if (!contains(offset)) {
             throw new IndexOutOfBoundsException(
-                "start:%d end:%d offset:%d".formatted(start, end, offset));
+                "start:%d end:%d offset:%d".formatted(
+                    point().offset(), point().offset() + length(), offset));
         }
         for (TextRun run : runs()) {
             if (run.length() == 0) continue;
             int runStart = run.source().point().offset() + run.start();
             int runEnd = runStart + run.length();
             if (runStart <= offset && offset < runEnd) {
-                return run.offsetToX().apply(offset - run.offset());
+                return run;
             }
         }
         throw new IllegalStateException("internal error:" + runs());
+    }
+
+    /**
+     * Get whether the given (total) offset contains on this line.
+     * @param offset the char (total) offset
+     * @return {@code true}, if the given (total) offset contains on this line
+     */
+    default boolean contains(int offset) {
+        int start = point().offset();
+        int end   = start + length();
+        return start <= offset && offset < end;
     }
 
     /**
@@ -87,14 +134,14 @@ public interface TextLine extends Textual {
         int offset = point().offset();
         for (TextRun run : runs()) {
             double runStart = run.layout().x();
-            double runEnd   = runStart + run.layout().width();
+            double runEnd = runStart + run.layout().width();
             if (runStart <= x && x < runEnd) {
                 offset += run.xToOffset().apply(x - run.layout().x());
                 return offset;
             }
             offset += run.length();
         }
-        return offset;
+        return Math.max(offset - 1, 0);
     }
 
     /**

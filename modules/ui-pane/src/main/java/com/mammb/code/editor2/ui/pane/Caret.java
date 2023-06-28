@@ -15,82 +15,120 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.layout.TextLine;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import java.util.function.Function;
+
 public class Caret {
 
-    /** The caret offset */
-    private int charOffset = 0;
+    /** The caret (char) offset */
+    private int offset = 0;
+    /** The logical caret position x. */
+    private double logicalX = 0;
+
+    /** The text line. */
+    private TextLine line = null;
     /** The caret position x. */
     private double x = 0;
     /** The caret position y. */
     private double y = 0;
-    /** The text line. */
-    private LayoutLine line;
-    /** The caret height. */
-    private double height = 0;
-    /** The logical caret position x. */
-    private double logicalX = 0;
+    /** dirty?. */
+    private boolean dirty = true;
+
+    private Function<Integer, LayoutLine> offsetToLine;
 
 
-    public void moveTo(double x, double y, double height) {
-        this.x = x;
-        this.y = y;
-        this.height = height;
-    }
-
-    public void moveTo(int charOffset) {
-        this.charOffset = charOffset;
+    public Caret(Function<Integer, LayoutLine> offsetToLine) {
+        this.offsetToLine = offsetToLine;
     }
 
 
-    public Caret copy() {
-        Caret copy = new Caret();
-        copy.charOffset = charOffset;
-        copy.x = x;
-        copy.y = y;
-        copy.height = height;
-        copy.line = line;
-        copy.logicalX = logicalX;
-        return copy;
+    public void draw(GraphicsContext gc) {
+        if (ensureLayout() == null) return;
+        gc.setStroke(Color.ORANGE);
+        gc.setLineWidth(x == 0 ? 4 : 2);
+        gc.strokeLine(x, y, x, y + line.height());
+        gc.restore();
     }
 
-    public void plusOffset() {
-        charOffset++;
+
+    public void markDirty() {
+        dirty = true;
+        line = null;
+        x = y = 0;
     }
 
-    public void minusOffset() {
-        charOffset--;
-    }
 
-    public void syncLogical() {
+    public void right() {
+        if (ensureLayout() == null) return;
+
+        logicalX = 0;
+        offset++;
+        if (offset >= line.end()) {
+            markDirty();
+            return;
+        }
+        if (Character.isLowSurrogate(line.charAt(offset))) {
+            offset++;
+        }
+        x = line.offsetToX(offset);
         logicalX = x;
     }
 
-    public boolean equalPoint(Caret other) {
-        return this.x == other.x && this.y == other.y;
+
+    public void left() {
+        if (ensureLayout() == null) return;
+
+        logicalX = 0;
+        offset--;
+        if (offset < line.point().offset()) {
+            markDirty();
+            return;
+        }
+        if (Character.isHighSurrogate(line.charAt(offset))) {
+            offset--;
+        }
+        x = line.offsetToX(offset);
+        logicalX = x;
     }
 
-    public int charOffset() {
-        return charOffset;
+
+    public void up() {
+        if (ensureLayout() == null) return;
+        if (line.point().offset() == 0) {
+            return;
+        }
+        LayoutLine prev = offsetToLine.apply(line.start() - 1);
+        if (prev == null) return;
+
+        line = prev;
+        offset = line.xToOffset(logicalX);
+        x = line.offsetToX(offset);
+        y = prev.offsetY();
     }
 
-    public double x() {
-        return x;
+
+    public void down() {
+        if (ensureLayout() == null) return;
+        // TODO return if the last line
+        LayoutLine next = offsetToLine.apply(line.end());
+        if (next == null) return;
+        line = next;
+        offset = line.xToOffset(logicalX);
+        x = line.offsetToX(offset);
+        y = next.offsetY();
     }
 
-    public double y() {
-        return y;
-    }
 
-    public double y2() {
-        return y + height();
-    }
-
-    public double height() {
-        return height;
-    }
-
-    public double logicalX() {
-        return logicalX;
+    private TextLine ensureLayout() {
+        if (!dirty) return line;
+        dirty = false;
+        LayoutLine layoutLine = offsetToLine.apply(offset);
+        if (layoutLine == null) return null;
+        x = layoutLine.offsetToX(offset);
+        y = layoutLine.offsetY();
+        return line = layoutLine;
     }
 
 }
