@@ -164,10 +164,9 @@ public class Screen {
 
     public void moveCaretRight() {
         scrollToCaret();
+        if (caret.y2() + 4 >= height) scrollNext(1);
         caret.right();
-        if (caret.y2() > height) {
-            scrollNext(1);
-        }
+        if (caret.y2() > height) scrollNext(1);
     }
 
     public void moveCaretLeft() {
@@ -188,10 +187,9 @@ public class Screen {
 
     public void moveCaretDown() {
         scrollToCaret();
+        if (caret.y2() + 4 >= height) scrollNext(1);
         caret.down();
-        if (caret.y2() > height) {
-            scrollNext(1);
-        }
+        if (caret.y2() > height) scrollNext(1);
     }
 
     // -- helper --------------------------------------------------------------
