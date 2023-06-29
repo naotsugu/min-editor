@@ -36,7 +36,7 @@ public class EditorModel {
 
 
     public EditorModel(double width, double height, Path path) {
-        screen = new Screen(TextBuffer.editBuffer(screenRowSize(height), path));
+        screen = new Screen(TextBuffer.editBuffer(screenRowSize(height), path), width, height);
     }
 
 

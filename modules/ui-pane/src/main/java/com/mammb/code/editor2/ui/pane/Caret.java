@@ -158,6 +158,11 @@ public class Caret {
     public int offset() {
         return offset;
     }
+    public int row() { return row; }
+    public double x() { return x; }
+    public double y() { return y; }
+    public double y2() { return y + line.height(); }
+
 
     private TextLine ensureLayout() {
         if (!dirty) return line;

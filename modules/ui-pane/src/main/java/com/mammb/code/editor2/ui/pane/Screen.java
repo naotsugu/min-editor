@@ -37,6 +37,8 @@ import java.util.List;
  */
 public class Screen {
 
+    private final double width;
+    private final double height;
     private final TextBuffer<Textual> editBuffer;
     private final FxLayoutBuilder layout = new FxLayoutBuilder();
     private final Translate<Textual, TextLine> translator;
@@ -44,10 +46,12 @@ public class Screen {
     private final Caret caret;
 
 
-    public Screen(TextBuffer<Textual> editBuffer) {
+    public Screen(TextBuffer<Textual> editBuffer, double width, double height) {
         this.editBuffer = editBuffer;
         this.translator = translator(layout);
         this.caret = new Caret(this::layoutLine);
+        this.width = width;
+        this.height = height;
     }
 
 
@@ -128,12 +132,13 @@ public class Screen {
         List<Textual> added = editBuffer.next(n); // row based
         if (added.isEmpty()) return;
 
-        // delete rows to avoid inadvertently increasing the list size
+        // delete rows to avoid inadvertently increasing the list size.
         removeHeadRow(lines, added.size());
 
         List<TextLine> list = added.stream().map(translator::applyTo).toList();
         removeHeadRow(list, added.size() - editBuffer.maxLineSize());
 
+        // add lines added by scrolling to the end.
         lines.addAll(list);
         // TODO if it is the last line, add an empty TextLine
         caret.markDirty();
@@ -141,16 +146,17 @@ public class Screen {
 
 
     private void scrollToCaret() {
-        int size = lines().size();
-        int head = lines.get(0).start();
-        int tail = lines.get(Math.min(size - 1, size - 2)).end();
-        if (head <= caret.offset() && caret.offset() < tail) {
+        List<TextLine> lines = lines();
+        int head = lines.get(0).point().row();
+        int tail = lines.get(lines.size() - 1).point().row();
+        int caretRow = caret.row();
+        if (head <= caretRow && caretRow <= tail) {
             return;
         }
-        if (caret.offset() < head) {
-            scrollPrev(0); // TODO
+        if (caretRow < head) {
+            scrollPrev(head - caretRow);
         } else {
-            scrollNext(0); // TODO
+            scrollNext(caretRow - tail);
         }
     }
 
@@ -159,21 +165,33 @@ public class Screen {
     public void moveCaretRight() {
         scrollToCaret();
         caret.right();
+        if (caret.y2() > height) {
+            scrollNext(1);
+        }
     }
 
     public void moveCaretLeft() {
         scrollToCaret();
+        if (lines.get(0).start() > 0 && lines.get(0).start() == caret.offset()) {
+            scrollPrev(1);
+        }
         caret.left();
     }
 
     public void moveCaretUp() {
         scrollToCaret();
+        if (lines.get(0).start() > 0 && caret.offset() < lines.get(0).end()) {
+            scrollPrev(1);
+        }
         caret.up();
     }
 
     public void moveCaretDown() {
         scrollToCaret();
         caret.down();
+        if (caret.y2() > height) {
+            scrollNext(1);
+        }
     }
 
     // -- helper --------------------------------------------------------------
