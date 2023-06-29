@@ -101,26 +101,44 @@ public class Screen {
     // -- scroll behavior  ----------------------------------------------------
 
     public void scrollPrev(int n) {
+        if (n <= 0) return;
 
-        List<TextLine> list = editBuffer.prev(n).stream()
-            .map(translator::applyTo).toList();
-        if (list.isEmpty()) return;
-
-        lines.addAll(0, list);
-        lines.subList(lines.size() - list.size(), lines.size()).clear();
-        caret.markDirty();
-    }
-
-    public void scrollNext(int n) {
-
-        List<TextLine> added = editBuffer.next(n).stream()
-            .map(translator::applyTo).toList();
+        List<Textual> added = editBuffer.prev(n); // row based
         if (added.isEmpty()) return;
 
-        lines.addAll(added);
-        lines.subList(0, added.size()).clear(); // TODO if it is the last line, add an empty TextLine
+        if (added.size() >= editBuffer.maxLineSize()) {
+            // if N exceeds the number of page lines, clear and add all.
+            // forward scrolling can skip re-parsing syntax.
+            added.subList(editBuffer.maxLineSize(), added.size()).clear();
+            lines.clear();
+            lines.addAll(added.stream().map(translator::applyTo).toList());
+        } else {
+            removeTailRow(lines, added.size());
+            List<TextLine> list = added.stream().map(translator::applyTo).toList();
+            lines.addAll(0, list);
+        }
+
         caret.markDirty();
     }
+
+
+    public void scrollNext(int n) {
+        if (n <= 0) return;
+
+        List<Textual> added = editBuffer.next(n); // row based
+        if (added.isEmpty()) return;
+
+        // delete rows to avoid inadvertently increasing the list size
+        removeHeadRow(lines, added.size());
+
+        List<TextLine> list = added.stream().map(translator::applyTo).toList();
+        removeHeadRow(list, added.size() - editBuffer.maxLineSize());
+
+        lines.addAll(list);
+        // TODO if it is the last line, add an empty TextLine
+        caret.markDirty();
+    }
+
 
     private void scrollToCaret() {
         int size = lines().size();
@@ -156,6 +174,38 @@ public class Screen {
     public void moveCaretDown() {
         scrollToCaret();
         caret.down();
+    }
+
+    // -- helper --------------------------------------------------------------
+
+    private static void removeHeadRow(List<TextLine> lines, int n) {
+        removeRow(lines, n, true);
+    }
+
+    private static void removeTailRow(List<TextLine> lines, int n) {
+        removeRow(lines, n, false);
+    }
+
+    private static void removeRow(List<TextLine> lines, int n, boolean asc) {
+
+        if (n <= 0) return;
+
+        if (n >= lines.size()) {
+            lines.clear();
+            return;
+        }
+
+        int prev = -1;
+        while (true) {
+            int index = asc ? 0 : lines.size() - 1;
+            TextLine line = lines.get(index);
+            if (prev != -1 && prev != line.point().row()) {
+                n--;
+            }
+            if (n == 0) break;
+            prev = line.point().row();
+            lines.remove(index);
+        }
     }
 
 }

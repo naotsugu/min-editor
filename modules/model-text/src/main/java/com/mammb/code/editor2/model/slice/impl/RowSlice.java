@@ -111,7 +111,7 @@ public class RowSlice implements Slice<Textual> {
 
     @Override
     public List<Textual> prev(int n) {
-        List<Textual> added = new ArrayList<>();
+        List<Textual> added = new LinkedList<>();
         for (int i = 0; i < n; i++) {
             Textual head = texts.get(0);
             int cpOffset = head.point().cpOffset();

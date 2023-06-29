@@ -26,8 +26,10 @@ import java.util.function.Function;
  */
 public class Caret {
 
-    /** The caret (char) offset */
+    /** The caret (char) offset. */
     private int offset = 0;
+    /** The caret row. */
+    private int row = 0;
     /** The logical caret position x. */
     private double logicalX = 0;
 
@@ -62,7 +64,6 @@ public class Caret {
         gc.setStroke(Color.ORANGE);
         gc.setLineWidth(x == 0 ? 4 : 2);
         gc.strokeLine(x, y, x, y + line.height());
-        gc.restore();
     }
 
 
@@ -82,9 +83,10 @@ public class Caret {
     public void right() {
         if (ensureLayout() == null) return;
 
-        logicalX = 0;
         offset++;
         if (offset >= line.end()) {
+            row++;
+            logicalX = 0;
             markDirty();
             return;
         }
@@ -100,11 +102,13 @@ public class Caret {
      * Move the caret to the left.
      */
     public void left() {
+        if (offset == 0) return;
         if (ensureLayout() == null) return;
 
-        logicalX = 0;
         offset--;
         if (offset < line.point().offset()) {
+            row--;
+            logicalX = 0;
             markDirty();
             return;
         }
@@ -129,6 +133,7 @@ public class Caret {
 
         line = prev;
         offset = line.xToOffset(logicalX);
+        row = line.point().row();
         x = line.offsetToX(offset);
         y = prev.offsetY();
     }
@@ -144,6 +149,7 @@ public class Caret {
         if (next == null) return;
         line = next;
         offset = line.xToOffset(logicalX);
+        row = line.point().row();
         x = line.offsetToX(offset);
         y = next.offsetY();
     }
