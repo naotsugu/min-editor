@@ -88,6 +88,7 @@ public class Caret {
             row++;
             logicalX = 0;
             markDirty();
+            ensureLayout();
             return;
         }
         if (Character.isLowSurrogate(line.charAt(offset))) {
@@ -110,6 +111,7 @@ public class Caret {
             row--;
             logicalX = 0;
             markDirty();
+            ensureLayout();
             return;
         }
         if (Character.isHighSurrogate(line.charAt(offset))) {

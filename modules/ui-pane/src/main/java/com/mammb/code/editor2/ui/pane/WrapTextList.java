@@ -47,18 +47,18 @@ public class WrapTextList implements TextList {
     }
 
     @Override
-    public void prev(int n) {
-        if (n <= 0) return;
+    public int prev(int n) {
+        return 0;
     }
 
     @Override
-    public void next(int n) {
-
+    public int next(int n) {
+        return 0;
     }
 
     @Override
-    public void at(int n) {
-
+    public int at(int n) {
+        return 0;
     }
 
     private static Translate<Textual, List<TextLine>> translator() {
@@ -66,6 +66,37 @@ public class WrapTextList implements TextList {
         return StylingTranslate.passThrough()
             .compound(SpanTranslate.of())
             .compound(LayoutWrapTranslate.of(layout));
+    }
+
+
+    private static void removeHeadRow(List<TextLine> lines, int n) {
+        removeRow(lines, n, true);
+    }
+
+    private static void removeTailRow(List<TextLine> lines, int n) {
+        removeRow(lines, n, false);
+    }
+
+    private static void removeRow(List<TextLine> lines, int n, boolean asc) {
+
+        if (n <= 0) return;
+
+        if (n >= lines.size()) {
+            lines.clear();
+            return;
+        }
+
+        int prev = -1;
+        while (true) {
+            int index = asc ? 0 : lines.size() - 1;
+            TextLine line = lines.get(index);
+            if (prev != -1 && prev != line.point().row()) {
+                n--;
+            }
+            if (n == 0) break;
+            prev = line.point().row();
+            lines.remove(index);
+        }
     }
 
 }

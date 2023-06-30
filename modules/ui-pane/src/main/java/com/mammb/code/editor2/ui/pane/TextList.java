@@ -20,9 +20,9 @@ import java.util.List;
 
 public interface TextList {
     List<TextLine> lines();
-    void prev(int n);
-    void next(int n);
-    void at(int n);
+    int prev(int n);
+    int next(int n);
+    int at(int n);
 
     default TextLine head() {
         return lines().get(0);

@@ -55,62 +55,65 @@ public class LinearTextList implements TextList {
 
 
     @Override
-    public void prev(int n) {
+    public int prev(int n) {
 
-        if (n <= 0) return;
+        if (n <= 0) return 0;
 
         List<Textual> added = editBuffer.prev(n);
-        if (added.isEmpty()) return;
+        int size = added.size();
+        if (size == 0) return 0;
 
-        if (added.size() >= editBuffer.maxLineSize()) {
+        if (size >= editBuffer.maxLineSize()) {
             // if N exceeds the number of page lines, clear and add all.
             // forward scrolling can skip re-parsing syntax.
-            added.subList(editBuffer.maxLineSize(), added.size()).clear();
+            added.subList(editBuffer.maxLineSize(), size).clear();
             lines.clear();
             lines.addAll(added.stream().map(translator::applyTo).toList());
         } else {
-            lines.subList(lines.size() - 1 - added.size(), lines.size()).clear();
+            lines.subList(lines.size() - 1 - size, lines.size()).clear();
             List<TextLine> list = added.stream().map(translator::applyTo).toList();
             lines.addAll(0, list);
         }
-
+        return size;
     }
 
 
     @Override
-    public void next(int n) {
+    public int next(int n) {
 
-        if (n <= 0) return;
+        if (n <= 0) return 0;
 
         List<Textual> added = editBuffer.next(n);
-        if (added.isEmpty()) return;
+        int size = added.size();
+        if (size == 0) return 0;
 
         // delete rows to avoid inadvertently increasing the list size.
-        lines.subList(0, added.size()).clear();
+        lines.subList(0, size).clear();
 
         List<TextLine> list = added.stream().map(translator::applyTo).toList();
-        if (added.size() > editBuffer.maxLineSize()) {
-            list.subList(0, added.size() - editBuffer.maxLineSize()).clear();
+        if (size > editBuffer.maxLineSize()) {
+            list.subList(0, size - editBuffer.maxLineSize()).clear();
         }
 
         // add lines added by scrolling to the end.
         lines.addAll(list);
         // TODO if it is the last line, add an empty TextLine
 
+        return size;
     }
 
 
     @Override
-    public void at(int row) {
+    public int at(int row) {
         final int head = head().point().row();
         final int tail = tail().point().row();
         if (head <= row && row <= tail) {
-            return;
+            return 0;
         }
         if (row < head) {
-            prev(head - row);
+            return prev(head - row);
         } else {
-            next(row - tail);
+            return next(row - tail);
         }
     }
 
