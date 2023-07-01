@@ -32,11 +32,17 @@ import java.util.List;
  */
 public class LinearTextList implements TextList {
 
+    /** The edit buffer. */
     private final TextBuffer<Textual> editBuffer;
+    /** The text translator. */
     private final Translate<Textual, TextLine> translator = translator();
+    /** The lines. */
     private final List<TextLine> lines = new LinkedList<>();
 
-
+    /**
+     * Constructor.
+     * @param editBuffer the edit buffer
+     */
     public LinearTextList(TextBuffer<Textual> editBuffer) {
         this.editBuffer = editBuffer;
     }
@@ -117,7 +123,10 @@ public class LinearTextList implements TextList {
         }
     }
 
-
+    /**
+     * Build the translator.
+     * @return the translator
+     */
     private static Translate<Textual, TextLine> translator() {
         FxLayoutBuilder layout = new FxLayoutBuilder();
         return StylingTranslate.passThrough()
