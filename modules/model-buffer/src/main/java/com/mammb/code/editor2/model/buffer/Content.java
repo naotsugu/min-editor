@@ -15,9 +15,12 @@
  */
 package com.mammb.code.editor2.model.buffer;
 
+import com.mammb.code.editor2.model.buffer.impl.Until;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -51,6 +54,28 @@ public interface Content {
      * @return the bytes
      */
     byte[] bytesBefore(int cpOffset, Predicate<byte[]> until);
+
+
+    default void traverseRow(Consumer<byte[]> rowConsumer) {
+        Predicate<byte[]> lfInclusive = Until.lfInclusive();
+        int cpOffset = 0;
+        for (;;) {
+            // utf8 bytes
+            byte[] bytes = bytes(cpOffset, lfInclusive);
+            if (bytes.length == 0) break;
+
+            rowConsumer.accept(bytes);
+
+            for (int i = 0; i < bytes.length;) {
+                if      ((bytes[i] & 0x80) == 0x00) i += 1;
+                else if ((bytes[i] & 0xE0) == 0xC0) i += 2;
+                else if ((bytes[i] & 0xF0) == 0xE0) i += 3;
+                else if ((bytes[i] & 0xF8) == 0xF0) i += 4;
+                else i += 1;
+                cpOffset++;
+            }
+        }
+    }
 
     /**
      * Get the charset.

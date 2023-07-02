@@ -66,6 +66,7 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      */
     List<T> next(int n);
 
+    ContentMetrics metrics(ContentMetrics metrics);
 
     static TextBuffer<Textual> editBuffer(int maxRowSize, Path path) {
         return new EditBuffer(

@@ -20,4 +20,7 @@ package com.mammb.code.editor2.model.buffer;
  * @author Naotsugu Kobayashi
  */
 public interface ContentMetrics {
+
+    void add(String row);
+
 }

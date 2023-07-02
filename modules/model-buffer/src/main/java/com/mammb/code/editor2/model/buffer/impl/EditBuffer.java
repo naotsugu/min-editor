@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.Content;
+import com.mammb.code.editor2.model.buffer.ContentMetrics;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditQueue;
@@ -100,6 +101,12 @@ public class EditBuffer implements TextBuffer<Textual> {
     public List<Textual> next(int n) {
         editQueue.flush();
         return slice.next(n);
+    }
+
+    @Override
+    public ContentMetrics metrics(ContentMetrics metrics) {
+        content.traverseRow(bytes -> metrics.add(new String(bytes, content.charset())));
+        return metrics;
     }
 
 }

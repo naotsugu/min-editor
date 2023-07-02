@@ -32,28 +32,94 @@ import java.util.List;
  */
 public class WrapTextList implements TextList {
 
+    /** The edit buffer. */
     private final TextBuffer<Textual> editBuffer;
+    /** The text translator. */
     private final Translate<Textual, List<TextLine>> translator = translator();
-    private final List<TextLine> lines = new LinkedList<>();
+    /** The source un-wrapped lines. */
+    private final List<TextLine> sourceLines = new LinkedList<>();
+
+    /** The lines maybe wrapped. */
+    private List<TextLine> lines;
+    /** The offset of lines. */
     private int lineOffset = 0;
 
+    /**
+     * Constructor.
+     * @param editBuffer the edit buffer
+     */
     public WrapTextList(TextBuffer<Textual> editBuffer) {
         this.editBuffer = editBuffer;
     }
 
+
     @Override
     public List<TextLine> lines() {
-        return null;
+        if (sourceLines.isEmpty()) {
+            for (Textual textual : editBuffer.texts()) {
+                lines.addAll(translator.applyTo(textual));
+            }
+            int size = Math.min(lines.size(), editBuffer.maxLineSize());
+            lines = sourceLines.subList(0, size);
+            lineOffset = 0;
+        }
+        return lines;
     }
 
     @Override
     public int prev(int n) {
-        return 0;
+        if (n <= 0) return 0;
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            int ret = prev();
+            if (ret == 0) return count;
+            count += ret;
+        }
+        return count;
+    }
+
+    private int prev() {
+        if (lineOffset == 0) {
+            List<Textual> added = editBuffer.prev(1);
+            int size = added.size();
+            if (size == 0) return 0;
+
+            removeTailRow(lines, 1);
+            List<TextLine> list = translator.applyTo(added.get(0));
+            lines.addAll(0, list);
+            lineOffset = list.size() - 1;
+        } else {
+            lineOffset--;
+        }
+        return 1;
     }
 
     @Override
     public int next(int n) {
-        return 0;
+        if (n <= 0) return 0;
+        int count = 0;
+        for (int i = 0; i < n; i++) {
+            int ret = next();
+            if (ret == 0) return count;
+            count += ret;
+        }
+        return count;
+    }
+
+    private int next() {
+        if (lines.size() >= lineOffset + editBuffer.maxLineSize()) {
+            List<Textual> added = editBuffer.next(1);
+            int size = added.size();
+            if (size == 0) return 0;
+
+            int removedCount = removeHeadRow(lines, 1);
+            List<TextLine> list = translator.applyTo(added.get(0));
+            lines.addAll(list);
+            // TODO if it is the last line, add an empty TextLine
+            lineOffset -= removedCount;
+        }
+        lineOffset++;
+        return 1;
     }
 
     @Override
@@ -69,23 +135,26 @@ public class WrapTextList implements TextList {
     }
 
 
-    private static void removeHeadRow(List<TextLine> lines, int n) {
-        removeRow(lines, n, true);
+    private static int removeHeadRow(List<TextLine> lines, int n) {
+        return removeRow(lines, n, true);
     }
 
-    private static void removeTailRow(List<TextLine> lines, int n) {
-        removeRow(lines, n, false);
+    private static int removeTailRow(List<TextLine> lines, int n) {
+        return removeRow(lines, n, false);
     }
 
-    private static void removeRow(List<TextLine> lines, int n, boolean asc) {
+    private static int removeRow(List<TextLine> lines, int n, boolean asc) {
 
-        if (n <= 0) return;
+        if (n <= 0) return 0;
 
-        if (n >= lines.size()) {
+        int size = lines.size();
+
+        if (n >= size) {
             lines.clear();
-            return;
+            return size;
         }
 
+        int count = 0;
         int prev = -1;
         while (true) {
             int index = asc ? 0 : lines.size() - 1;
@@ -96,7 +165,9 @@ public class WrapTextList implements TextList {
             if (n == 0) break;
             prev = line.point().row();
             lines.remove(index);
+            count++;
         }
+        return count;
     }
 
 }
