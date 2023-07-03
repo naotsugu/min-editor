@@ -106,6 +106,7 @@ public class WrapTextList implements TextList {
         return count;
     }
 
+
     private int next() {
         if (lines.size() >= lineOffset + editBuffer.maxLineSize()) {
             List<Textual> added = editBuffer.next(1);
