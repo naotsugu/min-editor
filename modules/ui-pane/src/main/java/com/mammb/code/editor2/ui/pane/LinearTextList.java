@@ -76,7 +76,7 @@ public class LinearTextList implements TextList {
             lines.clear();
             lines.addAll(added.stream().map(translator::applyTo).toList());
         } else {
-            lines.subList(lines.size() - 1 - size, lines.size()).clear();
+            lines.subList(lines.size() - size, lines.size()).clear();
             List<TextLine> list = added.stream().map(translator::applyTo).toList();
             lines.addAll(0, list);
         }

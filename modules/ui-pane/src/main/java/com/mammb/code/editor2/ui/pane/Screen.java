@@ -87,8 +87,8 @@ public class Screen {
     }
 
     private void scrollToCaret() {
-        int size = texts.at(caret.row(), caret.offset());
-        if (size > 0) caret.markDirty();
+        boolean scrolled = texts.at(caret.row(), caret.offset());
+        if (scrolled) caret.markDirty();
     }
 
     // -- arrow behavior ------------------------------------------------------
