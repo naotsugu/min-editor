@@ -31,7 +31,7 @@ public class Screen {
 
     private final double width;
     private final double height;
-    private final LinearTextList texts;
+    private final TextList texts;
     private final Caret caret;
 
 
@@ -81,15 +81,13 @@ public class Screen {
         if (size > 0) caret.markDirty();
     }
 
-
     public void scrollNext(int n) {
         int size = texts.next(n);
         if (size > 0) caret.markDirty();
     }
 
-
     private void scrollToCaret() {
-        int size = texts.at(caret.row());
+        int size = texts.at(caret.row(), caret.offset());
         if (size > 0) caret.markDirty();
     }
 

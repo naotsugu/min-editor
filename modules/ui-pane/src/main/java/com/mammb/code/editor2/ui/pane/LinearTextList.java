@@ -94,7 +94,7 @@ public class LinearTextList implements TextList {
         if (size == 0) return 0;
 
         // delete rows to avoid inadvertently increasing the list size.
-        lines.subList(0, size).clear();
+        lines.subList(0, Math.min(size, lines.size())).clear();
 
         List<TextLine> list = added.stream().map(translator::applyTo).toList();
         if (size > editBuffer.maxLineSize()) {
@@ -110,16 +110,16 @@ public class LinearTextList implements TextList {
 
 
     @Override
-    public int at(int row) {
+    public boolean at(int row, int offset) {
         final int head = head().point().row();
         final int tail = tail().point().row();
         if (head <= row && row <= tail) {
-            return 0;
+            return false;
         }
         if (row < head) {
-            return prev(head - row);
+            return prev(head - row) > 0;
         } else {
-            return next(row - tail);
+            return next(row - tail) > 0;
         }
     }
 

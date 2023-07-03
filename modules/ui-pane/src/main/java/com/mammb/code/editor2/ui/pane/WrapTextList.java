@@ -23,6 +23,7 @@ import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,13 +37,12 @@ public class WrapTextList implements TextList {
     private final TextBuffer<Textual> editBuffer;
     /** The text translator. */
     private final Translate<Textual, List<TextLine>> translator = translator();
-    /** The source un-wrapped lines. */
-    private final List<TextLine> sourceLines = new LinkedList<>();
 
     /** The lines maybe wrapped. */
-    private List<TextLine> lines;
+    private List<TextLine> lines = new LinkedList<>();;
     /** The offset of lines. */
     private int lineOffset = 0;
+
 
     /**
      * Constructor.
@@ -55,16 +55,16 @@ public class WrapTextList implements TextList {
 
     @Override
     public List<TextLine> lines() {
-        if (sourceLines.isEmpty()) {
+        if (lines.isEmpty()) {
             for (Textual textual : editBuffer.texts()) {
                 lines.addAll(translator.applyTo(textual));
             }
-            int size = Math.min(lines.size(), editBuffer.maxLineSize());
-            lines = sourceLines.subList(0, size);
             lineOffset = 0;
         }
-        return lines;
+        int toIndex = lineOffset + editBuffer.maxLineSize();
+        return lines.subList(lineOffset, Math.min(toIndex, lines.size()));
     }
+
 
     @Override
     public int prev(int n) {
@@ -77,6 +77,7 @@ public class WrapTextList implements TextList {
         }
         return count;
     }
+
 
     private int prev() {
         if (lineOffset == 0) {
@@ -93,6 +94,7 @@ public class WrapTextList implements TextList {
         }
         return 1;
     }
+
 
     @Override
     public int next(int n) {
@@ -124,8 +126,49 @@ public class WrapTextList implements TextList {
     }
 
     @Override
-    public int at(int n) {
-        return 0;
+    public boolean at(int row, int offset) {
+
+        List<TextLine> visibleLines = lines();
+        int start = visibleLines.get(0).start();
+        int end = visibleLines.get(visibleLines.size() - 1).end();
+        if (start <= offset && offset < end) {
+            return false;
+        }
+
+        final int first = lines.get(0).point().row();
+        final int last = lines.get(lines.size() - 1).point().row();
+        if (first > row || row > last) {
+            if (row < first) {
+                int nRow = first - row;
+                List<Textual> added = editBuffer.prev(nRow);
+                if (added.size() >= editBuffer.maxLineSize()) {
+                    added.subList(editBuffer.maxLineSize(), added.size()).clear();
+                }
+                removeTailRow(lines, added.size());
+                List<TextLine> list = added.stream().map(translator::applyTo)
+                    .flatMap(Collection::stream).toList();
+                    lines.addAll(0, list);
+            } else {
+                int nRow = row - last;
+                List<Textual> added = editBuffer.next(nRow);
+                int removedCount = removeHeadRow(lines, added.size());
+                List<TextLine> list = added.stream().map(translator::applyTo)
+                    .flatMap(Collection::stream).toList();
+                removeAfterRow(list, removedCount);
+                lines.addAll(list);
+            }
+        }
+
+        lineOffset = 0;
+        while (true) {
+            start = visibleLines.get(0).start();
+            end = visibleLines.get(visibleLines.size() - 1).end();
+            if (start <= offset && offset < end) {
+                return true;
+            }
+            int ret = next();
+            if (ret == 0) return true;
+        }
     }
 
     private static Translate<Textual, List<TextLine>> translator() {
@@ -135,15 +178,33 @@ public class WrapTextList implements TextList {
             .compound(LayoutWrapTranslate.of(layout));
     }
 
-
+    /**
+     *
+     * @param lines
+     * @param n
+     * @return the number of removed row
+     */
     private static int removeHeadRow(List<TextLine> lines, int n) {
         return removeRow(lines, n, true);
     }
 
+    /**
+     *
+     * @param lines
+     * @param n
+     * @return the number of removed row
+     */
     private static int removeTailRow(List<TextLine> lines, int n) {
         return removeRow(lines, n, false);
     }
 
+    /**
+     *
+     * @param lines
+     * @param n
+     * @param asc
+     * @return the number of removed row
+     */
     private static int removeRow(List<TextLine> lines, int n, boolean asc) {
 
         if (n <= 0) return 0;
@@ -170,5 +231,29 @@ public class WrapTextList implements TextList {
         }
         return count;
     }
+
+
+    private static void removeAfterRow(List<TextLine> lines, int n) {
+
+        if (n <= 0) return;
+
+        int size = lines.size();
+        if (n >= size) {
+            return;
+        }
+
+        int count = 0;
+        int prev = -1;
+        for (TextLine line : lines) {
+            if (prev != -1 && prev != line.point().row()) {
+                n--;
+            }
+            if (n == 0) break;
+            prev = line.point().row();
+            count++;
+        }
+        lines.subList(count, lines.size()).clear();
+    }
+
 
 }

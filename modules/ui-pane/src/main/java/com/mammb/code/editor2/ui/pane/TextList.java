@@ -19,15 +19,38 @@ import com.mammb.code.editor2.model.layout.TextLine;
 import java.util.List;
 
 public interface TextList {
-    List<TextLine> lines();
-    int prev(int n);
-    int next(int n);
-    int at(int n);
 
+    List<TextLine> lines();
+
+    /**
+     * Scroll prev.
+     * @param n the number of line
+     * @return the number of scrolled lines
+     */
+    int prev(int n);
+
+    /**
+     * Scroll next.
+     * @param n the number of line
+     * @return the number of scrolled lines
+     */
+    int next(int n);
+
+
+    boolean at(int row, int offset);
+
+    /**
+     * Get the line at head.
+     * @return the line at head
+     */
     default TextLine head() {
         return lines().get(0);
     }
 
+    /**
+     * Get the line at tail.
+     * @return the line at tail
+     */
     default TextLine tail() {
         List<TextLine> lines = lines();
         return lines.isEmpty() ? null : lines.get(lines.size() - 1);
