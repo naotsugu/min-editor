@@ -55,10 +55,11 @@ public class EditorModel {
     public void down(int n) { screen.scrollNext(n); }
 
     public void moveCaretRight() { screen.moveCaretRight(); }
-
     public void moveCaretLeft() { screen.moveCaretLeft(); }
     public void moveCaretUp() { screen.moveCaretUp(); }
     public void moveCaretDown() { screen.moveCaretDown(); }
+
+    public void toggleWrap() { screen.toggleWrap(); }
 
     // -- private
 

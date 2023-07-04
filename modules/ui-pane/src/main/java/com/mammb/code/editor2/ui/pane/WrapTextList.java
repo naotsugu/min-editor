@@ -36,12 +36,14 @@ public class WrapTextList implements TextList {
     /** The edit buffer. */
     private final TextBuffer<Textual> editBuffer;
     /** The text translator. */
-    private final Translate<Textual, List<TextLine>> translator = translator();
+    private final Translate<Textual, List<TextLine>> translator;
 
     /** The lines maybe wrapped. */
-    private List<TextLine> lines = new LinkedList<>();;
+    private List<TextLine> lines = new LinkedList<>();
     /** The offset of lines. */
     private int lineOffset = 0;
+
+    private final StylingTranslate styling;
 
 
     /**
@@ -49,8 +51,20 @@ public class WrapTextList implements TextList {
      * @param editBuffer the edit buffer
      */
     public WrapTextList(TextBuffer<Textual> editBuffer) {
-        this.editBuffer = editBuffer;
+        this(editBuffer, StylingTranslate.passThrough(), -1);
     }
+
+
+    /**
+     * Constructor.
+     * @param editBuffer the edit buffer
+     */
+    public WrapTextList(TextBuffer<Textual> editBuffer, StylingTranslate styling, double wrapWidth) {
+        this.editBuffer = editBuffer;
+        this.styling = styling;
+        this.translator = translator(wrapWidth, styling);
+    }
+
 
 
     @Override
@@ -171,12 +185,18 @@ public class WrapTextList implements TextList {
         }
     }
 
-    private static Translate<Textual, List<TextLine>> translator() {
-        FxLayoutBuilder layout = new FxLayoutBuilder();
-        return StylingTranslate.passThrough()
-            .compound(SpanTranslate.of())
-            .compound(LayoutWrapTranslate.of(layout));
+
+    private static Translate<Textual, List<TextLine>> translator(double wrapWidth) {
+        return translator(wrapWidth, StylingTranslate.passThrough());
     }
+
+    private static Translate<Textual, List<TextLine>> translator(
+        double wrapWidth, StylingTranslate styling) {
+        FxLayoutBuilder layout = new FxLayoutBuilder(wrapWidth);
+        return styling.compound(SpanTranslate.of())
+                      .compound(LayoutWrapTranslate.of(layout));
+    }
+
 
     /**
      *

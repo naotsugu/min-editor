@@ -123,4 +123,9 @@ public class Screen {
         if (caret.y2() > height) scrollNext(1);
     }
 
+    // --  ------------------------------------------------------
+
+    public void toggleWrap() {
+
+    }
 }

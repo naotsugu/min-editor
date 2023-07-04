@@ -35,16 +35,25 @@ public class LinearTextList implements TextList {
     /** The edit buffer. */
     private final TextBuffer<Textual> editBuffer;
     /** The text translator. */
-    private final Translate<Textual, TextLine> translator = translator();
+    private final Translate<Textual, TextLine> translator;
     /** The lines. */
     private final List<TextLine> lines = new LinkedList<>();
+
+    private final StylingTranslate styling;
 
     /**
      * Constructor.
      * @param editBuffer the edit buffer
      */
     public LinearTextList(TextBuffer<Textual> editBuffer) {
+        this(editBuffer, StylingTranslate.passThrough());
+    }
+
+
+    public LinearTextList(TextBuffer<Textual> editBuffer, StylingTranslate styling) {
         this.editBuffer = editBuffer;
+        this.styling = styling;
+        this.translator = translator(styling);
     }
 
 
@@ -127,11 +136,10 @@ public class LinearTextList implements TextList {
      * Build the translator.
      * @return the translator
      */
-    private static Translate<Textual, TextLine> translator() {
+    private static Translate<Textual, TextLine> translator(StylingTranslate styling) {
         FxLayoutBuilder layout = new FxLayoutBuilder();
-        return StylingTranslate.passThrough()
-            .compound(SpanTranslate.of())
-            .compound(LayoutTranslate.of(layout));
+        return styling.compound(SpanTranslate.of())
+                      .compound(LayoutTranslate.of(layout));
     }
 
 }

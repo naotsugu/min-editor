@@ -91,6 +91,12 @@ public class EditorPane extends StackPane {
 
 
     public void handle(KeyEvent e) {
+
+        if (Keys.SC_W.match(e)) {
+            editorModel.toggleWrap();
+            return;
+        }
+
         switch (e.getCode()) {
             case RIGHT      -> editorModel.moveCaretRight();
             case LEFT       -> editorModel.moveCaretLeft();
