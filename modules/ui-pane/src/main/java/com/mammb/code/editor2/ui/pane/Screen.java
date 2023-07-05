@@ -123,13 +123,21 @@ public class Screen {
         if (caret.y2() > height) scrollNext(1);
     }
 
+    public void moveCaretPageUp() {
+        scrollToCaret();
+    }
+
+    public void moveCaretPageDown() {
+        scrollToCaret();
+    }
+
     // --  ------------------------------------------------------
 
     public void toggleWrap() {
         if (texts instanceof LinearTextList linear)  {
-            texts = linear.asWrapTextList(width);
+            texts = linear.asWrapped(width);
         } else if (texts instanceof WrapTextList wrap) {
-            texts = wrap.asLinearTextList();
+            texts = wrap.asLinear();
         }
     }
 

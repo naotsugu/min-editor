@@ -38,8 +38,9 @@ public class LinearTextList implements TextList {
     private final Translate<Textual, TextLine> translator;
     /** The lines. */
     private final List<TextLine> lines = new LinkedList<>();
-
+    /** The styling. */
     private final StylingTranslate styling;
+
 
     /**
      * Constructor.
@@ -50,13 +51,19 @@ public class LinearTextList implements TextList {
     }
 
 
+    /**
+     * Constructor.
+     * @param editBuffer the edit buffer
+     * @param styling the styling
+     */
     public LinearTextList(TextBuffer<Textual> editBuffer, StylingTranslate styling) {
         this.editBuffer = editBuffer;
         this.styling = styling;
         this.translator = translator(styling);
     }
 
-    public TextList asWrapTextList(double width) {
+
+    public TextList asWrapped(double width) {
         return new WrapTextList(editBuffer, styling, width);
     }
 
@@ -143,7 +150,7 @@ public class LinearTextList implements TextList {
     private static Translate<Textual, TextLine> translator(StylingTranslate styling) {
         FxLayoutBuilder layout = new FxLayoutBuilder();
         return styling.compound(SpanTranslate.of())
-            .compound(LayoutTranslate.of(layout));
+                      .compound(LayoutTranslate.of(layout));
     }
 
 }

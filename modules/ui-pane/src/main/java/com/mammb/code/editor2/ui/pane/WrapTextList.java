@@ -37,13 +37,13 @@ public class WrapTextList implements TextList {
     private final TextBuffer<Textual> editBuffer;
     /** The text translator. */
     private final Translate<Textual, List<TextLine>> translator;
+    /** The styling. */
+    private final StylingTranslate styling;
 
     /** The lines maybe wrapped. */
-    private List<TextLine> lines = new LinkedList<>();
+    private final List<TextLine> lines = new LinkedList<>();
     /** The offset of lines. */
     private int lineOffset = 0;
-
-    private final StylingTranslate styling;
 
 
     /**
@@ -58,6 +58,8 @@ public class WrapTextList implements TextList {
     /**
      * Constructor.
      * @param editBuffer the edit buffer
+     * @param styling the styling
+     * @param wrapWidth the wrap width
      */
     public WrapTextList(TextBuffer<Textual> editBuffer, StylingTranslate styling, double wrapWidth) {
         this.editBuffer = editBuffer;
@@ -65,7 +67,8 @@ public class WrapTextList implements TextList {
         this.translator = translator(wrapWidth, styling);
     }
 
-    public TextList asLinearTextList() {
+
+    public TextList asLinear() {
         return new LinearTextList(editBuffer, styling);
     }
 
@@ -188,13 +191,6 @@ public class WrapTextList implements TextList {
         }
     }
 
-    public StylingTranslate styling() {
-        return styling;
-    }
-
-    private static Translate<Textual, List<TextLine>> translator(double wrapWidth) {
-        return translator(wrapWidth, StylingTranslate.passThrough());
-    }
 
     private static Translate<Textual, List<TextLine>> translator(
         double wrapWidth, StylingTranslate styling) {

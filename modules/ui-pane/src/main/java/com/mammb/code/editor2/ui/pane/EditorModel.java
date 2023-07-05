@@ -30,6 +30,7 @@ public class EditorModel {
 
     private Screen screen;
 
+
     public EditorModel(double width, double height) {
         this(width, height, null);
     }
@@ -50,14 +51,16 @@ public class EditorModel {
         screen.draw(gc);
     }
 
+    // -- scroll behavior  ----------------------------------------------------
     public void up(int n) { screen.scrollPrev(n); }
-
     public void down(int n) { screen.scrollNext(n); }
-
+    // -- arrow behavior ------------------------------------------------------
     public void moveCaretRight() { screen.moveCaretRight(); }
     public void moveCaretLeft() { screen.moveCaretLeft(); }
     public void moveCaretUp() { screen.moveCaretUp(); }
     public void moveCaretDown() { screen.moveCaretDown(); }
+    public void moveCaretPageUp() { screen.moveCaretPageUp(); }
+    public void moveCaretPageDown() { screen.moveCaretPageDown(); }
 
     public void toggleWrap() { screen.toggleWrap(); }
 

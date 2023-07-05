@@ -18,8 +18,16 @@ package com.mammb.code.editor2.ui.pane;
 import com.mammb.code.editor2.model.layout.TextLine;
 import java.util.List;
 
+/**
+ * TextList.
+ * @author Naotsugu Kobayashi
+ */
 public interface TextList {
 
+    /**
+     * Get the text lines.
+     * @return the text lines
+     */
     List<TextLine> lines();
 
     /**
@@ -36,8 +44,21 @@ public interface TextList {
      */
     int next(int n);
 
-
+    /**
+     * Scrolls to the specified position.
+     * @param row the number of row
+     * @param offset the char offset
+     * @return {@code true} if scrolled.
+     */
     boolean at(int row, int offset);
+
+    /**
+     * Get the size of text lines.
+     * @return the size of text lines
+     */
+    default int size() {
+        return lines().size();
+    }
 
     /**
      * Get the line at head.
