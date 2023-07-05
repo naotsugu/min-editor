@@ -29,9 +29,13 @@ import javafx.scene.text.Font;
  */
 public class Screen {
 
+    /** The screen width. */
     private final double width;
+    /** The screen height. */
     private final double height;
+
     private final Caret caret;
+
     private TextList texts;
 
 
@@ -76,18 +80,20 @@ public class Screen {
 
     // -- scroll behavior  ----------------------------------------------------
 
-    public void scrollPrev(int n) {
+    public int scrollPrev(int n) {
         int size = texts.prev(n);
         if (size > 0) caret.markDirty();
+        return size;
     }
 
-    public void scrollNext(int n) {
+    public int scrollNext(int n) {
         int size = texts.next(n);
         if (size > 0) caret.markDirty();
+        return size;
     }
 
     private void scrollToCaret() {
-        boolean scrolled = texts.at(caret.row(), caret.offset());
+        boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
         if (scrolled) caret.markDirty();
     }
 
@@ -125,10 +131,14 @@ public class Screen {
 
     public void moveCaretPageUp() {
         scrollToCaret();
+        scrollPrev(texts.capacity() - 1);
+        // TODO
     }
 
     public void moveCaretPageDown() {
         scrollToCaret();
+        scrollNext(texts.capacity() - 1);
+        // TODO
     }
 
     // --  ------------------------------------------------------

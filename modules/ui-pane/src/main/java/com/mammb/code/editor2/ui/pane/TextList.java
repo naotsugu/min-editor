@@ -50,15 +50,21 @@ public interface TextList {
      * @param offset the char offset
      * @return {@code true} if scrolled.
      */
-    boolean at(int row, int offset);
+    boolean scrollAt(int row, int offset);
 
     /**
-     * Get the size of text lines.
-     * @return the size of text lines
+     * Get the char offset at the specified position.
+     * @param x the x position
+     * @param y the y position
+     * @return the char offset
      */
-    default int size() {
-        return lines().size();
-    }
+    int at(double x, double y);
+
+    /**
+     * Get the size of text lines capacity.
+     * @return the size of text lines capacity
+     */
+    int capacity();
 
     /**
      * Get the line at head.

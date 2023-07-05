@@ -146,7 +146,7 @@ public class WrapTextList implements TextList {
     }
 
     @Override
-    public boolean at(int row, int offset) {
+    public boolean scrollAt(int row, int offset) {
 
         List<TextLine> visibleLines = lines();
         int start = visibleLines.get(0).start();
@@ -191,6 +191,16 @@ public class WrapTextList implements TextList {
         }
     }
 
+    @Override
+    public int at(double x, double y) {
+        // TODO
+        return 0;
+    }
+
+    @Override
+    public int capacity() {
+        return editBuffer.maxLineSize();
+    }
 
     private static Translate<Textual, List<TextLine>> translator(
         double wrapWidth, StylingTranslate styling) {

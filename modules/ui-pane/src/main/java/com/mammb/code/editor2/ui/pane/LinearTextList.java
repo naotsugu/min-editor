@@ -129,7 +129,7 @@ public class LinearTextList implements TextList {
 
 
     @Override
-    public boolean at(int row, int offset) {
+    public boolean scrollAt(int row, int offset) {
         final int head = head().point().row();
         final int tail = tail().point().row();
         if (head <= row && row <= tail) {
@@ -140,6 +140,17 @@ public class LinearTextList implements TextList {
         } else {
             return next(row - tail) > 0;
         }
+    }
+
+    @Override
+    public int at(double x, double y) {
+        // TODO
+        return 0;
+    }
+
+    @Override
+    public int capacity() {
+        return editBuffer.maxLineSize();
     }
 
 
