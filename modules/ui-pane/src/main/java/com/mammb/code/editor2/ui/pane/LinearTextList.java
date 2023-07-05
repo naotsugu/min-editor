@@ -56,6 +56,9 @@ public class LinearTextList implements TextList {
         this.translator = translator(styling);
     }
 
+    public TextList asWrapTextList(double width) {
+        return new WrapTextList(editBuffer, styling, width);
+    }
 
     @Override
     public List<TextLine> lines() {
@@ -132,6 +135,7 @@ public class LinearTextList implements TextList {
         }
     }
 
+
     /**
      * Build the translator.
      * @return the translator
@@ -139,7 +143,7 @@ public class LinearTextList implements TextList {
     private static Translate<Textual, TextLine> translator(StylingTranslate styling) {
         FxLayoutBuilder layout = new FxLayoutBuilder();
         return styling.compound(SpanTranslate.of())
-                      .compound(LayoutTranslate.of(layout));
+            .compound(LayoutTranslate.of(layout));
     }
 
 }

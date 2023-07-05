@@ -31,8 +31,8 @@ public class Screen {
 
     private final double width;
     private final double height;
-    private final TextList texts;
     private final Caret caret;
+    private TextList texts;
 
 
     public Screen(TextBuffer<Textual> editBuffer, double width, double height) {
@@ -56,7 +56,7 @@ public class Screen {
         for (TextLine line : texts.lines()) {
             for (TextRun run : line.runs()) {
                 if (run.style().font() instanceof Font font) gc.setFont(font);
-                gc.fillText(run.text(), run.layout().x(), offsetY + run.layout().y());
+                gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
             }
             offsetY += line.height();
         }
@@ -126,6 +126,11 @@ public class Screen {
     // --  ------------------------------------------------------
 
     public void toggleWrap() {
-
+        if (texts instanceof LinearTextList linear)  {
+            texts = linear.asWrapTextList(width);
+        } else if (texts instanceof WrapTextList wrap) {
+            texts = wrap.asLinearTextList();
+        }
     }
+
 }

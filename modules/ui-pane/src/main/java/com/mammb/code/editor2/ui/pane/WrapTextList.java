@@ -65,6 +65,9 @@ public class WrapTextList implements TextList {
         this.translator = translator(wrapWidth, styling);
     }
 
+    public TextList asLinearTextList() {
+        return new LinearTextList(editBuffer, styling);
+    }
 
 
     @Override
@@ -124,7 +127,7 @@ public class WrapTextList implements TextList {
 
 
     private int next() {
-        if (lines.size() >= lineOffset + editBuffer.maxLineSize()) {
+        if (lines.size() <= lineOffset + editBuffer.maxLineSize()) {
             List<Textual> added = editBuffer.next(1);
             int size = added.size();
             if (size == 0) return 0;
@@ -161,7 +164,7 @@ public class WrapTextList implements TextList {
                 removeTailRow(lines, added.size());
                 List<TextLine> list = added.stream().map(translator::applyTo)
                     .flatMap(Collection::stream).toList();
-                    lines.addAll(0, list);
+                lines.addAll(0, list);
             } else {
                 int nRow = row - last;
                 List<Textual> added = editBuffer.next(nRow);
@@ -185,6 +188,9 @@ public class WrapTextList implements TextList {
         }
     }
 
+    public StylingTranslate styling() {
+        return styling;
+    }
 
     private static Translate<Textual, List<TextLine>> translator(double wrapWidth) {
         return translator(wrapWidth, StylingTranslate.passThrough());
@@ -194,7 +200,7 @@ public class WrapTextList implements TextList {
         double wrapWidth, StylingTranslate styling) {
         FxLayoutBuilder layout = new FxLayoutBuilder(wrapWidth);
         return styling.compound(SpanTranslate.of())
-                      .compound(LayoutWrapTranslate.of(layout));
+            .compound(LayoutWrapTranslate.of(layout));
     }
 
 
@@ -274,6 +280,5 @@ public class WrapTextList implements TextList {
         }
         lines.subList(count, lines.size()).clear();
     }
-
 
 }

@@ -31,6 +31,12 @@ public interface TextRun {
     Layout layout();
 
     /**
+     * The position y.
+     * @return the position y
+     */
+    double y();
+
+    /**
      * Get the start char index at the source span.
      * @return the start char index at the source span
      */
@@ -41,6 +47,14 @@ public interface TextRun {
      * @return the char length of this text run
      */
     int length();
+
+    /**
+     * Get the baseline height.
+     * @return the baseline height.
+     */
+    default double baseline() {
+        return layout().y() - y();
+    }
 
     /**
      * Get the end char index at the source span.
@@ -102,6 +116,7 @@ public interface TextRun {
     /**
      * Create a new TextRun.
      * @param layout the layout
+     * @param y the position y
      * @param start the start char index at the source span
      * @param length the char length of this text run
      * @param source the source span
@@ -109,9 +124,9 @@ public interface TextRun {
      * @param xToOffset the x to offset function
      * @return a created TextRun
      */
-    static TextRun of(Layout layout, int start, int length, Span source,
+    static TextRun of(Layout layout, double y, int start, int length, Span source,
                       Function<Integer, Float> offsetToX, Function<Double, Integer> xToOffset) {
-        return new TextRunRecord(layout, start, length, null, source, offsetToX, xToOffset);
+        return new TextRunRecord(layout, y, start, length, null, source, offsetToX, xToOffset);
     }
 
     /**
@@ -121,7 +136,7 @@ public interface TextRun {
      * @return a created TextRun
      */
     static TextRun of(TextLine textLine, TextRun textRun) {
-        return new TextRunRecord(textRun.layout(), textRun.start(), textRun.length(), textLine, textRun.source(), textRun.offsetToX(), textRun.xToOffset());
+        return new TextRunRecord(textRun.layout(), textRun.y(), textRun.start(), textRun.length(), textLine, textRun.source(), textRun.offsetToX(), textRun.xToOffset());
     }
 
 }

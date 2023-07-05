@@ -24,6 +24,7 @@ import java.util.function.Function;
 /**
  * TextRunRecord.
  * @param layout the layout
+ * @param y the position y
  * @param start the start char index at the source span
  * @param length the char length of this text run
  * @param textLine the textLine to which this run belongs
@@ -34,6 +35,7 @@ import java.util.function.Function;
  */
 public record TextRunRecord(
     Layout layout,
+    double y,
     int start,
     int length,
     TextLine textLine,

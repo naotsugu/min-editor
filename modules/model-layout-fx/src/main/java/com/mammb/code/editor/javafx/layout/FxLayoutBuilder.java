@@ -23,7 +23,6 @@ import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -116,6 +115,7 @@ public class FxLayoutBuilder implements LineLayout {
 
                 textRuns.add(TextRun.of(
                     layout,
+                    location.y,
                     offset,
                     run.getLength(),
                     currentSpan.peer(),
@@ -130,7 +130,9 @@ public class FxLayoutBuilder implements LineLayout {
                 point.cpOffset());
             TextLine line = TextLine.of(
                 offsetPoint,
+                i,
                 textLine.getLength(),
+                textLine.getBounds().getWidth(),
                 textLine.getBounds().getHeight(),
                 textRuns);
             point = point.plus(line.text());
