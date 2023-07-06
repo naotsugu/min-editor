@@ -142,11 +142,6 @@ public class LinearTextList implements TextList {
         }
     }
 
-    @Override
-    public int at(double x, double y) {
-        // TODO
-        return 0;
-    }
 
     @Override
     public int capacity() {
@@ -161,7 +156,7 @@ public class LinearTextList implements TextList {
     private static Translate<Textual, TextLine> translator(StylingTranslate styling) {
         FxLayoutBuilder layout = new FxLayoutBuilder();
         return styling.compound(SpanTranslate.of())
-                      .compound(LayoutTranslate.of(layout));
+            .compound(LayoutTranslate.of(layout));
     }
 
 }

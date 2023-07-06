@@ -76,6 +76,25 @@ public class Caret {
         x = y = 0;
     }
 
+    public void at(int charOffset, boolean syncLogicalX) {
+        offset = charOffset;
+        LayoutLine layoutLine = offsetToLine.apply(offset);
+        if (layoutLine == null) {
+            x = y = 0;
+            row = 0;
+            dirty = true; // ?
+        } else {
+            x = layoutLine.offsetToX(offset);
+            y = layoutLine.offsetY();
+            line = layoutLine;
+            row = layoutLine.point().row();
+            dirty = false;
+            if (syncLogicalX) {
+                logicalX = x;
+            }
+
+        }
+    }
 
     /**
      * Move the caret to the right.
@@ -161,9 +180,18 @@ public class Caret {
         return offset;
     }
     public int row() { return row; }
-    public double x() { return x; }
-    public double y() { return y; }
-    public double y2() { return y + line.height(); }
+    public double x() {
+        ensureLayout();
+        return x;
+    }
+    public double y() {
+        ensureLayout();
+        return y;
+    }
+    public double y2() {
+        ensureLayout();
+        return y + line.height();
+    }
 
 
     private TextLine ensureLayout() {

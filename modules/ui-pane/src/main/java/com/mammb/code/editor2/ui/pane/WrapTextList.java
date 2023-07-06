@@ -192,12 +192,6 @@ public class WrapTextList implements TextList {
     }
 
     @Override
-    public int at(double x, double y) {
-        // TODO
-        return 0;
-    }
-
-    @Override
     public int capacity() {
         return editBuffer.maxLineSize();
     }

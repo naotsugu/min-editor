@@ -33,9 +33,9 @@ public class Screen {
     private final double width;
     /** The screen height. */
     private final double height;
-
+    /** The caret. */
     private final Caret caret;
-
+    /** The text list. */
     private TextList texts;
 
 
@@ -92,7 +92,7 @@ public class Screen {
         return size;
     }
 
-    private void scrollToCaret() {
+    public void scrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
         if (scrolled) caret.markDirty();
     }
@@ -131,14 +131,30 @@ public class Screen {
 
     public void moveCaretPageUp() {
         scrollToCaret();
+        double x = caret.x();
+        double y = caret.y();
         scrollPrev(texts.capacity() - 1);
-        // TODO
+        caret.at(texts.at(x, y), false);
     }
 
     public void moveCaretPageDown() {
         scrollToCaret();
+        double x = caret.x();
+        double y = caret.y();
         scrollNext(texts.capacity() - 1);
-        // TODO
+        caret.at(texts.at(x, y), false);
+    }
+
+    // -- mouse behavior ------------------------------------------------------
+
+    public void click(double x, double y) {
+        int offset = texts.at(x, y);
+        caret.at(offset, true);
+    }
+
+    public void clickDouble(double x, double y) {
+        int offset = texts.at(x, y);
+        caret.at(offset, true);
     }
 
     // --  ------------------------------------------------------
@@ -146,8 +162,10 @@ public class Screen {
     public void toggleWrap() {
         if (texts instanceof LinearTextList linear)  {
             texts = linear.asWrapped(width);
+            caret.markDirty();
         } else if (texts instanceof WrapTextList wrap) {
             texts = wrap.asLinear();
+            caret.markDirty();
         }
     }
 

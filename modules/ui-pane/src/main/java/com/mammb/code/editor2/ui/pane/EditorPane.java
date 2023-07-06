@@ -58,9 +58,10 @@ public class EditorPane extends StackPane {
      */
     private void initHandler() {
         setOnKeyPressed(this::handle);
+        setOnKeyTyped(this::handleKeyTyped);
         setOnKeyTyped(this::handle);
         setOnScroll(this::handle);
-        setOnMouseClicked(this::handle);
+        setOnMouseClicked(this::handleMouseClicked);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
     }
@@ -108,32 +109,30 @@ public class EditorPane extends StackPane {
         editorModel.clearAndDraw(gc);
     }
 
-//    public void handle(KeyEvent e) {
-//
-//        if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
-//            e.getCode().isArrowKey() || e.getCode().isModifierKey() ||
-//            e.getCode().isMediaKey() || !Keys.controlKeysFilter.test(e) ||
-//            e.getCharacter().length() == 0) {
-//            return;
-//        }
-//        int ascii = e.getCharacter().getBytes()[0];
-//        if (ascii < 32 || ascii == 127) {
-//            // 127:DEL
-//            if (ascii != 9 && ascii != 10 && ascii != 13) {
-//                // 9:HT 10:LF 13:CR
-//                return;
-//            }
-//        }
-//        //editBehavior.input(e.getCharacter());
-//
-//    }
+    public void handleMouseClicked(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            switch (event.getClickCount()) {
+                case 1 -> editorModel.click(event.getSceneX(), event.getSceneY());
+                case 2 -> editorModel.clickDouble(event.getSceneX(), event.getSceneY());
+            }
+            editorModel.clearAndDraw(gc);
+        }
+    }
 
-
-    public void handle(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
-            //caretBehavior.click(event.getSceneX(), event.getSceneY());
-        } else if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-            //caretBehavior.clickDouble(event.getSceneX(), event.getSceneY());
+    public void handleKeyTyped(KeyEvent e) {
+        if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
+            e.getCode().isArrowKey() || e.getCode().isModifierKey() ||
+            e.getCode().isMediaKey() || !Keys.controlKeysFilter.test(e) ||
+            e.getCharacter().length() == 0) {
+            return;
+        }
+        int ascii = e.getCharacter().getBytes()[0];
+        if (ascii < 32 || ascii == 127) {
+            // 127:DEL
+            if (ascii != 9 && ascii != 10 && ascii != 13) {
+                // 9:HT 10:LF 13:CR
+                return;
+            }
         }
     }
 

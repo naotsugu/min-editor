@@ -18,6 +18,7 @@ package com.mammb.code.editor2.ui.pane;
 import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
+import com.mammb.code.editor2.model.text.Textual;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import java.nio.file.Path;
@@ -28,6 +29,7 @@ import java.nio.file.Path;
  */
 public class EditorModel {
 
+    private TextBuffer<Textual> editBuffer;
     private Screen screen;
 
 
@@ -37,7 +39,8 @@ public class EditorModel {
 
 
     public EditorModel(double width, double height, Path path) {
-        screen = new Screen(TextBuffer.editBuffer(screenRowSize(height), path), width, height);
+        editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
+        screen = new Screen(editBuffer, width, height);
     }
 
 
@@ -61,10 +64,17 @@ public class EditorModel {
     public void moveCaretDown() { screen.moveCaretDown(); }
     public void moveCaretPageUp() { screen.moveCaretPageUp(); }
     public void moveCaretPageDown() { screen.moveCaretPageDown(); }
-
+    // -- mouse behavior ------------------------------------------------------
+    public void click(double x, double y) { screen.click(x, y); }
+    public void clickDouble(double x, double y) { screen.clickDouble(x, y); }
+    // -- edit behavior -------------------------------------------------------
+    public void input(String value) {
+        //buffer.push(Edit.insert(model.caret(), value));
+    }
+    // -- conf behavior -------------------------------------------------------
     public void toggleWrap() { screen.toggleWrap(); }
 
-    // -- private
+    // -- private -------------------------------------------------------------
 
     private int screenRowSize(double height) {
         var fontMetrics = new FxFontMetrics(FxFontStyle.of().font());

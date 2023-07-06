@@ -58,7 +58,25 @@ public interface TextList {
      * @param y the y position
      * @return the char offset
      */
-    int at(double x, double y);
+    default int at(double x, double y) {
+
+        if (y <= 0) {
+            TextLine head = head();
+            return head == null ? 0 : head.start();
+        }
+
+        double offsetY = 0;
+        for (TextLine line : lines()) {
+            double top = offsetY;
+            offsetY += line.height();
+            if (top <= y && y < offsetY) {
+                return line.xToOffset(x);
+            }
+        }
+
+        TextLine line = tail();
+        return line == null ? 0 : line.end();
+    }
 
     /**
      * Get the size of text lines capacity.
