@@ -16,8 +16,10 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.layout.TextLine;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
 import java.util.function.Function;
 
 /**
@@ -175,6 +177,12 @@ public class Caret {
         y = next.offsetY();
     }
 
+
+    public OffsetPoint offsetPoint() {
+        LayoutLine layoutLine = offsetToLine.apply(offset);
+        if (layoutLine == null) return OffsetPoint.zero;
+        return layoutLine.offsetPoint(offset);
+    }
 
     public int offset() {
         return offset;

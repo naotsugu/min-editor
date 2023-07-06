@@ -106,6 +106,16 @@ public interface TextRun {
     }
 
     /**
+     * Get the code point offset corresponding to the specified offset.
+     * @param offset the specified offset
+     * @return the code point offset corresponding to the specified offset
+     */
+    default int cpOffset(int offset) {
+        return source().point().cpOffset() +
+            Character.codePointCount(source().text(), 0, start() + offset);
+    }
+
+    /**
      * Get the style.
      * @return the style
      */

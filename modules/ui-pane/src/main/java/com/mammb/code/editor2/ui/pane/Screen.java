@@ -18,6 +18,7 @@ package com.mammb.code.editor2.ui.pane;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
@@ -52,6 +53,10 @@ public class Screen {
         drawText(gc);
         caret.draw(gc);
         gc.restore();
+    }
+
+    public OffsetPoint caretPoint() {
+        return caret.offsetPoint();
     }
 
     private void drawText(GraphicsContext gc) {
@@ -155,6 +160,11 @@ public class Screen {
     public void clickDouble(double x, double y) {
         int offset = texts.at(x, y);
         caret.at(offset, true);
+    }
+
+    // --  ------------------------------------------------------
+
+    public void input(String value) {
     }
 
     // --  ------------------------------------------------------

@@ -84,6 +84,16 @@ public interface TextLine extends Textual {
     }
 
     /**
+     * Get the code point offset corresponding to the specified offset.
+     * @param offset the specified offset
+     * @return the code point offset corresponding to the specified offset
+     */
+    default OffsetPoint offsetPoint(int offset) {
+        TextRun run = textRunAt(offset);
+        return OffsetPoint.of(point().row(), offset, run.cpOffset(offset));
+    }
+
+    /**
      * Get the x position from the specified x offset.
      * @param offset the specified char offset(total)
      * @return the x position from the specified x offset

@@ -59,7 +59,6 @@ public class EditorPane extends StackPane {
     private void initHandler() {
         setOnKeyPressed(this::handle);
         setOnKeyTyped(this::handleKeyTyped);
-        setOnKeyTyped(this::handle);
         setOnScroll(this::handle);
         setOnMouseClicked(this::handleMouseClicked);
         setOnDragOver(DragDrops.dragOverHandler());
@@ -134,6 +133,8 @@ public class EditorPane extends StackPane {
                 return;
             }
         }
+        editorModel.input(e.getCharacter());
+        editorModel.clearAndDraw(gc);
     }
 
 }

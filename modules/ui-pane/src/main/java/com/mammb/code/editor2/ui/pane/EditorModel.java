@@ -18,9 +18,11 @@ package com.mammb.code.editor2.ui.pane;
 import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
+import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.text.Textual;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+
 import java.nio.file.Path;
 
 /**
@@ -69,7 +71,7 @@ public class EditorModel {
     public void clickDouble(double x, double y) { screen.clickDouble(x, y); }
     // -- edit behavior -------------------------------------------------------
     public void input(String value) {
-        //buffer.push(Edit.insert(model.caret(), value));
+        editBuffer.push(Edit.insert(screen.caretPoint(), value));
     }
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() { screen.toggleWrap(); }

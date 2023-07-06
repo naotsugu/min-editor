@@ -57,6 +57,7 @@ public class EditBuffer implements TextBuffer<Textual> {
     @Override
     public List<Textual> texts() {
 
+System.out.println("editQueue.isEmpty():" + editQueue.isEmpty());
         if (editQueue.isEmpty()) {
             return slice.texts();
         }
