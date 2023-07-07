@@ -18,9 +18,9 @@ package com.mammb.code.editor2.model.buffer.impl;
 import com.mammb.code.editor2.model.buffer.Content;
 import com.mammb.code.editor2.model.buffer.ContentMetrics;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.edit.Edit;
-import com.mammb.code.editor2.model.edit.EditQueue;
+import com.mammb.code.editor2.model.edit.*;
 import com.mammb.code.editor2.model.slice.Slice;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class EditBuffer implements TextBuffer<Textual> {
     private final Content content;
 
     /** The edit queue. */
-    private final EditQueue editQueue = EditQueue.of();
+    private final EditQueue editQueue;
 
 
     /**
@@ -51,13 +51,13 @@ public class EditBuffer implements TextBuffer<Textual> {
     public EditBuffer(Content content, int maxRowSize) {
         this.content = content;
         this.slice = Slice.of(maxRowSize, new RawAdapter(content));
+        this.editQueue = EditQueue.of(editTo(content));
     }
 
 
     @Override
     public List<Textual> texts() {
 
-System.out.println("editQueue.isEmpty():" + editQueue.isEmpty());
         if (editQueue.isEmpty()) {
             return slice.texts();
         }
@@ -108,6 +108,19 @@ System.out.println("editQueue.isEmpty():" + editQueue.isEmpty());
     public ContentMetrics metrics(ContentMetrics metrics) {
         content.traverseRow(bytes -> metrics.add(new String(bytes, content.charset())));
         return metrics;
+    }
+
+    private EditListener editTo(Content content) {
+        return new EditToListener(new EditTo() {
+            @Override
+            public void insert(OffsetPoint point, CharSequence cs) {
+                content.insert(point, cs);
+            }
+            @Override
+            public void delete(OffsetPoint point, int len) {
+                content.delete(point, len);
+            }
+        });
     }
 
 }

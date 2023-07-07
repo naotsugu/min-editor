@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.buffer;
 
 import com.mammb.code.editor2.model.buffer.impl.Until;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -76,6 +77,20 @@ public interface Content {
             }
         }
     }
+
+    /**
+     * Inserts the char sequence into this {@code PieceTable}.
+     * @param point the offset point
+     * @param cs a char sequence
+     */
+    void insert(OffsetPoint point, CharSequence cs);
+
+    /**
+     * Removes the characters in a substring of this {@code PieceTable}.
+     * @param point the beginning index, inclusive
+     * @param len the length to be deleted
+     */
+    void delete(OffsetPoint point, int len);
 
     /**
      * Get the charset.

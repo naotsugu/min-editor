@@ -42,11 +42,22 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
     /** The edit listeners. */
     private final List<EditListener> listeners = new ArrayList<>();
 
+
     /**
      * Constructor.
      */
     public EditQueue() {
     }
+
+
+    /**
+     * Constructor.
+     * @param listener the edit listener
+     */
+    public EditQueue(EditListener listener) {
+        listeners.add(listener);
+    }
+
 
     /**
      * Push the edit.

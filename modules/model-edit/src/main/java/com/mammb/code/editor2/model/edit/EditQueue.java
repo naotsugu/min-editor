@@ -31,8 +31,8 @@ public interface EditQueue {
     void push(Edit edit);
 
     /**
-     *
-     * @return
+     * Peek the edit.
+     * @return the edit
      */
     Edit peek();
 
@@ -43,13 +43,11 @@ public interface EditQueue {
      */
     void peekEach(Consumer<Edit> action);
 
-
     /**
      * Get a sequential {@code Stream} with this collection as its edit.
      * @return a sequential {@code Stream} over the elements in this collection
      */
     Stream<Edit> stream();
-
 
     /**
      * Clear edit queue.
@@ -91,6 +89,15 @@ public interface EditQueue {
      */
     static EditQueue of() {
         return new com.mammb.code.editor2.model.edit.impl.EditQueue();
+    }
+
+    /**
+     * Create the edit queue.
+     * @param listener the edit listener
+     * @return the edit queue.
+     */
+    static EditQueue of(EditListener listener) {
+        return new com.mammb.code.editor2.model.edit.impl.EditQueue(listener);
     }
 
 }
