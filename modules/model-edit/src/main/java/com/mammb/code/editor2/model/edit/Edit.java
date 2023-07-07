@@ -41,6 +41,12 @@ public sealed interface Edit extends TextTranslate
     Edit flip();
 
     /**
+     * Apply this edit.
+     * @param editTo the edit to
+     */
+    void apply(EditTo editTo);
+
+    /**
      * Get whether other edit can be merged into this edit.
      * @param other the merging edit
      * @return {@code true} if other edit can be merged into this edit.

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
+import com.mammb.code.editor2.model.edit.EditTo;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 import java.util.ArrayList;
@@ -34,6 +35,11 @@ public record CompoundEdit(
     @Override
     public Edit flip() {
         return new CompoundEdit(edits.stream().map(Edit::flip).toList(), occurredOn);
+    }
+
+    @Override
+    public void apply(EditTo editTo) {
+        edits.forEach(edit -> edit.apply(editTo));
     }
 
     @Override

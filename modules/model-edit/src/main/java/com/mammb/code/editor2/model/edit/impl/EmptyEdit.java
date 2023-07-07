@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
+import com.mammb.code.editor2.model.edit.EditTo;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 
@@ -32,6 +33,10 @@ public record EmptyEdit() implements Edit {
     @Override
     public Edit flip() {
         return this;
+    }
+
+    @Override
+    public void apply(EditTo editTo) {
     }
 
     @Override

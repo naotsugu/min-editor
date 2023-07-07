@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.edit.impl;
+package com.mammb.code.editor2.model.edit;
 
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.text.Textual;
 
 /**
- * CoveredPointText.
+ * EditTo.
  * @author Naotsugu Kobayashi
  */
-public record TransTextual(Textual pear, OffsetPoint delta) implements Textual {
+public interface EditTo {
 
-    @Override
-    public OffsetPoint point() {
-        return pear.point().plus(delta);
-    }
+    /**
+     * Inserts the char sequence into at the specified point.
+     * @param point the offset
+     * @param cs a char sequence
+     */
+    void insert(OffsetPoint point, CharSequence cs);
 
-    @Override
-    public String text() {
-        return pear.text();
-    }
+    /**
+     * Removes the characters in a substring of at the specified point.
+     * @param point the beginning index, inclusive
+     * @param len the length to be deleted
+     */
+    void delete(OffsetPoint point, int len);
+
 }

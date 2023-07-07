@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
+import com.mammb.code.editor2.model.edit.EditTo;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
@@ -31,12 +32,15 @@ public record InsertEdit(
         String text,
         long occurredOn) implements Edit {
 
-
     @Override
     public Edit flip() {
         return new DeleteEdit(point, text, occurredOn);
     }
 
+    @Override
+    public void apply(EditTo editTo) {
+        editTo.insert(point, text);
+    }
 
     @Override
     public Textual applyTo(Textual textual) {
