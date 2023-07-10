@@ -115,6 +115,18 @@ public interface TextLine extends Textual {
     }
 
     /**
+     * Get the char string at offset position.
+     * @param offset the char (total) offset
+     * @return the char string at offset position
+     */
+    default String charStringAt(int offset) {
+        char ch = charAt(offset);
+        return Character.isHighSurrogate(ch)
+            ? String.valueOf(new char[] {ch, charAt(offset + 1)})
+            : String.valueOf(ch);
+    }
+
+    /**
      * Get the text run at offset position.
      * @param offset the char (total) offset
      * @return the text run at offset position
