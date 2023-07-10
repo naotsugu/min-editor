@@ -72,7 +72,6 @@ public class WrapTextList implements TextList {
         return new LinearTextList(editBuffer, styling);
     }
 
-
     @Override
     public List<TextLine> lines() {
         if (lines.isEmpty()) {
@@ -85,6 +84,10 @@ public class WrapTextList implements TextList {
         return lines.subList(lineOffset, Math.min(toIndex, lines.size()));
     }
 
+    @Override
+    public void markDirty() {
+        lines.clear();
+    }
 
     @Override
     public int prev(int n) {

@@ -104,6 +104,9 @@ public class EditorPane extends StackPane {
             case DOWN       -> editorModel.moveCaretDown();
             case PAGE_UP    -> editorModel.moveCaretPageUp();
             case PAGE_DOWN  -> editorModel.moveCaretPageDown();
+            case DELETE     -> editorModel.delete();
+            case BACK_SPACE -> editorModel.backspace();
+
         }
         editorModel.clearAndDraw(gc);
     }

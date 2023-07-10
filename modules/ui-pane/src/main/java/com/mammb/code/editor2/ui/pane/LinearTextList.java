@@ -78,6 +78,11 @@ public class LinearTextList implements TextList {
         return lines;
     }
 
+    @Override
+    public void markDirty() {
+        lines.clear();
+    }
+
 
     @Override
     public int prev(int n) {

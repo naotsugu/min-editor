@@ -18,7 +18,6 @@ package com.mammb.code.editor2.ui.pane;
 import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.text.Textual;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -31,7 +30,6 @@ import java.nio.file.Path;
  */
 public class EditorModel {
 
-    private TextBuffer<Textual> editBuffer;
     private Screen screen;
 
 
@@ -41,10 +39,9 @@ public class EditorModel {
 
 
     public EditorModel(double width, double height, Path path) {
-        editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
+        TextBuffer<Textual> editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
         screen = new Screen(editBuffer, width, height);
     }
-
 
     public void draw(GraphicsContext gc) {
         screen.draw(gc);
@@ -70,9 +67,9 @@ public class EditorModel {
     public void click(double x, double y) { screen.click(x, y); }
     public void clickDouble(double x, double y) { screen.clickDouble(x, y); }
     // -- edit behavior -------------------------------------------------------
-    public void input(String value) {
-        editBuffer.push(Edit.insert(screen.caretPoint(), value));
-    }
+    public void input(String value) { screen.input(value); }
+    public void delete() { screen.delete(); }
+    public void backspace() { screen.backspace(); }
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() { screen.toggleWrap(); }
 

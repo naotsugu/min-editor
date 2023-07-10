@@ -201,7 +201,6 @@ public class Caret {
         return y + line.height();
     }
 
-
     private TextLine ensureLayout() {
         if (!dirty) return line;
         dirty = false;

@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.layout.TextLine;
+
 import java.util.List;
 
 /**
@@ -29,6 +30,11 @@ public interface TextList {
      * @return the text lines
      */
     List<TextLine> lines();
+
+    /**
+     * Mark the TextList to dirty.
+     */
+    void markDirty();
 
     /**
      * Scroll prev.

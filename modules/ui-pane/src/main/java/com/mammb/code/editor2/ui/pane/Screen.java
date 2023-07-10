@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.buffer.TextBuffer;
+import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
@@ -30,6 +31,8 @@ import javafx.scene.text.Font;
  */
 public class Screen {
 
+    /** The text buffer. */
+    private final TextBuffer<Textual> editBuffer;
     /** The screen width. */
     private final double width;
     /** The screen height. */
@@ -40,7 +43,14 @@ public class Screen {
     private TextList texts;
 
 
+    /**
+     * Constructor.
+     * @param editBuffer the text buffer
+     * @param width the screen width
+     * @param height the screen height
+     */
     public Screen(TextBuffer<Textual> editBuffer, double width, double height) {
+        this.editBuffer = editBuffer;
         this.texts = new LinearTextList(editBuffer);
         this.caret = new Caret(this::layoutLine);
         this.width = width;
@@ -48,6 +58,10 @@ public class Screen {
     }
 
 
+    /**
+     * Draw the screen.
+     * @param gc the GraphicsContext
+     */
     public void draw(GraphicsContext gc) {
         gc.save();
         drawText(gc);
@@ -55,9 +69,6 @@ public class Screen {
         gc.restore();
     }
 
-    public OffsetPoint caretPoint() {
-        return caret.offsetPoint();
-    }
 
     private void drawText(GraphicsContext gc) {
         gc.setTextBaseline(VPos.CENTER);
@@ -165,6 +176,23 @@ public class Screen {
     // --  ------------------------------------------------------
 
     public void input(String value) {
+        OffsetPoint caretPoint = caret.offsetPoint();
+        editBuffer.push(Edit.insert(caretPoint, value));
+        for (int i = 0; i < value.length(); i++) moveCaretRight();
+        caret.markDirty();
+        texts.markDirty();
+    }
+
+    public void delete() {
+//        OffsetPoint caretPoint = caret.offsetPoint();
+//        editBuffer.push(Edit.delete(caretPoint, value));
+//        caret.markDirty();
+//        texts.markDirty();
+    }
+
+    public void backspace() {
+        moveCaretLeft();
+        delete();
     }
 
     // --  ------------------------------------------------------
