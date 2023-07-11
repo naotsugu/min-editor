@@ -176,18 +176,20 @@ public class Screen {
     // --  ------------------------------------------------------
 
     public void input(String value) {
+        scrollToCaret();
         OffsetPoint caretPoint = caret.offsetPoint();
         editBuffer.push(Edit.insert(caretPoint, value));
         for (int i = 0; i < value.length(); i++) moveCaretRight();
-        caret.markDirty();
         texts.markDirty();
+        caret.markDirty();
     }
 
     public void delete() {
-//        OffsetPoint caretPoint = caret.offsetPoint();
-//        editBuffer.push(Edit.delete(caretPoint, value));
-//        caret.markDirty();
-//        texts.markDirty();
+        scrollToCaret();
+        OffsetPoint caretPoint = caret.offsetPoint();
+        editBuffer.push(Edit.delete(caretPoint, texts.charStringAt(caretPoint.offset())));
+        texts.markDirty();
+        caret.markDirty();
     }
 
     public void backspace() {

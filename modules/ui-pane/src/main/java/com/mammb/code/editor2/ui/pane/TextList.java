@@ -16,7 +16,6 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.layout.TextLine;
-
 import java.util.List;
 
 /**
@@ -59,6 +58,12 @@ public interface TextList {
     boolean scrollAt(int row, int offset);
 
     /**
+     * Get the size of text lines capacity.
+     * @return the size of text lines capacity
+     */
+    int capacity();
+
+    /**
      * Get the char offset at the specified position.
      * @param x the x position
      * @param y the y position
@@ -84,11 +89,23 @@ public interface TextList {
         return line == null ? 0 : line.end();
     }
 
-    /**
-     * Get the size of text lines capacity.
-     * @return the size of text lines capacity
-     */
-    int capacity();
+    default char charAt(int offset) {
+        for (TextLine line : lines()) {
+            if (line.contains(offset)) {
+                return line.charAt(offset);
+            }
+        }
+        throw new IndexOutOfBoundsException(offset);
+    }
+
+    default String charStringAt(int offset) {
+        for (TextLine line : lines()) {
+            if (line.contains(offset)) {
+                return line.charStringAt(offset);
+            }
+        }
+        throw new IndexOutOfBoundsException(offset);
+    }
 
     /**
      * Get the line at head.

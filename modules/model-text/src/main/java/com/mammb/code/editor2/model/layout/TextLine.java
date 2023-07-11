@@ -123,7 +123,9 @@ public interface TextLine extends Textual {
         char ch = charAt(offset);
         return Character.isHighSurrogate(ch)
             ? String.valueOf(new char[] {ch, charAt(offset + 1)})
-            : String.valueOf(ch);
+            : Character.isLowSurrogate(ch)
+                ? String.valueOf(new char[] {charAt(offset - 1), ch})
+                : String.valueOf(ch);
     }
 
     /**
