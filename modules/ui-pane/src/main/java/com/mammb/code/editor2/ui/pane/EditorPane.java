@@ -81,9 +81,9 @@ public class EditorPane extends StackPane {
 
         if (e.getEventType() == ScrollEvent.SCROLL) {
             if (e.getDeltaY() > 0) {
-                editorModel.up(Math.min((int) e.getDeltaY(), 3));
+                editorModel.scrollPrev(Math.min((int) e.getDeltaY(), 3));
             } else if (e.getDeltaY() < 0) {
-                editorModel.down(Math.min(Math.abs((int) e.getDeltaY()), 3));
+                editorModel.scrollNext(Math.min(Math.abs((int) e.getDeltaY()), 3));
             }
             editorModel.clearAndDraw(gc);
         }

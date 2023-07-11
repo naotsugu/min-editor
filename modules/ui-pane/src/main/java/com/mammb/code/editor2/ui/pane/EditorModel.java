@@ -18,10 +18,15 @@ package com.mammb.code.editor2.ui.pane;
 import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
+import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.layout.TextLine;
+import com.mammb.code.editor2.model.layout.TextRun;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-
+import javafx.scene.text.Font;
 import java.nio.file.Path;
 
 /**
@@ -30,54 +35,182 @@ import java.nio.file.Path;
  */
 public class EditorModel {
 
-    private Screen screen;
+    /** The text buffer. */
+    private final TextBuffer<Textual> editBuffer;
+    /** The screen width. */
+    private final double width;
+    /** The screen height. */
+    private final double height;
+    /** The caret. */
+    private final Caret caret;
+    /** The text list. */
+    private TextList texts;
 
-
+    /**
+     * Constructor.
+     * @param width the screen width
+     * @param height the screen height
+     */
     public EditorModel(double width, double height) {
         this(width, height, null);
     }
 
-
+    /**
+     * Constructor.
+     * @param width the screen width
+     * @param height the screen height
+     * @param path the path
+     */
     public EditorModel(double width, double height, Path path) {
-        TextBuffer<Textual> editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
-        screen = new Screen(editBuffer, width, height);
+        this.editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
+        this.texts = new LinearTextList(editBuffer);
+        this.caret = new Caret(this::layoutLine);
+        this.width = width;
+        this.height = height;
     }
 
+    /**
+     * Draw the screen.
+     * @param gc the GraphicsContext
+     */
     public void draw(GraphicsContext gc) {
-        screen.draw(gc);
+        gc.save();
+        drawText(gc);
+        caret.draw(gc);
+        gc.restore();
     }
 
     public void clearAndDraw(GraphicsContext gc) {
         Canvas canvas = gc.getCanvas();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        screen.draw(gc);
+        draw(gc);
     }
 
     // -- scroll behavior  ----------------------------------------------------
-    public void up(int n) { screen.scrollPrev(n); }
-    public void down(int n) { screen.scrollNext(n); }
+    public int scrollPrev(int n) {
+        int size = texts.prev(n);
+        if (size > 0) caret.markDirty();
+        return size;
+    }
+    public int scrollNext(int n) {
+        int size = texts.next(n);
+        if (size > 0) caret.markDirty();
+        return size;
+    }
+    public void scrollToCaret() {
+        boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
+        if (scrolled) caret.markDirty();
+    }
     // -- arrow behavior ------------------------------------------------------
-    public void moveCaretRight() { screen.moveCaretRight(); }
-    public void moveCaretLeft() { screen.moveCaretLeft(); }
-    public void moveCaretUp() { screen.moveCaretUp(); }
-    public void moveCaretDown() { screen.moveCaretDown(); }
-    public void moveCaretPageUp() { screen.moveCaretPageUp(); }
-    public void moveCaretPageDown() { screen.moveCaretPageDown(); }
+    public void moveCaretRight() {
+        scrollToCaret();
+        if (caret.y2() + 4 >= height) scrollNext(1);
+        caret.right();
+        if (caret.y2() > height) scrollNext(1);
+    }
+    public void moveCaretLeft() {
+        scrollToCaret();
+        if (texts.head().start() > 0 && texts.head().start() == caret.offset()) {
+            scrollPrev(1);
+        }
+        caret.left();
+    }
+    public void moveCaretUp() {
+        scrollToCaret();
+        if (texts.head().start() > 0 && caret.offset() < texts.head().end()) {
+            scrollPrev(1);
+        }
+        caret.up();
+    }
+    public void moveCaretDown() {
+        scrollToCaret();
+        if (caret.y2() + 4 >= height) scrollNext(1);
+        caret.down();
+        if (caret.y2() > height) scrollNext(1);
+    }
+    public void moveCaretPageUp() {
+        scrollToCaret();
+        double x = caret.x();
+        double y = caret.y();
+        scrollPrev(texts.capacity() - 1);
+        caret.at(texts.at(x, y), false);
+    }
+    public void moveCaretPageDown() {
+        scrollToCaret();
+        double x = caret.x();
+        double y = caret.y();
+        scrollNext(texts.capacity() - 1);
+        caret.at(texts.at(x, y), false);
+    }
     // -- mouse behavior ------------------------------------------------------
-    public void click(double x, double y) { screen.click(x, y); }
-    public void clickDouble(double x, double y) { screen.clickDouble(x, y); }
+    public void click(double x, double y) {
+        int offset = texts.at(x, y);
+        caret.at(offset, true);
+    }
+    public void clickDouble(double x, double y) {
+        int offset = texts.at(x, y);
+        caret.at(offset, true);
+        // TODO
+    }
     // -- edit behavior -------------------------------------------------------
-    public void input(String value) { screen.input(value); }
-    public void delete() { screen.delete(); }
-    public void backspace() { screen.backspace(); }
+    public void input(String value) {
+        scrollToCaret();
+        OffsetPoint caretPoint = caret.offsetPoint();
+        editBuffer.push(Edit.insert(caretPoint, value));
+        for (int i = 0; i < value.length(); i++) moveCaretRight();
+        texts.markDirty();
+        caret.markDirty();
+    }
+    public void delete() {
+        scrollToCaret();
+        OffsetPoint caretPoint = caret.offsetPoint();
+        editBuffer.push(Edit.delete(caretPoint, texts.charStringAt(caretPoint.offset())));
+        texts.markDirty();
+        caret.markDirty();
+    }
+    public void backspace() {
+        moveCaretLeft();
+        delete();
+    }
     // -- conf behavior -------------------------------------------------------
-    public void toggleWrap() { screen.toggleWrap(); }
-
+    public void toggleWrap() {
+        if (texts instanceof LinearTextList linear)  {
+            texts = linear.asWrapped(width);
+            caret.markDirty();
+        } else if (texts instanceof WrapTextList wrap) {
+            texts = wrap.asLinear();
+            caret.markDirty();
+        }
+    }
     // -- private -------------------------------------------------------------
 
     private int screenRowSize(double height) {
         var fontMetrics = new FxFontMetrics(FxFontStyle.of().font());
         return (int) Math.ceil(height / fontMetrics.lineHeight());
+    }
+
+    private void drawText(GraphicsContext gc) {
+        gc.setTextBaseline(VPos.CENTER);
+        double offsetY = 0;
+        for (TextLine line : texts.lines()) {
+            for (TextRun run : line.runs()) {
+                if (run.style().font() instanceof Font font) gc.setFont(font);
+                gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
+            }
+            offsetY += line.height();
+        }
+    }
+
+    private LayoutLine layoutLine(int offset) {
+        if (offset < texts.head().point().offset()) {
+            return null;
+        }
+        double offsetY = 0;
+        for (TextLine line : texts.lines()) {
+            if (line.contains(offset)) return new LayoutLine(line, offsetY);
+            offsetY += line.height();
+        }
+        return null;
     }
 
 }
