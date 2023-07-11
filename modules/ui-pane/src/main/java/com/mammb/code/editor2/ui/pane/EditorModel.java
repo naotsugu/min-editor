@@ -64,7 +64,7 @@ public class EditorModel {
     public EditorModel(double width, double height, Path path) {
         this.editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
         this.texts = new LinearTextList(editBuffer);
-        this.caret = new Caret(this::layoutLine);
+        this.caret = new Caret(texts::layoutLine);
         this.width = width;
         this.height = height;
     }
@@ -164,7 +164,9 @@ public class EditorModel {
     public void delete() {
         scrollToCaret();
         OffsetPoint caretPoint = caret.offsetPoint();
-        editBuffer.push(Edit.delete(caretPoint, texts.charStringAt(caretPoint.offset())));
+        LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
+        if (layoutLine == null) return;
+        editBuffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
         texts.markDirty();
         caret.markDirty();
     }
@@ -199,18 +201,6 @@ public class EditorModel {
             }
             offsetY += line.height();
         }
-    }
-
-    private LayoutLine layoutLine(int offset) {
-        if (offset < texts.head().point().offset()) {
-            return null;
-        }
-        double offsetY = 0;
-        for (TextLine line : texts.lines()) {
-            if (line.contains(offset)) return new LayoutLine(line, offsetY);
-            offsetY += line.height();
-        }
-        return null;
     }
 
 }

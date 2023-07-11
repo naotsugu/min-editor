@@ -89,23 +89,19 @@ public interface TextList {
         return line == null ? 0 : line.end();
     }
 
-    default char charAt(int offset) {
-        for (TextLine line : lines()) {
-            if (line.contains(offset)) {
-                return line.charAt(offset);
-            }
+
+    default LayoutLine layoutLine(int offset) {
+        if (offset < head().point().offset()) {
+            return null;
         }
-        throw new IndexOutOfBoundsException(offset);
+        double offsetY = 0;
+        for (TextLine line : lines()) {
+            if (line.contains(offset)) return new LayoutLine(line, offsetY);
+            offsetY += line.height();
+        }
+        return null;
     }
 
-    default String charStringAt(int offset) {
-        for (TextLine line : lines()) {
-            if (line.contains(offset)) {
-                return line.charStringAt(offset);
-            }
-        }
-        throw new IndexOutOfBoundsException(offset);
-    }
 
     /**
      * Get the line at head.
