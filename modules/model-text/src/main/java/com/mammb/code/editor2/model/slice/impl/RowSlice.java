@@ -71,7 +71,7 @@ public class RowSlice implements Slice<Textual> {
         fill();
     }
 
-
+    @Override
     public void refresh(int rowNumber) {
         for (int i = 0; i < texts.size(); i++) {
             if (texts.get(i).point().row() >= rowNumber) {

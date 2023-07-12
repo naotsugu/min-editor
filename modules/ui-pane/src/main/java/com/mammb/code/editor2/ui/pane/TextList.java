@@ -90,13 +90,20 @@ public interface TextList {
     }
 
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     default LayoutLine layoutLine(int offset) {
         if (offset < head().point().offset()) {
             return null;
         }
         double offsetY = 0;
         for (TextLine line : lines()) {
-            if (line.contains(offset)) return new LayoutLine(line, offsetY);
+            if (line.contains(offset)) {
+                return new LayoutLine(line, offsetY);
+            }
             offsetY += line.height();
         }
         return null;

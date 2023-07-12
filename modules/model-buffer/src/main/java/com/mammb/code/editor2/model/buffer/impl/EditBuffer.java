@@ -115,10 +115,12 @@ public class EditBuffer implements TextBuffer<Textual> {
             @Override
             public void insert(OffsetPoint point, CharSequence cs) {
                 content.insert(point, cs);
+                slice.refresh(point.row());
             }
             @Override
             public void delete(OffsetPoint point, int len) {
                 content.delete(point, len);
+                slice.refresh(point.row());
             }
         });
     }

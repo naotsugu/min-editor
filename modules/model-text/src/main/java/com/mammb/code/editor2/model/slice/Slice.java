@@ -44,6 +44,12 @@ public interface Slice<T extends Textual> extends TextList<T> {
     void setMaxRowSize(int capacity);
 
     /**
+     * Refresh below the specified rowNumber(inclusive).
+     * @param rowNumber the specified rowNumber(inclusive)
+     */
+    void refresh(int rowNumber);
+
+    /**
      * Scroll previous line.
      * @param n the number of line
      * @return the added lines

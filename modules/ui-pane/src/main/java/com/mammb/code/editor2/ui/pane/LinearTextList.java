@@ -161,7 +161,7 @@ public class LinearTextList implements TextList {
     private static Translate<Textual, TextLine> translator(StylingTranslate styling) {
         FxLayoutBuilder layout = new FxLayoutBuilder();
         return styling.compound(SpanTranslate.of())
-            .compound(LayoutTranslate.of(layout));
+                      .compound(LayoutTranslate.of(layout));
     }
 
 }
