@@ -55,6 +55,7 @@ public class RowSlice implements Slice<Textual> {
 
     @Override
     public List<Textual> texts() {
+
         return texts;
     }
 
@@ -67,8 +68,15 @@ public class RowSlice implements Slice<Textual> {
 
     @Override
     public void setMaxRowSize(int capacity) {
-        this.maxRowSize = capacity;
-        fill();
+        if (maxRowSize > capacity) {
+            this.maxRowSize = capacity;
+            if (texts.size() > capacity) {
+                texts.subList(capacity, texts.size()).clear();
+            }
+        } else if (maxRowSize < capacity) {
+            this.maxRowSize = capacity;
+            fill();
+        }
     }
 
     @Override
@@ -143,20 +151,9 @@ public class RowSlice implements Slice<Textual> {
     }
 
 
-    private void pushFirst(List<Textual> rows) {
-        texts.addAll(0, rows);
-        while (texts.size() > maxRowSize) texts.remove(texts.size() - 1);
-    }
-
     private void pushFirst(Textual row) {
         texts.add(0, row);
         while (texts.size() > maxRowSize) texts.remove(texts.size() - 1);
-    }
-
-
-    private void pushLast(List<Textual> rows) {
-        texts.addAll(rows);
-        while (texts.size() > maxRowSize) texts.remove(0);
     }
 
     private void pushLast(Textual row) {
