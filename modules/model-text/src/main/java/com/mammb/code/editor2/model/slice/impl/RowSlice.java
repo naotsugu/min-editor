@@ -49,13 +49,14 @@ public class RowSlice implements Slice<Textual> {
     public RowSlice(int maxRowSize, RowSupplier rowSupplier) {
         this.rowSupplier = Objects.requireNonNull(rowSupplier);
         this.maxRowSize = Math.max(maxRowSize, 1);
-        fill();
     }
 
 
     @Override
     public List<Textual> texts() {
-
+        if (texts.isEmpty()) {
+            fill();
+        }
         return texts;
     }
 
@@ -68,6 +69,11 @@ public class RowSlice implements Slice<Textual> {
 
     @Override
     public void setMaxRowSize(int capacity) {
+
+        if (capacity <= 1) {
+            throw new IllegalArgumentException("Too small capacity. " + capacity);
+        }
+
         if (maxRowSize > capacity) {
             this.maxRowSize = capacity;
             if (texts.size() > capacity) {
@@ -79,25 +85,86 @@ public class RowSlice implements Slice<Textual> {
         }
     }
 
+
     @Override
     public void refresh(int rowNumber) {
         for (int i = 0; i < texts.size(); i++) {
             if (texts.get(i).point().row() >= rowNumber) {
                 texts.subList(i, texts.size()).clear();
-                break;
+                fill();
+                return;
             }
         }
-        fill();
     }
 
 
-    public void clear() {
-        texts.clear();
-        pushEmptyIf();
+    @Override
+    public List<Textual> prev(int n) {
+
+        List<Textual> added = new LinkedList<>();
+
+        for (int i = 0; i < n; i++) {
+
+            Textual head = texts.get(0);
+            int cpOffset = head.point().cpOffset();
+            if (cpOffset == 0) break;
+
+            String str = rowSupplier.before(cpOffset);
+            Textual textual = Textual.of(head.point().minus(str), str);
+            added.add(0, textual);
+            pushFirst(textual);
+        }
+
+        return added;
+    }
+
+
+    @Override
+    public List<Textual> next(int n) {
+
+        List<Textual> added = new ArrayList<>();
+
+        for (int i = 0; i < n; i++) {
+
+            Textual tail = texts.get(texts.size() - 1);
+            OffsetPoint next = tail.point().plus(tail.text());
+
+            String str = rowSupplier.at(next.cpOffset());
+            Textual textual = Textual.of(next, (str == null) ? "" : str);
+            added.add(textual);
+            pushLast(textual);
+
+            if (str == null) {
+                break;
+            }
+        }
+
+        return added;
+    }
+
+
+    private void pushFirst(Textual row) {
+        texts.add(0, row);
+        while (texts.size() > maxRowSize) {
+            texts.remove(texts.size() - 1);
+        }
+    }
+
+
+    private void pushLast(Textual row) {
+        texts.add(row);
+        while (texts.size() > maxRowSize) {
+            texts.remove(0);
+        }
     }
 
 
     private void fill() {
+
+        if (texts.size() > maxRowSize) {
+            texts.subList(maxRowSize, texts.size()).clear();
+            return;
+        }
 
         while (texts.size() < maxRowSize) {
 
@@ -110,60 +177,13 @@ public class RowSlice implements Slice<Textual> {
             }
 
             String str = rowSupplier.at(next.cpOffset());
-            if (str == null) break;
+            if (str == null) {
+                texts.add(Textual.of(next, ""));
+                break;
+            }
             texts.add(Textual.of(next, str));
         }
 
-    }
-
-
-    @Override
-    public List<Textual> prev(int n) {
-        List<Textual> added = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            Textual head = texts.get(0);
-            int cpOffset = head.point().cpOffset();
-            if (cpOffset == 0) break;
-
-            String str = rowSupplier.before(cpOffset);
-            Textual textual = Textual.of(head.point().minus(str), str);
-            added.add(0, textual);
-            pushFirst(textual);
-        }
-        return added;
-    }
-
-
-    @Override
-    public List<Textual> next(int n) {
-        List<Textual> added = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            Textual tail = texts.get(texts.size() - 1);
-            OffsetPoint next = tail.point().plus(tail.text());
-
-            String str = rowSupplier.at(next.cpOffset());
-            if (str == null) break;
-            Textual textual = Textual.of(next, str);
-            added.add(textual);
-            pushLast(textual);
-        }
-        return added;
-    }
-
-
-    private void pushFirst(Textual row) {
-        texts.add(0, row);
-        while (texts.size() > maxRowSize) texts.remove(texts.size() - 1);
-    }
-
-    private void pushLast(Textual row) {
-        texts.add(row);
-        while (texts.size() > maxRowSize) texts.remove(0);
-    }
-
-
-    private void pushEmptyIf() {
-        if (texts.isEmpty()) texts.add(Textual.of(OffsetPoint.zero, ""));
     }
 
 }

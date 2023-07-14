@@ -110,7 +110,9 @@ public class PtContentMirror implements Content {
             final int extensionPos = fileName.lastIndexOf('.');
             final String name = String.format("%-3s", fileName.substring(0, extensionPos)).replace(' ', '_');
             final String extension = fileName.substring(extensionPos);
-            return Files.createTempFile(name, extension);
+            Path tempFile = Files.createTempFile(name, extension);
+            tempFile.toFile().deleteOnExit();
+            return tempFile;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
