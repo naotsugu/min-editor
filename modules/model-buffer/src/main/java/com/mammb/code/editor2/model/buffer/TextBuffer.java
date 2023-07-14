@@ -16,14 +16,13 @@
 package com.mammb.code.editor2.model.buffer;
 
 import com.mammb.code.editor2.model.buffer.impl.EditBuffer;
-import com.mammb.code.editor2.model.buffer.impl.PtContent;
+import com.mammb.code.editor2.model.buffer.impl.PtContentMirror;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.text.TextList;
 import com.mammb.code.editor2.model.text.Textual;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The edit buffer.
@@ -66,12 +65,12 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      */
     List<T> next(int n);
 
+
     ContentMetrics metrics(ContentMetrics metrics);
 
+
     static TextBuffer<Textual> editBuffer(int maxRowSize, Path path) {
-        return new EditBuffer(
-            Objects.isNull(path) ? new PtContent() : new PtContent(path),
-            maxRowSize);
+        return new EditBuffer(PtContentMirror.of(path), maxRowSize);
     }
 
 }
