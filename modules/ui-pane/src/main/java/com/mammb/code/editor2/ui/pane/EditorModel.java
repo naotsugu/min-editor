@@ -19,7 +19,6 @@ import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
-import com.mammb.code.editor2.model.layout.Rec;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
@@ -27,6 +26,7 @@ import com.mammb.code.editor2.model.text.Textual;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.nio.file.Path;
 
@@ -44,8 +44,11 @@ public class EditorModel {
     private final double height;
     /** The caret. */
     private final Caret caret;
+    /** The selection. */
+    private final Selection sel;
     /** The text list. */
     private TextList texts;
+
 
     /**
      * Constructor.
@@ -67,6 +70,7 @@ public class EditorModel {
         this.editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
         this.texts = new LinearTextList(editBuffer);
         this.caret = new Caret(texts::layoutLine);
+        this.sel = new Selection();
         this.width = width;
         this.height = height;
     }
@@ -84,7 +88,12 @@ public class EditorModel {
         double offsetY = 0;
         for (TextLine line : texts.lines()) {
             for (TextRun run : line.runs()) {
+                if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
+                    gc.setFill(bg);
+                    gc.fillRect(run.layout().x(), offsetY, run.layout().width(), line.height());
+                }
                 if (run.style().font() instanceof Font font) gc.setFont(font);
+                if (run.style().color() instanceof Color color) gc.setFill(color);
                 gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
             }
             offsetY += line.height() + 1;
@@ -119,8 +128,14 @@ public class EditorModel {
                 double right = left + run.layout().width();
                 if (right < x) continue;
                 if (left > (x + w)) break;
-                gc.clearRect(left, top, run.layout().width(), line.height());
+                if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
+                    gc.setFill(bg);
+                    gc.fillRect(left, top, run.layout().width(), line.height());
+                } else {
+                    gc.clearRect(left, top, run.layout().width(), line.height());
+                }
                 if (run.style().font() instanceof Font font) gc.setFont(font);
+                if (run.style().color() instanceof Color color) gc.setFill(color);
                 gc.fillText(run.text(), left, top + run.baseline());
             }
             offsetY += line.height() + 1;
@@ -128,14 +143,15 @@ public class EditorModel {
         gc.restore();
     }
 
+    public void draw(GraphicsContext gc, Rect rect) {
+        if (rect == null) return;
+        draw(gc, rect.x(), rect.y(), rect.w(), rect.h());
+    }
+
     public void tick(GraphicsContext gc) {
         if (caret.drawn()) {
-            caret.clear(gc, new Rec() {
-                @Override
-                public void accept(double x, double y, double w, double h) {
-                    draw(gc, x, y, w, h);
-                }
-            });
+            Rect rect = caret.clear(gc);
+            draw(gc, rect);
         } else {
             caret.draw(gc);
         }
@@ -245,5 +261,7 @@ public class EditorModel {
         var fontMetrics = new FxFontMetrics(FxFontStyle.of().font());
         return (int) Math.ceil(height / fontMetrics.lineHeight());
     }
+
+    public record Rect(double x, double y, double w, double h) { }
 
 }

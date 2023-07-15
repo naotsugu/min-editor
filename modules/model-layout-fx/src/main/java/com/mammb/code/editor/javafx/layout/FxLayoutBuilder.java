@@ -107,8 +107,7 @@ public class FxLayoutBuilder implements LineLayout {
 
                 double baseline = -rectBounds.getMinY();
                 Layout layout = Layout.of(
-                    location.x, baseline + location.y,
-                    rectBounds.getWidth(), rectBounds.getHeight());
+                    location.x, baseline + location.y, run.getWidth(), run.getHeight());
 
                 Function<Integer, Float> offsetToX = off -> run.getXAtOffset(off, true) + location.x;
                 Function<Double, Integer> xToOffset = x -> run.getOffsetAtX(x.floatValue(), new int[1]);

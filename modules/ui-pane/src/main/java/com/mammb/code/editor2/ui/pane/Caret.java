@@ -15,11 +15,11 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
-import com.mammb.code.editor2.model.layout.Rec;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
 import java.util.function.Function;
 
 /**
@@ -27,6 +27,9 @@ import java.util.function.Function;
  * @author Naotsugu Kobayashi
  */
 public class Caret {
+
+    /** The caret width. */
+    private double width = 2;
 
     /** The caret (char) offset. */
     private int offset = 0;
@@ -64,12 +67,12 @@ public class Caret {
      */
     public void draw(GraphicsContext gc) {
         if (ensureLayout() == null) return;
-        double x1 = Math.max(2.0, x);
-        double y1 = y;
+        double x1 = Math.max(width, x);
+        double y1 = y + 1;
         double x2 = x1;
-        double y2 = y1 + line.height();
+        double y2 = y + line.height() - 1;
         gc.setStroke(Color.ORANGE);
-        gc.setLineWidth(2);
+        gc.setLineWidth(width);
         gc.strokeLine(x1, y1, x2, y2);
         drawn = true;
     }
@@ -78,17 +81,16 @@ public class Caret {
     /**
      * Clear.
      * @param gc the graphics context
-     * @param rec the Rec
      */
-    public void clear(GraphicsContext gc, Rec rec) {
-        if (ensureLayout() == null) return;
-        double dx = Math.max(x - 1.0, 0.0);
-        double dy = Math.max(y - 1.0, 0.0);
-        double dw = 2;
-        double dh = line.height() + 2.0;
+    public EditorModel.Rect clear(GraphicsContext gc) {
+        if (ensureLayout() == null) return null;
+        double dx = Math.max(x - width / 2, 0);
+        double dy = y;
+        double dw = width;
+        double dh = line.height();
         gc.clearRect(dx, dy, dw, dh);
         drawn = false;
-        rec.accept(dx, dy, dw, dh);
+        return new EditorModel.Rect(dx, dy, dw, dh);
     }
 
 
