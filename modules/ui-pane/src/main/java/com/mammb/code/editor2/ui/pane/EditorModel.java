@@ -55,6 +55,7 @@ public class EditorModel {
         this(width, height, null);
     }
 
+
     /**
      * Constructor.
      * @param width the screen width
@@ -69,21 +70,58 @@ public class EditorModel {
         this.height = height;
     }
 
+
     /**
      * Draw the screen.
      * @param gc the GraphicsContext
      */
     public void draw(GraphicsContext gc) {
+        Canvas canvas = gc.getCanvas();
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.save();
-        drawText(gc);
+        gc.setTextBaseline(VPos.CENTER);
+        double offsetY = 0;
+        for (TextLine line : texts.lines()) {
+            for (TextRun run : line.runs()) {
+                if (run.style().font() instanceof Font font) gc.setFont(font);
+                gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
+            }
+            offsetY += line.height();
+        }
         caret.draw(gc);
         gc.restore();
     }
 
-    public void clearAndDraw(GraphicsContext gc) {
-        Canvas canvas = gc.getCanvas();
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        draw(gc);
+
+    /**
+     * Draw the screen partly.
+     * @param gc the GraphicsContext
+     * @param x the x position of dirty area
+     * @param y the y position of dirty area
+     * @param w the width of dirty area
+     * @param h the height of dirty area
+     */
+    public void draw(GraphicsContext gc, double x, double y, double w, double h) {
+        gc.save();
+        gc.setTextBaseline(VPos.CENTER);
+        double offsetY = 0;
+        for (TextLine line : texts.lines()) {
+            double top = offsetY;
+            double bottom = top + line.height();
+            if (bottom < y) continue;
+            if (top > (y + h)) break;
+            for (TextRun run : line.runs()) {
+                double left = run.layout().x();
+                double right = left + run.layout().width();
+                if (right < x) continue;
+                if (left > (x + w)) break;
+                gc.clearRect(left, top, run.layout().width(), line.height());
+                if (run.style().font() instanceof Font font) gc.setFont(font);
+                gc.fillText(run.text(), left, top + run.baseline());
+            }
+            offsetY += line.height();
+        }
+        gc.restore();
     }
 
     // -- scroll behavior  ----------------------------------------------------
@@ -189,18 +227,6 @@ public class EditorModel {
     private int screenRowSize(double height) {
         var fontMetrics = new FxFontMetrics(FxFontStyle.of().font());
         return (int) Math.ceil(height / fontMetrics.lineHeight());
-    }
-
-    private void drawText(GraphicsContext gc) {
-        gc.setTextBaseline(VPos.CENTER);
-        double offsetY = 0;
-        for (TextLine line : texts.lines()) {
-            for (TextRun run : line.runs()) {
-                if (run.style().font() instanceof Font font) gc.setFont(font);
-                gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
-            }
-            offsetY += line.height();
-        }
     }
 
 }

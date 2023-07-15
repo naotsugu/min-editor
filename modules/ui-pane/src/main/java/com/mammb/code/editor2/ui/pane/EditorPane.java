@@ -85,7 +85,7 @@ public class EditorPane extends StackPane {
             } else if (e.getDeltaY() < 0) {
                 editorModel.scrollNext(Math.min(Math.abs((int) e.getDeltaY()), 3));
             }
-            editorModel.clearAndDraw(gc);
+            editorModel.draw(gc);
         }
     }
 
@@ -108,7 +108,7 @@ public class EditorPane extends StackPane {
             case BACK_SPACE -> editorModel.backspace();
 
         }
-        editorModel.clearAndDraw(gc);
+        editorModel.draw(gc);
     }
 
     public void handleMouseClicked(MouseEvent event) {
@@ -117,7 +117,7 @@ public class EditorPane extends StackPane {
                 case 1 -> editorModel.click(event.getSceneX(), event.getSceneY());
                 case 2 -> editorModel.clickDouble(event.getSceneX(), event.getSceneY());
             }
-            editorModel.clearAndDraw(gc);
+            editorModel.draw(gc);
         }
     }
 
@@ -137,7 +137,7 @@ public class EditorPane extends StackPane {
             }
         }
         editorModel.input(e.getCharacter());
-        editorModel.clearAndDraw(gc);
+        editorModel.draw(gc);
     }
 
 }
