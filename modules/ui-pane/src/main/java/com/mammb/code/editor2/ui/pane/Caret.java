@@ -15,11 +15,11 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.layout.Rec;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
 import java.util.function.Function;
 
 /**
@@ -47,6 +47,7 @@ public class Caret {
     /** The offset to layout line function. */
     private Function<Integer, LayoutLine> offsetToLine;
 
+    boolean drawn;
 
     /**
      * Constructor.
@@ -63,9 +64,31 @@ public class Caret {
      */
     public void draw(GraphicsContext gc) {
         if (ensureLayout() == null) return;
+        double x1 = Math.max(2.0, x);
+        double y1 = y;
+        double x2 = x1;
+        double y2 = y1 + line.height();
         gc.setStroke(Color.ORANGE);
-        gc.setLineWidth(x == 0 ? 4 : 2);
-        gc.strokeLine(x, y, x, y + line.height());
+        gc.setLineWidth(2);
+        gc.strokeLine(x1, y1, x2, y2);
+        drawn = true;
+    }
+
+
+    /**
+     * Clear.
+     * @param gc the graphics context
+     * @param rec the Rec
+     */
+    public void clear(GraphicsContext gc, Rec rec) {
+        if (ensureLayout() == null) return;
+        double dx = Math.max(x - 1.0, 0.0);
+        double dy = Math.max(y - 1.0, 0.0);
+        double dw = 2;
+        double dh = line.height() + 2.0;
+        gc.clearRect(dx, dy, dw, dh);
+        drawn = false;
+        rec.accept(dx, dy, dw, dh);
     }
 
 
@@ -77,6 +100,7 @@ public class Caret {
         line = null;
         x = y = 0;
     }
+
 
     public void at(int charOffset, boolean syncLogicalX) {
         offset = charOffset;
@@ -94,9 +118,9 @@ public class Caret {
             if (syncLogicalX) {
                 logicalX = x;
             }
-
         }
     }
+
 
     /**
      * Move the caret to the right.
@@ -199,6 +223,10 @@ public class Caret {
     public double y2() {
         ensureLayout();
         return y + line.height();
+    }
+
+    public boolean drawn() {
+        return drawn;
     }
 
     private TextLine ensureLayout() {

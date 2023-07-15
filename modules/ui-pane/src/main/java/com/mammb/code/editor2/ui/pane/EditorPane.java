@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.AccessibleRole;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -23,6 +25,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
+
 import java.nio.file.Path;
 
 /**
@@ -31,10 +35,15 @@ import java.nio.file.Path;
  */
 public class EditorPane extends StackPane {
 
+    /** The Canvas. */
     private Canvas canvas;
     private GraphicsContext gc;
     private EditorModel editorModel;
     double margin = 5;
+
+    /** The timeline. */
+    private final Timeline timeline = new Timeline();
+
 
     public EditorPane(double width, double height) {
         setWidth(width);
@@ -50,6 +59,10 @@ public class EditorPane extends StackPane {
         setAccessibleRole(AccessibleRole.TEXT_AREA);
         initHandler();
         getChildren().add(canvas);
+
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> tick()));
+        timeline.setCycleCount(-1);
+        timeline.play();
     }
 
 
@@ -138,6 +151,10 @@ public class EditorPane extends StackPane {
         }
         editorModel.input(e.getCharacter());
         editorModel.draw(gc);
+    }
+
+    private void tick() {
+        editorModel.tick(gc);
     }
 
 }

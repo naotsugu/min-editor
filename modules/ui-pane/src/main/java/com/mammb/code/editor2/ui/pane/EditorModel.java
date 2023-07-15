@@ -19,6 +19,7 @@ import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.layout.Rec;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
@@ -86,7 +87,7 @@ public class EditorModel {
                 if (run.style().font() instanceof Font font) gc.setFont(font);
                 gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
             }
-            offsetY += line.height();
+            offsetY += line.height() + 1;
         }
         caret.draw(gc);
         gc.restore();
@@ -108,8 +109,11 @@ public class EditorModel {
         for (TextLine line : texts.lines()) {
             double top = offsetY;
             double bottom = top + line.height();
-            if (bottom < y) continue;
-            if (top > (y + h)) break;
+            if (bottom < y) {
+                offsetY += line.height() + 1;
+                continue;
+            }
+            if (top >= (y + h)) break;
             for (TextRun run : line.runs()) {
                 double left = run.layout().x();
                 double right = left + run.layout().width();
@@ -119,9 +123,22 @@ public class EditorModel {
                 if (run.style().font() instanceof Font font) gc.setFont(font);
                 gc.fillText(run.text(), left, top + run.baseline());
             }
-            offsetY += line.height();
+            offsetY += line.height() + 1;
         }
         gc.restore();
+    }
+
+    public void tick(GraphicsContext gc) {
+        if (caret.drawn()) {
+            caret.clear(gc, new Rec() {
+                @Override
+                public void accept(double x, double y, double w, double h) {
+                    draw(gc, x, y, w, h);
+                }
+            });
+        } else {
+            caret.draw(gc);
+        }
     }
 
     // -- scroll behavior  ----------------------------------------------------

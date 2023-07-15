@@ -104,7 +104,7 @@ public interface TextList {
             if (line.contains(offset)) {
                 return new LayoutLine(line, offsetY);
             }
-            offsetY += line.height();
+            offsetY += line.height() + 1;
         }
         return null;
     }
