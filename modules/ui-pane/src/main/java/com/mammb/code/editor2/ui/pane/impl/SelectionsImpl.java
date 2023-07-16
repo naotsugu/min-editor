@@ -13,40 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.editor.impl;
+package com.mammb.code.editor2.ui.pane.impl;
 
-import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.editor.Selection;
-import com.mammb.code.editor2.model.editor.ViewModel;
-import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.text.Textual;
-
+import com.mammb.code.editor2.ui.pane.Selection;
+import com.mammb.code.editor2.ui.pane.Selections;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
- * ViewModel.
+ * SelectionsImpl.
  * @author Naotsugu Kobayashi
  */
-public class ViewModelImpl implements ViewModel {
+public class SelectionsImpl implements Selections {
 
-    private TextBuffer<? extends Textual> buffer;
-
-    private OffsetPoint caret;
-
-    private List<Selection> selections;
-
-    public ViewModelImpl() {
-    }
-
+    private final List<Selection> list = new ArrayList<>();
 
     @Override
-    public OffsetPoint caret() {
-        return caret;
+    public void put(Selection selection) {
+        list.add(selection);
     }
 
     @Override
-    public List<Selection> selections() {
-        return selections;
+    public Selection put(int offset) {
+        Selection sel = new SelectionImpl(offset);
+        list.add(sel);
+        return sel;
+    }
+
+    @Override
+    public void clear() {
+        list.clear();
+    }
+
+    @Override
+    public void forEach(Consumer<? super Selection> action) {
+        list.forEach(action);
     }
 
 }

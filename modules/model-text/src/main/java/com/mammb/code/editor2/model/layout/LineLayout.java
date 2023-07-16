@@ -27,7 +27,7 @@ public interface LineLayout {
      * Layout.
      * @return the TextLine
      */
-    List<TextLine> layout(Span span);
+    List<TextLine> layout(List<Span> line);
 
     /**
      * Sets the wrap width for the TextLayout.

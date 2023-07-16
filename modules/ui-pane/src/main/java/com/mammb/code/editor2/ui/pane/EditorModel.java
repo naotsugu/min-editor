@@ -21,13 +21,17 @@ import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
+import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor2.ui.pane.impl.SelectionTranslate;
+import com.mammb.code.editor2.ui.pane.impl.SelectionsImpl;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import java.nio.file.Path;
 
 /**
@@ -38,14 +42,14 @@ public class EditorModel {
 
     /** The text buffer. */
     private final TextBuffer<Textual> editBuffer;
+    /** The selection. */
+    private final Selections selections;
     /** The screen width. */
     private final double width;
     /** The screen height. */
     private final double height;
     /** The caret. */
     private final Caret caret;
-    /** The selection. */
-    private final Selection sel;
     /** The text list. */
     private TextList texts;
 
@@ -68,9 +72,10 @@ public class EditorModel {
      */
     public EditorModel(double width, double height, Path path) {
         this.editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
-        this.texts = new LinearTextList(editBuffer);
+        this.selections = new SelectionsImpl();
+        this.texts = new LinearTextList(editBuffer,
+            StylingTranslate.passThrough().compound(new SelectionTranslate(selections)));
         this.caret = new Caret(texts::layoutLine);
-        this.sel = new Selection();
         this.width = width;
         this.height = height;
     }

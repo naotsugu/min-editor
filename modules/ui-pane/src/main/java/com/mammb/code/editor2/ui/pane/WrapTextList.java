@@ -20,6 +20,7 @@ import com.mammb.code.editor.javafx.layout.SpanTranslate;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.layout.LayoutWrapTranslate;
 import com.mammb.code.editor2.model.layout.TextLine;
+import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
@@ -38,7 +39,7 @@ public class WrapTextList implements TextList {
     /** The text translator. */
     private final Translate<Textual, List<TextLine>> translator;
     /** The styling. */
-    private final StylingTranslate styling;
+    private final Translate<Textual, StyledText> styling;
 
     /** The lines maybe wrapped. */
     private final List<TextLine> lines = new LinkedList<>();
@@ -61,7 +62,10 @@ public class WrapTextList implements TextList {
      * @param styling the styling
      * @param wrapWidth the wrap width
      */
-    public WrapTextList(TextBuffer<Textual> editBuffer, StylingTranslate styling, double wrapWidth) {
+    public WrapTextList(
+            TextBuffer<Textual> editBuffer,
+            Translate<Textual, StyledText> styling,
+            double wrapWidth) {
         this.editBuffer = editBuffer;
         this.styling = styling;
         this.translator = translator(wrapWidth, styling);
@@ -71,6 +75,7 @@ public class WrapTextList implements TextList {
     public TextList asLinear() {
         return new LinearTextList(editBuffer, styling);
     }
+
 
     @Override
     public List<TextLine> lines() {
@@ -200,7 +205,7 @@ public class WrapTextList implements TextList {
     }
 
     private static Translate<Textual, List<TextLine>> translator(
-        double wrapWidth, StylingTranslate styling) {
+        double wrapWidth, Translate<Textual, StyledText> styling) {
         FxLayoutBuilder layout = new FxLayoutBuilder(wrapWidth);
         return styling.compound(SpanTranslate.of())
             .compound(LayoutWrapTranslate.of(layout));

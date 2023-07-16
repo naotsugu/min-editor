@@ -13,16 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.editor.impl;
+package com.mammb.code.editor2.ui.pane.impl;
 
-import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.editor.Selection;
+import com.mammb.code.editor2.ui.pane.Selection;
 
 /**
- * Selection.
+ * SelectionImpl.
  * @author Naotsugu Kobayashi
  */
 public class SelectionImpl implements Selection {
-    private OffsetPoint point;
-    private int length;
+
+    private int start;
+    private int end;
+    private boolean dragging;
+
+    public SelectionImpl(int start) {
+        this.start = start;
+        this.end = start;
+    }
+
+    @Override
+    public int start() {
+        return start;
+    }
+
+    @Override
+    public int end() {
+        return end;
+    }
+
+    public boolean dragging() {
+        return dragging;
+    }
 }

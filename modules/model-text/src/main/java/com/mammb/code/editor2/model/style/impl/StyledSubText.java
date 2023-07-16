@@ -89,18 +89,18 @@ public class StyledSubText implements StyledText {
     @Override
     public List<StyleSpan> styles() {
         if (subStyles == null) {
-            List<StyleSpan> sub = new ArrayList<>();
+            List<StyleSpan> list = new ArrayList<>();
             for (StyleSpan styleSpan : styledText.styles()) {
                 if (!styleSpan.inRange(start, length)) continue;
                 int newEnd = Math.min(styleSpan.endExclusive() - start, length);
                 int newStart = Math.max(styleSpan.point() - start, 0);
-                StyleSpan subStyle = StyleSpan.of(
+                StyleSpan sub = StyleSpan.of(
                     styleSpan.style(),
                     newStart,
                     newEnd - newStart);
-                sub.add(subStyle);
+                list.add(sub);
             }
-            subStyles = sub;
+            subStyles = list;
         }
         return subStyles;
     }

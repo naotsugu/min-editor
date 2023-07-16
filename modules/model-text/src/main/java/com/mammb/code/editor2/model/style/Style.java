@@ -39,7 +39,16 @@ public sealed interface Style {
      * @param opacity the opacity of color
      */
     record Color(String colorString, double opacity) implements Style {
-        public Color(String colorString) { this(colorString, 1); };
+        public Color(String colorString) { this(colorString, 1); }
+    }
+
+    /**
+     * BgColor.
+     * @param colorString the string representation of color
+     * @param opacity the opacity of color
+     */
+    record BgColor(String colorString, double opacity) implements Style {
+        public BgColor(String colorString) { this(colorString, 1); }
     }
 
     /**
@@ -50,6 +59,6 @@ public sealed interface Style {
     /**
      * Zero length marker.
      */
-    sealed interface ZeroLength extends Style {};
+    sealed interface ZeroLength extends Style {}
 
 }

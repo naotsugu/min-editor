@@ -20,6 +20,7 @@ import com.mammb.code.editor.javafx.layout.SpanTranslate;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.layout.LayoutTranslate;
 import com.mammb.code.editor2.model.layout.TextLine;
+import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
@@ -39,7 +40,7 @@ public class LinearTextList implements TextList {
     /** The lines. */
     private final List<TextLine> lines = new LinkedList<>();
     /** The styling. */
-    private final StylingTranslate styling;
+    private final Translate<Textual, StyledText> styling;
 
 
     /**
@@ -56,7 +57,7 @@ public class LinearTextList implements TextList {
      * @param editBuffer the edit buffer
      * @param styling the styling
      */
-    public LinearTextList(TextBuffer<Textual> editBuffer, StylingTranslate styling) {
+    public LinearTextList(TextBuffer<Textual> editBuffer, Translate<Textual, StyledText> styling) {
         this.editBuffer = editBuffer;
         this.styling = styling;
         this.translator = translator(styling);
@@ -158,7 +159,7 @@ public class LinearTextList implements TextList {
      * Build the translator.
      * @return the translator
      */
-    private static Translate<Textual, TextLine> translator(StylingTranslate styling) {
+    private static Translate<Textual, TextLine> translator(Translate<Textual, StyledText> styling) {
         FxLayoutBuilder layout = new FxLayoutBuilder();
         return styling.compound(SpanTranslate.of())
                       .compound(LayoutTranslate.of(layout));

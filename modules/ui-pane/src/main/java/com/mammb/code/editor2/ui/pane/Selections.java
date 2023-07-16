@@ -15,26 +15,20 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import java.util.function.Consumer;
+
 /**
- * Selection.
+ * Selections.
  * @author Naotsugu Kobayashi
  */
-public interface Selection {
+public interface Selections {
 
-    int start();
+    void put(Selection selection);
 
-    int end();
+    Selection put(int offset);
 
-    default int length() {
-        return max() - min();
-    }
+    void clear();
 
-    default int min() {
-        return Math.min(start(), end());
-    }
-
-    default int max() {
-        return Math.max(start(), end());
-    }
+    void forEach(Consumer<? super Selection> action);
 
 }
