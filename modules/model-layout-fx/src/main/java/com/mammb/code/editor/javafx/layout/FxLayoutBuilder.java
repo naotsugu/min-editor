@@ -168,9 +168,9 @@ public class FxLayoutBuilder implements LineLayout {
     }
 
     @Override
-    public List<TextLine> layout(List<Span> line) {
+    public List<TextLine> layout(List<Span> row) {
         clear();
-        add(line);
+        add(row);
         return layout();
     }
 
