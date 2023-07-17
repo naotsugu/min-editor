@@ -70,9 +70,9 @@ public class EditorPane extends StackPane {
      * Initialize handler.
      */
     private void initHandler() {
-        setOnKeyPressed(this::handle);
+        setOnKeyPressed(this::handleKeyPressed);
         setOnKeyTyped(this::handleKeyTyped);
-        setOnScroll(this::handle);
+        setOnScroll(this::handleScroll);
         setOnMouseClicked(this::handleMouseClicked);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
@@ -90,7 +90,7 @@ public class EditorPane extends StackPane {
     }
 
 
-    public void handle(ScrollEvent e) {
+    public void handleScroll(ScrollEvent e) {
 
         if (e.getEventType() == ScrollEvent.SCROLL) {
             if (e.getDeltaY() > 0) {
@@ -103,7 +103,7 @@ public class EditorPane extends StackPane {
     }
 
 
-    public void handle(KeyEvent e) {
+    public void handleKeyPressed(KeyEvent e) {
 
         if (Keys.SC_W.match(e)) {
             editorModel.toggleWrap();

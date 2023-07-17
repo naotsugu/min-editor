@@ -16,8 +16,10 @@
 package com.mammb.code.editor2.ui.pane;
 
 import javafx.scene.input.KeyCharacterCombination;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+
 import java.util.function.Predicate;
 
 /**
@@ -47,5 +49,19 @@ public class Keys {
         System.getProperty("os.name").startsWith("Windows")
             ? !e.isControlDown() && !e.isAltDown() && !e.isMetaDown() && e.getCharacter().length() == 1 && e.getCharacter().getBytes()[0] != 0
             : !e.isControlDown() && !e.isAltDown() && !e.isMetaDown();
+
+
+    /**
+     * Get whether the shift down key combination.
+     * @param e the key event
+     * @return {@code true}, if whether the shift down key combination
+     */
+    private static boolean isSelectCombination(KeyEvent e) {
+        final KeyCode code = e.getCode();
+        return code == KeyCode.LEFT    || code ==  KeyCode.RIGHT ||
+               code == KeyCode.UP      || code ==  KeyCode.DOWN  ||
+               code == KeyCode.HOME    || code ==  KeyCode.END   ||
+               code == KeyCode.PAGE_UP || code ==  KeyCode.PAGE_DOWN;
+    }
 
 }
