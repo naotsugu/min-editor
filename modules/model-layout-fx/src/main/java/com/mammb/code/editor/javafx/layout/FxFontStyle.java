@@ -25,6 +25,11 @@ import javafx.scene.text.Font;
  */
 public interface FxFontStyle extends FontStyle<Font, Color> {
 
+    String defaultName = "Consolas";
+    double defaultSize = 18;
+    Color defaultColor = Color.BLACK;
+    Color defaultBgColor = Color.TRANSPARENT;
+
     /**
      * Get the font.
      * @return the font
@@ -36,7 +41,7 @@ public interface FxFontStyle extends FontStyle<Font, Color> {
      * @return a created Style
      */
     static FxFontStyle of() {
-        return of(Font.font("Consolas", 18));
+        return of(Font.font(defaultName, defaultSize));
     }
 
     /**
@@ -45,7 +50,7 @@ public interface FxFontStyle extends FontStyle<Font, Color> {
      * @return a created Style
      */
     static FxFontStyle of(Font font) {
-        return of(font, Color.BLACK, Color.TRANSPARENT);
+        return of(font, defaultColor, defaultBgColor);
     }
 
     /**
@@ -55,7 +60,24 @@ public interface FxFontStyle extends FontStyle<Font, Color> {
      * @return a created Style
      */
     static FxFontStyle of(Font font, Color color) {
-        return of(font, color, Color.TRANSPARENT);
+        return of(font, color, defaultBgColor);
+    }
+
+    /**
+     * Create a new Style.
+     * @param family the family of the font
+     * @param size the point size of the font
+     * @param colorString the name or numeric representation of the color in one of the supported formats
+     * @param opacity the opacity component in range from 0.0 (transparent) to 1.0 (opaque)
+     * @param bgColorString the name or numeric representation of the background color in one of the supported formats
+     * @param bgOpacity the background color opacity component in range from 0.0 (transparent) to 1.0 (opaque)
+     * @return a created Style
+     */
+    static FxFontStyle of(
+            String family, double size,
+            String colorString, double opacity,
+            String bgColorString, double bgOpacity) {
+        return of(Font.font(family, size), Color.web(colorString, opacity), Color.web(bgColorString, bgOpacity));
     }
 
     /**

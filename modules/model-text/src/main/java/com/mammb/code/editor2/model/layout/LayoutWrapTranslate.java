@@ -22,7 +22,7 @@ import java.util.List;
  * LayoutWrapTranslate.
  * @author Naotsugu Kobayashi
  */
-public class LayoutWrapTranslate implements Translate<Span, List<TextLine>> {
+public class LayoutWrapTranslate implements Translate<List<Span>, List<TextLine>> {
 
     /** The line layout. */
     private final LineLayout lineLayout;
@@ -40,13 +40,13 @@ public class LayoutWrapTranslate implements Translate<Span, List<TextLine>> {
      * @param lineLayout the line layout
      * @return a new translation
      */
-    public static Translate<Span, List<TextLine>> of(LineLayout lineLayout) {
+    public static Translate<List<Span>, List<TextLine>> of(LineLayout lineLayout) {
         return new LayoutWrapTranslate(lineLayout);
     }
 
     @Override
-    public List<TextLine> applyTo(Span row) {
-        List<TextLine> lines = lineLayout.layout(List.of(row));
+    public List<TextLine> applyTo(List<Span> row) {
+        List<TextLine> lines = lineLayout.layout(row);
         if (lines.size() > 1 && lines.get(lines.size() - 1).length() == 0) {
             return lines.subList(0, lines.size() - 1);
         }

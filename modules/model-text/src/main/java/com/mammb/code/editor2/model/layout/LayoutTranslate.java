@@ -23,7 +23,7 @@ import java.util.Objects;
  * LayoutTranslate.
  * @author Naotsugu Kobayashi
  */
-public class LayoutTranslate implements Translate<Span, TextLine> {
+public class LayoutTranslate implements Translate<List<Span>, TextLine> {
 
     /** The line layout. */
     private final LineLayout lineLayout;
@@ -41,13 +41,13 @@ public class LayoutTranslate implements Translate<Span, TextLine> {
      * @param lineLayout the line layout
      * @return a new translation
      */
-    public static Translate<Span, TextLine> of(LineLayout lineLayout) {
+    public static Translate<List<Span>, TextLine> of(LineLayout lineLayout) {
         return new LayoutTranslate(lineLayout);
     }
 
     @Override
-    public TextLine applyTo(Span row) {
-        List<TextLine> results = lineLayout.layout(List.of(row));
+    public TextLine applyTo(List<Span> row) {
+        List<TextLine> results = lineLayout.layout(row);
         return results.isEmpty() ? null : results.get(0);
     }
 

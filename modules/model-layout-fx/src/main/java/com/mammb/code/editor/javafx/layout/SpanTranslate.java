@@ -16,47 +16,65 @@
 package com.mammb.code.editor.javafx.layout;
 
 import com.mammb.code.editor2.model.layout.Span;
+import com.mammb.code.editor2.model.style.Style;
+import com.mammb.code.editor2.model.style.StyleSpan;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.text.Translate;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * SpanTranslate.
  * @author Naotsugu Kobayashi
  */
-public class SpanTranslate implements Translate<StyledText, Span> {
-
-    /** The font style. */
-    private FxFontStyle fontStyle;
+public class SpanTranslate implements Translate<StyledText, List<Span>> {
 
     /**
      * Constructor.
-     * @param fontStyle the fontStyle
      */
-    private SpanTranslate(FxFontStyle fontStyle) {
-        this.fontStyle = fontStyle;
-    }
-
-    /**
-     * Create a new translation.
-     * @param font the font
-     * @return a new translation
-     */
-    public static Translate<StyledText, Span> of(Font font) {
-        return new SpanTranslate(FxFontStyle.of(font));
+    private SpanTranslate() {
     }
 
     /**
      * Create a new translation.
      * @return a new translation
      */
-    public static Translate<StyledText, Span> of() {
-        return new SpanTranslate(FxFontStyle.of());
+    public static Translate<StyledText, List<Span>> of() {
+        return new SpanTranslate();
     }
+
 
     @Override
-    public Span applyTo(StyledText input) {
-        return Span.of(input, fontStyle);
+    public List<Span> applyTo(StyledText row) {
+        var list = new ArrayList<Span>();
+        for (StyledText text : row.spans()) {
+
+            String fontName = FxFontStyle.defaultName;
+            double fontSize = FxFontStyle.defaultSize;
+            Color fgColor = FxFontStyle.defaultColor;
+            Color bgColor = FxFontStyle.defaultBgColor;
+
+            for (StyleSpan styleSpan : text.styles()) {
+                Style style = styleSpan.style();
+                if (style instanceof Style.FontFamily family) {
+                    fontName = family.name();
+                } else if (style instanceof Style.FontSize size) {
+                    fontSize = size.size();
+                } else if (style instanceof Style.Color fg) {
+                    fgColor = Color.web(fg.colorString());
+                } else if (style instanceof Style.BgColor bg) {
+                    bgColor = Color.web(bg.colorString());
+                }
+            }
+
+            Font font = Font.font(fontName, fontSize);
+            Span span = Span.of(text, FxFontStyle.of(font, fgColor, bgColor));
+            list.add(span);
+        }
+        return list;
     }
 
 }
