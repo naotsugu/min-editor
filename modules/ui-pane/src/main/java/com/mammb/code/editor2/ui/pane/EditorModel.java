@@ -178,6 +178,19 @@ public class EditorModel {
         if (scrolled) caret.markDirty();
     }
     // -- arrow behavior ------------------------------------------------------
+    public void selectOn() {
+        selections.put(caret.offset());
+    }
+    public void selectOff() {
+        selections.clear();
+        texts.markDirty();
+    }
+    public void selectTo() {
+        if (selections.length() > 0) {
+            selections.get(0).to(caret.offset());
+            texts.markDirty();
+        }
+    }
     public void moveCaretRight() {
         scrollToCaret();
         if (caret.y2() + 4 >= height) scrollNext(1);

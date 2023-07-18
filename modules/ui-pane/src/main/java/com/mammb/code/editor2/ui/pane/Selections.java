@@ -27,6 +27,10 @@ public interface Selections {
 
     Selection put(int offset);
 
+    Selection get(int index);
+
+    int length();
+
     void clear();
 
     void forEach(Consumer<? super Selection> action);

@@ -52,18 +52,18 @@ public interface StyledText extends Textual, Styled {
         for (StyleSpan style : styles()) {
             indices.add(style.point());
             if (style.length() > 0) {
-                indices.add(style.length() - 1);
+                indices.add(style.point() + style.length());
             }
         }
-        indices.add(text().length() - 1);
-
+        indices.add(text().length());
         List<StyledText> spans = new ArrayList<>();
         int prev = 0;
         for (int i : indices) {
             if (i == 0) continue;
-            spans.add(subText(prev, i + 1));
+            spans.add(subText(prev, i - prev));
             prev = i;
         }
+
         return spans;
     }
 

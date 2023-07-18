@@ -56,12 +56,12 @@ public class Keys {
      * @param e the key event
      * @return {@code true}, if whether the shift down key combination
      */
-    private static boolean isSelectCombination(KeyEvent e) {
+    public static boolean isSelectCombination(KeyEvent e) {
         final KeyCode code = e.getCode();
         return code == KeyCode.LEFT    || code ==  KeyCode.RIGHT ||
-               code == KeyCode.UP      || code ==  KeyCode.DOWN  ||
-               code == KeyCode.HOME    || code ==  KeyCode.END   ||
-               code == KeyCode.PAGE_UP || code ==  KeyCode.PAGE_DOWN;
+            code == KeyCode.UP      || code ==  KeyCode.DOWN  ||
+            code == KeyCode.HOME    || code ==  KeyCode.END   ||
+            code == KeyCode.PAGE_UP || code ==  KeyCode.PAGE_DOWN;
     }
 
 }

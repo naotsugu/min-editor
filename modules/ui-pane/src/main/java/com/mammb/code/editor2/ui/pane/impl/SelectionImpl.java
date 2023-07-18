@@ -42,6 +42,11 @@ public class SelectionImpl implements Selection {
         return end;
     }
 
+    @Override
+    public void to(int toOffset) {
+        end = toOffset;
+    }
+
     public boolean dragging() {
         return dragging;
     }

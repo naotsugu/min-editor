@@ -86,7 +86,7 @@ public class Caret {
         if (ensureLayout() == null) return null;
         double dx = Math.max(x - width / 2, 0);
         double dy = y;
-        double dw = width;
+        double dw = width + 1;
         double dh = line.height();
         gc.clearRect(dx, dy, dw, dh);
         drawn = false;

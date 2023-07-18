@@ -25,6 +25,8 @@ public interface Selection {
 
     int end();
 
+    void to(int toOffset);
+
     default int length() {
         return max() - min();
     }

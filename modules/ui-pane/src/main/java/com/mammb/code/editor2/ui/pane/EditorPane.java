@@ -103,11 +103,30 @@ public class EditorPane extends StackPane {
     }
 
 
+    public void handleMouseClicked(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY) {
+            switch (event.getClickCount()) {
+                case 1 -> editorModel.click(event.getSceneX(), event.getSceneY());
+                case 2 -> editorModel.clickDouble(event.getSceneX(), event.getSceneY());
+            }
+            editorModel.draw(gc);
+        }
+    }
+
+
     public void handleKeyPressed(KeyEvent e) {
 
         if (Keys.SC_W.match(e)) {
             editorModel.toggleWrap();
             return;
+        }
+
+        if (Keys.isSelectCombination(e)) {
+            if (e.isShiftDown()) {
+                editorModel.selectOn();
+            } else {
+                editorModel.selectOff();
+            }
         }
 
         switch (e.getCode()) {
@@ -121,17 +140,10 @@ public class EditorPane extends StackPane {
             case BACK_SPACE -> editorModel.backspace();
 
         }
-        editorModel.draw(gc);
-    }
 
-    public void handleMouseClicked(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY) {
-            switch (event.getClickCount()) {
-                case 1 -> editorModel.click(event.getSceneX(), event.getSceneY());
-                case 2 -> editorModel.clickDouble(event.getSceneX(), event.getSceneY());
-            }
-            editorModel.draw(gc);
-        }
+        editorModel.selectTo();
+
+        editorModel.draw(gc);
     }
 
     public void handleKeyTyped(KeyEvent e) {

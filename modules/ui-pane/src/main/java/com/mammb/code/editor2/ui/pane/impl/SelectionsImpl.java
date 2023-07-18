@@ -42,6 +42,16 @@ public class SelectionsImpl implements Selections {
     }
 
     @Override
+    public Selection get(int index) {
+        return list.get(index);
+    }
+
+    @Override
+    public int length() {
+        return list.size();
+    }
+
+    @Override
     public void clear() {
         list.clear();
     }

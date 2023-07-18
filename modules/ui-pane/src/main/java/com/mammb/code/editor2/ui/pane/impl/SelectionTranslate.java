@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 public class SelectionTranslate implements Translate<StyledText, StyledText> {
 
-    private final Style bgColor = new Style.BgColor("#3F51B5");
+    private final Style bgColor = new Style.BgColor("#42A5F5");
 
     private final Selections selections;
 
@@ -40,9 +40,7 @@ public class SelectionTranslate implements Translate<StyledText, StyledText> {
     @Override
     public StyledText applyTo(StyledText input) {
         selections.forEach(sel -> {
-            if (sel.length() > 0 &&
-                    input.point().offset() >= sel.max() &&
-                    sel.min() < input.tailOffset()) {
+            if (sel.length() > 0 && sel.max() >= input.point().offset() && sel.min() < input.tailOffset()) {
                 int start = Math.max(0, sel.min() - input.point().offset());
                 int end = Math.min(input.text().length(), sel.max() - input.point().offset());
                 input.putStyle(StyleSpan.of(bgColor, start, end - start));
