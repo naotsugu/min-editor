@@ -24,8 +24,7 @@ import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor2.ui.pane.impl.SelectionTranslate;
-import com.mammb.code.editor2.ui.pane.impl.SelectionsImpl;
+import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -42,14 +41,14 @@ public class EditorModel {
 
     /** The text buffer. */
     private final TextBuffer<Textual> editBuffer;
-    /** The selection. */
-    private final Selections selections;
     /** The screen width. */
     private final double width;
     /** The screen height. */
     private final double height;
     /** The caret. */
     private final Caret caret;
+    /** The selection. */
+    private final Selection selection;
     /** The text list. */
     private TextList texts;
 
@@ -72,10 +71,9 @@ public class EditorModel {
      */
     public EditorModel(double width, double height, Path path) {
         this.editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
-        this.selections = new SelectionsImpl();
-        this.texts = new LinearTextList(editBuffer,
-            StylingTranslate.passThrough().compound(new SelectionTranslate(selections)));
+        this.texts = new LinearTextList(editBuffer, StylingTranslate.passThrough());
         this.caret = new Caret(texts::layoutLine);
+        this.selection = new SelectionImpl();
         this.width = width;
         this.height = height;
     }
@@ -97,6 +95,8 @@ public class EditorModel {
                     gc.setFill(bg);
                     gc.fillRect(run.layout().x(), offsetY, run.layout().width(), line.height());
                 }
+                if (selection.started()) selection.draw(gc, run, offsetY);
+
                 if (run.style().font() instanceof Font font) gc.setFont(font);
                 if (run.style().color() instanceof Color color) gc.setFill(color);
                 gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
@@ -139,6 +139,8 @@ public class EditorModel {
                 } else {
                     gc.clearRect(left, top, run.layout().width(), line.height());
                 }
+                if (selection.started()) selection.draw(gc, run, offsetY);
+
                 if (run.style().font() instanceof Font font) gc.setFont(font);
                 if (run.style().color() instanceof Color color) gc.setFill(color);
                 gc.fillText(run.text(), left, top + run.baseline());
@@ -179,16 +181,16 @@ public class EditorModel {
     }
     // -- arrow behavior ------------------------------------------------------
     public void selectOn() {
-        selections.put(caret.offset());
+        if (!selection.started()) {
+            selection.start(caret.offset());
+        }
     }
     public void selectOff() {
-        selections.clear();
-        texts.markDirty();
+        selection.clear();
     }
     public void selectTo() {
-        if (selections.length() > 0) {
-            selections.get(0).to(caret.offset());
-            texts.markDirty();
+        if (selection.started()) {
+            selection.to(caret.offset());
         }
     }
     public void moveCaretRight() {

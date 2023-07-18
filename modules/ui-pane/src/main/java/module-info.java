@@ -26,4 +26,5 @@ module code.editor.ui.pane {
     requires code.editor.model.text;
     requires code.editor.model.edit;
     exports com.mammb.code.editor2.ui.pane;
+    exports com.mammb.code.editor2.ui.pane.impl;
 }

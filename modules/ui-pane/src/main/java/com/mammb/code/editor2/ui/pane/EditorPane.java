@@ -39,7 +39,7 @@ public class EditorPane extends StackPane {
     private Canvas canvas;
     private GraphicsContext gc;
     private EditorModel editorModel;
-    double margin = 5;
+    double margin = 5.5;
 
     /** The timeline. */
     private final Timeline timeline = new Timeline();

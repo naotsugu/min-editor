@@ -15,7 +15,10 @@
  */
 package com.mammb.code.editor2.ui.pane.impl;
 
+import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.ui.pane.Selection;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /**
  * SelectionImpl.
@@ -25,21 +28,34 @@ public class SelectionImpl implements Selection {
 
     private int start;
     private int end;
-    private boolean dragging;
 
-    public SelectionImpl(int start) {
-        this.start = start;
-        this.end = start;
+    public SelectionImpl() {
+        start = end = -1;
     }
 
     @Override
-    public int start() {
+    public void start(int offset) {
+        start = end = offset;
+    }
+
+    @Override
+    public void clear() {
+        start = end = -1;
+    }
+
+    @Override
+    public int startOffset() {
         return start;
     }
 
     @Override
-    public int end() {
+    public int endOffset() {
         return end;
+    }
+
+    @Override
+    public boolean started() {
+        return start > -1;
     }
 
     @Override
@@ -47,7 +63,17 @@ public class SelectionImpl implements Selection {
         end = toOffset;
     }
 
-    public boolean dragging() {
-        return dragging;
+    public void draw(GraphicsContext gc, TextRun run, double top) {
+        if (!started()) throw new IllegalStateException();
+        int runStart = run.offset();
+        int runEnd = runStart + run.length();
+        if (max() >= runStart && min() < runEnd) {
+            double left = run.offsetToX().apply(Math.max(min(), runStart) - runStart);
+            double width = run.offsetToX().apply(Math.min(max(), runEnd) - runStart) - left;
+            gc.setFill(Color.LIGHTBLUE);
+            gc.fillRect(left, top, width, run.textLine().height());
+        }
     }
+
 }
+

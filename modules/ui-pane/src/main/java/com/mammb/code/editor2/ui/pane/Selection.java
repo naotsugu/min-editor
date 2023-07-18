@@ -15,28 +15,39 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.layout.TextRun;
+import javafx.scene.canvas.GraphicsContext;
+
 /**
  * Selection.
  * @author Naotsugu Kobayashi
  */
 public interface Selection {
 
-    int start();
+    void start(int offset);
 
-    int end();
+    void clear();
+
+    int startOffset();
+
+    int endOffset();
+
+    boolean started();
 
     void to(int toOffset);
+
+    void draw(GraphicsContext gc, TextRun run, double offsetY);
 
     default int length() {
         return max() - min();
     }
 
     default int min() {
-        return Math.min(start(), end());
+        return Math.min(startOffset(), endOffset());
     }
 
     default int max() {
-        return Math.max(start(), end());
+        return Math.max(startOffset(), endOffset());
     }
 
 }
