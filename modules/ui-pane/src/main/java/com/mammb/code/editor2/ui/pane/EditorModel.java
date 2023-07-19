@@ -233,6 +233,26 @@ public class EditorModel {
         scrollNext(texts.capacity() - 1);
         caret.at(texts.at(x, y), false);
     }
+    public void moveCaretLineHome() {
+        scrollToCaret();
+        LayoutLine line = texts.layoutLine(caret.offset());
+        if (line.start() == caret.offset()) {
+            if (Character.isWhitespace(line.charAt(caret.offset()))) {
+                while (caret.offset() < line.end() &&
+                    Character.isWhitespace(line.charAt(caret.offset()))) {
+                    caret.right();
+                }
+            }
+        } else {
+            caret.at(line.start(), true);
+        }
+    }
+    public void moveCaretLineEnd() {
+        scrollToCaret();
+        LayoutLine line = texts.layoutLine(caret.offset());
+        int offset = line.end() - line.endMarkCount();
+        caret.at(offset, true);
+    }
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
         int offset = texts.at(x, y);

@@ -110,8 +110,8 @@ public interface TextLine extends Textual {
      */
     default char charAt(int offset) {
         TextRun run = textRunAt(offset);
-        int runStart = run.source().point().offset() + run.start();
-        return run.source().text().charAt(offset - runStart);
+        int index = offset - run.source().point().offset();
+        return run.source().text().charAt(index);
     }
 
     /**
@@ -124,8 +124,8 @@ public interface TextLine extends Textual {
         return Character.isHighSurrogate(ch)
             ? String.valueOf(new char[] {ch, charAt(offset + 1)})
             : Character.isLowSurrogate(ch)
-                ? String.valueOf(new char[] {charAt(offset - 1), ch})
-                : String.valueOf(ch);
+            ? String.valueOf(new char[] {charAt(offset - 1), ch})
+            : String.valueOf(ch);
     }
 
     /**
@@ -178,6 +178,17 @@ public interface TextLine extends Textual {
             offset += run.length();
         }
         return Math.max(offset - 1, 0);
+    }
+
+    /**
+     * Get the count of end mark.
+     * @return the count of end mark
+     */
+    default int endMarkCount() {
+        String text = text();
+        if (text.endsWith("\r\n")) return 2;
+        if (text.endsWith("\n")) return 1;
+        return 0;
     }
 
     /**
