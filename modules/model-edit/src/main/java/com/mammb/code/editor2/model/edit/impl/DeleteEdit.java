@@ -44,15 +44,15 @@ public record DeleteEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
-        if (!acrossRows()) {
+        if (acrossRows()) {
             throw new UnsupportedOperationException();
         }
         return switch (textual.compareOffsetRangeTo(point.offset())) {
             case -1 -> {
                 OffsetPoint delta = OffsetPoint.of(
                     0,
-                        -text.length(),
-                        -Character.codePointCount(text, 0, text.length()));
+                    -text.length(),
+                    -Character.codePointCount(text, 0, text.length()));
                 yield Textual.of(textual.point().plus(delta), textual.text());
             }
             case  0 -> {
