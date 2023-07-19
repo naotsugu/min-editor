@@ -239,9 +239,14 @@ public class EditorModel {
         caret.at(offset, true);
     }
     public void clickDouble(double x, double y) {
-        int offset = texts.at(x, y);
-        caret.at(offset, true);
-        // TODO
+        int[] offsets = texts.atAround(x, y);
+        if (offsets.length == 2) {
+            selection.start(offsets[0]);
+            selection.to(offsets[1]);
+            caret.at(offsets[1], true);
+        } else {
+            caret.at(offsets[0], true);
+        }
     }
     // -- edit behavior -------------------------------------------------------
     public void input(String value) {

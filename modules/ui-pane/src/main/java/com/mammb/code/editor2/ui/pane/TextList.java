@@ -17,6 +17,7 @@ package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.layout.TextLine;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * TextList.
@@ -70,30 +71,78 @@ public interface TextList {
      * @return the char offset
      */
     default int at(double x, double y) {
-
         if (y <= 0) {
             TextLine head = head();
             return head == null ? 0 : head.start();
         }
+        Optional<TextLine> line = at(y);
+        if (line.isPresent()) {
+            return line.get().xToOffset(x);
+        } else {
+            TextLine tail = tail();
+            return tail == null ? 0 : tail.end();
+        }
+    }
 
+    /**
+     * Get the char offset of the word selection at the specified position.
+     * @param x the x position
+     * @param y the y position
+     * @return the start and end offsets as an array, if word selected, otherwise the single offset.
+     */
+    default int[] atAround(double x, double y) {
+        Optional<TextLine> maybeLine = at(y);
+        if (maybeLine.isEmpty()) {
+            return new int[] { at(x, y) };
+        }
+        TextLine line = maybeLine.get();
+
+        int offset = line.xToOffset(x);
+        int start = offset;
+        int end = offset;
+        int type = Character.getType(Character.toLowerCase(line.charAt(offset)));
+
+        for (int i = offset + 1; i < line.end(); i++) {
+            if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
+                end = i;
+                break;
+            }
+        }
+        for (int i = offset - 1; i >= line.start(); i--) {
+            if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
+                break;
+            } else {
+                start = i;
+            }
+        }
+        if (start != end) {
+            return new int[] { start, end };
+        } else {
+            return new int[] { start };
+        }
+    }
+
+    /**
+     * Get the TextLine corresponding to the y position.
+     * @param y the y position
+     * @return the TextLine
+     */
+    default Optional<TextLine> at(double y) {
         double offsetY = 0;
         for (TextLine line : lines()) {
             double top = offsetY;
-            offsetY += line.height();
+            offsetY += line.height() + 1;
             if (top <= y && y < offsetY) {
-                return line.xToOffset(x);
+                return Optional.of(line);
             }
         }
-
-        TextLine line = tail();
-        return line == null ? 0 : line.end();
+        return Optional.empty();
     }
 
-
     /**
-     *
-     * @param offset
-     * @return
+     * Get the LayoutLine corresponding to the char offset.
+     * @param offset the char offset
+     * @return the LayoutLine
      */
     default LayoutLine layoutLine(int offset) {
         if (offset < head().point().offset()) {
@@ -108,7 +157,6 @@ public interface TextList {
         }
         return null;
     }
-
 
     /**
      * Get the line at head.
