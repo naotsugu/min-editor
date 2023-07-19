@@ -44,7 +44,7 @@ public record DeleteEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
-        if (!isSingleRowEdit()) {
+        if (!acrossRows()) {
             throw new UnsupportedOperationException();
         }
         return switch (textual.compareOffsetRangeTo(point.offset())) {
@@ -93,8 +93,8 @@ public record DeleteEdit(
     }
 
     @Override
-    public boolean isSingleRowEdit() {
-        return text.indexOf('\n') == -1;
+    public boolean acrossRows() {
+        return text.indexOf('\n') > -1;
     }
 
 }

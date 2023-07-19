@@ -73,7 +73,7 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
             flush();
         }
         deque.push(edit);
-        if (!edit.isSingleRowEdit()) {
+        if (edit.acrossRows()) {
             flush();
         }
     }

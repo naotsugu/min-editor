@@ -69,10 +69,10 @@ public sealed interface Edit extends TextTranslate
     }
 
     /**
-     *
-     * @return
+     * Get whether this edit is a across-row edit or not.
+     * @return {@code true}, if this edit is a across-row edit
      */
-    boolean isSingleRowEdit();
+    boolean acrossRows();
 
     /**
      * Create the insertion edit.
