@@ -121,6 +121,31 @@ public class EditorPane extends StackPane {
             return;
         }
 
+        // clipboard operations
+        if (Keys.SC_C.match(e)) {
+            editorModel.copyToClipboard();
+            return;
+        }
+        if (Keys.SC_V.match(e)) {
+            editorModel.pasteFromClipboard();
+            return;
+        }
+        if (Keys.SC_X.match(e)) {
+            editorModel.cutToClipboard();
+            return;
+        }
+
+        // undo redo
+        if (Keys.SC_Z.match(e)) {
+            editorModel.undo();
+            return;
+        }
+        if (Keys.SC_Y.match(e) || Keys.SC_SZ.match(e)) {
+            editorModel.redo();
+            return;
+        }
+
+
         if (Keys.isSelectCombination(e)) {
             if (e.isShiftDown()) {
                 editorModel.selectOn();

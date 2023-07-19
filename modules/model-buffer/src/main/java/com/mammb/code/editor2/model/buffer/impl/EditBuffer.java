@@ -93,6 +93,11 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public void flush() {
+        editQueue.flush();
+    }
+
+    @Override
     public List<Textual> prev(int n) {
         editQueue.flush();
         return slice.prev(n);

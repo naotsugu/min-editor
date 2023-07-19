@@ -24,6 +24,7 @@ import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor2.ui.pane.impl.Clipboard;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -196,11 +197,13 @@ public class EditorModel {
     public void moveCaretRight() {
         scrollToCaret();
         if (caret.y2() + 4 >= height) scrollNext(1);
+        editBuffer.flush();
         caret.right();
         if (caret.y2() > height) scrollNext(1);
     }
     public void moveCaretLeft() {
         scrollToCaret();
+        editBuffer.flush();
         if (texts.head().start() > 0 && texts.head().start() == caret.offset()) {
             scrollPrev(1);
         }
@@ -208,6 +211,7 @@ public class EditorModel {
     }
     public void moveCaretUp() {
         scrollToCaret();
+        editBuffer.flush();
         if (texts.head().start() > 0 && caret.offset() < texts.head().end()) {
             scrollPrev(1);
         }
@@ -215,12 +219,14 @@ public class EditorModel {
     }
     public void moveCaretDown() {
         scrollToCaret();
+        editBuffer.flush();
         if (caret.y2() + 4 >= height) scrollNext(1);
         caret.down();
         if (caret.y2() > height) scrollNext(1);
     }
     public void moveCaretPageUp() {
         scrollToCaret();
+        editBuffer.flush();
         double x = caret.x();
         double y = caret.y();
         scrollPrev(texts.capacity() - 1);
@@ -228,6 +234,7 @@ public class EditorModel {
     }
     public void moveCaretPageDown() {
         scrollToCaret();
+        editBuffer.flush();
         double x = caret.x();
         double y = caret.y();
         scrollNext(texts.capacity() - 1);
@@ -235,6 +242,7 @@ public class EditorModel {
     }
     public void moveCaretLineHome() {
         scrollToCaret();
+        editBuffer.flush();
         LayoutLine line = texts.layoutLine(caret.offset());
         if (line.start() == caret.offset()) {
             if (Character.isWhitespace(line.charAt(caret.offset()))) {
@@ -249,6 +257,7 @@ public class EditorModel {
     }
     public void moveCaretLineEnd() {
         scrollToCaret();
+        editBuffer.flush();
         LayoutLine line = texts.layoutLine(caret.offset());
         int offset = line.end() - line.endMarkCount();
         caret.at(offset, true);
@@ -256,10 +265,12 @@ public class EditorModel {
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
         int offset = texts.at(x, y);
+        editBuffer.flush();
         caret.at(offset, true);
     }
     public void clickDouble(double x, double y) {
         int[] offsets = texts.atAround(x, y);
+        editBuffer.flush();
         if (offsets.length == 2) {
             selection.start(offsets[0]);
             selection.to(offsets[1]);
@@ -290,6 +301,34 @@ public class EditorModel {
         moveCaretLeft();
         delete();
     }
+    public void undo() {
+        // TODO
+    }
+    public void redo() {
+        // TODO
+    }
+    /**
+     * Paste the text from the clipboard.
+     */
+    public void pasteFromClipboard() {
+        var text = Clipboard.get();
+        if (!text.isEmpty()) {
+            input(text);
+        }
+    }
+    /**
+     * Copy the selection text to the clipboard.
+     */
+    public void copyToClipboard() {
+        copyToClipboard(false);
+    }
+    /**
+     * Cut the selection text to the clipboard.
+     */
+    public void cutToClipboard() {
+        copyToClipboard(true);
+    }
+
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
         if (texts instanceof LinearTextList linear)  {
@@ -305,6 +344,22 @@ public class EditorModel {
     private int screenRowSize(double height) {
         var fontMetrics = new FxFontMetrics(FxFontStyle.of().font());
         return (int) Math.ceil(height / fontMetrics.lineHeight());
+    }
+
+    /**
+     * Copy the selection text to the clipboard.
+     * @param cut need cut?
+     */
+    private void copyToClipboard(boolean cut) {
+        if (selection.started() && selection.length() > 0) {
+//            String text = texts.substring(selection.min(), selection.max());
+//            if (text != null && !text.isEmpty()) {
+//                Clipboard.put(text);
+//                if (cut) {
+//                    //selectionDelete();
+//                }
+//            }
+        }
     }
 
     public record Rect(double x, double y, double w, double h) { }
