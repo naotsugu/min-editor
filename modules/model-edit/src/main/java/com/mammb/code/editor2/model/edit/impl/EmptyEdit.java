@@ -45,7 +45,7 @@ public record EmptyEdit() implements Edit {
     }
 
     @Override
-    public boolean isSingleEdit() {
+    public boolean isSingleRowEdit() {
         return true;
     }
 

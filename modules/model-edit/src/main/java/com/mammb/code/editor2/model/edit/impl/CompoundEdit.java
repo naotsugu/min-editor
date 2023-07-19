@@ -44,7 +44,7 @@ public record CompoundEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
-        if (!isSingleEdit()) {
+        if (!isSingleRowEdit()) {
             throw new UnsupportedOperationException();
         }
         return edits.get(0).applyTo(textual);
@@ -85,8 +85,8 @@ public record CompoundEdit(
 
 
     @Override
-    public boolean isSingleEdit() {
-        return edits.size() == 1 && edits.get(0).isSingleEdit();
+    public boolean isSingleRowEdit() {
+        return edits.size() == 1 && edits.get(0).isSingleRowEdit();
     }
 
 }

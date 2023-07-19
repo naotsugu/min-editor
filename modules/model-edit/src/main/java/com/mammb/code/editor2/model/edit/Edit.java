@@ -72,7 +72,7 @@ public sealed interface Edit extends TextTranslate
      *
      * @return
      */
-    boolean isSingleEdit();
+    boolean isSingleRowEdit();
 
     /**
      * Create the insertion edit.

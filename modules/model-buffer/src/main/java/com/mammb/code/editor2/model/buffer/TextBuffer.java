@@ -51,8 +51,6 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      */
     void push(Edit edit);
 
-    void flush();
-
     /**
      * Scroll previous line.
      * @param n the number of line

@@ -25,8 +25,6 @@ import com.mammb.code.editor2.model.text.Textual;
 
 import java.util.List;
 
-import static java.util.function.Predicate.not;
-
 /**
  * EditBuffer.
  * @author Naotsugu Kobayashi
@@ -62,12 +60,6 @@ public class EditBuffer implements TextBuffer<Textual> {
             return slice.texts();
         }
 
-        if (editQueue.size() > 1 || editQueue.stream().anyMatch(not(Edit::isSingleEdit))) {
-            // if the edit queue contains multiline deleted edits,
-            // the retrieved text may be insufficient.
-            editQueue.flush();
-        }
-
         Edit edit = editQueue.isEmpty()
                 ? Edit.empty
                 : editQueue.peek();
@@ -90,11 +82,6 @@ public class EditBuffer implements TextBuffer<Textual> {
     @Override
     public void push(Edit edit) {
         editQueue.push(edit);
-    }
-
-    @Override
-    public void flush() {
-        editQueue.flush();
     }
 
     @Override

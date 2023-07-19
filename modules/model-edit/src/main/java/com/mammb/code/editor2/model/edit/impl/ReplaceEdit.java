@@ -47,7 +47,7 @@ public record ReplaceEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
-        if (!isSingleEdit()) {
+        if (!isSingleRowEdit()) {
             throw new UnsupportedOperationException();
         }
         return switch (textual.compareOffsetRangeTo(point.offset())) {
@@ -72,7 +72,7 @@ public record ReplaceEdit(
 
 
     @Override
-    public boolean isSingleEdit() {
+    public boolean isSingleRowEdit() {
         return beforeText.indexOf('\n') == -1 && afterTText.indexOf('\n') == -1;
     }
 

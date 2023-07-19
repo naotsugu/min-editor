@@ -197,13 +197,11 @@ public class EditorModel {
     public void moveCaretRight() {
         scrollToCaret();
         if (caret.y2() + 4 >= height) scrollNext(1);
-        editBuffer.flush();
         caret.right();
         if (caret.y2() > height) scrollNext(1);
     }
     public void moveCaretLeft() {
         scrollToCaret();
-        editBuffer.flush();
         if (texts.head().start() > 0 && texts.head().start() == caret.offset()) {
             scrollPrev(1);
         }
@@ -211,7 +209,6 @@ public class EditorModel {
     }
     public void moveCaretUp() {
         scrollToCaret();
-        editBuffer.flush();
         if (texts.head().start() > 0 && caret.offset() < texts.head().end()) {
             scrollPrev(1);
         }
@@ -219,14 +216,12 @@ public class EditorModel {
     }
     public void moveCaretDown() {
         scrollToCaret();
-        editBuffer.flush();
         if (caret.y2() + 4 >= height) scrollNext(1);
         caret.down();
         if (caret.y2() > height) scrollNext(1);
     }
     public void moveCaretPageUp() {
         scrollToCaret();
-        editBuffer.flush();
         double x = caret.x();
         double y = caret.y();
         scrollPrev(texts.capacity() - 1);
@@ -234,7 +229,6 @@ public class EditorModel {
     }
     public void moveCaretPageDown() {
         scrollToCaret();
-        editBuffer.flush();
         double x = caret.x();
         double y = caret.y();
         scrollNext(texts.capacity() - 1);
@@ -242,7 +236,6 @@ public class EditorModel {
     }
     public void moveCaretLineHome() {
         scrollToCaret();
-        editBuffer.flush();
         LayoutLine line = texts.layoutLine(caret.offset());
         if (line.start() == caret.offset()) {
             if (Character.isWhitespace(line.charAt(caret.offset()))) {
@@ -257,7 +250,6 @@ public class EditorModel {
     }
     public void moveCaretLineEnd() {
         scrollToCaret();
-        editBuffer.flush();
         LayoutLine line = texts.layoutLine(caret.offset());
         int offset = line.end() - line.endMarkCount();
         caret.at(offset, true);
@@ -265,12 +257,10 @@ public class EditorModel {
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
         int offset = texts.at(x, y);
-        editBuffer.flush();
         caret.at(offset, true);
     }
     public void clickDouble(double x, double y) {
         int[] offsets = texts.atAround(x, y);
-        editBuffer.flush();
         if (offsets.length == 2) {
             selection.start(offsets[0]);
             selection.to(offsets[1]);
@@ -300,6 +290,7 @@ public class EditorModel {
     public void backspace() {
         moveCaretLeft();
         delete();
+        // TODO
     }
     public void undo() {
         // TODO

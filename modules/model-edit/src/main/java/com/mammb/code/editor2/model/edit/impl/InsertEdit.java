@@ -44,7 +44,7 @@ public record InsertEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
-        if (!isSingleEdit()) {
+        if (!isSingleRowEdit()) {
             throw new UnsupportedOperationException();
         }
         return switch (textual.compareOffsetRangeTo(point.offset())) {
@@ -90,7 +90,7 @@ public record InsertEdit(
     }
 
     @Override
-    public boolean isSingleEdit() {
+    public boolean isSingleRowEdit() {
         return text.indexOf('\n') == -1;
     }
 
