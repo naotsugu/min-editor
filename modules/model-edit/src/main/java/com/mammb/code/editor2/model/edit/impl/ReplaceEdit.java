@@ -47,7 +47,7 @@ public record ReplaceEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
-        if (!acrossRows()) {
+        if (acrossRows()) {
             throw new UnsupportedOperationException();
         }
         return switch (textual.compareOffsetRangeTo(point.offset())) {
