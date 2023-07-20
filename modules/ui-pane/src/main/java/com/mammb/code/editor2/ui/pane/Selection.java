@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.layout.TextRun;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
@@ -24,30 +25,30 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public interface Selection {
 
-    void start(int offset);
+    void start(OffsetPoint offset);
 
     void clear();
 
-    int startOffset();
+    OffsetPoint startOffset();
 
-    int endOffset();
+    OffsetPoint endOffset();
 
     boolean started();
 
-    void to(int toOffset);
+    void to(OffsetPoint toOffset);
 
     void draw(GraphicsContext gc, TextRun run, double offsetY);
 
     default int length() {
-        return max() - min();
+        return max().offset() - min().offset();
     }
 
-    default int min() {
-        return Math.min(startOffset(), endOffset());
+    default OffsetPoint min() {
+        return (startOffset().offset() <= endOffset().offset()) ? startOffset() : endOffset();
     }
 
-    default int max() {
-        return Math.max(startOffset(), endOffset());
+    default OffsetPoint max() {
+        return (startOffset().offset() <= endOffset().offset()) ? endOffset() : startOffset();
     }
 
 }

@@ -18,6 +18,7 @@ package com.mammb.code.editor2.model.buffer;
 import com.mammb.code.editor2.model.buffer.impl.EditBuffer;
 import com.mammb.code.editor2.model.buffer.impl.PtContentMirror;
 import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.TextList;
 import com.mammb.code.editor2.model.text.Textual;
 
@@ -52,6 +53,18 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
     void push(Edit edit);
 
     /**
+     * Undo.
+     * @return the undone edit.
+     */
+    Edit undo();
+
+    /**
+     * Redo.
+     * @return the redone edit.
+     */
+    Edit redo();
+
+    /**
      * Scroll previous line.
      * @param n the number of line
      * @return the added lines
@@ -65,6 +78,13 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      */
     List<T> next(int n);
 
+    /**
+     * Get the sub text.
+     * @param point the start point
+     * @param length the char length to be gets
+     * @return the sub text
+     */
+    Textual subText(OffsetPoint point, int length);
 
     ContentMetrics metrics(ContentMetrics metrics);
 

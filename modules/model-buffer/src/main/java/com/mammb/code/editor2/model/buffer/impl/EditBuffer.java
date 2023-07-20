@@ -22,7 +22,6 @@ import com.mammb.code.editor2.model.edit.*;
 import com.mammb.code.editor2.model.slice.Slice;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
-
 import java.util.List;
 
 /**
@@ -61,12 +60,12 @@ public class EditBuffer implements TextBuffer<Textual> {
         }
 
         Edit edit = editQueue.isEmpty()
-                ? Edit.empty
-                : editQueue.peek();
+            ? Edit.empty
+            : editQueue.peek();
 
         return slice.texts().stream()
-                .map(edit::applyTo)
-                .toList();
+            .map(edit::applyTo)
+            .toList();
     }
 
     @Override
@@ -85,6 +84,16 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public Edit undo() {
+        return editQueue.undo();
+    }
+
+    @Override
+    public Edit redo() {
+        return editQueue.redo();
+    }
+
+    @Override
     public List<Textual> prev(int n) {
         editQueue.flush();
         return slice.prev(n);
@@ -97,7 +106,15 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public Textual subText(OffsetPoint point, int length) {
+        editQueue.flush();
+        byte[] bytes = content.bytes(point.cpOffset(), new Until.CharLen(length));
+        return Textual.of(point, new String(bytes, content.charset()));
+    }
+
+    @Override
     public ContentMetrics metrics(ContentMetrics metrics) {
+        editQueue.flush();
         content.traverseRow(bytes -> metrics.add(new String(bytes, content.charset())));
         return metrics;
     }

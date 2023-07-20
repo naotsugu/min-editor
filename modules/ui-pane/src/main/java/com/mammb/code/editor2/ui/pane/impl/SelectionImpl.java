@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.ui.pane.impl;
 
 import com.mammb.code.editor2.model.layout.TextRun;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.ui.pane.Selection;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -26,40 +27,36 @@ import javafx.scene.paint.Color;
  */
 public class SelectionImpl implements Selection {
 
-    private int start;
-    private int end;
-
-    public SelectionImpl() {
-        start = end = -1;
-    }
+    private OffsetPoint start;
+    private OffsetPoint end;
 
     @Override
-    public void start(int offset) {
+    public void start(OffsetPoint offset) {
         start = end = offset;
     }
 
     @Override
     public void clear() {
-        start = end = -1;
+        start = end = null;
     }
 
     @Override
-    public int startOffset() {
+    public OffsetPoint startOffset() {
         return start;
     }
 
     @Override
-    public int endOffset() {
+    public OffsetPoint endOffset() {
         return end;
     }
 
     @Override
     public boolean started() {
-        return start > -1;
+        return start != null;
     }
 
     @Override
-    public void to(int toOffset) {
+    public void to(OffsetPoint toOffset) {
         end = toOffset;
     }
 
@@ -67,13 +64,12 @@ public class SelectionImpl implements Selection {
         if (!started()) throw new IllegalStateException();
         int runStart = run.offset();
         int runEnd = runStart + run.length();
-        if (max() >= runStart && min() < runEnd) {
-            double left = run.offsetToX().apply(Math.max(min(), runStart) - runStart);
-            double width = run.offsetToX().apply(Math.min(max(), runEnd) - runStart) - left;
+        if (max().offset() >= runStart && min().offset() < runEnd) {
+            double left = run.offsetToX().apply(Math.max(min().offset(), runStart) - runStart);
+            double width = run.offsetToX().apply(Math.min(max().offset(), runEnd) - runStart) - left;
             gc.setFill(Color.LIGHTBLUE);
             gc.fillRect(left, top, width, run.textLine().height());
         }
     }
 
 }
-

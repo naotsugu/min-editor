@@ -41,7 +41,7 @@ public class Clipboard {
 
     /**
      * Get the text from clipboard.
-     * @return the text
+     * @return the text (will not be null)
      */
     public static String get() {
         var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();

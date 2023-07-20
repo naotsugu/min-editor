@@ -183,7 +183,7 @@ public class EditorModel {
     // -- arrow behavior ------------------------------------------------------
     public void selectOn() {
         if (!selection.started()) {
-            selection.start(caret.offset());
+            selection.start(caret.offsetPoint());
         }
     }
     public void selectOff() {
@@ -191,7 +191,7 @@ public class EditorModel {
     }
     public void selectTo() {
         if (selection.started()) {
-            selection.to(caret.offset());
+            selection.to(caret.offsetPoint());
         }
     }
     public void moveCaretRight() {
@@ -262,9 +262,10 @@ public class EditorModel {
     public void clickDouble(double x, double y) {
         int[] offsets = texts.atAround(x, y);
         if (offsets.length == 2) {
-            selection.start(offsets[0]);
-            selection.to(offsets[1]);
+            caret.at(offsets[0], true);
+            selection.start(caret.offsetPoint());
             caret.at(offsets[1], true);
+            selection.to(caret.offsetPoint());
         } else {
             caret.at(offsets[0], true);
         }
@@ -293,9 +294,11 @@ public class EditorModel {
         // TODO
     }
     public void undo() {
+        selection.clear();
         // TODO
     }
     public void redo() {
+        selection.clear();
         // TODO
     }
     /**
@@ -343,15 +346,18 @@ public class EditorModel {
      */
     private void copyToClipboard(boolean cut) {
         if (selection.started() && selection.length() > 0) {
-//            String text = texts.substring(selection.min(), selection.max());
-//            if (text != null && !text.isEmpty()) {
-//                Clipboard.put(text);
-//                if (cut) {
-//                    //selectionDelete();
-//                }
-//            }
+            Textual text = editBuffer.subText(selection.min(), selection.length());
+            Clipboard.put(text.text());
+            if (cut) {
+                editBuffer.push(Edit.delete(text.point(), text.text()));
+                selection.clear();
+                caret.at(text.point().offset(), true);
+                texts.markDirty();
+                caret.markDirty();
+            }
         }
     }
+
 
     public record Rect(double x, double y, double w, double h) { }
 
