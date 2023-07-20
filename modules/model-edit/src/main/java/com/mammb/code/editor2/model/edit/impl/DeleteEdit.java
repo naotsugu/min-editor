@@ -33,6 +33,11 @@ public record DeleteEdit(
         long occurredOn) implements Edit {
 
     @Override
+    public int length() {
+        return text.length();
+    }
+
+    @Override
     public Edit flip() {
         return new InsertEdit(point, text, occurredOn);
     }

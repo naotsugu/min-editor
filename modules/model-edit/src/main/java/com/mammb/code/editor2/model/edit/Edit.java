@@ -29,6 +29,18 @@ public sealed interface Edit extends TextTranslate
     Edit empty = new EmptyEdit();
 
     /**
+     * Get the offset point of edit.
+     * @return the offset point of edit
+     */
+    OffsetPoint point();
+
+    /**
+     * Get the char length of edit.
+     * @return the char length of edit
+     */
+    int length();
+
+    /**
      * Get the occurredOn.
      * @return the occurredOn.
      */

@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.edit.EditTo;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 import java.util.ArrayList;
@@ -31,6 +32,16 @@ public record CompoundEdit(
         List<Edit> edits,
         long occurredOn) implements Edit {
 
+
+    @Override
+    public OffsetPoint point() {
+        return edits.get(0).point();
+    }
+
+    @Override
+    public int length() {
+        return edits.stream().mapToInt(Edit::length).sum();
+    }
 
     @Override
     public Edit flip() {

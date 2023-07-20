@@ -24,25 +24,30 @@ import com.mammb.code.editor2.model.edit.Edit;
  * ReplaceEdit.
  * @param point the offset point of edit.
  * @param beforeText the before text string
- * @param afterTText the after text string
+ * @param afterText the after text string
  * @param occurredOn the occurredOn.
  * @author Naotsugu Kobayashi
  */
 public record ReplaceEdit(
         OffsetPoint point,
         String beforeText,
-        String afterTText,
+        String afterText,
         long occurredOn) implements Edit {
 
     @Override
+    public int length() {
+        return afterText.length();
+    }
+
+    @Override
     public Edit flip() {
-        return new ReplaceEdit(point, afterTText, beforeText, occurredOn);
+        return new ReplaceEdit(point, afterText, beforeText, occurredOn);
     }
 
     @Override
     public void apply(EditTo editTo) {
         editTo.delete(point, beforeText.length());
-        editTo.insert(point, afterTText);
+        editTo.insert(point, afterText);
     }
 
     @Override
@@ -54,8 +59,8 @@ public record ReplaceEdit(
             case -1 -> {
                 OffsetPoint delta = OffsetPoint.of(
                     0,
-                    afterTText.length() - beforeText.length(),
-                    Character.codePointCount(afterTText, 0, afterTText.length())
+                    afterText.length() - beforeText.length(),
+                    Character.codePointCount(afterText, 0, afterText.length())
                         - Character.codePointCount(beforeText, 0, beforeText.length()));
                 yield Textual.of(textual.point().plus(delta), textual.text());
             }
@@ -63,7 +68,7 @@ public record ReplaceEdit(
                 StringBuilder sb = new StringBuilder(textual.text());
                 int start = point.offset() - textual.point().offset();
                 int end = start + beforeText.length();
-                sb.replace(start, end, afterTText);
+                sb.replace(start, end, afterText);
                 yield Textual.of(textual.point(), sb.toString());
             }
             default -> textual;
@@ -73,7 +78,7 @@ public record ReplaceEdit(
 
     @Override
     public boolean acrossRows() {
-        return beforeText.indexOf('\n') > -1 || afterTText.indexOf('\n') > -1;
+        return beforeText.indexOf('\n') > -1 || afterText.indexOf('\n') > -1;
     }
 
 }

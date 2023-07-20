@@ -118,6 +118,7 @@ public class EditorPane extends StackPane {
 
         if (Keys.SC_W.match(e)) {
             editorModel.toggleWrap();
+            editorModel.draw(gc);
             return;
         }
 
@@ -128,20 +129,24 @@ public class EditorPane extends StackPane {
         }
         if (Keys.SC_V.match(e)) {
             editorModel.pasteFromClipboard();
+            editorModel.draw(gc);
             return;
         }
         if (Keys.SC_X.match(e)) {
             editorModel.cutToClipboard();
+            editorModel.draw(gc);
             return;
         }
 
         // undo redo
         if (Keys.SC_Z.match(e)) {
             editorModel.undo();
+            editorModel.draw(gc);
             return;
         }
         if (Keys.SC_Y.match(e) || Keys.SC_SZ.match(e)) {
             editorModel.redo();
+            editorModel.draw(gc);
             return;
         }
 

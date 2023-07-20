@@ -295,11 +295,15 @@ public class EditorModel {
     }
     public void undo() {
         selection.clear();
-        // TODO
+        Edit edit = editBuffer.undo();
+        texts.markDirty();
+        caret.at(edit.point().offset(), true);
     }
     public void redo() {
         selection.clear();
-        // TODO
+        Edit edit = editBuffer.redo();
+        texts.markDirty();
+        caret.at(edit.point().offset(), true);
     }
     /**
      * Paste the text from the clipboard.

@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.edit.EditTo;
+import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.edit.Edit;
 
@@ -24,6 +25,16 @@ import com.mammb.code.editor2.model.edit.Edit;
  * @author Naotsugu Kobayashi
  */
 public record EmptyEdit() implements Edit {
+
+    @Override
+    public OffsetPoint point() {
+        return OffsetPoint.zero;
+    }
+
+    @Override
+    public int length() {
+        return 0;
+    }
 
     @Override
     public long occurredOn() {

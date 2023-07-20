@@ -11,6 +11,11 @@ public record BackspaceEdit(
         long occurredOn) implements Edit {
 
     @Override
+    public int length() {
+        return text.length();
+    }
+
+    @Override
     public Edit flip() {
         return null;
     }
