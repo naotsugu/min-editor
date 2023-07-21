@@ -23,7 +23,9 @@ import com.mammb.code.editor2.model.edit.impl.*;
  * @author Naotsugu Kobayashi
  */
 public sealed interface Edit extends TextTranslate
-        permits InsertEdit, DeleteEdit, BackspaceEdit, ReplaceEdit, CompoundEdit, EmptyEdit {
+        permits InsertEdit, DeleteEdit,
+            BsInsertEdit, BsDeleteEdit,
+            ReplaceEdit, CompoundEdit, EmptyEdit {
 
     /** The empty edit. */
     Edit empty = new EmptyEdit();
@@ -114,7 +116,7 @@ public sealed interface Edit extends TextTranslate
      * @return the backspace edit
      */
     static Edit backspace(OffsetPoint point, String text) {
-        return new BackspaceEdit(point, text, System.currentTimeMillis());
+        return new BsDeleteEdit(point, text, System.currentTimeMillis());
     }
 
     /**

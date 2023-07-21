@@ -90,6 +90,7 @@ public class EditorPane extends StackPane {
     }
 
 
+
     public void handleScroll(ScrollEvent e) {
 
         if (e.getEventType() == ScrollEvent.SCROLL) {
@@ -115,6 +116,17 @@ public class EditorPane extends StackPane {
 
 
     public void handleKeyPressed(KeyEvent e) {
+
+        if (Keys.SC_O.match(e)) {
+            return;
+        }
+        if (Keys.SC_S.match(e)) {
+            editorModel.save();
+            return;
+        }
+        if (Keys.SC_SA.match(e)) {
+            return;
+        }
 
         if (Keys.SC_W.match(e)) {
             editorModel.toggleWrap();
@@ -170,6 +182,7 @@ public class EditorPane extends StackPane {
             case PAGE_DOWN  -> editorModel.moveCaretPageDown();
             case DELETE     -> editorModel.delete();
             case BACK_SPACE -> editorModel.backspace();
+            case ESCAPE     -> editorModel.selectOff();
         }
 
         editorModel.selectTo();
@@ -178,12 +191,14 @@ public class EditorPane extends StackPane {
     }
 
     public void handleKeyTyped(KeyEvent e) {
+
         if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
             e.getCode().isArrowKey() || e.getCode().isModifierKey() ||
             e.getCode().isMediaKey() || !Keys.controlKeysFilter.test(e) ||
             e.getCharacter().length() == 0) {
             return;
         }
+
         int ascii = e.getCharacter().getBytes()[0];
         if (ascii < 32 || ascii == 127) {
             // 127:DEL

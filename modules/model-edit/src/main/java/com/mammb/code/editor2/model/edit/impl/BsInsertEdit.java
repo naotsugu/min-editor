@@ -15,22 +15,22 @@
  */
 package com.mammb.code.editor2.model.edit.impl;
 
+import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditTo;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor2.model.edit.Edit;
 
 /**
- * InsertEdit.
+ * Backspace undo insert Edit.
  * @param point the offset point of edit.
  * @param text the deletion text
  * @param occurredOn the occurredOn.
  * @author Naotsugu Kobayashi
  */
-public record InsertEdit(
-        OffsetPoint point,
-        String text,
-        long occurredOn) implements Edit {
+public record BsInsertEdit(
+    OffsetPoint point,
+    String text,
+    long occurredOn) implements Edit {
 
     @Override
     public int length() {
@@ -39,12 +39,43 @@ public record InsertEdit(
 
     @Override
     public Edit flip() {
-        return new DeleteEdit(point, text, occurredOn);
+        return new BsDeleteEdit(point, text, occurredOn);
     }
 
     @Override
     public void apply(EditTo editTo) {
         editTo.insert(point, text);
+    }
+
+    @Override
+    public boolean canMerge(Edit other) {
+        if (other instanceof EmptyEdit) {
+            return true;
+        }
+        if (other.occurredOn() - occurredOn > 2000) {
+            return false;
+        }
+        return (other instanceof BsInsertEdit insert) &&
+            point.offset() + text.length() == insert.point().offset();
+    }
+
+
+    @Override
+    public Edit merge(Edit other) {
+        if (other instanceof EmptyEdit) {
+            return this;
+        }
+
+        BsInsertEdit insert = (BsInsertEdit) other;
+        return new InsertEdit(
+            point,
+            text + insert.text(),
+            other.occurredOn());
+    }
+
+    @Override
+    public boolean acrossRows() {
+        return text.indexOf('\n') > -1;
     }
 
     @Override
@@ -67,38 +98,6 @@ public record InsertEdit(
             }
             default -> textual;
         };
-    }
-
-
-    @Override
-    public boolean canMerge(Edit other) {
-        if (other instanceof EmptyEdit) {
-            return true;
-        }
-        if (other.occurredOn() - occurredOn > 2000) {
-            return false;
-        }
-        return (other instanceof InsertEdit insert) &&
-            point.offset() + text.length() == insert.point().offset();
-    }
-
-
-    @Override
-    public Edit merge(Edit other) {
-        if (other instanceof EmptyEdit) {
-            return this;
-        }
-
-        InsertEdit insert = (InsertEdit) other;
-        return new InsertEdit(
-            point,
-            text + insert.text(),
-            other.occurredOn());
-    }
-
-    @Override
-    public boolean acrossRows() {
-        return text.indexOf('\n') > -1;
     }
 
 }

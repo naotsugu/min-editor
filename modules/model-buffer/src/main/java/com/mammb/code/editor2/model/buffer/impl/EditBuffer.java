@@ -22,6 +22,8 @@ import com.mammb.code.editor2.model.edit.*;
 import com.mammb.code.editor2.model.slice.Slice;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
+
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -117,6 +119,18 @@ public class EditBuffer implements TextBuffer<Textual> {
         editQueue.flush();
         content.traverseRow(bytes -> metrics.add(new String(bytes, content.charset())));
         return metrics;
+    }
+
+    @Override
+    public void save() {
+        editQueue.flush();
+        content.save();
+    }
+
+    @Override
+    public void saveAs(Path path) {
+        editQueue.flush();
+        content.saveAs(path);
     }
 
     private EditListener editTo(Content content) {

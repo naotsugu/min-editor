@@ -53,7 +53,7 @@ public record ReplaceEdit(
     @Override
     public Textual applyTo(Textual textual) {
         if (acrossRows()) {
-            throw new UnsupportedOperationException();
+            throw new IllegalStateException("Should be pre-flashed");
         }
         return switch (textual.compareOffsetRangeTo(point.offset())) {
             case -1 -> {

@@ -56,7 +56,7 @@ public record CompoundEdit(
     @Override
     public Textual applyTo(Textual textual) {
         if (acrossRows()) {
-            throw new UnsupportedOperationException();
+            throw new IllegalStateException("Should be pre-flashed");
         }
         return edits.get(0).applyTo(textual);
     }

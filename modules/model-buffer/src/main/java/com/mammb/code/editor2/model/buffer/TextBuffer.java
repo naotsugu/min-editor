@@ -88,6 +88,9 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
 
     ContentMetrics metrics(ContentMetrics metrics);
 
+    void save();
+
+    void saveAs(Path path);
 
     static TextBuffer<Textual> editBuffer(int maxRowSize, Path path) {
         return new EditBuffer(PtContentMirror.of(path), maxRowSize);

@@ -50,15 +50,16 @@ public record DeleteEdit(
     @Override
     public Textual applyTo(Textual textual) {
         if (acrossRows()) {
-            throw new UnsupportedOperationException();
+            throw new IllegalStateException("Should be pre-flashed");
         }
         return switch (textual.compareOffsetRangeTo(point.offset())) {
             case -1 -> {
-                OffsetPoint delta = OffsetPoint.of(
-                    0,
-                    -text.length(),
-                    -Character.codePointCount(text, 0, text.length()));
-                yield Textual.of(textual.point().plus(delta), textual.text());
+                OffsetPoint newPoint = OffsetPoint.of(
+                    textual.point().row(),
+                    textual.point().offset() - text.length(),
+                    textual.point().offset() - Character.codePointCount(text, 0, text.length())
+                );
+                yield Textual.of(newPoint, textual.text());
             }
             case  0 -> {
                 StringBuilder sb = new StringBuilder(textual.text());

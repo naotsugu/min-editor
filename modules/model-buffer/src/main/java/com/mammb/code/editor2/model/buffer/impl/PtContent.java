@@ -35,7 +35,7 @@ public class PtContent implements Content {
     private LineEnding lineEnding;
 
     /** The piece table. */
-    private final PieceTable pt;
+    private PieceTable pt;
 
 
     /**
@@ -87,11 +87,13 @@ public class PtContent implements Content {
     @Override
     public void save() {
         pt.write(path);
+        pt = PieceTable.of(path);
     }
 
     @Override
     public void saveAs(Path path) {
         pt.write(path);
+        pt = PieceTable.of(path);
         this.path = path;
     }
 

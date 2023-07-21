@@ -327,6 +327,13 @@ public class EditorModel {
         copyToClipboard(true);
     }
 
+    // -- file behavior -------------------------------------------------------
+    public void save() {
+        editBuffer.save();
+    }
+    public void saveAs(Path path) {
+        editBuffer.saveAs(path);
+    }
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
         if (texts instanceof LinearTextList linear)  {
