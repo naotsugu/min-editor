@@ -25,8 +25,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.nio.file.Path;
 
 /**
@@ -88,8 +90,20 @@ public class EditorPane extends StackPane {
         editorModel.draw(gc);
         requestFocus();
     }
-
-
+    private void openChoose() {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Select file...");
+        fc.setInitialDirectory(initialDirectory(null));
+        File file = fc.showOpenDialog(getScene().getWindow());
+        if (file != null && file.canRead()) open(file.toPath());
+    }
+    private void saveChoose() {
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Save As...");
+        fc.setInitialDirectory(initialDirectory(null));
+        File file = fc.showSaveDialog(getScene().getWindow());
+        if (file != null) editorModel.saveAs(file.toPath());
+    }
 
     public void handleScroll(ScrollEvent e) {
 
@@ -117,49 +131,16 @@ public class EditorPane extends StackPane {
 
     public void handleKeyPressed(KeyEvent e) {
 
-        if (Keys.SC_O.match(e)) {
-            return;
-        }
-        if (Keys.SC_S.match(e)) {
-            editorModel.save();
-            return;
-        }
-        if (Keys.SC_SA.match(e)) {
-            return;
-        }
-
-        if (Keys.SC_W.match(e)) {
-            editorModel.toggleWrap();
-            editorModel.draw(gc);
-            return;
-        }
-
-        // clipboard operations
-        if (Keys.SC_C.match(e)) {
-            editorModel.copyToClipboard();
-            return;
-        }
-        if (Keys.SC_V.match(e)) {
-            editorModel.pasteFromClipboard();
-            editorModel.draw(gc);
-            return;
-        }
-        if (Keys.SC_X.match(e)) {
-            editorModel.cutToClipboard();
-            editorModel.draw(gc);
-            return;
-        }
-
-        // undo redo
-        if (Keys.SC_Z.match(e)) {
-            editorModel.undo();
-            editorModel.draw(gc);
-            return;
-        }
-        if (Keys.SC_Y.match(e) || Keys.SC_SZ.match(e)) {
-            editorModel.redo();
-            editorModel.draw(gc);
-            return;
+        switch (Keys.asAction(e)) {
+            case OPEN    -> { openChoose(); return; }
+            case SAVE    -> { editorModel.save(); return; }
+            case SAVE_AS -> { saveChoose(); return; }
+            case WRAP    -> { editorModel.toggleWrap(); editorModel.draw(gc); return; }
+            case COPY    -> { editorModel.copyToClipboard(); return; }
+            case PASTE   -> { editorModel.pasteFromClipboard();  editorModel.draw(gc); return; }
+            case CUT     -> { editorModel.cutToClipboard(); editorModel.draw(gc); return; }
+            case UNDO    -> { editorModel.undo(); editorModel.draw(gc); return; }
+            case REDO    -> { editorModel.redo(); editorModel.draw(gc); return; }
         }
 
 
@@ -214,5 +195,15 @@ public class EditorPane extends StackPane {
     private void tick() {
         editorModel.tick(gc);
     }
+
+
+    private static File initialDirectory(Path base) {
+        return (base == null)
+            ? new File(System.getProperty("user.home"))
+            : base.toFile().isDirectory()
+                ? base.toFile()
+                : base.getParent().toFile();
+    }
+
 
 }

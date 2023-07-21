@@ -28,6 +28,14 @@ import java.util.function.Predicate;
  */
 public class Keys {
 
+    public enum Action {
+        OPEN, SAVE, SAVE_AS,
+        COPY, PASTE, CUT,
+        UNDO, REDO,
+        WRAP, EMPTY,
+        ;
+    }
+
     public static final KeyCombination SC_C = new KeyCharacterCombination("c", KeyCombination.SHORTCUT_DOWN);
     public static final KeyCombination SC_V = new KeyCharacterCombination("v", KeyCombination.SHORTCUT_DOWN);
     public static final KeyCombination SC_X = new KeyCharacterCombination("x", KeyCombination.SHORTCUT_DOWN);
@@ -59,9 +67,21 @@ public class Keys {
     public static boolean isSelectCombination(KeyEvent e) {
         final KeyCode code = e.getCode();
         return code == KeyCode.LEFT    || code ==  KeyCode.RIGHT ||
-            code == KeyCode.UP      || code ==  KeyCode.DOWN  ||
-            code == KeyCode.HOME    || code ==  KeyCode.END   ||
-            code == KeyCode.PAGE_UP || code ==  KeyCode.PAGE_DOWN;
+               code == KeyCode.UP      || code ==  KeyCode.DOWN  ||
+               code == KeyCode.HOME    || code ==  KeyCode.END   ||
+               code == KeyCode.PAGE_UP || code ==  KeyCode.PAGE_DOWN;
     }
 
+    public static Action asAction(KeyEvent e) {
+        if (Keys.SC_O.match(e)) return Action.OPEN;
+        else if (Keys.SC_S.match(e)) return Action.SAVE;
+        else if (Keys.SC_SA.match(e)) return Action.SAVE_AS;
+        else if (Keys.SC_W.match(e)) return Action.WRAP;
+        else if (Keys.SC_C.match(e)) return Action.COPY;
+        else if (Keys.SC_V.match(e)) return Action.PASTE;
+        else if (Keys.SC_X.match(e)) return Action.CUT;
+        else if (Keys.SC_Z.match(e)) return Action.UNDO;
+        else if (Keys.SC_Y.match(e)|| Keys.SC_SZ.match(e)) return Action.REDO;
+        else return Action.EMPTY;
+    }
 }
