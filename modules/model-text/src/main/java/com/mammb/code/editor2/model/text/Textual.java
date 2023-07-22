@@ -40,7 +40,16 @@ public interface Textual {
      * @return the offset of tail.
      */
     default int tailOffset() {
-        return point().offset() + text().length();
+        return point().offset() + length();
+    }
+
+    /**
+     * Get the length of the text.
+     * @return the length of the text
+     */
+    default int length() {
+        var text = text();
+        return (text == null) ? 0 : text.length();
     }
 
     /**
@@ -48,7 +57,7 @@ public interface Textual {
      * @return the coed point offset of tail.
      */
     default int tailCpOffset() {
-        return point().cpOffset() + Character.codePointCount(text(), 0, text().length());
+        return point().cpOffset() + Character.codePointCount(text(), 0, length());
     }
 
     /**

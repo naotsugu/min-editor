@@ -55,7 +55,7 @@ public interface StyledText extends Textual, Styled {
                 indices.add(style.point() + style.length());
             }
         }
-        indices.add(text().length());
+        indices.add(length());
         List<StyledText> spans = new ArrayList<>();
         int prev = 0;
         for (int i : indices) {
