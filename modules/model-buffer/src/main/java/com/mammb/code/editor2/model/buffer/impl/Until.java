@@ -80,7 +80,7 @@ public class Until {
          * Constructor.
          * @param count the line feed count
          */
-        public CharLen(int count) {
+        private CharLen(int count) {
             this.count = count;
         }
 
@@ -106,7 +106,7 @@ public class Until {
          * @param count the line feed count
          * @param exclusive the exclusive flag
          */
-        public LF(int count, boolean exclusive) {
+        private LF(int count, boolean exclusive) {
             if (count <= 0) throw new IllegalArgumentException();
             this.count = count;
             this.exclusive = exclusive;

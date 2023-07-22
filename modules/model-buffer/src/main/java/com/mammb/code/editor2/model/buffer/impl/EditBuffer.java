@@ -53,7 +53,6 @@ public class EditBuffer implements TextBuffer<Textual> {
         this.editQueue = EditQueue.of(editTo(content));
     }
 
-
     @Override
     public List<Textual> texts() {
         if (editQueue.isEmpty()) {
@@ -109,7 +108,7 @@ public class EditBuffer implements TextBuffer<Textual> {
     @Override
     public Textual subText(OffsetPoint point, int length) {
         editQueue.flush();
-        byte[] bytes = content.bytes(point.cpOffset(), new Until.CharLen(length));
+        byte[] bytes = content.bytes(point.cpOffset(), Until.charLength(length));
         return Textual.of(point, new String(bytes, content.charset()));
     }
 
