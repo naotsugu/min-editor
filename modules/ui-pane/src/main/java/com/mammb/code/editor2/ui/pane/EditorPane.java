@@ -65,6 +65,7 @@ public class EditorPane extends StackPane {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> tick()));
         timeline.setCycleCount(-1);
         timeline.play();
+
     }
 
 
@@ -172,7 +173,6 @@ public class EditorPane extends StackPane {
     }
 
     public void handleKeyTyped(KeyEvent e) {
-
         if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
             e.getCode().isArrowKey() || e.getCode().isModifierKey() ||
             e.getCode().isMediaKey() || !Keys.controlKeysFilter.test(e) ||
@@ -194,6 +194,7 @@ public class EditorPane extends StackPane {
 
     private void tick() {
         editorModel.tick(gc);
+        requestFocus();
     }
 
 

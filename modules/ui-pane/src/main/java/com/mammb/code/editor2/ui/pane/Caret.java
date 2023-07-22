@@ -20,6 +20,7 @@ import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -110,9 +111,9 @@ public class Caret {
         if (layoutLine == null) {
             x = y = 0;
             row = 0;
-            dirty = true; // ?
+            dirty = true;
         } else {
-            x = layoutLine.offsetToX(offset);
+            x = (layoutLine.length() == 0) ? 0 : layoutLine.offsetToX(offset);
             y = layoutLine.offsetY();
             line = layoutLine;
             row = layoutLine.point().row();
@@ -131,7 +132,7 @@ public class Caret {
         if (ensureLayout() == null) return;
 
         offset++;
-        if (offset >= line.end()) {
+        if (offset >= line.end() && line.endMarkCount() > 0) {
             row++;
             logicalX = 0;
             markDirty();
@@ -206,7 +207,7 @@ public class Caret {
 
     public OffsetPoint offsetPoint() {
         LayoutLine layoutLine = offsetToLine.apply(offset);
-        if (layoutLine == null) return OffsetPoint.zero;
+        if (layoutLine == null || layoutLine.length() == 0) return OffsetPoint.zero;
         return layoutLine.offsetPoint(offset);
     }
 
@@ -235,9 +236,15 @@ public class Caret {
         if (!dirty) return line;
         dirty = false;
         LayoutLine layoutLine = offsetToLine.apply(offset);
-        if (layoutLine == null) return null;
-        x = layoutLine.offsetToX(offset);
-        y = layoutLine.offsetY();
+if (layoutLine == null) {
+    Arrays.stream(Thread.currentThread().getStackTrace()).forEach(System.out::println);
+}
+        if (layoutLine == null || layoutLine.length() == 0) {
+            x = y = 0;
+        } else {
+            x = layoutLine.offsetToX(offset);
+            y = layoutLine.offsetY();
+        }
         return line = layoutLine;
     }
 

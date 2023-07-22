@@ -131,7 +131,7 @@ public interface TextList {
         double offsetY = 0;
         for (TextLine line : lines()) {
             double top = offsetY;
-            offsetY += line.height() + 1;
+            offsetY += line.leadingHeight();
             if (top <= y && y < offsetY) {
                 return Optional.of(line);
             }
@@ -145,15 +145,23 @@ public interface TextList {
      * @return the LayoutLine
      */
     default LayoutLine layoutLine(int offset) {
-        if (offset < head().point().offset()) {
+
+        final List<TextLine> lines = lines();
+
+        if (offset == 0 && lines.size() == 1 && lines.get(0).length() == 0) {
+            // initial empty content
+            return new LayoutLine(lines.get(0), 0);
+        }
+
+        if (offset < lines.get(0).point().offset()) {
             return null;
         }
         double offsetY = 0;
-        for (TextLine line : lines()) {
+        for (TextLine line : lines) {
             if (line.contains(offset)) {
                 return new LayoutLine(line, offsetY);
             }
-            offsetY += line.height() + 1;
+            offsetY += line.leadingHeight();
         }
         return null;
     }

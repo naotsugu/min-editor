@@ -59,4 +59,13 @@ public interface Layout {
         return new LayoutRecord(x, y, width, height);
     }
 
+    /**
+     * Create the empty Layout.
+     * @param height the height of the {@code Layout}
+     * @return the empty Layout
+     */
+    static Layout empty(double height) {
+        return new LayoutRecord(0, 0, 0, height);
+    }
+
 }

@@ -177,7 +177,7 @@ public class RowSlice implements Slice<Textual> {
             }
 
             String str = rowSupplier.at(next.cpOffset());
-            if (str == null) {
+            if (str == null || str.length() == 0) {
                 texts.add(Textual.of(next, ""));
                 break;
             }

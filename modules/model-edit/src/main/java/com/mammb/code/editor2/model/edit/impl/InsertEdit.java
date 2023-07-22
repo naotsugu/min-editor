@@ -52,6 +52,11 @@ public record InsertEdit(
         if (acrossRows()) {
             throw new IllegalStateException("Should be pre-flashed");
         }
+
+        if (point.offset() == 0 && textual.point().offset() == 0 && textual.tailOffset() == 0) {
+            return Textual.of(textual.point(), text);
+        }
+
         return switch (textual.compareOffsetRangeTo(point.offset())) {
             case -1 -> {
                 OffsetPoint newPoint = OffsetPoint.of(
@@ -60,7 +65,7 @@ public record InsertEdit(
                     textual.point().cpOffset() + Character.codePointCount(text, 0, text.length()));
                 yield Textual.of(newPoint, textual.text());
             }
-            case  0 -> {
+            case 0 -> {
                 StringBuilder sb = new StringBuilder(textual.text());
                 sb.insert(point.offset() - textual.point().offset(), text);
                 yield Textual.of(textual.point(), sb.toString());

@@ -34,7 +34,7 @@ import java.util.List;
 public class LinearTextList implements TextList {
 
     /** The edit buffer. */
-    private final TextBuffer<Textual> editBuffer;
+    private final TextBuffer<Textual> buffer;
     /** The text translator. */
     private final Translate<Textual, TextLine> translator;
     /** The lines. */
@@ -45,36 +45,35 @@ public class LinearTextList implements TextList {
 
     /**
      * Constructor.
-     * @param editBuffer the edit buffer
+     * @param buffer the edit buffer
      */
-    public LinearTextList(TextBuffer<Textual> editBuffer) {
-        this(editBuffer, StylingTranslate.passThrough());
+    public LinearTextList(TextBuffer<Textual> buffer) {
+        this(buffer, StylingTranslate.passThrough());
     }
 
 
     /**
      * Constructor.
-     * @param editBuffer the edit buffer
+     * @param buffer the edit buffer
      * @param styling the styling
      */
-    public LinearTextList(TextBuffer<Textual> editBuffer, Translate<Textual, StyledText> styling) {
-        this.editBuffer = editBuffer;
+    public LinearTextList(TextBuffer<Textual> buffer, Translate<Textual, StyledText> styling) {
+        this.buffer = buffer;
         this.styling = styling;
         this.translator = translator(styling);
     }
 
 
     public TextList asWrapped(double width) {
-        return new WrapTextList(editBuffer, styling, width);
+        return new WrapTextList(buffer, styling, width);
     }
 
     @Override
     public List<TextLine> lines() {
         if (lines.isEmpty()) {
-            for (Textual textual : editBuffer.texts()) {
+            for (Textual textual : buffer.texts()) {
                 lines.add(translator.applyTo(textual));
             }
-            // TODO if it is the last line, add an empty TextLine
         }
         return lines;
     }
@@ -90,14 +89,14 @@ public class LinearTextList implements TextList {
 
         if (n <= 0) return 0;
 
-        List<Textual> added = editBuffer.prev(n);
+        List<Textual> added = buffer.prev(n);
         int size = added.size();
         if (size == 0) return 0;
 
-        if (size >= editBuffer.maxLineSize()) {
+        if (size >= buffer.maxLineSize()) {
             // if N exceeds the number of page lines, clear and add all.
             // forward scrolling can skip re-parsing syntax.
-            added.subList(editBuffer.maxLineSize(), size).clear();
+            added.subList(buffer.maxLineSize(), size).clear();
             lines.clear();
             lines.addAll(added.stream().map(translator::applyTo).toList());
         } else {
@@ -114,7 +113,7 @@ public class LinearTextList implements TextList {
 
         if (n <= 0) return 0;
 
-        List<Textual> added = editBuffer.next(n);
+        List<Textual> added = buffer.next(n);
         int size = added.size();
         if (size == 0) return 0;
 
@@ -122,8 +121,8 @@ public class LinearTextList implements TextList {
         lines.subList(0, Math.min(size, lines.size())).clear();
 
         List<TextLine> list = added.stream().map(translator::applyTo).toList();
-        if (size > editBuffer.maxLineSize()) {
-            list.subList(0, size - editBuffer.maxLineSize()).clear();
+        if (size > buffer.maxLineSize()) {
+            list.subList(0, size - buffer.maxLineSize()).clear();
         }
 
         // add lines added by scrolling to the end.
@@ -151,7 +150,7 @@ public class LinearTextList implements TextList {
 
     @Override
     public int capacity() {
-        return editBuffer.maxLineSize();
+        return buffer.maxLineSize();
     }
 
 

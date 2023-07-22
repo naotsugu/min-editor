@@ -41,7 +41,7 @@ import java.nio.file.Path;
 public class EditorModel {
 
     /** The text buffer. */
-    private final TextBuffer<Textual> editBuffer;
+    private final TextBuffer<Textual> buffer;
     /** The screen width. */
     private final double width;
     /** The screen height. */
@@ -71,8 +71,8 @@ public class EditorModel {
      * @param path the path
      */
     public EditorModel(double width, double height, Path path) {
-        this.editBuffer = TextBuffer.editBuffer(screenRowSize(height), path);
-        this.texts = new LinearTextList(editBuffer, StylingTranslate.passThrough());
+        this.buffer = TextBuffer.editBuffer(screenRowSize(height), path);
+        this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
         this.caret = new Caret(texts::layoutLine);
         this.selection = new SelectionImpl();
         this.width = width;
@@ -102,7 +102,7 @@ public class EditorModel {
                 if (run.style().color() instanceof Color color) gc.setFill(color);
                 gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
             }
-            offsetY += line.height() + 1;
+            offsetY += line.leadingHeight();
         }
         caret.draw(gc);
         gc.restore();
@@ -125,7 +125,7 @@ public class EditorModel {
             double top = offsetY;
             double bottom = top + line.height();
             if (bottom < y) {
-                offsetY += line.height() + 1;
+                offsetY += line.leadingHeight();
                 continue;
             }
             if (top >= (y + h)) break;
@@ -146,7 +146,7 @@ public class EditorModel {
                 if (run.style().color() instanceof Color color) gc.setFill(color);
                 gc.fillText(run.text(), left, top + run.baseline());
             }
-            offsetY += line.height() + 1;
+            offsetY += line.leadingHeight();
         }
         gc.restore();
     }
@@ -274,17 +274,17 @@ public class EditorModel {
     public void input(String value) {
         scrollToCaret();
         OffsetPoint caretPoint = caret.offsetPoint();
-        editBuffer.push(Edit.insert(caretPoint, value));
-        for (int i = 0; i < value.length(); i++) moveCaretRight();
+        buffer.push(Edit.insert(caretPoint, value));
         texts.markDirty();
         caret.markDirty();
+        for (int i = 0; i < value.length(); i++) moveCaretRight();
     }
     public void delete() {
         scrollToCaret();
         OffsetPoint caretPoint = caret.offsetPoint();
         LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
         if (layoutLine == null) return;
-        editBuffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
+        buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
         texts.markDirty();
         caret.markDirty();
     }
@@ -295,13 +295,13 @@ public class EditorModel {
     }
     public void undo() {
         selection.clear();
-        Edit edit = editBuffer.undo();
+        Edit edit = buffer.undo();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
     }
     public void redo() {
         selection.clear();
-        Edit edit = editBuffer.redo();
+        Edit edit = buffer.redo();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
     }
@@ -329,10 +329,10 @@ public class EditorModel {
 
     // -- file behavior -------------------------------------------------------
     public void save() {
-        editBuffer.save();
+        buffer.save();
     }
     public void saveAs(Path path) {
-        editBuffer.saveAs(path);
+        buffer.saveAs(path);
     }
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
@@ -357,10 +357,10 @@ public class EditorModel {
      */
     private void copyToClipboard(boolean cut) {
         if (selection.started() && selection.length() > 0) {
-            Textual text = editBuffer.subText(selection.min(), selection.length());
+            Textual text = buffer.subText(selection.min(), selection.length());
             Clipboard.put(text.text());
             if (cut) {
-                editBuffer.push(Edit.delete(text.point(), text.text()));
+                buffer.push(Edit.delete(text.point(), text.text()));
                 selection.clear();
                 caret.at(text.point().offset(), true);
                 texts.markDirty();
