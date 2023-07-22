@@ -49,11 +49,12 @@ public record InsertEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
+
         if (acrossRows()) {
             throw new IllegalStateException("Should be pre-flashed");
         }
 
-        if (point.offset() == 0 && textual.point().offset() == 0 && textual.tailOffset() == 0) {
+        if (textual.length() == 0) {
             return Textual.of(textual.point(), text);
         }
 
@@ -72,6 +73,7 @@ public record InsertEdit(
             }
             default -> textual;
         };
+        
     }
 
 

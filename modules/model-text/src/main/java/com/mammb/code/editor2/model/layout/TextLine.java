@@ -63,7 +63,7 @@ public interface TextLine extends Textual {
 
     /**
      * Get the leading height(leading + height).
-     * @returnt the leading height(leading + height)
+     * @return the leading height(leading + height)
      */
     default double leadingHeight() {
         return height() + 0.5;
@@ -107,8 +107,14 @@ public interface TextLine extends Textual {
      * @return the x position from the specified x offset
      */
     default double offsetToX(int offset) {
-        TextRun run = textRunAt(offset);
-        return run.offsetToX().apply(offset - run.offset());
+        if (offset == end() && endMarkCount() == 0) {
+            List<TextRun> runs = runs();
+            TextRun run = runs.get(runs.size() - 1);
+            return run.offsetToX().apply(offset - run.offset());
+        } else {
+            TextRun run = textRunAt(offset);
+            return run.offsetToX().apply(offset - run.offset());
+        }
     }
 
     /**
@@ -164,9 +170,7 @@ public interface TextLine extends Textual {
      * @return {@code true}, if the given (total) offset contains on this line
      */
     default boolean contains(int offset) {
-        int start = point().offset();
-        int end   = start + length();
-        return start <= offset && offset < end;
+        return start() <= offset && offset < end();
     }
 
     /**

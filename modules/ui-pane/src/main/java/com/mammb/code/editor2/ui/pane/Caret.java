@@ -129,17 +129,30 @@ public class Caret {
      * Move the caret to the right.
      */
     public void right() {
+
         if (ensureLayout() == null) return;
 
-        offset++;
-        if (offset >= line.end() && line.endMarkCount() > 0) {
+        if (offset == line.end() && line.endMarkCount() == 0) {
+            // | a | b | $ |
+            // | c||  offset:4  line.end():4  line.endMarkCount():0
+            logicalX = x;
+            return;
+        }
+
+        if (offset == line.end() - line.endMarkCount()) {
+            // | a | b|| $ |      offset:2  line.end():3  line.endMarkCount():1
+            // | a | b|| $ | $ |  offset:2  line.end():4  line.endMarkCount():2
+            offset += line.endMarkCount();
             row++;
             logicalX = 0;
             markDirty();
-            ensureLayout();
             return;
         }
-        if (Character.isLowSurrogate(line.charAt(offset))) {
+
+        offset++;
+        if (offset < line.end() && Character.isLowSurrogate(line.charAt(offset))) {
+            // | a|| b |  offset:1  line.end():2
+            // | a | b||  offset:2  line.end():2
             offset++;
         }
         x = line.offsetToX(offset);
