@@ -37,7 +37,7 @@ public interface RowSupplier {
      *   text.at(14) -> null
      * </pre>
      * @param cpOffset the codepoint offset
-     * @return the row string
+     * @return the row string, non-null
      */
     String at(int cpOffset);
 
@@ -56,7 +56,7 @@ public interface RowSupplier {
      *   text.before(15) -> null
      * </pre>
      * @param cpOffset the codepoint offset
-     * @return the row string
+     * @return the row string, non-null
      */
     String before(int cpOffset);
 

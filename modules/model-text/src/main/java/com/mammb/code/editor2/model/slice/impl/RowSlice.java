@@ -55,7 +55,7 @@ public class RowSlice implements Slice<Textual> {
     @Override
     public List<Textual> texts() {
         if (texts.isEmpty()) {
-            fill();
+            fulfillTexts();
         }
         return texts;
     }
@@ -81,7 +81,7 @@ public class RowSlice implements Slice<Textual> {
             }
         } else if (maxRowSize < capacity) {
             this.maxRowSize = capacity;
-            fill();
+            fulfillTexts();
         }
     }
 
@@ -91,7 +91,7 @@ public class RowSlice implements Slice<Textual> {
         for (int i = 0; i < texts.size(); i++) {
             if (texts.get(i).point().row() >= rowNumber) {
                 texts.subList(i, texts.size()).clear();
-                fill();
+                fulfillTexts();
                 return;
             }
         }
@@ -130,11 +130,11 @@ public class RowSlice implements Slice<Textual> {
             OffsetPoint next = tail.point().plus(tail.text());
 
             String str = rowSupplier.at(next.cpOffset());
-            Textual textual = Textual.of(next, (str == null) ? "" : str);
+            Textual textual = Textual.of(next, str);
             added.add(textual);
             pushLast(textual);
 
-            if (str == null) {
+            if (str.isEmpty()) {
                 break;
             }
         }
@@ -159,7 +159,7 @@ public class RowSlice implements Slice<Textual> {
     }
 
 
-    private void fill() {
+    private void fulfillTexts() {
 
         if (texts.size() > maxRowSize) {
             texts.subList(maxRowSize, texts.size()).clear();
@@ -173,15 +173,14 @@ public class RowSlice implements Slice<Textual> {
                 next = OffsetPoint.zero;
             } else {
                 Textual tail = texts.get(texts.size() - 1);
-                next = tail.point().plus(texts.get(texts.size() - 1).text());
+                next = tail.point().plus(tail.text());
             }
 
             String str = rowSupplier.at(next.cpOffset());
-            if (str == null || str.length() == 0) {
-                texts.add(Textual.of(next, ""));
+            texts.add(Textual.of(next, str));
+            if (str.isEmpty()) {
                 break;
             }
-            texts.add(Textual.of(next, str));
         }
 
     }

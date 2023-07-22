@@ -24,14 +24,19 @@ import com.mammb.code.editor2.model.slice.RowSupplier;
  */
 public record RawAdapter(Content content) implements RowSupplier {
 
+    /** The empty string. */
+    private static final String empty = "";
+
     @Override
     public String at(int cpOffset) {
-        return new String(content.bytes(cpOffset, Until.lfInclusive()), content.charset());
+        byte[] bytes = content.bytes(cpOffset, Until.lfInclusive());
+        return (bytes.length == 0) ? empty : new String(bytes, content.charset());
     }
 
     @Override
     public String before(int cpOffset) {
-        return new String(content.bytesBefore(cpOffset, Until.lf(2)), content.charset());
+        byte[] bytes = content.bytesBefore(cpOffset, Until.lf(2));
+        return (bytes.length == 0) ? empty : new String( bytes, content.charset());
     }
 
 }
