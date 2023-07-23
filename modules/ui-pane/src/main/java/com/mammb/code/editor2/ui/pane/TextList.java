@@ -148,17 +148,13 @@ public interface TextList {
 
         final List<TextLine> lines = lines();
 
-        if (offset == 0 && lines.size() == 1 && lines.get(0).length() == 0) {
-            // initial empty content
-            return new LayoutLine(lines.get(0), 0);
-        }
-
         if (offset < lines.get(0).point().offset()) {
             return null;
         }
         double offsetY = 0;
         for (TextLine line : lines) {
-            if (line.contains(offset)) {
+            if (line.contains(offset) ||
+               (line.length() == 0 && line.start() == offset)) {
                 return new LayoutLine(line, offsetY);
             }
             offsetY += line.leadingHeight();

@@ -206,8 +206,10 @@ public class Caret {
      * Move the caret to the down.
      */
     public void down() {
+
         if (ensureLayout() == null) return;
-        // TODO return if the last line
+        if (line.endMarkCount() == 0) return;
+
         LayoutLine next = offsetToLine.apply(line.end());
         if (next == null) return;
         line = next;

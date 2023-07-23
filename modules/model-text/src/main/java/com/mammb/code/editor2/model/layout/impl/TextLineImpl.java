@@ -19,6 +19,7 @@ import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * TextLineRecord.
@@ -88,4 +89,14 @@ public class TextLineImpl implements TextLine {
         return height;
     }
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", TextLineImpl.class.getSimpleName() + "[", "]")
+            .add("point=" + point)
+            .add("lineIndex=" + lineIndex)
+            .add("length=" + length)
+            .add("width=" + width)
+            .add("height=" + height)
+            .toString();
+    }
 }
