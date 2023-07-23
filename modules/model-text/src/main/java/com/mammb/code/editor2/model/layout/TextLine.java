@@ -107,14 +107,14 @@ public interface TextLine extends Textual {
      * @return the x position from the specified x offset
      */
     default double offsetToX(int offset) {
+        TextRun run;
         if (offset == end() && endMarkCount() == 0) {
             List<TextRun> runs = runs();
-            TextRun run = runs.get(runs.size() - 1);
-            return run.offsetToX().apply(offset - run.offset());
+            run = runs.get(runs.size() - 1);
         } else {
-            TextRun run = textRunAt(offset);
-            return run.offsetToX().apply(offset - run.offset());
+            run = textRunAt(offset);
         }
+        return run.offsetToX().apply(offset - run.offset());
     }
 
     /**
