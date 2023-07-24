@@ -254,7 +254,7 @@ public class Caret {
 if (layoutLine == null) {
     Arrays.stream(Thread.currentThread().getStackTrace()).forEach(System.out::println);
 }
-        if (layoutLine == null || layoutLine.length() == 0) {
+        if (layoutLine == null) {
             x = y = 0;
         } else {
             x = layoutLine.offsetToX(offset);

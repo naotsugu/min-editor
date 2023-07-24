@@ -287,6 +287,7 @@ public class EditorModel {
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
         texts.markDirty();
         caret.markDirty();
+
     }
     public void backspace() {
         moveCaretLeft();

@@ -172,6 +172,7 @@ public class EditorPane extends StackPane {
         editorModel.draw(gc);
     }
 
+
     public void handleKeyTyped(KeyEvent e) {
         if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
             e.getCode().isArrowKey() || e.getCode().isModifierKey() ||
@@ -192,6 +193,7 @@ public class EditorPane extends StackPane {
         editorModel.draw(gc);
     }
 
+
     private void tick() {
         editorModel.tick(gc);
         requestFocus();
@@ -205,6 +207,5 @@ public class EditorPane extends StackPane {
                 ? base.toFile()
                 : base.getParent().toFile();
     }
-
 
 }

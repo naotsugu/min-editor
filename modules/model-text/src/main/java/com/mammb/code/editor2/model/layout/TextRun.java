@@ -124,6 +124,15 @@ public interface TextRun {
     }
 
     /**
+     * Get whether the given (total) offset located on tail of this line.
+     * @param offset the char (total) offset
+     * @return {@code true}, if the given (total) offset located on tail of this line
+     */
+    default boolean containsTailOn(int offset) {
+        return length() == 0 && offset() == offset;
+    }
+
+    /**
      * Create a new TextRun.
      * @param layout the layout
      * @param y the position y
