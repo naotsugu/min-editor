@@ -153,8 +153,7 @@ public interface TextList {
         }
         double offsetY = 0;
         for (TextLine line : lines) {
-            if (line.contains(offset) ||
-               (line.length() == 0 && line.start() == offset)) {
+            if (line.contains(offset) || line.containsTailOn(offset)) {
                 return new LayoutLine(line, offsetY);
             }
             offsetY += line.leadingHeight();

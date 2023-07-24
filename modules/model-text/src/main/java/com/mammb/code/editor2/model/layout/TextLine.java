@@ -88,7 +88,7 @@ public interface TextLine extends Textual {
      * @return the end char (total) offset
      */
     default int end() {
-        return point().offset() + length();
+        return start() + length();
     }
 
     /**
@@ -153,8 +153,7 @@ public interface TextLine extends Textual {
         }
         if (!contains(offset)) {
             throw new IndexOutOfBoundsException(
-                "start:%d end:%d offset:%d".formatted(
-                    point().offset(), point().offset() + length(), offset));
+                "start:%d end:%d offset:%d".formatted(start(), end(), offset));
         }
         for (TextRun run : runs()) {
             if (run.length() == 0) continue;
@@ -193,7 +192,7 @@ public interface TextLine extends Textual {
      * @return the char offset(total) from the specified x position
      */
     default int xToOffset(double x) {
-        int offset = point().offset();
+        int offset = start();
         for (TextRun run : runs()) {
             double runStart = run.layout().x();
             double runEnd = runStart + run.layout().width();
@@ -227,8 +226,13 @@ public interface TextLine extends Textual {
      * @param textRuns the text runs
      * @return a created TextLine
      */
-    static TextLine of(OffsetPoint point, int lineIndex, int length, double width, double height,
-                       List<TextRun> textRuns) {
+    static TextLine of(
+            OffsetPoint point,
+            int lineIndex,
+            int length,
+            double width,
+            double height,
+            List<TextRun> textRuns) {
         return new TextLineImpl(point, lineIndex, length, width, height, textRuns);
     }
 
