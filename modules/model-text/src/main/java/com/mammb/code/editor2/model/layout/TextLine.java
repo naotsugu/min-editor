@@ -148,6 +148,9 @@ public interface TextLine extends Textual {
      * @return the text run at offset position
      */
     default TextRun textRunAt(int offset) {
+        if (containsTailOn(offset)) {
+            return runs().get(0);
+        }
         if (!contains(offset)) {
             throw new IndexOutOfBoundsException(
                 "start:%d end:%d offset:%d".formatted(
@@ -164,6 +167,7 @@ public interface TextLine extends Textual {
         throw new IllegalStateException("internal error:" + runs());
     }
 
+
     /**
      * Get whether the given (total) offset contains on this line.
      * @param offset the char (total) offset
@@ -171,6 +175,16 @@ public interface TextLine extends Textual {
      */
     default boolean contains(int offset) {
         return start() <= offset && offset < end();
+    }
+
+
+    /**
+     * Get whether the given (total) offset located on tail of this line.
+     * @param offset the char (total) offset
+     * @return {@code true}, if the given (total) offset located on tail of this line
+     */
+    default boolean containsTailOn(int offset) {
+        return length() == 0 && start() == offset;
     }
 
     /**

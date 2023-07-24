@@ -25,6 +25,9 @@ import com.mammb.code.editor2.model.text.Textual;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.function.Predicate.not;
 
 /**
  * EditBuffer.
@@ -63,9 +66,24 @@ public class EditBuffer implements TextBuffer<Textual> {
             ? Edit.empty
             : editQueue.peek();
 
-        return slice.texts().stream()
+        List<Textual> texts = slice.texts();
+        boolean eof = texts.get(texts.size() - 1).isEmpty();
+
+        texts = texts.stream()
             .map(edit::applyTo)
-            .toList();
+            .filter(not(Textual::isEmpty))
+            .collect(Collectors.toList());
+
+        if (eof) {
+            if (texts.isEmpty()) {
+                texts.add(Textual.of(OffsetPoint.zero, ""));
+            } else {
+                Textual tail = texts.get(texts.size() - 1);
+                texts.add(Textual.of(tail.point().plus(tail.text()), ""));
+            }
+        }
+
+        return texts;
     }
 
     @Override

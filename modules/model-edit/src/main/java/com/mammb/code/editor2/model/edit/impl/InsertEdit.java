@@ -68,7 +68,7 @@ public record InsertEdit(
                 yield Textual.of(textual.point(), sb.toString());
             }
             case 1 -> {
-                if (textual.length() == 0) yield Textual.of(textual.point(), text);
+                if (textual.length() == 0 && textual.point().offset() == point.offset()) yield Textual.of(textual.point(), text);
                 else yield textual;
             }
             default -> textual;

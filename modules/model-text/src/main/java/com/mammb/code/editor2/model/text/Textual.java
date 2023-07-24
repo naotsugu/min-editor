@@ -53,6 +53,14 @@ public interface Textual {
     }
 
     /**
+     * Get whether this textual is empty.
+     * @return {@code true}, if this textual is empty
+     */
+    default boolean isEmpty() {
+        return length() == 0;
+    }
+
+    /**
      * Get the coed point offset of tail.
      * @return the coed point offset of tail.
      */

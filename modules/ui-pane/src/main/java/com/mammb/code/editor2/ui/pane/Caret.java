@@ -222,7 +222,7 @@ public class Caret {
 
     public OffsetPoint offsetPoint() {
         LayoutLine layoutLine = offsetToLine.apply(offset);
-        if (layoutLine == null || layoutLine.length() == 0) return OffsetPoint.zero;
+        if (layoutLine == null) return OffsetPoint.zero;
         return layoutLine.offsetPoint(offset);
     }
 
