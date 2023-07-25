@@ -183,7 +183,7 @@ public interface TextLine extends Textual {
      * @return {@code true}, if the given (total) offset located on tail of this line
      */
     default boolean containsTailOn(int offset) {
-        return length() == 0 && start() == offset;
+        return end() == offset && endMarkCount() == 0;
     }
 
     /**
@@ -203,17 +203,6 @@ public interface TextLine extends Textual {
             offset += run.length();
         }
         return Math.max(offset - 1, 0);
-    }
-
-    /**
-     * Get the count of end mark.
-     * @return the count of end mark
-     */
-    default int endMarkCount() {
-        String text = text();
-        if (text.endsWith("\r\n")) return 2;
-        if (text.endsWith("\n")) return 1;
-        return 0;
     }
 
     /**

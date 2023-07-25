@@ -18,7 +18,11 @@ package com.mammb.code.editor2.model.buffer.impl;
 import com.mammb.code.editor2.model.buffer.Content;
 import com.mammb.code.editor2.model.buffer.ContentMetrics;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
-import com.mammb.code.editor2.model.edit.*;
+import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.edit.EditListener;
+import com.mammb.code.editor2.model.edit.EditQueue;
+import com.mammb.code.editor2.model.edit.EditTo;
+import com.mammb.code.editor2.model.edit.EditToListener;
 import com.mammb.code.editor2.model.slice.Slice;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
@@ -26,8 +30,6 @@ import com.mammb.code.editor2.model.text.Textual;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static java.util.function.Predicate.not;
 
 /**
  * EditBuffer.
@@ -58,32 +60,16 @@ public class EditBuffer implements TextBuffer<Textual> {
 
     @Override
     public List<Textual> texts() {
+
         if (editQueue.isEmpty()) {
             return slice.texts();
         }
 
-        Edit edit = editQueue.isEmpty()
-            ? Edit.empty
-            : editQueue.peek();
+        Edit edit = editQueue.peek();
 
-        List<Textual> texts = slice.texts();
-        boolean eof = texts.get(texts.size() - 1).isEmpty();
-
-        texts = texts.stream()
+        return slice.texts().stream()
             .map(edit::applyTo)
-            .filter(not(Textual::isEmpty))
             .collect(Collectors.toList());
-
-        if (eof) {
-            if (texts.isEmpty()) {
-                texts.add(Textual.of(OffsetPoint.zero, ""));
-            } else {
-                Textual tail = texts.get(texts.size() - 1);
-                texts.add(Textual.of(tail.point().plus(tail.text()), ""));
-            }
-        }
-
-        return texts;
     }
 
     @Override

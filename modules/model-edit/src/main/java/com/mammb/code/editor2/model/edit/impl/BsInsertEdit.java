@@ -96,6 +96,12 @@ public record BsInsertEdit(
                 sb.insert(point.offset() - textual.point().offset(), text);
                 yield Textual.of(textual.point(), sb.toString());
             }
+            case 1 -> {
+                if (textual.tailOffset() == point.offset() && textual.endMarkCount() == 0)
+                    yield Textual.of(textual.point(), textual.text() + text);
+                else
+                    yield textual;
+            }
             default -> textual;
         };
     }

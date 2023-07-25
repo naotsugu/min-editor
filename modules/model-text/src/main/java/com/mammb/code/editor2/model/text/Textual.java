@@ -93,6 +93,19 @@ public interface Textual {
         }
     }
 
+
+    /**
+     * Get the count of end mark.
+     * @return the count of end mark
+     */
+    default int endMarkCount() {
+        String text = text();
+        if (text.endsWith("\r\n")) return 2;
+        if (text.endsWith("\n")) return 1;
+        return 0;
+    }
+
+
     /**
      * Create a new PointText
      * @param point the offset point

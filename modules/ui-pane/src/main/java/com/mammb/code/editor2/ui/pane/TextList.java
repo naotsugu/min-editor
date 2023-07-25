@@ -145,7 +145,6 @@ public interface TextList {
      * @return the LayoutLine
      */
     default LayoutLine layoutLine(int offset) {
-
         final List<TextLine> lines = lines();
 
         if (offset < lines.get(0).point().offset()) {
