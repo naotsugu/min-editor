@@ -60,7 +60,7 @@ public class SelectionImpl implements Selection {
         end = toOffset;
     }
 
-    public void draw(GraphicsContext gc, TextRun run, double top) {
+    public void draw(GraphicsContext gc, TextRun run, double top, double sideBearing) {
         if (!started()) throw new IllegalStateException();
         int runStart = run.offset();
         int runEnd = runStart + run.length();
@@ -68,7 +68,7 @@ public class SelectionImpl implements Selection {
             double left = run.offsetToX().apply(Math.max(min().offset(), runStart) - runStart);
             double width = run.offsetToX().apply(Math.min(max().offset(), runEnd) - runStart) - left;
             gc.setFill(Color.LIGHTBLUE);
-            gc.fillRect(left, top, width, run.textLine().height());
+            gc.fillRect(left + sideBearing, top, width, run.textLine().height());
         }
     }
 

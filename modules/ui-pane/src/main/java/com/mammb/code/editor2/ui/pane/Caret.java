@@ -31,6 +31,8 @@ public class Caret {
 
     /** The caret width. */
     private double width = 2;
+    /** The side bearing. */
+    private double sideBearing;
 
     /** The caret (char) offset. */
     private int offset = 0;
@@ -57,8 +59,9 @@ public class Caret {
      * Constructor.
      * @param offsetToLine the offset to layout line function
      */
-    public Caret(Function<Integer, LayoutLine> offsetToLine) {
+    public Caret(Function<Integer, LayoutLine> offsetToLine, double sideBearing) {
         this.offsetToLine = offsetToLine;
+        this.sideBearing = sideBearing;
     }
 
 
@@ -68,7 +71,7 @@ public class Caret {
      */
     public void draw(GraphicsContext gc) {
         if (ensureLayout() == null) return;
-        double x1 = Math.max(width, x);
+        double x1 = x + sideBearing;
         double y1 = y + 1;
         double x2 = x1;
         double y2 = y + line.height() - 1;
@@ -85,9 +88,9 @@ public class Caret {
      */
     public EditorModel.Rect clear(GraphicsContext gc) {
         if (ensureLayout() == null) return null;
-        double dx = Math.max(x - width / 2, 0);
+        double dx = x;
         double dy = y;
-        double dw = width + 1;
+        double dw = width + sideBearing;
         double dh = line.height();
         gc.clearRect(dx, dy, dw, dh);
         drawn = false;
@@ -134,14 +137,14 @@ public class Caret {
 
         if (offset == line.tailOffset() && line.endMarkCount() == 0) {
             // | a | b | $ |
-            // | c||  offset:4  line.end():4  line.endMarkCount():0
+            // | c||  offset:4  line.tailOffset():4  line.endMarkCount():0
             logicalX = x;
             return;
         }
 
         if (offset == line.tailOffset() - line.endMarkCount()) {
-            // | a | b|| $ |      offset:2  line.end():3  line.endMarkCount():1
-            // | a | b|| $ | $ |  offset:2  line.end():4  line.endMarkCount():2
+            // | a | b|| $ |      offset:2  line.tailOffset():3  line.endMarkCount():1
+            // | a | b|| $ | $ |  offset:2  line.tailOffset():4  line.endMarkCount():2
             offset += line.endMarkCount();
             row++;
             logicalX = 0;
@@ -151,8 +154,8 @@ public class Caret {
 
         offset++;
         if (offset < line.tailOffset() && Character.isLowSurrogate(line.charAt(offset))) {
-            // | a|| b |  offset:1  line.end():2
-            // | a | b||  offset:2  line.end():2
+            // | a|| b |  offset:1  line.tailOffset():2
+            // | a | b||  offset:2  line.tailOffset():2
             offset++;
         }
         x = line.offsetToX(offset);

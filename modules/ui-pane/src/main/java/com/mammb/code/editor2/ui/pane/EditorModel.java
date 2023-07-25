@@ -40,6 +40,9 @@ import java.nio.file.Path;
  */
 public class EditorModel {
 
+    /** The side bearing. */
+    private static final double sideBearing = 1.0;
+
     /** The text buffer. */
     private final TextBuffer<Textual> buffer;
     /** The screen width. */
@@ -52,6 +55,7 @@ public class EditorModel {
     private final Selection selection;
     /** The text list. */
     private TextList texts;
+
 
 
     /**
@@ -73,7 +77,7 @@ public class EditorModel {
     public EditorModel(double width, double height, Path path) {
         this.buffer = TextBuffer.editBuffer(screenRowSize(height), path);
         this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
-        this.caret = new Caret(texts::layoutLine);
+        this.caret = new Caret(texts::layoutLine, sideBearing);
         this.selection = new SelectionImpl();
         this.width = width;
         this.height = height;
@@ -94,13 +98,17 @@ public class EditorModel {
             for (TextRun run : line.runs()) {
                 if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
                     gc.setFill(bg);
-                    gc.fillRect(run.layout().x(), offsetY, run.layout().width(), line.height());
+                    gc.fillRect(
+                        run.layout().x() + sideBearing,
+                        offsetY,
+                        run.layout().width(),
+                        line.height());
                 }
-                if (selection.started()) selection.draw(gc, run, offsetY);
+                if (selection.started()) selection.draw(gc, run, offsetY, sideBearing);
 
                 if (run.style().font() instanceof Font font) gc.setFont(font);
                 if (run.style().color() instanceof Color color) gc.setFill(color);
-                gc.fillText(run.text(), run.layout().x(), offsetY + run.baseline());
+                gc.fillText(run.text(), run.layout().x() + sideBearing, offsetY + run.baseline());
             }
             offsetY += line.leadingHeight();
         }
@@ -136,15 +144,15 @@ public class EditorModel {
                 if (left > (x + w)) break;
                 if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
                     gc.setFill(bg);
-                    gc.fillRect(left, top, run.layout().width(), line.height());
+                    gc.fillRect(left + sideBearing, top, run.layout().width(), line.height());
                 } else {
-                    gc.clearRect(left, top, run.layout().width(), line.height());
+                    gc.clearRect(left, top, run.layout().width() + (sideBearing * 2), line.height());
                 }
-                if (selection.started()) selection.draw(gc, run, offsetY);
+                if (selection.started()) selection.draw(gc, run, offsetY, sideBearing);
 
                 if (run.style().font() instanceof Font font) gc.setFont(font);
                 if (run.style().color() instanceof Color color) gc.setFill(color);
-                gc.fillText(run.text(), left, top + run.baseline());
+                gc.fillText(run.text(), left + sideBearing, top + run.baseline());
             }
             offsetY += line.leadingHeight();
         }
@@ -338,7 +346,7 @@ public class EditorModel {
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
         if (texts instanceof LinearTextList linear)  {
-            texts = linear.asWrapped(width);
+            texts = linear.asWrapped(width - (sideBearing * 2));
             caret.markDirty();
         } else if (texts instanceof WrapTextList wrap) {
             texts = wrap.asLinear();

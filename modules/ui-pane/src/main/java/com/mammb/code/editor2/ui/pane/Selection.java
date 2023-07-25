@@ -37,7 +37,7 @@ public interface Selection {
 
     void to(OffsetPoint toOffset);
 
-    void draw(GraphicsContext gc, TextRun run, double offsetY);
+    void draw(GraphicsContext gc, TextRun run, double offsetY, double sideBearing);
 
     default int length() {
         return max().offset() - min().offset();
