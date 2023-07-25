@@ -132,14 +132,15 @@ public interface TextLine extends Textual {
      * @return the text run at offset position
      */
     default TextRun textRunAt(int offset) {
+        List<TextRun> runs = runs();
         if (containsTailOn(offset)) {
-            return runs().get(0);
+            return runs.get(runs.size() - 1);
         }
         if (!contains(offset)) {
             throw new IndexOutOfBoundsException(
                 "start:%d end:%d offset:%d".formatted(offset(), tailOffset(), offset));
         }
-        for (TextRun run : runs()) {
+        for (TextRun run : runs) {
             if (run.length() == 0) continue;
             int runStart = run.source().point().offset() + run.start();
             int runEnd = runStart + run.length();
