@@ -66,10 +66,11 @@ public class EditBuffer implements TextBuffer<Textual> {
         }
 
         Edit edit = editQueue.peek();
-
-        return slice.texts().stream()
+        List<Textual> texts = slice.texts().stream()
             .map(edit::applyTo)
             .collect(Collectors.toList());
+
+        return texts;
     }
 
     @Override
