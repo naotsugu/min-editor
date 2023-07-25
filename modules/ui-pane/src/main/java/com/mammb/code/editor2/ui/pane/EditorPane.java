@@ -189,7 +189,8 @@ public class EditorPane extends StackPane {
                 return;
             }
         }
-        editorModel.input(e.getCharacter());
+        String ch = (ascii == 13) ? "\n" : e.getCharacter();
+        editorModel.input(ch);
         editorModel.draw(gc);
     }
 
