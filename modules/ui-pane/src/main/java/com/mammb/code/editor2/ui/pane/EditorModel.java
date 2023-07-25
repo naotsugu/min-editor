@@ -57,7 +57,6 @@ public class EditorModel {
     private TextList texts;
 
 
-
     /**
      * Constructor.
      * @param width the screen width
@@ -171,6 +170,18 @@ public class EditorModel {
         } else {
             caret.draw(gc);
         }
+    }
+
+    // -- ime behavior  ----------------------------------------------------
+    public Rect imeOn() {
+        scrollToCaret();
+        return new Rect(caret.x(), caret.y(), caret.width(), caret.height());
+    }
+    public void imeOff() {
+    }
+    public void imeCommitted(String text) {
+    }
+    public void imeComposed(String text) {
     }
 
     // -- scroll behavior  ----------------------------------------------------
@@ -295,7 +306,6 @@ public class EditorModel {
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
         texts.markDirty();
         caret.markDirty();
-
     }
     public void backspace() {
         moveCaretLeft();

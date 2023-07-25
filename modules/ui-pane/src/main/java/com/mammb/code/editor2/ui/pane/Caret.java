@@ -19,9 +19,10 @@ import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
-import java.util.Arrays;
+import java.lang.System.Logger;
 import java.util.function.Function;
+
+import static java.lang.System.Logger.Level.INFO;
 
 /**
  * Caret.
@@ -29,10 +30,15 @@ import java.util.function.Function;
  */
 public class Caret {
 
+    /** logger. */
+    private static final Logger log = System.getLogger(Caret.class.getName());
+
     /** The caret width. */
-    private double width = 2;
+    private final double width = 2;
     /** The side bearing. */
-    private double sideBearing;
+    private final double sideBearing;
+    /** The offset to layout line function. */
+    private final Function<Integer, LayoutLine> offsetToLine;
 
     /** The caret (char) offset. */
     private int offset = 0;
@@ -49,11 +55,9 @@ public class Caret {
     private double y = 0;
     /** dirty?. */
     private boolean dirty = true;
+    /** drawn. */
+    private boolean drawn;
 
-    /** The offset to layout line function. */
-    private Function<Integer, LayoutLine> offsetToLine;
-
-    boolean drawn;
 
     /**
      * Constructor.
@@ -223,6 +227,10 @@ public class Caret {
     }
 
 
+    /**
+     * Get the offsetPoint at caret.
+     * @return the offsetPoint at caret
+     */
     public OffsetPoint offsetPoint() {
         LayoutLine layoutLine = offsetToLine.apply(offset);
         if (layoutLine == null) return OffsetPoint.zero;
@@ -245,6 +253,13 @@ public class Caret {
         ensureLayout();
         return y + line.height();
     }
+    public double width() {
+        return width;
+    }
+    public double height() {
+        ensureLayout();
+        return line.height();
+    }
 
     public boolean drawn() {
         return drawn;
@@ -254,10 +269,8 @@ public class Caret {
         if (!dirty) return line;
         dirty = false;
         LayoutLine layoutLine = offsetToLine.apply(offset);
-if (layoutLine == null) {
-    Arrays.stream(Thread.currentThread().getStackTrace()).forEach(System.out::println);
-}
         if (layoutLine == null) {
+            log.log(INFO, "offset:{0}", offset);
             x = y = 0;
         } else {
             x = layoutLine.offsetToX(offset);

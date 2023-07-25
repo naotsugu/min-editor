@@ -17,9 +17,13 @@ package com.mammb.code.editor2.ui.pane;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.geometry.Point2D;
 import javafx.scene.AccessibleRole;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.InputMethodEvent;
+import javafx.scene.input.InputMethodRequests;
+import javafx.scene.input.InputMethodTextRun;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -30,6 +34,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
 
 /**
  * EditorPane.
@@ -79,6 +84,8 @@ public class EditorPane extends StackPane {
         setOnMouseClicked(this::handleMouseClicked);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
+        setInputMethodRequests(inputMethodRequests());
+        setOnInputMethodTextChanged(this::handleInputMethod);
     }
 
 
@@ -194,12 +201,49 @@ public class EditorPane extends StackPane {
         editorModel.draw(gc);
     }
 
+    public void handleInputMethod(InputMethodEvent event) {
+        if (event.getCommitted().length() > 0) {
+            editorModel.imeCommitted(event.getCommitted());
+        } else if (!event.getComposed().isEmpty()) {
+            event.getComposed().forEach(System.out::println);
+            editorModel.imeComposed(event.getComposed().stream()
+                .map(InputMethodTextRun::getText)
+                .collect(Collectors.joining()));
+        } else {
+            editorModel.imeOff();
+        }
+    }
 
     private void tick() {
         editorModel.tick(gc);
         requestFocus();
     }
 
+    /**
+     * Create input method request.
+     * @return the InputMethodRequests
+     */
+    public InputMethodRequests inputMethodRequests() {
+        return new InputMethodRequests() {
+            @Override
+            public Point2D getTextLocation(int offset) {
+                var rect = editorModel.imeOn();
+                return localToScreen(rect.x(), rect.y() + rect.h());
+            }
+            @Override
+            public void cancelLatestCommittedText() {
+                editorModel.imeOff();
+            }
+            @Override
+            public int getLocationOffset(int x, int y) {
+                return 0;
+            }
+            @Override
+            public String getSelectedText() {
+                return "";
+            }
+        };
+    }
 
     private static File initialDirectory(Path base) {
         return (base == null)
