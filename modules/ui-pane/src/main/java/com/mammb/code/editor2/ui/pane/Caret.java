@@ -132,14 +132,14 @@ public class Caret {
 
         if (ensureLayout() == null) return;
 
-        if (offset == line.end() && line.endMarkCount() == 0) {
+        if (offset == line.tailOffset() && line.endMarkCount() == 0) {
             // | a | b | $ |
             // | c||  offset:4  line.end():4  line.endMarkCount():0
             logicalX = x;
             return;
         }
 
-        if (offset == line.end() - line.endMarkCount()) {
+        if (offset == line.tailOffset() - line.endMarkCount()) {
             // | a | b|| $ |      offset:2  line.end():3  line.endMarkCount():1
             // | a | b|| $ | $ |  offset:2  line.end():4  line.endMarkCount():2
             offset += line.endMarkCount();
@@ -150,7 +150,7 @@ public class Caret {
         }
 
         offset++;
-        if (offset < line.end() && Character.isLowSurrogate(line.charAt(offset))) {
+        if (offset < line.tailOffset() && Character.isLowSurrogate(line.charAt(offset))) {
             // | a|| b |  offset:1  line.end():2
             // | a | b||  offset:2  line.end():2
             offset++;
@@ -191,7 +191,7 @@ public class Caret {
         if (line.point().offset() == 0) {
             return;
         }
-        LayoutLine prev = offsetToLine.apply(line.start() - 1);
+        LayoutLine prev = offsetToLine.apply(line.offset() - 1);
         if (prev == null) return;
 
         line = prev;
@@ -210,7 +210,7 @@ public class Caret {
         if (ensureLayout() == null) return;
         if (line.endMarkCount() == 0) return;
 
-        LayoutLine next = offsetToLine.apply(line.end());
+        LayoutLine next = offsetToLine.apply(line.tailOffset());
         if (next == null) return;
         line = next;
         offset = line.xToOffset(logicalX);

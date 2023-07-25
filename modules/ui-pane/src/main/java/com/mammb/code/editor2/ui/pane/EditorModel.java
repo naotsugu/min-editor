@@ -202,14 +202,14 @@ public class EditorModel {
     }
     public void moveCaretLeft() {
         scrollToCaret();
-        if (texts.head().start() > 0 && texts.head().start() == caret.offset()) {
+        if (texts.head().offset() > 0 && texts.head().offset() == caret.offset()) {
             scrollPrev(1);
         }
         caret.left();
     }
     public void moveCaretUp() {
         scrollToCaret();
-        if (texts.head().start() > 0 && caret.offset() < texts.head().end()) {
+        if (texts.head().offset() > 0 && caret.offset() < texts.head().tailOffset()) {
             scrollPrev(1);
         }
         caret.up();
@@ -237,21 +237,21 @@ public class EditorModel {
     public void moveCaretLineHome() {
         scrollToCaret();
         LayoutLine line = texts.layoutLine(caret.offset());
-        if (line.start() == caret.offset()) {
+        if (line.offset() == caret.offset()) {
             if (Character.isWhitespace(line.charAt(caret.offset()))) {
-                while (caret.offset() < line.end() &&
+                while (caret.offset() < line.tailOffset() &&
                     Character.isWhitespace(line.charAt(caret.offset()))) {
                     caret.right();
                 }
             }
         } else {
-            caret.at(line.start(), true);
+            caret.at(line.offset(), true);
         }
     }
     public void moveCaretLineEnd() {
         scrollToCaret();
         LayoutLine line = texts.layoutLine(caret.offset());
-        int offset = line.end() - line.endMarkCount();
+        int offset = line.tailOffset() - line.endMarkCount();
         caret.at(offset, true);
     }
     // -- mouse behavior ------------------------------------------------------

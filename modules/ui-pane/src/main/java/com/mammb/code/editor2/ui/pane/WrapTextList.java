@@ -157,8 +157,8 @@ public class WrapTextList implements TextList {
     public boolean scrollAt(int row, int offset) {
 
         List<TextLine> visibleLines = lines();
-        int start = visibleLines.get(0).start();
-        int end = visibleLines.get(visibleLines.size() - 1).end();
+        int start = visibleLines.get(0).offset();
+        int end = visibleLines.get(visibleLines.size() - 1).tailOffset();
         if (start <= offset && offset < end) {
             return false;
         }
@@ -189,8 +189,8 @@ public class WrapTextList implements TextList {
 
         lineOffset = 0;
         while (true) {
-            start = visibleLines.get(0).start();
-            end = visibleLines.get(visibleLines.size() - 1).end();
+            start = visibleLines.get(0).offset();
+            end = visibleLines.get(visibleLines.size() - 1).tailOffset();
             if (start <= offset && offset < end) {
                 return true;
             }

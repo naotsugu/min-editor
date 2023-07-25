@@ -76,22 +76,6 @@ public interface TextLine extends Textual {
     List<TextRun> runs();
 
     /**
-     * Get the start char (total) offset.
-     * @return the start char (total) offset
-     */
-    default int start() {
-        return point().offset();
-    }
-
-    /**
-     * Get the end char (total) offset.
-     * @return the end char (total) offset
-     */
-    default int end() {
-        return start() + length();
-    }
-
-    /**
      * Get the code point offset corresponding to the specified offset.
      * @param offset the specified offset
      * @return the code point offset corresponding to the specified offset
@@ -108,7 +92,7 @@ public interface TextLine extends Textual {
      */
     default double offsetToX(int offset) {
         TextRun run;
-        if (offset == end() && endMarkCount() == 0) {
+        if (offset == tailOffset() && endMarkCount() == 0) {
             List<TextRun> runs = runs();
             run = runs.get(runs.size() - 1);
         } else {
@@ -153,7 +137,7 @@ public interface TextLine extends Textual {
         }
         if (!contains(offset)) {
             throw new IndexOutOfBoundsException(
-                "start:%d end:%d offset:%d".formatted(start(), end(), offset));
+                "start:%d end:%d offset:%d".formatted(offset(), tailOffset(), offset));
         }
         for (TextRun run : runs()) {
             if (run.length() == 0) continue;
@@ -173,7 +157,7 @@ public interface TextLine extends Textual {
      * @return {@code true}, if the given (total) offset contains on this line
      */
     default boolean contains(int offset) {
-        return start() <= offset && offset < end();
+        return offset() <= offset && offset < tailOffset();
     }
 
 
@@ -183,7 +167,7 @@ public interface TextLine extends Textual {
      * @return {@code true}, if the given (total) offset located on tail of this line
      */
     default boolean containsTailOn(int offset) {
-        return end() == offset && endMarkCount() == 0;
+        return tailOffset() == offset && endMarkCount() == 0;
     }
 
     /**
@@ -192,7 +176,7 @@ public interface TextLine extends Textual {
      * @return the char offset(total) from the specified x position
      */
     default int xToOffset(double x) {
-        int offset = start();
+        int offset = offset();
         for (TextRun run : runs()) {
             double runStart = run.layout().x();
             double runEnd = runStart + run.layout().width();

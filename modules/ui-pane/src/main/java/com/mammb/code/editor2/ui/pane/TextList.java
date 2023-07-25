@@ -73,14 +73,14 @@ public interface TextList {
     default int at(double x, double y) {
         if (y <= 0) {
             TextLine head = head();
-            return head == null ? 0 : head.start();
+            return head == null ? 0 : head.offset();
         }
         Optional<TextLine> line = at(y);
         if (line.isPresent()) {
             return line.get().xToOffset(x);
         } else {
             TextLine tail = tail();
-            return tail == null ? 0 : tail.end();
+            return tail == null ? 0 : tail.tailOffset();
         }
     }
 
@@ -102,13 +102,13 @@ public interface TextList {
         int end = offset;
         int type = Character.getType(Character.toLowerCase(line.charAt(offset)));
 
-        for (int i = offset + 1; i < line.end(); i++) {
+        for (int i = offset + 1; i < line.tailOffset(); i++) {
             if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
                 end = i;
                 break;
             }
         }
-        for (int i = offset - 1; i >= line.start(); i--) {
+        for (int i = offset - 1; i >= line.offset(); i--) {
             if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
                 break;
             } else {

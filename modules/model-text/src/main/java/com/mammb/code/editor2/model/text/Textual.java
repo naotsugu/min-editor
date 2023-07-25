@@ -36,11 +36,19 @@ public interface Textual {
     OffsetPoint point();
 
     /**
-     * Get the offset of tail.
-     * @return the offset of tail.
+     * Get the start char (total) offset.
+     * @return the start char (total) offset.
+     */
+    default int offset() {
+        return point().offset();
+    }
+
+    /**
+     * Get the char offset of tail(exclusive).
+     * @return the offset of tail(exclusive).
      */
     default int tailOffset() {
-        return point().offset() + length();
+        return offset() + length();
     }
 
     /**
