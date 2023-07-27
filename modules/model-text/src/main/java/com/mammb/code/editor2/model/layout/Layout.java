@@ -47,6 +47,10 @@ public interface Layout {
      */
     double height();
 
+    default double right() {
+        return x() + width();
+    }
+
     /**
      * Create a new Layout.
      * @param x the X coordinate of this {@code Layout}

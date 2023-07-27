@@ -34,6 +34,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * EditorModel.
@@ -98,20 +99,9 @@ public class EditorModel {
         gc.setTextBaseline(VPos.CENTER);
         double offsetY = 0;
         for (TextLine line : texts.lines()) {
-            for (TextRun run : line.runs()) {
-                if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
-                    gc.setFill(bg);
-                    gc.fillRect(
-                        run.layout().x() + sideBearing,
-                        offsetY,
-                        run.layout().width(),
-                        line.height());
-                }
-                if (selection.started()) selection.draw(gc, run, offsetY, sideBearing);
-
-                if (run.style().font() instanceof Font font) gc.setFont(font);
-                if (run.style().color() instanceof Color color) gc.setFill(color);
-                gc.fillText(run.text(), run.layout().x() + sideBearing, offsetY + run.baseline());
+            List<TextRun> runs = line.runs();
+            for (TextRun run : runs) {
+                drawRun(gc, run, false, offsetY, line.height());
             }
             offsetY += line.leadingHeight();
         }
@@ -140,26 +130,30 @@ public class EditorModel {
                 continue;
             }
             if (top >= (y + h)) break;
-            for (TextRun run : line.runs()) {
-                double left = run.layout().x();
-                double right = left + run.layout().width();
-                if (right < x) continue;
-                if (left > (x + w)) break;
-                if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
-                    gc.setFill(bg);
-                    gc.fillRect(left + sideBearing, top, run.layout().width(), line.height());
-                } else {
-                    gc.clearRect(left, top, run.layout().width() + (sideBearing * 2), line.height());
-                }
-                if (selection.started()) selection.draw(gc, run, offsetY, sideBearing);
 
-                if (run.style().font() instanceof Font font) gc.setFont(font);
-                if (run.style().color() instanceof Color color) gc.setFill(color);
-                gc.fillText(run.text(), left + sideBearing, top + run.baseline());
+            List<TextRun> runs = line.runs();
+            for (TextRun run : runs) {
+                if ((run.layout().right()) < x) continue;
+                if (run.layout().x() > (x + w)) break;
+                drawRun(gc, run, true, top, line.height());
             }
             offsetY += line.leadingHeight();
         }
         gc.restore();
+    }
+
+    private void drawRun(GraphicsContext gc, TextRun run, boolean overlay, double top, double lineHeight) {
+        if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
+            gc.setFill(bg);
+            gc.fillRect(run.layout().x() + sideBearing, top, run.layout().width(), lineHeight);
+        } else if (overlay) {
+            gc.clearRect(run.layout().x(), top, run.layout().width() + (sideBearing * 2), lineHeight);
+        }
+        if (selection.started()) selection.draw(gc, run, top, sideBearing);
+
+        if (run.style().font() instanceof Font font) gc.setFont(font);
+        if (run.style().color() instanceof Color color) gc.setFill(color);
+        gc.fillText(run.text(), run.layout().x() + sideBearing, top + run.baseline());
     }
 
     public void draw(GraphicsContext gc, Rect rect) {
