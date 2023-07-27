@@ -25,7 +25,8 @@ import com.mammb.code.editor2.model.edit.impl.*;
 public sealed interface Edit extends TextTranslate
         permits InsertEdit, DeleteEdit,
             BsInsertEdit, BsDeleteEdit,
-            ReplaceEdit, CompoundEdit, EmptyEdit {
+            ReplaceEdit, CompoundEdit,
+            FlushInsertEdit, EmptyEdit {
 
     /** The empty edit. */
     Edit empty = new EmptyEdit();
@@ -98,6 +99,15 @@ public sealed interface Edit extends TextTranslate
         return new InsertEdit(point, text, System.currentTimeMillis());
     }
 
+    /**
+     * Create the flush insertion edit.
+     * @param point the offset point text
+     * @param text the insertion text
+     * @return the flush insertion edit
+     */
+    static Edit insertFlush(OffsetPoint point, String text) {
+        return new FlushInsertEdit(point, text, System.currentTimeMillis());
+    }
 
     /**
      * Create the deletion edit.

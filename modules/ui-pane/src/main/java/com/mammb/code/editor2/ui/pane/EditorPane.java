@@ -211,6 +211,7 @@ public class EditorPane extends StackPane {
         } else {
             editorModel.imeOff();
         }
+        editorModel.draw(gc);
     }
 
     private void tick() {
@@ -226,7 +227,7 @@ public class EditorPane extends StackPane {
         return new InputMethodRequests() {
             @Override
             public Point2D getTextLocation(int offset) {
-                var rect = editorModel.imeOn();
+                var rect = editorModel.imeOn(gc);
                 return localToScreen(rect.x(), rect.y() + rect.h());
             }
             @Override

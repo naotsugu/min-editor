@@ -17,47 +17,44 @@ package com.mammb.code.editor2.ui.pane.impl;
 
 import com.mammb.code.editor2.model.layout.LineLayout;
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.ui.pane.ImeDispose;
+import com.mammb.code.editor2.ui.pane.ImePallet;
+import com.mammb.code.editor2.ui.pane.LayoutLine;
 
 import java.util.Objects;
 
 /**
- * ImeDisposeImpl.
+ * ImePalletImpl.
  * @author Naotsugu Kobayashi
  */
-public class ImeDisposeImpl implements ImeDispose {
+public class ImePalletImpl implements ImePallet {
 
-    private OffsetPoint point;
-
-    private LineLayout layout;
+    private OffsetPoint offsetPoint;
 
     private String fragments = "";
 
-
-    public ImeDisposeImpl() {
+    public ImePalletImpl() {
     }
 
     @Override
-    public void on(OffsetPoint offsetPoint, LineLayout layout) {
-        this.point = Objects.requireNonNull(offsetPoint);
-        this.layout = Objects.requireNonNull(layout);
+    public void on(OffsetPoint offsetPoint) {
+        this.offsetPoint = Objects.requireNonNull(offsetPoint);
     }
 
     @Override
     public void off() {
-        point = null;
-        layout = null;
+        offsetPoint = null;
         fragments = "";
     }
 
     @Override
-    public void compose(String text) {
+    public LayoutLine compose(String text) {
         fragments = text;
+        return null;
     }
 
     @Override
     public boolean enabled() {
-        return point != null;
+        return offsetPoint != null;
     }
 
 }

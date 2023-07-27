@@ -16,7 +16,6 @@
 package com.mammb.code.editor2.model.edit;
 
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 /**
  * The edit queue.
@@ -42,12 +41,6 @@ public interface EditQueue {
      * @param action the action
      */
     void peekEach(Consumer<Edit> action);
-
-    /**
-     * Get a sequential {@code Stream} with this collection as its edit.
-     * @return a sequential {@code Stream} over the elements in this collection
-     */
-    Stream<Edit> stream();
 
     /**
      * Clear edit queue.

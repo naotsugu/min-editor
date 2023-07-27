@@ -15,20 +15,19 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
-import com.mammb.code.editor2.model.layout.LineLayout;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 
 /**
- * ImeDispose.
+ * ImePallet.
  * @author Naotsugu Kobayashi
  */
-public interface ImeDispose {
+public interface ImePallet {
 
-    void on(OffsetPoint offsetPoint, LineLayout layout);
+    void on(OffsetPoint point);
 
     void off();
 
-    void compose(String text);
+    LayoutLine compose(String text);
 
     boolean enabled();
 

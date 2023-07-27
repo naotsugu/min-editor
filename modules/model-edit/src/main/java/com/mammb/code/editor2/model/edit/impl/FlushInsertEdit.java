@@ -21,13 +21,13 @@ import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 
 /**
- * Backspace undo insert Edit.
+ * FlushInsertEdit.
  * @param point the offset point of edit.
  * @param text the deletion text
  * @param occurredOn the occurredOn.
  * @author Naotsugu Kobayashi
  */
-public record BsInsertEdit(
+public record FlushInsertEdit(
     OffsetPoint point,
     String text,
     long occurredOn) implements Edit {
@@ -39,48 +39,31 @@ public record BsInsertEdit(
 
     @Override
     public Edit flip() {
-        return new BsDeleteEdit(point, text, occurredOn);
+        return Edit.empty;
     }
 
     @Override
     public void apply(EditTo editTo) {
-        editTo.insert(point, text);
-    }
-
-    @Override
-    public boolean canMerge(Edit other) {
-        if (other instanceof EmptyEdit) {
-            return true;
-        }
-        if (other.occurredOn() - occurredOn > 2000) {
-            return false;
-        }
-        return (other instanceof BsInsertEdit insert) &&
-            point.offset() + text.length() == insert.point().offset();
-    }
-
-
-    @Override
-    public Edit merge(Edit other) {
-        if (other instanceof EmptyEdit) {
-            return this;
-        }
-
-        BsInsertEdit insert = (BsInsertEdit) other;
-        return new InsertEdit(
-            point,
-            text + insert.text(),
-            other.occurredOn());
-    }
-
-    @Override
-    public boolean acrossRows() {
-        return text.indexOf('\n') > -1;
     }
 
     @Override
     public Textual applyTo(Textual textual) {
         return new InsertEdit(point, text, occurredOn).applyTo(textual);
+    }
+
+    @Override
+    public boolean canMerge(Edit other) {
+        return false;
+    }
+
+    @Override
+    public Edit merge(Edit other) {
+        return other;
+    }
+
+    @Override
+    public boolean acrossRows() {
+        return false;
     }
 
 }

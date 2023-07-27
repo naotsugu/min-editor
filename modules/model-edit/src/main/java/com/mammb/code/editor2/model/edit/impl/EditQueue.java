@@ -17,12 +17,12 @@ package com.mammb.code.editor2.model.edit.impl;
 
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditListener;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 /**
  * EditQueueImpl.
@@ -92,12 +92,6 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
 
 
     @Override
-    public Stream<Edit> stream() {
-        return deque.stream();
-    }
-
-
-    @Override
     public void clear() {
         flush();
         undo.clear();
@@ -121,6 +115,7 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
     public void flush() {
         while (!deque.isEmpty()) {
             Edit edit = deque.pop();
+            if (edit == Edit.empty) continue;
             listeners.forEach(l -> l.handle(edit));
             undo.push(edit.flip());
             redo.clear();

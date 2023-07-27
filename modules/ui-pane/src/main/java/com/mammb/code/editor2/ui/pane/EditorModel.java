@@ -25,7 +25,7 @@ import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.ui.pane.impl.Clipboard;
-import com.mammb.code.editor2.ui.pane.impl.ImeDisposeImpl;
+import com.mammb.code.editor2.ui.pane.impl.ImePalletImpl;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -56,7 +56,7 @@ public class EditorModel {
     /** The selection. */
     private final Selection selection;
     /** The ime. */
-    private final ImeDispose ime;
+    private final ImePallet ime;
     /** The text list. */
     private TextList texts;
 
@@ -82,7 +82,7 @@ public class EditorModel {
         this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
         this.caret = new Caret(texts::layoutLine, sideBearing);
         this.selection = new SelectionImpl();
-        this.ime = new ImeDisposeImpl();
+        this.ime = new ImePalletImpl();
         this.width = width;
         this.height = height;
     }
@@ -105,7 +105,11 @@ public class EditorModel {
             }
             offsetY += line.leadingHeight();
         }
-        caret.draw(gc);
+        if (ime.enabled()) {
+
+        } else {
+            caret.draw(gc);
+        }
         gc.restore();
     }
 
@@ -162,6 +166,7 @@ public class EditorModel {
     }
 
     public void tick(GraphicsContext gc) {
+        if (ime.enabled()) return;
         if (caret.drawn()) {
             Rect rect = caret.clear(gc);
             draw(gc, rect);
@@ -171,9 +176,10 @@ public class EditorModel {
     }
 
     // -- ime behavior  ----------------------------------------------------
-    public Rect imeOn() {
+    public Rect imeOn(GraphicsContext gc) {
         scrollToCaret();
-        ime.on(caret.offsetPoint(), texts.lineLayout());
+        ime.on(caret.offsetPoint());
+        draw(gc, caret.clear(gc));
         return new Rect(caret.x(), caret.y(), caret.width(), caret.height());
     }
     public void imeOff() {
@@ -184,7 +190,9 @@ public class EditorModel {
         input(text);
     }
     public void imeComposed(String text) {
-        ime.compose(text);
+        OffsetPoint caretPoint = caret.offsetPoint();
+        buffer.push(Edit.insertFlush(caretPoint, text));
+        texts.markDirty();
     }
     // -- scroll behavior  ----------------------------------------------------
     public int scrollPrev(int n) {
