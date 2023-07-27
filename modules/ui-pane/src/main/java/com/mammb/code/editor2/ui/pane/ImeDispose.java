@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.layout.LineLayout;
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.ui.pane.impl.ImeDisposeImpl;
 
 /**
  * ImeDispose.
@@ -24,13 +24,11 @@ import com.mammb.code.editor2.ui.pane.impl.ImeDisposeImpl;
  */
 public interface ImeDispose {
 
-    /**
-     * Create a {@link ImeDispose}.
-     * @param offsetPoint the offsetPoint
-     * @return a {@link ImeDispose}
-     */
-    static ImeDispose of(OffsetPoint offsetPoint) {
-        return new ImeDisposeImpl(offsetPoint);
-    }
+    void on(OffsetPoint offsetPoint, LineLayout layout);
 
+    void off();
+
+    void commit(String text);
+
+    void compose(String text);
 }

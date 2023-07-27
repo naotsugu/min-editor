@@ -15,8 +15,11 @@
  */
 package com.mammb.code.editor2.ui.pane.impl;
 
+import com.mammb.code.editor2.model.layout.LineLayout;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.ui.pane.ImeDispose;
+
+import java.util.Objects;
 
 /**
  * ImeDisposeImpl.
@@ -26,9 +29,30 @@ public class ImeDisposeImpl implements ImeDispose {
 
     private OffsetPoint offsetPoint;
 
-    public ImeDisposeImpl(OffsetPoint offsetPoint) {
-        this.offsetPoint = offsetPoint;
+    private LineLayout layout;
+
+    public ImeDisposeImpl() {
     }
 
+    @Override
+    public void on(OffsetPoint offsetPoint, LineLayout layout) {
+        this.offsetPoint = Objects.requireNonNull(offsetPoint);
+        this.layout = Objects.requireNonNull(layout);
+    }
+
+    @Override
+    public void off() {
+
+    }
+
+    @Override
+    public void commit(String text) {
+
+    }
+
+    @Override
+    public void compose(String text) {
+
+    }
 
 }

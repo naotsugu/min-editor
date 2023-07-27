@@ -19,6 +19,7 @@ import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
 import com.mammb.code.editor.javafx.layout.SpanTranslate;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.layout.LayoutWrapTranslate;
+import com.mammb.code.editor2.model.layout.LineLayout;
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
@@ -40,6 +41,8 @@ public class WrapTextList implements TextList {
     private final Translate<Textual, List<TextLine>> translator;
     /** The styling. */
     private final Translate<Textual, StyledText> styling;
+    /** The LineLayout. */
+    private final LineLayout layout = new FxLayoutBuilder();
 
     /** The lines maybe wrapped. */
     private final List<TextLine> lines = new LinkedList<>();
@@ -68,7 +71,7 @@ public class WrapTextList implements TextList {
             double wrapWidth) {
         this.editBuffer = editBuffer;
         this.styling = styling;
-        this.translator = translator(wrapWidth, styling);
+        this.translator = translator(layout, wrapWidth, styling);
     }
 
 
@@ -204,9 +207,14 @@ public class WrapTextList implements TextList {
         return editBuffer.maxLineSize();
     }
 
+    @Override
+    public LineLayout lineLayout() {
+        return layout;
+    }
+
+
     private static Translate<Textual, List<TextLine>> translator(
-        double wrapWidth, Translate<Textual, StyledText> styling) {
-        FxLayoutBuilder layout = new FxLayoutBuilder(wrapWidth);
+            LineLayout layout, double wrapWidth, Translate<Textual, StyledText> styling) {
         return styling.compound(SpanTranslate.of())
             .compound(LayoutWrapTranslate.of(layout));
     }

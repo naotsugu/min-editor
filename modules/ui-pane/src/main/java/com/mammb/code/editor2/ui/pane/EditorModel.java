@@ -25,6 +25,7 @@ import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.ui.pane.impl.Clipboard;
+import com.mammb.code.editor2.ui.pane.impl.ImeDisposeImpl;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -53,6 +54,8 @@ public class EditorModel {
     private final Caret caret;
     /** The selection. */
     private final Selection selection;
+    /** The ime. */
+    private final ImeDispose ime;
     /** The text list. */
     private TextList texts;
 
@@ -78,6 +81,7 @@ public class EditorModel {
         this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
         this.caret = new Caret(texts::layoutLine, sideBearing);
         this.selection = new SelectionImpl();
+        this.ime = new ImeDisposeImpl();
         this.width = width;
         this.height = height;
     }
@@ -175,15 +179,18 @@ public class EditorModel {
     // -- ime behavior  ----------------------------------------------------
     public Rect imeOn() {
         scrollToCaret();
+        ime.on(caret.offsetPoint(), texts.lineLayout());
         return new Rect(caret.x(), caret.y(), caret.width(), caret.height());
     }
     public void imeOff() {
+        ime.off();
     }
     public void imeCommitted(String text) {
+        ime.commit(text);
     }
     public void imeComposed(String text) {
+        ime.compose(text);
     }
-
     // -- scroll behavior  ----------------------------------------------------
     public int scrollPrev(int n) {
         int size = texts.prev(n);
