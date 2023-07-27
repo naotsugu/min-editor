@@ -28,7 +28,8 @@ public interface ImeDispose {
 
     void off();
 
-    void commit(String text);
-
     void compose(String text);
+
+    boolean enabled();
+
 }

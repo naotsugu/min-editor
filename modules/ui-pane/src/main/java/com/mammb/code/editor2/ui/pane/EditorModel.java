@@ -186,7 +186,8 @@ public class EditorModel {
         ime.off();
     }
     public void imeCommitted(String text) {
-        ime.commit(text);
+        ime.off();
+        input(text);
     }
     public void imeComposed(String text) {
         ime.compose(text);

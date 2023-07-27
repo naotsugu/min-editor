@@ -205,7 +205,6 @@ public class EditorPane extends StackPane {
         if (event.getCommitted().length() > 0) {
             editorModel.imeCommitted(event.getCommitted());
         } else if (!event.getComposed().isEmpty()) {
-            event.getComposed().forEach(System.out::println);
             editorModel.imeComposed(event.getComposed().stream()
                 .map(InputMethodTextRun::getText)
                 .collect(Collectors.joining()));

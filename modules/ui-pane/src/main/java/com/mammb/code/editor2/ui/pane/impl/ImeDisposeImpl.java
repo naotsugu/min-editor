@@ -27,32 +27,37 @@ import java.util.Objects;
  */
 public class ImeDisposeImpl implements ImeDispose {
 
-    private OffsetPoint offsetPoint;
+    private OffsetPoint point;
 
     private LineLayout layout;
+
+    private String fragments = "";
+
 
     public ImeDisposeImpl() {
     }
 
     @Override
     public void on(OffsetPoint offsetPoint, LineLayout layout) {
-        this.offsetPoint = Objects.requireNonNull(offsetPoint);
+        this.point = Objects.requireNonNull(offsetPoint);
         this.layout = Objects.requireNonNull(layout);
     }
 
     @Override
     public void off() {
-
-    }
-
-    @Override
-    public void commit(String text) {
-
+        point = null;
+        layout = null;
+        fragments = "";
     }
 
     @Override
     public void compose(String text) {
+        fragments = text;
+    }
 
+    @Override
+    public boolean enabled() {
+        return point != null;
     }
 
 }
