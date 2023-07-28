@@ -65,14 +65,14 @@ public class ImePalletImpl implements ImePallet {
     }
 
     @Override
-    public void drawComposedMark(GraphicsContext gc, TextRun textRun, double lineHeight) {
+    public void drawCompose(GraphicsContext gc, TextRun textRun, double bottom, double sideBearing) {
         for (Run composedRun : runs) {
             int start = offsetPoint.offset() + composedRun.offset();
             int end = start + composedRun.length();
             if (start < textRun.tailOffset() && textRun.offset() <= end) {
-                double x1 = textRun.offsetToX().apply(Math.max(start, textRun.offset()));
-                double x2 = textRun.offsetToX().apply(Math.min(end, textRun.tailOffset()));
-                double y = textRun.y() + lineHeight - width - width;
+                double x1 = textRun.offsetToX().apply(Math.max(start, textRun.offset()) - textRun.offset()) + sideBearing;
+                double x2 = textRun.offsetToX().apply(Math.min(end, textRun.tailOffset()) - textRun.offset()) + sideBearing;
+                double y = bottom - width - width;
                 gc.setLineDashes(composedRun.type().ordinal());
                 gc.setLineWidth(width);
                 gc.strokeLine(x1, y, x2, y);

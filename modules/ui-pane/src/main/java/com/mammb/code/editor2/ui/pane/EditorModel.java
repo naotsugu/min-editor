@@ -159,7 +159,7 @@ public class EditorModel {
         if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
         gc.fillText(run.text(), run.layout().x() + sideBearing, top + run.baseline());
 
-        if (ime.enabled()) ime.drawComposedMark(gc, run, lineHeight);
+        if (ime.enabled()) ime.drawCompose(gc, run, top + lineHeight, sideBearing);
     }
 
     public void draw(GraphicsContext gc, Rect rect) {
