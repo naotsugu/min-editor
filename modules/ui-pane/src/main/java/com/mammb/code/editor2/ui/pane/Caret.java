@@ -120,7 +120,7 @@ public class Caret {
             row = 0;
             dirty = true;
         } else {
-            x = (layoutLine.length() == 0) ? 0 : layoutLine.offsetToX(offset);
+            x = (layoutLine.isEmpty()) ? 0 : layoutLine.offsetToX(offset);
             y = layoutLine.offsetY();
             line = layoutLine;
             row = layoutLine.point().row();

@@ -15,7 +15,11 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.model.text.Textual;
+
+import java.util.List;
 
 /**
  * ImePallet.
@@ -27,8 +31,26 @@ public interface ImePallet {
 
     void off();
 
-    LayoutLine compose(String text);
-
     boolean enabled();
 
+    void composed(TextBuffer<Textual> buffer, List<Run> runs);
+
+
+    /** The Ime run. */
+    record Run(int offset, String text, RunType type) {
+        public int length() { return text.length(); }
+    }
+
+    /** The RunType. */
+    enum RunType {
+        /** The unselected raw input method text. */
+        UNSELECTED_RAW,
+        /** The selected raw input method text. */
+        SELECTED_RAW,
+        /** The unselected converted input method text. */
+        UNSELECTED_CONVERTED,
+        /** The selected converted input method text. */
+        SELECTED_CONVERTED
+
+    }
 }

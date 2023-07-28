@@ -15,12 +15,15 @@
  */
 package com.mammb.code.editor2.ui.pane.impl;
 
-import com.mammb.code.editor2.model.layout.LineLayout;
+import com.mammb.code.editor2.model.buffer.TextBuffer;
+import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.ui.pane.ImePallet;
-import com.mammb.code.editor2.ui.pane.LayoutLine;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * ImePalletImpl.
@@ -30,7 +33,7 @@ public class ImePalletImpl implements ImePallet {
 
     private OffsetPoint offsetPoint;
 
-    private String fragments = "";
+    private List<Run> runs;
 
     public ImePalletImpl() {
     }
@@ -43,18 +46,22 @@ public class ImePalletImpl implements ImePallet {
     @Override
     public void off() {
         offsetPoint = null;
-        fragments = "";
-    }
-
-    @Override
-    public LayoutLine compose(String text) {
-        fragments = text;
-        return null;
+        runs = null;
     }
 
     @Override
     public boolean enabled() {
         return offsetPoint != null;
+    }
+
+    @Override
+    public void composed(TextBuffer<Textual> buffer, List<Run> runs) {
+        this.runs = runs;
+        buffer.push(Edit.insertFlush(offsetPoint, composedText()));
+    }
+
+    private String composedText() {
+        return (runs == null) ? "" : runs.stream().map(Run::text).collect(Collectors.joining());
     }
 
 }

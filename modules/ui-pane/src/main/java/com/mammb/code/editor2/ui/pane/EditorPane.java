@@ -23,7 +23,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.InputMethodRequests;
-import javafx.scene.input.InputMethodTextRun;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -34,7 +33,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 /**
  * EditorPane.
@@ -205,9 +204,18 @@ public class EditorPane extends StackPane {
         if (!event.getCommitted().isEmpty()) {
             editorModel.imeCommitted(event.getCommitted());
         } else if (!event.getComposed().isEmpty()) {
-            editorModel.imeComposed(event.getComposed().stream()
-                .map(InputMethodTextRun::getText)
-                .collect(Collectors.joining()));
+            if (!editorModel.isImeOn()) editorModel.imeOn(gc);
+            var runs = new ArrayList<ImePallet.Run>();
+            int offset = 0;
+            for (var run : event.getComposed()) {
+                var r = new ImePallet.Run(
+                    offset,
+                    run.getText(),
+                    ImePallet.RunType.valueOf(run.getHighlight().name()));
+                runs.add(r);
+                offset += r.length();
+            }
+            editorModel.imeComposed(runs);
         } else {
             editorModel.imeOff();
         }

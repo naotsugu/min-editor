@@ -177,6 +177,7 @@ public class EditorModel {
 
     // -- ime behavior  ----------------------------------------------------
     public Rect imeOn(GraphicsContext gc) {
+        if (ime.enabled()) new Rect(caret.x(), caret.y(), caret.width(), caret.height());
         scrollToCaret();
         ime.on(caret.offsetPoint());
         draw(gc, caret.clear(gc));
@@ -189,11 +190,14 @@ public class EditorModel {
         ime.off();
         input(text);
     }
-    public void imeComposed(String text) {
-        OffsetPoint caretPoint = caret.offsetPoint();
-        buffer.push(Edit.insertFlush(caretPoint, text));
+    public void imeComposed(List<ImePallet.Run> runs) {
+        ime.composed(buffer, runs);
         texts.markDirty();
     }
+    public boolean isImeOn() {
+        return ime.enabled();
+    }
+
     // -- scroll behavior  ----------------------------------------------------
     public int scrollPrev(int n) {
         int size = texts.prev(n);
