@@ -79,6 +79,7 @@ public class Caret {
         double y1 = y + 1;
         double x2 = x1;
         double y2 = y + line.height() - 1;
+        gc.setLineDashes(0);
         gc.setStroke(Color.ORANGE);
         gc.setLineWidth(width);
         gc.strokeLine(x1, y1, x2, y2);

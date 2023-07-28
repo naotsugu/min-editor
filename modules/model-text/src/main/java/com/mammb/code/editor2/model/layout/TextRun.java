@@ -106,6 +106,14 @@ public interface TextRun {
     }
 
     /**
+     * Get the tail offset char index.
+     * @return the tail offset char index
+     */
+    default int tailOffset() {
+        return offset() + length();
+    }
+
+    /**
      * Get the code point offset corresponding to the specified offset.
      * @param offset the specified offset
      * @return the code point offset corresponding to the specified offset

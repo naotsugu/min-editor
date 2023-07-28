@@ -235,7 +235,7 @@ public class EditorPane extends StackPane {
             @Override
             public Point2D getTextLocation(int offset) {
                 var rect = editorModel.imeOn(gc);
-                return localToScreen(rect.x(), rect.y() + rect.h());
+                return localToScreen(rect.x(), rect.y() + rect.h() + 5);
             }
             @Override
             public void cancelLatestCommittedText() {

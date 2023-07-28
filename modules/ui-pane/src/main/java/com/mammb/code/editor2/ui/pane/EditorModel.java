@@ -156,8 +156,10 @@ public class EditorModel {
         if (selection.started()) selection.draw(gc, run, top, sideBearing);
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
-        if (run.style().color() instanceof Color color) gc.setFill(color);
+        if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
         gc.fillText(run.text(), run.layout().x() + sideBearing, top + run.baseline());
+
+        if (ime.enabled()) ime.drawComposedMark(gc, run, lineHeight);
     }
 
     public void draw(GraphicsContext gc, Rect rect) {

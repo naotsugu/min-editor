@@ -16,8 +16,10 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.buffer.TextBuffer;
+import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
+import javafx.scene.canvas.GraphicsContext;
 
 import java.util.List;
 
@@ -35,6 +37,7 @@ public interface ImePallet {
 
     void composed(TextBuffer<Textual> buffer, List<Run> runs);
 
+    void drawComposedMark(GraphicsContext gc, TextRun run, double lineHeight);
 
     /** The Ime run. */
     record Run(int offset, String text, RunType type) {
@@ -43,14 +46,13 @@ public interface ImePallet {
 
     /** The RunType. */
     enum RunType {
-        /** The unselected raw input method text. */
-        UNSELECTED_RAW,
-        /** The selected raw input method text. */
-        SELECTED_RAW,
+        /** The selected converted input method text. */
+        SELECTED_CONVERTED,
         /** The unselected converted input method text. */
         UNSELECTED_CONVERTED,
-        /** The selected converted input method text. */
-        SELECTED_CONVERTED
-
+        /** The selected raw input method text. */
+        SELECTED_RAW,
+        /** The unselected raw input method text. */
+        UNSELECTED_RAW,
     }
 }

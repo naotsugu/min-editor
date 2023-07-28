@@ -17,9 +17,11 @@ package com.mammb.code.editor2.ui.pane.impl;
 
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.ui.pane.ImePallet;
+import javafx.scene.canvas.GraphicsContext;
 
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +35,9 @@ public class ImePalletImpl implements ImePallet {
 
     private OffsetPoint offsetPoint;
 
-    private List<Run> runs;
+    private List<Run> runs = List.of();
+
+    private static final double width = 1.0;
 
     public ImePalletImpl() {
     }
@@ -46,7 +50,7 @@ public class ImePalletImpl implements ImePallet {
     @Override
     public void off() {
         offsetPoint = null;
-        runs = null;
+        runs = List.of();
     }
 
     @Override
@@ -58,6 +62,21 @@ public class ImePalletImpl implements ImePallet {
     public void composed(TextBuffer<Textual> buffer, List<Run> runs) {
         this.runs = runs;
         buffer.push(Edit.insertFlush(offsetPoint, composedText()));
+    }
+
+    @Override
+    public void drawComposedMark(GraphicsContext gc, TextRun textRun, double lineHeight) {
+        for (Run composedRun : runs) {
+            int start = offsetPoint.offset() + composedRun.offset();
+            int end = start + composedRun.length();
+            if (start < textRun.tailOffset() && textRun.offset() <= end) {
+                double x1 = textRun.offsetToX().apply(Math.max(start, textRun.offset()));
+                double x2 = textRun.offsetToX().apply(Math.min(end, textRun.tailOffset()));
+                gc.setLineDashes(composedRun.type().ordinal());
+                gc.setLineWidth(width);
+                gc.strokeLine(x1, textRun.y() + lineHeight - width, x2, textRun.y() + lineHeight - width);
+            }
+        }
     }
 
     private String composedText() {
