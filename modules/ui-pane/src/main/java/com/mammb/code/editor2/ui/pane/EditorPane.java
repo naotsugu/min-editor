@@ -59,10 +59,10 @@ public class EditorPane extends StackPane {
         double canvasHeight = height - margin;
         editorModel = new EditorModel(canvasWidth, canvasHeight);
         canvas = new Canvas(canvasWidth, canvasHeight);
+        canvas.setFocusTraversable(true);
         canvas.setLayoutX(margin);
         canvas.setLayoutY(margin);
         gc = canvas.getGraphicsContext2D();
-        setFocusTraversable(true);
         setAccessibleRole(AccessibleRole.TEXT_AREA);
         initHandler();
         getChildren().add(canvas);
@@ -84,8 +84,8 @@ public class EditorPane extends StackPane {
         setOnMouseClicked(this::handleMouseClicked);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
-        setInputMethodRequests(inputMethodRequests());
-        setOnInputMethodTextChanged(this::handleInputMethod);
+        canvas.setInputMethodRequests(inputMethodRequests());
+        canvas.setOnInputMethodTextChanged(this::handleInputMethod);
     }
 
 
@@ -96,8 +96,8 @@ public class EditorPane extends StackPane {
     public void open(Path path) {
         editorModel = new EditorModel(getWidth(), getHeight(), path);
         editorModel.draw(gc);
-        requestFocus();
     }
+
     private void openChoose() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Select file...");
@@ -184,7 +184,7 @@ public class EditorPane extends StackPane {
         if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
             e.getCode().isArrowKey() || e.getCode().isModifierKey() ||
             e.getCode().isMediaKey() || !Keys.controlKeysFilter.test(e) ||
-            e.getCharacter().length() == 0) {
+            e.getCharacter().isEmpty()) {
             return;
         }
 
@@ -202,7 +202,7 @@ public class EditorPane extends StackPane {
     }
 
     public void handleInputMethod(InputMethodEvent event) {
-        if (event.getCommitted().length() > 0) {
+        if (!event.getCommitted().isEmpty()) {
             editorModel.imeCommitted(event.getCommitted());
         } else if (!event.getComposed().isEmpty()) {
             editorModel.imeComposed(event.getComposed().stream()
@@ -216,7 +216,6 @@ public class EditorPane extends StackPane {
 
     private void tick() {
         editorModel.tick(gc);
-        requestFocus();
     }
 
     /**
