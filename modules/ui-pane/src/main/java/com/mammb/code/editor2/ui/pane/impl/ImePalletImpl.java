@@ -72,9 +72,10 @@ public class ImePalletImpl implements ImePallet {
             if (start < textRun.tailOffset() && textRun.offset() <= end) {
                 double x1 = textRun.offsetToX().apply(Math.max(start, textRun.offset()));
                 double x2 = textRun.offsetToX().apply(Math.min(end, textRun.tailOffset()));
+                double y = textRun.y() + lineHeight - width - width;
                 gc.setLineDashes(composedRun.type().ordinal());
                 gc.setLineWidth(width);
-                gc.strokeLine(x1, textRun.y() + lineHeight - width, x2, textRun.y() + lineHeight - width);
+                gc.strokeLine(x1, y, x2, y);
             }
         }
     }
