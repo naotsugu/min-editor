@@ -53,6 +53,11 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
     void push(Edit edit);
 
     /**
+     * Flush.
+     */
+    void flush();
+
+    /**
      * Undo.
      * @return the undone edit.
      */

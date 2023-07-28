@@ -37,7 +37,7 @@ public interface ImePallet {
 
     void composed(TextBuffer<Textual> buffer, List<Run> runs);
 
-    void drawCompose(GraphicsContext gc, TextRun run, double bottom, double sideBearing);
+    void drawCompose(GraphicsContext gc, TextRun run, double top, double height, double sideBearing);
 
     /** The Ime run. */
     record Run(int offset, String text, RunType type) {

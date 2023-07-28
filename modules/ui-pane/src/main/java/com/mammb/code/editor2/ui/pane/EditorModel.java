@@ -153,13 +153,18 @@ public class EditorModel {
         } else if (overlay) {
             gc.clearRect(run.layout().x(), top, run.layout().width() + (sideBearing * 2), lineHeight);
         }
-        if (selection.started()) selection.draw(gc, run, top, sideBearing);
+
+        if (selection.started()) {
+            selection.draw(gc, run, top, sideBearing);
+        }
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
         if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
         gc.fillText(run.text(), run.layout().x() + sideBearing, top + run.baseline());
 
-        if (ime.enabled()) ime.drawCompose(gc, run, top + lineHeight, sideBearing);
+        if (ime.enabled()) {
+            ime.drawCompose(gc, run, top, lineHeight, sideBearing);
+        }
     }
 
     public void draw(GraphicsContext gc, Rect rect) {
@@ -187,6 +192,7 @@ public class EditorModel {
     }
     public void imeOff() {
         ime.off();
+        buffer.flush();
     }
     public void imeCommitted(String text) {
         ime.off();

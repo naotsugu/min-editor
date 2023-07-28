@@ -75,17 +75,16 @@ public class Caret {
      */
     public void draw(GraphicsContext gc) {
         if (ensureLayout() == null) return;
-        double x1 = x + sideBearing;
-        double y1 = y + 1;
-        double x2 = x1;
-        double y2 = y + line.height() - 1;
-        gc.setLineDashes(0);
-        gc.setStroke(Color.ORANGE);
-        gc.setLineWidth(width);
-        gc.strokeLine(x1, y1, x2, y2);
+        drawCaretAt(gc, x, y, line.height());
         drawn = true;
     }
 
+    private void drawCaretAt(GraphicsContext gc, double x, double top, double height) {
+        gc.setLineDashes(0);
+        gc.setStroke(Color.ORANGE);
+        gc.setLineWidth(width);
+        gc.strokeLine(x + sideBearing, top + 1, x + sideBearing, top + height - 1);
+    }
 
     /**
      * Clear.

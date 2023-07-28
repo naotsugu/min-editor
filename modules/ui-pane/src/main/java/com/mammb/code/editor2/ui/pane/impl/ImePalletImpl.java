@@ -22,6 +22,7 @@ import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.ui.pane.ImePallet;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import java.util.List;
 import java.util.Objects;
@@ -65,19 +66,31 @@ public class ImePalletImpl implements ImePallet {
     }
 
     @Override
-    public void drawCompose(GraphicsContext gc, TextRun textRun, double bottom, double sideBearing) {
+    public void drawCompose(GraphicsContext gc, TextRun textRun, double top, double height, double sideBearing) {
+        double right = -1;
         for (Run composedRun : runs) {
             int start = offsetPoint.offset() + composedRun.offset();
             int end = start + composedRun.length();
             if (start < textRun.tailOffset() && textRun.offset() <= end) {
                 double x1 = textRun.offsetToX().apply(Math.max(start, textRun.offset()) - textRun.offset()) + sideBearing;
                 double x2 = textRun.offsetToX().apply(Math.min(end, textRun.tailOffset()) - textRun.offset()) + sideBearing;
-                double y = bottom - width - width;
+                double bottom = top + height - width - width;
                 gc.setLineDashes(composedRun.type().ordinal());
                 gc.setLineWidth(width);
-                gc.strokeLine(x1, y, x2, y);
+                gc.strokeLine(x1, bottom, x2, bottom);
+                right = x2;
             }
         }
+        if (right > 0) {
+            gc.setLineDashes(0);
+            gc.setStroke(Color.ORANGE);
+            gc.setLineWidth(2);
+            gc.strokeLine(right, top + 1, right, top + height - 1);
+        }
+    }
+
+    public int tailOffset() {
+        return offsetPoint.offset() + composedText().length();
     }
 
     private String composedText() {

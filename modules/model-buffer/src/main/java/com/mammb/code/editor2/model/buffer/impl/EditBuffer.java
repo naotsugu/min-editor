@@ -87,6 +87,11 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public void flush() {
+        editQueue.flush();
+    }
+
+    @Override
     public Edit undo() {
         return editQueue.undo();
     }
