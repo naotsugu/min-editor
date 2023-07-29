@@ -69,7 +69,7 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
             deque.removeLast();
             edit = last.merge(edit);
         }
-        if (deque.size() > 0) {
+        if (!deque.isEmpty()) {
             flush();
         }
         deque.push(edit);

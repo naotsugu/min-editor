@@ -120,7 +120,7 @@ public interface TextRun {
      */
     default int cpOffset(int offset) {
         return source().point().cpOffset() +
-            Character.codePointCount(source().text(), 0, offset - offset());
+            Character.codePointCount(source().text(), 0, offset - source().offset());
     }
 
     /**
