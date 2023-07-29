@@ -119,6 +119,11 @@ public interface TextLine extends Textual {
      */
     default String charStringAt(int offset) {
         char ch = charAt(offset);
+        if (ch == '\r' && offset < tailOffset() - 1 && charAt(offset + 1) == '\n') {
+            return "\r\n";
+        } else if (ch == '\n' && offset > point().offset() && charAt(offset - 1) == '\r') {
+            return "\r\n";
+        }
         return Character.isHighSurrogate(ch)
             ? String.valueOf(new char[] {ch, charAt(offset + 1)})
             : Character.isLowSurrogate(ch)
