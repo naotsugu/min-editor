@@ -89,10 +89,6 @@ public class ImePalletImpl implements ImePallet {
         }
     }
 
-    public int tailOffset() {
-        return offsetPoint.offset() + composedText().length();
-    }
-
     private String composedText() {
         return (runs == null) ? "" : runs.stream().map(Run::text).collect(Collectors.joining());
     }

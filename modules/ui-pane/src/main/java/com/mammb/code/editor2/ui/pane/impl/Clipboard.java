@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.ui.pane.impl;
 
 import javafx.scene.input.DataFormat;
-import java.util.HashMap;
+
 import java.util.Map;
 
 /**
@@ -33,9 +33,8 @@ public class Clipboard {
         if (text == null || text.isBlank()) {
             return;
         }
-        Map<DataFormat, Object> content = new HashMap<>();
-        content.put(DataFormat.PLAIN_TEXT, text);
-        javafx.scene.input.Clipboard.getSystemClipboard().setContent(content);
+        javafx.scene.input.Clipboard.getSystemClipboard()
+            .setContent(Map.of(DataFormat.PLAIN_TEXT, text));
     }
 
 

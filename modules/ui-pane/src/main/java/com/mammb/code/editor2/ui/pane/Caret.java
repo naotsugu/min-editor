@@ -79,6 +79,11 @@ public class Caret {
         drawn = true;
     }
 
+
+    public void flushDraw(GraphicsContext gc) {
+        drawCaretAt(gc, x, y, line.height());
+    }
+
     private void drawCaretAt(GraphicsContext gc, double x, double top, double height) {
         gc.setLineDashes(0);
         gc.setStroke(Color.ORANGE);
@@ -237,10 +242,16 @@ public class Caret {
         return layoutLine.offsetPoint(offset);
     }
 
+    /**
+     * Get the char offset.
+     * @return the char offset
+     */
     public int offset() {
         return offset;
     }
+
     public int row() { return row; }
+
     public double x() {
         ensureLayout();
         return x;
@@ -253,12 +264,13 @@ public class Caret {
         ensureLayout();
         return y + line.height();
     }
-    public double width() {
-        return width;
-    }
     public double height() {
         ensureLayout();
         return line.height();
+    }
+
+    public double width() {
+        return width;
     }
 
     public boolean drawn() {
