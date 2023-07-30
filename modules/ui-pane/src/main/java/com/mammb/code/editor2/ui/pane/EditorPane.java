@@ -17,6 +17,8 @@ package com.mammb.code.editor2.ui.pane;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.AccessibleRole;
 import javafx.scene.canvas.Canvas;
@@ -85,6 +87,8 @@ public class EditorPane extends StackPane {
         setOnDragDropped(DragDrops.droppedHandler(this::open));
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethod);
+
+        layoutBoundsProperty().addListener(this::layoutBoundsChanged);
     }
 
 
@@ -220,6 +224,27 @@ public class EditorPane extends StackPane {
             editorModel.imeOff();
         }
         editorModel.draw(gc);
+    }
+
+    /**
+     * Called when the value of the layout changes.
+     * @param observable the ObservableValue which value changed
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
+    private void layoutBoundsChanged(
+            ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
+        if (newValue.getWidth() > 0 && newValue.getHeight() > 0 &&
+            (oldValue.getHeight() != newValue.getHeight() || oldValue.getWidth() != newValue.getWidth())) {
+            setWidth(newValue.getWidth());
+            setHeight(newValue.getHeight());
+            double canvasWidth = newValue.getWidth() - margin;
+            double canvasHeight = newValue.getHeight() - margin;
+            canvas.setWidth(canvasWidth);
+            canvas.setHeight(canvasHeight);
+            editorModel.layoutBounds(canvasWidth, canvasHeight);
+            editorModel.draw(gc);
+        }
     }
 
     private void tick() {

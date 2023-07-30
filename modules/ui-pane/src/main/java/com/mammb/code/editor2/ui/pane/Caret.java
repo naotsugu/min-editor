@@ -19,10 +19,11 @@ import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
 import java.lang.System.Logger;
 import java.util.function.Function;
 
-import static java.lang.System.Logger.Level.INFO;
+import static java.lang.System.Logger.Level.DEBUG;
 
 /**
  * Caret.
@@ -282,7 +283,7 @@ public class Caret {
         dirty = false;
         LayoutLine layoutLine = offsetToLine.apply(offset);
         if (layoutLine == null) {
-            log.log(INFO, "offset:{0}", offset);
+            log.log(DEBUG, "offset:{0}", offset);
             x = y = 0;
         } else {
             x = layoutLine.offsetToX(offset);

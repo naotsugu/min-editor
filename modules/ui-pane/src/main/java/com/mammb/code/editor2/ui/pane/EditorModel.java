@@ -47,16 +47,16 @@ public class EditorModel {
 
     /** The text buffer. */
     private final TextBuffer<Textual> buffer;
-    /** The screen width. */
-    private final double width;
-    /** The screen height. */
-    private final double height;
     /** The caret. */
     private final Caret caret;
     /** The selection. */
     private final Selection selection;
     /** The ime. */
     private final ImePallet ime;
+    /** The screen width. */
+    private double width;
+    /** The screen height. */
+    private double height;
     /** The text list. */
     private TextList texts;
 
@@ -374,6 +374,14 @@ public class EditorModel {
     }
     public void saveAs(Path path) {
         buffer.saveAs(path);
+    }
+    // -- layout behavior -----------------------------------------------------
+    public void layoutBounds(double width, double height) {
+        this.width = width;
+        this.height = height;
+        this.buffer.setMaxLineSize(screenRowSize(height));
+        texts.markDirty();
+        caret.markDirty();
     }
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
