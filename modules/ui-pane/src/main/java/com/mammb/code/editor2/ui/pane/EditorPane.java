@@ -32,7 +32,6 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -45,7 +44,9 @@ public class EditorPane extends StackPane {
 
     /** The Canvas. */
     private Canvas canvas;
+    /** The FX GraphicsContext. */
     private GraphicsContext gc;
+    /** The editor model. */
     private EditorModel editorModel;
     double margin = 5.5;
 
@@ -71,7 +72,6 @@ public class EditorPane extends StackPane {
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> tick()));
         timeline.setCycleCount(-1);
         timeline.play();
-
     }
 
 

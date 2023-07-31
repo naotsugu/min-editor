@@ -35,8 +35,12 @@ public class MetricsUtf8 implements Traverse, Metrics {
     private int invalid = 0;
     private int crCount = 0;
     private int lfCount = 0;
-    private Path path = null;
+    private Path path;
 
+
+    public MetricsUtf8(Path path) {
+        this.path = path;
+    }
 
     @Override
     public int accept(byte[] bytes) {
@@ -132,7 +136,7 @@ public class MetricsUtf8 implements Traverse, Metrics {
     }
 
     @Override
-    public int invalid() {
+    public int invalidCpCount() {
         return invalid;
     }
 

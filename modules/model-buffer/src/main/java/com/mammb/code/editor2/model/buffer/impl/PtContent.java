@@ -16,9 +16,9 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.Content;
-import com.mammb.code.editor2.model.text.LineEnding;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.piecetable.PieceTable;
+
 import java.nio.file.Path;
 import java.util.function.Predicate;
 
@@ -31,27 +31,14 @@ public class PtContent implements Content {
     /** The content path. */
     private Path path;
 
-    /** The line ending. */
-    private LineEnding lineEnding;
-
     /** The piece table. */
     private PieceTable pt;
-
 
     /**
      * Constructor.
      */
     public PtContent() {
-        this(LineEnding.platform());
-    }
-
-    /**
-     * Constructor.
-     * @param lineEnding the line ending
-     */
-    public PtContent(LineEnding lineEnding) {
         this.pt = PieceTable.of("");
-        this.lineEnding = lineEnding;
     }
 
     /**
@@ -61,7 +48,6 @@ public class PtContent implements Content {
     public PtContent(Path path) {
         this.pt = PieceTable.of(path);
         this.path = path;
-        this.lineEnding = LineEnding.LF; // TODO
     }
 
     @Override

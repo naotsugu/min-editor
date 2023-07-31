@@ -15,7 +15,12 @@
  */
 package com.mammb.code.editor2.model.buffer;
 
+import com.mammb.code.editor2.model.edit.Edit;
+import com.mammb.code.editor2.model.text.LineEnding;
+
 import java.nio.file.Path;
+
+import static java.lang.System.Logger.Level.WARNING;
 
 /**
  * Metrics.
@@ -23,6 +28,13 @@ import java.nio.file.Path;
  */
 public interface Metrics {
 
+    /** logger. */
+    System.Logger log = System.getLogger(Metrics.class.getName());
+
+    /**
+     * Get the content path.
+     * @return the content path
+     */
     Path path();
 
     long byteLen();
@@ -31,10 +43,31 @@ public interface Metrics {
 
     int chCount();
 
-    int invalid();
+    int invalidCpCount();
 
     int crCount();
 
     int lfCount();
+
+    void apply(Edit edit);
+
+    void setPath(Path pate);
+
+    /**
+     * Get the line ending.
+     * @return the line ending
+     */
+    default LineEnding lineEnding() {
+        if (crCount() == 0 && lfCount() == 0) {
+            return LineEnding.platform();
+        } else if (crCount() == lfCount()) {
+            return LineEnding.CRLF;
+        } else if (crCount() == 0 && lfCount() > 0) {
+            return LineEnding.LF;
+        } else {
+            log.log(WARNING, "inconsistent line breaks. CR[{0}] LF[{1}]", crCount(), lfCount());
+            return LineEnding.platform();
+        }
+    }
 
 }

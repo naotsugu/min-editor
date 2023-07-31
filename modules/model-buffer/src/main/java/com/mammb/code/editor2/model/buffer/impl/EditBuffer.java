@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.Content;
+import com.mammb.code.editor2.model.buffer.Metrics;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditListener;
@@ -25,9 +26,9 @@ import com.mammb.code.editor2.model.edit.EditToListener;
 import com.mammb.code.editor2.model.slice.Slice;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
-
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +46,9 @@ public class EditBuffer implements TextBuffer<Textual> {
     /** The edit queue. */
     private final EditQueue editQueue;
 
+    /** The metrics. */
+    private final Metrics metrics;
+
 
     /**
      * Constructor.
@@ -52,9 +56,10 @@ public class EditBuffer implements TextBuffer<Textual> {
      * @param maxRowSize the row size of slice
      */
     public EditBuffer(Content content, int maxRowSize) {
-        this.content = content;
+        this.content = Objects.requireNonNull(content);
         this.slice = Slice.of(maxRowSize, new RawAdapter(content));
         this.editQueue = EditQueue.of(editTo(content));
+        this.metrics = content.traverseRow(new MetricsUtf8(content.path()));
     }
 
     @Override
@@ -83,6 +88,7 @@ public class EditBuffer implements TextBuffer<Textual> {
     @Override
     public void push(Edit edit) {
         editQueue.push(edit);
+        metrics.apply(edit);
     }
 
     @Override
@@ -129,6 +135,12 @@ public class EditBuffer implements TextBuffer<Textual> {
     public void saveAs(Path path) {
         editQueue.flush();
         content.saveAs(path);
+        metrics.setPath(path);
+    }
+
+    @Override
+    public Metrics metrics() {
+        return metrics;
     }
 
     private EditListener editTo(Content content) {

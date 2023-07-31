@@ -103,6 +103,12 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
     void saveAs(Path path);
 
     /**
+     * Get the metrics.
+     * @return the metrics
+     */
+    Metrics metrics();
+
+    /**
      * Create a new text buffer.
      * @param maxRowSize the max row size
      * @param path the path of content

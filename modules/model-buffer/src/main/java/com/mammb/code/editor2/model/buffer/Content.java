@@ -97,8 +97,10 @@ public interface Content {
     /**
      * Traverse the all rows
      * @param traverse the traverse
+     * @return
+     * @param <T>
      */
-    default void traverseRow(Traverse traverse) {
+    default <T extends Traverse> T traverseRow(T traverse) {
         Predicate<byte[]> lfInclusive = Until.lfInclusive();
         int cpOffset = 0;
         for (;;) {
@@ -106,6 +108,7 @@ public interface Content {
             if (n == 0) break;
             cpOffset += n;
         }
+        return traverse;
     }
 
 }
