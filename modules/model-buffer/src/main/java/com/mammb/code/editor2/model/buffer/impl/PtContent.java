@@ -97,4 +97,9 @@ public class PtContent implements Content {
         this.path = path;
     }
 
+    @Override
+    public Path path() {
+        return path;
+    }
+
 }

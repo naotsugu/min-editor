@@ -94,6 +94,11 @@ public class PtContentMirror implements Content {
         copy(mirror, StandardCharsets.UTF_8, original, originalCs);
     }
 
+    @Override
+    public Path path() {
+        return original;
+    }
+
 
     private static Charset detectCharset(Path path) {
         try (var is = Files.newInputStream(path)) {
