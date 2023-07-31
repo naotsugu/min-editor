@@ -46,7 +46,7 @@ public record ReplaceEdit(
 
     @Override
     public void apply(EditTo editTo) {
-        editTo.delete(point, beforeText.length());
+        editTo.delete(point, beforeText);
         editTo.insert(point, afterText);
     }
 

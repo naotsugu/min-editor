@@ -26,15 +26,15 @@ public interface EditTo {
     /**
      * Inserts the char sequence into at the specified point.
      * @param point the offset
-     * @param cs a char sequence
+     * @param text a char sequence
      */
-    void insert(OffsetPoint point, CharSequence cs);
+    void insert(OffsetPoint point, String text);
 
     /**
      * Removes the characters in a substring of at the specified point.
      * @param point the beginning index, inclusive
-     * @param len the length to be deleted
+     * @param text the length to be deleted
      */
-    void delete(OffsetPoint point, int len);
+    void delete(OffsetPoint point, String text);
 
 }

@@ -142,13 +142,13 @@ public class EditBuffer implements TextBuffer<Textual> {
     private EditListener editTo(Content content) {
         return new EditToListener(new EditTo() {
             @Override
-            public void insert(OffsetPoint point, CharSequence cs) {
-                content.insert(point, cs);
+            public void insert(OffsetPoint point, String text) {
+                content.insert(point, text);
                 slice.refresh(point.row());
             }
             @Override
-            public void delete(OffsetPoint point, int len) {
-                content.delete(point, len);
+            public void delete(OffsetPoint point, String text) {
+                content.delete(point, text.length());
                 slice.refresh(point.row());
             }
         });

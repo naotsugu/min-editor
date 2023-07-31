@@ -44,7 +44,7 @@ public record DeleteEdit(
 
     @Override
     public void apply(EditTo editTo) {
-        editTo.delete(point, text.length());
+        editTo.delete(point, text);
     }
 
     @Override
