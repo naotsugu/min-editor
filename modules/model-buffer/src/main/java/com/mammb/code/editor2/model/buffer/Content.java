@@ -21,7 +21,6 @@ import com.mammb.code.editor2.model.text.OffsetPoint;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -95,24 +94,17 @@ public interface Content {
      */
     Path path();
 
-    default void traverseRow(Consumer<byte[]> rowConsumer) {
+    /**
+     * Traverse the all rows
+     * @param traverse the traverse
+     */
+    default void traverseRow(Traverse traverse) {
         Predicate<byte[]> lfInclusive = Until.lfInclusive();
         int cpOffset = 0;
         for (;;) {
-            // utf8 bytes
-            byte[] bytes = bytes(cpOffset, lfInclusive);
-            if (bytes.length == 0) break;
-
-            rowConsumer.accept(bytes);
-
-            for (int i = 0; i < bytes.length;) {
-                if      ((bytes[i] & 0x80) == 0x00) i += 1;
-                else if ((bytes[i] & 0xE0) == 0xC0) i += 2;
-                else if ((bytes[i] & 0xF0) == 0xE0) i += 3;
-                else if ((bytes[i] & 0xF8) == 0xF0) i += 4;
-                else i += 1;
-                cpOffset++;
-            }
+            int n = traverse.accept(bytes(cpOffset, lfInclusive));
+            if (n == 0) break;
+            cpOffset += n;
         }
     }
 
