@@ -44,7 +44,7 @@ public record BsInsertEdit(
 
     @Override
     public void apply(EditTo editTo) {
-        editTo.insert(point, text);
+        editTo.insert(point.minus(text), text);
     }
 
     @Override
@@ -56,7 +56,7 @@ public record BsInsertEdit(
             return false;
         }
         return (other instanceof BsInsertEdit insert) &&
-            point.offset() + text.length() == insert.point().offset();
+            point.offset() == insert.point().offset() - insert.length();
     }
 
 
@@ -67,8 +67,8 @@ public record BsInsertEdit(
         }
 
         BsInsertEdit insert = (BsInsertEdit) other;
-        return new InsertEdit(
-            point,
+        return new BsInsertEdit(
+            insert.point(),
             text + insert.text(),
             other.occurredOn());
     }
@@ -80,7 +80,7 @@ public record BsInsertEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
-        return new InsertEdit(point, text, occurredOn).applyTo(textual);
+        return new InsertEdit(point.minus(text), text, occurredOn).applyTo(textual);
     }
 
 }

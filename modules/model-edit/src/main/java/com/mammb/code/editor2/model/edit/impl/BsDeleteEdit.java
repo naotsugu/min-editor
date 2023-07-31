@@ -28,9 +28,9 @@ import com.mammb.code.editor2.model.text.Textual;
  * @author Naotsugu Kobayashi
  */
 public record BsDeleteEdit(
-        OffsetPoint point,
-        String text,
-        long occurredOn) implements Edit {
+    OffsetPoint point,
+    String text,
+    long occurredOn) implements Edit {
 
     @Override
     public int length() {
@@ -79,26 +79,6 @@ public record BsDeleteEdit(
 
     @Override
     public Textual applyTo(Textual textual) {
-        if (acrossRows()) {
-            throw new IllegalStateException("Should be pre-flashed");
-        }
-        return switch (textual.compareOffsetRangeTo(point.offset() - text.length())) {
-            case -1 -> {
-                OffsetPoint newPoint = OffsetPoint.of(
-                    textual.point().row(),
-                    textual.point().offset() - text.length(),
-                    textual.point().offset() - Character.codePointCount(text, 0, text.length())
-                );
-                yield Textual.of(newPoint, textual.text());
-            }
-            case  0 -> {
-                StringBuilder sb = new StringBuilder(textual.text());
-                int start = point.offset() - text.length() - textual.point().offset();
-                int end = start + text.length();
-                sb.replace(start, end, "");
-                yield Textual.of(textual.point(), sb.toString());
-            }
-            default -> textual;
-        };
+        return new DeleteEdit(point.minus(text), text, occurredOn).applyTo(textual);
     }
 }

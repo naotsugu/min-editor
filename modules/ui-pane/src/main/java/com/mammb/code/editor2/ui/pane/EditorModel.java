@@ -330,9 +330,14 @@ public class EditorModel {
         caret.markDirty();
     }
     public void backspace() {
+        scrollToCaret();
+        if (caret.offset() == 0) return;
+        OffsetPoint caretPoint = caret.offsetPoint();
+        LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
+        if (layoutLine == null) return;
         moveCaretLeft();
-        delete();
-        // TODO
+        buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
+        texts.markDirty();
     }
     public void undo() {
         selection.clear();
