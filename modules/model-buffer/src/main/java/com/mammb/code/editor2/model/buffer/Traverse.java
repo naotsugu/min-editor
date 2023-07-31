@@ -16,11 +16,16 @@
 package com.mammb.code.editor2.model.buffer;
 
 /**
- * The content metrics.
+ * The traverse.
  * @author Naotsugu Kobayashi
  */
-public interface ContentMetrics {
+public interface Traverse {
 
-    void add(String row);
+    /**
+     * Accept the given bytes.
+     * @param bytes the given bytes to be accepted
+     * @return the count of accept
+     */
+    int accept(byte[] bytes);
 
 }

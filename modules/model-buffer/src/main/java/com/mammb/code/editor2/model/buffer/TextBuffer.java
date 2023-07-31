@@ -91,12 +91,23 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      */
     Textual subText(OffsetPoint point, int length);
 
-    ContentMetrics metrics(ContentMetrics metrics);
-
+    /**
+     * Save.
+     */
     void save();
 
+    /**
+     * Save as.
+     * @param path the path to be saved
+     */
     void saveAs(Path path);
 
+    /**
+     * Create a new text buffer.
+     * @param maxRowSize the max row size
+     * @param path the path of content
+     * @return a new text buffer
+     */
     static TextBuffer<Textual> editBuffer(int maxRowSize, Path path) {
         return new EditBuffer(PtContentMirror.of(path), maxRowSize);
     }
