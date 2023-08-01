@@ -26,7 +26,7 @@ import javafx.scene.text.Font;
 public interface FxFontStyle extends FontStyle<Font, Color> {
 
     String defaultName = "Consolas";
-    double defaultSize = 18;
+    double defaultSize = 15;
     Color defaultColor = Color.BLACK;
     Color defaultBgColor = Color.TRANSPARENT;
 

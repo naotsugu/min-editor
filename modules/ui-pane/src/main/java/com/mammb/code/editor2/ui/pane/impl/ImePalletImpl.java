@@ -66,14 +66,14 @@ public class ImePalletImpl implements ImePallet {
     }
 
     @Override
-    public void drawCompose(GraphicsContext gc, TextRun textRun, double top, double height, double sideBearing) {
+    public void drawCompose(GraphicsContext gc, TextRun textRun, double top, double height, double left) {
         double right = -1;
         for (Run composedRun : runs) {
             int start = offsetPoint.offset() + composedRun.offset();
             int end = start + composedRun.length();
             if (start < textRun.tailOffset() && textRun.offset() <= end) {
-                double x1 = textRun.offsetToX().apply(Math.max(start, textRun.offset()) - textRun.offset()) + sideBearing;
-                double x2 = textRun.offsetToX().apply(Math.min(end, textRun.tailOffset()) - textRun.offset()) + sideBearing;
+                double x1 = textRun.offsetToX().apply(Math.max(start, textRun.offset()) - textRun.offset()) + left;
+                double x2 = textRun.offsetToX().apply(Math.min(end, textRun.tailOffset()) - textRun.offset()) + left;
                 double bottom = top + height - width - width;
                 gc.setLineDashes(composedRun.type().ordinal());
                 gc.setLineWidth(width);

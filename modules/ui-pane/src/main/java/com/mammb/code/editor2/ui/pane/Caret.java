@@ -36,8 +36,6 @@ public class Caret {
 
     /** The caret width. */
     private final double width = 2;
-    /** The side bearing. */
-    private final double sideBearing;
     /** The offset to layout line function. */
     private final Function<Integer, LayoutLine> offsetToLine;
 
@@ -64,47 +62,43 @@ public class Caret {
      * Constructor.
      * @param offsetToLine the offset to layout line function
      */
-    public Caret(Function<Integer, LayoutLine> offsetToLine, double sideBearing) {
+    public Caret(Function<Integer, LayoutLine> offsetToLine) {
         this.offsetToLine = offsetToLine;
-        this.sideBearing = sideBearing;
     }
 
 
     /**
-     * Draw caret,
+     * Draw caret.
      * @param gc the graphics context
+     * @param left the left position offset
      */
-    public void draw(GraphicsContext gc) {
+    public void draw(GraphicsContext gc, double left) {
         if (ensureLayout() == null) return;
-        drawCaretAt(gc, x, y, line.height());
+        drawCaretAt(gc, x + left, y, line.height());
         drawn = true;
     }
 
-
-    public void flushDraw(GraphicsContext gc) {
-        drawCaretAt(gc, x, y, line.height());
-    }
 
     private void drawCaretAt(GraphicsContext gc, double x, double top, double height) {
         gc.setLineDashes(0);
         gc.setStroke(Color.ORANGE);
         gc.setLineWidth(width);
-        gc.strokeLine(x + sideBearing, top + 1, x + sideBearing, top + height - 1);
+        gc.strokeLine(x, top + 1, x, top + height - 1);
     }
 
     /**
      * Clear.
      * @param gc the graphics context
      */
-    public EditorModel.Rect clear(GraphicsContext gc) {
+    public EditorModel.Rect clear(GraphicsContext gc, double left) {
         if (ensureLayout() == null) return null;
-        double dx = x;
+        double dx = x + left - 0.5;
         double dy = y;
-        double dw = width + sideBearing;
+        double dw = width + 1;
         double dh = line.height();
         gc.clearRect(dx, dy, dw, dh);
         drawn = false;
-        return new EditorModel.Rect(dx, dy, dw, dh);
+        return new EditorModel.Rect(dx - left, dy, dw, dh);
     }
 
 

@@ -83,7 +83,7 @@ public class EditorModel {
         this.buffer = TextBuffer.editBuffer(screenRowSize(height), path);
         this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
         this.gutter = new Gutter();
-        this.caret = new Caret(texts::layoutLine, sideBearing);
+        this.caret = new Caret(texts::layoutLine);
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.width = width;
@@ -108,10 +108,8 @@ public class EditorModel {
             }
             offsetY += line.leadingHeight();
         }
-        if (ime.enabled()) {
-
-        } else {
-            caret.draw(gc);
+        if (!ime.enabled()) {
+            caret.draw(gc, gutter.width() + sideBearing);
         }
         gc.restore();
     }
@@ -150,23 +148,24 @@ public class EditorModel {
     }
 
     private void drawRun(GraphicsContext gc, TextRun run, boolean overlay, double top, double lineHeight) {
+        double left = run.layout().x() + gutter.width() + sideBearing;
         if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
             gc.setFill(bg);
-            gc.fillRect(run.layout().x() + sideBearing, top, run.layout().width(), lineHeight);
+            gc.fillRect(left, top, run.layout().width(), lineHeight);
         } else if (overlay) {
-            gc.clearRect(run.layout().x(), top, run.layout().width() + (sideBearing * 2), lineHeight);
+            gc.clearRect(left - sideBearing, top, run.layout().width() + (sideBearing * 2), lineHeight);
         }
 
         if (selection.started()) {
-            selection.draw(gc, run, top, sideBearing);
+            selection.draw(gc, run, top, left);
         }
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
         if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
-        gc.fillText(run.text(), run.layout().x() + sideBearing, top + run.baseline());
+        gc.fillText(run.text(), left + sideBearing, top + run.baseline());
 
         if (ime.enabled()) {
-            ime.drawCompose(gc, run, top, lineHeight, sideBearing);
+            ime.drawCompose(gc, run, top, lineHeight, left);
         }
     }
 
@@ -178,10 +177,10 @@ public class EditorModel {
     public void tick(GraphicsContext gc) {
         if (ime.enabled()) return;
         if (caret.drawn()) {
-            Rect rect = caret.clear(gc);
+            Rect rect = caret.clear(gc, gutter.width() + sideBearing);
             draw(gc, rect);
         } else {
-            caret.draw(gc);
+            caret.draw(gc, gutter.width() + sideBearing);
         }
     }
 
@@ -190,7 +189,7 @@ public class EditorModel {
         if (ime.enabled()) new Rect(caret.x(), caret.y(), caret.width(), caret.height());
         scrollToCaret();
         ime.on(caret.offsetPoint());
-        draw(gc, caret.clear(gc));
+        draw(gc, caret.clear(gc, gutter.width() + sideBearing));
         return new Rect(caret.x(), caret.y(), caret.width(), caret.height());
     }
     public void imeOff() {
@@ -301,11 +300,11 @@ public class EditorModel {
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
         selection.clear();
-        int offset = texts.at(x, y);
+        int offset = texts.at(x - (gutter.width() + sideBearing), y);
         caret.at(offset, true);
     }
     public void clickDouble(double x, double y) {
-        int[] offsets = texts.atAround(x, y);
+        int[] offsets = texts.atAround(x - (gutter.width() + sideBearing), y);
         if (offsets.length == 2) {
             caret.at(offsets[0], true);
             selection.start(caret.offsetPoint());
