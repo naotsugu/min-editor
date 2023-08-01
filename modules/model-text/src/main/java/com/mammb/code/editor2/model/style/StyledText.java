@@ -38,6 +38,12 @@ public interface StyledText extends Textual, Styled {
     @Override
     List<StyleSpan> styles();
 
+    /**
+     * Head of line?
+     * @return
+     */
+    boolean hol();
+
     StyledText subText(int start, int length);
 
     void putStyle(StyleSpan style);

@@ -105,6 +105,11 @@ public class StyledSubText implements StyledText {
         return subStyles;
     }
 
+    @Override
+    public boolean hol() {
+        return start == 0;
+    }
+
 
     @Override
     public StyledText subText(int start, int length) {

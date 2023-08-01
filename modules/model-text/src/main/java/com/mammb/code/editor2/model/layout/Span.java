@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.model.layout;
 
 import com.mammb.code.editor2.model.layout.impl.SpanRecord;
+import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 
@@ -37,14 +38,16 @@ public interface Span extends Textual {
      */
     FontStyle<?, ?> style();
 
+    boolean hol();
+
     /**
      * Create a new Span.
      * @param textual the text of span
      * @param fontStyle the style of span
      * @return a created Span
      */
-    static Span of(Textual textual, FontStyle<?, ?> fontStyle) {
-        return new SpanRecord(textual.text(), textual.point(), fontStyle);
+    static Span of(StyledText textual, FontStyle<?, ?> fontStyle) {
+        return new SpanRecord(textual.text(), textual.point(), textual.hol(), fontStyle);
     }
 
 }

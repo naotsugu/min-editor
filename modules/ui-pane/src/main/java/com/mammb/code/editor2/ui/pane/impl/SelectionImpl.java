@@ -68,7 +68,9 @@ public class SelectionImpl implements Selection {
             double x = run.offsetToX().apply(Math.max(min().offset(), runStart) - runStart);
             double width = run.offsetToX().apply(Math.min(max().offset(), runEnd) - runStart) - x;
             gc.setFill(Color.LIGHTBLUE);
-            gc.fillRect(x + left, top, width, run.textLine().height());
+            if (run.source().hol()) {
+                gc.fillRect(x + left, top, width, run.textLine().height());
+            }
         }
     }
 

@@ -47,6 +47,11 @@ public record StyledTextRecord(
     }
 
     @Override
+    public boolean hol() {
+        return true;
+    }
+
+    @Override
     public StyledText subText(int start, int length) {
         return StyledSubText.of(this, start, length);
     }
