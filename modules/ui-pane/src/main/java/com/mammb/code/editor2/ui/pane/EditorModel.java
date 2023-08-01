@@ -47,6 +47,8 @@ public class EditorModel {
 
     /** The text buffer. */
     private final TextBuffer<Textual> buffer;
+    /** The gutter. */
+    private final Gutter gutter;
     /** The caret. */
     private final Caret caret;
     /** The selection. */
@@ -80,6 +82,7 @@ public class EditorModel {
     public EditorModel(double width, double height, Path path) {
         this.buffer = TextBuffer.editBuffer(screenRowSize(height), path);
         this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
+        this.gutter = new Gutter();
         this.caret = new Caret(texts::layoutLine, sideBearing);
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();

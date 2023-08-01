@@ -23,6 +23,10 @@ public class Gutter {
 
     private double width = 50;
 
+    /**
+     * Get the width of gutter.
+     * @return the width of gutter
+     */
     public double width() {
         return width;
     }
