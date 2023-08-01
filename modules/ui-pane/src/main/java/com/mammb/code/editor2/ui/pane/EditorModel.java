@@ -297,6 +297,7 @@ public class EditorModel {
     }
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
+        selection.clear();
         int offset = texts.at(x, y);
         caret.at(offset, true);
     }
