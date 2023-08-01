@@ -15,13 +15,16 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.layout.TextRun;
+import javafx.scene.canvas.GraphicsContext;
+
 /**
  * Gutter.
  * @author Naotsugu Kobayashi
  */
 public class Gutter {
 
-    private double width = 50;
+    private double width = 30;
 
     /**
      * Get the width of gutter.
@@ -29,6 +32,11 @@ public class Gutter {
      */
     public double width() {
         return width;
+    }
+
+    public void draw(GraphicsContext gc, TextRun run, double top, double lineHeight) {
+        gc.clearRect(0, top, width - 0.5, lineHeight);
+        gc.fillText(run.source().point().row() + 1 + "", 0, top + run.baseline());
     }
 
 }
