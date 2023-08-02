@@ -30,9 +30,13 @@ import java.util.WeakHashMap;
  */
 public class FxFontMetrics implements com.mammb.code.editor2.model.layout.FontMetrics<Font> {
 
+    /** The FontMetrics. */
     private final Map<Font, FontMetrics> metrics = new WeakHashMap<>();
+    /** The loader. */
     private final FontLoader fontLoader;
+    /** The base font. */
     private Font base;
+
 
     public FxFontMetrics(Font font) {
         fontLoader = Toolkit.getToolkit().getFontLoader();
@@ -45,12 +49,10 @@ public class FxFontMetrics implements com.mammb.code.editor2.model.layout.FontMe
         base = font;
     }
 
-
     @Override
     public double lineHeight() {
         return metrics.get(base).getLineHeight();
     }
-
 
     @Override
     public double lineHeight(FontStyle<Font, ?> font) {
@@ -58,6 +60,11 @@ public class FxFontMetrics implements com.mammb.code.editor2.model.layout.FontMe
                 font.font(),
                 fontLoader::getFontMetrics)
             .getLineHeight();
+    }
+
+    @Override
+    public float getCharWidth(char ch) {
+        return metrics.get(base).getCharWidth(ch);
     }
 
 }

@@ -41,4 +41,10 @@ public interface FontMetrics<F> {
      */
     double lineHeight(FontStyle<F, ?> font);
 
+    /**
+     * Computes the width of the char when rendered with the font represented by this FontMetrics instance.
+     * @param ch the characters to be inspected
+     * @return the width of the char
+     */
+    float getCharWidth(char ch);
 }

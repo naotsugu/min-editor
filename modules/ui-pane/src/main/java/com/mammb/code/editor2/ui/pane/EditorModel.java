@@ -109,6 +109,11 @@ public class EditorModel {
             caret.draw(gc, gutter.width());
         }
         gc.restore();
+        if (gutter.checkWidthChanged()) {
+            texts.markDirty();
+            caret.markDirty();
+            draw(gc);
+        }
     }
 
 
