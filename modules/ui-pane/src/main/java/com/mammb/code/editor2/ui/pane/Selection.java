@@ -27,6 +27,12 @@ public interface Selection {
 
     void start(OffsetPoint offset);
 
+    void to(OffsetPoint toOffset);
+
+    void startDragging(OffsetPoint offset);
+
+    boolean isDragging();
+
     void clear();
 
     OffsetPoint startOffset();
@@ -34,8 +40,6 @@ public interface Selection {
     OffsetPoint endOffset();
 
     boolean started();
-
-    void to(OffsetPoint toOffset);
 
     void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
 

@@ -83,6 +83,7 @@ public class EditorPane extends StackPane {
         setOnKeyTyped(this::handleKeyTyped);
         setOnScroll(this::handleScroll);
         setOnMouseClicked(this::handleMouseClicked);
+        setOnMouseDragged(this::handleMouseDragged);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
         canvas.setInputMethodRequests(inputMethodRequests());
@@ -117,7 +118,6 @@ public class EditorPane extends StackPane {
     }
 
     public void handleScroll(ScrollEvent e) {
-
         if (e.getEventType() == ScrollEvent.SCROLL) {
             if (e.getDeltaY() > 0) {
                 editorModel.scrollPrev(Math.min((int) e.getDeltaY(), 3));
@@ -139,6 +139,12 @@ public class EditorPane extends StackPane {
         }
     }
 
+    public void handleMouseDragged(MouseEvent event) {
+        if (event.getButton().equals(MouseButton.PRIMARY)) {
+            editorModel.dragged(event.getSceneX(), event.getSceneY());
+        }
+        editorModel.draw(gc);
+    }
 
     public void handleKeyPressed(KeyEvent e) {
 

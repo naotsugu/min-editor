@@ -302,6 +302,10 @@ public class EditorModel {
     }
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
+        if (selection.isDragging()) {
+            selection.to(caret.offsetPoint());
+            return;
+        }
         selection.clear();
         int offset = texts.at(x - gutter.width(), y);
         caret.at(offset, true);
@@ -315,6 +319,14 @@ public class EditorModel {
             selection.to(caret.offsetPoint());
         } else {
             caret.at(offsets[0], true);
+        }
+    }
+    public void dragged(double x, double y) {
+        caret.at(texts.at(x - gutter.width(), y), true);
+        if (selection.isDragging()) {
+            selection.to(caret.offsetPoint());
+        } else {
+            selection.startDragging(caret.offsetPoint());
         }
     }
     // -- edit behavior -------------------------------------------------------

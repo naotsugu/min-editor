@@ -27,17 +27,42 @@ import javafx.scene.paint.Color;
  */
 public class SelectionImpl implements Selection {
 
+    /** The selection open offset. */
     private OffsetPoint start;
+
+    /** The selection close offset. */
     private OffsetPoint end;
+
+    /** The selection dragging. */
+    private boolean dragging = false;
+
 
     @Override
     public void start(OffsetPoint offset) {
         start = end = offset;
+        dragging = false;
+    }
+
+    @Override
+    public void to(OffsetPoint toOffset) {
+        end = toOffset;
+    }
+
+    @Override
+    public void startDragging(OffsetPoint offset) {
+        start = end = offset;
+        dragging = true;
+    }
+
+    @Override
+    public boolean isDragging() {
+        return dragging;
     }
 
     @Override
     public void clear() {
         start = end = null;
+        dragging = false;
     }
 
     @Override
@@ -55,10 +80,6 @@ public class SelectionImpl implements Selection {
         return start != null;
     }
 
-    @Override
-    public void to(OffsetPoint toOffset) {
-        end = toOffset;
-    }
 
     public void draw(GraphicsContext gc, TextRun run, double top, double left) {
         if (!started()) throw new IllegalStateException();
