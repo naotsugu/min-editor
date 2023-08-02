@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
-import com.mammb.code.editor.javafx.layout.FxFontMetrics;
-import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.layout.TextLine;
@@ -409,8 +407,7 @@ public class EditorModel {
     // -- private -------------------------------------------------------------
 
     private int screenRowSize(double height) {
-        var fontMetrics = new FxFontMetrics(FxFontStyle.of().font());
-        return (int) Math.ceil(height / fontMetrics.lineHeight());
+        return (int) Math.ceil(height / Base.fontMetrics.lineHeight());
     }
 
     /**

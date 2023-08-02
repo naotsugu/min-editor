@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
-import com.mammb.code.editor.javafx.layout.FxFontMetrics;
-import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor2.model.layout.TextRun;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -37,11 +35,11 @@ public class Gutter {
 
 
     public Gutter() {
-        var style = FxFontStyle.of();
-        setFont(style.font());
-        color = style.color();
-        width = Math.ceil(chWidth * 5);
-        widthChanged = false;
+        this.font = Base.style.font();
+        this.color = Base.style.color();
+        this.chWidth = characterWidth(font);
+        this.width = Math.ceil(chWidth * 5);
+        this.widthChanged = false;
     }
 
 
@@ -101,9 +99,8 @@ public class Gutter {
      */
     private static double characterWidth(Font font) {
         double w = 0;
-        var metrics = new FxFontMetrics(font);
         for (char c = '0'; c <= '9'; c++) {
-            double s = metrics.getCharWidth(c);
+            double s = Base.fontMetrics.getCharWidth(font, c);
             if (s > w) w = s;
         }
         return w;

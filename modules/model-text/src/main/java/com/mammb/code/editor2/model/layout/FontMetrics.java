@@ -47,4 +47,12 @@ public interface FontMetrics<F> {
      * @return the width of the char
      */
     float getCharWidth(char ch);
+
+    /**
+     * Computes the width of the char when rendered with the font represented by this FontMetrics instance.
+     * @param font the font
+     * @param ch the characters to be inspected
+     * @return the width of the char
+     */
+    float getCharWidth(F font, char ch);
 }
