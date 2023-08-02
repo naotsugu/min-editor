@@ -32,14 +32,24 @@ public class Gutter {
     private double chWidth;
     private double width;
     private boolean widthChanged;
-
+    private static final double FACTOR = 0.2;
 
     public Gutter() {
         this.font = Base.style.font();
-        this.color = Base.style.color();
         this.chWidth = characterWidth(font);
         this.width = Math.ceil(chWidth * 5);
         this.widthChanged = false;
+
+        Color baseColor = Base.style.color();
+        if (baseColor.getBrightness() < 0.4) {
+            double brightnessFactor = 1.0 / (baseColor.getBrightness() + FACTOR);
+            this.color = baseColor.deriveColor(0, 1.0, brightnessFactor, 1.0);
+        } else if (baseColor.getBrightness() > 0.6) {
+            double brightnessFactor = (1 - baseColor.getBrightness()) + FACTOR;
+            this.color = baseColor.deriveColor(0, 1.0, brightnessFactor, 1.0);
+        } else {
+            this.color = Base.style.color();
+        }
     }
 
 
