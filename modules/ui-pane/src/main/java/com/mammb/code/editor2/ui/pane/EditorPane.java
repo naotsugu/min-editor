@@ -90,6 +90,7 @@ public class EditorPane extends StackPane {
         canvas.setOnInputMethodTextChanged(this::handleInputMethod);
 
         layoutBoundsProperty().addListener(this::layoutBoundsChanged);
+        canvas.focusedProperty().addListener(this::focusedChanged);
     }
 
 
@@ -250,6 +251,17 @@ public class EditorPane extends StackPane {
             canvas.setHeight(canvasHeight);
             editorModel.layoutBounds(canvasWidth, canvasHeight);
             editorModel.draw(gc);
+        }
+    }
+
+    private void focusedChanged(
+            ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
+        if (focused) {
+            editorModel.focusIn(gc);
+            timeline.play();
+        } else {
+            timeline.stop();
+            editorModel.focusOut(gc);
         }
     }
 

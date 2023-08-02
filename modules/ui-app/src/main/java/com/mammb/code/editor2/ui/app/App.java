@@ -34,6 +34,7 @@ public class App extends Application {
         Parent parent = new EditorPane(context.width, context.height);
         Scene scene = new Scene(parent, context.width, context.height);
         stage.setScene(scene);
+        stage.setTitle("min-editor");
         stage.show();
     }
 

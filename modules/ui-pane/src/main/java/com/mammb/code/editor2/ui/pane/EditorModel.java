@@ -187,6 +187,14 @@ public class EditorModel {
         }
     }
 
+    public void focusIn(GraphicsContext gc) {
+        caret.draw(gc, gutter.width());
+    }
+
+    public void focusOut(GraphicsContext gc) {
+        if (caret.drawn()) draw(gc, caret.clear(gc, gutter.width()));
+    }
+
     // -- ime behavior  ----------------------------------------------------
     public Rect imeOn(GraphicsContext gc) {
         if (ime.enabled()) new Rect(caret.x(), caret.y(), caret.width(), caret.height());
