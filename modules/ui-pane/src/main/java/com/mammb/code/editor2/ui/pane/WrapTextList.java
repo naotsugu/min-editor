@@ -214,9 +214,11 @@ public class WrapTextList implements TextList {
 
 
     private static Translate<Textual, List<TextLine>> translator(
-            LineLayout layout, double wrapWidth, Translate<Textual, StyledText> styling) {
+            LineLayout layout, double wrapWidth,
+            Translate<Textual, StyledText> styling) {
+        layout.setWrapWidth(wrapWidth);
         return styling.compound(SpanTranslate.of())
-            .compound(LayoutWrapTranslate.of(layout));
+                      .compound(LayoutWrapTranslate.of(layout));
     }
 
 
