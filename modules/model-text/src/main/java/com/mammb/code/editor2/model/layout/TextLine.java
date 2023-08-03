@@ -189,7 +189,11 @@ public interface TextLine extends Textual {
      * @return {@code true}, if the given (total) offset located on tail of this line
      */
     default boolean containsTailOn(int offset) {
-        return tailOffset() == offset && endMarkCount() == 0;
+        return tailOffset() == offset && isBottomLine();
+    }
+
+    default boolean isBottomLine() {
+        return lineIndex() == (lineSize() - 1) && endMarkCount() == 0;
     }
 
     /**

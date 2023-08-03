@@ -215,7 +215,7 @@ public class Caret {
     public void down() {
 
         if (ensureLayout() == null) return;
-        if (line.endMarkCount() == 0) return;
+        if (line.isBottomLine()) return;
 
         LayoutLine next = offsetToLine.apply(line.tailOffset());
         if (next == null) return;

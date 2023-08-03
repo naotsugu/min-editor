@@ -163,9 +163,7 @@ public interface TextList {
             if (line.contains(offset) || line.containsTailOn(offset)) {
                 return new LayoutLine(line, offsetY);
             }
-            if (line.endMarkCount() > 0) {
-                offsetY += line.leadingHeight();
-            }
+            offsetY += line.leadingHeight();
         }
         return null;
     }
