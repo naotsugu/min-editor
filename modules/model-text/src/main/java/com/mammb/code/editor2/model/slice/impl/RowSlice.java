@@ -127,18 +127,17 @@ public class RowSlice implements Slice<Textual> {
         for (int i = 0; i < n; i++) {
 
             Textual tail = texts.get(texts.size() - 1);
-            OffsetPoint next = tail.point().plus(tail.text());
+            if (tail.isEmpty()) {
+                break;
+            }
 
+            OffsetPoint next = tail.point().plus(tail.text());
             String str = rowSupplier.at(next.cpOffset());
             Textual textual = Textual.of(next, str);
             added.add(textual);
             pushLast(textual);
 
-            if (str.isEmpty()) {
-                break;
-            }
         }
-
         return added;
     }
 
