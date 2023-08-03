@@ -49,4 +49,11 @@ public interface LineLayout {
      */
     boolean setTabSize(int spaces);
 
+    /**
+     * Sets whether a blank line is added after the trailing newline.
+     * Default is {@code false}
+     * @param enable whether a blank line is added after the trailing newline
+     */
+    void setFollowingEmptyLine(boolean enable);
+
 }

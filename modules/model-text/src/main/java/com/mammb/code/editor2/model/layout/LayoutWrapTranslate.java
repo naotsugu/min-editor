@@ -46,11 +46,7 @@ public class LayoutWrapTranslate implements Translate<List<Span>, List<TextLine>
 
     @Override
     public List<TextLine> applyTo(List<Span> row) {
-        List<TextLine> lines = lineLayout.layout(row);
-        if (lines.size() > 1 && lines.get(lines.size() - 1).length() == 0) {
-            return lines.subList(0, lines.size() - 1);
-        }
-        return lines;
+        return lineLayout.layout(row);
     }
 
 }

@@ -31,6 +31,8 @@ public class TextLineImpl implements TextLine {
     private final OffsetPoint point;
     /** The line index. */
     private final int lineIndex;
+    /** The line size. */
+    private final int lineSize;
     /** The char length. */
     private final int length;
     /** The width of line. */
@@ -43,16 +45,18 @@ public class TextLineImpl implements TextLine {
     /**
      * Constructor.
      * @param point the offsetPoint
+     * @param lineIndex the line index
+     * @param lineSize the line size
      * @param length the char length
      * @param width the width of line
      * @param height the height of line
      * @param textRuns the text runs
      */
-    public TextLineImpl(OffsetPoint point, int lineIndex, int length,
-                        double width, double height,
-                        List<TextRun> textRuns) {
+    public TextLineImpl(OffsetPoint point, int lineIndex, int lineSize,
+            int length, double width, double height, List<TextRun> textRuns) {
         this.point = point;
         this.lineIndex = lineIndex;
+        this.lineSize = lineSize;
         this.length = length;
         this.width = width;
         this.height = height;
@@ -67,6 +71,11 @@ public class TextLineImpl implements TextLine {
     @Override
     public int lineIndex() {
         return lineIndex;
+    }
+
+    @Override
+    public int lineSize() {
+        return lineSize;
     }
 
     @Override

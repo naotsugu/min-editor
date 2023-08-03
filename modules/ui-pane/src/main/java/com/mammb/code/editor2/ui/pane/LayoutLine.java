@@ -39,6 +39,11 @@ public record LayoutLine(TextLine line, double offsetY) implements TextLine {
     }
 
     @Override
+    public int lineSize() {
+        return line.lineSize();
+    }
+
+    @Override
     public int length() {
         return line.length();
     }

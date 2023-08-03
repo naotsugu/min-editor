@@ -15,7 +15,12 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.*;
+import com.mammb.code.editor2.model.layout.HitPosition;
+import com.mammb.code.editor2.model.layout.Layout;
+import com.mammb.code.editor2.model.layout.LineLayout;
+import com.mammb.code.editor2.model.layout.Span;
+import com.mammb.code.editor2.model.layout.TextLine;
+import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.sun.javafx.geom.Point2D;
 import com.sun.javafx.geom.RectBounds;
@@ -23,7 +28,9 @@ import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.scene.text.TextLayout;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +51,8 @@ public class FxLayoutBuilder implements LineLayout {
     /** The spans. */
     private final List<Span> spans = new ArrayList<>();
 
+    /** The followingEmptyLineEnabled. */
+    private boolean followingEmptyLineEnabled = false;
 
     /**
      * Create a new Layout.
@@ -91,7 +100,7 @@ public class FxLayoutBuilder implements LineLayout {
         TextSpan currentSpan = null;
         int offset = 0;
 
-        com.sun.javafx.scene.text.TextLine[] lines = textLayout.getLines();
+        com.sun.javafx.scene.text.TextLine[] lines = thinOut(textLayout.getLines());
         for (int i = 0; i < lines.length; i++) {
             com.sun.javafx.scene.text.TextLine textLine = lines[i];
 
@@ -130,6 +139,7 @@ public class FxLayoutBuilder implements LineLayout {
             TextLine line = TextLine.of(
                 offsetPoint,
                 i,
+                lines.length,
                 textLine.getLength(),
                 textLine.getBounds().getWidth(),
                 textLine.getBounds().getHeight(),
@@ -152,6 +162,32 @@ public class FxLayoutBuilder implements LineLayout {
         return new HitPositionRecord(hit.getCharIndex(), hit.getInsertionIndex(), hit.isLeading());
     }
 
+    /**
+     * <pre>
+     *  |                ->       |               length:1 -> 1
+     *
+     *  | a |            ->       | a |           length:1 -> 1
+     *
+     *  | a | b | $ |    ->       | a | b | $ |   length:2 -> 1
+     *  |
+     *
+     *  | a | b | c |    ->       | a | b | c |   length:2 -> 2
+     *  | d |                     | d |
+     *
+     *  | a | b | c |    ->       | a | b | c |   length:3 -> 2
+     *  | d | $ |                 | d | $ |
+     *  |
+     * </pre>
+     * @param lines the array of TextLine
+     * @return thinning outed TextLine
+     */
+    private com.sun.javafx.scene.text.TextLine[] thinOut(com.sun.javafx.scene.text.TextLine[] lines) {
+        if (!followingEmptyLineEnabled && lines.length > 1 && lines[lines.length - 1].getLength() == 0) {
+            return Arrays.copyOfRange(lines, 0, lines.length - 1);
+        }
+        return lines;
+    }
+
     @Override
     public boolean setWrapWidth(double wrapWidth) {
         return textLayout.setWrapWidth((float) wrapWidth);
@@ -165,6 +201,11 @@ public class FxLayoutBuilder implements LineLayout {
     @Override
     public boolean setTabSize(int spaces) {
         return textLayout.setTabSize(spaces);
+    }
+
+    @Override
+    public void setFollowingEmptyLine(boolean enable) {
+        followingEmptyLineEnabled = enable;
     }
 
     @Override

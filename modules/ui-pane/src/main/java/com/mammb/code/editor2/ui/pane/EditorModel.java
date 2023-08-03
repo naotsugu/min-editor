@@ -78,13 +78,12 @@ public class EditorModel {
         this.buffer = TextBuffer.editBuffer(screenRowSize(height), path);
         this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
         this.gutter = new Gutter();
-        this.caret = new Caret(texts::layoutLine);
+        this.caret = new Caret(this::layoutLine);
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.width = width;
         this.height = height;
     }
-
 
     /**
      * Draw the screen.
@@ -428,6 +427,10 @@ public class EditorModel {
 
     private int screenRowSize(double height) {
         return (int) Math.ceil(height / Base.fontMetrics.lineHeight());
+    }
+
+    private LayoutLine layoutLine(int offset) {
+        return texts.layoutLine(offset);
     }
 
     /**

@@ -24,6 +24,7 @@ import java.util.List;
  * TextLineRecord.
  * @param point the OffsetPoint
  * @param lineIndex the line index
+ * @param lineSize the line size
  * @param length the char length
  * @param width the width of line
  * @param height the height
@@ -33,6 +34,7 @@ import java.util.List;
 public record TextLineRecord(
     OffsetPoint point,
     int lineIndex,
+    int lineSize,
     int length,
     double width,
     double height,
