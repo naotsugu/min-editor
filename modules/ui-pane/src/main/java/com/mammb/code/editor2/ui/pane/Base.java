@@ -46,4 +46,25 @@ public class Base {
             .mapToDouble(c -> fontMetrics.getCharWidth(font, (char) c))
             .max().orElse(0.0);
     }
+
+
+    public static Color flipBrightness(Color color) {
+
+        final double factor = 0.2;
+
+        if (color.getBrightness() < 0.4) {
+            double brightnessFactor = 1.0 / (color.getBrightness() + factor);
+            return color.deriveColor(0, 1.0, brightnessFactor, 1.0);
+
+        } else if (color.getBrightness() > 0.6) {
+            double brightnessFactor = (1 - color.getBrightness()) + factor;
+            return color.deriveColor(0, 1.0, brightnessFactor, 1.0);
+
+        } else {
+            return color;
+        }
+
+    }
+
+
 }

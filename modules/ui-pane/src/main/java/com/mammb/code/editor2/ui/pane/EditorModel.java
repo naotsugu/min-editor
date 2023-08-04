@@ -166,7 +166,11 @@ public class EditorModel {
         final String text = run.text();
         gc.fillText(text, left, top + run.baseline());
         if (!text.isEmpty() && text.charAt(text.length() - 1) == '\n') {
-            drawLf(gc, new Rect(gutter.width() + run.textLine().width(), top + lineHeight * 0.1, Base.numberCharacterWidth(gc.getFont()), lineHeight).smaller(0.5));
+            drawLf(gc, new Rect(
+                left + run.layout().width(),
+                top + lineHeight * 0.1,
+                Base.numberCharacterWidth(gc.getFont()),
+                lineHeight).smaller(0.5));
         }
 
         if (run.layout().x() == 0) {
@@ -188,6 +192,7 @@ public class EditorModel {
         double[] yPoints = new double[] { r.y() + r.h() * 0.75, r.y() + r.h(), r.y() + r.h() * 0.75 };
         gc.setLineWidth(1);
         gc.setStroke(Color.LIGHTGRAY);
+        gc.setLineDashes(1);
         gc.strokePolyline(xPoints, yPoints, 3);
         gc.strokeLine(r.x() + r.w() / 2, r.y(), r.x() + r.w() / 2, r.y() + r.h());
     }
