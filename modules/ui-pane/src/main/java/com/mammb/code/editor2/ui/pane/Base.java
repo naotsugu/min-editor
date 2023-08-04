@@ -22,6 +22,8 @@ import com.mammb.code.editor2.model.layout.FontStyle;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import java.util.stream.IntStream;
+
 /**
  * Global config.
  * @author Naotsugu Kobayashi
@@ -32,4 +34,16 @@ public class Base {
 
     public static final FontMetrics<Font> fontMetrics = new FxFontMetrics(style.font());
 
+    public static final double numWidth = numberCharacterWidth(style.font());
+
+    /**
+     * Get the maximum unit width of a number character when drawn in the specified font.
+     * @param font the specified font
+     * @return the unit width
+     */
+    public static double numberCharacterWidth(Font font) {
+        return IntStream.rangeClosed('0', '9')
+            .mapToDouble(c -> fontMetrics.getCharWidth(font, (char) c))
+            .max().orElse(0.0);
+    }
 }

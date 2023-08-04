@@ -35,6 +35,18 @@ public interface FontMetrics<F> {
     double lineHeight();
 
     /**
+     * Get the ascent of base font.
+     * @return the ascent of base font
+     */
+    double ascent();
+
+    /**
+     * Get the descent of base font.
+     * @return the descent of base font
+     */
+    double descent();
+
+    /**
      * Get the font line height(ascent + descent + leading).
      * @param font the font style
      * @return the font line height(ascent + descent + leading)

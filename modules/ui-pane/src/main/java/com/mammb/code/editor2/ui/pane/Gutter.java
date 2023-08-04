@@ -36,7 +36,7 @@ public class Gutter {
 
     public Gutter() {
         this.font = Base.style.font();
-        this.chWidth = characterWidth(font);
+        this.chWidth = Base.numWidth;
         this.width = Math.ceil(chWidth * 5);
         this.widthChanged = false;
 
@@ -93,7 +93,7 @@ public class Gutter {
 
     public void setFont(Font font) {
         this.font = font;
-        this.chWidth = characterWidth(font);
+        this.chWidth = Base.numberCharacterWidth(font);
         this.widthChanged = true;
     }
 
@@ -104,21 +104,6 @@ public class Gutter {
             width = w;
             widthChanged = true;
         }
-    }
-
-
-    /**
-     * Get the maximum unit width of a number character when drawn in the specified font.
-     * @param font the specified font
-     * @return the unit width
-     */
-    private static double characterWidth(Font font) {
-        double w = 0;
-        for (char c = '0'; c <= '9'; c++) {
-            double s = Base.fontMetrics.getCharWidth(font, c);
-            if (s > w) w = s;
-        }
-        return w;
     }
 
 }

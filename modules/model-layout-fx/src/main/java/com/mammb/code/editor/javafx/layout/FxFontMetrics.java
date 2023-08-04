@@ -55,6 +55,16 @@ public class FxFontMetrics implements com.mammb.code.editor2.model.layout.FontMe
     }
 
     @Override
+    public double ascent() {
+        return metrics.get(base).getAscent();
+    }
+
+    @Override
+    public double descent() {
+        return metrics.get(base).getDescent();
+    }
+
+    @Override
     public double lineHeight(FontStyle<Font, ?> font) {
         return metrics.computeIfAbsent(
                 font.font(),
