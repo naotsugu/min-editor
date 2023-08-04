@@ -30,6 +30,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
 import java.io.File;
@@ -48,6 +49,7 @@ public class EditorPane extends StackPane {
     private GraphicsContext gc;
     /** The editor model. */
     private EditorModel editorModel;
+
     double margin = 5.5;
 
     /** The timeline. */
@@ -62,10 +64,11 @@ public class EditorPane extends StackPane {
         editorModel = new EditorModel(canvasWidth, canvasHeight);
         canvas = new Canvas(canvasWidth, canvasHeight);
         canvas.setFocusTraversable(true);
+        canvas.setAccessibleRole(AccessibleRole.TEXT_AREA);
         canvas.setLayoutX(margin);
         canvas.setLayoutY(margin);
         gc = canvas.getGraphicsContext2D();
-        setAccessibleRole(AccessibleRole.TEXT_AREA);
+        gc.setLineCap(StrokeLineCap.BUTT);
         initHandler();
         getChildren().add(canvas);
 

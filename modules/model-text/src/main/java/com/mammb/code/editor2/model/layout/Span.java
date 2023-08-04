@@ -38,6 +38,11 @@ public interface Span extends Textual {
      */
     FontStyle<?, ?> style();
 
+    /**
+     * Head of line?
+     * not head of row
+     * @return Head of line?
+     */
     boolean hol();
 
     /**

@@ -147,7 +147,9 @@ public class EditorModel {
     }
 
     private void drawRun(GraphicsContext gc, TextRun run, boolean overlay, double top, double lineHeight) {
+
         double left = run.layout().x() + gutter.width();
+
         if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
             gc.setFill(bg);
             gc.fillRect(left, top, run.layout().width(), lineHeight);
@@ -161,19 +163,33 @@ public class EditorModel {
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
         if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
-        gc.fillText(run.text(), left, top + run.baseline());
+        final String text = run.text();
+        gc.fillText(text, left, top + run.baseline());
+        if (!text.isEmpty() && text.charAt(text.length() - 1) == '\n') {
+            drawLf(gc, new Rect(gutter.width() + run.textLine().width(), top + lineHeight * 0.1, Base.numberCharacterWidth(gc.getFont()), lineHeight).smaller(0.5));
+        }
+
         if (run.layout().x() == 0) {
             gutter.draw(gc, run, top, lineHeight);
         }
-
         if (ime.enabled()) {
             ime.drawCompose(gc, run, top, lineHeight, left);
         }
     }
 
+
     public void draw(GraphicsContext gc, Rect rect) {
         if (rect == null) return;
         draw(gc, rect.x(), rect.y(), rect.w(), rect.h());
+    }
+
+    public void drawLf(GraphicsContext gc, Rect r) {
+        double[] xPoints = new double[] { r.x(), r.x() + r.w() / 2, r.x() + r.w() };
+        double[] yPoints = new double[] { r.y() + r.h() * 0.75, r.y() + r.h(), r.y() + r.h() * 0.75 };
+        gc.setLineWidth(1);
+        gc.setStroke(Color.LIGHTGRAY);
+        gc.strokePolyline(xPoints, yPoints, 3);
+        gc.strokeLine(r.x() + r.w() / 2, r.y(), r.x() + r.w() / 2, r.y() + r.h());
     }
 
     public void tick(GraphicsContext gc) {

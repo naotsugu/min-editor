@@ -25,6 +25,14 @@ package com.mammb.code.editor2.ui.pane;
  */
 public record Rect(double x, double y, double w, double h) {
 
+    public double x2() {
+        return x + w;
+    }
+
+    public double y2() {
+        return y + h;
+    }
+
     public Rect smaller() {
         return smaller(0.7);
     }
@@ -32,8 +40,8 @@ public record Rect(double x, double y, double w, double h) {
     public Rect smaller(double scale) {
         if (scale >= 1) throw new IllegalArgumentException();
         return new Rect(
-            x + x * (1 - scale) / 2,
-            y + y * (1 - scale) / 2,
+            x + w * (1 - scale) / 2,
+            y + h * (1 - scale) / 2,
             w * scale,
             h * scale);
     }
