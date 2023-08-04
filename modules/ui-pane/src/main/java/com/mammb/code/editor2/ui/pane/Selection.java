@@ -44,7 +44,7 @@ public interface Selection {
     void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
 
     default int length() {
-        return max().offset() - min().offset();
+        return started() ? max().offset() - min().offset() : 0;
     }
 
     default OffsetPoint min() {

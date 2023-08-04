@@ -207,6 +207,7 @@ public class EditorModel {
         }
     }
 
+    // -- focus behavior  --------------------------------------------------
     public void focusIn(GraphicsContext gc) {
         caret.draw(gc, gutter.width());
     }
@@ -266,6 +267,16 @@ public class EditorModel {
     public void selectTo() {
         if (selection.started()) {
             selection.to(caret.offsetPoint());
+        }
+    }
+    private void selectionDelete() {
+        if (selection.length() > 0) {
+            Textual text = buffer.subText(selection.min(), selection.length());
+            buffer.push(Edit.delete(text.point(), text.text()));
+            selection.clear();
+            caret.at(text.point().offset(), true);
+            texts.markDirty();
+            caret.markDirty();
         }
     }
     public void moveCaretRight() {
@@ -360,6 +371,7 @@ public class EditorModel {
     // -- edit behavior -------------------------------------------------------
     public void input(String value) {
         scrollToCaret();
+        selectionDelete();
         OffsetPoint caretPoint = caret.offsetPoint();
         buffer.push(Edit.insert(caretPoint, value));
         texts.markDirty();
@@ -368,6 +380,10 @@ public class EditorModel {
     }
     public void delete() {
         scrollToCaret();
+        if (selection.length() > 0) {
+            selectionDelete();
+            return;
+        }
         OffsetPoint caretPoint = caret.offsetPoint();
         LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
         if (layoutLine == null) return;
@@ -377,6 +393,10 @@ public class EditorModel {
     }
     public void backspace() {
         scrollToCaret();
+        if (selection.length() > 0) {
+            selectionDelete();
+            return;
+        }
         if (caret.offset() == 0) return;
         OffsetPoint caretPoint = caret.offsetPoint();
         LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
@@ -459,7 +479,7 @@ public class EditorModel {
      * @param cut need cut?
      */
     private void copyToClipboard(boolean cut) {
-        if (selection.started() && selection.length() > 0) {
+        if (selection.length() > 0) {
             Textual text = buffer.subText(selection.min(), selection.length());
             Clipboard.put(text.text());
             if (cut) {
