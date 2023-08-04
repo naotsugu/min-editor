@@ -44,6 +44,8 @@ public class LinearTextList implements TextList {
     private final Translate<Textual, StyledText> styling;
     /** The LineLayout. */
     private final LineLayout layout = new FxLayoutBuilder();
+    /** The count of rollup lines. */
+    private int rollup = 0;
 
     /**
      * Constructor.
@@ -89,6 +91,16 @@ public class LinearTextList implements TextList {
     @Override
     public int prev(int n) {
 
+        if (rollup > 0) {
+            if (rollup >= n) {
+                rollup -= n;
+                return n;
+            } else {
+                n -= rollup;
+                rollup = 0;
+            }
+        }
+
         if (n <= 0) return 0;
 
         List<Textual> added = buffer.prev(n);
@@ -119,6 +131,9 @@ public class LinearTextList implements TextList {
 
         List<Textual> added = buffer.next(n);
         int size = added.size();
+        if (size < n) {
+            rollup = Math.min(rollup + (n - size), buffer.maxLineSize() / 2);
+        }
         if (size == 0) {
             return 0;
         }
