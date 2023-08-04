@@ -451,7 +451,4 @@ public class EditorModel {
         }
     }
 
-
-    public record Rect(double x, double y, double w, double h) { }
-
 }

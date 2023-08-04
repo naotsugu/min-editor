@@ -90,7 +90,7 @@ public class Caret {
      * Clear.
      * @param gc the graphics context
      */
-    public EditorModel.Rect clear(GraphicsContext gc, double left) {
+    public Rect clear(GraphicsContext gc, double left) {
         if (ensureLayout() == null) return null;
         double dx = x + left - 0.5;
         double dy = y;
@@ -98,7 +98,7 @@ public class Caret {
         double dh = line.height();
         gc.clearRect(dx, dy, dw, dh);
         drawn = false;
-        return new EditorModel.Rect(dx - left, dy, dw, dh);
+        return new Rect(dx - left, dy, dw, dh);
     }
 
 
