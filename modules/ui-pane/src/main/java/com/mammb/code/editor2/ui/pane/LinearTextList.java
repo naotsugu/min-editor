@@ -79,7 +79,7 @@ public class LinearTextList implements TextList {
                 lines.add(translator.applyTo(textual));
             }
         }
-        return lines;
+        return (rollup > 0) ? lines.subList(rollup, lines.size()): lines;
     }
 
     @Override
