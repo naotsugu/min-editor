@@ -36,7 +36,7 @@ import java.util.List;
 public class WrapTextList implements TextList {
 
     /** The edit buffer. */
-    private final TextBuffer<Textual> editBuffer;
+    private final TextBuffer<Textual> buffer;
     /** The text translator. */
     private final Translate<Textual, List<TextLine>> translator;
     /** The styling. */
@@ -48,48 +48,49 @@ public class WrapTextList implements TextList {
     private final List<TextLine> lines = new LinkedList<>();
     /** The offset of lines. */
     private int lineOffset = 0;
-
+    /** The count of rollup lines. */
+    private int rollup = 0;
 
     /**
      * Constructor.
-     * @param editBuffer the edit buffer
+     * @param buffer the edit buffer
      */
-    public WrapTextList(TextBuffer<Textual> editBuffer) {
-        this(editBuffer, StylingTranslate.passThrough(), -1);
+    public WrapTextList(TextBuffer<Textual> buffer) {
+        this(buffer, StylingTranslate.passThrough(), -1);
     }
 
 
     /**
      * Constructor.
-     * @param editBuffer the edit buffer
+     * @param buffer the edit buffer
      * @param styling the styling
      * @param wrapWidth the wrap width
      */
     public WrapTextList(
-            TextBuffer<Textual> editBuffer,
+            TextBuffer<Textual> buffer,
             Translate<Textual, StyledText> styling,
             double wrapWidth) {
-        this.editBuffer = editBuffer;
+        this.buffer = buffer;
         this.styling = styling;
         this.translator = translator(layout, wrapWidth, styling);
     }
 
 
     public TextList asLinear() {
-        return new LinearTextList(editBuffer, styling);
+        return new LinearTextList(buffer, styling);
     }
 
 
     @Override
     public List<TextLine> lines() {
         if (lines.isEmpty()) {
-            for (Textual textual : editBuffer.texts()) {
+            for (Textual textual : buffer.texts()) {
                 lines.addAll(translator.applyTo(textual));
             }
             lineOffset = 0;
         }
-        int toIndex = lineOffset + editBuffer.maxLineSize();
-        return lines.subList(lineOffset, Math.min(toIndex, lines.size()));
+        int toIndex = lineOffset + buffer.maxLineSize();
+        return lines.subList(lineOffset + rollup, Math.min(toIndex, lines.size()));
     }
 
     @Override
@@ -99,7 +100,19 @@ public class WrapTextList implements TextList {
 
     @Override
     public int prev(int n) {
+
+        if (rollup > 0) {
+            if (rollup >= n) {
+                rollup -= n;
+                return n;
+            } else {
+                n -= rollup;
+                rollup = 0;
+            }
+        }
+
         if (n <= 0) return 0;
+
         int count = 0;
         for (int i = 0; i < n; i++) {
             int ret = prev();
@@ -112,7 +125,7 @@ public class WrapTextList implements TextList {
 
     private int prev() {
         if (lineOffset == 0) {
-            List<Textual> added = editBuffer.prev(1);
+            List<Textual> added = buffer.prev(1);
             int size = added.size();
             if (size == 0) return 0;
 
@@ -133,7 +146,10 @@ public class WrapTextList implements TextList {
         int count = 0;
         for (int i = 0; i < n; i++) {
             int ret = next();
-            if (ret == 0) return count;
+            if (ret == 0) {
+                rollup = Math.min(rollup + (n - i), buffer.maxLineSize() / 2);
+                return count;
+            }
             count += ret;
         }
         return count;
@@ -141,8 +157,8 @@ public class WrapTextList implements TextList {
 
 
     private int next() {
-        if (lines.size() <= lineOffset + editBuffer.maxLineSize()) {
-            List<Textual> added = editBuffer.next(1);
+        if (lines.size() <= lineOffset + buffer.maxLineSize()) {
+            List<Textual> added = buffer.next(1);
             int size = added.size();
             if (size == 0) return 0;
 
@@ -171,9 +187,9 @@ public class WrapTextList implements TextList {
         if (first > row || row > last) {
             if (row < first) {
                 int nRow = first - row;
-                List<Textual> added = editBuffer.prev(nRow);
-                if (added.size() >= editBuffer.maxLineSize()) {
-                    added.subList(editBuffer.maxLineSize(), added.size()).clear();
+                List<Textual> added = buffer.prev(nRow);
+                if (added.size() >= buffer.maxLineSize()) {
+                    added.subList(buffer.maxLineSize(), added.size()).clear();
                 }
                 removeTailRow(lines, added.size());
                 List<TextLine> list = added.stream().map(translator::applyTo)
@@ -181,7 +197,7 @@ public class WrapTextList implements TextList {
                 lines.addAll(0, list);
             } else {
                 int nRow = row - last;
-                List<Textual> added = editBuffer.next(nRow);
+                List<Textual> added = buffer.next(nRow);
                 int removedCount = removeHeadRow(lines, added.size());
                 List<TextLine> list = added.stream().map(translator::applyTo)
                     .flatMap(Collection::stream).toList();
@@ -204,7 +220,7 @@ public class WrapTextList implements TextList {
 
     @Override
     public int capacity() {
-        return editBuffer.maxLineSize();
+        return buffer.maxLineSize();
     }
 
     @Override
