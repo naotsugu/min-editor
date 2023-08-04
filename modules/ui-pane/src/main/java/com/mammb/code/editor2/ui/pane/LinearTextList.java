@@ -93,7 +93,9 @@ public class LinearTextList implements TextList {
 
         List<Textual> added = buffer.prev(n);
         int size = added.size();
-        if (size == 0) return 0;
+        if (size == 0) {
+            return 0;
+        }
 
         if (size >= buffer.maxLineSize()) {
             // if N exceeds the number of page lines, clear and add all.
@@ -117,7 +119,9 @@ public class LinearTextList implements TextList {
 
         List<Textual> added = buffer.next(n);
         int size = added.size();
-        if (size == 0) return 0;
+        if (size == 0) {
+            return 0;
+        }
 
         // delete rows to avoid inadvertently increasing the list size.
         lines.subList(0, Math.min(size, lines.size())).clear();

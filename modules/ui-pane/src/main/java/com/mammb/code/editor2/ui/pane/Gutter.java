@@ -55,6 +55,11 @@ public class Gutter {
 
     public void draw(GraphicsContext gc, TextRun run, double top, double lineHeight) {
 
+        if (run.textLine().lineIndex() > 0) {
+            gc.clearRect(0, top, width - 0.5, lineHeight);
+            return;
+        }
+
         String num = String.valueOf(run.source().point().row() + 1);
         growWidthIf(num);
 
