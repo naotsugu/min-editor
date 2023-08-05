@@ -169,7 +169,7 @@ public class EditorModel {
             drawLf(gc, new Rect(
                 left + run.layout().width(),
                 top + lineHeight * 0.1,
-                Base.numberCharacterWidth(gc.getFont()),
+                Global.numberCharacterWidth(gc.getFont()),
                 lineHeight).smaller(0.5));
         }
 
@@ -268,6 +268,11 @@ public class EditorModel {
         if (selection.started()) {
             selection.to(caret.offsetPoint());
         }
+    }
+    public void selectAll() {
+        selection.start(OffsetPoint.zero);
+        var metrics = buffer.metrics();
+        selection.to(OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
     }
     private void selectionDelete() {
         if (selection.length() > 0) {
@@ -467,7 +472,7 @@ public class EditorModel {
     // -- private -------------------------------------------------------------
 
     private int screenRowSize(double height) {
-        return (int) Math.ceil(height / Base.fontMetrics.lineHeight());
+        return (int) Math.ceil(height / Global.fontMetrics.lineHeight());
     }
 
     private LayoutLine layoutLine(int offset) {

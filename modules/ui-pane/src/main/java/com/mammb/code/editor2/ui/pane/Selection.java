@@ -25,14 +25,27 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public interface Selection {
 
+    /**
+     * Start select.
+     * @param offset the point of select start
+     */
     void start(OffsetPoint offset);
 
+    /**
+     * Move select to.
+     * @param toOffset the point of select to
+     */
     void to(OffsetPoint toOffset);
 
+    /**
+     * Start dragging.
+     * @param offset the point of dragging select start
+     */
     void startDragging(OffsetPoint offset);
 
-    boolean isDragging();
-
+    /**
+     * Clear selection.
+     */
     void clear();
 
     OffsetPoint startOffset();
@@ -40,6 +53,8 @@ public interface Selection {
     OffsetPoint endOffset();
 
     boolean started();
+
+    boolean isDragging();
 
     void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
 

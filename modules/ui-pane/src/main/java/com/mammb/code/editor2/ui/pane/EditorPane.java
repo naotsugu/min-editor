@@ -43,6 +43,9 @@ import java.util.ArrayList;
  */
 public class EditorPane extends StackPane {
 
+    /** The timeline. */
+    private final Timeline timeline = new Timeline();
+
     /** The Canvas. */
     private Canvas canvas;
     /** The FX GraphicsContext. */
@@ -50,12 +53,15 @@ public class EditorPane extends StackPane {
     /** The editor model. */
     private EditorModel editorModel;
 
+    /** The margin. */
     double margin = 5.5;
 
-    /** The timeline. */
-    private final Timeline timeline = new Timeline();
 
-
+    /**
+     * Constructor.
+     * @param width the width
+     * @param height the height
+     */
     public EditorPane(double width, double height) {
         setWidth(width);
         setHeight(height);
@@ -72,7 +78,7 @@ public class EditorPane extends StackPane {
         initHandler();
         getChildren().add(canvas);
 
-        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> tick()));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> editorModel.tick(gc)));
         timeline.setCycleCount(-1);
         timeline.play();
     }
@@ -93,7 +99,7 @@ public class EditorPane extends StackPane {
         canvas.setOnInputMethodTextChanged(this::handleInputMethod);
 
         layoutBoundsProperty().addListener(this::layoutBoundsChanged);
-        canvas.focusedProperty().addListener(this::focusedChanged);
+        canvas.focusedProperty().addListener(this::focusChanged);
     }
 
 
@@ -113,6 +119,7 @@ public class EditorPane extends StackPane {
         File file = fc.showOpenDialog(getScene().getWindow());
         if (file != null && file.canRead()) open(file.toPath());
     }
+
     private void saveChoose() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Save As...");
@@ -131,7 +138,6 @@ public class EditorPane extends StackPane {
             editorModel.draw(gc);
         }
     }
-
 
     public void handleMouseClicked(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
@@ -162,8 +168,10 @@ public class EditorPane extends StackPane {
             case CUT     -> { editorModel.cutToClipboard(); editorModel.draw(gc); return; }
             case UNDO    -> { editorModel.undo(); editorModel.draw(gc); return; }
             case REDO    -> { editorModel.redo(); editorModel.draw(gc); return; }
+            case HOME    -> { editorModel.moveCaretLineHome(); return; }
+            case END     -> { editorModel.moveCaretLineEnd(); return; }
+            case SELECT_ALL -> { editorModel.selectAll(); return; }
         }
-
 
         if (Keys.isSelectCombination(e)) {
             if (e.isShiftDown()) {
@@ -257,7 +265,13 @@ public class EditorPane extends StackPane {
         }
     }
 
-    private void focusedChanged(
+    /**
+     * Focus changed handler.
+     * @param observable the ObservableValue which value changed
+     * @param oldValue the old value
+     * @param focused the new value
+     */
+    private void focusChanged(
             ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
         if (focused) {
             editorModel.focusIn(gc);
@@ -268,15 +282,11 @@ public class EditorPane extends StackPane {
         }
     }
 
-    private void tick() {
-        editorModel.tick(gc);
-    }
-
     /**
      * Create input method request.
      * @return the InputMethodRequests
      */
-    public InputMethodRequests inputMethodRequests() {
+    private InputMethodRequests inputMethodRequests() {
         return new InputMethodRequests() {
             @Override
             public Point2D getTextLocation(int offset) {

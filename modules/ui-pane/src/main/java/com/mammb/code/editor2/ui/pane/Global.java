@@ -28,7 +28,7 @@ import java.util.stream.IntStream;
  * Global config.
  * @author Naotsugu Kobayashi
  */
-public class Base {
+public class Global {
 
     public static final FontStyle<Font, Color> style = FxFontStyle.of();
 

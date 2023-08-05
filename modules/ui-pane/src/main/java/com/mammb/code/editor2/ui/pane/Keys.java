@@ -17,6 +17,7 @@ package com.mammb.code.editor2.ui.pane;
 
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 
@@ -28,10 +29,13 @@ import java.util.function.Predicate;
  */
 public class Keys {
 
+    /** The key action type.*/
     public enum Action {
         OPEN, SAVE, SAVE_AS,
         COPY, PASTE, CUT,
         UNDO, REDO,
+        HOME, END,
+        SELECT_ALL,
         WRAP, EMPTY,
         ;
     }
@@ -52,6 +56,9 @@ public class Keys {
     public static final KeyCombination SC_A = new KeyCharacterCombination("a", KeyCombination.SHORTCUT_DOWN);
 
     public static final KeyCombination SC_W = new KeyCharacterCombination("w", KeyCombination.SHORTCUT_DOWN);
+
+    public static final KeyCombination SC_END  = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.SHORTCUT_DOWN);
+    public static final KeyCombination SC_HOME = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.SHORTCUT_DOWN);
 
     public static final Predicate<KeyEvent> controlKeysFilter = e ->
         System.getProperty("os.name").startsWith("Windows")
@@ -82,6 +89,9 @@ public class Keys {
         else if (Keys.SC_X.match(e)) return Action.CUT;
         else if (Keys.SC_Z.match(e)) return Action.UNDO;
         else if (Keys.SC_Y.match(e)|| Keys.SC_SZ.match(e)) return Action.REDO;
+        else if (Keys.SC_HOME.match(e)) return Action.HOME;
+        else if (Keys.SC_END.match(e)) return Action.END;
+        else if (Keys.SC_A.match(e)) return Action.SELECT_ALL;
         else return Action.EMPTY;
     }
 }

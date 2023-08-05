@@ -34,11 +34,11 @@ public class Gutter {
     private boolean widthChanged;
 
     public Gutter() {
-        this.font = Base.style.font();
-        this.chWidth = Base.numWidth;
+        this.font = Global.style.font();
+        this.chWidth = Global.numWidth;
         this.width = Math.ceil(chWidth * 5);
         this.widthChanged = false;
-        this.color = Base.flipBrightness(Base.style.color());
+        this.color = Global.flipBrightness(Global.style.color());
     }
 
 
@@ -82,7 +82,7 @@ public class Gutter {
 
     public void setFont(Font font) {
         this.font = font;
-        this.chWidth = Base.numberCharacterWidth(font);
+        this.chWidth = Global.numberCharacterWidth(font);
         this.widthChanged = true;
     }
 
