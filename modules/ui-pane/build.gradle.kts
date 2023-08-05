@@ -9,4 +9,5 @@ dependencies {
     implementation(project(":model-text"))
     implementation(project(":model-edit"))
     implementation(project(":model-layout-fx"))
+    implementation(project(":ui-control"))
 }

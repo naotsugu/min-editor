@@ -80,7 +80,7 @@ public class EditorModel {
      * @param path the path
      */
     public EditorModel(double width, double height, Path path) {
-        this.buffer = TextBuffer.editBuffer(screenRowSize(height), path);
+        this.buffer = TextBuffer.editBuffer(path, screenRowSize(height));
         this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
         this.gutter = new Gutter();
         this.caret = new Caret(this::layoutLine);
@@ -89,6 +89,7 @@ public class EditorModel {
         this.width = width;
         this.height = height;
     }
+
 
     /**
      * Draw the screen.

@@ -16,104 +16,57 @@
 package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.Metrics;
-import com.mammb.code.editor2.model.buffer.Traverse;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditTo;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 
 /**
- * MetricsUtf8.
+ * MetricsImpl.
  * @author Naotsugu Kobayashi
  */
-public class MetricsUtf8 implements Traverse, Metrics {
+public class MetricsImpl implements Metrics, Consumer<byte[]> {
 
-    private long byteLen = 0;
-    private int cpCount = 0;
-    private int chCount = 0;
-    private int invalid = 0;
-    private int crCount = 0;
-    private int lfCount = 0;
+    /** The content path. */
     private Path path;
+    /** The byte length of content. */
+    private long byteLen = 0;
+    /** The code point count. */
+    private int cpCount = 0;
+    /** The char count. */
+    private int chCount = 0;
+    /** The invalid code point count. */
+    private int invalid = 0;
+    /** The carriage return count. */
+    private int crCount = 0;
+    /** The line feed count. */
+    private int lfCount = 0;
 
 
-    public MetricsUtf8(Path path) {
+    /**
+     * Constructor.
+     * @param path the content path
+     */
+    public MetricsImpl(Path path) {
         this.path = path;
     }
+
+
+    /**
+     * Set the content path.
+     * @param path the content path
+     */
+    public void setPath(Path path) {
+        this.path = path;
+    }
+
 
     @Override
-    public int accept(byte[] bytes) {
-        int before = cpCount;
+    public void accept(byte[] bytes) {
         plus(bytes);
-        return cpCount - before;
-    }
-
-
-    private void plus(byte[] bytes) {
-
-        if (bytes == null || bytes.length == 0) return;
-
-        for (int i = 0; i < bytes.length;) {
-            byte b = bytes[i];
-            if ((b & 0x80) == 0x00){
-                if (b == '\r') crCount++;
-                if (b == '\n') lfCount++;
-                i += 1;
-            } else if ((b & 0xE0) == 0xC0) {
-                i += 2;
-            } else if ((b & 0xF0) == 0xE0) {
-                i += 3;
-            } else if ((b & 0xF8) == 0xF0) {
-                chCount++;
-                i += 4;
-            } else {
-                invalid++;
-                i += 1;
-            }
-            chCount++;
-            cpCount++;
-        }
-        byteLen += bytes.length;
-    }
-
-
-    private void minus(byte[] bytes) {
-
-        if (bytes == null || bytes.length == 0) return;
-
-        for (int i = 0; i < bytes.length;) {
-            byte b = bytes[i];
-            if ((b & 0x80) == 0x00){
-                if (b == '\r') crCount--;
-                if (b == '\n') lfCount--;
-                i += 1;
-            } else if ((b & 0xE0) == 0xC0) {
-                i += 2;
-            } else if ((b & 0xF0) == 0xE0) {
-                i += 3;
-            } else if ((b & 0xF8) == 0xF0) {
-                chCount--;
-                i += 4;
-            } else {
-                invalid--;
-                i += 1;
-            }
-            chCount--;
-            cpCount--;
-        }
-        byteLen -= bytes.length;
-    }
-
-
-    public void apply(Edit edit) {
-        edit.apply(editTo);
-    }
-
-
-    public void setPath(Path pate) {
-        this.path = path;
     }
 
     @Override
@@ -151,6 +104,79 @@ public class MetricsUtf8 implements Traverse, Metrics {
         return lfCount;
     }
 
+    @Override
+    public void apply(Edit edit) {
+        edit.apply(editTo);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", MetricsImpl.class.getSimpleName() + "[", "]")
+            .add("path=" + path)
+            .add("byteLen=" + byteLen)
+            .add("cpCount=" + cpCount)
+            .add("chCount=" + chCount)
+            .add("invalid=" + invalid)
+            .add("crCount=" + crCount)
+            .add("lfCount=" + lfCount)
+            .toString();
+    }
+
+    // -- private -------------------------------------------------------------
+
+    private void plus(byte[] bytes) {
+
+        if (bytes == null || bytes.length == 0) return;
+
+        for (int i = 0; i < bytes.length;) {
+            byte b = bytes[i];
+            if ((b & 0x80) == 0x00){
+                if (b == '\r') crCount++;
+                if (b == '\n') lfCount++;
+                i += 1;
+            } else if ((b & 0xE0) == 0xC0) {
+                i += 2;
+            } else if ((b & 0xF0) == 0xE0) {
+                i += 3;
+            } else if ((b & 0xF8) == 0xF0) {
+                chCount++;
+                i += 4;
+            } else {
+                invalid++;
+                i += 1;
+            }
+            chCount++;
+            cpCount++;
+        }
+        byteLen += bytes.length;
+    }
+
+    private void minus(byte[] bytes) {
+
+        if (bytes == null || bytes.length == 0) return;
+
+        for (int i = 0; i < bytes.length;) {
+            byte b = bytes[i];
+            if ((b & 0x80) == 0x00){
+                if (b == '\r') crCount--;
+                if (b == '\n') lfCount--;
+                i += 1;
+            } else if ((b & 0xE0) == 0xC0) {
+                i += 2;
+            } else if ((b & 0xF0) == 0xE0) {
+                i += 3;
+            } else if ((b & 0xF8) == 0xF0) {
+                chCount--;
+                i += 4;
+            } else {
+                invalid--;
+                i += 1;
+            }
+            chCount--;
+            cpCount--;
+        }
+        byteLen -= bytes.length;
+    }
 
     private final EditTo editTo = new EditTo() {
 
@@ -165,16 +191,4 @@ public class MetricsUtf8 implements Traverse, Metrics {
         }
     };
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", MetricsUtf8.class.getSimpleName() + "[", "]")
-            .add("path=" + path)
-            .add("byteLen=" + byteLen)
-            .add("cpCount=" + cpCount)
-            .add("chCount=" + chCount)
-            .add("invalid=" + invalid)
-            .add("crCount=" + crCount)
-            .add("lfCount=" + lfCount)
-            .toString();
-    }
 }

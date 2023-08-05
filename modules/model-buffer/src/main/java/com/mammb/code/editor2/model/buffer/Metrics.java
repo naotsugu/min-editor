@@ -17,7 +17,6 @@ package com.mammb.code.editor2.model.buffer;
 
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.text.LineEnding;
-
 import java.nio.file.Path;
 
 import static java.lang.System.Logger.Level.WARNING;
@@ -37,21 +36,47 @@ public interface Metrics {
      */
     Path path();
 
+    /**
+     * Get the byte length of content.
+     * @return the byte length of content
+     */
     long byteLen();
 
+    /**
+     * Get the code point count.
+     * @return the code point count
+     */
     int cpCount();
 
+    /**
+     * Get the char count.
+     * @return the char count
+     */
     int chCount();
 
+    /**
+     * Get the invalid code point count.
+     * @return the invalid code point count
+     */
     int invalidCpCount();
 
+    /**
+     * Get the carriage return count.
+     * @return the carriage return count
+     */
     int crCount();
 
+    /**
+     * Get the line feed count.
+     * @return the line feed count
+     */
     int lfCount();
 
+    /**
+     * Apply the edit.
+     * @param edit the edit
+     */
     void apply(Edit edit);
-
-    void setPath(Path pate);
 
     /**
      * Get the line ending.

@@ -20,12 +20,12 @@ import com.mammb.code.editor2.model.buffer.impl.PtContentMirror;
 import com.mammb.code.editor2.model.buffer.impl.Until;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.piecetable.buffer.Charsets;
-
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -102,23 +102,27 @@ public interface Content {
     /**
      * Traverse the all rows
      * @param traverse the traverse
-     * @return the result of traverse
      * @param <T> the type of traverse
      */
-    default <T extends Traverse> T traverseRow(T traverse) {
+    default <T extends Traverse> void traverseRow(T traverse) {
         Predicate<byte[]> until = Until.lfInclusive();
         int cpOffset = 0;
         for (;;) {
             byte[] bytes = bytes(cpOffset, until);
-            int n = traverse.accept(bytes);
-            if (n == 0) break;
-            cpOffset += n;
+            if (bytes.length == 0) break;
+            cpOffset += traverse.accept(bytes);
         }
-        return traverse;
     }
 
 
-    static Content of(Path path) {
+    /**
+     * Create a new Content
+     * @param traverse
+     * @param path the content path
+     * @param traverse the bytes traverse at initial loading
+     * @return a created Content
+     */
+    static Content of(Path path, Consumer<byte[]> traverse) {
 
         if (path == null) {
             return new PtContent();
@@ -132,8 +136,8 @@ public interface Content {
         }
 
         return cs.equals(StandardCharsets.UTF_8)
-            ? new PtContent(path)
-            : new PtContentMirror(path, cs);
+            ? new PtContent(path, traverse)
+            : new PtContentMirror(path, cs, traverse);
     }
 
 }

@@ -16,12 +16,10 @@
 package com.mammb.code.editor2.model.buffer;
 
 import com.mammb.code.editor2.model.buffer.impl.EditBuffer;
-import com.mammb.code.editor2.model.buffer.impl.PtContentMirror;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.TextList;
 import com.mammb.code.editor2.model.text.Textual;
-
 import java.nio.file.Path;
 import java.util.List;
 
@@ -110,12 +108,12 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
 
     /**
      * Create a new text buffer.
-     * @param maxRowSize the max row size
      * @param path the path of content
+     * @param maxRowSize the max row size
      * @return a new text buffer
      */
-    static TextBuffer<Textual> editBuffer(int maxRowSize, Path path) {
-        return new EditBuffer(Content.of(path), maxRowSize);
+    static TextBuffer<Textual> editBuffer(Path path, int maxRowSize) {
+        return new EditBuffer(path, maxRowSize);
     }
 
 }

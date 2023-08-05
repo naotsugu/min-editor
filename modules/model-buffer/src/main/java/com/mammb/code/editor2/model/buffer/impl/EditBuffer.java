@@ -28,7 +28,6 @@ import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -47,20 +46,21 @@ public class EditBuffer implements TextBuffer<Textual> {
     private final EditQueue editQueue;
 
     /** The metrics. */
-    private final Metrics metrics;
+    private final MetricsImpl metrics;
 
 
     /**
      * Constructor.
-     * @param content the content
+     * @param path the path of content
      * @param maxRowSize the row size of slice
      */
-    public EditBuffer(Content content, int maxRowSize) {
-        this.content = Objects.requireNonNull(content);
+    public EditBuffer(Path path, int maxRowSize) {
+        this.metrics = new MetricsImpl(path);
+        this.content = Content.of(path, metrics);
         this.slice = Slice.of(maxRowSize, new RawAdapter(content));
         this.editQueue = EditQueue.of(editTo(content));
-        this.metrics = content.traverseRow(new MetricsUtf8(content.path()));
     }
+
 
     @Override
     public List<Textual> texts() {
@@ -73,6 +73,7 @@ public class EditBuffer implements TextBuffer<Textual> {
         return slice.texts().stream()
             .map(edit::applyTo)
             .collect(Collectors.toList());
+
     }
 
     @Override

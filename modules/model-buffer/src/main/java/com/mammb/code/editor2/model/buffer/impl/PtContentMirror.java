@@ -17,7 +17,6 @@ package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.Content;
 import com.mammb.code.editor2.model.text.OffsetPoint;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -25,6 +24,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -50,13 +50,14 @@ public class PtContentMirror implements Content {
      * Constructor.
      * @param original the source path
      * @param charset the charset of the original content
+     * @param traverse the bytes traverse at initial loading
      */
-    public PtContentMirror(Path original, Charset charset) {
+    public PtContentMirror(Path original, Charset charset, Consumer<byte[]> traverse) {
         this.original = original;
         this.originalCs = charset;
         this.mirror = createMirror(original);
         copy(original, originalCs, mirror, StandardCharsets.UTF_8);
-        this.peer = new PtContent(mirror);
+        this.peer = new PtContent(mirror, traverse);
     }
 
     @Override

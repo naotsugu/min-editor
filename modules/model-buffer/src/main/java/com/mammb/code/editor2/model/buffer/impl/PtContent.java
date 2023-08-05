@@ -19,6 +19,7 @@ import com.mammb.code.editor2.model.buffer.Content;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.piecetable.PieceTable;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -46,6 +47,16 @@ public class PtContent implements Content {
      */
     public PtContent(Path path) {
         this.pt = PieceTable.of(path);
+        this.path = path;
+    }
+
+    /**
+     * Create content for specified path.
+     * @param path the content path
+     * @param traverse the bytes traverse at initial loading
+     */
+    public PtContent(Path path, Consumer<byte[]> traverse) {
+        this.pt = PieceTable.of(path, traverse);
         this.path = path;
     }
 

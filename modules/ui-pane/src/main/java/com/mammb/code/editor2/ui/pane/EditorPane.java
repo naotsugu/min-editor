@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.ui.control.ScrollBar;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
@@ -33,6 +34,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -52,6 +54,8 @@ public class EditorPane extends StackPane {
     private GraphicsContext gc;
     /** The editor model. */
     private EditorModel editorModel;
+
+    private ScrollBar vScrollBar;
 
     /** The margin. */
     double margin = 5.5;
