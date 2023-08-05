@@ -97,14 +97,15 @@ public interface Content {
     /**
      * Traverse the all rows
      * @param traverse the traverse
-     * @return
-     * @param <T>
+     * @return the result of traverse
+     * @param <T> the type of traverse
      */
     default <T extends Traverse> T traverseRow(T traverse) {
-        Predicate<byte[]> lfInclusive = Until.lfInclusive();
+        Predicate<byte[]> until = Until.lfInclusive();
         int cpOffset = 0;
         for (;;) {
-            int n = traverse.accept(bytes(cpOffset, lfInclusive));
+            byte[] bytes = bytes(cpOffset, until);
+            int n = traverse.accept(bytes);
             if (n == 0) break;
             cpOffset += n;
         }

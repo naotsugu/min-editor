@@ -71,7 +71,10 @@ public class Until {
 
 
     /** CharLen. */
-    static class CharLen implements Predicate<byte[]> {
+    public static class CharLen implements Predicate<byte[]> {
+
+        /** The original char count. */
+        private final int originalCount;
 
         /** The char count. */
         private int count;
@@ -81,19 +84,30 @@ public class Until {
          * @param count the line feed count
          */
         private CharLen(int count) {
+            this.originalCount = count;
             this.count = count;
         }
 
         @Override
         public boolean test(byte[] bytes) {
             count -= lengthByteAsUtf16(bytes[0]);
-            return count < 0;
+            boolean ret = count < 0;
+            if (ret) {
+                count = originalCount;
+            }
+            return ret;
         }
+
     }
 
 
     /** LF. */
-    static class LF implements Predicate<byte[]> {
+    public static class LF implements Predicate<byte[]> {
+
+        /** The original line feed count. */
+        private final int originalCount;
+        /** The original exclusive flag. */
+        private final boolean originalExclusive;
 
         /** The line feed count. */
         private int count;
@@ -108,8 +122,11 @@ public class Until {
          */
         private LF(int count, boolean exclusive) {
             if (count <= 0) throw new IllegalArgumentException();
+            this.originalCount = count;
             this.count = count;
+            this.originalExclusive = exclusive;
             this.exclusive = exclusive;
+
         }
 
         @Override
@@ -121,8 +138,13 @@ public class Until {
             if (count <= 0) {
                 exclusive = true;
             }
+            if (ret) {
+                count = originalCount;
+                exclusive = originalExclusive;
+            }
             return ret;
         }
+
     }
 
 

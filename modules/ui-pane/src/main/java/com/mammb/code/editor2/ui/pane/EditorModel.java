@@ -34,11 +34,16 @@ import javafx.scene.text.Font;
 import java.nio.file.Path;
 import java.util.List;
 
+import static java.lang.System.Logger.Level.INFO;
+
 /**
  * EditorModel.
  * @author Naotsugu Kobayashi
  */
 public class EditorModel {
+
+    /** logger. */
+    private static final System.Logger log = System.getLogger(EditorModel.class.getName());
 
     /** The text buffer. */
     private final TextBuffer<Textual> buffer;
@@ -272,6 +277,7 @@ public class EditorModel {
     public void selectAll() {
         selection.start(OffsetPoint.zero);
         var metrics = buffer.metrics();
+        log.log(INFO, metrics);
         selection.to(OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
     }
     private void selectionDelete() {

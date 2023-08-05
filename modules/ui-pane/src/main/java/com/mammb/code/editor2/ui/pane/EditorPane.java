@@ -63,22 +63,27 @@ public class EditorPane extends StackPane {
      * @param height the height
      */
     public EditorPane(double width, double height) {
+
         setWidth(width);
         setHeight(height);
         double canvasWidth = width - margin;
         double canvasHeight = height - margin;
+
         editorModel = new EditorModel(canvasWidth, canvasHeight);
         canvas = new Canvas(canvasWidth, canvasHeight);
         canvas.setFocusTraversable(true);
         canvas.setAccessibleRole(AccessibleRole.TEXT_AREA);
         canvas.setLayoutX(margin);
         canvas.setLayoutY(margin);
+        getChildren().add(canvas);
+        initHandler();
+
         gc = canvas.getGraphicsContext2D();
         gc.setLineCap(StrokeLineCap.BUTT);
-        initHandler();
-        getChildren().add(canvas);
 
-        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> editorModel.tick(gc)));
+        timeline.getKeyFrames().add(
+            new KeyFrame(Duration.millis(500),
+                e -> editorModel.tick(gc)));
         timeline.setCycleCount(-1);
         timeline.play();
     }
@@ -97,9 +102,9 @@ public class EditorPane extends StackPane {
         setOnDragDropped(DragDrops.droppedHandler(this::open));
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethod);
+        canvas.focusedProperty().addListener(this::focusChanged);
 
         layoutBoundsProperty().addListener(this::layoutBoundsChanged);
-        canvas.focusedProperty().addListener(this::focusChanged);
     }
 
 
@@ -168,9 +173,9 @@ public class EditorPane extends StackPane {
             case CUT     -> { editorModel.cutToClipboard(); editorModel.draw(gc); return; }
             case UNDO    -> { editorModel.undo(); editorModel.draw(gc); return; }
             case REDO    -> { editorModel.redo(); editorModel.draw(gc); return; }
-            case HOME    -> { editorModel.moveCaretLineHome(); return; }
-            case END     -> { editorModel.moveCaretLineEnd(); return; }
-            case SELECT_ALL -> { editorModel.selectAll(); return; }
+            case HOME    -> { editorModel.moveCaretLineHome(); editorModel.draw(gc); return; }
+            case END     -> { editorModel.moveCaretLineEnd(); editorModel.draw(gc); return; }
+            case SELECT_ALL -> { editorModel.selectAll(); editorModel.draw(gc); return; }
         }
 
         if (Keys.isSelectCombination(e)) {

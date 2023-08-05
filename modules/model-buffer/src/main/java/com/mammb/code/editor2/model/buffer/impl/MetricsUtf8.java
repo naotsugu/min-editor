@@ -22,6 +22,7 @@ import com.mammb.code.editor2.model.edit.EditTo;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.StringJoiner;
 
 /**
  * MetricsUtf8.
@@ -164,4 +165,16 @@ public class MetricsUtf8 implements Traverse, Metrics {
         }
     };
 
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", MetricsUtf8.class.getSimpleName() + "[", "]")
+            .add("path=" + path)
+            .add("byteLen=" + byteLen)
+            .add("cpCount=" + cpCount)
+            .add("chCount=" + chCount)
+            .add("invalid=" + invalid)
+            .add("crCount=" + crCount)
+            .add("lfCount=" + lfCount)
+            .toString();
+    }
 }
