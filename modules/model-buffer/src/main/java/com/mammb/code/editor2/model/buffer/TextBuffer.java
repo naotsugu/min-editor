@@ -115,7 +115,7 @@ public interface TextBuffer<T extends Textual> extends TextList<T> {
      * @return a new text buffer
      */
     static TextBuffer<Textual> editBuffer(int maxRowSize, Path path) {
-        return new EditBuffer(PtContentMirror.of(path), maxRowSize);
+        return new EditBuffer(Content.of(path), maxRowSize);
     }
 
 }

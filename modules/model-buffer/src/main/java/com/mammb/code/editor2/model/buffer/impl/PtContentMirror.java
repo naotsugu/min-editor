@@ -17,8 +17,10 @@ package com.mammb.code.editor2.model.buffer.impl;
 
 import com.mammb.code.editor2.model.buffer.Content;
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.piecetable.buffer.Charsets;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -40,9 +42,15 @@ public class PtContentMirror implements Content {
     /** The copied path. */
     private Path mirror;
 
+    /** The peer. */
     private PtContent peer;
 
 
+    /**
+     * Constructor.
+     * @param original the source path
+     * @param charset the charset of the original content
+     */
     public PtContentMirror(Path original, Charset charset) {
         this.original = original;
         this.originalCs = charset;
@@ -50,16 +58,6 @@ public class PtContentMirror implements Content {
         copy(original, originalCs, mirror, StandardCharsets.UTF_8);
         this.peer = new PtContent(mirror);
     }
-
-
-    public static Content of(Path path) {
-        if (path == null) return new PtContent();
-        final Charset cs = detectCharset(path);
-        return cs.equals(StandardCharsets.UTF_8)
-            ? new PtContent(path)
-            : new PtContentMirror(path, cs);
-    }
-
 
     @Override
     public byte[] bytes(int cpOffset, Predicate<byte[]> until) {
@@ -97,15 +95,6 @@ public class PtContentMirror implements Content {
     @Override
     public Path path() {
         return original;
-    }
-
-
-    private static Charset detectCharset(Path path) {
-        try (var is = Files.newInputStream(path)) {
-            return Charsets.charsetOf(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 

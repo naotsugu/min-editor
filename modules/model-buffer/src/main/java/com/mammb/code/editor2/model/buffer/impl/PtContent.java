@@ -18,7 +18,6 @@ package com.mammb.code.editor2.model.buffer.impl;
 import com.mammb.code.editor2.model.buffer.Content;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.piecetable.PieceTable;
-
 import java.nio.file.Path;
 import java.util.function.Predicate;
 

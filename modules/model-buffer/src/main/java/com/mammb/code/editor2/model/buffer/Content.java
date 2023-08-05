@@ -15,11 +15,16 @@
  */
 package com.mammb.code.editor2.model.buffer;
 
+import com.mammb.code.editor2.model.buffer.impl.PtContent;
+import com.mammb.code.editor2.model.buffer.impl.PtContentMirror;
 import com.mammb.code.editor2.model.buffer.impl.Until;
 import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.piecetable.buffer.Charsets;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.function.Predicate;
 
@@ -110,6 +115,25 @@ public interface Content {
             cpOffset += n;
         }
         return traverse;
+    }
+
+
+    static Content of(Path path) {
+
+        if (path == null) {
+            return new PtContent();
+        }
+
+        final Charset cs;
+        try (var is = Files.newInputStream(path)) {
+            cs = Charsets.charsetOf(is);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return cs.equals(StandardCharsets.UTF_8)
+            ? new PtContent(path)
+            : new PtContentMirror(path, cs);
     }
 
 }
