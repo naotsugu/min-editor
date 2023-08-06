@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.ui.control;
-
-import com.mammb.code.editor2.ui.control.impl.VScrollBar;
+package com.mammb.code.editor.ui.control;
 
 /**
  * ScrollBar.
@@ -26,7 +24,4 @@ public interface ScrollBar {
     /** The width of scroll bar. */
     double WIDTH = 8;
 
-    static ScrollBar verticalOf() {
-        return new VScrollBar();
-    }
 }

@@ -15,12 +15,13 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
-import com.mammb.code.editor2.ui.control.ScrollBar;
+import com.mammb.code.editor.ui.control.VScrollBar;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -54,8 +55,8 @@ public class EditorPane extends StackPane {
     private GraphicsContext gc;
     /** The editor model. */
     private EditorModel editorModel;
-
-    private ScrollBar vScrollBar;
+    /** The vertical scroll bar for line scroll. */
+    private VScrollBar vScrollBar;
 
     /** The margin. */
     double margin = 5.5;
@@ -80,6 +81,11 @@ public class EditorPane extends StackPane {
         canvas.setLayoutX(margin);
         canvas.setLayoutY(margin);
         getChildren().add(canvas);
+
+        vScrollBar = new VScrollBar(Global.fgColor);
+        StackPane.setAlignment(vScrollBar, Pos.CENTER_RIGHT);
+        getChildren().add(vScrollBar);
+
         initHandler();
 
         gc = canvas.getGraphicsContext2D();

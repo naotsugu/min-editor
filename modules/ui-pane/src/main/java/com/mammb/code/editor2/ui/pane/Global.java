@@ -30,7 +30,11 @@ import java.util.stream.IntStream;
  */
 public class Global {
 
-    public static final FontStyle<Font, Color> style = FxFontStyle.of();
+    public static final Color fgColor = Color.BLACK;
+    public static final Color bgColor = Color.WHITE;
+
+    public static final FontStyle<Font, Color> style = FxFontStyle.of(fgColor);
+
 
     public static final FontMetrics<Font> fontMetrics = new FxFontMetrics(style.font());
 

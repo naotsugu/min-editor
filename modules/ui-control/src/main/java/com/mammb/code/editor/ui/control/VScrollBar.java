@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.ui.control.impl;
+package com.mammb.code.editor.ui.control;
 
-import com.mammb.code.editor2.ui.control.ScrollBar;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.AccessibleRole;
@@ -46,12 +45,16 @@ public class VScrollBar extends StackPane implements ScrollBar {
     /**
      * Constructor.
      */
-    public VScrollBar() {
-        setManaged(false);
-        setAccessibleRole(AccessibleRole.SCROLL_BAR);
-        setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, null, null)));
+    public VScrollBar(Color baseColor) {
+
+        final Color backGround = baseColor.deriveColor(0, 1, 1, 0.05);
 
         setWidth(WIDTH);
+        setPrefWidth(WIDTH);
+        setMaxWidth(WIDTH);
+        setBackground(new Background(new BackgroundFill(backGround, null, null)));
+        setAccessibleRole(AccessibleRole.SCROLL_BAR);
+
         getChildren().add(thumb);
 
         initListener();
