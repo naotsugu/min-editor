@@ -22,6 +22,6 @@ package com.mammb.code.editor.ui.control;
 public interface ScrollBar {
 
     /** The width of scroll bar. */
-    double WIDTH = 8;
+    double WIDTH = 10;
 
 }
