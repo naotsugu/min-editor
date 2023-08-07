@@ -72,6 +72,14 @@ public interface Metrics {
     int lfCount();
 
     /**
+     * Get the total row count.
+     * @return the total row count
+     */
+    default int rowCount() {
+        return lfCount() + 1;
+    }
+
+    /**
      * Get the line ending.
      * @return the line ending
      */

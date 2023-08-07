@@ -216,23 +216,17 @@ public class EditorModel {
     }
 
     /**
-     * Get the metrics.
-     * @return the metrics
+     * Get the inspect snapshot.
+     * @return the inspect snapshot
      */
-    public Metrics metrics() {
-        return buffer.metrics();
-    }
-
-    /**
-     * Get the metrics snapshot.
-     * @return the metrics snapshot
-     */
-    public Metrics metricsSnapshot() {
-        return new MetricsRecord(buffer.metrics());
-    }
-
-    public int getMaxLineSize() {
-        return buffer.maxLineSize();
+    public Inspect inspect() {
+        Metrics metrics = buffer.metrics();
+        return new Inspect(
+            new MetricsRecord(metrics),
+            caret.offset(),
+            buffer.maxLineSize(),
+            metrics.rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0)
+        );
     }
 
     // -- focus behavior  --------------------------------------------------

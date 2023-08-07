@@ -229,6 +229,13 @@ public class WrapTextList implements TextList {
     }
 
 
+    public int wrappedSize() {
+        if (lines.isEmpty()) {
+            lines();
+        }
+        return lines.size();
+    }
+
     private static Translate<Textual, List<TextLine>> translator(
             LineLayout layout, double wrapWidth,
             Translate<Textual, StyledText> styling) {

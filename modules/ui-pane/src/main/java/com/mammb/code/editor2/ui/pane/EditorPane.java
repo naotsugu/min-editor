@@ -16,7 +16,6 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.ui.control.VScrollBar;
-import com.mammb.code.editor2.model.buffer.Metrics;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
@@ -84,7 +83,6 @@ public class EditorPane extends StackPane {
         getChildren().add(canvas);
 
         vScrollBar = new VScrollBar(Global.fgColor);
-        vScrollBar.visibleAmount.setValue(editorModel.getMaxLineSize());
         StackPane.setAlignment(vScrollBar, Pos.CENTER_RIGHT);
         getChildren().add(vScrollBar);
 
@@ -273,7 +271,6 @@ public class EditorPane extends StackPane {
             canvas.setHeight(canvasHeight);
             editorModel.layoutBounds(canvasWidth, canvasHeight);
             editorModel.draw(gc);
-            vScrollBar.visibleAmount.setValue(editorModel.getMaxLineSize());
         }
     }
 
@@ -321,10 +318,10 @@ public class EditorPane extends StackPane {
     }
 
     private void aroundEdit(Runnable runnable) {
-        var before = editorModel.metricsSnapshot();
+        var before = editorModel.inspect();
         runnable.run();
         editorModel.draw(gc);
-        handleMetricsChange(before, editorModel.metrics());
+        handleScreenChange(before, editorModel.inspect());
     }
 
     private void aroundEdit(Runnable edit, boolean withSelect) {
@@ -339,9 +336,9 @@ public class EditorPane extends StackPane {
         });
     }
 
-    private void handleMetricsChange(Metrics before, Metrics after) {
-        if (before.lfCount() != after.lfCount()) {
-            vScrollBar.max.setValue(after.lfCount() + 1);
+    private void handleScreenChange(Inspect before, Inspect after) {
+        if (before.screenLines() != after.screenLines()) {
+            vScrollBar.max.setValue(after.screenLines());
         }
     }
 
