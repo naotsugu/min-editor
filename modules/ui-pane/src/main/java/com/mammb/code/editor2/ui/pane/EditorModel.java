@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor2.model.buffer.Metrics;
+import com.mammb.code.editor2.model.buffer.MetricsRecord;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.layout.TextLine;
@@ -211,6 +213,22 @@ public class EditorModel {
         } else {
             caret.draw(gc, gutter.width());
         }
+    }
+
+    /**
+     * Get the metrics.
+     * @return the metrics
+     */
+    public Metrics metrics() {
+        return buffer.metrics();
+    }
+
+    /**
+     * Get the metrics snapshot.
+     * @return the metrics snapshot
+     */
+    public Metrics metricsSnapshot() {
+        return new MetricsRecord(buffer.metrics());
     }
 
     // -- focus behavior  --------------------------------------------------

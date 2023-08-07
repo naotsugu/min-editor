@@ -83,7 +83,7 @@ public interface Metrics {
      * @return the line ending
      */
     default LineEnding lineEnding() {
-        if (crCount() == 0 && lfCount() == 0) {
+        if (crCount() <= 0 && lfCount() <= 0) {
             return LineEnding.platform();
         } else if (crCount() == lfCount()) {
             return LineEnding.CRLF;
