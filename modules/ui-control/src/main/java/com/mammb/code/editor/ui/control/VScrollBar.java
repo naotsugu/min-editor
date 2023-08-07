@@ -15,16 +15,20 @@
  */
 package com.mammb.code.editor.ui.control;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.AccessibleRole;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 /**
  * Vertical ScrollBar.
@@ -81,30 +85,33 @@ public class VScrollBar extends StackPane implements ScrollBar {
         value.addListener(this::handleValueChanged);
         visibleAmount.addListener(this::handleVisibleAmountChanged);
 
+        heightProperty().addListener(this::handleHeightChanged);
+
         setOnMouseEntered(this::handleMouseEntered);
         setOnMouseExited(this::handleMouseExited);
         setOnMouseClicked(this::handleTruckClicked);
     }
 
-
-    private void handleMinValueChanged(ObservableValue<? extends Number> observable,
-            Number oldValue, Number newValue) {
-
+    private void handleHeightChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        thumb.resize(WIDTH, thumbLength());
     }
 
-    private void handleMaxValueChanged(ObservableValue<? extends Number> observable,
-            Number oldValue, Number newValue) {
 
+    private void handleMinValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        thumb.resize(WIDTH, thumbLength());
     }
 
-    private void handleValueChanged(ObservableValue<? extends Number> observable,
-            Number oldValue, Number newValue) {
+    private void handleMaxValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        thumb.resize(WIDTH, thumbLength());
+    }
+
+    private void handleValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 
     }
 
     private void handleVisibleAmountChanged(ObservableValue<? extends Number> observable,
             Number oldValue, Number newValue) {
-
+        thumb.resize(WIDTH, thumbLength());
     }
 
     private void handleMouseEntered(MouseEvent event) {
@@ -127,6 +134,49 @@ public class VScrollBar extends StackPane implements ScrollBar {
         }
     }
 
+    public void thumbDragged(double position) {
+        // stop the timeline for continuous increments as drags take precedence
+        stopTimeline();
+
+        if (!isFocused() && isFocusTraversable()) requestFocus();
+        int newValue = (int) (position * valueLength()) + min.getValue();
+        value.setValue(clamp(newValue));
+    }
+
+    public void trackPress(double position) {
+        if (timeline != null) return;
+        if (!isFocused() && isFocusTraversable()) requestFocus();
+        final double pos = position;
+        final boolean incrementing = (pos > ((value.getValue() - min.getValue()) / valueLength()));
+        timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+
+        final EventHandler<ActionEvent> step =
+            event -> {
+                boolean i = (pos > ((value.getValue() - min.getValue()) / valueLength()));
+                if (incrementing == i) {
+                    // we started incrementing and still are, or we
+                    // started decrementing and still are
+                    adjustValue(pos);
+                }
+                else {
+                    stopTimeline();
+                }
+            };
+
+        final KeyFrame kf = new KeyFrame(Duration.millis(200), step);
+        timeline.getKeyFrames().add(kf);
+        // do the first step immediately
+        timeline.play();
+        step.handle(null);
+
+    }
+
+
+    public void trackRelease() {
+        stopTimeline();
+    }
+
     public void adjustValue(double position) {
         // figure out the "value" associated with the specified position
         int posValue = (int) ((max.getValue() - min.getValue()) * clamp(0, position, 1)) + min.getValue();
@@ -138,6 +188,21 @@ public class VScrollBar extends StackPane implements ScrollBar {
         }
     }
 
+
+    private double visiblePortion() {
+        return (valueLength() > 0)
+            ? (double) visibleAmount.getValue() / valueLength()
+            : 1.0;
+    }
+
+
+    private double thumbLength() {
+        return clamp(WIDTH, getHeight() * visiblePortion(), getHeight());
+    }
+
+    private int valueLength() {
+        return Math.max(0, max.getValue() - min.getValue());
+    }
 
     /**
      * Clamps the given value to be strictly between the min and max values.

@@ -154,6 +154,7 @@ public class EditorPane extends StackPane {
         }
     }
 
+
     public void handleMouseClicked(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             switch (event.getClickCount()) {
@@ -164,12 +165,14 @@ public class EditorPane extends StackPane {
         }
     }
 
+
     public void handleMouseDragged(MouseEvent event) {
         if (event.getButton().equals(MouseButton.PRIMARY)) {
             editorModel.dragged(event.getSceneX(), event.getSceneY());
         }
         editorModel.draw(gc);
     }
+
 
     public void handleKeyPressed(KeyEvent e) {
 
@@ -230,6 +233,7 @@ public class EditorPane extends StackPane {
         editorModel.input(ch);
         editorModel.draw(gc);
     }
+
 
     public void handleInputMethod(InputMethodEvent event) {
         if (!event.getCommitted().isEmpty()) {
