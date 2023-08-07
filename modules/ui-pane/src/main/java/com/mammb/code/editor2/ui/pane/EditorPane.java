@@ -35,7 +35,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -173,46 +172,40 @@ public class EditorPane extends StackPane {
 
     public void handleKeyPressed(KeyEvent e) {
 
-        switch (Keys.asAction(e)) {
-            case OPEN    -> { openChoose(); return; }
-            case SAVE    -> { editorModel.save(); return; }
-            case SAVE_AS -> { saveChoose(); return; }
-            case WRAP    -> { editorModel.toggleWrap(); editorModel.draw(gc); return; }
-            case COPY    -> { editorModel.copyToClipboard(); return; }
-            case PASTE   -> { editorModel.pasteFromClipboard();  editorModel.draw(gc); return; }
-            case CUT     -> { editorModel.cutToClipboard(); editorModel.draw(gc); return; }
-            case UNDO    -> { editorModel.undo(); editorModel.draw(gc); return; }
-            case REDO    -> { editorModel.redo(); editorModel.draw(gc); return; }
-            case HOME    -> { editorModel.moveCaretLineHome(); editorModel.draw(gc); return; }
-            case END     -> { editorModel.moveCaretLineEnd(); editorModel.draw(gc); return; }
-            case SELECT_ALL -> { editorModel.selectAll(); editorModel.draw(gc); return; }
-        }
+        final Keys.Action action = Keys.asAction(e);
+        final boolean withSelect = e.isShiftDown();
 
-        if (Keys.isSelectCombination(e)) {
-            if (e.isShiftDown()) {
-                editorModel.selectOn();
-            } else {
-                editorModel.selectOff();
+        if (action != Keys.Action.EMPTY) {
+            switch (action) {
+                case OPEN       -> openChoose();
+                case SAVE       -> editorModel.save();
+                case SAVE_AS    -> saveChoose();
+                case COPY       -> editorModel.copyToClipboard();
+                case PASTE      -> aroundEdit(editorModel::pasteFromClipboard);
+                case CUT        -> aroundEdit(editorModel::cutToClipboard);
+                case UNDO       -> aroundEdit(editorModel::undo);
+                case REDO       -> aroundEdit(editorModel::redo);
+                case SELECT_ALL -> aroundEdit(editorModel::selectAll);
+                case WRAP       -> aroundEdit(editorModel::toggleWrap);
+                case HOME       -> aroundEdit(editorModel::moveCaretLineHome, withSelect);
+                case END        -> aroundEdit(editorModel::moveCaretLineEnd, withSelect);
             }
+            return;
         }
 
         switch (e.getCode()) {
-            case RIGHT      -> editorModel.moveCaretRight();
-            case LEFT       -> editorModel.moveCaretLeft();
-            case UP         -> editorModel.moveCaretUp();
-            case DOWN       -> editorModel.moveCaretDown();
-            case HOME       -> editorModel.moveCaretLineHome();
-            case END        -> editorModel.moveCaretLineEnd();
-            case PAGE_UP    -> editorModel.moveCaretPageUp();
-            case PAGE_DOWN  -> editorModel.moveCaretPageDown();
-            case DELETE     -> editorModel.delete();
-            case BACK_SPACE -> editorModel.backspace();
-            case ESCAPE     -> editorModel.selectOff();
+            case RIGHT      -> aroundEdit(editorModel::moveCaretRight, withSelect);
+            case LEFT       -> aroundEdit(editorModel::moveCaretLeft, withSelect);
+            case UP         -> aroundEdit(editorModel::moveCaretUp, withSelect);
+            case DOWN       -> aroundEdit(editorModel::moveCaretDown, withSelect);
+            case HOME       -> aroundEdit(editorModel::moveCaretLineHome, withSelect);
+            case END        -> aroundEdit(editorModel::moveCaretLineEnd, withSelect);
+            case PAGE_UP    -> aroundEdit(editorModel::moveCaretPageUp, withSelect);
+            case PAGE_DOWN  -> aroundEdit(editorModel::moveCaretPageDown, withSelect);
+            case DELETE     -> aroundEdit(editorModel::delete);
+            case BACK_SPACE -> aroundEdit(editorModel::backspace);
+            case ESCAPE     -> aroundEdit(editorModel::selectOff);
         }
-
-        editorModel.selectTo();
-
-        editorModel.draw(gc);
     }
 
 
@@ -321,6 +314,23 @@ public class EditorPane extends StackPane {
                 return "";
             }
         };
+    }
+
+    private void aroundEdit(Runnable runnable) {
+        runnable.run();
+        editorModel.draw(gc);
+    }
+
+    private void aroundEdit(Runnable edit, boolean withSelect) {
+        aroundEdit(() -> {
+            if (withSelect) {
+                editorModel.selectOn();
+            } else {
+                editorModel.selectOff();
+            }
+            edit.run();
+            editorModel.selectTo();
+        });
     }
 
     private static File initialDirectory(Path base) {
