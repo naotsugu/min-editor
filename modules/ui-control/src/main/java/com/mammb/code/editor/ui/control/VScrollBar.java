@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.control;
 
+import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
@@ -32,21 +33,24 @@ import javafx.scene.paint.Color;
 public class VScrollBar extends StackPane implements ScrollBar {
 
     /** The min value of scroll bar. */
-    private final IntegerProperty min = new SimpleIntegerProperty(0);
+    public final IntegerProperty min = new SimpleIntegerProperty(this, "min", 0);
 
     /** The max value of scroll bar. */
-    private final IntegerProperty max = new SimpleIntegerProperty(100);
+    public final IntegerProperty max = new SimpleIntegerProperty(this, "max", 100);
 
     /** The value of scroll bar. */
-    private final IntegerProperty value = new SimpleIntegerProperty(0);
+    public final IntegerProperty value = new SimpleIntegerProperty(this, "value", 0);
 
     /** The visible amount. */
-    private final IntegerProperty visibleAmount = new SimpleIntegerProperty(100);
+    public final IntegerProperty visibleAmount = new SimpleIntegerProperty(this, "visibleAmount", 100);
 
     /** The thumb. */
     private final ScrollThumb thumb = ScrollThumb.rowOf(WIDTH);
 
     private final Color backGround;
+
+    /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
+    private Timeline timeline;
 
 
     /**
@@ -103,6 +107,15 @@ public class VScrollBar extends StackPane implements ScrollBar {
 
     }
 
+    private void handleMouseEntered(MouseEvent event) {
+        setBackground(new Background(new BackgroundFill(backGround, null, null)));
+    }
+
+    private void handleMouseExited(MouseEvent event) {
+        setBackground(null);
+    }
+
+
     /**
      * The truck clicked handler.
      * @param event the MouseEvent
@@ -114,12 +127,41 @@ public class VScrollBar extends StackPane implements ScrollBar {
         }
     }
 
-    private void handleMouseEntered(MouseEvent event) {
-        setBackground(new Background(new BackgroundFill(backGround, null, null)));
+    public void adjustValue(double position) {
+        // figure out the "value" associated with the specified position
+        int posValue = (int) ((max.getValue() - min.getValue()) * clamp(0, position, 1)) + min.getValue();
+        if (Integer.compare(posValue, value.getValue()) != 0) {
+            int newValue = (posValue > value.getValue())
+                ? value.getValue() + visibleAmount.getValue()
+                : value.getValue() - visibleAmount.getValue();
+            value.setValue(clamp(newValue));
+        }
     }
 
-    private void handleMouseExited(MouseEvent event) {
-        setBackground(null);
+
+    /**
+     * Clamps the given value to be strictly between the min and max values.
+     */
+    private int clamp(int value) {
+        if (value < min.getValue()) return min.getValue();
+        if (value > max.getValue()) return max.getValue();
+        return value;
+    }
+
+    /**
+     * Clamps the given value to be strictly between the min and max values.
+     */
+    private double clamp(double min, double value, double max) {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
+    private void stopTimeline() {
+        if (timeline != null) {
+            timeline.stop();
+            timeline = null;
+        }
     }
 
 }

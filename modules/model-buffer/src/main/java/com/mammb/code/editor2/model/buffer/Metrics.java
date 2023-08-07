@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor2.model.buffer;
 
-import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.text.LineEnding;
 import java.nio.file.Path;
 
@@ -71,12 +70,6 @@ public interface Metrics {
      * @return the line feed count
      */
     int lfCount();
-
-    /**
-     * Apply the edit.
-     * @param edit the edit
-     */
-    void apply(Edit edit);
 
     /**
      * Get the line ending.

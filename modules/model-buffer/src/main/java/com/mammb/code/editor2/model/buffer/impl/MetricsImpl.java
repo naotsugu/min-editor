@@ -19,6 +19,7 @@ import com.mammb.code.editor2.model.buffer.Metrics;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.edit.EditTo;
 import com.mammb.code.editor2.model.text.OffsetPoint;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.StringJoiner;
@@ -63,6 +64,13 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
         this.path = path;
     }
 
+    /**
+     * Apply the edit.
+     * @param edit the edit
+     */
+    public void apply(Edit edit) {
+        edit.apply(editTo);
+    }
 
     @Override
     public void accept(byte[] bytes) {
@@ -102,11 +110,6 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     @Override
     public int lfCount() {
         return lfCount;
-    }
-
-    @Override
-    public void apply(Edit edit) {
-        edit.apply(editTo);
     }
 
     @Override

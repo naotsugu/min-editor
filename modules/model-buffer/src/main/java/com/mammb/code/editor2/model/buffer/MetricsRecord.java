@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor2.model.buffer;
 
-import com.mammb.code.editor2.model.edit.Edit;
 import java.nio.file.Path;
 
 /**
@@ -44,11 +43,6 @@ public record MetricsRecord(
      */
     public MetricsRecord(Metrics m) {
         this(m.path(), m.byteLen(), m.cpCount(), m.chCount(), m.invalidCpCount(), m.crCount(), m.lfCount());
-    }
-
-    @Override
-    public void apply(Edit edit) {
-        throw new UnsupportedOperationException();
     }
 
 }

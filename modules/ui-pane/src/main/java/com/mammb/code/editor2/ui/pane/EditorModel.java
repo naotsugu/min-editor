@@ -231,6 +231,10 @@ public class EditorModel {
         return new MetricsRecord(buffer.metrics());
     }
 
+    public int getMaxLineSize() {
+        return buffer.maxLineSize();
+    }
+
     // -- focus behavior  --------------------------------------------------
     public void focusIn(GraphicsContext gc) {
         caret.draw(gc, gutter.width());
@@ -496,7 +500,7 @@ public class EditorModel {
     }
     // -- private -------------------------------------------------------------
 
-    private int screenRowSize(double height) {
+    int screenRowSize(double height) {
         return (int) Math.ceil(height / Global.fontMetrics.lineHeight());
     }
 
