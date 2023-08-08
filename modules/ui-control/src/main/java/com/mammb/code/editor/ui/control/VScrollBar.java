@@ -49,7 +49,7 @@ public class VScrollBar extends StackPane implements ScrollBar {
     public final IntegerProperty visibleAmount = new SimpleIntegerProperty(this, "visibleAmount", 100);
 
     /** The thumb. */
-    private final ScrollThumb thumb = ScrollThumb.rowOf(WIDTH);
+    private final ScrollThumb thumb;
 
     private final Color backGround;
 
@@ -69,6 +69,8 @@ public class VScrollBar extends StackPane implements ScrollBar {
         setMaxWidth(WIDTH);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
 
+        thumb = ScrollThumb.rowOf(WIDTH);
+        thumb.setFill(baseColor.deriveColor(0, 1, 1, 0.2));
         getChildren().add(thumb);
 
         initListener();
@@ -93,25 +95,25 @@ public class VScrollBar extends StackPane implements ScrollBar {
     }
 
     private void handleHeightChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        thumb.resize(WIDTH, thumbLength());
+        adjustThumbLength();
     }
 
 
     private void handleMinValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        thumb.resize(WIDTH, thumbLength());
+        adjustThumbLength();
     }
 
     private void handleMaxValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        thumb.resize(WIDTH, thumbLength());
+        adjustThumbLength();
     }
 
     private void handleValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-
+        positionThumb();
     }
 
     private void handleVisibleAmountChanged(ObservableValue<? extends Number> observable,
             Number oldValue, Number newValue) {
-        thumb.resize(WIDTH, thumbLength());
+        adjustThumbLength();
     }
 
     private void handleMouseEntered(MouseEvent event) {
@@ -180,7 +182,7 @@ public class VScrollBar extends StackPane implements ScrollBar {
         stopTimeline();
     }
 
-    public void adjustValue(double position) {
+    private void adjustValue(double position) {
         // figure out the "value" associated with the specified position
         int posValue = (int) ((max.getValue() - min.getValue()) * clamp(0, position, 1)) + min.getValue();
         if (Integer.compare(posValue, value.getValue()) != 0) {
@@ -191,6 +193,24 @@ public class VScrollBar extends StackPane implements ScrollBar {
         }
     }
 
+    private void positionThumb() {
+        double clampedValue = clamp(value.getValue());
+        double trackPos = (valueLength() > 0)
+            ? ((getHeight() - thumb.getHeight()) * (clampedValue - min.getValue()) / valueLength()) : (0.0F);
+
+        thumb.setTranslateY(snapPositionY(trackPos + snappedTopInset()));
+    }
+
+    private void adjustThumbLength() {
+        double thumbLength = thumbLength();
+        if (thumbLength >= getHeight()) {
+            setVisible(false);
+        } else {
+            setVisible(true);
+            thumb.setHeight(thumbLength());
+        }
+
+    }
 
     private double visiblePortion() {
         return (valueLength() > 0)

@@ -16,15 +16,24 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.buffer.Metrics;
+import com.mammb.code.editor2.ui.pane.impl.InspectRecord;
 
 /**
  * Inspect.
  * @author Naotsugu Kobayashi
  */
 public interface Inspect {
+
+    Inspect empty = new InspectRecord(Metrics.empty, 0, 0, 0, 0);
+
     Metrics metrics();
+
     int caretOffset();
+
     int screenMaxLines();
+
     int screenLines();
+
     int screenTopLines();
+
 }

@@ -29,6 +29,7 @@ public interface Metrics {
     /** logger. */
     System.Logger log = System.getLogger(Metrics.class.getName());
 
+
     /**
      * Get the content path.
      * @return the content path
@@ -96,4 +97,5 @@ public interface Metrics {
         }
     }
 
+    Metrics empty = new MetricsRecord(null, 0, 0, 0, 0, 0, 0);
 }

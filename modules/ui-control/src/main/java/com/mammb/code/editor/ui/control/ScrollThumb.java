@@ -15,10 +15,7 @@
  */
 package com.mammb.code.editor.ui.control;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.AccessibleRole;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -26,9 +23,6 @@ import javafx.scene.shape.Rectangle;
  * @author Naotsugu Kobayashi
  */
 public class ScrollThumb extends Rectangle {
-
-    /** The length of thumb. */
-    private final DoubleProperty length = new SimpleDoubleProperty(10);
 
     /**
      * Constructor.
@@ -43,7 +37,6 @@ public class ScrollThumb extends Rectangle {
         setY(0);
         setArcHeight(8);
         setArcWidth(8);
-        setFill(Color.GRAY);
         setAccessibleRole(AccessibleRole.THUMB);
 
         initListener();
@@ -63,8 +56,7 @@ public class ScrollThumb extends Rectangle {
      * @return a new thumb
      */
     public static ScrollThumb rowOf(double width) {
-        var thumb = new ScrollThumb(width, 0);
-        thumb.heightProperty().bind(thumb.length);
+        var thumb = new ScrollThumb(width, 10);
         return thumb;
     }
 
@@ -74,8 +66,7 @@ public class ScrollThumb extends Rectangle {
      * @return a new thumb
      */
     public static ScrollThumb colOf(double height) {
-        var thumb = new ScrollThumb(0, height);
-        thumb.widthProperty().bind(thumb.length);
+        var thumb = new ScrollThumb(10, height);
         return thumb;
     }
 }
