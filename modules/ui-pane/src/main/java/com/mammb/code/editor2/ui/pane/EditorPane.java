@@ -144,15 +144,16 @@ public class EditorPane extends StackPane {
         if (file != null) editorModel.saveAs(file.toPath());
     }
 
+
     public void handleScroll(ScrollEvent e) {
-        if (e.getEventType() == ScrollEvent.SCROLL) {
-            aroundEdit(() -> {
-                if (e.getDeltaY() > 0) {
-                    editorModel.scrollPrev(Math.min((int) e.getDeltaY(), 3));
-                } else if (e.getDeltaY() < 0) {
-                    editorModel.scrollNext(Math.min(Math.abs((int) e.getDeltaY()), 3));
-                }
-            });
+        if (e.getEventType() == ScrollEvent.SCROLL && e.getDeltaY() != 0) {
+            if (e.getDeltaY() > 0) {
+                editorModel.scrollPrev(Math.min((int) e.getDeltaY(), 3));
+            } else {
+                editorModel.scrollNext(Math.min(Math.abs((int) e.getDeltaY()), 3));
+            }
+            editorModel.draw(gc);
+            vScrollBar.value.setValue(editorModel.inspect().screenTopLines());
         }
     }
 
