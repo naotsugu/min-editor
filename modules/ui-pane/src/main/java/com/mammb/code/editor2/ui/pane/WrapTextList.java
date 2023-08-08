@@ -51,6 +51,9 @@ public class WrapTextList implements TextList {
     /** The count of rollup lines. */
     private int rollup = 0;
 
+    private TextLine top = null;
+
+
     /**
      * Constructor.
      * @param buffer the edit buffer
@@ -90,7 +93,16 @@ public class WrapTextList implements TextList {
             lineOffset = 0;
         }
         int toIndex = lineOffset + buffer.maxLineSize();
-        return lines.subList(lineOffset + rollup, Math.min(toIndex, lines.size()));
+
+        List<TextLine> ret = lines.subList(lineOffset + rollup, Math.min(toIndex, lines.size()));
+        top = ret.get(0);
+        return ret;
+    }
+
+    @Override
+    public TextLine top() {
+        if (lines.isEmpty()) lines();
+        return top;
     }
 
     @Override

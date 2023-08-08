@@ -26,6 +26,7 @@ import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.ui.pane.impl.Clipboard;
 import com.mammb.code.editor2.ui.pane.impl.ImePalletImpl;
+import com.mammb.code.editor2.ui.pane.impl.InspectRecord;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -221,11 +222,12 @@ public class EditorModel {
      */
     public Inspect inspect() {
         Metrics metrics = buffer.metrics();
-        return new Inspect(
+        return new InspectRecord(
             new MetricsRecord(metrics),
             caret.offset(),
             buffer.maxLineSize(),
-            metrics.rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0)
+            metrics.rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0),
+            texts.top().point().row() + texts.top().lineIndex()
         );
     }
 

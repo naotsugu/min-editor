@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.ui.pane;
+package com.mammb.code.editor2.ui.pane.impl;
 
 import com.mammb.code.editor2.model.buffer.Metrics;
+import com.mammb.code.editor2.ui.pane.Inspect;
 
 /**
- * Inspect.
+ * InspectRecord.
  * @author Naotsugu Kobayashi
  */
-public interface Inspect {
-    Metrics metrics();
-    int caretOffset();
-    int screenMaxLines();
-    int screenLines();
-    int screenTopLines();
+public record InspectRecord(
+    Metrics metrics,
+    int caretOffset,
+    int screenMaxLines,
+    int screenLines,
+    int screenTopLines) implements Inspect {
 }

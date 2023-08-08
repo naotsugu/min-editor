@@ -47,6 +47,9 @@ public class LinearTextList implements TextList {
     /** The count of rollup lines. */
     private int rollup = 0;
 
+    private TextLine top = null;
+
+
     /**
      * Constructor.
      * @param buffer the edit buffer
@@ -79,7 +82,15 @@ public class LinearTextList implements TextList {
                 lines.add(translator.applyTo(textual));
             }
         }
-        return (rollup > 0) ? lines.subList(rollup, lines.size()): lines;
+        List<TextLine> ret = (rollup > 0) ? lines.subList(rollup, lines.size()): lines;
+        top = ret.get(0);
+        return ret;
+    }
+
+    @Override
+    public TextLine top() {
+        if (lines.isEmpty()) lines();
+        return top;
     }
 
     @Override

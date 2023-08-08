@@ -34,6 +34,12 @@ public interface TextList {
     List<TextLine> lines();
 
     /**
+     * Get the top text line.
+     * @return the top text line
+     */
+    TextLine top();
+
+    /**
      * Mark the TextList to dirty.
      */
     void markDirty();

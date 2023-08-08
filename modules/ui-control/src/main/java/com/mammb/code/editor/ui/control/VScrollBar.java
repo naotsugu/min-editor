@@ -134,6 +134,7 @@ public class VScrollBar extends StackPane implements ScrollBar {
         }
     }
 
+
     public void thumbDragged(double position) {
         // stop the timeline for continuous increments as drags take precedence
         stopTimeline();
@@ -143,7 +144,9 @@ public class VScrollBar extends StackPane implements ScrollBar {
         value.setValue(clamp(newValue));
     }
 
+
     public void trackPress(double position) {
+
         if (timeline != null) return;
         if (!isFocused() && isFocusTraversable()) requestFocus();
         final double pos = position;
