@@ -16,6 +16,8 @@
 package com.mammb.code.editor.ui.control;
 
 import javafx.scene.AccessibleRole;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -24,19 +26,23 @@ import javafx.scene.shape.Rectangle;
  */
 public class ScrollThumb extends Rectangle {
 
+    private final Color baseColor;
+
     /**
      * Constructor.
      * @param width the width of thumb
      * @param height the height of thumb
+     * @param baseColor the base color
      */
-    public ScrollThumb(double width, double height) {
-
+    public ScrollThumb(double width, double height, Color baseColor) {
+        this.baseColor = baseColor;
         setManaged(false);
         setWidth(width);
         setHeight(height);
         setY(0);
         setArcHeight(8);
         setArcWidth(8);
+        setFill(baseColor.deriveColor(0, 1, 1, 0.2));
         setAccessibleRole(AccessibleRole.THUMB);
 
         initListener();
@@ -47,26 +53,16 @@ public class ScrollThumb extends Rectangle {
      * Initialize listener.
      */
     private void initListener() {
+        setOnMouseEntered(this::handleMouseEntered);
+        setOnMouseExited(this::handleMouseExited);
     }
 
-
-    /**
-     * Create a thumb for row scroll bar.
-     * @param width the width of thumb
-     * @return a new thumb
-     */
-    public static ScrollThumb rowOf(double width) {
-        var thumb = new ScrollThumb(width, 10);
-        return thumb;
+    private void handleMouseEntered(MouseEvent event) {
+        setFill(baseColor.deriveColor(0, 1, 1, 0.3));
     }
 
-    /**
-     * Create a thumb for col scroll bar.
-     * @param height the height of thumb
-     * @return a new thumb
-     */
-    public static ScrollThumb colOf(double height) {
-        var thumb = new ScrollThumb(10, height);
-        return thumb;
+    private void handleMouseExited(MouseEvent event) {
+        setFill(baseColor.deriveColor(0, 1, 1, 0.2));
     }
+
 }

@@ -69,8 +69,7 @@ public class VScrollBar extends StackPane implements ScrollBar {
         setMaxWidth(WIDTH);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
 
-        thumb = ScrollThumb.rowOf(WIDTH);
-        thumb.setFill(baseColor.deriveColor(0, 1, 1, 0.2));
+        thumb = new ScrollThumb(WIDTH, WIDTH, baseColor);
         getChildren().add(thumb);
 
         initListener();
