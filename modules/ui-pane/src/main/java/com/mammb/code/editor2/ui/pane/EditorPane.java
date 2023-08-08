@@ -232,9 +232,13 @@ public class EditorPane extends StackPane {
                 return;
             }
         }
-        String ch = (ascii == 13) ? "\n" : e.getCharacter();
+        var inspect = editorModel.inspect();
+        String ch = (ascii == 13)
+            ? inspect.metrics().lineEnding().str()
+            : e.getCharacter();
         editorModel.input(ch);
         editorModel.draw(gc);
+        handleScreenChange(inspect, editorModel.inspect());
     }
 
 
@@ -278,6 +282,9 @@ public class EditorPane extends StackPane {
             canvas.setHeight(canvasHeight);
             editorModel.layoutBounds(canvasWidth, canvasHeight);
             editorModel.draw(gc);
+            var inspect = editorModel.inspect();
+            vScrollBar.max.setValue(inspect.screenLines());
+            vScrollBar.visibleAmount.setValue(inspect.screenMaxLines());
         }
     }
 
