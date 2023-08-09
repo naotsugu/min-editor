@@ -34,7 +34,7 @@ import javafx.util.Duration;
  * Vertical ScrollBar.
  * @author Naotsugu Kobayashi
  */
-public class VScrollBar extends StackPane implements ScrollBar {
+public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
     /** The min value of scroll bar. */
     public final IntegerProperty min = new SimpleIntegerProperty(this, "min", 0);
@@ -214,13 +214,13 @@ public class VScrollBar extends StackPane implements ScrollBar {
 
     private double visiblePortion() {
         return (valueLength() > 0)
-            ? (double) visibleAmount.getValue() / valueLength()
+            ? (double) getVisibleAmount() / valueLength()
             : 1.0;
     }
 
 
     private double thumbLength() {
-        return clamp(WIDTH, getHeight() * visiblePortion(), getHeight());
+        return clamp(WIDTH, getTruckLength() * visiblePortion(), getTruckLength());
     }
 
     private int valueLength() {
@@ -250,6 +250,51 @@ public class VScrollBar extends StackPane implements ScrollBar {
             timeline.stop();
             timeline = null;
         }
+    }
+
+    @Override
+    public Integer getMin() {
+        return min.getValue();
+    }
+
+    @Override
+    public void setMin(Integer min) {
+        this.min.setValue(min);
+    }
+
+    @Override
+    public Integer getMax() {
+        return max.getValue();
+    }
+
+    @Override
+    public void setMax(Integer max) {
+        this.max.setValue(max);
+    }
+
+    @Override
+    public Integer getVisibleAmount() {
+        return visibleAmount.getValue();
+    }
+
+    @Override
+    public void setVisibleAmount(Integer amount) {
+        this.visibleAmount.setValue(amount);
+    }
+
+    @Override
+    public Integer getValue() {
+        return value.getValue();
+    }
+
+    @Override
+    public void setValue(Integer value) {
+        this.value.setValue(value);
+    }
+
+    @Override
+    public double getTruckLength() {
+        return getHeight();
     }
 
 }

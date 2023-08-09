@@ -19,9 +19,20 @@ package com.mammb.code.editor.ui.control;
  * ScrollBar.
  * @author Naotsugu Kobayashi
  */
-public interface ScrollBar {
+public interface ScrollBar<T extends Number> {
 
     /** The width of scroll bar. */
     double WIDTH = 9;
+
+    T getMin();
+    void setMin(T min);
+    T getMax();
+    void setMax(T max);
+    T getVisibleAmount();
+    void setVisibleAmount(T amount);
+    T getValue();
+    void setValue(T value);
+
+    double getTruckLength();
 
 }
