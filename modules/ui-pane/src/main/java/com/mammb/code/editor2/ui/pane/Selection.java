@@ -44,6 +44,11 @@ public interface Selection {
     void startDragging(OffsetPoint offset);
 
     /**
+     * End dragging.
+     */
+    void endDragging();
+
+    /**
      * Clear selection.
      */
     void clear();

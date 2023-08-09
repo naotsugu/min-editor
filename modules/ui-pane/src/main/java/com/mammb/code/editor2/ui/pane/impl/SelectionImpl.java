@@ -55,6 +55,11 @@ public class SelectionImpl implements Selection {
     }
 
     @Override
+    public void endDragging() {
+        dragging = false;
+    }
+
+    @Override
     public boolean isDragging() {
         return dragging;
     }

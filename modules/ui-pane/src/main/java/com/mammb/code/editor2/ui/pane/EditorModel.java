@@ -373,6 +373,7 @@ public class EditorModel {
     public void click(double x, double y) {
         if (selection.isDragging()) {
             selection.to(caret.offsetPoint());
+            selection.endDragging();
             return;
         }
         selection.clear();
