@@ -81,9 +81,9 @@ public interface SpecialCharacter {
         double x0 = r.x() + r.w() * 0.1;
         double x1 = r.x() + r.w() * 0.5;
         double x2 = r.x() + r.w() * 0.9;
-        double y0 = r.y() + r.h() * 0.2;
+        double y0 = r.y() + r.h() * 0.3;
         double y1 = r.y() + r.h() * 0.5;
-        double y2 = r.y() + r.h() * 0.8;
+        double y2 = r.y() + r.h() * 0.7;
         gc.setLineWidth(1);
         gc.strokeLine(x0, y1, x1, y0);
         gc.strokeLine(x0, y1, x2, y1);
@@ -110,9 +110,9 @@ public interface SpecialCharacter {
         double x0 = r.x() + r.w() * 0.1;
         double x1 = r.x() + r.w() * 0.5;
         double x2 = r.x() + r.w() * 0.9;
-        double y0 = r.y() + r.h() * 0.2;
+        double y0 = r.y() + r.h() * 0.3;
         double y1 = r.y() + r.h() * 0.5;
-        double y2 = r.y() + r.h() * 0.8;
+        double y2 = r.y() + r.h() * 0.7;
         gc.setLineWidth(1);
         gc.strokeLine(x2, y1, x1, y0);
         gc.strokeLine(x2, y1, x0, y1);
@@ -138,7 +138,7 @@ public interface SpecialCharacter {
     SpecialCharacter WSP = (GraphicsContext gc, Rect r) -> {
         double x0 = r.x() + r.w() * 0.1;
         double x2 = r.x() + r.w() * 0.9;
-        double y1 = r.y() + r.h() * 0.8;
+        double y1 = r.y() + r.h() * 0.7;
         double y2 = r.y() + r.h() * 0.9;
         gc.setLineWidth(1);
         gc.strokeLine(x0, y1, x0, y2);

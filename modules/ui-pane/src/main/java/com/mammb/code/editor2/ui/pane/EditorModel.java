@@ -214,16 +214,27 @@ public class EditorModel {
 
     private void drawSpecialCharacter(GraphicsContext gc, TextRun run, double top, double lineHeight) {
         final String text = run.text();
-        if (!text.isEmpty() && text.charAt(text.length() - 1) == '\n') {
-            var rect = new Rect(
-                run.layout().x() + gutter.width() + run.layout().width(),
-                top + lineHeight * 0.1,
-                Global.numberCharacterWidth(gc.getFont()),
-                lineHeight).smaller(0.8);
-            if (text.length() > 1 && text.charAt(text.length() - 2) == '\r') {
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+            if (ch != '\r' && ch != '\n' && ch != '\t' && ch != '　') continue;
+
+            double x = gutter.width() + run.offsetToX().apply(i);
+            double w = (ch == '　')
+                ? gutter.width() + run.offsetToX().apply(i + 1) - x
+                : Global.numberCharacterWidth(gc.getFont());
+            var rect = new Rect(x, top + lineHeight * 0.1, w, lineHeight).smaller(0.8);
+
+            gc.setStroke(Color.LIGHTGRAY);
+            if (ch == '\r') {
                 SpecialCharacter.CRLF.draw(gc, rect);
-            } else {
+                break;
+            } else if (ch == '\n') {
                 SpecialCharacter.LF.draw(gc, rect);
+                break;
+            } else if (ch == '\t') {
+                SpecialCharacter.TAB.draw(gc, rect);
+            } else {
+                SpecialCharacter.WSP.draw(gc, rect);
             }
         }
 
