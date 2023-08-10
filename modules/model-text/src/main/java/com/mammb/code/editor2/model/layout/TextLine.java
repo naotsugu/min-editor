@@ -39,6 +39,7 @@ public interface TextLine extends Textual {
 
     /**
      * Get the line index.
+     * Always zero if not wrapped.
      * <pre>
      *     ...
      *     | a | b | c |  lineIndex:0  lineSize: 2
@@ -50,6 +51,7 @@ public interface TextLine extends Textual {
 
     /**
      * Get the line size.
+     * Always zero if not wrapped.
      * <pre>
      *     ...
      *     | a | b | c |  lineIndex:0  lineSize: 2

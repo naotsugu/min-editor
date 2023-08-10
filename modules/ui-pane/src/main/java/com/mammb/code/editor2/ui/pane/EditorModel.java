@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor2.model.buffer.Metrics;
 import com.mammb.code.editor2.model.buffer.MetricsRecord;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
@@ -28,6 +29,7 @@ import com.mammb.code.editor2.ui.pane.impl.Clipboard;
 import com.mammb.code.editor2.ui.pane.impl.ImePalletImpl;
 import com.mammb.code.editor2.ui.pane.impl.InspectRecord;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
+import com.mammb.code.editor2.ui.pane.impl.SpecialCharacter;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -58,6 +60,10 @@ public class EditorModel {
     private final Selection selection;
     /** The ime. */
     private final ImePallet ime;
+    /** The vertical scroll. */
+    private final ScrollBar<Integer> vScroll;
+    /** The horizontal scrollBar. */
+    private final ScrollBar<Double> hScroll;
     /** The screen width. */
     private double width;
     /** The screen height. */
@@ -91,6 +97,8 @@ public class EditorModel {
         this.ime = new ImePalletImpl();
         this.width = width;
         this.height = height;
+        this.vScroll = null;
+        this.hScroll = null;
     }
 
 
@@ -174,12 +182,9 @@ public class EditorModel {
         if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
         final String text = run.text();
         gc.fillText(text, left, top + run.baseline());
-        if (!text.isEmpty() && text.charAt(text.length() - 1) == '\n') {
-            drawLf(gc, new Rect(
-                left + run.layout().width(),
-                top + lineHeight * 0.1,
-                Global.numberCharacterWidth(gc.getFont()),
-                lineHeight).smaller(0.5));
+
+        if (!text.isEmpty() && run.textLine().point().row() == caret.row()) {
+            drawSpecialCharacter(gc, run, top, lineHeight);
         }
 
         if (run.layout().x() == 0) {
@@ -196,15 +201,6 @@ public class EditorModel {
         draw(gc, rect.x(), rect.y(), rect.w(), rect.h());
     }
 
-    public void drawLf(GraphicsContext gc, Rect r) {
-        double[] xPoints = new double[] { r.x(), r.x() + r.w() / 2, r.x() + r.w() };
-        double[] yPoints = new double[] { r.y() + r.h() * 0.75, r.y() + r.h(), r.y() + r.h() * 0.75 };
-        gc.setLineWidth(1);
-        gc.setStroke(Color.LIGHTGRAY);
-        gc.setLineDashes(1);
-        gc.strokePolyline(xPoints, yPoints, 3);
-        gc.strokeLine(r.x() + r.w() / 2, r.y(), r.x() + r.w() / 2, r.y() + r.h());
-    }
 
     public void tick(GraphicsContext gc) {
         if (ime.enabled()) return;
@@ -214,6 +210,23 @@ public class EditorModel {
         } else {
             caret.draw(gc, gutter.width());
         }
+    }
+
+    private void drawSpecialCharacter(GraphicsContext gc, TextRun run, double top, double lineHeight) {
+        final String text = run.text();
+        if (!text.isEmpty() && text.charAt(text.length() - 1) == '\n') {
+            var rect = new Rect(
+                run.layout().x() + gutter.width() + run.layout().width(),
+                top + lineHeight * 0.1,
+                Global.numberCharacterWidth(gc.getFont()),
+                lineHeight).smaller(0.8);
+            if (text.length() > 1 && text.charAt(text.length() - 2) == '\r') {
+                SpecialCharacter.CRLF.draw(gc, rect);
+            } else {
+                SpecialCharacter.LF.draw(gc, rect);
+            }
+        }
+
     }
 
     /**
