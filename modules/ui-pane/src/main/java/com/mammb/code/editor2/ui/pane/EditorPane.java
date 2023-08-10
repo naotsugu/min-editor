@@ -216,6 +216,7 @@ public class EditorPane extends StackPane {
 
 
     public void handleKeyTyped(KeyEvent e) {
+        System.out.println(e);
         if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
             e.getCode().isArrowKey() || e.getCode().isModifierKey() ||
             e.getCode().isMediaKey() || !Keys.controlKeysFilter.test(e) ||
