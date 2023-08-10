@@ -17,6 +17,7 @@ package com.mammb.code.editor2.ui.pane.impl;
 
 import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.ui.pane.Global;
 import com.mammb.code.editor2.ui.pane.Selection;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -97,12 +98,26 @@ public class SelectionImpl implements Selection {
 
         if (max().offset() >= runStart && min().offset() < runEnd) {
 
-            double x = run.offsetToX().apply(Math.max(min().offset(), runStart) - runStart);
-            double width = run.offsetToX().apply(Math.min(max().offset(), runEnd) - runStart) - x;
-            gc.setFill(Color.LIGHTBLUE);
-            gc.fillRect(x + left, top, width, run.textLine().height());
+            final String text = run.text();
 
+            if (runEnd <= max().offset() &&
+                ((text.length() == 1 && text.charAt(0) == '\n') ||
+                 (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
+
+                gc.setFill(Color.LIGHTBLUE);
+                gc.fillRect(left - 0.5, top, Global.numberCharacterWidth(gc.getFont()), run.textLine().height());
+
+            } else {
+
+                double x1 = run.offsetToX().apply(Math.max(min().offset(), runStart) - runStart);
+                double x2 = run.offsetToX().apply(Math.min(max().offset(), runEnd) - runStart);
+
+                gc.setFill(Color.LIGHTBLUE);
+                gc.fillRect(x1 + left, top, x2 - x1, run.textLine().height());
+
+            }
         }
+
     }
 
 }

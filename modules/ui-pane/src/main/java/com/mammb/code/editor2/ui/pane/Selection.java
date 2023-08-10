@@ -53,24 +53,59 @@ public interface Selection {
      */
     void clear();
 
+    /**
+     * Get the select start offset.
+     * @return the select start offset
+     */
     OffsetPoint startOffset();
 
+    /**
+     * Get the select end offset.
+     * @return the select end offset
+     */
     OffsetPoint endOffset();
 
+    /**
+     * Gets whether the select has been started or not.
+     * @return {@code true} if the select has been started
+     */
     boolean started();
 
+    /**
+     * Gets whether the dragging select has been started or not.
+     * @return {@code true} if the dragging select has been started
+     */
     boolean isDragging();
 
+    /**
+     * Draw the selection.
+     * @param gc the graphics context
+     * @param run the text run
+     * @param offsetY the position y
+     * @param left the left position of run(margin included)
+     */
     void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
 
+    /**
+     * Get the selected char length.
+     * @return the selected char length
+     */
     default int length() {
         return started() ? max().offset() - min().offset() : 0;
     }
 
+    /**
+     * Get the min select offset.
+     * @return the min select offset
+     */
     default OffsetPoint min() {
         return (startOffset().offset() <= endOffset().offset()) ? startOffset() : endOffset();
     }
 
+    /**
+     * Get the max select offset.
+     * @return the max select offset
+     */
     default OffsetPoint max() {
         return (startOffset().offset() <= endOffset().offset()) ? endOffset() : startOffset();
     }

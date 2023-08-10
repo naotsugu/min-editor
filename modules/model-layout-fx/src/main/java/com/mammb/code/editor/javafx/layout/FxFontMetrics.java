@@ -79,7 +79,7 @@ public class FxFontMetrics implements com.mammb.code.editor2.model.layout.FontMe
 
     @Override
     public float getCharWidth(Font font, char ch) {
-        return metrics.get(font).getCharWidth(ch);
+        return metrics.computeIfAbsent(font, fontLoader::getFontMetrics).getCharWidth(ch);
     }
 
 
