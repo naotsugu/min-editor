@@ -17,7 +17,6 @@ package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor2.model.buffer.Metrics;
-import com.mammb.code.editor2.model.buffer.MetricsRecord;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.edit.Edit;
 import com.mammb.code.editor2.model.layout.TextLine;
@@ -27,7 +26,6 @@ import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.ui.pane.impl.Clipboard;
 import com.mammb.code.editor2.ui.pane.impl.ImePalletImpl;
-import com.mammb.code.editor2.ui.pane.impl.InspectRecord;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
 import com.mammb.code.editor2.ui.pane.impl.SpecialCharacter;
 import javafx.geometry.VPos;
@@ -35,7 +33,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
 import java.nio.file.Path;
 import java.util.List;
 
@@ -61,9 +58,9 @@ public class EditorModel {
     /** The ime. */
     private final ImePallet ime;
     /** The vertical scroll. */
-    private final ScrollBar<Integer> vScroll;
+    private ScrollBar<Integer> vScroll;
     /** The horizontal scrollBar. */
-    private final ScrollBar<Double> hScroll;
+    private ScrollBar<Double> hScroll;
     /** The screen width. */
     private double width;
     /** The screen height. */
@@ -78,7 +75,7 @@ public class EditorModel {
      * @param height the screen height
      */
     public EditorModel(double width, double height) {
-        this(width, height, null);
+        this(width, height, null, ScrollBar.empty(), ScrollBar.empty());
     }
 
 
@@ -88,7 +85,8 @@ public class EditorModel {
      * @param height the screen height
      * @param path the path
      */
-    public EditorModel(double width, double height, Path path) {
+    public EditorModel(double width, double height, Path path,
+            ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
         this.buffer = TextBuffer.editBuffer(path, screenRowSize(height));
         this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
         this.gutter = new Gutter();
@@ -97,8 +95,7 @@ public class EditorModel {
         this.ime = new ImePalletImpl();
         this.width = width;
         this.height = height;
-        this.vScroll = null;
-        this.hScroll = null;
+        setScroll(vScroll, hScroll);
     }
 
 
@@ -241,18 +238,19 @@ public class EditorModel {
     }
 
     /**
-     * Get the inspect snapshot.
-     * @return the inspect snapshot
+     * Get the metrics.
+     * @return the metrics
      */
-    public Inspect inspect() {
-        Metrics metrics = buffer.metrics();
-        return new InspectRecord(
-            new MetricsRecord(metrics),
-            caret.offset(),
-            buffer.maxLineSize(),
-            metrics.rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0),
-            texts.top().point().row() + texts.top().lineIndex()
-        );
+    public Metrics metrics() {
+        return buffer.metrics();
+    }
+
+    public void setScroll(ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
+        this.vScroll = vScroll;
+        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setVisibleAmount(buffer.maxLineSize());
+        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        this.hScroll = hScroll;
     }
 
     // -- focus behavior  --------------------------------------------------
@@ -291,17 +289,23 @@ public class EditorModel {
     // -- scroll behavior  ----------------------------------------------------
     public int scrollPrev(int n) {
         int size = texts.prev(n);
-        if (size > 0) caret.markDirty();
+        if (size == 0) return 0;
+        caret.markDirty();
+        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
         return size;
     }
     public int scrollNext(int n) {
         int size = texts.next(n);
-        if (size > 0) caret.markDirty();
+        if (size == 0) return 0;
+        caret.markDirty();
+        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
         return size;
     }
     public void scrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
-        if (scrolled) caret.markDirty();
+        if (!scrolled) return;
+        caret.markDirty();
+        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
     // -- arrow behavior ------------------------------------------------------
     public void selectOn() {
@@ -322,16 +326,6 @@ public class EditorModel {
         var metrics = buffer.metrics();
         log.log(INFO, metrics);
         selection.to(OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
-    }
-    private void selectionDelete() {
-        if (selection.length() > 0) {
-            Textual text = buffer.subText(selection.min(), selection.length());
-            buffer.push(Edit.delete(text.point(), text.text()));
-            selection.clear();
-            caret.at(text.point().offset(), true);
-            texts.markDirty();
-            caret.markDirty();
-        }
     }
     public void moveCaretRight() {
         scrollToCaret();
@@ -431,6 +425,7 @@ public class EditorModel {
         buffer.push(Edit.insert(caretPoint, value));
         texts.markDirty();
         caret.markDirty();
+        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
         for (int i = 0; i < value.length(); i++) moveCaretRight();
     }
     public void delete() {
@@ -445,6 +440,7 @@ public class EditorModel {
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
         texts.markDirty();
         caret.markDirty();
+        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
     }
     public void backspace() {
         scrollToCaret();
@@ -453,24 +449,42 @@ public class EditorModel {
             return;
         }
         if (caret.offset() == 0) return;
+        // TODO backspace at the leading position
         OffsetPoint caretPoint = caret.offsetPoint();
         LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
         if (layoutLine == null) return;
         moveCaretLeft();
         buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
         texts.markDirty();
+        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+    }
+    private void selectionDelete() {
+        if (selection.length() > 0) {
+            Textual text = buffer.subText(selection.min(), selection.length());
+            buffer.push(Edit.delete(text.point(), text.text()));
+            selection.clear();
+            caret.at(text.point().offset(), true);
+            texts.markDirty();
+            caret.markDirty();
+            vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+            vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        }
     }
     public void undo() {
         selection.clear();
         Edit edit = buffer.undo();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
+        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
     public void redo() {
         selection.clear();
         Edit edit = buffer.redo();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
+        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
     /**
      * Paste the text from the clipboard.
@@ -508,6 +522,8 @@ public class EditorModel {
         this.buffer.setMaxLineSize(screenRowSize(height));
         texts.markDirty();
         caret.markDirty();
+        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setVisibleAmount(buffer.maxLineSize());
     }
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
@@ -518,6 +534,9 @@ public class EditorModel {
             texts = wrap.asLinear();
             caret.markDirty();
         }
+        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setVisibleAmount(buffer.maxLineSize());
+        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
     // -- private -------------------------------------------------------------
 

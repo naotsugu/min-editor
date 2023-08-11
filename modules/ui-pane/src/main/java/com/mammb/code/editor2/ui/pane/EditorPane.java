@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -84,6 +85,7 @@ public class EditorPane extends StackPane {
         vScrollBar = new VScrollBar(Global.fgColor);
         StackPane.setAlignment(vScrollBar, Pos.CENTER_RIGHT);
         getChildren().add(vScrollBar);
+        editorModel.setScroll(vScrollBar, ScrollBar.empty());
 
         initHandler();
 
@@ -122,9 +124,8 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        editorModel = new EditorModel(getWidth(), getHeight(), path);
+        editorModel = new EditorModel(getWidth(), getHeight(), path, vScrollBar, ScrollBar.empty());
         editorModel.draw(gc);
-        handleScreenChange(Inspect.empty, editorModel.inspect());
     }
 
     private void openChoose() {
@@ -152,7 +153,6 @@ public class EditorPane extends StackPane {
                 editorModel.scrollNext(Math.min(Math.abs((int) e.getDeltaY()), 3));
             }
             editorModel.draw(gc);
-            vScrollBar.value.setValue(editorModel.inspect().screenTopLines());
         }
     }
 
@@ -232,13 +232,11 @@ public class EditorPane extends StackPane {
                 return;
             }
         }
-        var inspect = editorModel.inspect();
         String ch = (ascii == 13)
-            ? inspect.metrics().lineEnding().str()
+            ? editorModel.metrics().lineEnding().str()
             : e.getCharacter();
         editorModel.input(ch);
         editorModel.draw(gc);
-        handleScreenChange(inspect, editorModel.inspect());
     }
 
 
@@ -282,9 +280,6 @@ public class EditorPane extends StackPane {
             canvas.setHeight(canvasHeight);
             editorModel.layoutBounds(canvasWidth, canvasHeight);
             editorModel.draw(gc);
-            var inspect = editorModel.inspect();
-            vScrollBar.max.setValue(inspect.screenLines());
-            vScrollBar.visibleAmount.setValue(inspect.screenMaxLines());
         }
     }
 
@@ -332,10 +327,8 @@ public class EditorPane extends StackPane {
     }
 
     private void aroundEdit(Runnable runnable) {
-        var before = editorModel.inspect();
         runnable.run();
         editorModel.draw(gc);
-        handleScreenChange(before, editorModel.inspect());
     }
 
     private void aroundEdit(Runnable edit, boolean withSelect) {
@@ -348,20 +341,6 @@ public class EditorPane extends StackPane {
             edit.run();
             editorModel.selectTo();
         });
-    }
-
-
-    private void handleScreenChange(Inspect before, Inspect after) {
-
-        if (before.screenLines() != after.screenLines()) {
-            vScrollBar.max.setValue(after.screenLines());
-        }
-        if (before.screenMaxLines() != after.screenMaxLines()) {
-            vScrollBar.visibleAmount.setValue(after.screenMaxLines());
-        }
-        if (before.screenTopLines() != after.screenTopLines()) {
-            vScrollBar.value.setValue(after.screenTopLines());
-        }
     }
 
 
