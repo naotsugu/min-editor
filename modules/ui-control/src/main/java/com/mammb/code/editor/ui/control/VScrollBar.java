@@ -93,11 +93,6 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         setOnMouseClicked(this::handleTruckClicked);
     }
 
-    private void handleHeightChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        adjustThumbLength();
-    }
-
-
     private void handleMinValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         adjustThumbLength();
     }
@@ -112,6 +107,10 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
     private void handleVisibleAmountChanged(ObservableValue<? extends Number> observable,
             Number oldValue, Number newValue) {
+        adjustThumbLength();
+    }
+
+    private void handleHeightChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         adjustThumbLength();
     }
 
@@ -212,20 +211,6 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
     }
 
-    private double visiblePortion() {
-        return (valueLength() > 0)
-            ? (double) getVisibleAmount() / valueLength()
-            : 1.0;
-    }
-
-
-    private double thumbLength() {
-        return clamp(WIDTH, getTruckLength() * visiblePortion(), getTruckLength());
-    }
-
-    private int valueLength() {
-        return Math.max(0, max.getValue() - min.getValue());
-    }
 
     /**
      * Clamps the given value to be strictly between the min and max values.

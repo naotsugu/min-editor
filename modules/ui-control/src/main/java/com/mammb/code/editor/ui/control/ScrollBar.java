@@ -35,6 +35,31 @@ public interface ScrollBar<T extends Number> {
 
     double getTruckLength();
 
+
+    default double visiblePortion() {
+        double length = valueLength();
+        return (length > 0)
+            ? getVisibleAmount().doubleValue() / length
+            : 1.0;
+    }
+
+    default double valueLength() {
+        return Math.max(0, getMax().doubleValue() - getMin().doubleValue());
+    }
+
+    default double thumbLength() {
+        return clamp(WIDTH, getTruckLength() * visiblePortion(), getTruckLength());
+    }
+
+    /**
+     * Clamps the given value to be strictly between the min and max values.
+     */
+    private static double clamp(double min, double value, double max) {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
+    }
+
     static <T extends Number> ScrollBar<T> empty() {
         return new ScrollBar<>() {
             @Override public T getMin() { return null; }

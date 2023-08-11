@@ -18,7 +18,11 @@ package com.mammb.code.editor.ui.control;
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.AccessibleRole;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
@@ -40,13 +44,90 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     /** The visible amount. */
     public final DoubleProperty visibleAmount = new SimpleDoubleProperty(this, "visibleAmount", 100);
 
+    /** The thumb. */
+    private final ScrollThumb thumb;
+
+    /** The thumb. */
+    private final Color baseColor;
+
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
 
 
     public HScrollBar(Color baseColor) {
+
+        this.baseColor = baseColor.deriveColor(0, 1, 1, 0.1);
+
+        setHeight(WIDTH);
+        setPrefHeight(WIDTH);
+        setMaxHeight(WIDTH);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
+
+        thumb = new ScrollThumb(WIDTH, WIDTH, baseColor);
+        getChildren().add(thumb);
+
+        initListener();
     }
+
+    /**
+     * Initialize listener.
+     */
+    private void initListener() {
+        min.addListener(this::handleMinValueChanged);
+        max.addListener(this::handleMaxValueChanged);
+        value.addListener(this::handleValueChanged);
+        visibleAmount.addListener(this::handleVisibleAmountChanged);
+
+        heightProperty().addListener(this::handleHeightChanged);
+
+        setOnMouseEntered(this::handleMouseEntered);
+        setOnMouseExited(this::handleMouseExited);
+        setOnMouseClicked(this::handleTruckClicked);
+    }
+
+    private void handleMinValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    }
+
+    private void handleMaxValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    }
+
+    private void handleValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    }
+
+    private void handleVisibleAmountChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    }
+
+    private void handleHeightChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    }
+
+    private void handleMouseEntered(MouseEvent event) {
+        setBackground(new Background(new BackgroundFill(baseColor, null, null)));
+    }
+
+    private void handleMouseExited(MouseEvent event) {
+        setBackground(null);
+    }
+
+    /**
+     * The truck clicked handler.
+     * @param event the MouseEvent
+     */
+    private void handleTruckClicked(MouseEvent event) {
+        if (event.isSynthesized()) {
+            event.consume();
+            return;
+        }
+        // TODO
+    }
+
+    private void stopTimeline() {
+        if (timeline != null) {
+            timeline.stop();
+            timeline = null;
+        }
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="getter/setter">
 
     @Override
     public Double getMin() {
@@ -92,5 +173,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     public double getTruckLength() {
         return getWidth();
     }
+
+    //</editor-fold>
 
 }
