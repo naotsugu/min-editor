@@ -78,7 +78,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         value.addListener(this::handleValueChanged);
         visibleAmount.addListener(this::handleVisibleAmountChanged);
 
-        heightProperty().addListener(this::handleHeightChanged);
+        widthProperty().addListener(this::handleWidthChanged);
 
         setOnMouseEntered(this::handleMouseEntered);
         setOnMouseExited(this::handleMouseExited);
@@ -101,7 +101,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         adjustThumbLength();
     }
 
-    private void handleHeightChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void handleWidthChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         adjustThumbLength();
     }
 
@@ -159,7 +159,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
     private void adjustThumbLength() {
         double thumbLength = thumbLength();
-        if (thumbLength >= getHeight()) {
+        if (thumbLength >= getWidth()) {
             setVisible(false);
         } else {
             setVisible(true);

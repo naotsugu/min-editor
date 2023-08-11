@@ -245,12 +245,20 @@ public class EditorModel {
         return buffer.metrics();
     }
 
+
     public void setScroll(ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
+
         this.vScroll = vScroll;
         vScroll.setMax(scrollMax());
         vScroll.setVisibleAmount(buffer.maxLineSize());
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+
         this.hScroll = hScroll;
+        if (texts instanceof LinearTextList linear) {
+            hScroll.setMax(linear.highWaterWidth());
+            hScroll.setVisibleAmount(width - gutter.width());
+            hScroll.setValue(0.0);
+        }
     }
 
     // -- focus behavior  --------------------------------------------------
@@ -522,6 +530,10 @@ public class EditorModel {
         caret.markDirty();
         vScroll.setMax(scrollMax());
         vScroll.setVisibleAmount(buffer.maxLineSize());
+        if (texts instanceof LinearTextList linear) {
+            hScroll.setMax(linear.highWaterWidth());
+            hScroll.setVisibleAmount(width - gutter.width());
+        }
     }
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
@@ -535,6 +547,11 @@ public class EditorModel {
         vScroll.setMax(scrollMax());
         vScroll.setVisibleAmount(buffer.maxLineSize());
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        if (texts instanceof LinearTextList linear) {
+            hScroll.setMax(linear.highWaterWidth());
+            hScroll.setVisibleAmount(width - gutter.width());
+            hScroll.setValue(0.0);
+        }
     }
     // -- private -------------------------------------------------------------
 
@@ -554,6 +571,7 @@ public class EditorModel {
         }
         return max;
     }
+
     private LayoutLine layoutLine(int offset) {
         return texts.layoutLine(offset);
     }

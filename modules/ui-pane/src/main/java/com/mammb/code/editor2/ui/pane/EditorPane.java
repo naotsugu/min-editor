@@ -36,7 +36,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
-
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
