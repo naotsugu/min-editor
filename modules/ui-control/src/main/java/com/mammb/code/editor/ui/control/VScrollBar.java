@@ -105,8 +105,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         positionThumb();
     }
 
-    private void handleVisibleAmountChanged(ObservableValue<? extends Number> observable,
-            Number oldValue, Number newValue) {
+    private void handleVisibleAmountChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         adjustThumbLength();
     }
 
@@ -183,19 +182,19 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
     private void adjustValue(double position) {
         // figure out the "value" associated with the specified position
-        int posValue = (int) ((max.getValue() - min.getValue()) * clamp(0, position, 1)) + min.getValue();
-        if (Integer.compare(posValue, value.getValue()) != 0) {
-            int newValue = (posValue > value.getValue())
-                ? value.getValue() + visibleAmount.getValue()
-                : value.getValue() - visibleAmount.getValue();
-            value.setValue(clamp(newValue));
+        int posValue = (int) (valueLength() * clamp(0, position, 1)) + getMin();
+        if (Integer.compare(posValue, getValue()) != 0) {
+            int newValue = (posValue > getValue())
+                ? getValue() + getVisibleAmount()
+                : getValue() - getVisibleAmount();
+            setValue(clamp(newValue));
         }
     }
 
     private void positionThumb() {
-        double clampedValue = clamp(value.getValue());
+        double clampedValue = clamp(getValue());
         double trackPos = (valueLength() > 0)
-            ? ((getHeight() - thumb.getHeight()) * (clampedValue - min.getValue()) / valueLength()) : (0.0F);
+            ? ((getHeight() - thumb.getHeight()) * (clampedValue - getMin()) / valueLength()) : (0.0F);
 
         thumb.setTranslateY(snapPositionY(trackPos + snappedTopInset()));
     }
@@ -208,9 +207,14 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
             setVisible(true);
             thumb.setHeight(thumbLength());
         }
-
     }
 
+    private void stopTimeline() {
+        if (timeline != null) {
+            timeline.stop();
+            timeline = null;
+        }
+    }
 
     /**
      * Clamps the given value to be strictly between the min and max values.
@@ -230,12 +234,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         return value;
     }
 
-    private void stopTimeline() {
-        if (timeline != null) {
-            timeline.stop();
-            timeline = null;
-        }
-    }
+    //<editor-fold defaultstate="collapsed" desc="getter/setter">
 
     @Override
     public Integer getMin() {
@@ -281,5 +280,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     public double getTruckLength() {
         return getHeight();
     }
+
+    //</editor-fold>
 
 }

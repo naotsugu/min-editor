@@ -75,7 +75,7 @@ public class EditorModel {
      * @param height the screen height
      */
     public EditorModel(double width, double height) {
-        this(width, height, null, ScrollBar.empty(), ScrollBar.empty());
+        this(width, height, null, ScrollBar.vEmpty(), ScrollBar.hEmpty());
     }
 
 
@@ -538,8 +538,13 @@ public class EditorModel {
     }
     // -- private -------------------------------------------------------------
 
+
     int screenRowSize(double height) {
         return (int) Math.ceil(height / Global.fontMetrics.lineHeight());
+    }
+
+    private double textLeft() {
+        return gutter.width() - hScroll.getValue();
     }
 
     private int scrollMax() {

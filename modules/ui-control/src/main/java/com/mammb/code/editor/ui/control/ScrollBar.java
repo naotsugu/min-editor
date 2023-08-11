@@ -24,15 +24,40 @@ public interface ScrollBar<T extends Number> {
     /** The width of scroll bar. */
     double WIDTH = 9;
 
+    /**
+     * Get the min value.
+     * @return the min value
+     */
     T getMin();
+
     void setMin(T min);
+
+    /**
+     * Get the max value.
+     * @return the max value
+     */
     T getMax();
+
     void setMax(T max);
+
+    /**
+     * Get the visible amount.
+     * @return the visible amount
+     */
     T getVisibleAmount();
     void setVisibleAmount(T amount);
+
+    /**
+     * Get the value.
+     * @return the value
+     */
     T getValue();
     void setValue(T value);
 
+    /**
+     * Get the truck length.
+     * @return the truck length
+     */
     double getTruckLength();
 
 
@@ -44,33 +69,45 @@ public interface ScrollBar<T extends Number> {
     }
 
     default double valueLength() {
-        return Math.max(0, getMax().doubleValue() - getMin().doubleValue());
+        double length = getMax().doubleValue() - getMin().doubleValue();
+        return (length > 0) ? length : 0;
     }
 
     default double thumbLength() {
-        return clamp(WIDTH, getTruckLength() * visiblePortion(), getTruckLength());
+        double thumbLength = getTruckLength() * visiblePortion();
+        if (thumbLength < WIDTH) {
+            return WIDTH;
+        } else if (thumbLength > getTruckLength()) {
+            return getTruckLength();
+        }
+        return thumbLength;
     }
 
-    /**
-     * Clamps the given value to be strictly between the min and max values.
-     */
-    private static double clamp(double min, double value, double max) {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
-    }
-
-    static <T extends Number> ScrollBar<T> empty() {
+    static ScrollBar<Integer> vEmpty() {
         return new ScrollBar<>() {
-            @Override public T getMin() { return null; }
-            @Override public void setMin(T min) { }
-            @Override public T getMax() { return null; }
-            @Override public void setMax(T max) { }
-            @Override public T getVisibleAmount() { return null; }
-            @Override public void setVisibleAmount(T amount) { }
-            @Override public T getValue() { return null; }
-            @Override public void setValue(T value) { }
+            @Override public Integer getMin() { return 0; }
+            @Override public void setMin(Integer min) { }
+            @Override public Integer getMax() { return 0; }
+            @Override public void setMax(Integer max) { }
+            @Override public Integer getVisibleAmount() { return 0; }
+            @Override public void setVisibleAmount(Integer amount) { }
+            @Override public Integer getValue() { return 0; }
+            @Override public void setValue(Integer value) { }
             @Override public double getTruckLength() { return 0; }
+        };
+    }
+
+    static ScrollBar<Double> hEmpty() {
+        return new ScrollBar<>() {
+            @Override public Double getMin() { return 0.0; }
+            @Override public void setMin(Double min) { }
+            @Override public Double getMax() { return 0.0; }
+            @Override public void setMax(Double max) { }
+            @Override public Double getVisibleAmount() { return 0.0; }
+            @Override public void setVisibleAmount(Double amount) { }
+            @Override public Double getValue() { return 0.0; }
+            @Override public void setValue(Double value) { }
+            @Override public double getTruckLength() { return 0.0; }
         };
     }
 

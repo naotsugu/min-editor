@@ -16,7 +16,6 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.ui.control.HScrollBar;
-import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -131,7 +130,7 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        editorModel = new EditorModel(getWidth(), getHeight(), path, vScrollBar, ScrollBar.empty());
+        editorModel = new EditorModel(getWidth(), getHeight(), path, vScrollBar, hScrollBar);
         editorModel.draw(gc);
     }
 

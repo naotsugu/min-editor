@@ -86,18 +86,23 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     }
 
     private void handleMinValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        adjustThumbLength();
     }
 
     private void handleMaxValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        adjustThumbLength();
     }
 
     private void handleValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        positionThumb();
     }
 
     private void handleVisibleAmountChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        adjustThumbLength();
     }
 
     private void handleHeightChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        adjustThumbLength();
     }
 
     private void handleMouseEntered(MouseEvent event) {
@@ -120,11 +125,63 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         // TODO
     }
 
+    public void thumbDragged(double position) {
+
+    }
+
+    public void trackPress(double position) {
+
+    }
+
+    public void trackRelease() {
+        stopTimeline();
+    }
+
+    private void adjustValue(double position) {
+        // figure out the "value" associated with the specified position
+        double posValue = valueLength() * clamp(0, position, 1) + getMin();
+        if (Double.compare(posValue, getValue()) != 0) {
+            double newValue = (posValue > getValue())
+                ? getValue() + getVisibleAmount()
+                : getValue() - getVisibleAmount();
+            setValue(clamp(getMin(), newValue, getMax()));
+        }
+    }
+
+
+    private void positionThumb() {
+        double clampedValue = clamp(getMin(), getValue(), getMax());
+        double trackPos = (valueLength() > 0)
+            ? ((getWidth() - thumb.getWidth()) * (clampedValue - getMin()) / valueLength()) : (0.0F);
+        thumb.setTranslateX(snapPositionX(trackPos + snappedLeftInset()));
+    }
+
+
+    private void adjustThumbLength() {
+        double thumbLength = thumbLength();
+        if (thumbLength >= getHeight()) {
+            setVisible(false);
+        } else {
+            setVisible(true);
+            thumb.setWidth(thumbLength());
+        }
+    }
+
+
     private void stopTimeline() {
         if (timeline != null) {
             timeline.stop();
             timeline = null;
         }
+    }
+
+    /**
+     * Clamps the given value to be strictly between the min and max values.
+     */
+    private double clamp(double min, double value, double max) {
+        if (value < min) return min;
+        if (value > max) return max;
+        return value;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getter/setter">
