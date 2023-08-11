@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.ui.pane;
 
+import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import javafx.animation.KeyFrame;
@@ -36,6 +37,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -57,6 +59,8 @@ public class EditorPane extends StackPane {
     private EditorModel editorModel;
     /** The vertical scroll bar for line scroll. */
     private VScrollBar vScrollBar;
+    /** The horizontal scroll bar for line scroll. */
+    private HScrollBar hScrollBar;
 
     /** The margin. */
     double margin = 5.5;
@@ -75,6 +79,7 @@ public class EditorPane extends StackPane {
         double canvasHeight = height - margin;
 
         editorModel = new EditorModel(canvasWidth, canvasHeight);
+
         canvas = new Canvas(canvasWidth, canvasHeight);
         canvas.setFocusTraversable(true);
         canvas.setAccessibleRole(AccessibleRole.TEXT_AREA);
@@ -84,8 +89,10 @@ public class EditorPane extends StackPane {
 
         vScrollBar = new VScrollBar(Global.fgColor);
         StackPane.setAlignment(vScrollBar, Pos.CENTER_RIGHT);
-        getChildren().add(vScrollBar);
-        editorModel.setScroll(vScrollBar, ScrollBar.empty());
+        hScrollBar = new HScrollBar(Global.fgColor);
+        StackPane.setAlignment(hScrollBar, Pos.BOTTOM_LEFT);
+        getChildren().addAll(vScrollBar, hScrollBar);
+        editorModel.setScroll(vScrollBar, hScrollBar);
 
         initHandler();
 

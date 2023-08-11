@@ -36,7 +36,7 @@ public interface ScrollBar<T extends Number> {
     double getTruckLength();
 
     static <T extends Number> ScrollBar<T> empty() {
-        return new ScrollBar<T>() {
+        return new ScrollBar<>() {
             @Override public T getMin() { return null; }
             @Override public void setMin(T min) { }
             @Override public T getMax() { return null; }
@@ -48,4 +48,5 @@ public interface ScrollBar<T extends Number> {
             @Override public double getTruckLength() { return 0; }
         };
     }
+
 }

@@ -20,6 +20,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.AccessibleRole;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 /**
  * Horizontal ScrollBar.
@@ -43,7 +44,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     private Timeline timeline;
 
 
-    public HScrollBar() {
+    public HScrollBar(Color baseColor) {
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
     }
 
