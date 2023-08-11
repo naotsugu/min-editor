@@ -25,6 +25,7 @@ import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class WrapTextList implements TextList {
     private int rollup = 0;
 
     private TextLine top = null;
+
 
 
     /**
@@ -247,6 +249,7 @@ public class WrapTextList implements TextList {
         }
         return lines.size();
     }
+
 
     private static Translate<Textual, List<TextLine>> translator(
             LineLayout layout, double wrapWidth,

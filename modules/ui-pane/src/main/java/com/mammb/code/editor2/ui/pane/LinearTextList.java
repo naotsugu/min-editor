@@ -25,6 +25,7 @@ import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.model.text.Translate;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,12 +43,16 @@ public class LinearTextList implements TextList {
     private final List<TextLine> lines = new LinkedList<>();
     /** The styling. */
     private final Translate<Textual, StyledText> styling;
+
     /** The LineLayout. */
     private final LineLayout layout = new FxLayoutBuilder();
     /** The count of rollup lines. */
     private int rollup = 0;
 
     private TextLine top = null;
+
+    /** The high water width. */
+    private double highWaterWidth = 0;
 
 
     /**
@@ -67,7 +72,7 @@ public class LinearTextList implements TextList {
     public LinearTextList(TextBuffer<Textual> buffer, Translate<Textual, StyledText> styling) {
         this.buffer = buffer;
         this.styling = styling;
-        this.translator = translator(layout, styling);
+        this.translator = translator(layout, styling, passThroughTrace());
     }
 
 
@@ -191,13 +196,34 @@ public class LinearTextList implements TextList {
     }
 
     /**
+     * Get the high water width.
+     * @return the high water width
+     */
+    public double highWaterWidth() {
+        return highWaterWidth;
+    }
+
+
+    /**
      * Build the translator.
      * @return the translator
      */
     private static Translate<Textual, TextLine> translator(
-            LineLayout layout, Translate<Textual, StyledText> styling) {
+            LineLayout layout, Translate<Textual, StyledText> styling,
+            Translate<TextLine, TextLine> passThrough) {
         return styling.compound(SpanTranslate.of())
-                      .compound(LayoutTranslate.of(layout));
+                      .compound(LayoutTranslate.of(layout))
+                      .compound(passThrough);
+    }
+
+
+    private Translate<TextLine, TextLine> passThroughTrace() {
+        return textLine -> {
+            if (highWaterWidth < textLine.width()) {
+                highWaterWidth = textLine.width();
+            }
+            return textLine;
+        };
     }
 
 }

@@ -247,7 +247,7 @@ public class EditorModel {
 
     public void setScroll(ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
         this.vScroll = vScroll;
-        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setMax(scrollMax());
         vScroll.setVisibleAmount(buffer.maxLineSize());
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
         this.hScroll = hScroll;
@@ -287,19 +287,17 @@ public class EditorModel {
     }
 
     // -- scroll behavior  ----------------------------------------------------
-    public int scrollPrev(int n) {
+    public void scrollPrev(int n) {
         int size = texts.prev(n);
-        if (size == 0) return 0;
+        if (size == 0) return;
         caret.markDirty();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
-        return size;
     }
-    public int scrollNext(int n) {
+    public void scrollNext(int n) {
         int size = texts.next(n);
-        if (size == 0) return 0;
+        if (size == 0) return;
         caret.markDirty();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
-        return size;
     }
     public void scrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
@@ -425,7 +423,7 @@ public class EditorModel {
         buffer.push(Edit.insert(caretPoint, value));
         texts.markDirty();
         caret.markDirty();
-        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setMax(scrollMax());
         for (int i = 0; i < value.length(); i++) moveCaretRight();
     }
     public void delete() {
@@ -440,7 +438,7 @@ public class EditorModel {
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
         texts.markDirty();
         caret.markDirty();
-        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setMax(scrollMax());
     }
     public void backspace() {
         scrollToCaret();
@@ -456,7 +454,7 @@ public class EditorModel {
         moveCaretLeft();
         buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
         texts.markDirty();
-        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setMax(scrollMax());
     }
     private void selectionDelete() {
         if (selection.length() > 0) {
@@ -466,7 +464,7 @@ public class EditorModel {
             caret.at(text.point().offset(), true);
             texts.markDirty();
             caret.markDirty();
-            vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+            vScroll.setMax(scrollMax());
             vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
         }
     }
@@ -475,7 +473,7 @@ public class EditorModel {
         Edit edit = buffer.undo();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
-        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setMax(scrollMax());
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
     public void redo() {
@@ -483,7 +481,7 @@ public class EditorModel {
         Edit edit = buffer.redo();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
-        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setMax(scrollMax());
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
     /**
@@ -522,7 +520,7 @@ public class EditorModel {
         this.buffer.setMaxLineSize(screenRowSize(height));
         texts.markDirty();
         caret.markDirty();
-        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setMax(scrollMax());
         vScroll.setVisibleAmount(buffer.maxLineSize());
     }
     // -- conf behavior -------------------------------------------------------
@@ -534,7 +532,7 @@ public class EditorModel {
             texts = wrap.asLinear();
             caret.markDirty();
         }
-        vScroll.setMax(buffer.metrics().rowCount() + ((texts instanceof WrapTextList w) ? w.wrappedSize() - buffer.maxLineSize() : 0));
+        vScroll.setMax(scrollMax());
         vScroll.setVisibleAmount(buffer.maxLineSize());
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
@@ -544,6 +542,13 @@ public class EditorModel {
         return (int) Math.ceil(height / Global.fontMetrics.lineHeight());
     }
 
+    private int scrollMax() {
+        int max = buffer.metrics().rowCount() - buffer.maxLineSize();
+        if (texts instanceof WrapTextList w) {
+            max += w.wrappedSize() - buffer.maxLineSize();
+        }
+        return max;
+    }
     private LayoutLine layoutLine(int offset) {
         return texts.layoutLine(offset);
     }
