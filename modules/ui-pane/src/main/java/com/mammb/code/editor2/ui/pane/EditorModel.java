@@ -117,7 +117,7 @@ public class EditorModel {
             offsetY += line.leadingHeight();
         }
         if (!ime.enabled()) {
-            caret.draw(gc, gutter.width());
+            caret.draw(gc, textLeft());
         }
         gc.restore();
         if (gutter.checkWidthChanged()) {
@@ -162,7 +162,7 @@ public class EditorModel {
 
     private void drawRun(GraphicsContext gc, TextRun run, boolean overlay, double top, double lineHeight) {
 
-        double left = run.layout().x() + gutter.width();
+        double left = run.layout().x() + textLeft();
 
         if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
             gc.setFill(bg);
@@ -202,10 +202,10 @@ public class EditorModel {
     public void tick(GraphicsContext gc) {
         if (ime.enabled()) return;
         if (caret.drawn()) {
-            Rect rect = caret.clear(gc, gutter.width());
+            Rect rect = caret.clear(gc, textLeft());
             draw(gc, rect);
         } else {
-            caret.draw(gc, gutter.width());
+            caret.draw(gc, textLeft());
         }
     }
 
@@ -215,9 +215,9 @@ public class EditorModel {
             char ch = text.charAt(i);
             if (ch != '\r' && ch != '\n' && ch != '\t' && ch != '　') continue;
 
-            double x = gutter.width() + run.offsetToX().apply(i);
+            double x = textLeft() + run.offsetToX().apply(i);
             double w = (ch == '　')
-                ? gutter.width() + run.offsetToX().apply(i + 1) - x
+                ? textLeft() + run.offsetToX().apply(i + 1) - x
                 : Global.numberCharacterWidth(gc.getFont());
             var rect = new Rect(x, top + lineHeight * 0.1, w, lineHeight).smaller(0.8);
 
@@ -263,19 +263,19 @@ public class EditorModel {
 
     // -- focus behavior  --------------------------------------------------
     public void focusIn(GraphicsContext gc) {
-        caret.draw(gc, gutter.width());
+        caret.draw(gc, textLeft());
     }
 
     public void focusOut(GraphicsContext gc) {
-        if (caret.drawn()) draw(gc, caret.clear(gc, gutter.width()));
+        if (caret.drawn()) draw(gc, caret.clear(gc, textLeft()));
     }
 
     // -- ime behavior  ----------------------------------------------------
     public Rect imeOn(GraphicsContext gc) {
         if (ime.enabled()) new Rect(caret.x(), caret.y(), caret.width(), caret.height());
-        scrollToCaret();
+        vScrollToCaret();
         ime.on(caret.offsetPoint());
-        draw(gc, caret.clear(gc, gutter.width()));
+        draw(gc, caret.clear(gc, textLeft()));
         return new Rect(caret.x(), caret.y(), caret.width(), caret.height());
     }
     public void imeOff() {
@@ -307,11 +307,23 @@ public class EditorModel {
         caret.markDirty();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
-    public void scrollToCaret() {
+    public void vScrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
         if (!scrolled) return;
         caret.markDirty();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+    }
+    public void hScrollToCaret() {
+        double gap = width / 10;
+        if (caret.x() <= hScroll.getValue()) {
+            hScroll.setValue(Math.max(0, caret.x() - gap));
+            return;
+        }
+        double right = hScroll.getValue() + (width - gutter.width());
+        if (caret.x() + gap >= right) {
+            double delta = caret.x() + gap - right;
+            hScroll.setValue(hScroll.getValue() + delta);
+        }
     }
     // -- arrow behavior ------------------------------------------------------
     public void selectOn() {
@@ -334,47 +346,51 @@ public class EditorModel {
         selection.to(OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
     }
     public void moveCaretRight() {
-        scrollToCaret();
+        vScrollToCaret();
         if (caret.y2() + 4 >= height) scrollNext(1);
         caret.right();
         if (caret.y2() > height) scrollNext(1);
+        hScrollToCaret();
     }
     public void moveCaretLeft() {
-        scrollToCaret();
+        vScrollToCaret();
         if (texts.head().offset() > 0 && texts.head().offset() == caret.offset()) {
             scrollPrev(1);
         }
         caret.left();
+        hScrollToCaret();
     }
     public void moveCaretUp() {
-        scrollToCaret();
+        vScrollToCaret();
         if (texts.head().offset() > 0 && caret.offset() < texts.head().tailOffset()) {
             scrollPrev(1);
         }
         caret.up();
+        hScrollToCaret();
     }
     public void moveCaretDown() {
-        scrollToCaret();
+        vScrollToCaret();
         if (caret.y2() + 4 >= height) scrollNext(1);
         caret.down();
         if (caret.y2() > height) scrollNext(1);
+        hScrollToCaret();
     }
     public void moveCaretPageUp() {
-        scrollToCaret();
+        vScrollToCaret();
         double x = caret.x();
         double y = caret.y();
         scrollPrev(texts.capacity() - 1);
         caret.at(texts.at(x, y), false);
     }
     public void moveCaretPageDown() {
-        scrollToCaret();
+        vScrollToCaret();
         double x = caret.x();
         double y = caret.y();
         scrollNext(texts.capacity() - 1);
         caret.at(texts.at(x, y), false);
     }
     public void moveCaretLineHome() {
-        scrollToCaret();
+        vScrollToCaret();
         LayoutLine line = texts.layoutLine(caret.offset());
         if (line.offset() == caret.offset()) {
             if (Character.isWhitespace(line.charAt(caret.offset()))) {
@@ -386,12 +402,14 @@ public class EditorModel {
         } else {
             caret.at(line.offset(), true);
         }
+        hScrollToCaret();
     }
     public void moveCaretLineEnd() {
-        scrollToCaret();
+        vScrollToCaret();
         LayoutLine line = texts.layoutLine(caret.offset());
         int offset = line.tailOffset() - line.endMarkCount();
         caret.at(offset, true);
+        hScrollToCaret();
     }
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
@@ -401,11 +419,11 @@ public class EditorModel {
             return;
         }
         selection.clear();
-        int offset = texts.at(x - gutter.width(), y);
+        int offset = texts.at(x - textLeft(), y);
         caret.at(offset, true);
     }
     public void clickDouble(double x, double y) {
-        int[] offsets = texts.atAround(x - gutter.width(), y);
+        int[] offsets = texts.atAround(x - textLeft(), y);
         if (offsets.length == 2) {
             caret.at(offsets[0], true);
             selection.start(caret.offsetPoint());
@@ -416,7 +434,7 @@ public class EditorModel {
         }
     }
     public void dragged(double x, double y) {
-        caret.at(texts.at(x - gutter.width(), y), true);
+        caret.at(texts.at(x - textLeft(), y), true);
         if (selection.isDragging()) {
             selection.to(caret.offsetPoint());
         } else {
@@ -425,7 +443,7 @@ public class EditorModel {
     }
     // -- edit behavior -------------------------------------------------------
     public void input(String value) {
-        scrollToCaret();
+        vScrollToCaret();
         selectionDelete();
         OffsetPoint caretPoint = caret.offsetPoint();
         buffer.push(Edit.insert(caretPoint, value));
@@ -435,7 +453,7 @@ public class EditorModel {
         for (int i = 0; i < value.length(); i++) moveCaretRight();
     }
     public void delete() {
-        scrollToCaret();
+        vScrollToCaret();
         if (selection.length() > 0) {
             selectionDelete();
             return;
@@ -449,7 +467,7 @@ public class EditorModel {
         vScroll.setMax(scrollMax());
     }
     public void backspace() {
-        scrollToCaret();
+        vScrollToCaret();
         if (selection.length() > 0) {
             selectionDelete();
             return;
@@ -474,6 +492,7 @@ public class EditorModel {
             caret.markDirty();
             vScroll.setMax(scrollMax());
             vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+            hScrollToCaret();
         }
     }
     public void undo() {
@@ -483,6 +502,7 @@ public class EditorModel {
         caret.at(edit.point().offset(), true);
         vScroll.setMax(scrollMax());
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        hScrollToCaret();
     }
     public void redo() {
         selection.clear();
@@ -491,6 +511,7 @@ public class EditorModel {
         caret.at(edit.point().offset(), true);
         vScroll.setMax(scrollMax());
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        hScrollToCaret();
     }
     /**
      * Paste the text from the clipboard.
@@ -544,14 +565,7 @@ public class EditorModel {
             texts = wrap.asLinear();
             caret.markDirty();
         }
-        vScroll.setMax(scrollMax());
-        vScroll.setVisibleAmount(buffer.maxLineSize());
-        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
-        if (texts instanceof LinearTextList linear) {
-            hScroll.setMax(linear.highWaterWidth());
-            hScroll.setVisibleAmount(width - gutter.width());
-            hScroll.setValue(0.0);
-        }
+        setScroll(vScroll, hScroll);
     }
     // -- private -------------------------------------------------------------
 
