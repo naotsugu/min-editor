@@ -249,16 +249,12 @@ public class EditorModel {
     public void setScroll(ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
 
         this.vScroll = vScroll;
-        vScroll.setMax(scrollMax());
-        vScroll.setVisibleAmount(buffer.maxLineSize());
+        setupVScroll();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
 
         this.hScroll = hScroll;
-        if (texts instanceof LinearTextList linear) {
-            hScroll.setMax(linear.highWaterWidth());
-            hScroll.setVisibleAmount(width - gutter.width());
-            hScroll.setValue(0.0);
-        }
+        setupHScroll();
+        hScroll.setValue(0.0);
     }
 
     // -- focus behavior  --------------------------------------------------
@@ -449,7 +445,7 @@ public class EditorModel {
         buffer.push(Edit.insert(caretPoint, value));
         texts.markDirty();
         caret.markDirty();
-        vScroll.setMax(scrollMax());
+        setupVScroll();
         for (int i = 0; i < value.length(); i++) moveCaretRight();
     }
     public void delete() {
@@ -464,7 +460,7 @@ public class EditorModel {
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
         texts.markDirty();
         caret.markDirty();
-        vScroll.setMax(scrollMax());
+        setupVScroll();
     }
     public void backspace() {
         vScrollToCaret();
@@ -480,7 +476,7 @@ public class EditorModel {
         moveCaretLeft();
         buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
         texts.markDirty();
-        vScroll.setMax(scrollMax());
+        setupVScroll();
     }
     private void selectionDelete() {
         if (selection.length() > 0) {
@@ -490,7 +486,7 @@ public class EditorModel {
             caret.at(text.point().offset(), true);
             texts.markDirty();
             caret.markDirty();
-            vScroll.setMax(scrollMax());
+            setupVScroll();
             vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
             hScrollToCaret();
         }
@@ -500,7 +496,7 @@ public class EditorModel {
         Edit edit = buffer.undo();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
-        vScroll.setMax(scrollMax());
+        setupVScroll();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
         hScrollToCaret();
     }
@@ -509,7 +505,7 @@ public class EditorModel {
         Edit edit = buffer.redo();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
-        vScroll.setMax(scrollMax());
+        setupVScroll();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
         hScrollToCaret();
     }
@@ -549,12 +545,8 @@ public class EditorModel {
         this.buffer.setMaxLineSize(screenRowSize(height));
         texts.markDirty();
         caret.markDirty();
-        vScroll.setMax(scrollMax());
-        vScroll.setVisibleAmount(buffer.maxLineSize());
-        if (texts instanceof LinearTextList linear) {
-            hScroll.setMax(linear.highWaterWidth());
-            hScroll.setVisibleAmount(width - gutter.width());
-        }
+        setupVScroll();
+        setupHScroll();
     }
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
@@ -588,6 +580,27 @@ public class EditorModel {
 
     private LayoutLine layoutLine(int offset) {
         return texts.layoutLine(offset);
+    }
+
+    private void setupVScroll() {
+        int max = buffer.metrics().rowCount();
+        if (texts instanceof WrapTextList w) {
+            max += w.wrappedSize() - buffer.maxLineSize();
+        }
+        int gap = Math.max(0, max - buffer.maxLineSize());
+        double ratio = gap / height;
+        vScroll.setMax(gap);
+        vScroll.setVisibleAmount((int) Math.floor(buffer.maxLineSize() * ratio));
+    }
+
+    private void setupHScroll() {
+        if (texts instanceof LinearTextList linear) {
+            double w = Math.max(0, width - gutter.width());
+            double gap = Math.max(0, linear.highWaterWidth() - w);
+            double ratio = gap / width;
+            hScroll.setMax(gap);
+            hScroll.setVisibleAmount(w * ratio);
+        }
     }
 
     /**
