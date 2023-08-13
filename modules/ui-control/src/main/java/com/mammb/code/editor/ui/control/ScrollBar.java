@@ -25,33 +25,52 @@ public interface ScrollBar<T extends Number> {
     double WIDTH = 9;
 
     /**
-     * Get the min value.
-     * @return the min value
+     * Get the minimum value represented by this {@code ScrollBar}.
+     * @return the minimum value represented by this {@code ScrollBar}
      */
     T getMin();
 
+    /**
+     * Set the minimum value.
+     * @param min the minimum value
+     */
     void setMin(T min);
 
     /**
-     * Get the max value.
-     * @return the max value
+     * Get the maximum value represented by this {@code ScrollBar}.
+     * @return the maximum value represented by this {@code ScrollBar}
      */
     T getMax();
 
+    /**
+     * Set the maximum value.
+     * @param max the maximum value
+     */
     void setMax(T max);
 
     /**
-     * Get the visible amount.
-     * @return the visible amount
+     * Get the visible amount of the scrollbar's range.
+     * This amount is typically represented by the size of the scroll bar's thumb
+     * @return the visible amount of the scrollbar's range
      */
     T getVisibleAmount();
+
+    /**
+     * Set the visible amount of the scrollbar's range.
+     * @param amount the visible amount of the scrollbar's range
+     */
     void setVisibleAmount(T amount);
 
     /**
-     * Get the value.
-     * @return the value
+     * Get the current value represented by this {@code ScrollBar}.
+     * @return the current value represented by this {@code ScrollBar}
      */
     T getValue();
+
+    /**
+     * Set the current value.
+     * @param value the current value
+     */
     void setValue(T value);
 
     /**
@@ -60,7 +79,10 @@ public interface ScrollBar<T extends Number> {
      */
     double getTruckLength();
 
-
+    /**
+     * Gets the ratio of the display area.
+     * @return the ratio of the display area
+     */
     default double visiblePortion() {
         double length = valueLength();
         return (length > 0)
@@ -68,12 +90,20 @@ public interface ScrollBar<T extends Number> {
             : 1.0;
     }
 
+    /**
+     * Get the length from the minimum value to the maximum value.
+     * @return the length from the minimum value to the maximum value
+     */
     default double valueLength() {
         double length = getMax().doubleValue() - getMin().doubleValue();
         return (length > 0) ? length : 0;
     }
 
-    default double thumbLength() {
+    /**
+     * Get the size of the scroll bar's thumb.
+     * @return the size of the scroll bar's thumb
+     */
+    default double thumbSize() {
         double thumbLength = getTruckLength() * visiblePortion();
         if (thumbLength < WIDTH) {
             return WIDTH;

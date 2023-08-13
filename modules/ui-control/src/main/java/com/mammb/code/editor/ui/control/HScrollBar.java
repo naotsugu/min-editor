@@ -158,12 +158,12 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
 
     private void adjustThumbLength() {
-        double thumbLength = thumbLength();
+        double thumbLength = thumbSize();
         if (thumbLength >= getWidth()) {
             setVisible(false);
         } else {
             setVisible(true);
-            thumb.setWidth(thumbLength());
+            thumb.setWidth(thumbSize());
         }
     }
 

@@ -200,12 +200,12 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     }
 
     private void adjustThumbLength() {
-        double thumbLength = thumbLength();
+        double thumbLength = thumbSize();
         if (thumbLength >= getHeight()) {
             setVisible(false);
         } else {
             setVisible(true);
-            thumb.setHeight(thumbLength());
+            thumb.setHeight(thumbSize());
         }
     }
 
