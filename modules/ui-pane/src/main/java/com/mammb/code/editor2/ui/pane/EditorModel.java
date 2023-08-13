@@ -301,12 +301,14 @@ public class EditorModel {
     public void scrollPrev(int n) {
         int size = texts.prev(n);
         if (size == 0) return;
+        texts.markDirty();
         caret.markDirty();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
     public void scrollNext(int n) {
         int size = texts.next(n);
         if (size == 0) return;
+        texts.markDirty();
         caret.markDirty();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
