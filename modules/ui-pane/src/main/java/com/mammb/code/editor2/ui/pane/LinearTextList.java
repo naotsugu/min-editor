@@ -51,9 +51,6 @@ public class LinearTextList implements TextList {
 
     private TextLine top = null;
 
-    /** The high water width. */
-    private double highWaterWidth = 0;
-
 
     /**
      * Constructor.
@@ -72,7 +69,7 @@ public class LinearTextList implements TextList {
     public LinearTextList(TextBuffer<Textual> buffer, Translate<Textual, StyledText> styling) {
         this.buffer = buffer;
         this.styling = styling;
-        this.translator = translator(layout, styling, passThroughTrace());
+        this.translator = translator(layout, styling);
     }
 
 
@@ -196,34 +193,13 @@ public class LinearTextList implements TextList {
     }
 
     /**
-     * Get the high water width.
-     * @return the high water width
-     */
-    public double highWaterWidth() {
-        return highWaterWidth;
-    }
-
-
-    /**
      * Build the translator.
      * @return the translator
      */
     private static Translate<Textual, TextLine> translator(
-            LineLayout layout, Translate<Textual, StyledText> styling,
-            Translate<TextLine, TextLine> passThrough) {
+            LineLayout layout, Translate<Textual, StyledText> styling) {
         return styling.compound(SpanTranslate.of())
-                      .compound(LayoutTranslate.of(layout))
-                      .compound(passThrough);
-    }
-
-
-    private Translate<TextLine, TextLine> passThroughTrace() {
-        return textLine -> {
-            if (highWaterWidth < textLine.width()) {
-                highWaterWidth = textLine.width();
-            }
-            return textLine;
-        };
+                      .compound(LayoutTranslate.of(layout));
     }
 
 }
