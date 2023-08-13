@@ -332,6 +332,16 @@ public class EditorModel {
             hScroll.setValue(hScroll.getValue() + delta);
         }
     }
+    public void vScrolled(int oldValue, int newValue) {
+        int delta = newValue - oldValue;
+        if (delta == 0) return;
+        int size = (delta > 0) ? texts.next(delta) : texts.prev(Math.abs(delta));
+        if (size == 0) return;
+        texts.markDirty();
+        caret.markDirty();
+    }
+    public void hScrolled(double oldValue, double newValue) {
+    }
     // -- arrow behavior ------------------------------------------------------
     public void selectOn() {
         if (!selection.started()) {

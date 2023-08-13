@@ -23,6 +23,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.AccessibleRole;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -56,6 +57,8 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
 
+    private ScrolledHandler<Integer> listener = (oldValue, newValue) -> { };
+
 
     /**
      * Constructor.
@@ -86,12 +89,14 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         value.addListener(this::handleValueChanged);
         visibleAmount.addListener(this::handleVisibleAmountChanged);
 
-        heightProperty().addListener(this::handleHeightChanged);
-
         setOnMouseEntered(this::handleMouseEntered);
         setOnMouseExited(this::handleMouseExited);
-        setOnMouseClicked(this::handleTruckClicked);
+        setOnMousePressed(this::handleTrackMousePressed);
+        setOnMouseReleased(this::handleTrackMouseReleased);
+        heightProperty().addListener(this::handleHeightChanged);
+
     }
+
 
     private void handleMinValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         adjustThumbLength();
@@ -123,15 +128,22 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
 
     /**
-     * The truck clicked handler.
+     * The track pressed handler.
      * @param event the MouseEvent
      */
-    private void handleTruckClicked(MouseEvent event) {
-        if (event.isSynthesized()) {
-            event.consume();
-            return;
-        }
-        // TODO
+    private void handleTrackMousePressed(MouseEvent event) {
+        if (event.getButton() != MouseButton.PRIMARY) return;
+        trackPress(event.getY() / getTrackLength());
+        event.consume();
+    }
+
+    /**
+     * The track mouse released handler.
+     * @param event the MouseEvent
+     */
+    private void handleTrackMouseReleased(MouseEvent event) {
+        trackRelease();
+        event.consume();
     }
 
 
@@ -158,11 +170,10 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
             event -> {
                 boolean i = (pos > ((value.getValue() - min.getValue()) / valueLength()));
                 if (incrementing == i) {
-                    // we started incrementing and still are, or we
-                    // started decrementing and still are
+                    int old = value.getValue();
                     adjustValue(pos);
-                }
-                else {
+                    listener.handle(old, value.getValue());
+                } else {
                     stopTimeline();
                 }
             };
@@ -184,10 +195,12 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         // figure out the "value" associated with the specified position
         int posValue = (int) (valueLength() * clamp(0, position, 1)) + getMin();
         if (Integer.compare(posValue, getValue()) != 0) {
+            int old = value.getValue();
             int newValue = (posValue > getValue())
                 ? getValue() + getVisibleAmount()
                 : getValue() - getVisibleAmount();
             setValue(clamp(newValue));
+            listener.handle(old, value.getValue());
         }
     }
 
@@ -234,6 +247,11 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         return value;
     }
 
+    @Override
+    public void setOnScrolled(ScrolledHandler<Integer> listener) {
+        this.listener = listener;
+    }
+
     //<editor-fold defaultstate="collapsed" desc="getter/setter">
 
     @Override
@@ -277,7 +295,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     }
 
     @Override
-    public double getTruckLength() {
+    public double getTrackLength() {
         return getHeight();
     }
 

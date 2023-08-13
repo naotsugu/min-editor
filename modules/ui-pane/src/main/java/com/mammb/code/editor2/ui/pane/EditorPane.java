@@ -109,6 +109,7 @@ public class EditorPane extends StackPane {
      * Initialize handler.
      */
     private void initHandler() {
+
         setOnKeyPressed(this::handleKeyPressed);
         setOnKeyTyped(this::handleKeyTyped);
         setOnScroll(this::handleScroll);
@@ -116,11 +117,14 @@ public class EditorPane extends StackPane {
         setOnMouseDragged(this::handleMouseDragged);
         setOnDragOver(DragDrops.dragOverHandler());
         setOnDragDropped(DragDrops.droppedHandler(this::open));
+        layoutBoundsProperty().addListener(this::layoutBoundsChanged);
+
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethod);
         canvas.focusedProperty().addListener(this::focusChanged);
 
-        layoutBoundsProperty().addListener(this::layoutBoundsChanged);
+        vScrollBar.setOnScrolled(this::handleVScrolled);
+        hScrollBar.setOnScrolled(this::handleHScrolled);
     }
 
 
@@ -267,6 +271,7 @@ public class EditorPane extends StackPane {
         editorModel.draw(gc);
     }
 
+
     /**
      * Called when the value of the layout changes.
      * @param observable the ObservableValue which value changed
@@ -294,8 +299,7 @@ public class EditorPane extends StackPane {
      * @param oldValue the old value
      * @param focused the new value
      */
-    private void focusChanged(
-            ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
+    private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
         if (focused) {
             editorModel.focusIn(gc);
             timeline.play();
@@ -304,6 +308,16 @@ public class EditorPane extends StackPane {
             editorModel.focusOut(gc);
         }
     }
+
+    public void handleVScrolled(Integer oldValue, Integer newValue) {
+        editorModel.vScrolled(oldValue, newValue);
+        editorModel.draw(gc);
+    }
+    public void handleHScrolled(Double oldValue, Double newValue) {
+        editorModel.hScrolled(oldValue, newValue);
+        editorModel.draw(gc);
+    }
+
 
     /**
      * Create input method request.

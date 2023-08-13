@@ -73,11 +73,14 @@ public interface ScrollBar<T extends Number> {
      */
     void setValue(T value);
 
+
+    void setOnScrolled(ScrolledHandler<T> listener);
+
     /**
-     * Get the truck length.
-     * @return the truck length
+     * Get the track length.
+     * @return the track length
      */
-    double getTruckLength();
+    double getTrackLength();
 
     /**
      * Gets the ratio of the display area.
@@ -104,11 +107,11 @@ public interface ScrollBar<T extends Number> {
      * @return the size of the scroll bar's thumb
      */
     default double thumbSize() {
-        double thumbLength = getTruckLength() * visiblePortion();
+        double thumbLength = getTrackLength() * visiblePortion();
         if (thumbLength < WIDTH) {
             return WIDTH;
-        } else if (thumbLength > getTruckLength()) {
-            return getTruckLength();
+        } else if (thumbLength > getTrackLength()) {
+            return getTrackLength();
         }
         return thumbLength;
     }
@@ -123,7 +126,8 @@ public interface ScrollBar<T extends Number> {
             @Override public void setVisibleAmount(Integer amount) { }
             @Override public Integer getValue() { return 0; }
             @Override public void setValue(Integer value) { }
-            @Override public double getTruckLength() { return 0; }
+            @Override public void setOnScrolled(ScrolledHandler<Integer> listener) { }
+            @Override public double getTrackLength() { return 0; }
         };
     }
 
@@ -137,7 +141,8 @@ public interface ScrollBar<T extends Number> {
             @Override public void setVisibleAmount(Double amount) { }
             @Override public Double getValue() { return 0.0; }
             @Override public void setValue(Double value) { }
-            @Override public double getTruckLength() { return 0.0; }
+            @Override public void setOnScrolled(ScrolledHandler<Double> listener) { }
+            @Override public double getTrackLength() { return 0.0; }
         };
     }
 

@@ -53,6 +53,8 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
 
+    private ScrolledHandler<Double> listener = (oldValue, newValue) -> { };
+
 
     public HScrollBar(Color baseColor) {
 
@@ -118,10 +120,6 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
      * @param event the MouseEvent
      */
     private void handleTruckClicked(MouseEvent event) {
-        if (event.isSynthesized()) {
-            event.consume();
-            return;
-        }
         // TODO
     }
 
@@ -184,6 +182,11 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         return value;
     }
 
+    @Override
+    public void setOnScrolled(ScrolledHandler<Double> listener) {
+        this.listener = listener;
+    }
+
     //<editor-fold defaultstate="collapsed" desc="getter/setter">
 
     @Override
@@ -227,7 +230,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     }
 
     @Override
-    public double getTruckLength() {
+    public double getTrackLength() {
         return getWidth();
     }
 
