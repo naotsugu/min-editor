@@ -167,7 +167,7 @@ public class EditorPane extends StackPane {
 
 
     public void handleMouseClicked(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY) {
+        if (event.getButton() == MouseButton.PRIMARY && event.getTarget() == canvas) {
             switch (event.getClickCount()) {
                 case 1 -> editorModel.click(event.getSceneX(), event.getSceneY());
                 case 2 -> editorModel.clickDouble(event.getSceneX(), event.getSceneY());
@@ -178,7 +178,7 @@ public class EditorPane extends StackPane {
 
 
     public void handleMouseDragged(MouseEvent event) {
-        if (event.getButton().equals(MouseButton.PRIMARY)) {
+        if (event.getButton() == MouseButton.PRIMARY && event.getTarget() == canvas) {
             editorModel.dragged(event.getSceneX(), event.getSceneY());
         }
         editorModel.draw(gc);
