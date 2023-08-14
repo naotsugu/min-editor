@@ -15,16 +15,21 @@
  */
 package com.mammb.code.editor.ui.control;
 
+import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.AccessibleRole;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
 /**
  * Horizontal ScrollBar.
@@ -53,6 +58,10 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
 
+    private double preDragThumbPos;
+
+    private double dragStart;
+
     private ScrolledHandler<Double> listener = (oldValue, newValue) -> { };
 
 
@@ -80,11 +89,14 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         value.addListener(this::handleValueChanged);
         visibleAmount.addListener(this::handleVisibleAmountChanged);
 
-        widthProperty().addListener(this::handleWidthChanged);
-
         setOnMouseEntered(this::handleMouseEntered);
         setOnMouseExited(this::handleMouseExited);
-        setOnMouseClicked(this::handleTruckClicked);
+        setOnMousePressed(this::handleTrackMousePressed);
+        setOnMouseReleased(this::handleTrackMouseReleased);
+        widthProperty().addListener(this::handleWidthChanged);
+
+        thumb.setOnMousePressed(this::handleThumbMousePressed);
+        thumb.setOnMouseDragged(this::handleThumbMouseDragged);
     }
 
     private void handleMinValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -119,15 +131,75 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
      * The truck clicked handler.
      * @param event the MouseEvent
      */
-    private void handleTruckClicked(MouseEvent event) {
-        // TODO
+    private void handleTrackMousePressed(MouseEvent event) {
+        if (event.getButton() != MouseButton.PRIMARY) return;
+        trackPress(event.getY() / getTrackLength());
+        event.consume();
+    }
+
+    /**
+     * The track mouse released handler.
+     * @param event the MouseEvent
+     */
+    private void handleTrackMouseReleased(MouseEvent event) {
+        trackRelease();
+        event.consume();
+    }
+
+    private void handleThumbMousePressed(MouseEvent event) {
+        if (event.isSynthesized()) {
+            event.consume();
+            return;
+        }
+        dragStart = thumb.localToParent(event.getX(), event.getY()).getX();
+        preDragThumbPos = (clamp(getMin(), getValue(), getMax()) - getMin()) / valueLength();
+        event.consume();
+    }
+    private void handleThumbMouseDragged(MouseEvent event) {
+        if (event.isSynthesized()) {
+            event.consume();
+            return;
+        }
+        double cur = thumb.localToParent(event.getX(), event.getY()).getX();
+        double dragPos = cur - dragStart;
+        thumbDragged(preDragThumbPos + dragPos / (getWidth() - thumb.getWidth()));
+        event.consume();
     }
 
     public void thumbDragged(double position) {
-
+        stopTimeline();
+        if (!isFocused() && isFocusTraversable()) requestFocus();
+        double newValue = (position * valueLength()) + min.getValue();
+        double old = value.getValue();
+        value.setValue(clamp(getMin(), newValue, getMax()));
+        listener.handle(old, value.getValue());
     }
 
     public void trackPress(double position) {
+        if (timeline != null) return;
+        if (!isFocused() && isFocusTraversable()) requestFocus();
+        final double pos = position;
+        final boolean incrementing = (pos > ((value.getValue() - min.getValue()) / valueLength()));
+        timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+
+        final EventHandler<ActionEvent> step =
+            event -> {
+                boolean i = (pos > ((value.getValue() - min.getValue()) / valueLength()));
+                if (incrementing == i) {
+                    double old = value.getValue();
+                    adjustValue(pos);
+                    listener.handle(old, value.getValue());
+                } else {
+                    stopTimeline();
+                }
+            };
+
+        final KeyFrame kf = new KeyFrame(Duration.millis(200), step);
+        timeline.getKeyFrames().add(kf);
+        // do the first step immediately
+        timeline.play();
+        step.handle(null);
 
     }
 
