@@ -312,8 +312,8 @@ public class EditorPane extends StackPane {
         editorModel.vScrolled(oldValue, newValue);
         editorModel.draw(gc);
     }
+
     public void handleHScrolled(Double oldValue, Double newValue) {
-        editorModel.hScrolled(oldValue, newValue);
         editorModel.draw(gc);
     }
 

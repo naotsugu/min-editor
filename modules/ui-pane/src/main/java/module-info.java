@@ -20,7 +20,6 @@
  */
 module code.editor.ui.pane {
     requires code.editor.javafx;
-    requires code.editor.model.editor;
     requires code.editor.model.buffer;
     requires code.editor.javafx.layout;
     requires code.editor.model.text;

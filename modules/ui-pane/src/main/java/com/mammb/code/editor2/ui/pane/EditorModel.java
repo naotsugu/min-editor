@@ -340,8 +340,7 @@ public class EditorModel {
         texts.markDirty();
         caret.markDirty();
     }
-    public void hScrolled(double oldValue, double newValue) {
-    }
+
     // -- arrow behavior ------------------------------------------------------
     public void selectOn() {
         if (!selection.started()) {

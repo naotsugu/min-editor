@@ -26,35 +26,23 @@ module javafx.graphics {
     exports javafx.stage;
 
     exports com.sun.glass.ui to
-        javafx.media,
-        javafx.swing,
         javafx.web;
     exports com.sun.glass.utils to
-        javafx.media,
         javafx.web;
     exports com.sun.javafx.application to
         java.base,
         javafx.controls,
-        javafx.swing,
         javafx.web;
     exports com.sun.javafx.css to
         javafx.controls;
-    exports com.sun.javafx.cursor to
-        javafx.swing;
-    exports com.sun.javafx.embed to
-        javafx.swing;
     exports com.sun.javafx.font to
         javafx.web;
     exports com.sun.javafx.geom to
         code.editor.javafx.layout,
         javafx.controls,
-        javafx.media,
-        javafx.swing,
         javafx.web;
     exports com.sun.javafx.geom.transform to
         javafx.controls,
-        javafx.media,
-        javafx.swing,
         javafx.web;
     exports com.sun.javafx.iio to
         javafx.web;
@@ -62,12 +50,9 @@ module javafx.graphics {
         javafx.controls;
     exports com.sun.javafx.scene to
         javafx.controls,
-        javafx.media,
-        javafx.swing,
         javafx.web;
     exports com.sun.javafx.scene.input to
         javafx.controls,
-        javafx.swing,
         javafx.web;
     exports com.sun.javafx.scene.layout to
         code.editor.javafx.layout,
@@ -81,29 +66,20 @@ module javafx.graphics {
         javafx.controls,
         javafx.web;
     exports com.sun.javafx.sg.prism to
-        javafx.media,
-        javafx.swing,
         javafx.web;
     exports com.sun.javafx.stage to
-        javafx.controls,
-        javafx.swing;
+        javafx.controls;
     exports com.sun.javafx.text to
         code.editor.javafx.layout,
         javafx.web;
     exports com.sun.javafx.tk to
         code.editor.javafx.layout,
         javafx.controls,
-        javafx.media,
-        javafx.swing,
         javafx.web;
     exports com.sun.javafx.util to
         javafx.controls,
-        javafx.fxml,
-        javafx.media,
-        javafx.swing,
         javafx.web;
     exports com.sun.prism to
-        javafx.media,
         javafx.web;
     exports com.sun.prism.image to
         javafx.web;
