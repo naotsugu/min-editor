@@ -57,6 +57,10 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
 
+    private double preDragThumbPos;
+
+    private double dragStart;
+
     private ScrolledHandler<Integer> listener = (oldValue, newValue) -> { };
 
 
@@ -95,6 +99,8 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         setOnMouseReleased(this::handleTrackMouseReleased);
         heightProperty().addListener(this::handleHeightChanged);
 
+        thumb.setOnMousePressed(this::handleThumbMousePressed);
+        thumb.setOnMouseDragged(this::handleThumbMouseDragged);
     }
 
 
@@ -143,6 +149,27 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
      */
     private void handleTrackMouseReleased(MouseEvent event) {
         trackRelease();
+        event.consume();
+    }
+
+    private void handleThumbMousePressed(MouseEvent event) {
+        if (event.isSynthesized()) {
+            event.consume();
+            return;
+        }
+        dragStart = thumb.localToParent(event.getX(), event.getY()).getY();
+        preDragThumbPos = (clamp(getValue()) - getMin()) / valueLength();
+        event.consume();
+    }
+
+    private void handleThumbMouseDragged(MouseEvent event) {
+        if (event.isSynthesized()) {
+            event.consume();
+            return;
+        }
+        double cur = thumb.localToParent(event.getX(), event.getY()).getY();
+        double dragPos = cur - dragStart;
+        thumbDragged(preDragThumbPos + dragPos / (getHeight() - thumb.getHeight()));
         event.consume();
     }
 
