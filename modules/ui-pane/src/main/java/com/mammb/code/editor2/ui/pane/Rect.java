@@ -33,12 +33,23 @@ public record Rect(double x, double y, double w, double h) {
         return y + h;
     }
 
+    /**
+     * Create a new smaller rect.
+     * @return a new smaller rect
+     */
     public Rect smaller() {
         return smaller(0.7);
     }
 
+    /**
+     * Create a new smaller rect.
+     * @param scale the scale(0 < scale <= 1)
+     * @return a new smaller rect
+     */
     public Rect smaller(double scale) {
-        if (scale >= 1) throw new IllegalArgumentException();
+        if (scale > 1 || scale <= 0) {
+            throw new IllegalArgumentException("illegal scale.[" + scale + "]");
+        }
         return new Rect(
             x + w * (1 - scale) / 2,
             y + h * (1 - scale) / 2,

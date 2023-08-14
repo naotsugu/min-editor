@@ -122,9 +122,8 @@ public class EditorModel {
             }
             offsetY += line.leadingHeight();
         }
-        if (!ime.enabled()) {
-            caret.draw(gc, gutter.width(), hScroll.getValue());
-        }
+        showCaret(gc);
+
         gc.restore();
         if (gutter.checkWidthChanged()) {
             texts.markDirty();
@@ -209,11 +208,18 @@ public class EditorModel {
     public void tick(GraphicsContext gc) {
         if (ime.enabled()) return;
         if (caret.drawn()) {
-            Rect rect = caret.clear(gc, textLeft());
-            draw(gc, rect);
+            hideCaret(gc);
         } else {
-            caret.draw(gc, gutter.width(), hScroll.getValue());
+            showCaret(gc);
         }
+    }
+
+    public void showCaret(GraphicsContext gc) {
+        if (!ime.enabled()) caret.draw(gc, gutter.width(), hScroll.getValue());
+    }
+
+    public void hideCaret(GraphicsContext gc) {
+        if (caret.drawn()) draw(gc, caret.clear(gc, textLeft()));
     }
 
     private void drawSpecialCharacter(GraphicsContext gc, TextRun run, double top, double lineHeight) {
@@ -264,15 +270,6 @@ public class EditorModel {
         hScroll.setValue(0.0);
     }
 
-    // -- focus behavior  --------------------------------------------------
-    public void focusIn(GraphicsContext gc) {
-        caret.draw(gc, gutter.width(), hScroll.getValue());
-    }
-
-    public void focusOut(GraphicsContext gc) {
-        if (caret.drawn()) draw(gc, caret.clear(gc, textLeft()));
-    }
-
     // -- ime behavior  ----------------------------------------------------
     public Rect imeOn(GraphicsContext gc) {
         if (ime.enabled()) new Rect(caret.x(), caret.y(), caret.width(), caret.height());
@@ -312,13 +309,13 @@ public class EditorModel {
         caret.markDirty();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
-    public void vScrollToCaret() {
+    private void vScrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
         if (!scrolled) return;
         caret.markDirty();
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
     }
-    public void hScrollToCaret() {
+    private void hScrollToCaret() {
         if (texts instanceof WrapTextList) return;
         adjustHScroll();
         double gap = width / 10;

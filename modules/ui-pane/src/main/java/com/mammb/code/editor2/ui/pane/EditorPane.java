@@ -100,7 +100,7 @@ public class EditorPane extends StackPane {
         timeline.getKeyFrames().add(
             new KeyFrame(Duration.millis(500),
                 e -> editorModel.tick(gc)));
-        timeline.setCycleCount(-1);
+        timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
@@ -243,8 +243,7 @@ public class EditorPane extends StackPane {
         String ch = (ascii == 13)
             ? editorModel.metrics().lineEnding().str()
             : e.getCharacter();
-        editorModel.input(ch);
-        editorModel.draw(gc);
+        aroundEdit(() -> editorModel.input(ch));
     }
 
 
@@ -300,11 +299,11 @@ public class EditorPane extends StackPane {
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
         if (focused) {
-            editorModel.focusIn(gc);
+            editorModel.showCaret(gc);
             timeline.play();
         } else {
             timeline.stop();
-            editorModel.focusOut(gc);
+            editorModel.hideCaret(gc);
         }
     }
 
@@ -345,8 +344,11 @@ public class EditorPane extends StackPane {
     }
 
     private void aroundEdit(Runnable runnable) {
+        timeline.stop();
+        editorModel.showCaret(gc);
         runnable.run();
         editorModel.draw(gc);
+        timeline.play();
     }
 
     private void aroundEdit(Runnable edit, boolean withSelect) {
