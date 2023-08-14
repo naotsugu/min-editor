@@ -596,22 +596,22 @@ public class EditorModel {
     }
 
     private void adjustVScroll() {
-        int max = buffer.metrics().rowCount();
+        int lines = buffer.metrics().rowCount();
         if (texts instanceof WrapTextList w) {
-            max += w.wrappedSize() - buffer.maxLineSize();
+            lines += w.wrappedSize() - buffer.maxLineSize();
         }
-        int gap = Math.max(0, max - buffer.maxLineSize());
-        double ratio = gap / height;
-        vScroll.setMax(gap);
+        int adjustedMax = Math.max(0, lines - buffer.maxLineSize());
+        double ratio = (double) adjustedMax / lines; // reduction ratio
+        vScroll.setMax(adjustedMax);
         vScroll.setVisibleAmount((int) Math.floor(buffer.maxLineSize() * ratio));
     }
 
     private void adjustHScroll() {
         if (texts instanceof LinearTextList) {
             double w = Math.max(0, width - gutter.width());
-            double gap = Math.max(0, maxWidth - w);
-            double ratio = gap / width;
-            hScroll.setMax(gap);
+            double adjustedMax = Math.max(0, maxWidth - w);
+            double ratio = adjustedMax / maxWidth; // reduction ratio
+            hScroll.setMax(adjustedMax);
             hScroll.setVisibleAmount(w * ratio);
         }
     }
