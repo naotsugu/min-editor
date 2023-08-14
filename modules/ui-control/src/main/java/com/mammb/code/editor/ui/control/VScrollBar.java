@@ -200,7 +200,6 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
                 ? getValue() + getVisibleAmount()
                 : getValue() - getVisibleAmount();
             setValue(clamp(newValue));
-            listener.handle(old, value.getValue());
         }
     }
 
