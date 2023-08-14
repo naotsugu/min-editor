@@ -70,12 +70,17 @@ public class Caret {
     /**
      * Draw caret.
      * @param gc the graphics context
-     * @param left the left position offset
+     * @param margin the left position offset
+     * @param shift the size of shift
      */
-    public void draw(GraphicsContext gc, double left) {
+    public void draw(GraphicsContext gc, double margin, double shift) {
         if (ensureLayout() == null) return;
-        drawCaretAt(gc, x + left, y, line.height());
-        drawn = true;
+        if ((x - shift) < 0) {
+            drawn = false;
+        } else {
+            drawCaretAt(gc, x - shift + margin, y, line.height());
+            drawn = true;
+        }
     }
 
 

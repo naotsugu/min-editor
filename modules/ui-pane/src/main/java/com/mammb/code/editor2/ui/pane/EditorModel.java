@@ -123,7 +123,7 @@ public class EditorModel {
             offsetY += line.leadingHeight();
         }
         if (!ime.enabled()) {
-            caret.draw(gc, textLeft());
+            caret.draw(gc, gutter.width(), hScroll.getValue());
         }
         gc.restore();
         if (gutter.checkWidthChanged()) {
@@ -212,7 +212,7 @@ public class EditorModel {
             Rect rect = caret.clear(gc, textLeft());
             draw(gc, rect);
         } else {
-            caret.draw(gc, textLeft());
+            caret.draw(gc, gutter.width(), hScroll.getValue());
         }
     }
 
@@ -266,7 +266,7 @@ public class EditorModel {
 
     // -- focus behavior  --------------------------------------------------
     public void focusIn(GraphicsContext gc) {
-        caret.draw(gc, textLeft());
+        caret.draw(gc, gutter.width(), hScroll.getValue());
     }
 
     public void focusOut(GraphicsContext gc) {
