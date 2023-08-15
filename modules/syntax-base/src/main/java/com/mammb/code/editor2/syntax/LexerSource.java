@@ -15,6 +15,9 @@
  */
 package com.mammb.code.editor2.syntax;
 
+import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor2.syntax.impl.LexerSourceImpl;
+
 /**
  * LexerSource.
  * @author Naotsugu Kobayashi
@@ -67,5 +70,14 @@ public interface LexerSource {
      * @return the length
      */
     int length();
+
+    /**
+     * Create a new LexerSource.
+     * @param textual the input textual
+     * @return a new LexerSource
+     */
+    static LexerSource of(Textual textual) {
+        return LexerSourceImpl.of(textual);
+    }
 
 }
