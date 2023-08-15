@@ -55,7 +55,6 @@ public class WrapTextList implements TextList {
     private TextLine top = null;
 
 
-
     /**
      * Constructor.
      * @param buffer the edit buffer
