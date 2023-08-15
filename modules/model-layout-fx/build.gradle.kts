@@ -6,5 +6,6 @@ plugins {
 dependencies {
     implementation(project(":javafx"))
     implementation(project(":model-text"))
+    implementation(project(":model-layout"))
 }
 

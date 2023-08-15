@@ -13,7 +13,7 @@ include(":piecetable")
 project(":piecetable").projectDir = file("modules/piecetable/lib")
 
 // other module
-include("model-text", "model-edit", "model-buffer")
+include("model-text", "model-edit", "model-buffer", "model-layout")
 include("syntax-base")
 include("ui-app", "ui-pane", "ui-control")
 

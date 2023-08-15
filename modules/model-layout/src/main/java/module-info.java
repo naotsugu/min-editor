@@ -15,11 +15,10 @@
  */
 
 /**
- * The text model module.
+ * The layout model module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.model.text {
-    exports com.mammb.code.editor2.model.text;
-    exports com.mammb.code.editor2.model.slice;
-    exports com.mammb.code.editor2.model.style;
+module code.editor.model.layout {
+    requires code.editor.model.text;
+    exports com.mammb.code.editor2.model.layout;
 }

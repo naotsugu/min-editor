@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor2.model.text;
+
+import com.mammb.code.editor2.model.slice.RowSupplier;
+import com.mammb.code.editor2.model.slice.Slice;
+import org.junit.jupiter.api.Test;
 
 /**
- * The text model module.
+ * Test of {@link Slice}.
  * @author Naotsugu Kobayashi
  */
-module code.editor.model.text {
-    exports com.mammb.code.editor2.model.text;
-    exports com.mammb.code.editor2.model.slice;
-    exports com.mammb.code.editor2.model.style;
+class RowSliceTest {
+
+    @Test void of() {
+        var slice = Slice.of(5, RowSupplier.stringOf("abc"));
+        // TODO add test
+    }
 }

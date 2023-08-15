@@ -21,5 +21,6 @@
 module code.editor.javafx.layout {
     requires code.editor.javafx;
     requires code.editor.model.text;
+    requires code.editor.model.layout;
     exports com.mammb.code.editor.javafx.layout;
 }
