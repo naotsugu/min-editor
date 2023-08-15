@@ -15,18 +15,26 @@
  */
 package com.mammb.code.editor2.syntax;
 
-import com.mammb.code.editor2.model.text.Translate;
+import com.mammb.code.editor2.model.style.StyledText;
+import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
 
 /**
  * SyntaxTranslate.
  * @author Naotsugu Kobayashi
  */
-public class SyntaxTranslate implements Translate<Textual, Textual> {
+public class SyntaxTranslate implements StylingTranslate {
+
+    /** The lexer .*/
+    private final Lexer lexer;
+
+    public SyntaxTranslate(Lexer lexer) {
+        this.lexer = lexer;
+    }
 
     @Override
-    public Textual applyTo(Textual texts) {
-        return texts;
+    public StyledText applyTo(Textual textual) {
+        return StyledText.of(textual);
     }
 
 }

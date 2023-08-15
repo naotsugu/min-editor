@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.model.style;
 
+import com.mammb.code.editor2.model.style.impl.StyledTextRecord;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 
@@ -71,6 +72,11 @@ public interface StyledText extends Textual, Styled {
         }
 
         return spans;
+    }
+
+
+    static StyledText of(Textual textual) {
+        return new StyledTextRecord(textual);
     }
 
 }

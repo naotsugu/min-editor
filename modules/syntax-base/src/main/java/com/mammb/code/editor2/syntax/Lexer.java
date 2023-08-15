@@ -20,4 +20,17 @@ package com.mammb.code.editor2.syntax;
  * @author Naotsugu Kobayashi
  */
 public interface Lexer {
+
+    /**
+     * Get the name.
+     * @return the name
+     */
+    String name();
+
+    /**
+     * Gets the next token.
+     * @return the next token
+     */
+    Token nextToken();
+
 }

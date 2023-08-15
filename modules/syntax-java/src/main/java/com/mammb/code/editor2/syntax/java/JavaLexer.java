@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.style;
+package com.mammb.code.editor2.syntax.java;
 
-import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor2.model.text.Translate;
-import com.mammb.code.editor2.model.style.impl.StyledTextRecord;
+import com.mammb.code.editor2.syntax.Lexer;
+import com.mammb.code.editor2.syntax.Token;
 
 /**
- * The styling translate.
+ * JavaLexer.
  * @author Naotsugu Kobayashi
  */
-public interface StylingTranslate extends Translate<Textual, StyledText> {
+public class JavaLexer implements Lexer {
 
     @Override
-    StyledText applyTo(Textual texts);
+    public String name() {
+        return "java";
+    }
 
-    /**
-     * Create the pass through translate.
-     * @return the pass through translate
-     */
-    static StylingTranslate passThrough() {
-        return StyledTextRecord::new;
+    @Override
+    public Token nextToken() {
+        return null;
     }
 
 }

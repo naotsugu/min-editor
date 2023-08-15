@@ -13,27 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.model.style;
-
-import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor2.model.text.Translate;
-import com.mammb.code.editor2.model.style.impl.StyledTextRecord;
 
 /**
- * The styling translate.
+ * The java syntax module.
  * @author Naotsugu Kobayashi
  */
-public interface StylingTranslate extends Translate<Textual, StyledText> {
-
-    @Override
-    StyledText applyTo(Textual texts);
-
-    /**
-     * Create the pass through translate.
-     * @return the pass through translate
-     */
-    static StylingTranslate passThrough() {
-        return StyledTextRecord::new;
-    }
-
+module code.editor.syntax.java {
+    requires code.editor.model.text;
+    requires code.editor.syntax.base;
+    exports com.mammb.code.editor2.syntax.java;
 }
