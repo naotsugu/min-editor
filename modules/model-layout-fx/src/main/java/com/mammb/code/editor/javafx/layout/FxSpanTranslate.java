@@ -16,26 +16,26 @@
 package com.mammb.code.editor.javafx.layout;
 
 import com.mammb.code.editor2.model.layout.Span;
+import com.mammb.code.editor2.model.layout.SpanTranslate;
 import com.mammb.code.editor2.model.style.Style;
 import com.mammb.code.editor2.model.style.StyleSpan;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.text.Translate;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * SpanTranslate.
+ * FxSpanTranslate.
  * @author Naotsugu Kobayashi
  */
-public class SpanTranslate implements Translate<StyledText, List<Span>> {
+public class FxSpanTranslate implements SpanTranslate {
 
     /**
      * Constructor.
      */
-    private SpanTranslate() {
+    private FxSpanTranslate() {
     }
 
     /**
@@ -43,7 +43,7 @@ public class SpanTranslate implements Translate<StyledText, List<Span>> {
      * @return a new translation
      */
     public static Translate<StyledText, List<Span>> of() {
-        return new SpanTranslate();
+        return new FxSpanTranslate();
     }
 
 

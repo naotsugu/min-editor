@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
-import com.mammb.code.editor.javafx.layout.SpanTranslate;
+import com.mammb.code.editor.javafx.layout.FxSpanTranslate;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.layout.LayoutWrapTranslate;
 import com.mammb.code.editor2.model.layout.LineLayout;
@@ -255,7 +255,7 @@ public class WrapTextList implements TextList {
             LineLayout layout, double wrapWidth,
             Translate<Textual, StyledText> styling) {
         layout.setWrapWidth(wrapWidth);
-        return styling.compound(SpanTranslate.of())
+        return styling.compound(FxSpanTranslate.of())
                       .compound(LayoutWrapTranslate.of(layout));
     }
 

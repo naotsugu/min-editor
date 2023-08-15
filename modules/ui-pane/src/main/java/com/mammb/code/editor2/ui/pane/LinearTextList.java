@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
-import com.mammb.code.editor.javafx.layout.SpanTranslate;
+import com.mammb.code.editor.javafx.layout.FxSpanTranslate;
 import com.mammb.code.editor2.model.buffer.TextBuffer;
 import com.mammb.code.editor2.model.layout.LayoutTranslate;
 import com.mammb.code.editor2.model.layout.LineLayout;
@@ -198,7 +198,7 @@ public class LinearTextList implements TextList {
      */
     private static Translate<Textual, TextLine> translator(
             LineLayout layout, Translate<Textual, StyledText> styling) {
-        return styling.compound(SpanTranslate.of())
+        return styling.compound(FxSpanTranslate.of())
                       .compound(LayoutTranslate.of(layout));
     }
 
