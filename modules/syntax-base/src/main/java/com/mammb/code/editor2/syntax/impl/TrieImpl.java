@@ -15,13 +15,14 @@
  */
 package com.mammb.code.editor2.syntax.impl;
 
+import com.mammb.code.editor2.syntax.Trie;
 import java.util.List;
 
 /**
  * Trie.
  * @author Naotsugu Kobayashi
  */
-public class Trie {
+public class TrieImpl implements Trie {
 
     /** The node. */
     private final TrieNode root;
@@ -30,15 +31,11 @@ public class Trie {
     /**
      * Constructor.
      */
-    public Trie() {
+    public TrieImpl() {
         root = new TrieNode(null);
     }
 
-
-    /**
-     * Put the word.
-     * @param word the word
-     */
+    @Override
     public void put(String word) {
         TrieNode node = root;
         for (int i = 0; i < word.length();) {
@@ -49,11 +46,7 @@ public class Trie {
         node.setEndOfWord();
     }
 
-
-    /**
-     * Remove the word.
-     * @param word the word
-     */
+    @Override
     public void remove(String word) {
         TrieNode node = searchPrefix(word);
         if (node == null || !node.isEndOfWord()) {
@@ -63,27 +56,31 @@ public class Trie {
         node.removeIfEmpty();
     }
 
-
-    /**
-     * Gets whether the specified word matches.
-     * @param word the words to be inspected
-     * @return {@code true}, if the specified word matches
-     */
+    @Override
     public boolean match(String word) {
         TrieNode node = searchPrefix(word);
         return node != null && node.isEndOfWord();
     }
 
-
-    /**
-     * Gets whether the specified word left-hand matches.
-     * @param prefix the text to be inspected
-     * @return {@code true}, if the specified word left-hand matches
-     */
+    @Override
     public boolean startsWith(String prefix) {
         return searchPrefix(prefix) != null;
     }
 
+    @Override
+    public List<String> suggestion(String word) {
+        TrieNode node = root;
+        for (int i = 0; i < word.length();) {
+            int cp = word.codePointAt(i);
+            if (node.contains(cp)) {
+                node = node.get(cp);
+            } else {
+                break;
+            }
+            i += Character.charCount(cp);
+        }
+        return node.childKeys();
+    }
 
     /**
      * Search the TrieNode.
@@ -102,26 +99,6 @@ public class Trie {
             i += Character.charCount(cp);
         }
         return node;
-    }
-
-
-    /**
-     * Gets the list of suggestion by the specified word.
-     * @param word the specified word
-     * @return the specified word
-     */
-    public List<String> suggestion(String word) {
-        TrieNode node = root;
-        for (int i = 0; i < word.length();) {
-            int cp = word.codePointAt(i);
-            if (node.contains(cp)) {
-                node = node.get(cp);
-            } else {
-                break;
-            }
-            i += Character.charCount(cp);
-        }
-        return node.childKeys();
     }
 
 }
