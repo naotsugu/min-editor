@@ -51,14 +51,4 @@ public sealed interface Style {
         public BgColor(String colorString) { this(colorString, 1); }
     }
 
-    /**
-     * Wrap break point.
-     */
-    record BreakPoint() implements ZeroLength {}
-
-    /**
-     * Zero length marker.
-     */
-    sealed interface ZeroLength extends Style {}
-
 }

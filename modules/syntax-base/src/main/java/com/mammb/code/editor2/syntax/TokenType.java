@@ -35,6 +35,7 @@ public interface TokenType {
     /** The type of eol. */
     TokenType EOL = create();
 
+    String colorString();
 
     static TokenType create() {
         return create("");

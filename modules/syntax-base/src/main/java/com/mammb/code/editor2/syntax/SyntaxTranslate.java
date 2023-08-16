@@ -15,11 +15,12 @@
  */
 package com.mammb.code.editor2.syntax;
 
+import com.mammb.code.editor2.model.style.Style;
+import com.mammb.code.editor2.model.style.StyleSpan;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
-
-import java.util.TreeMap;
+import com.mammb.code.editor2.syntax.impl.LexicalScope;
 
 /**
  * SyntaxTranslate.
@@ -27,27 +28,39 @@ import java.util.TreeMap;
  */
 public class SyntaxTranslate implements StylingTranslate {
 
-    /** The lexer .*/
+    /** The lexer. */
     private final Lexer lexer;
 
-    /** The block tokens .*/
-    private final TreeMap<Integer, Token> tokens = new TreeMap<>();
+    /** The scopes. */
+    private final LexicalScope scopes = new LexicalScope();
 
 
     public SyntaxTranslate(Lexer lexer) {
         this.lexer = lexer;
     }
 
+
     @Override
     public StyledText applyTo(Textual textual) {
 
-        StyledText styledText = StyledText.of(textual);
+        final StyledText styledText = StyledText.of(textual);
 
+        int offset = textual.offset();
+
+        scopes.init(offset);
         lexer.setSource(LexerSource.of(textual));
 
         for (Token token = lexer.nextToken();
              !token.isEmpty();
              token = lexer.nextToken()) {
+
+            var cs = token.type().colorString();
+            if (!cs.isEmpty()) {
+                styledText.putStyle(StyleSpan.of(
+                    new Style.Color(cs, 1.0), token.position(), token.length()));
+            }
+
+            offset += token.length();
 
         }
 

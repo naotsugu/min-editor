@@ -30,20 +30,9 @@ import java.util.Objects;
 public record StyleSpanRecord(Style style, int point, int length) implements StyleSpan {
 
     public StyleSpanRecord {
-        if (length < 0 ||
-            (length == 0 && !(style instanceof Style.ZeroLength)))
+        if (length < 0)
             throw new IllegalArgumentException();
         Objects.requireNonNull(style);
-    }
-
-
-    /**
-     * Create a new zero length style span.
-     * @param style the style
-     * @param point the point of start
-     */
-    public StyleSpanRecord(Style.ZeroLength style, int point) {
-        this(style, point, 0);
     }
 
 

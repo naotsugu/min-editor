@@ -72,13 +72,4 @@ public interface StyleSpan {
         return new StyleSpanRecord(style, point, length);
     }
 
-    /**
-     * Create a new zero length style span.
-     * @param style the style
-     * @param point the point of start
-     */
-    static StyleSpan of(Style.ZeroLength style, int point) {
-        return new StyleSpanRecord(style, point);
-    }
-
 }

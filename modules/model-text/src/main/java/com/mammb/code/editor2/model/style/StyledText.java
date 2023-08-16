@@ -45,9 +45,20 @@ public interface StyledText extends Textual, Styled {
      */
     boolean hol();
 
+    /**
+     * Get the sub StyledText.
+     * @param start the start index
+     * @param length the length
+     * @return the sub StyledText
+     */
     StyledText subText(int start, int length);
 
+    /**
+     * Put the style.
+     * @param style the style
+     */
     void putStyle(StyleSpan style);
+
 
     default List<StyledText> spans() {
 
