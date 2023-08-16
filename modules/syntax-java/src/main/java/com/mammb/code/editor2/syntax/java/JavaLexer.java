@@ -16,6 +16,7 @@
 package com.mammb.code.editor2.syntax.java;
 
 import com.mammb.code.editor2.syntax.Lexer;
+import com.mammb.code.editor2.syntax.LexerSource;
 import com.mammb.code.editor2.syntax.Token;
 import com.mammb.code.editor2.syntax.Trie;
 
@@ -27,6 +28,14 @@ public class JavaLexer implements Lexer {
 
     /** The syntax keywords. */
     private static final Trie keywords = Java.keywords();
+
+    /** The input string. */
+    private LexerSource source;
+
+
+    public JavaLexer(LexerSource source) {
+        this.source = source;
+    }
 
     @Override
     public String name() {

@@ -26,12 +26,15 @@ public interface TokenType {
     /** The number of serial. */
     AtomicInteger serial = new AtomicInteger(0);
 
+    /** The type of empty. */
+    TokenType EMPTY = create();
     /** The type of any. */
     TokenType ANY = create();
     /** The type of whitespace. */
     TokenType SP = create();
     /** The type of eol. */
     TokenType EOL = create();
+
 
     static TokenType create() {
         return create("");

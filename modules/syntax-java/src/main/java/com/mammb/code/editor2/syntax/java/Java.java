@@ -36,6 +36,7 @@ public class Java {
 
     }
 
+
     /**
      * Get the keyword trie.
      * @return the keyword trie

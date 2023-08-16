@@ -61,6 +61,53 @@ public interface Token {
 
 
     /**
+     * Get the empty token.
+     * @param source the lexer source
+     * @return the empty token
+     */
+    static Token empty(LexerSource source) {
+        return of(TokenType.EMPTY, Scope.NEUTRAL, (source == null) ? 0 : source.position(), 0);
+    }
+
+
+    /**
+     * Get an any token.
+     * @param source the lexer source
+     * @return an any token
+     */
+    static Token any(LexerSource source) {
+        return of(TokenType.ANY, Scope.NEUTRAL, source.position(), 1);
+    }
+
+
+    /**
+     * Get the whitespace token.
+     * @param source the lexer source
+     * @return the whitespace token
+     */
+    static Token whitespace(LexerSource source) {
+        return of(TokenType.SP, Scope.NEUTRAL, source.position(), 1);
+    }
+
+
+    /**
+     * Read line end.
+     * @param source the lexer source
+     * @return the token
+     */
+    static Token lineEnd(LexerSource source) {
+        int pos = source.position();
+        if (source.currentChar() == '\r' && source.peekChar() == '\n') {
+            source.commitPeek();
+            return of(TokenType.EOL, Scope.INLINE_END, pos, 2);
+        } else {
+            source.rollbackPeek();
+            return of(TokenType.EOL, Scope.INLINE_END, pos, 1);
+        }
+    }
+
+
+    /**
      * Create a new Token.
      * @param type the token type
      * @param scope the token scope
