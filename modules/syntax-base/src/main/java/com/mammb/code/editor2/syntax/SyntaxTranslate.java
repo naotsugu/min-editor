@@ -45,22 +45,22 @@ public class SyntaxTranslate implements StylingTranslate {
 
         final StyledText styledText = StyledText.of(textual);
 
-        int offset = textual.offset();
-
-        scopes.init(offset);
+        scopes.init(textual.offset());
         lexer.setSource(LexerSource.of(textual));
 
         for (Token token = lexer.nextToken();
              !token.isEmpty();
              token = lexer.nextToken()) {
 
+            if (!token.scope().isNeutral()) {
+                scopes.put(token, textual.offset() + token.position());
+            }
+
             var cs = token.type().colorString();
             if (!cs.isEmpty()) {
                 styledText.putStyle(StyleSpan.of(
                     new Style.Color(cs, 1.0), token.position(), token.length()));
             }
-
-            offset += token.length();
 
         }
 

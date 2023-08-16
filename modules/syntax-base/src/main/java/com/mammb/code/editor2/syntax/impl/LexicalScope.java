@@ -18,6 +18,7 @@ package com.mammb.code.editor2.syntax.impl;
 import com.mammb.code.editor2.syntax.Token;
 import com.mammb.code.editor2.syntax.TokenType;
 
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -54,17 +55,18 @@ public class LexicalScope {
     /**
      * Put the token.
      * @param token the token
+     * @param offset the offset
      */
-    public void put(Token token) {
+    public void put(Token token, int offset) {
         if (token.scope().isContext()) {
-            putScope(token, contextScopes);
+            putScope(token, offset, contextScopes);
         } else if (token.scope().isBlock()) {
-            putScope(token, blockScopes);
+            putScope(token, offset, blockScopes);
         } else if (token.scope().isInline()) {
             if (token.type() == TokenType.EOL) {
                 inlineScopes.clear();
             } else { //if (token.scope().isStart() || token.scope().isEnd()) {
-                putScope(token, inlineScopes);
+                putScope(token, offset, inlineScopes);
             }
         }
     }
@@ -75,9 +77,41 @@ public class LexicalScope {
      * @param token the token
      * @param scopes the target scope
      */
-    private void putScope(Token token, TreeMap<Integer, Token> scopes) {
+    private void putScope(Token token, int offset, TreeMap<Integer, Token> scopes) {
+
+        if (token.scope().isStart()) {
+            scopes.put(offset, token);
+            return;
+        }
+
+        if (token.scope().isStart()) {
+            var before = beforeStartEntry(offset, token.type(), scopes);
+            if (before != null) {
+                scopes.remove(before.getKey());
+            }
+            return;
+        }
+
+        if (token.scope().isAny()) {
+            // toggle scope if any
+            return;
+        }
 
     }
 
+    private static Map.Entry<Integer, Token> beforeStartEntry(
+            int offset, TokenType type, TreeMap<Integer, Token> scopes) {
+        while (true) {
+            var entry = scopes.floorEntry(offset);
+            if (entry == null) {
+                return null;
+            }
+            if (entry.getValue().type() == type &&
+                entry.getValue().scope().isStart()) {
+                return entry;
+            }
+            offset = entry.getKey() - 1;
+        }
+    }
 
 }
