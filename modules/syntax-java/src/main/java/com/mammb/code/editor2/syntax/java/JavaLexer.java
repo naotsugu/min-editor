@@ -34,10 +34,10 @@ public class JavaLexer implements Lexer {
     private LexerSource source;
 
 
-    public JavaLexer(LexerSource source) {
+    @Override
+    public void setSource(LexerSource source) {
         this.source = source;
     }
-
 
     @Override
     public String name() {

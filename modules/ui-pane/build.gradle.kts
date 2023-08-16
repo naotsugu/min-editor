@@ -3,11 +3,17 @@ plugins {
 }
 
 dependencies {
+
     implementation(project(":javafx"))
+
     implementation(project(":model-buffer"))
     implementation(project(":model-text"))
     implementation(project(":model-layout"))
     implementation(project(":model-edit"))
     implementation(project(":model-layout-fx"))
+
+    implementation(project(":syntax-base"))
+    implementation(project(":syntax-java"))
+
     implementation(project(":ui-control"))
 }

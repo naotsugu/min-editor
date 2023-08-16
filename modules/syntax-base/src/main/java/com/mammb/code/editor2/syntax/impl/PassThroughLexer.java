@@ -17,7 +17,9 @@ package com.mammb.code.editor2.syntax.impl;
 
 import com.mammb.code.editor2.syntax.Lexer;
 import com.mammb.code.editor2.syntax.LexerSource;
+import com.mammb.code.editor2.syntax.Scope;
 import com.mammb.code.editor2.syntax.Token;
+import com.mammb.code.editor2.syntax.TokenType;
 
 /**
  * PassThrough Lexer.
@@ -31,9 +33,11 @@ public class PassThroughLexer implements Lexer {
     /** The input string. */
     private LexerSource source;
 
-    public PassThroughLexer(String name, LexerSource source) {
+    /** The string length. */
+    private int length = 0;
+
+    public PassThroughLexer(String name) {
         this.name = name;
-        this.source = source;
     }
 
     @Override
@@ -42,18 +46,20 @@ public class PassThroughLexer implements Lexer {
     }
 
     @Override
-    public Token nextToken() {
-        return null;
-//        if (source == null) {
-//            return TokenType.empty(null);
-//        }
-//
-//        char ch = source.readChar();
-//        return switch (ch) {
-//            case ' ', '\t' -> TokenType.whitespace(source);
-//            case '\n', '\r' -> TokenType.lineEnd(source);
-//            case 0 -> new Token(TokenType.EMPTY, ScopeType.NEUTRAL, 0, 0);
-//            default -> TokenType.any(source);
-//        };
+    public void setSource(LexerSource source) {
+        this.source = source;
+        this.length = source.length();
     }
+
+    @Override
+    public Token nextToken() {
+        if (source != null && source.length() > 0) {
+            length = source.length();
+            source = null;
+            return Token.of(TokenType.ANY, Scope.NEUTRAL, 0, length);
+        } else {
+            return Token.of(TokenType.EMPTY, Scope.NEUTRAL, length, 0);
+        }
+    }
+
 }

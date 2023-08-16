@@ -19,6 +19,8 @@ import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
 
+import java.util.TreeMap;
+
 /**
  * SyntaxTranslate.
  * @author Naotsugu Kobayashi
@@ -28,13 +30,28 @@ public class SyntaxTranslate implements StylingTranslate {
     /** The lexer .*/
     private final Lexer lexer;
 
+    /** The block tokens .*/
+    private final TreeMap<Integer, Token> tokens = new TreeMap<>();
+
+
     public SyntaxTranslate(Lexer lexer) {
         this.lexer = lexer;
     }
 
     @Override
     public StyledText applyTo(Textual textual) {
-        return StyledText.of(textual);
+
+        StyledText styledText = StyledText.of(textual);
+
+        lexer.setSource(LexerSource.of(textual));
+
+        for (Token token = lexer.nextToken();
+             !token.isEmpty();
+             token = lexer.nextToken()) {
+
+        }
+
+        return styledText;
     }
 
 }

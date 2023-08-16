@@ -28,6 +28,13 @@ public interface Lexer {
     String name();
 
     /**
+     * Set the source.
+     * @param source the source.
+     * @param lexicalScope the lexicalScope.
+     */
+    void setSource(LexerSource source);
+
+    /**
      * Gets the next token.
      * @return the next token
      */

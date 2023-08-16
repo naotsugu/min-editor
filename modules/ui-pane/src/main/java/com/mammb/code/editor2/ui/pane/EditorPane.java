@@ -17,6 +17,9 @@ package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.VScrollBar;
+import com.mammb.code.editor2.model.style.StylingTranslate;
+import com.mammb.code.editor2.syntax.SyntaxTranslate;
+import com.mammb.code.editor2.syntax.java.JavaLexer;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
@@ -36,6 +39,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -133,7 +137,10 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        editorModel = new EditorModel(getWidth(), getHeight(), path, vScrollBar, hScrollBar);
+        editorModel = new EditorModel(
+            getWidth(), getHeight(),
+            path, findSyntax(path),
+            vScrollBar, hScrollBar);
         editorModel.draw(gc);
     }
 
@@ -370,6 +377,28 @@ public class EditorPane extends StackPane {
             : base.toFile().isDirectory()
                 ? base.toFile()
                 : base.getParent().toFile();
+    }
+
+
+    private static StylingTranslate findSyntax(Path path) {
+        return switch (getExtension(path)) {
+            case "java" -> new SyntaxTranslate(new JavaLexer());
+            default     -> StylingTranslate.passThrough();
+        };
+    }
+
+
+    /**
+     * Get the extension name.
+     * @param path the source path
+     * @return the extension name
+     */
+    public static String getExtension(Path path) {
+        if (path == null) {
+            return "";
+        }
+        String fileName = path.getFileName().toString();
+        return fileName.substring(fileName.lastIndexOf('.') + 1);
     }
 
 }

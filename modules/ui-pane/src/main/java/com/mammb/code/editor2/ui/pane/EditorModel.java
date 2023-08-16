@@ -78,7 +78,9 @@ public class EditorModel {
      * @param height the screen height
      */
     public EditorModel(double width, double height) {
-        this(width, height, null, ScrollBar.vEmpty(), ScrollBar.hEmpty());
+        this(width, height,
+            null, StylingTranslate.passThrough(),
+            ScrollBar.vEmpty(), ScrollBar.hEmpty());
     }
 
 
@@ -88,10 +90,13 @@ public class EditorModel {
      * @param height the screen height
      * @param path the path
      */
-    public EditorModel(double width, double height, Path path,
-            ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
+    public EditorModel(
+            double width, double height,
+            Path path, StylingTranslate styling,
+            ScrollBar<Integer> vScroll,
+            ScrollBar<Double> hScroll) {
         this.buffer = TextBuffer.editBuffer(path, screenRowSize(height));
-        this.texts = new LinearTextList(buffer, StylingTranslate.passThrough());
+        this.texts = new LinearTextList(buffer, styling);
         this.gutter = new Gutter();
         this.caret = new Caret(this::layoutLine);
         this.selection = new SelectionImpl();

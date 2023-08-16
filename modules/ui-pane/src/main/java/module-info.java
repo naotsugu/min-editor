@@ -25,7 +25,12 @@ module code.editor.ui.pane {
     requires code.editor.model.text;
     requires code.editor.model.layout;
     requires code.editor.model.edit;
+
+    requires code.editor.syntax.base;
+    requires code.editor.syntax.java;
+
     requires code.editor.ui.control;
+
     exports com.mammb.code.editor2.ui.pane;
     exports com.mammb.code.editor2.ui.pane.impl;
 }
