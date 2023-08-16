@@ -20,4 +20,70 @@ package com.mammb.code.editor2.syntax;
  * @author Naotsugu Kobayashi
  */
 public interface Token {
+
+    /**
+     * Get the token type.
+     * @return the token type
+     */
+    TokenType type();
+
+    /**
+     * Get the token scope.
+     * @return the token scope
+     */
+    Scope scope();
+
+    /**
+     * Get the position.
+     * @return the position
+     */
+    int position();
+
+    /**
+     * Get the length.
+     * @return the length
+     */
+    int length();
+
+    /**
+     * Get the context.
+     * @return the context
+     */
+    String context();
+
+    /**
+     * Get whether this type is empty.
+     * @return {@code true}, if this type is empty
+     */
+    default boolean isEmpty() {
+        return length() <= 0;
+    }
+
+
+    /**
+     * Create a new Token.
+     * @param type the token type
+     * @param scope the token scope
+     * @param position the position
+     * @param length the length
+     * @return token
+     */
+    static Token of(TokenType type, Scope scope, int position, int length) {
+        return of(type, scope, position, length, "");
+    }
+
+    /**
+     * Create a new Token.
+     * @param type the token type
+     * @param scope the token scope
+     * @param position the position
+     * @param length the length
+     * @param context the context
+     * @return token
+     */
+    static Token of(TokenType type, Scope scope, int position, int length, String context) {
+        record TokenRecode(TokenType type, Scope scope, int position, int length, String context) implements Token { }
+        return new TokenRecode(type, scope, position, length, context);
+    }
+
 }
