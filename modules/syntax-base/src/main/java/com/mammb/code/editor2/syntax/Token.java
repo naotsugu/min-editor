@@ -119,6 +119,7 @@ public interface Token {
         return of(type, scope, position, length, "");
     }
 
+
     /**
      * Create a new Token.
      * @param type the token type

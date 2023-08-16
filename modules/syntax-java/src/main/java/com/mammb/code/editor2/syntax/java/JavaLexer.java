@@ -17,6 +17,7 @@ package com.mammb.code.editor2.syntax.java;
 
 import com.mammb.code.editor2.syntax.Lexer;
 import com.mammb.code.editor2.syntax.LexerSource;
+import com.mammb.code.editor2.syntax.Scope;
 import com.mammb.code.editor2.syntax.Token;
 import com.mammb.code.editor2.syntax.Trie;
 
@@ -37,16 +38,57 @@ public class JavaLexer implements Lexer {
         this.source = source;
     }
 
+
     @Override
     public String name() {
         return "java";
     }
 
+
     @Override
     public Token nextToken() {
-        return null;
+
+        if (source == null) {
+            return Token.empty(null);
+        }
+
+        char ch = source.readChar();
+        return switch (ch) {
+            case ' ', '\t'  -> Token.whitespace(source);
+            case '\n', '\r' -> Token.lineEnd(source);
+
+            case 0 -> Token.empty(source);
+            default -> Character.isJavaIdentifierStart(ch)
+                ? readIdentifier(source)
+                : Token.any(source);
+        };
     }
 
 
+    /**
+     * Read identifier.
+     * @param source the lexer source
+     * @return the token
+     */
+    private Token readIdentifier(LexerSource source) {
+
+        int pos = source.position();
+        StringBuilder sb = new StringBuilder();
+        sb.append(source.currentChar());
+
+        for (;;) {
+            char ch = source.peekChar();
+            if (!Character.isJavaIdentifierPart(ch)) {
+                String str = sb.toString();
+                source.commitPeekBefore();
+                if (keywords.match(str)) {
+                    return Token.of(Java.ToKenType.KEYWORD, Scope.NEUTRAL, pos, str.length());
+                } else {
+                    return Token.of(Java.ToKenType.ANY, Scope.NEUTRAL, pos, str.length());
+                }
+            }
+            sb.append(source.readChar());
+        }
+    }
 
 }
