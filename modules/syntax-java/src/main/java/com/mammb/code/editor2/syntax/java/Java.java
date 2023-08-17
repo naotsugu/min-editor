@@ -28,11 +28,11 @@ public class Java {
 
     public interface ToKenType extends com.mammb.code.editor2.syntax.TokenType {
 
-        TokenType KEYWORD = TokenType.create("#eb8a3a");
+        TokenType KEYWORD = TokenType.create("#BF360C");
         TokenType TEXT = TokenType.create("#629755");
         TokenType NUMBER = TokenType.create("#78aed7");
         TokenType LINE_COMMENT = TokenType.create("#808080");
-        TokenType COMMENT = TokenType.create("#629755");
+        TokenType COMMENT = TokenType.create("#1B5E20");
         TokenType CHAR_LITERAL = TokenType.create("#629755");
 
     }

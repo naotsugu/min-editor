@@ -131,7 +131,7 @@ public class LexicalScope {
             var before = beforeEntry(scopes, offset,
                 t -> t.type() == token.type() && t.scope().isStart());
             if (before != null) {
-                scopes.remove(before);
+                scopes.remove(before.getKey());
             }
             return;
         }
@@ -141,7 +141,7 @@ public class LexicalScope {
             var before = beforeEntry(scopes, offset,
                 t -> t.type() == token.type() && t.scope().isAny());
             if (before != null) {
-                scopes.remove(before);
+                scopes.remove(before.getKey());
             } else {
                 scopes.put(offset, token);
             }

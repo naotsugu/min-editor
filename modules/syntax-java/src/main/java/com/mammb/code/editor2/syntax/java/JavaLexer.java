@@ -56,7 +56,8 @@ public class JavaLexer implements Lexer {
         return switch (ch) {
             case ' ', '\t'  -> Token.whitespace(source);
             case '\n', '\r' -> Token.lineEnd(source);
-
+            case '/' -> readComment(source);
+            case '*'  -> readCommentBlockClosed(source);
             case 0 -> Token.empty(source);
             default -> Character.isJavaIdentifierStart(ch)
                 ? readIdentifier(source)
@@ -64,6 +65,40 @@ public class JavaLexer implements Lexer {
         };
     }
 
+    /**
+     * Read comment.
+     * @param source the lexer source
+     * @return the token
+     */
+    private Token readComment(LexerSource source) {
+        int pos = source.position();
+        char ch = source.peekChar();
+        if (ch == '/') {
+            source.commitPeek();
+            return Token.of(Java.ToKenType.LINE_COMMENT, Scope.INLINE_START, pos, 2);
+        } else if (ch == '*') {
+            source.commitPeek();
+            return Token.of(Java.ToKenType.COMMENT, Scope.BLOCK_START, pos, 2);
+        } else {
+            return Token.any(source);
+        }
+    }
+
+    /**
+     * Read block comment.
+     * @param source the lexer source
+     * @return the token
+     */
+    private Token readCommentBlockClosed(LexerSource source) {
+        int pos = source.position();
+        char ch = source.peekChar();
+        if (ch == '/') {
+            source.commitPeek();
+            return Token.of(Java.ToKenType.COMMENT, Scope.BLOCK_END, pos, 2);
+        } else {
+            return Token.any(source);
+        }
+    }
 
     /**
      * Read identifier.
