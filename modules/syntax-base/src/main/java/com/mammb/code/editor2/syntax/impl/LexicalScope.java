@@ -17,9 +17,9 @@ package com.mammb.code.editor2.syntax.impl;
 
 import com.mammb.code.editor2.syntax.Token;
 import com.mammb.code.editor2.syntax.TokenType;
-
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 /**
  * LexicalScope.
@@ -58,6 +58,11 @@ public class LexicalScope {
      * @param offset the offset
      */
     public void put(Token token, int offset) {
+
+        if (token.scope().isNeutral()) {
+            throw new IllegalArgumentException();
+        }
+
         if (token.scope().isContext()) {
             putScope(token, offset, contextScopes);
         } else if (token.scope().isBlock()) {
@@ -69,6 +74,44 @@ public class LexicalScope {
                 putScope(token, offset, inlineScopes);
             }
         }
+    }
+
+    /**
+     * Get the current context scope token.
+     * @return the current context scope token
+     */
+    public Token currentContext() {
+        if (!contextScopes.isEmpty()) {
+            var last = contextScopes.lastEntry().getValue();
+            if (last.scope().isStart() || last.scope().isAny()) {
+                return last;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * Get the current scope token.
+     * @return the current scope token
+     */
+    public Token current() {
+
+        if (!blockScopes.isEmpty()) {
+            var last = blockScopes.lastEntry().getValue();
+            if (last.scope().isStart() || last.scope().isAny()) {
+                return last;
+            }
+        }
+
+        if (!inlineScopes.isEmpty()) {
+            var last = inlineScopes.lastEntry().getValue();
+            if (last.scope().isStart() || last.scope().isAny()) {
+                return last;
+            }
+        }
+
+        return null;
     }
 
 
@@ -84,30 +127,38 @@ public class LexicalScope {
             return;
         }
 
-        if (token.scope().isStart()) {
-            var before = beforeStartEntry(offset, token.type(), scopes);
+        if (token.scope().isEnd()) {
+            var before = beforeEntry(scopes, offset,
+                t -> t.type() == token.type() && t.scope().isStart());
             if (before != null) {
-                scopes.remove(before.getKey());
+                scopes.remove(before);
             }
             return;
         }
 
         if (token.scope().isAny()) {
             // toggle scope if any
+            var before = beforeEntry(scopes, offset,
+                t -> t.type() == token.type() && t.scope().isAny());
+            if (before != null) {
+                scopes.remove(before);
+            } else {
+                scopes.put(offset, token);
+            }
             return;
         }
 
     }
 
-    private static Map.Entry<Integer, Token> beforeStartEntry(
-            int offset, TokenType type, TreeMap<Integer, Token> scopes) {
+
+    private static Map.Entry<Integer, Token> beforeEntry(
+            TreeMap<Integer, Token> scopes, int offset, Predicate<Token> match) {
         while (true) {
             var entry = scopes.floorEntry(offset);
             if (entry == null) {
                 return null;
             }
-            if (entry.getValue().type() == type &&
-                entry.getValue().scope().isStart()) {
+            if (match.test(entry.getValue())) {
                 return entry;
             }
             offset = entry.getKey() - 1;

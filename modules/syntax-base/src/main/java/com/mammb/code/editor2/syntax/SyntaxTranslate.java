@@ -48,6 +48,10 @@ public class SyntaxTranslate implements StylingTranslate {
         scopes.init(textual.offset());
         lexer.setSource(LexerSource.of(textual));
 
+
+        Token prev = null;
+        int beginOffset = 0;
+
         for (Token token = lexer.nextToken();
              !token.isEmpty();
              token = lexer.nextToken()) {
@@ -56,15 +60,33 @@ public class SyntaxTranslate implements StylingTranslate {
                 scopes.put(token, textual.offset() + token.position());
             }
 
-            var cs = token.type().colorString();
+            Token current = scopes.current();
+            current = (current == null) ? token : current;
+
+            if (prev == null) {
+                prev = current;
+                beginOffset = token.position();
+            } else {
+                if (prev.type() != current.type()) {
+                    var cs = prev.type().colorString();
+                    if (!cs.isEmpty()) {
+                        styledText.putStyle(StyleSpan.of(
+                            new Style.Color(cs, 1.0), beginOffset, token.position() - beginOffset));
+                    }
+                    prev = current;
+                    beginOffset = token.position();
+                }
+            }
+        }
+
+        if (prev != null) {
+            var cs = prev.type().colorString();
             if (!cs.isEmpty()) {
                 styledText.putStyle(StyleSpan.of(
-                    new Style.Color(cs, 1.0), token.position(), token.length()));
+                    new Style.Color(cs, 1.0), beginOffset, textual.length() - beginOffset));
             }
-
         }
 
         return styledText;
     }
-
 }
