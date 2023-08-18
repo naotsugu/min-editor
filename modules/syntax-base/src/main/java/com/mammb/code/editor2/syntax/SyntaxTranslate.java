@@ -35,6 +35,10 @@ public class SyntaxTranslate implements StylingTranslate {
     private final LexicalScope scopes = new LexicalScope();
 
 
+    /**
+     * Create a new {@link SyntaxTranslate}.
+     * @param lexer the source lexer
+     */
     public SyntaxTranslate(Lexer lexer) {
         this.lexer = lexer;
     }

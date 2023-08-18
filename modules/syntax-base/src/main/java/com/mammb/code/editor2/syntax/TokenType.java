@@ -37,7 +37,9 @@ public interface TokenType extends Comparable<TokenType> {
 
     String colorString();
 
+    /** The serial(Used as token priority). */
     int serial();
+
 
     static TokenType create() {
         return create("");
