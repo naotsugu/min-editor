@@ -17,9 +17,14 @@ package com.mammb.code.editor2.syntax.impl;
 
 import com.mammb.code.editor2.syntax.Token;
 import com.mammb.code.editor2.syntax.TokenType;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.function.Predicate;
+import java.util.Optional;
+import java.util.Collection;
+import java.util.Comparator;
 
 /**
  * LexicalScope.
@@ -27,141 +32,122 @@ import java.util.function.Predicate;
  */
 public class LexicalScope {
 
-    /** The context scopes. */
-    private final TreeMap<Integer, Token> contextScopes = new TreeMap<>();
+    /** The tokens(key:offset value:token). */
+    private final TreeMap<Integer, Token> tokens = new TreeMap<>();
 
-    /** The block scopes. */
-    private final TreeMap<Integer, Token> blockScopes = new TreeMap<>();
+    /** The context scopes(key:token type number). */
+    private final Map<Integer, Deque<Token>> contextScopes = new HashMap<>();
 
-    /** The inline scopes. */
-    private final TreeMap<Integer, Token> inlineScopes = new TreeMap<>();
+    /** The block scopes(key:tokenType value:tokens). */
+    private final Map<TokenType, Deque<Token>> blockScopes = new HashMap<>();
+
+    /** The inline scopes(key:tokenType value:tokens). */
+    private final Map<TokenType, Deque<Token>> inlineScopes = new HashMap<>();
+
+    /** The high water offset. */
+    private int highWaterOffset;
 
 
-
-    public void init() {
-        contextScopes.clear();
+    /**
+     * Start scope processing.
+     * @param offset the offset
+     */
+    public void start(int offset) {
+        markDirty(offset);
         blockScopes.clear();
         inlineScopes.clear();
-    }
-
-
-    public void init(int offset) {
-        contextScopes.subMap(offset, Integer.MAX_VALUE).clear();
-        blockScopes.subMap(offset, Integer.MAX_VALUE).clear();
-        inlineScopes.subMap(offset, Integer.MAX_VALUE).clear();
+        for (Map.Entry<Integer, Token> entry : tokens.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
 
     /**
-     * Put the token.
-     * @param token the token
-     * @param offset the offset
+     * Deletes the scope after the specified offset as dirty.
+     * @param offset the specified offset
      */
-    public void put(Token token, int offset) {
+    public void markDirty(int offset) {
+        if (offset < highWaterOffset) {
+            if (!tokens.isEmpty()) {
+                tokens.subMap(offset, Integer.MAX_VALUE).clear();
+            }
+            highWaterOffset = offset;
+        }
+    }
+
+    /**
+     * Put the token.
+     * @param offset the offset
+     * @param token the token
+     */
+    public void put(int offset, Token token) {
 
         if (token.scope().isNeutral()) {
             throw new IllegalArgumentException();
         }
 
-        if (token.scope().isContext()) {
-            putScope(token, offset, contextScopes);
-        } else if (token.scope().isBlock()) {
-            putScope(token, offset, blockScopes);
-        } else if (token.scope().isInline()) {
+        if (token.scope().isBlock()) {
+            tokens.put(offset, token);
+            highWaterOffset = offset;
+            putScope(token, blockScopes);
+            return;
+        }
+        if (token.scope().isInline()) {
             if (token.type() == TokenType.EOL) {
                 inlineScopes.clear();
             } else { //if (token.scope().isStart() || token.scope().isEnd()) {
-                putScope(token, offset, inlineScopes);
+                putScope(token, inlineScopes);
             }
+            return;
         }
+//        if (token.scope().isContext()) {
+//            putScope(token, contextScopes);
+//        }
     }
-
-    /**
-     * Get the current context scope token.
-     * @return the current context scope token
-     */
-    public Token currentContext() {
-        if (!contextScopes.isEmpty()) {
-            var last = contextScopes.lastEntry().getValue();
-            if (last.scope().isStart() || last.scope().isAny()) {
-                return last;
-            }
-        }
-        return null;
-    }
-
 
     /**
      * Get the current scope token.
      * @return the current scope token
      */
-    public Token current() {
+    public Optional<Token> current() {
 
-        if (!blockScopes.isEmpty()) {
-            var last = blockScopes.lastEntry().getValue();
-            if (last.scope().isStart() || last.scope().isAny()) {
-                return last;
-            }
+        Optional<Token> blockScope = blockScopes.values().stream()
+            .flatMap(Collection::stream)
+            .min(Comparator.comparing(Token::type));
+        if (blockScope.isPresent()) {
+            return blockScope;
         }
 
-        if (!inlineScopes.isEmpty()) {
-            var last = inlineScopes.lastEntry().getValue();
-            if (last.scope().isStart() || last.scope().isAny()) {
-                return last;
-            }
-        }
-
-        return null;
+        return inlineScopes.values().stream()
+            .flatMap(Collection::stream)
+            .min(Comparator.comparing(Token::type));
     }
-
 
     /**
      * Put the scope.
      * @param token the token
      * @param scopes the target scope
      */
-    private void putScope(Token token, int offset, TreeMap<Integer, Token> scopes) {
+    private void putScope(Token token, Map<TokenType, Deque<Token>> scopes) {
 
         if (token.scope().isStart()) {
-            scopes.put(offset, token);
+            scopes.computeIfAbsent(token.type(), k -> new ArrayDeque<>()).push(token);
             return;
         }
 
-        if (token.scope().isEnd()) {
-            var before = beforeEntry(scopes, offset,
-                t -> t.type() == token.type() && t.scope().isStart());
-            if (before != null) {
-                scopes.remove(before.getKey());
-            }
+        if (token.scope().isEnd() && scopes.containsKey(token.type())) {
+            scopes.get(token.type()).poll();
             return;
         }
 
         if (token.scope().isAny()) {
             // toggle scope if any
-            var before = beforeEntry(scopes, offset,
-                t -> t.type() == token.type() && t.scope().isAny());
-            if (before != null) {
-                scopes.remove(before.getKey());
+            Deque<Token> deque = scopes.get(token.type());
+            if (deque == null || deque.isEmpty()) {
+                scopes.computeIfAbsent(token.type(), k -> new ArrayDeque<>()).push(token);
             } else {
-                scopes.put(offset, token);
+                scopes.get(token.type()).poll();
             }
-            return;
-        }
-
-    }
-
-
-    private static Map.Entry<Integer, Token> beforeEntry(
-            TreeMap<Integer, Token> scopes, int offset, Predicate<Token> match) {
-        while (true) {
-            var entry = scopes.floorEntry(offset);
-            if (entry == null) {
-                return null;
-            }
-            if (match.test(entry.getValue())) {
-                return entry;
-            }
-            offset = entry.getKey() - 1;
         }
     }
 

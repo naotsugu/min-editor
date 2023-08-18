@@ -45,9 +45,8 @@ public class SyntaxTranslate implements StylingTranslate {
 
         final StyledText styledText = StyledText.of(textual);
 
-        scopes.init(textual.offset());
+        scopes.start(textual.offset());
         lexer.setSource(LexerSource.of(textual));
-
 
         Token prev = null;
         int beginOffset = 0;
@@ -57,11 +56,10 @@ public class SyntaxTranslate implements StylingTranslate {
              token = lexer.nextToken()) {
 
             if (!token.scope().isNeutral()) {
-                scopes.put(token, textual.offset() + token.position());
+                scopes.put(textual.offset() + token.position(), token);
             }
 
-            Token current = scopes.current();
-            current = (current == null) ? token : current;
+            Token current = scopes.current().orElse(token);
 
             if (prev == null) {
                 prev = current;

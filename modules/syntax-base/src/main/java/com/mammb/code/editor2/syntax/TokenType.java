@@ -21,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Token.
  * @author Naotsugu Kobayashi
  */
-public interface TokenType {
+public interface TokenType extends Comparable<TokenType> {
 
     /** The number of serial. */
     AtomicInteger serial = new AtomicInteger(0);
@@ -37,6 +37,8 @@ public interface TokenType {
 
     String colorString();
 
+    int serial();
+
     static TokenType create() {
         return create("");
     }
@@ -45,5 +47,10 @@ public interface TokenType {
         record TokenTypeRecord(int serial, String colorString) implements TokenType { }
         return new TokenTypeRecord(serial.getAndIncrement(), colorString);
     }
+
+    default int compareTo(TokenType o) {
+        return Integer.compare(serial(), o.serial());
+    }
+
 
 }
