@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor2.syntax;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * The ui pane module.
+ * Test of {@link ColorPalette}.
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui.pane {
-    requires code.editor.javafx;
-    requires code.editor.model.buffer;
-    requires code.editor.javafx.layout;
-    requires code.editor.model.text;
-    requires code.editor.model.layout;
-    requires code.editor.model.edit;
+class ColorPaletteTest {
 
-    requires code.editor.syntax;
+    @Test
+    void getLuminance() {
+        assertEquals(0.0, new ColorPalette("000000").getLuminance());
+        assertEquals(100.0, new ColorPalette("FFFFFF").getLuminance());
+    }
 
-    requires code.editor.ui.control;
-
-    exports com.mammb.code.editor2.ui.pane;
-    exports com.mammb.code.editor2.ui.pane.impl;
 }

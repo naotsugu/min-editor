@@ -36,7 +36,7 @@ public class LexicalScope {
     private final TreeMap<Integer, Token> tokens = new TreeMap<>();
 
     /** The context scopes(key:token type number). */
-    private final Map<Integer, Deque<Token>> contextScopes = new HashMap<>();
+    private final Map<TokenType, Deque<Token>> contextScopes = new HashMap<>();
 
     /** The block scopes(key:tokenType value:tokens). */
     private final Map<TokenType, Deque<Token>> blockScopes = new HashMap<>();
@@ -100,10 +100,11 @@ public class LexicalScope {
             }
             return;
         }
-//        if (token.scope().isContext()) {
-//            putScope(token, contextScopes);
-//        }
+        if (token.scope().isContext()) {
+            putScope(token, contextScopes);
+        }
     }
+
 
     /**
      * Get the current scope token.
@@ -122,6 +123,7 @@ public class LexicalScope {
             .flatMap(Collection::stream)
             .min(Comparator.comparing(Token::type));
     }
+
 
     /**
      * Put the scope.

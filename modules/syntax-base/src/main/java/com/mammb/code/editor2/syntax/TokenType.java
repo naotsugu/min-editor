@@ -27,32 +27,33 @@ public interface TokenType extends Comparable<TokenType> {
     AtomicInteger serial = new AtomicInteger(0);
 
     /** The type of empty. */
-    TokenType EMPTY = create();
+    TokenType EMPTY = build();
     /** The type of any. */
-    TokenType ANY = create();
+    TokenType ANY = build();
     /** The type of whitespace. */
-    TokenType SP = create();
+    TokenType SP = build();
     /** The type of eol. */
-    TokenType EOL = create();
+    TokenType EOL = build();
 
-    String colorString();
+    /** The hue. */
+    Hue hue();
 
     /** The serial(Used as token priority). */
     int serial();
 
 
-    static TokenType create() {
-        return create("");
+    static TokenType build() {
+        return build(Hue.NONE);
     }
 
-    static TokenType create(String colorString) {
-        record TokenTypeRecord(int serial, String colorString) implements TokenType { }
-        return new TokenTypeRecord(serial.getAndIncrement(), colorString);
+    static TokenType build(Hue hue) {
+        record TokenTypeRecord(int serial, Hue hue) implements TokenType { }
+        return new TokenTypeRecord(serial.getAndIncrement(), hue);
     }
 
+    @Override
     default int compareTo(TokenType o) {
         return Integer.compare(serial(), o.serial());
     }
-
 
 }

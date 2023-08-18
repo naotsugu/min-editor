@@ -22,6 +22,8 @@ import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.syntax.impl.LexicalScope;
 
+import java.util.Objects;
+
 /**
  * SyntaxTranslate.
  * @author Naotsugu Kobayashi
@@ -34,15 +36,28 @@ public class SyntaxTranslate implements StylingTranslate {
     /** The scopes. */
     private final LexicalScope scopes = new LexicalScope();
 
+    /** The ColorPalette. */
+    private final ColorPalette palette;
+
 
     /**
      * Create a new {@link SyntaxTranslate}.
      * @param lexer the source lexer
      */
     public SyntaxTranslate(Lexer lexer) {
-        this.lexer = lexer;
+        this(lexer, "");
     }
 
+
+    /**
+     * Create a new {@link SyntaxTranslate}.
+     * @param lexer the source lexer
+     * @param baseColorString the base color string((like #808080))
+     */
+    public SyntaxTranslate(Lexer lexer, String baseColorString) {
+        this.lexer = Objects.requireNonNull(lexer);
+        this.palette = new ColorPalette(baseColorString);
+    }
 
     @Override
     public StyledText applyTo(Textual textual) {
@@ -70,10 +85,10 @@ public class SyntaxTranslate implements StylingTranslate {
                 beginOffset = token.position();
             } else {
                 if (prev.type() != current.type()) {
-                    var cs = prev.type().colorString();
-                    if (!cs.isEmpty()) {
+                    var hue = prev.type().hue();
+                    if (hue != Hue.NONE) {
                         styledText.putStyle(StyleSpan.of(
-                            new Style.Color(cs, 1.0), beginOffset, token.position() - beginOffset));
+                            new Style.Color(palette.on(hue), 1.0), beginOffset, token.position() - beginOffset));
                     }
                     prev = current;
                     beginOffset = token.position();
@@ -82,10 +97,10 @@ public class SyntaxTranslate implements StylingTranslate {
         }
 
         if (prev != null) {
-            var cs = prev.type().colorString();
-            if (!cs.isEmpty()) {
+            var hue = prev.type().hue();
+            if (hue != Hue.NONE) {
                 styledText.putStyle(StyleSpan.of(
-                    new Style.Color(cs, 1.0), beginOffset, textual.length() - beginOffset));
+                    new Style.Color(palette.on(hue), 1.0), beginOffset, textual.length() - beginOffset));
             }
         }
 

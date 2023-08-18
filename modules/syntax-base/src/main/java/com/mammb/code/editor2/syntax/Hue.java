@@ -13,23 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor2.syntax;
 
 /**
- * The ui pane module.
+ * Hue.
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui.pane {
-    requires code.editor.javafx;
-    requires code.editor.model.buffer;
-    requires code.editor.javafx.layout;
-    requires code.editor.model.text;
-    requires code.editor.model.layout;
-    requires code.editor.model.edit;
-
-    requires code.editor.syntax;
-
-    requires code.editor.ui.control;
-
-    exports com.mammb.code.editor2.ui.pane;
-    exports com.mammb.code.editor2.ui.pane.impl;
+public enum Hue {
+    RED, PINK, PURPLE, DEEP_PURPLE, INDIGO, BLUE, LIGHT_BLUE ,CYAN, TEAL, GREEN,
+    LIGHT_GREEN,LIME,YELLOW,AMBER,ORANGE,DEEP_ORANGE,BROWN,GREY,BLUE_GREY,
+    NONE;
 }

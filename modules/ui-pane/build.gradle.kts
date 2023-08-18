@@ -11,9 +11,6 @@ dependencies {
     implementation(project(":model-layout"))
     implementation(project(":model-edit"))
     implementation(project(":model-layout-fx"))
-
-    implementation(project(":syntax-base"))
-    implementation(project(":syntax-java"))
-
+    implementation(project(":syntax"))
     implementation(project(":ui-control"))
 }

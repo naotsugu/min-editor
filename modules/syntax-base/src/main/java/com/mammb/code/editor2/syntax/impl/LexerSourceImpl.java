@@ -34,6 +34,7 @@ public class LexerSourceImpl implements LexerSource {
     /** The peeked count. */
     private int peekCount = 0;
 
+
     /**
      * Constructor.
      * @param textual the input textual

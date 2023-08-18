@@ -14,13 +14,10 @@ project(":piecetable").projectDir = file("modules/piecetable/lib")
 
 // other module
 include("model-text", "model-edit", "model-buffer", "model-layout")
-include("syntax-base")
-include("syntax-java")
+include("syntax", "syntax-base", "syntax-java")
 include("ui-app", "ui-pane", "ui-control")
 
-include("javafx")
-include("javafx-peep")
-include("javafx-original")
+include("javafx", "javafx-peep", "javafx-original")
 
 include("model-layout-fx")
 

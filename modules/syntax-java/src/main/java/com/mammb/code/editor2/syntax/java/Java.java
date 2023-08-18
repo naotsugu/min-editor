@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor2.syntax.java;
 
+import com.mammb.code.editor2.syntax.Hue;
 import com.mammb.code.editor2.syntax.TokenType;
 import com.mammb.code.editor2.syntax.Trie;
 import java.util.stream.Stream;
@@ -28,12 +29,12 @@ public class Java {
 
     public interface ToKenType extends com.mammb.code.editor2.syntax.TokenType {
 
-        TokenType KEYWORD = TokenType.create("#BF360C");
-        TokenType TEXT = TokenType.create("#629755");
-        TokenType NUMBER = TokenType.create("#78aed7");
-        TokenType LINE_COMMENT = TokenType.create("#808080");
-        TokenType COMMENT = TokenType.create("#1B5E20");
-        TokenType CHAR_LITERAL = TokenType.create("#629755");
+        TokenType KEYWORD = TokenType.build(Hue.DEEP_ORANGE);
+        TokenType TEXT = TokenType.build(Hue.GREEN);
+        TokenType NUMBER = TokenType.build(Hue.CYAN);
+        TokenType LINE_COMMENT = TokenType.build(Hue.GREY);
+        TokenType COMMENT = TokenType.build(Hue.GREEN);
+        TokenType CHAR_LITERAL = TokenType.build(Hue.TEAL);
 
     }
 
