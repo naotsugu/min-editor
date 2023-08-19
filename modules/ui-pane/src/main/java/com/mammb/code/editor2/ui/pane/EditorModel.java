@@ -71,14 +71,16 @@ public class EditorModel {
     /** The max width. */
     private double maxWidth = 0;
 
+    private Color fgColor;
 
     /**
      * Constructor.
      * @param width the screen width
      * @param height the screen height
+     * @param fgColor the fgColor
      */
-    public EditorModel(double width, double height) {
-        this(width, height,
+    public EditorModel(double width, double height, Color fgColor) {
+        this(width, height, fgColor,
             null, StylingTranslate.passThrough(),
             ScrollBar.vEmpty(), ScrollBar.hEmpty());
     }
@@ -88,13 +90,15 @@ public class EditorModel {
      * Constructor.
      * @param width the screen width
      * @param height the screen height
+     * @param fgColor the fgColor
      * @param path the path
      */
     public EditorModel(
-            double width, double height,
+            double width, double height, Color fgColor,
             Path path, StylingTranslate styling,
             ScrollBar<Integer> vScroll,
             ScrollBar<Double> hScroll) {
+        this.fgColor = fgColor;
         this.buffer = TextBuffer.editBuffer(path, screenRowSize(height));
         this.texts = new LinearTextList(buffer, styling);
         this.gutter = new Gutter();

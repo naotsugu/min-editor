@@ -34,6 +34,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.FileChooser;
 import javafx.util.Duration;
@@ -63,8 +64,8 @@ public class EditorPane extends StackPane {
     private HScrollBar hScrollBar;
 
     /** The margin. */
-    double margin = 5.5;
-
+    private double margin = 5.5;
+    private Color fgColor = Global.fgColor;
 
     /**
      * Constructor.
@@ -78,7 +79,7 @@ public class EditorPane extends StackPane {
         double canvasWidth = width - margin;
         double canvasHeight = height - margin;
 
-        editorModel = new EditorModel(canvasWidth, canvasHeight);
+        editorModel = new EditorModel(canvasWidth, canvasHeight, fgColor);
 
         canvas = new Canvas(canvasWidth, canvasHeight);
         canvas.setFocusTraversable(true);
@@ -87,9 +88,9 @@ public class EditorPane extends StackPane {
         canvas.setLayoutY(margin);
         getChildren().add(canvas);
 
-        vScrollBar = new VScrollBar(Global.fgColor);
+        vScrollBar = new VScrollBar(fgColor);
         StackPane.setAlignment(vScrollBar, Pos.CENTER_RIGHT);
-        hScrollBar = new HScrollBar(Global.fgColor);
+        hScrollBar = new HScrollBar(fgColor);
         StackPane.setAlignment(hScrollBar, Pos.BOTTOM_LEFT);
         getChildren().addAll(vScrollBar, hScrollBar);
         editorModel.setScroll(vScrollBar, hScrollBar);
@@ -135,7 +136,8 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        editorModel = new EditorModel(getWidth(), getHeight(), path, Syntax.of(path), vScrollBar, hScrollBar);
+        editorModel = new EditorModel(
+            getWidth(), getHeight(), fgColor, path, Syntax.of(path, fgColor.toString().substring(2, 8)), vScrollBar, hScrollBar);
         editorModel.draw(gc);
     }
 

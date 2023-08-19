@@ -26,9 +26,9 @@ import java.nio.file.Path;
  */
 public class Syntax {
 
-    public static StylingTranslate of(Path path) {
+    public static StylingTranslate of(Path path, String baseColor) {
         return switch (getExtension(path)) {
-            case "java" -> new SyntaxTranslate(new JavaLexer());
+            case "java" -> new SyntaxTranslate(new JavaLexer(), baseColor);
             default     -> StylingTranslate.passThrough();
         };
     }
