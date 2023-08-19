@@ -199,7 +199,7 @@ public class EditorModel {
             drawSpecialCharacter(gc, run, top, lineHeight);
         }
 
-        if (run.layout().x() == 0) {
+        if (run.layout().x() - hScroll.getValue() <= 0) {
             gutter.draw(gc, run, top, lineHeight);
         }
         if (ime.enabled()) {
