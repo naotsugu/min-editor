@@ -25,6 +25,8 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.InputMethodEvent;
@@ -37,6 +39,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -208,6 +211,7 @@ public class EditorPane extends StackPane {
                 case WRAP       -> aroundEdit(editorModel::toggleWrap);
                 case HOME       -> aroundEdit(editorModel::moveCaretLineHome, withSelect);
                 case END        -> aroundEdit(editorModel::moveCaretLineEnd, withSelect);
+                case NEW        -> newPane();
             }
             return;
         }
@@ -320,6 +324,16 @@ public class EditorPane extends StackPane {
         editorModel.draw(gc);
     }
 
+    private void newPane() {
+        Stage newStage = new Stage();
+        Bounds bounds = localToScreen(getBoundsInLocal());
+        newStage.setX(bounds.getMinX() + 15);
+        newStage.setY(bounds.getMinY() + 15);
+        Parent parent = new EditorPane(getWidth(), getHeight());
+        Scene scene = new Scene(parent, getWidth(), getHeight());
+        newStage.setScene(scene);
+        newStage.show();
+    }
 
     /**
      * Create input method request.

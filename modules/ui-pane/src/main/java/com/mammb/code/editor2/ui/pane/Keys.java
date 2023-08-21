@@ -37,6 +37,7 @@ public class Keys {
         HOME, END,
         SELECT_ALL,
         WRAP, EMPTY,
+        NEW,
         ;
     }
 
@@ -92,6 +93,7 @@ public class Keys {
         else if (Keys.SC_HOME.match(e)) return Action.HOME;
         else if (Keys.SC_END.match(e)) return Action.END;
         else if (Keys.SC_A.match(e)) return Action.SELECT_ALL;
+        else if (Keys.SC_N.match(e)) return Action.NEW;
         else return Action.EMPTY;
     }
 }
