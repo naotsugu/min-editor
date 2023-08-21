@@ -19,7 +19,6 @@ import com.mammb.code.editor2.syntax.Lexer;
 import com.mammb.code.editor2.syntax.LexerSource;
 import com.mammb.code.editor2.syntax.Token;
 
-
 /**
  * MarkdownLexer.
  * @author Naotsugu Kobayashi
@@ -49,6 +48,31 @@ public class MarkdownLexer implements Lexer {
         }
 
         char ch = source.readChar();
+        return switch (ch) {
+            case ' ', '\t' -> Token.whitespace(source);
+            case '\n', '\r' -> Token.lineEnd(source);
+            case '#' -> readHeader(source);
+            case '`' -> readFence(source);
+            case 0 -> Token.empty(source);
+            default -> Token.any(source);
+        };
+    }
+
+    /**
+     * Read header.
+     * @param source the lexer source
+     * @return the token
+     */
+    private Token readHeader(LexerSource source) {
+        return Token.any(source);
+    }
+
+    /**
+     * Read fence.
+     * @param source the lexer source
+     * @return the token
+     */
+    private Token readFence(LexerSource source) {
         return Token.any(source);
     }
 

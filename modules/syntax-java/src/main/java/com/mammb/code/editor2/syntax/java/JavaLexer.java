@@ -23,7 +23,6 @@ import com.mammb.code.editor2.syntax.Trie;
 
 import static com.mammb.code.editor2.syntax.java.Java.ToKenType.*;
 
-
 /**
  * JavaLexer.
  * @author Naotsugu Kobayashi
