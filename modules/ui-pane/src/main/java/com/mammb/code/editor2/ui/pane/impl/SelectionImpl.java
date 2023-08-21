@@ -105,7 +105,7 @@ public class SelectionImpl implements Selection {
                  (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
 
                 gc.setFill(Color.LIGHTBLUE);
-                gc.fillRect(left - 0.5, top, Global.numberCharacterWidth(gc.getFont()), run.textLine().height());
+                gc.fillRect(run.layout().x() + left - 0.5, top, Global.numberCharacterWidth(gc.getFont()), run.textLine().height());
 
             } else {
 

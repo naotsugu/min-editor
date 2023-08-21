@@ -187,7 +187,7 @@ public class EditorModel {
         }
 
         if (selection.started()) {
-            selection.draw(gc, run, top, left);
+            selection.draw(gc, run, top, textLeft());
         }
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
@@ -203,7 +203,7 @@ public class EditorModel {
             gutter.draw(gc, run, top, lineHeight);
         }
         if (ime.enabled()) {
-            ime.drawCompose(gc, run, top, lineHeight, left);
+            ime.drawCompose(gc, run, top, lineHeight, textLeft());
         }
     }
 
