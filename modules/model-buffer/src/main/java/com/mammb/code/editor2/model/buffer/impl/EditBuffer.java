@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
  */
 public class EditBuffer implements TextBuffer<Textual> {
 
-    /** The pear slice. */
+    /** The peer slice. */
     private final Slice<Textual> slice;
 
     /** The content. */
