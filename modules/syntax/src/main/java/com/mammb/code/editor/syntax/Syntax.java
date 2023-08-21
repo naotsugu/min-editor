@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.syntax;
 
+import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.syntax.SyntaxTranslate;
 import com.mammb.code.editor2.syntax.java.JavaLexer;
@@ -27,8 +28,9 @@ import java.nio.file.Path;
 public class Syntax {
 
     public static StylingTranslate of(Path path, String baseColor) {
-        return switch (getExtension(path)) {
+        return switch (getExtension(path).toLowerCase()) {
             case "java" -> new SyntaxTranslate(new JavaLexer(), baseColor);
+            case "md"   -> new SyntaxTranslate(new MarkdownLexer(), baseColor);
             default     -> StylingTranslate.passThrough();
         };
     }

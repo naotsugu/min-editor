@@ -13,18 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.markdown;
+
+import com.mammb.code.editor2.syntax.Hue;
+import com.mammb.code.editor2.syntax.TokenType;
+import com.mammb.code.editor2.syntax.Trie;
+
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 /**
- * The syntax module.
+ * Markdown.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax {
+public class Markdown {
 
-    requires transitive code.editor.syntax.base;
-    requires code.editor.syntax.java;
-    requires code.editor.syntax.markdown;
-    requires code.editor.model.text;
-
-    exports com.mammb.code.editor.syntax;
+    /** Java Token type. */
+    public interface ToKenType extends com.mammb.code.editor2.syntax.TokenType {
+        TokenType COMMENT = TokenType.build(Hue.GREEN);
+    }
 
 }

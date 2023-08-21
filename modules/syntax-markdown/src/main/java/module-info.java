@@ -15,16 +15,11 @@
  */
 
 /**
- * The syntax module.
+ * The markdown syntax module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax {
-
-    requires transitive code.editor.syntax.base;
-    requires code.editor.syntax.java;
-    requires code.editor.syntax.markdown;
+module code.editor.syntax.markdown {
     requires code.editor.model.text;
-
-    exports com.mammb.code.editor.syntax;
-
+    requires code.editor.syntax.base;
+    exports com.mammb.code.editor.syntax.markdown;
 }
