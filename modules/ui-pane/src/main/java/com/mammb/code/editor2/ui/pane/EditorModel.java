@@ -581,6 +581,7 @@ public class EditorModel {
             caret.markDirty();
         } else if (texts instanceof WrapTextList wrap) {
             texts = wrap.asLinear();
+            maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
             caret.markDirty();
         }
         setScroll(vScroll, hScroll);
@@ -618,6 +619,9 @@ public class EditorModel {
             double ratio = adjustedMax / maxWidth; // reduction ratio
             hScroll.setMax(adjustedMax);
             hScroll.setVisibleAmount(w * ratio);
+        } else {
+            hScroll.setMax(width - gutter.width());
+            hScroll.setVisibleAmount(width - gutter.width());
         }
     }
 
