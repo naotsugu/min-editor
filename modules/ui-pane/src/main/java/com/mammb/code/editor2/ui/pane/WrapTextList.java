@@ -91,7 +91,6 @@ public class WrapTextList implements TextList {
             for (Textual textual : buffer.texts()) {
                 lines.addAll(translator.applyTo(textual));
             }
-            lineOffset = 0;
         }
         int toIndex = lineOffset + buffer.maxLineSize();
 
