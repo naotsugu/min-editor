@@ -84,7 +84,7 @@ public record InsertEdit(
         if (other instanceof EmptyEdit) {
             return true;
         }
-        if (other.occurredOn() - occurredOn > 2000) {
+        if (other.occurredOn() - occurredOn > 2500) {
             return false;
         }
         return (other instanceof InsertEdit insert) &&

@@ -15,8 +15,15 @@
  */
 package com.mammb.code.editor2.model.edit;
 
+import com.mammb.code.editor2.model.edit.impl.BsDeleteEdit;
+import com.mammb.code.editor2.model.edit.impl.BsInsertEdit;
+import com.mammb.code.editor2.model.edit.impl.CompoundEdit;
+import com.mammb.code.editor2.model.edit.impl.DeleteEdit;
+import com.mammb.code.editor2.model.edit.impl.EmptyEdit;
+import com.mammb.code.editor2.model.edit.impl.FlushInsertEdit;
+import com.mammb.code.editor2.model.edit.impl.InsertEdit;
+import com.mammb.code.editor2.model.edit.impl.ReplaceEdit;
 import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.edit.impl.*;
 
 /**
  * Edit.
