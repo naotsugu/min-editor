@@ -472,7 +472,9 @@ public class EditorModel {
         texts.markDirty();
         caret.markDirty();
         adjustVScroll();
-        for (int i = 0; i < value.length(); i++) moveCaretRight();
+        for (int i = 0; i < Character.codePointCount(value, 0, value.length()); i++) {
+            moveCaretRight();
+        }
     }
     public void delete() {
         vScrollToCaret();
@@ -541,7 +543,7 @@ public class EditorModel {
     public void pasteFromClipboard() {
         var text = Clipboard.get();
         if (!text.isEmpty()) {
-            input(text);
+            input(metrics().lineEnding().unify(text));
         }
     }
     /**
