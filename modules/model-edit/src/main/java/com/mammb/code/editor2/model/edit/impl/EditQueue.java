@@ -110,6 +110,11 @@ public class EditQueue implements com.mammb.code.editor2.model.edit.EditQueue {
         return deque.isEmpty();
     }
 
+    @Override
+    public boolean hasUndo() {
+        return !undo.isEmpty();
+    }
+
 
     @Override
     public void flush() {

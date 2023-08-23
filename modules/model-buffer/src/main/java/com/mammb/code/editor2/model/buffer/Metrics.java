@@ -73,6 +73,12 @@ public interface Metrics {
     int lfCount();
 
     /**
+     * Get whether dirty.
+     * @return whether dirty
+     */
+    boolean isDirty();
+
+    /**
      * Get the total row count.
      * @return the total row count
      */
@@ -97,5 +103,5 @@ public interface Metrics {
         }
     }
 
-    Metrics empty = new MetricsRecord(null, 0, 0, 0, 0, 0, 0);
+    Metrics empty = new MetricsRecord(null, 0, 0, 0, 0, 0, 0, false);
 }

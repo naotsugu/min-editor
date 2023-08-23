@@ -45,7 +45,8 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     private int crCount = 0;
     /** The line feed count. */
     private int lfCount = 0;
-
+    /** whether dirty. */
+    private boolean isDirty = false;
 
     /**
      * Constructor.
@@ -62,6 +63,14 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
      */
     public void setPath(Path path) {
         this.path = path;
+    }
+
+    /**
+     * Set the dirty.
+     * @param dirty whether dirty
+     */
+    public void setDirty(boolean dirty) {
+        this.isDirty = dirty;
     }
 
     /**
@@ -113,6 +122,11 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     @Override
+    public boolean isDirty() {
+        return isDirty;
+    }
+
+    @Override
     public String toString() {
         return new StringJoiner(", ", MetricsImpl.class.getSimpleName() + "[", "]")
             .add("path=" + path)
@@ -122,6 +136,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
             .add("invalid=" + invalid)
             .add("crCount=" + crCount)
             .add("lfCount=" + lfCount)
+            .add("isDirty=" + isDirty)
             .toString();
     }
 
@@ -151,6 +166,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
             chCount++;
             cpCount++;
         }
+        isDirty = true;
         byteLen += bytes.length;
     }
 
@@ -178,6 +194,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
             chCount--;
             cpCount--;
         }
+        isDirty = true;
         byteLen -= bytes.length;
     }
 

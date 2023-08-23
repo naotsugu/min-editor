@@ -17,6 +17,7 @@ package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.control.HScrollBar;
+import com.mammb.code.editor.ui.control.OverlayDialog;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -139,9 +140,16 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        editorModel = new EditorModel(
-            getWidth(), getHeight(), fgColor, path, Syntax.of(path, fgColor.toString().substring(2, 8)), vScrollBar, hScrollBar);
-        editorModel.draw(gc);
+        final Runnable openAction = () -> {
+            editorModel = new EditorModel(
+                getWidth(), getHeight(), fgColor, path, Syntax.of(path, fgColor.toString().substring(2, 8)), vScrollBar, hScrollBar);
+            editorModel.draw(gc);
+        };
+        if (editorModel.metrics().isDirty()) {
+            OverlayDialog.confirm(this, "Are you sure you want to discard your changes?", openAction);
+        } else {
+            openAction.run();
+        }
     }
 
     private void openChoose() {

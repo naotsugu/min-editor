@@ -60,6 +60,12 @@ public interface EditQueue {
     boolean isEmpty();
 
     /**
+     * Get whether this edit queue has undo.
+     * @return {@code true} if this edit queue has undo.
+     */
+    boolean hasUndo();
+
+    /**
      * Flush edit queue.
      */
     void flush();
