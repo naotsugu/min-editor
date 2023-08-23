@@ -281,11 +281,11 @@ public class EditorModel {
 
     // -- ime behavior  ----------------------------------------------------
     public Rect imeOn(GraphicsContext gc) {
-        if (ime.enabled()) new Rect(caret.x(), caret.y(), caret.width(), caret.height());
+        if (ime.enabled()) new Rect(caret.x() + textLeft(), caret.y(), caret.width(), caret.height());
         vScrollToCaret();
         ime.on(caret.offsetPoint());
         draw(gc, caret.clear(gc, textLeft()));
-        return new Rect(caret.x(), caret.y(), caret.width(), caret.height());
+        return new Rect(caret.x() + textLeft(), caret.y(), caret.width(), caret.height());
     }
     public void imeOff() {
         ime.off();
