@@ -17,6 +17,8 @@ package com.mammb.code.editor.syntax;
 
 import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
 import com.mammb.code.editor2.model.style.StylingTranslate;
+import com.mammb.code.editor2.syntax.Lexer;
+import com.mammb.code.editor2.syntax.LexerProvider;
 import com.mammb.code.editor2.syntax.SyntaxTranslate;
 import com.mammb.code.editor2.syntax.java.JavaLexer;
 import java.nio.file.Path;
@@ -27,13 +29,28 @@ import java.nio.file.Path;
  */
 public class Syntax {
 
-    public static StylingTranslate of(Path path, String baseColor) {
-        return switch (getExtension(path).toLowerCase()) {
-            case "java" -> new SyntaxTranslate(new JavaLexer(), baseColor);
-            case "md"   -> new SyntaxTranslate(new MarkdownLexer(), baseColor);
-            default     -> StylingTranslate.passThrough();
+    /** The lexer provider. */
+    private static final LexerProvider lexerProvider = name ->
+        switch (name) {
+            case "java" -> new JavaLexer();
+            case "md"   -> new MarkdownLexer();
+            default     -> null;
         };
+
+
+    /**
+     * Get the StylingTranslate for the specified path file type.
+     * @param path the path of the target file
+     * @param baseColor
+     * @return the StylingTranslate
+     */
+    public static StylingTranslate of(Path path, String baseColor) {
+        Lexer lexer = lexerProvider.of(getExtension(path).toLowerCase());
+        return (lexer != null)
+            ? new SyntaxTranslate(lexer, baseColor)
+            : StylingTranslate.passThrough();
     }
+
 
     /**
      * Get the extension name.
@@ -47,4 +64,5 @@ public class Syntax {
         String fileName = path.getFileName().toString();
         return fileName.substring(fileName.lastIndexOf('.') + 1);
     }
+
 }
