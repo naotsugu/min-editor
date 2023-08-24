@@ -179,8 +179,10 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         stopTimeline();
 
         if (!isFocused() && isFocusTraversable()) requestFocus();
+        int oldValue = value.getValue();
         int newValue = (int) (position * valueLength()) + min.getValue();
         value.setValue(clamp(newValue));
+        listener.handle(oldValue, value.getValue());
     }
 
 
