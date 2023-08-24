@@ -20,4 +20,8 @@ package com.mammb.code.editor.ui.pref;
  * @author Naotsugu Kobayashi
  */
 public interface Preference {
+    double fontSize();
+    String fontName();
+    String bgColor();
+    String fgColor();
 }

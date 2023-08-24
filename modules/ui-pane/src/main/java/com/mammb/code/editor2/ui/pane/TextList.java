@@ -17,7 +17,6 @@ package com.mammb.code.editor2.ui.pane;
 
 import com.mammb.code.editor2.model.layout.LineLayout;
 import com.mammb.code.editor2.model.layout.TextLine;
-
 import java.util.List;
 import java.util.Optional;
 

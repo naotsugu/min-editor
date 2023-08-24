@@ -347,7 +347,7 @@ public class EditorModel {
         caret.markDirty();
     }
 
-    // -- arrow behavior ------------------------------------------------------
+    // -- select behavior -----------------------------------------------------
     public void selectOn() {
         if (!selection.started()) {
             selection.start(caret.offsetPoint());
@@ -367,6 +367,7 @@ public class EditorModel {
         log.log(INFO, metrics);
         selection.to(OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
     }
+    // -- arrow behavior ------------------------------------------------------
     public void moveCaretRight() {
         vScrollToCaret();
         if (caret.y2() + 4 >= height) scrollNext(1);
@@ -465,8 +466,11 @@ public class EditorModel {
     }
     // -- edit behavior -------------------------------------------------------
     public void input(String value) {
+        if (selection.length() > 0) {
+            selectionReplace(value);
+            return;
+        }
         vScrollToCaret();
-        selectionDelete();
         OffsetPoint caretPoint = caret.offsetPoint();
         buffer.push(Edit.insert(caretPoint, value));
         texts.markDirty();
@@ -506,6 +510,30 @@ public class EditorModel {
         texts.markDirty();
         adjustVScroll();
     }
+    private void selectionReplace(String string) {
+        if (string == null || string.isEmpty()) {
+            vScrollToCaret();
+            selectionDelete();
+            return;
+        }
+        if (selection.length() <= 0) {
+            input(string);
+            return;
+        }
+        vScrollToCaret();
+        Textual text = buffer.subText(selection.min(), selection.length());
+        buffer.push(Edit.replace(text.point(), text.text(), string));
+        selection.clear();
+        caret.at(text.offset(), true);
+        selection.start(caret.offsetPoint());
+        caret.at(text.offset() + string.length(), true);
+        selection.to(caret.offsetPoint());
+        texts.markDirty();
+        caret.markDirty();
+        adjustVScroll();
+        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        hScrollToCaret();
+    }
     private void selectionDelete() {
         if (selection.length() > 0) {
             Textual text = buffer.subText(selection.min(), selection.length());
@@ -537,6 +565,8 @@ public class EditorModel {
         vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
         hScrollToCaret();
     }
+
+    // -- clipboard behavior --------------------------------------------------
     /**
      * Paste the text from the clipboard.
      */
