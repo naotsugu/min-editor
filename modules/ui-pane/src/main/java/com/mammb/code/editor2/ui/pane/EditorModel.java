@@ -34,7 +34,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.lang.System.Logger.Level.INFO;
 
@@ -566,6 +569,25 @@ public class EditorModel {
         hScrollToCaret();
     }
 
+    public void indent() {
+        normalizeRowSelect();
+        replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
+            .map(l -> "    " + l)
+            .collect(Collectors.joining()));
+    }
+
+    public void unindent() {
+        normalizeRowSelect();
+        replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
+            .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
+            .collect(Collectors.joining()));
+    }
+
+    private void replaceSelection(Function<String, String> replace) {
+        Textual text = buffer.subText(selection.min(), selection.length());
+        selectionReplace(replace.apply(text.text()));
+    }
+
     // -- clipboard behavior --------------------------------------------------
     /**
      * Paste the text from the clipboard.
@@ -654,6 +676,43 @@ public class EditorModel {
         } else {
             hScroll.setMax(width - gutter.width());
             hScroll.setVisibleAmount(width - gutter.width());
+        }
+    }
+
+    private int[] rowOffsetRange() {
+        var lines = texts.rowAt(caret.offset());
+        return new int[] {
+            lines.get(0).offset(),
+            lines.get(lines.size() - 1).tailOffset()
+        };
+    }
+
+    private int[] lineOffsetRange() {
+        var line = texts.lineAt(caret.offset());
+        return new int[] {
+            line.offset(),
+            line.tailOffset()
+        };
+    }
+
+    private void select(int[] chOffsetRange) {
+        caret.at(chOffsetRange[0], true);
+        selection.start(caret.offsetPoint());
+        caret.at(chOffsetRange[1], true);
+        selection.to(caret.offsetPoint());
+    }
+
+    private void normalizeRowSelect() {
+        if (selection.length() <= 0) {
+            select(rowOffsetRange());
+        } else {
+            OffsetPoint min = selection.min();
+            OffsetPoint max = selection.max();
+            caret.at(min.offset(), true);
+            int start = rowOffsetRange()[0];
+            caret.at(max.offset(), true);
+            int end = rowOffsetRange()[1];
+            select(new int[] { start, end });
         }
     }
 
