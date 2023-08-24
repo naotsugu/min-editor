@@ -445,7 +445,7 @@ public class EditorModel {
         caret.at(offset, true);
     }
     public void clickDouble(double x, double y) {
-        int[] offsets = texts.atAround(x - textLeft(), y);
+        int[] offsets = texts.atAroundWord(x - textLeft(), y);
         if (offsets.length == 2) {
             caret.at(offsets[0], true);
             selection.start(caret.offsetPoint());

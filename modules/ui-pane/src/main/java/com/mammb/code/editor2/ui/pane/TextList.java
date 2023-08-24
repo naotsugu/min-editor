@@ -99,12 +99,29 @@ public interface TextList {
     }
 
     /**
+     * Get the TextLine corresponding to the y position.
+     * @param y the y position
+     * @return the TextLine
+     */
+    default Optional<TextLine> at(double y) {
+        double offsetY = 0;
+        for (TextLine line : lines()) {
+            double top = offsetY;
+            offsetY += line.leadingHeight();
+            if (top <= y && y < offsetY) {
+                return Optional.of(line);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
      * Get the char offset of the word selection at the specified position.
      * @param x the x position
      * @param y the y position
      * @return the start and end offsets as an array, if word selected, otherwise the single offset.
      */
-    default int[] atAround(double x, double y) {
+    default int[] atAroundWord(double x, double y) {
         Optional<TextLine> maybeLine = at(y);
         if (maybeLine.isEmpty()) {
             return new int[] { at(x, y) };
@@ -136,22 +153,64 @@ public interface TextList {
         }
     }
 
+
     /**
-     * Get the TextLine corresponding to the y position.
-     * @param y the y position
-     * @return the TextLine
+     * Get the line at head.
+     * @return the line at head
      */
-    default Optional<TextLine> at(double y) {
-        double offsetY = 0;
-        for (TextLine line : lines()) {
-            double top = offsetY;
-            offsetY += line.leadingHeight();
-            if (top <= y && y < offsetY) {
-                return Optional.of(line);
-            }
-        }
-        return Optional.empty();
+    default TextLine head() {
+        return lines().get(0);
     }
+
+
+    /**
+     * Get the line at tail.
+     * @return the line at tail
+     */
+    default TextLine tail() {
+        List<TextLine> lines = lines();
+        return lines.isEmpty() ? null : lines.get(lines.size() - 1);
+    }
+
+
+    /**
+     * Gets the line to which the specified offset contains.
+     * @param offset the specified offset
+     * @return the line to which the specified offset contains
+     */
+    default TextLine lineAt(int offset) {
+        return lines().stream()
+            .filter(l -> l.contains(offset))
+            .findFirst().orElse(null);
+    }
+
+
+    /**
+     * Gets the row to which the specified offset contains.
+     * @param offset the specified offset
+     * @return the row to which the specified offset contains
+     */
+    default List<TextLine> rowAt(int offset) {
+        TextLine line = lineAt(offset);
+        if (line == null) {
+            return List.of();
+        }
+
+        final List<TextLine> lines = lines();
+        int baseIndex = lines.indexOf(line);
+
+        int start = baseIndex;
+        while (line.lineIndex() > 0 && start > 0) {
+            line = lines.get(--start);
+        }
+
+        int end = baseIndex;
+        while (line.lineIndex() != (line.lineSize() - 1) && end + 1 < lines.size()) {
+            line = lines.get(++end);
+        }
+        return lines.subList(start, end + 1);
+    }
+
 
     /**
      * Get the LayoutLine corresponding to the char offset.
@@ -172,23 +231,6 @@ public interface TextList {
             offsetY += line.leadingHeight();
         }
         return null;
-    }
-
-    /**
-     * Get the line at head.
-     * @return the line at head
-     */
-    default TextLine head() {
-        return lines().get(0);
-    }
-
-    /**
-     * Get the line at tail.
-     * @return the line at tail
-     */
-    default TextLine tail() {
-        List<TextLine> lines = lines();
-        return lines.isEmpty() ? null : lines.get(lines.size() - 1);
     }
 
 }

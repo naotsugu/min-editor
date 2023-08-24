@@ -170,9 +170,9 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         stopTimeline();
         if (!isFocused() && isFocusTraversable()) requestFocus();
         double newValue = (position * valueLength()) + min.getValue();
-        double old = value.getValue();
+        double oldValue = value.getValue();
         value.setValue(clamp(getMin(), newValue, getMax()));
-        listener.handle(old, value.getValue());
+        listener.handle(oldValue, value.getValue());
     }
 
     public void trackPress(double position) {
