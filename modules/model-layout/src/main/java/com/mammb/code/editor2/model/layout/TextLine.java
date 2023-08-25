@@ -205,6 +205,9 @@ public interface TextLine extends Textual {
      */
     default int xToOffset(double x) {
         int offset = offset();
+        if (length() == 0) {
+            return offset; // end of file
+        }
         for (TextRun run : runs()) {
             double runStart = run.layout().x();
             double runEnd = runStart + run.layout().width();
