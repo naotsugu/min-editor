@@ -42,8 +42,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static java.lang.System.Logger.Level.INFO;
-
 /**
  * EditorModel.
  * @author Naotsugu Kobayashi
@@ -342,10 +340,11 @@ public class EditorModel {
         }
     }
     public void selectAll() {
-        selection.start(OffsetPoint.zero);
         var metrics = buffer.metrics();
-        log.log(INFO, metrics);
-        selection.to(OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
+        SelectBehaviors.select(
+            OffsetPoint.zero,
+            OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()),
+            selection);
     }
     // -- arrow behavior ------------------------------------------------------
     public void moveCaretRight() {

@@ -15,16 +15,33 @@
  */
 package com.mammb.code.editor2.ui.pane.impl;
 
+import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.ui.pane.Caret;
 import com.mammb.code.editor2.ui.pane.Selection;
 import com.mammb.code.editor2.ui.pane.TextList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Select behavior collection.
  * @author Naotsugu Kobayashi
  */
 public class SelectBehaviors {
+
+    /**
+     * Select the specified range.
+     * @param range the range to select
+     * @param caret the caret
+     * @param selection the selection
+     */
+    public static void select(OffsetPoint[] range, Caret caret, Selection selection) {
+        if (range == null || range.length != 2) {
+            return;
+        }
+        select(range, selection);
+        caret.at(range[1].offset(), true);
+    }
 
     /**
      * Select the specified range.
@@ -44,12 +61,33 @@ public class SelectBehaviors {
      * @param selection the selection
      */
     public static void select(int offset1, int offset2, Caret caret, Selection selection) {
-        int start = Math.min(offset1, offset2);
-        int end   = Math.max(offset1, offset2);
-        caret.at(start, true);
+        caret.at(offset1, true);
         selection.start(caret.offsetPoint());
-        caret.at(end, true);
+        caret.at(offset2, true);
         selection.to(caret.offsetPoint());
+    }
+
+    /**
+     * Selects a range of specified points.
+     * @param range the range of point
+     * @param selection the selection
+     */
+    public static void select(OffsetPoint[] range, Selection selection) {
+        if (range == null || range.length != 2) {
+            return;
+        }
+        select(range[0], range[1], selection);
+    }
+
+    /**
+     * Selects a range of specified points.
+     * @param from the point at start
+     * @param to the point at end
+     * @param selection the selection
+     */
+    public static void select(OffsetPoint from, OffsetPoint to, Selection selection) {
+        selection.start(Objects.requireNonNull(from));
+        selection.to(Objects.requireNonNull(to));
     }
 
     /**
@@ -59,44 +97,45 @@ public class SelectBehaviors {
      * @param texts the texts
      */
     public static void selectCurrentRow(Caret caret, Selection selection, TextList texts) {
-        if (selection.length() <= 0) {
-            SelectBehaviors.select(rowOffsetRange(caret, texts), caret, selection);
+        if (selection.length() == 0 || selection.min().row() == selection.max().row()) {
+            // if not selected or within a row selected, select current row
+            SelectBehaviors.select(rowPointRange(caret.offset(), texts), caret, selection);
         } else {
-            OffsetPoint min = selection.min();
-            OffsetPoint max = selection.max();
-            caret.at(min.offset(), true);
-            int start = rowOffsetRange(caret, texts)[0];
-            caret.at(max.offset(), true);
-            int end = rowOffsetRange(caret, texts)[1];
-            SelectBehaviors.select(start, end, caret, selection);
+            // if selected, reselect all rows in the selection
+            OffsetPoint start = rowPointRange(selection.min().offset(), texts)[0];
+            OffsetPoint end   = rowPointRange(selection.max().offset(), texts)[1];
+            OffsetPoint[] range = (selection.startOffset() == selection.min())
+                ? new OffsetPoint[] { start, end }
+                : new OffsetPoint[] { end, start };
+            SelectBehaviors.select(range, caret, selection);
         }
     }
 
     /**
-     * Get the offset of the current caret row.
-     * @param caret the caret
+     * Get the point of the current caret row.
+     * @param charOffset the char offset
      * @param texts the texts
-     * @return the offset of the current caret row
+     * @return the point of the current caret row
      */
-    private static int[] rowOffsetRange(Caret caret, TextList texts) {
-        var lines = texts.rowAt(caret.offset());
-        return new int[] {
-            lines.get(0).offset(),
-            lines.get(lines.size() - 1).tailOffset()
+    private static OffsetPoint[] rowPointRange(int charOffset, TextList texts) {
+        List<TextLine> lines = texts.rowAt(charOffset);
+        return new OffsetPoint[] {
+            lines.get(0).point(),
+            lines.get(lines.size() - 1).tailPoint()
         };
     }
 
     /**
-     * Get the offset of the current caret line.
-     * @param caret the caret
+     * Get the point of the current caret line.
+     * @param charOffset the char offset
      * @param texts the texts
-     * @return the offset of the current caret line
+     * @return the point of the current caret line
      */
-    private static int[] lineOffsetRange(Caret caret, TextList texts) {
-        var line = texts.lineAt(caret.offset());
-        return new int[] {
-            line.offset(),
-            line.tailOffset()
+    private static OffsetPoint[] linePointRange(int charOffset, TextList texts) {
+        var line = texts.lineAt(charOffset);
+        return new OffsetPoint[] {
+            line.point(),
+            line.tailPoint()
         };
     }
 

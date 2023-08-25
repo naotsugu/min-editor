@@ -45,7 +45,11 @@ public interface Caret {
      */
     void markDirty();
 
-
+    /**
+     * Moves the caret to the specified offset.
+     * @param charOffset the char offset
+     * @param syncLogicalX whether to synchronize x position
+     */
     void at(int charOffset, boolean syncLogicalX);
 
 

@@ -52,6 +52,14 @@ public interface Textual {
     }
 
     /**
+     * Get the point of tail(exclusive).
+     * @return the point of tail(exclusive)
+     */
+    default OffsetPoint tailPoint() {
+        return OffsetPoint.of(point().row(), tailOffset(), tailCpOffset());
+    }
+
+    /**
      * Get the length of the text.
      * @return the length of the text
      */
