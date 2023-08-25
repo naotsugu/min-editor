@@ -25,14 +25,15 @@ import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
 import com.mammb.code.editor2.ui.pane.impl.Clipboard;
+import com.mammb.code.editor2.ui.pane.impl.Draws;
 import com.mammb.code.editor2.ui.pane.impl.ImePalletImpl;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
-import com.mammb.code.editor2.ui.pane.impl.SpecialCharacter;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -198,8 +199,10 @@ public class EditorModel {
         final String text = run.text();
         gc.fillText(text, left, top + run.baseline());
 
-        if (!text.isEmpty() && run.textLine().point().row() == caret.row()) {
-            drawSpecialCharacter(gc, run, top, lineHeight);
+        if (!text.isEmpty() && (
+                run.textLine().point().row() == caret.row()) ||
+                selection.contains(run.textLine().point().row())) {
+            Draws.specialCharacter(gc, run, top, lineHeight, textLeft());
         }
 
         if (run.layout().x() - hScroll.getValue() <= 0) {
@@ -232,34 +235,6 @@ public class EditorModel {
 
     public void hideCaret(GraphicsContext gc) {
         if (caret.drawn()) draw(gc, caret.clear(gc, textLeft()));
-    }
-
-    private void drawSpecialCharacter(GraphicsContext gc, TextRun run, double top, double lineHeight) {
-        final String text = run.text();
-        for (int i = 0; i < text.length(); i++) {
-            char ch = text.charAt(i);
-            if (ch != '\r' && ch != '\n' && ch != '\t' && ch != '　') continue;
-
-            double x = textLeft() + run.offsetToX().apply(i);
-            double w = (ch == '　')
-                ? textLeft() + run.offsetToX().apply(i + 1) - x
-                : Global.numberCharacterWidth(gc.getFont());
-            var rect = new Rect(x, top + lineHeight * 0.1, w, lineHeight).smaller(0.8);
-
-            gc.setStroke(Color.LIGHTGRAY);
-            if (ch == '\r') {
-                SpecialCharacter.CRLF.draw(gc, rect);
-                break;
-            } else if (ch == '\n') {
-                SpecialCharacter.LF.draw(gc, rect);
-                break;
-            } else if (ch == '\t') {
-                SpecialCharacter.TAB.draw(gc, rect);
-            } else {
-                SpecialCharacter.WSP.draw(gc, rect);
-            }
-        }
-
     }
 
     /**

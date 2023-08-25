@@ -8,6 +8,6 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.mammb.code.editor2.bootstrap.Main")
+    mainClass.set("com.mammb.code.editor.bootstrap.Main")
     mainModule.set("code.editor.bootstrap")
 }

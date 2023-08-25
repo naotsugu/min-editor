@@ -110,4 +110,16 @@ public interface Selection {
         return (startOffset().offset() <= endOffset().offset()) ? endOffset() : startOffset();
     }
 
+    /**
+     * Gets whether this selection contains the specified rows.
+     * @param row the specified rows
+     * @return {@code true} if this selection contains the specified rows
+     */
+    default boolean contains(int row) {
+        if (length() <= 0) {
+            return false;
+        }
+        return min().row() <= row && row <= max().row();
+    }
+
 }

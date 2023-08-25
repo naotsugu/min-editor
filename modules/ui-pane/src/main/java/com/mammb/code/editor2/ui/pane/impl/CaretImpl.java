@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.ui.pane;
+package com.mammb.code.editor2.ui.pane.impl;
 
 import com.mammb.code.editor2.model.layout.TextLine;
 import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor2.ui.pane.Caret;
+import com.mammb.code.editor2.ui.pane.LayoutLine;
+import com.mammb.code.editor2.ui.pane.Rect;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import java.lang.System.Logger;
 import java.util.function.Function;
 
 import static java.lang.System.Logger.Level.DEBUG;
 
 /**
- * Caret.
+ * Caret implementation.
  * @author Naotsugu Kobayashi
  */
-public class Caret {
+public class CaretImpl {
 
     /** logger. */
-    private static final Logger log = System.getLogger(Caret.class.getName());
+    private static final System.Logger log = System.getLogger(Caret.class.getName());
 
     /** The caret width. */
     private final double width = 2;
@@ -62,7 +64,7 @@ public class Caret {
      * Constructor.
      * @param offsetToLine the offset to layout line function
      */
-    public Caret(Function<Integer, LayoutLine> offsetToLine) {
+    public CaretImpl(Function<Integer, LayoutLine> offsetToLine) {
         this.offsetToLine = offsetToLine;
     }
 
@@ -294,5 +296,6 @@ public class Caret {
         }
         return line = layoutLine;
     }
+
 
 }
