@@ -49,7 +49,7 @@ public class LinearTextList implements TextList {
     /** The count of rollup lines. */
     private int rollup = 0;
 
-    private TextLine top = null;
+    private TextLine head = null;
 
 
     /**
@@ -85,14 +85,14 @@ public class LinearTextList implements TextList {
             }
         }
         List<TextLine> ret = (rollup > 0) ? lines.subList(rollup, lines.size()): lines;
-        top = ret.get(0);
+        head = ret.get(0);
         return ret;
     }
 
     @Override
-    public TextLine top() {
+    public TextLine head() {
         if (lines.isEmpty()) lines();
-        return top;
+        return head;
     }
 
     @Override
@@ -114,7 +114,9 @@ public class LinearTextList implements TextList {
             }
         }
 
-        if (n <= 0) return 0;
+        if (n <= 0) {
+            return 0;
+        }
 
         List<Textual> added = buffer.prev(n);
         int size = added.size();
@@ -140,7 +142,9 @@ public class LinearTextList implements TextList {
     @Override
     public int next(int n) {
 
-        if (n <= 0) return 0;
+        if (n <= 0) {
+            return 0;
+        }
 
         List<Textual> added = buffer.next(n);
         int size = added.size();

@@ -22,7 +22,6 @@ import com.mammb.code.editor2.ui.pane.LayoutLine;
 import com.mammb.code.editor2.ui.pane.Rect;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
 import java.util.function.Function;
 
 import static java.lang.System.Logger.Level.DEBUG;
@@ -31,7 +30,7 @@ import static java.lang.System.Logger.Level.DEBUG;
  * Caret implementation.
  * @author Naotsugu Kobayashi
  */
-public class CaretImpl {
+public class CaretImpl implements Caret {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(Caret.class.getName());
@@ -69,12 +68,7 @@ public class CaretImpl {
     }
 
 
-    /**
-     * Draw caret.
-     * @param gc the graphics context
-     * @param margin the left position offset
-     * @param hScrolled the size of horizontal scroll
-     */
+    @Override
     public void draw(GraphicsContext gc, double margin, double hScrolled) {
         if (ensureLayout() == null) return;
         if ((x - hScrolled) < 0) {
@@ -93,10 +87,8 @@ public class CaretImpl {
         gc.strokeLine(x, top + 1, x, top + height - 1);
     }
 
-    /**
-     * Clear.
-     * @param gc the graphics context
-     */
+
+    @Override
     public Rect clear(GraphicsContext gc, double left) {
         if (ensureLayout() == null) return null;
         double dx = x + left - 0.5;
@@ -109,9 +101,7 @@ public class CaretImpl {
     }
 
 
-    /**
-     * Mark the caret to dirty.
-     */
+    @Override
     public void markDirty() {
         dirty = true;
         line = null;
@@ -119,6 +109,7 @@ public class CaretImpl {
     }
 
 
+    @Override
     public void at(int charOffset, boolean syncLogicalX) {
         offset = charOffset;
         LayoutLine layoutLine = offsetToLine.apply(offset);
@@ -139,9 +130,7 @@ public class CaretImpl {
     }
 
 
-    /**
-     * Move the caret to the right.
-     */
+    @Override
     public void right() {
 
         if (ensureLayout() == null) return;
@@ -174,9 +163,7 @@ public class CaretImpl {
     }
 
 
-    /**
-     * Move the caret to the left.
-     */
+    @Override
     public void left() {
         if (offset == 0) return;
         if (ensureLayout() == null) return;
@@ -197,9 +184,7 @@ public class CaretImpl {
     }
 
 
-    /**
-     * Move the caret to the up.
-     */
+    @Override
     public void up() {
         if (ensureLayout() == null) return;
         if (line.point().offset() == 0) {
@@ -216,9 +201,7 @@ public class CaretImpl {
     }
 
 
-    /**
-     * Move the caret to the down.
-     */
+    @Override
     public void down() {
 
         if (ensureLayout() == null || line.isBottomLine()) {
@@ -237,10 +220,7 @@ public class CaretImpl {
     }
 
 
-    /**
-     * Get the offsetPoint at caret.
-     * @return the offsetPoint at caret
-     */
+    @Override
     public OffsetPoint offsetPoint() {
         LayoutLine layoutLine = offsetToLine.apply(offset);
         return (layoutLine == null)
@@ -248,40 +228,56 @@ public class CaretImpl {
             : layoutLine.offsetPoint(offset);
     }
 
-    /**
-     * Get the char offset.
-     * @return the char offset
-     */
+
+    @Override
     public int offset() {
         return offset;
     }
 
+
+    @Override
     public int row() { return row; }
 
+
+    @Override
     public double x() {
         ensureLayout();
         return x;
     }
+
+
+    @Override
     public double y() {
         ensureLayout();
         return y;
     }
+
+
+    @Override
     public double y2() {
         ensureLayout();
         return y + line.height();
     }
+
+
+    @Override
     public double height() {
         ensureLayout();
         return line.height();
     }
 
+
+    @Override
     public double width() {
         return width;
     }
 
+
+    @Override
     public boolean drawn() {
         return drawn;
     }
+
 
     private TextLine ensureLayout() {
         if (!dirty) return line;
@@ -296,6 +292,5 @@ public class CaretImpl {
         }
         return line = layoutLine;
     }
-
 
 }

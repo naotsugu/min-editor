@@ -24,9 +24,11 @@ import com.mammb.code.editor2.model.layout.TextRun;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.OffsetPoint;
 import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor2.ui.pane.impl.CaretImpl;
 import com.mammb.code.editor2.ui.pane.impl.Clipboard;
 import com.mammb.code.editor2.ui.pane.impl.Draws;
 import com.mammb.code.editor2.ui.pane.impl.ImePalletImpl;
+import com.mammb.code.editor2.ui.pane.impl.SelectBehaviors;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
@@ -106,7 +108,7 @@ public class EditorModel {
         this.buffer = TextBuffer.editBuffer(path, screenRowSize(height));
         this.texts = new LinearTextList(buffer, styling);
         this.gutter = new Gutter();
-        this.caret = new Caret(this::layoutLine);
+        this.caret = new CaretImpl(this::layoutLine);
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.width = width;
@@ -250,7 +252,7 @@ public class EditorModel {
 
         this.vScroll = vScroll;
         adjustVScroll();
-        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
 
         this.hScroll = hScroll;
         adjustHScroll();
@@ -287,20 +289,20 @@ public class EditorModel {
         if (size == 0) return;
         texts.markDirty();
         caret.markDirty();
-        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
     public void scrollNext(int n) {
         int size = texts.next(n);
         if (size == 0) return;
         texts.markDirty();
         caret.markDirty();
-        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
     private void vScrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
         if (!scrolled) return;
         caret.markDirty();
-        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
     private void hScrollToCaret() {
         if (texts instanceof WrapTextList) return;
@@ -509,7 +511,7 @@ public class EditorModel {
         texts.markDirty();
         caret.markDirty();
         adjustVScroll();
-        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
         hScrollToCaret();
     }
     private void selectionDelete() {
@@ -521,7 +523,7 @@ public class EditorModel {
             texts.markDirty();
             caret.markDirty();
             adjustVScroll();
-            vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+            vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
             hScrollToCaret();
         }
     }
@@ -531,7 +533,7 @@ public class EditorModel {
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         adjustVScroll();
-        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
         hScrollToCaret();
     }
     public void redo() {
@@ -540,7 +542,7 @@ public class EditorModel {
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         adjustVScroll();
-        vScroll.setValue(texts.top().point().row() + texts.top().lineIndex());
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
         hScrollToCaret();
     }
 
@@ -670,16 +672,10 @@ public class EditorModel {
         };
     }
 
-    private void select(int[] chOffsetRange) {
-        caret.at(chOffsetRange[0], true);
-        selection.start(caret.offsetPoint());
-        caret.at(chOffsetRange[1], true);
-        selection.to(caret.offsetPoint());
-    }
 
     private void normalizeRowSelect() {
         if (selection.length() <= 0) {
-            select(rowOffsetRange());
+            SelectBehaviors.select(rowOffsetRange(), caret, selection);
         } else {
             OffsetPoint min = selection.min();
             OffsetPoint max = selection.max();
@@ -687,7 +683,7 @@ public class EditorModel {
             int start = rowOffsetRange()[0];
             caret.at(max.offset(), true);
             int end = rowOffsetRange()[1];
-            select(new int[] { start, end });
+            SelectBehaviors.select(start, end, caret, selection);
         }
     }
 

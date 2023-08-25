@@ -33,12 +33,6 @@ public interface TextList {
     List<TextLine> lines();
 
     /**
-     * Get the top text line.
-     * @return the top text line
-     */
-    TextLine top();
-
-    /**
      * Mark the TextList to dirty.
      */
     void markDirty();
@@ -157,9 +151,7 @@ public interface TextList {
      * Get the line at head.
      * @return the line at head
      */
-    default TextLine head() {
-        return lines().get(0);
-    }
+    TextLine head();
 
 
     /**

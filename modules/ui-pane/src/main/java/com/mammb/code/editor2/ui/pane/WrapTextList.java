@@ -52,7 +52,7 @@ public class WrapTextList implements TextList {
     /** The count of rollup lines. */
     private int rollup = 0;
 
-    private TextLine top = null;
+    private TextLine head = null;
 
 
     /**
@@ -95,14 +95,14 @@ public class WrapTextList implements TextList {
         int toIndex = lineOffset + buffer.maxLineSize();
 
         List<TextLine> ret = lines.subList(lineOffset + rollup, Math.min(toIndex, lines.size()));
-        top = ret.get(0);
+        head = ret.get(0);
         return ret;
     }
 
     @Override
-    public TextLine top() {
+    public TextLine head() {
         if (lines.isEmpty()) lines();
-        return top;
+        return head;
     }
 
     @Override
