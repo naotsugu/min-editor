@@ -13,22 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.ui.app;
+package com.mammb.code.editor.bootstrap;
 
-import com.mammb.code.editor2.ui.pane.EditorPane;
-import javafx.application.Application;
-import javafx.stage.Stage;
+import com.mammb.code.editor.ui.app.AppLauncher;
 
 /**
- * The Application.
+ * The entry point.
  * @author Naotsugu Kobayashi
  */
-public class App extends Application {
+public class Main {
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        AppContext context = AppContext.of(getParameters());
-        new EditorPane(context.width, context.height).showOn(stage);
+    /**
+     * Launch application.
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+
+        System.setProperty(
+            "java.util.logging.SimpleFormatter.format",
+            "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
+
+        new AppLauncher().launch(args);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.mammb.code.editor2.ui.app;
+package com.mammb.code.editor.ui.app;
 
 import javafx.application.Application;
 

@@ -20,5 +20,5 @@
  */
 module code.editor.bootstrap {
     requires code.editor.ui.app;
-    exports com.mammb.code.editor2.bootstrap;
+    exports com.mammb.code.editor.bootstrap;
 }

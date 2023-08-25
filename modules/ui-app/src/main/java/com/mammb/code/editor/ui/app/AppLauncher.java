@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor2.bootstrap;
-
-import com.mammb.code.editor2.ui.app.AppLauncher;
+package com.mammb.code.editor.ui.app;
 
 /**
- * The entry point.
+ * The Launcher.
  * @author Naotsugu Kobayashi
  */
-public class Main {
+public class AppLauncher {
 
     /**
-     * Launch application.
-     * @param args the command line arguments
+     * Launch the application.
+     * @param args the arguments
      */
-    public static void main(String[] args) {
-
-        System.setProperty(
-            "java.util.logging.SimpleFormatter.format",
-            "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
-
-        new AppLauncher().launch(args);
+    public void launch(String[] args) {
+        App.launch(App.class, args);
     }
 
 }
