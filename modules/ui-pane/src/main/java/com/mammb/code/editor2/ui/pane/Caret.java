@@ -219,11 +219,14 @@ public class Caret {
      */
     public void down() {
 
-        if (ensureLayout() == null) return;
-        if (line.isBottomLine()) return;
+        if (ensureLayout() == null || line.isBottomLine()) {
+            return;
+        }
 
         LayoutLine next = offsetToLine.apply(line.tailOffset());
-        if (next == null) return;
+        if (next == null) {
+            return;
+        }
         line = next;
         offset = line.xToOffset(logicalX);
         row = line.point().row();

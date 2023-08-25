@@ -26,7 +26,6 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -337,10 +336,14 @@ public class EditorPane extends StackPane {
         Bounds bounds = localToScreen(getBoundsInLocal());
         newStage.setX(bounds.getMinX() + 15);
         newStage.setY(bounds.getMinY() + 15);
-        Parent parent = new EditorPane(getWidth(), getHeight());
-        Scene scene = new Scene(parent, getWidth(), getHeight());
-        newStage.setScene(scene);
-        newStage.show();
+        new EditorPane(getWidth(), getHeight()).showOn(newStage);
+    }
+
+    public void showOn(Stage stage) {
+        Scene scene = new Scene(this, getWidth(), getHeight());
+        stage.setScene(scene);
+        stage.setTitle("min-editor");
+        stage.show();
     }
 
     /**
