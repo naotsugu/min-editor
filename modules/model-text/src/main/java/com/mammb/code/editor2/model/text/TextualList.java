@@ -21,7 +21,7 @@ import java.util.List;
  * The list of textual.
  * @author Naotsugu Kobayashi
  */
-public interface TextList<T extends Textual> {
+public interface TextualList<T extends Textual> {
 
     /**
      * Get the text lines.

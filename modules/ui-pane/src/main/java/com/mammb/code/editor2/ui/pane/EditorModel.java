@@ -428,10 +428,7 @@ public class EditorModel {
     public void clickDouble(double x, double y) {
         int[] offsets = texts.atAroundWord(x - textLeft(), y);
         if (offsets.length == 2) {
-            caret.at(offsets[0], true);
-            selection.start(caret.offsetPoint());
-            caret.at(offsets[1], true);
-            selection.to(caret.offsetPoint());
+            SelectBehaviors.select(offsets, caret, selection);
         } else {
             caret.at(offsets[0], true);
         }
@@ -503,11 +500,7 @@ public class EditorModel {
         vScrollToCaret();
         Textual text = buffer.subText(selection.min(), selection.length());
         buffer.push(Edit.replace(text.point(), text.text(), string));
-        selection.clear();
-        caret.at(text.offset(), true);
-        selection.start(caret.offsetPoint());
-        caret.at(text.offset() + string.length(), true);
-        selection.to(caret.offsetPoint());
+        SelectBehaviors.select(text.offset(), text.offset() + string.length(), caret, selection);
         texts.markDirty();
         caret.markDirty();
         adjustVScroll();
@@ -547,14 +540,14 @@ public class EditorModel {
     }
 
     public void indent() {
-        normalizeRowSelect();
+        SelectBehaviors.selectCurrentRow(caret, selection, texts);
         replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
             .collect(Collectors.joining()));
     }
 
     public void unindent() {
-        normalizeRowSelect();
+        SelectBehaviors.selectCurrentRow(caret, selection, texts);
         replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
             .collect(Collectors.joining()));
@@ -653,37 +646,6 @@ public class EditorModel {
         } else {
             hScroll.setMax(width - gutter.width());
             hScroll.setVisibleAmount(width - gutter.width());
-        }
-    }
-
-    private int[] rowOffsetRange() {
-        var lines = texts.rowAt(caret.offset());
-        return new int[] {
-            lines.get(0).offset(),
-            lines.get(lines.size() - 1).tailOffset()
-        };
-    }
-
-    private int[] lineOffsetRange() {
-        var line = texts.lineAt(caret.offset());
-        return new int[] {
-            line.offset(),
-            line.tailOffset()
-        };
-    }
-
-
-    private void normalizeRowSelect() {
-        if (selection.length() <= 0) {
-            SelectBehaviors.select(rowOffsetRange(), caret, selection);
-        } else {
-            OffsetPoint min = selection.min();
-            OffsetPoint max = selection.max();
-            caret.at(min.offset(), true);
-            int start = rowOffsetRange()[0];
-            caret.at(max.offset(), true);
-            int end = rowOffsetRange()[1];
-            SelectBehaviors.select(start, end, caret, selection);
         }
     }
 

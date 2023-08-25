@@ -182,6 +182,7 @@ public interface TextList {
      * @return the row to which the specified offset contains
      */
     default List<TextLine> rowAt(int offset) {
+
         TextLine line = lineAt(offset);
         if (line == null) {
             return List.of();
@@ -209,13 +210,12 @@ public interface TextList {
      * @return the LayoutLine
      */
     default LayoutLine layoutLine(int offset) {
-        final List<TextLine> lines = lines();
 
-        if (offset < lines.get(0).point().offset()) {
+        if (offset < head().point().offset()) {
             return null;
         }
         double offsetY = 0;
-        for (TextLine line : lines) {
+        for (TextLine line : lines()) {
             if (line.contains(offset) || line.containsTailOn(offset)) {
                 return new LayoutLine(line, offsetY);
             }

@@ -16,7 +16,7 @@
 package com.mammb.code.editor2.model.slice;
 
 import com.mammb.code.editor2.model.slice.impl.RowSlice;
-import com.mammb.code.editor2.model.text.TextList;
+import com.mammb.code.editor2.model.text.TextualList;
 import com.mammb.code.editor2.model.text.Textual;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
  * @param <T> type of row content
  * @author Naotsugu Kobayashi
  */
-public interface Slice<T extends Textual> extends TextList<T> {
+public interface Slice<T extends Textual> extends TextualList<T> {
 
     @Override
     List<T> texts();
