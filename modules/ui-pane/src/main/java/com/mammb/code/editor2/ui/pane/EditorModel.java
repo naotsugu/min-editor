@@ -40,6 +40,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -220,6 +221,10 @@ public class EditorModel {
     }
 
 
+    /**
+     * Tick.
+     * @param gc the GraphicsContext
+     */
     public void tick(GraphicsContext gc) {
         if (ime.enabled()) return;
         if (caret.drawn()) {
@@ -229,10 +234,18 @@ public class EditorModel {
         }
     }
 
+    /**
+     * Show caret.
+     * @param gc the GraphicsContext
+     */
     public void showCaret(GraphicsContext gc) {
         if (!ime.enabled()) caret.draw(gc, gutter.width(), hScroll.getValue());
     }
 
+    /**
+     * Hide caret.
+     * @param gc the GraphicsContext
+     */
     public void hideCaret(GraphicsContext gc) {
         if (caret.drawn()) draw(gc, caret.clear(gc, textLeft()));
     }
@@ -243,6 +256,12 @@ public class EditorModel {
      */
     public Metrics metrics() {
         return buffer.metrics();
+    }
+
+
+    public boolean peekSelection(Predicate<Textual> predicate) {
+        return (selection.length() > 0) &&
+            predicate.test(buffer.subText(selection.min(), selection.length()));
     }
 
 

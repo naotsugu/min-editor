@@ -36,21 +36,18 @@ public class SelectBehaviors {
      * @param selection the selection
      */
     public static void select(OffsetPoint[] range, Caret caret, Selection selection) {
-        if (range == null || range.length != 2) {
-            return;
-        }
         select(range, selection);
         caret.at(range[1].offset(), true);
     }
 
     /**
      * Select the specified range.
-     * @param offsetRange range to select
+     * @param range range to select
      * @param caret the caret
      * @param selection the selection
      */
-    public static void select(int[] offsetRange, Caret caret, Selection selection) {
-        select(offsetRange[0], offsetRange[1], caret, selection);
+    public static void select(int[] range, Caret caret, Selection selection) {
+        select(range[0], range[1], caret, selection);
     }
 
     /**
@@ -73,9 +70,6 @@ public class SelectBehaviors {
      * @param selection the selection
      */
     public static void select(OffsetPoint[] range, Selection selection) {
-        if (range == null || range.length != 2) {
-            return;
-        }
         select(range[0], range[1], selection);
     }
 
@@ -91,7 +85,17 @@ public class SelectBehaviors {
     }
 
     /**
-     * Select the current caret row
+     * Select the current caret line
+     * @param caret the caret
+     * @param selection the selection
+     * @param texts the texts
+     */
+    public static void selectCurrentLine(Caret caret, Selection selection, TextList texts) {
+        SelectBehaviors.select(linePointRange(caret.offset(), texts), caret, selection);
+    }
+
+    /**
+     * Select the current row
      * @param caret the caret
      * @param selection the selection
      * @param texts the texts
@@ -103,7 +107,7 @@ public class SelectBehaviors {
         } else {
             // if selected, reselect all rows in the selection
             OffsetPoint start = rowPointRange(selection.min().offset(), texts)[0];
-            OffsetPoint end   = rowPointRange(selection.max().offset(), texts)[1];
+            OffsetPoint end   = rowPointRange(selection.max().offset() - 1, texts)[1];
             OffsetPoint[] range = (selection.startOffset() == selection.min())
                 ? new OffsetPoint[] { start, end }
                 : new OffsetPoint[] { end, start };

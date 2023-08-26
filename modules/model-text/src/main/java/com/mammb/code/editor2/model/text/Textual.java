@@ -60,6 +60,20 @@ public interface Textual {
     }
 
     /**
+     * Get the point of last(for inclusive).
+     * <pre>
+     *     | 0 | 1 | 2 |   : 2 (tailPoint :3 )
+     *     | 0 |           : 0 (tailPoint :1 )
+     * </pre>
+     * @return the point of last(for inclusive)
+     */
+    default OffsetPoint lastPoint() {
+        var text = text();
+        return (text == null || text.isEmpty()) ? tailPoint()
+            : tailPoint().minus(String.valueOf(text.charAt(text.length() - 1)));
+    }
+
+    /**
      * Get the length of the text.
      * @return the length of the text
      */

@@ -240,6 +240,7 @@ public class EditorPane extends StackPane {
 
 
     public void handleKeyTyped(KeyEvent e) {
+
         if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
             e.getCode().isArrowKey()    || e.getCode().isModifierKey() ||
             e.getCode().isMediaKey()    || !Keys.controlKeysFilter.test(e) ||
@@ -248,13 +249,23 @@ public class EditorPane extends StackPane {
         }
 
         int ascii = e.getCharacter().getBytes()[0];
-        if (ascii < 32 || ascii == 127) {
-            // 127:DEL
-            if (ascii != 9 && ascii != 10 && ascii != 13) {
-                // 9:HT 10:LF 13:CR
+        if (ascii < 32 || ascii == 127) { // 127:DEL
+
+            if (ascii == 9 || ascii == 25) { // 9:TAB 25:ME(shift+tab)
+                if (editorModel.peekSelection(t -> t.text().contains("\n"))) {
+                    aroundEdit(() -> {
+                        if (e.isShiftDown()) editorModel.unindent();
+                        else editorModel.indent();
+                    });
+                    return;
+                }
+            }
+
+            if (ascii != 9 && ascii != 10 && ascii != 13) { // 9:HT 10:LF 13:CR
                 return;
             }
         }
+
         String ch = (ascii == 13)
             ? editorModel.metrics().lineEnding().str()
             : e.getCharacter();
