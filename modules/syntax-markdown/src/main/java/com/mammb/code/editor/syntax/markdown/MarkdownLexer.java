@@ -16,6 +16,7 @@
 package com.mammb.code.editor.syntax.markdown;
 
 import com.mammb.code.editor2.syntax.Lexer;
+import com.mammb.code.editor2.syntax.LexerProvider;
 import com.mammb.code.editor2.syntax.LexerSource;
 import com.mammb.code.editor2.syntax.Scope;
 import com.mammb.code.editor2.syntax.Token;
@@ -32,6 +33,16 @@ public class MarkdownLexer implements Lexer {
     /** The input string. */
     private LexerSource source;
 
+    /** The lexer provider. */
+    private LexerProvider lexerProvider;
+
+    /**
+     *
+     * @param lexerProvider
+     */
+    public MarkdownLexer(LexerProvider lexerProvider) {
+        this.lexerProvider = lexerProvider;
+    }
 
     @Override
     public void setSource(LexerSource source) {

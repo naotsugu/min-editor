@@ -26,6 +26,6 @@ public interface LexerProvider {
      * @param name the name of lexer
      * @return the lexer
      */
-    Lexer of(String name);
+    Lexer get(String name);
 
 }

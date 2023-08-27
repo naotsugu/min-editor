@@ -21,6 +21,7 @@ import com.mammb.code.editor2.syntax.Lexer;
 import com.mammb.code.editor2.syntax.LexerProvider;
 import com.mammb.code.editor2.syntax.SyntaxTranslate;
 import com.mammb.code.editor2.syntax.java.JavaLexer;
+
 import java.nio.file.Path;
 
 /**
@@ -30,13 +31,16 @@ import java.nio.file.Path;
 public class Syntax {
 
     /** The lexer provider. */
-    private static final LexerProvider lexerProvider = name ->
-        switch (name) {
-            case "java" -> new JavaLexer();
-            case "md"   -> new MarkdownLexer();
-            default     -> null;
-        };
-
+    private static final LexerProvider lexerProvider = new LexerProvider() {
+        @Override
+        public Lexer get(String name) {
+            return switch (name) {
+                case "java" -> new JavaLexer();
+                case "md"   -> new MarkdownLexer(lexerProvider);
+                default     -> null;
+            };
+        }
+    };
 
     /**
      * Get the StylingTranslate for the specified path file type.
@@ -45,7 +49,7 @@ public class Syntax {
      * @return the StylingTranslate
      */
     public static StylingTranslate of(Path path, String baseColor) {
-        Lexer lexer = lexerProvider.of(getExtension(path).toLowerCase());
+        Lexer lexer = lexerProvider.get(getExtension(path).toLowerCase());
         return (lexer != null)
             ? new SyntaxTranslate(lexer, baseColor)
             : StylingTranslate.passThrough();
