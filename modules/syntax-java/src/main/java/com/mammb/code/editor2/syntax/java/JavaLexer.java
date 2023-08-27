@@ -21,7 +21,7 @@ import com.mammb.code.editor2.syntax.Scope;
 import com.mammb.code.editor2.syntax.Token;
 import com.mammb.code.editor2.syntax.Trie;
 
-import static com.mammb.code.editor2.syntax.java.Java.ToKenType.*;
+import static com.mammb.code.editor2.syntax.java.Java.JavaToken.*;
 
 /**
  * JavaLexer.

@@ -17,7 +17,11 @@ package com.mammb.code.editor.syntax.markdown;
 
 import com.mammb.code.editor2.syntax.Lexer;
 import com.mammb.code.editor2.syntax.LexerSource;
+import com.mammb.code.editor2.syntax.Scope;
 import com.mammb.code.editor2.syntax.Token;
+import com.mammb.code.editor2.syntax.TokenType;
+
+import static com.mammb.code.editor.syntax.markdown.Markdown.MdToken.*;
 
 /**
  * MarkdownLexer.
@@ -64,7 +68,25 @@ public class MarkdownLexer implements Lexer {
      * @return the token
      */
     private Token readHeader(LexerSource source) {
-        return Token.any(source);
+        int pos = source.position();
+        char[] ca = new char[] { source.peekChar(), source.peekChar(),
+            source.peekChar(), source.peekChar(), source.peekChar()};
+
+        TokenType type = null;
+        if (ca[0] == ' ') type = H1;
+        else if (ca[0] == '#' && ca[1] == ' ') type = H2;
+        else if (ca[0] == '#' && ca[1] == '#' && ca[2] == ' ') type = H3;
+        else if (ca[0] == '#' && ca[1] == '#' && ca[2] == '#' && ca[3] == ' ') type = H4;
+        else if (ca[0] == '#' && ca[1] == '#' && ca[2] == '#' && ca[3] == '#' && ca[4] == ' ') type = H5;
+
+        if (type != null) {
+            for (;;) { if (source.peekChar() == '\n') break; }
+            source.commitPeekBefore();
+            return Token.of(type, Scope.INLINE_ANY, pos, source.position() + 1 - pos);
+        } else {
+            source.rollbackPeek();
+            return Token.any(source);
+        }
     }
 
     /**
@@ -73,7 +95,26 @@ public class MarkdownLexer implements Lexer {
      * @return the token
      */
     private Token readFence(LexerSource source) {
-        return Token.any(source);
+        int pos = source.position();
+        if (source.peekChar() == '`' && source.peekChar() == '`') {
+            source.commitPeek();
+            StringBuilder sb = new StringBuilder();
+            for (;;) {
+                char ch = source.peekChar();
+                if (Character.isLetterOrDigit(ch)) {
+                    sb.append(ch);
+                } else if (ch == '\r' || ch == '\n' || ch == 0) {
+                    source.commitPeekBefore();
+                    return Token.of(FENCE, Scope.CONTEXT_START, pos, source.position() + 1 - pos, sb.toString());
+                } else {
+                    source.rollbackPeek();
+                    return Token.of(FENCE, Scope.CONTEXT_ANY, pos, source.position() + 1 - pos);
+                }
+            }
+        } else {
+            source.rollbackPeek();
+            return Token.of(CODE, Scope.INLINE_ANY, pos, 1);
+        }
     }
 
 }

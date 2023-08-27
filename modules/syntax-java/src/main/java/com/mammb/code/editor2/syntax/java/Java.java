@@ -18,7 +18,6 @@ package com.mammb.code.editor2.syntax.java;
 import com.mammb.code.editor2.syntax.Hue;
 import com.mammb.code.editor2.syntax.TokenType;
 import com.mammb.code.editor2.syntax.Trie;
-
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -29,7 +28,7 @@ import java.util.stream.Stream;
 public class Java {
 
     /** Java Token type. */
-    public interface ToKenType extends com.mammb.code.editor2.syntax.TokenType {
+    public interface JavaToken extends com.mammb.code.editor2.syntax.TokenType {
 
         TokenType KEYWORD = TokenType.build(Hue.DEEP_ORANGE);
         TokenType TEXT = TokenType.build(Hue.GREEN);

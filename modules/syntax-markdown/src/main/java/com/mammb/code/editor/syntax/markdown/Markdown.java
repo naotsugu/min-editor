@@ -17,10 +17,6 @@ package com.mammb.code.editor.syntax.markdown;
 
 import com.mammb.code.editor2.syntax.Hue;
 import com.mammb.code.editor2.syntax.TokenType;
-import com.mammb.code.editor2.syntax.Trie;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 /**
  * Markdown.
@@ -29,8 +25,14 @@ import java.util.stream.Stream;
 public class Markdown {
 
     /** Java Token type. */
-    public interface ToKenType extends com.mammb.code.editor2.syntax.TokenType {
-        TokenType COMMENT = TokenType.build(Hue.GREEN);
+    public interface MdToken extends com.mammb.code.editor2.syntax.TokenType {
+        TokenType H1 = TokenType.build(Hue.BLUE);
+        TokenType H2 = TokenType.build(Hue.BLUE);
+        TokenType H3 = TokenType.build(Hue.BLUE);
+        TokenType H4 = TokenType.build(Hue.BLUE);
+        TokenType H5 = TokenType.build(Hue.BLUE);
+        TokenType CODE = TokenType.build(Hue.CYAN);
+        TokenType FENCE = TokenType.build();
     }
 
 }
