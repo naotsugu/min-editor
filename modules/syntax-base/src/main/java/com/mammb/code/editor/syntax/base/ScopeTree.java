@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.base;
 
 /**
- * The base syntax module.
+ * ScopeTree.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax.base {
-    requires code.editor.model.text;
-    exports com.mammb.code.editor.syntax.base;
+public interface ScopeTree {
+
+    /**
+     * push the token.
+     * @param token the token
+     */
+    void push(Token token);
+
+    ScopeNode current();
+
+    ScopeNode at(int offset);
+
 }

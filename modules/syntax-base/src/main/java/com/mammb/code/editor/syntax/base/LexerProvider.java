@@ -13,12 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.base;
 
 /**
- * The base syntax module.
+ * LexerProvider.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax.base {
-    requires code.editor.model.text;
-    exports com.mammb.code.editor.syntax.base;
+public interface LexerProvider {
+
+    /**
+     * Get the lexer according to the specified name
+     * @param name the name of lexer
+     * @return the lexer
+     */
+    Lexer get(String name);
+
 }

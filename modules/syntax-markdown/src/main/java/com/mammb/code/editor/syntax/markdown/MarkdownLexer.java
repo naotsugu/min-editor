@@ -15,12 +15,12 @@
  */
 package com.mammb.code.editor.syntax.markdown;
 
-import com.mammb.code.editor2.syntax.Lexer;
-import com.mammb.code.editor2.syntax.LexerProvider;
-import com.mammb.code.editor2.syntax.LexerSource;
-import com.mammb.code.editor2.syntax.Scope;
-import com.mammb.code.editor2.syntax.Token;
-import com.mammb.code.editor2.syntax.TokenType;
+import com.mammb.code.editor.syntax.base.Lexer;
+import com.mammb.code.editor.syntax.base.LexerProvider;
+import com.mammb.code.editor.syntax.base.LexerSource;
+import com.mammb.code.editor.syntax.base.Scope;
+import com.mammb.code.editor.syntax.base.Token;
+import com.mammb.code.editor.syntax.base.TokenType;
 
 import static com.mammb.code.editor.syntax.markdown.Markdown.MdToken.*;
 

@@ -21,5 +21,5 @@
 module code.editor.syntax.java {
     requires code.editor.model.text;
     requires code.editor.syntax.base;
-    exports com.mammb.code.editor2.syntax.java;
+    exports com.mammb.code.editor.syntax.java;
 }

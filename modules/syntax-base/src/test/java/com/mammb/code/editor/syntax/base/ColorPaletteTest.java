@@ -13,12 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.base;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * The base syntax module.
+ * Test of {@link ColorPalette}.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax.base {
-    requires code.editor.model.text;
-    exports com.mammb.code.editor.syntax.base;
+class ColorPaletteTest {
+
+    @Test
+    void getLuminance() {
+        assertEquals(0.0, new ColorPalette("000000").getLuminance());
+        assertEquals(100.0, new ColorPalette("FFFFFF").getLuminance());
+    }
+
 }

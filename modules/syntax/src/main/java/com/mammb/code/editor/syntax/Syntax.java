@@ -17,11 +17,10 @@ package com.mammb.code.editor.syntax;
 
 import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
 import com.mammb.code.editor2.model.style.StylingTranslate;
-import com.mammb.code.editor2.syntax.Lexer;
-import com.mammb.code.editor2.syntax.LexerProvider;
-import com.mammb.code.editor2.syntax.SyntaxTranslate;
-import com.mammb.code.editor2.syntax.java.JavaLexer;
-
+import com.mammb.code.editor.syntax.base.Lexer;
+import com.mammb.code.editor.syntax.base.LexerProvider;
+import com.mammb.code.editor.syntax.base.SyntaxTranslate;
+import com.mammb.code.editor.syntax.java.JavaLexer;
 import java.nio.file.Path;
 
 /**

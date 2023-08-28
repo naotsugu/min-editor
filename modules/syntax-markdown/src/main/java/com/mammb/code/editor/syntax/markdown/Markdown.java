@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.syntax.markdown;
 
-import com.mammb.code.editor2.syntax.Hue;
-import com.mammb.code.editor2.syntax.TokenType;
+import com.mammb.code.editor.syntax.base.Hue;
+import com.mammb.code.editor.syntax.base.TokenType;
 
 /**
  * Markdown.
@@ -25,7 +25,7 @@ import com.mammb.code.editor2.syntax.TokenType;
 public class Markdown {
 
     /** Java Token type. */
-    public interface MdToken extends com.mammb.code.editor2.syntax.TokenType {
+    public interface MdToken extends com.mammb.code.editor.syntax.base.TokenType {
         TokenType H1 = TokenType.build(Hue.BLUE);
         TokenType H2 = TokenType.build(Hue.BLUE);
         TokenType H3 = TokenType.build(Hue.BLUE);

@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.base;
 
 /**
- * The base syntax module.
+ * Hue.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax.base {
-    requires code.editor.model.text;
-    exports com.mammb.code.editor.syntax.base;
+public enum Hue {
+    RED, PINK, PURPLE, DEEP_PURPLE, INDIGO, BLUE, LIGHT_BLUE ,CYAN, TEAL, GREEN,
+    LIGHT_GREEN,LIME,YELLOW,AMBER,ORANGE,DEEP_ORANGE,BROWN,GREY,BLUE_GREY,
+    NONE;
 }
