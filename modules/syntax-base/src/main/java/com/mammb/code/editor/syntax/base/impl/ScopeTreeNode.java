@@ -78,9 +78,9 @@ public class ScopeTreeNode implements ScopeNode {
     }
 
     public ScopeTreeNode at(int offset) {
-        if (open.position() < offset) {
+        if (open.position() > offset) {
             return null;
-        } else if (open.position() >= offset && !children.isEmpty()) {
+        } else if (open.position() <= offset && !children.isEmpty()) {
             var find = children.stream()
                 .filter(n -> n.within(offset))
                 .map(n -> n.at(offset))

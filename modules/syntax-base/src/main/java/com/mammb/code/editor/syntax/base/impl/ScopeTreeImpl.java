@@ -39,7 +39,9 @@ public class ScopeTreeImpl implements ScopeTree {
         }
         hwm = token.position();
         ScopeTreeNode node = root.at(hwm);
-        if (node.isOpen() && node.open().type() == token.type()) {
+        if (node == null) {
+            root.children().add(ScopeTreeNode.of(root, token));
+        } else if (node.isOpen() && node.open().type() == token.type()) {
             node.closeOn(token);
         } else {
             node.children().add(ScopeTreeNode.of(node, token));
@@ -48,12 +50,14 @@ public class ScopeTreeImpl implements ScopeTree {
 
     @Override
     public ScopeNode current() {
-        return root.at(hwm);
+        ScopeNode scopeNode = root.at(hwm);
+        return (scopeNode == null) ? root : scopeNode;
     }
 
     @Override
     public ScopeNode at(int offset) {
-        return root.at(offset);
+        ScopeNode scopeNode = root.at(hwm);
+        return (scopeNode == null) ? root : scopeNode;
     }
 
 }
