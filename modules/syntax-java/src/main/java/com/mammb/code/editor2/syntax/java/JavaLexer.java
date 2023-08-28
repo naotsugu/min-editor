@@ -80,10 +80,10 @@ public class JavaLexer implements Lexer {
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
-            return Token.of(LINE_COMMENT, Scope.INLINE_START, pos, 2);
+            return Token.of(LINE_COMMENT, Scope.INLINE_START, source.offset() + pos, 2);
         } else if (ch == '*') {
             source.commitPeek();
-            return Token.of(COMMENT, Scope.BLOCK_START, pos, 2);
+            return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 2);
         } else {
             return Token.any(source);
         }
@@ -99,7 +99,7 @@ public class JavaLexer implements Lexer {
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
-            return Token.of(COMMENT, Scope.BLOCK_END, pos, 2);
+            return Token.of(COMMENT, Scope.BLOCK_END, source.offset() + pos, 2);
         } else {
             return Token.any(source);
         }
@@ -113,7 +113,7 @@ public class JavaLexer implements Lexer {
     private Token readText(LexerSource source) {
         if (source.peekChar() == '"' && source.peekChar() == '"') {
             source.commitPeek();
-            return Token.of(TEXT, Scope.BLOCK_ANY, source.position() - 3, 3);
+            return Token.of(TEXT, Scope.BLOCK_ANY, source.offset() + source.position() - 3, 3);
         }
         source.rollbackPeek();
         return readString(source);
@@ -134,7 +134,7 @@ public class JavaLexer implements Lexer {
                 return Token.any(source);
             } else if (prev != '\\' && ch == '"') {
                 source.commitPeek();
-                return Token.of(TEXT, Scope.NEUTRAL, pos, source.position() + 1 - pos);
+                return Token.of(TEXT, Scope.NEUTRAL, source.offset() + pos, source.position() + 1 - pos);
             }
             prev = ch;
         }
@@ -155,7 +155,7 @@ public class JavaLexer implements Lexer {
                 return Token.any(source);
             } else if (prev != '\\' && ch == '\'') {
                 source.commitPeek();
-                return Token.of(CHAR_LITERAL, Scope.NEUTRAL, pos, source.position() + 1 - pos);
+                return Token.of(CHAR_LITERAL, Scope.NEUTRAL, source.offset() + pos, source.position() + 1 - pos);
             }
             prev = ch;
         }
@@ -180,7 +180,7 @@ public class JavaLexer implements Lexer {
         }
         if (Java.isJavaNumber(sb.toString())) {
             source.commitPeekBefore();
-            return Token.of(NUMBER, Scope.NEUTRAL, pos, sb.length());
+            return Token.of(NUMBER, Scope.NEUTRAL, source.offset() + pos, sb.length());
         } else {
             return Token.any(source);
         }
@@ -203,9 +203,9 @@ public class JavaLexer implements Lexer {
                 String str = sb.toString();
                 source.commitPeekBefore();
                 if (keywords.match(str)) {
-                    return Token.of(KEYWORD, Scope.NEUTRAL, pos, str.length());
+                    return Token.of(KEYWORD, Scope.NEUTRAL, source.offset() + pos, str.length());
                 } else {
-                    return Token.of(ANY, Scope.NEUTRAL, pos, str.length());
+                    return Token.of(ANY, Scope.NEUTRAL, source.offset() + pos, str.length());
                 }
             }
             sb.append(source.readChar());

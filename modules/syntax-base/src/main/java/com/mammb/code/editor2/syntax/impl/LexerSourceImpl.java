@@ -113,4 +113,9 @@ public class LexerSourceImpl implements LexerSource {
         return textual.length();
     }
 
+    @Override
+    public int offset() {
+        return textual.offset();
+    }
+
 }

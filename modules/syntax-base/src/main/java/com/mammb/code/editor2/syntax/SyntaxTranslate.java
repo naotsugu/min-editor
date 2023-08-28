@@ -59,6 +59,7 @@ public class SyntaxTranslate implements StylingTranslate {
         this.palette = new ColorPalette(baseColorString);
     }
 
+
     @Override
     public StyledText applyTo(Textual textual) {
 
@@ -68,30 +69,30 @@ public class SyntaxTranslate implements StylingTranslate {
         lexer.setSource(LexerSource.of(textual));
 
         Token prev = null;
-        int beginOffset = 0;
+        int beginPos = 0;
 
         for (Token token = lexer.nextToken();
              !token.isEmpty();
              token = lexer.nextToken()) {
 
             if (!token.scope().isNeutral()) {
-                scopes.put(textual.offset() + token.position(), token);
+                scopes.put(token.position(), token);
             }
 
             Token current = scopes.current().orElse(token);
 
             if (prev == null) {
                 prev = current;
-                beginOffset = token.position();
+                beginPos = token.position();
             } else {
                 if (prev.type() != current.type()) {
                     var hue = prev.type().hue();
                     if (hue != Hue.NONE) {
                         styledText.putStyle(StyleSpan.of(
-                            new Style.Color(palette.on(hue), 1.0), beginOffset, token.position() - beginOffset));
+                            new Style.Color(palette.on(hue), 1.0), beginPos - textual.offset(), token.position() - beginPos));
                     }
                     prev = current;
-                    beginOffset = token.position();
+                    beginPos = token.position();
                 }
             }
         }
@@ -99,8 +100,9 @@ public class SyntaxTranslate implements StylingTranslate {
         if (prev != null) {
             var hue = prev.type().hue();
             if (hue != Hue.NONE) {
+                int pos = beginPos - textual.offset();
                 styledText.putStyle(StyleSpan.of(
-                    new Style.Color(palette.on(hue), 1.0), beginOffset, textual.length() - beginOffset));
+                    new Style.Color(palette.on(hue), 1.0), pos, textual.length() - pos));
             }
         }
 

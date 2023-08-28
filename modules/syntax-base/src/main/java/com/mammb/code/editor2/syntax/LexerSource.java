@@ -72,6 +72,12 @@ public interface LexerSource {
     int length();
 
     /**
+     * Get the start char (total) offset.
+     * @return the start char (total) offset.
+     */
+    int offset();
+
+    /**
      * Create a new LexerSource.
      * @param textual the input textual
      * @return a new LexerSource

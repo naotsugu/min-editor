@@ -93,7 +93,7 @@ public class MarkdownLexer implements Lexer {
         if (type != null) {
             for (;;) { if (source.peekChar() == '\n') break; }
             source.commitPeekBefore();
-            return Token.of(type, Scope.INLINE_ANY, pos, source.position() + 1 - pos);
+            return Token.of(type, Scope.INLINE_ANY, source.offset() + pos, source.position() + 1 - pos);
         } else {
             source.rollbackPeek();
             return Token.any(source);
@@ -116,15 +116,15 @@ public class MarkdownLexer implements Lexer {
                     sb.append(ch);
                 } else if (ch == '\r' || ch == '\n' || ch == 0) {
                     source.commitPeekBefore();
-                    return Token.of(FENCE, Scope.CONTEXT_START, pos, source.position() + 1 - pos, sb.toString());
+                    return Token.of(FENCE, Scope.CONTEXT_START, source.offset() + pos, source.position() + 1 - pos, sb.toString());
                 } else {
                     source.rollbackPeek();
-                    return Token.of(FENCE, Scope.CONTEXT_ANY, pos, source.position() + 1 - pos);
+                    return Token.of(FENCE, Scope.CONTEXT_ANY, source.offset() + pos, source.position() + 1 - pos);
                 }
             }
         } else {
             source.rollbackPeek();
-            return Token.of(CODE, Scope.INLINE_ANY, pos, 1);
+            return Token.of(CODE, Scope.INLINE_ANY, source.offset() + pos, 1);
         }
     }
 

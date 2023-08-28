@@ -66,7 +66,7 @@ public interface Token {
      * @return the empty token
      */
     static Token empty(LexerSource source) {
-        return of(TokenType.EMPTY, Scope.NEUTRAL, (source == null) ? 0 : source.position(), 0);
+        return of(TokenType.EMPTY, Scope.NEUTRAL, (source == null) ? 0 : source.offset() + source.position(), 0);
     }
 
 
@@ -76,7 +76,7 @@ public interface Token {
      * @return an any token
      */
     static Token any(LexerSource source) {
-        return of(TokenType.ANY, Scope.NEUTRAL, source.position(), 1);
+        return of(TokenType.ANY, Scope.NEUTRAL, source.offset() + source.position(), 1);
     }
 
 
@@ -86,7 +86,7 @@ public interface Token {
      * @return the whitespace token
      */
     static Token whitespace(LexerSource source) {
-        return of(TokenType.SP, Scope.NEUTRAL, source.position(), 1);
+        return of(TokenType.SP, Scope.NEUTRAL, source.offset() + source.position(), 1);
     }
 
 
@@ -99,10 +99,10 @@ public interface Token {
         int pos = source.position();
         if (source.currentChar() == '\r' && source.peekChar() == '\n') {
             source.commitPeek();
-            return of(TokenType.EOL, Scope.INLINE_END, pos, 2);
+            return of(TokenType.EOL, Scope.INLINE_END, source.offset() + pos, 2);
         } else {
             source.rollbackPeek();
-            return of(TokenType.EOL, Scope.INLINE_END, pos, 1);
+            return of(TokenType.EOL, Scope.INLINE_END, source.offset() + pos, 1);
         }
     }
 
