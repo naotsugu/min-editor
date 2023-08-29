@@ -45,7 +45,10 @@ public class ScopeTreeNode implements ScopeNode {
         return new ScopeTreeNode(null, Token.empty(null));
     }
 
-    public static ScopeTreeNode of(ScopeTreeNode parent, Token open) {
+    public static ScopeTreeNode startOf(ScopeTreeNode parent, Token open) {
+        if (open.scope().isEnd()) {
+            throw new IllegalArgumentException();
+        }
         return new ScopeTreeNode(parent, open);
     }
 

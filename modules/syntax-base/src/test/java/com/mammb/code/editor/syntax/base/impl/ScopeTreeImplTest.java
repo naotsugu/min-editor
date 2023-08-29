@@ -37,26 +37,48 @@ class ScopeTreeImplTest {
     @Test
     void push() {
 
-        ScopeTree scope = new ScopeTreeImpl();
+        ScopeTree scope = ScopeTreeImpl.of();
         var node = scope.current();
         assertEquals(true, node.isOpen());
+        assertEquals(TestToken.EMPTY, node.open().type());
 
         // a {
         scope.push(Token.of(TestToken.BLOCK1, Scope.BLOCK_START, 2, 1));
-        //scope.push(Token.of(TestToken.BLOCK2, Scope.BLOCK_START, 9, 1));
 
         node = scope.current();
         assertEquals(true, node.isOpen());
         assertEquals(TestToken.BLOCK1, node.open().type());
 
+        node = scope.at(1);
+        assertEquals(TestToken.EMPTY, node.open().type());
+
+
         // a {
         //    b {
-        scope.push(Token.of(TestToken.BLOCK1, Scope.BLOCK_START, 2, 1));
         scope.push(Token.of(TestToken.BLOCK2, Scope.BLOCK_START, 9, 1));
 
         node = scope.current();
         assertEquals(true, node.isOpen());
         assertEquals(TestToken.BLOCK2, node.open().type());
 
+        node = scope.at(7);
+        assertEquals(true, node.isOpen());
+        assertEquals(TestToken.BLOCK1, node.open().type());
+
+
+        // a {
+        //    b {
+        //    }
+        scope.push(Token.of(TestToken.BLOCK2, Scope.BLOCK_END, 14, 1));
+
+        node = scope.current();
+        assertEquals(true, node.isOpen());
+        assertEquals(TestToken.BLOCK1, node.open().type());
+
+        node = scope.at(13);
+        assertEquals(true, node.isClosed());
+        assertEquals(TestToken.BLOCK2, node.open().type());
+
     }
+
 }

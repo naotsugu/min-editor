@@ -25,39 +25,64 @@ import com.mammb.code.editor.syntax.base.Token;
  */
 public class ScopeTreeImpl implements ScopeTree {
 
+    /** The root node. */
     private ScopeTreeNode root;
+
+    /** The high watermark. */
     private int hwm = 0;
 
-    public ScopeTreeImpl() {
+
+    /**
+     * Constructor.
+     */
+    private ScopeTreeImpl() {
         this.root = ScopeTreeNode.root();
     }
 
+    /**
+     * Create a new ScopeTree.
+     * @return a new ScopeTree
+     */
+    public static ScopeTree of() {
+        return new ScopeTreeImpl();
+    }
+
+
     @Override
     public void push(Token token) {
-        if (token.position() >= hwm) {
+
+        if (token.position() <= hwm) {
             root.removeAfter(token.position());
         }
         hwm = token.position();
-        ScopeTreeNode node = root.at(hwm);
-        if (node == null) {
-            root.children().add(ScopeTreeNode.of(root, token));
-        } else if (node.isOpen() && node.open().type() == token.type()) {
+
+        final ScopeTreeNode node = root.at(hwm);
+
+        if (node == null && !token.scope().isEnd()) {
+            root.children().add(ScopeTreeNode.startOf(root, token));
+
+        } else if (node.isOpen() &&
+                node.open().type() == token.type() &&
+                node.open().scope().isPair(token.scope())) {
             node.closeOn(token);
-        } else {
-            node.children().add(ScopeTreeNode.of(node, token));
+
+        } else if (!token.scope().isEnd()) {
+            node.children().add(ScopeTreeNode.startOf(node, token));
         }
+
     }
+
 
     @Override
     public ScopeNode current() {
-        ScopeNode scopeNode = root.at(hwm);
-        return (scopeNode == null) ? root : scopeNode;
+        return at(hwm);
     }
+
 
     @Override
     public ScopeNode at(int offset) {
-        ScopeNode scopeNode = root.at(hwm);
-        return (scopeNode == null) ? root : scopeNode;
+        final ScopeNode node = root.at(offset);
+        return (node == null) ? root : node;
     }
 
 }

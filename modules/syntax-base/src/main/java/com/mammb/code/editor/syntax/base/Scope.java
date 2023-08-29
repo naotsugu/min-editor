@@ -102,4 +102,20 @@ public enum Scope {
         return this == BLOCK_ANY || this == INLINE_ANY || this == CONTEXT_ANY;
     }
 
+
+    public boolean isPair(Scope other) {
+        return switch (this) {
+            case BLOCK_START   -> other == BLOCK_END     || other == BLOCK_ANY;
+            case BLOCK_ANY     -> other.isBlock();
+            case BLOCK_END     -> other == BLOCK_START   || other == BLOCK_ANY;
+            case INLINE_START  -> other == INLINE_END    || other == INLINE_ANY;
+            case INLINE_ANY    -> other.isInline();
+            case INLINE_END    -> other == INLINE_START  || other == INLINE_ANY;
+            case CONTEXT_START -> other == CONTEXT_END   || other == CONTEXT_ANY;
+            case CONTEXT_ANY   -> other.isContext();
+            case CONTEXT_END   -> other == CONTEXT_START || other == CONTEXT_ANY;
+            default -> false;
+        };
+    }
+
 }
