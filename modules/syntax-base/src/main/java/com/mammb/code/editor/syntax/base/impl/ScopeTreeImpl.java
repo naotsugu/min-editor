@@ -57,12 +57,14 @@ public class ScopeTreeImpl implements ScopeTree {
         hwm = token.position();
 
         final ScopeTreeNode node = root.at(hwm);
+        if (node == null) {
+            if (!token.scope().isEnd()) {
+                root.children().add(ScopeTreeNode.startOf(root, token));
+            }
+            return;
+        }
 
-        if (node == null && !token.scope().isEnd()) {
-            root.children().add(ScopeTreeNode.startOf(root, token));
-
-        } else if (node.isOpen() &&
-                node.open().type() == token.type() &&
+        if (node.isOpen() && node.open().type() == token.type() &&
                 node.open().scope().isPair(token.scope())) {
             node.closeOn(token);
 

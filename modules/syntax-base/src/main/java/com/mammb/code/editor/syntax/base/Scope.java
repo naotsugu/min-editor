@@ -102,7 +102,11 @@ public enum Scope {
         return this == BLOCK_ANY || this == INLINE_ANY || this == CONTEXT_ANY;
     }
 
-
+    /**
+     * Gets whether this scope can be paired with the given scope.
+     * @param other the other scope
+     * @return {@code true}, if this scope can be paired with the given scope
+     */
     public boolean isPair(Scope other) {
         return switch (this) {
             case BLOCK_START   -> other == BLOCK_END     || other == BLOCK_ANY;

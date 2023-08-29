@@ -27,24 +27,41 @@ import java.util.Objects;
  */
 public class ScopeTreeNode implements ScopeNode {
 
+    /** The parent node. */
     private ScopeTreeNode parent;
 
+    /** The children. */
     private final List<ScopeTreeNode> children = new ArrayList<>();
 
+    /** The token in open position. */
     private Token open;
 
+    /** The token in close position. */
     private Token close;
 
 
+    /**
+     * Constructor.
+     */
     private ScopeTreeNode(ScopeTreeNode parent, Token open) {
         this.parent = parent;
         this.open = open;
     }
 
+    /**
+     * Create a root node.
+     * @return a root node
+     */
     public static ScopeTreeNode root() {
         return new ScopeTreeNode(null, Token.empty(null));
     }
 
+    /**
+     * Create a node of scope started.
+     * @param parent the parent node
+     * @param open the token in open position
+     * @return
+     */
     public static ScopeTreeNode startOf(ScopeTreeNode parent, Token open) {
         if (open.scope().isEnd()) {
             throw new IllegalArgumentException();
@@ -67,20 +84,20 @@ public class ScopeTreeNode implements ScopeNode {
         return close;
     }
 
-    public void closeOn(Token token) {
+    void closeOn(Token token) {
         this.close = token;
     }
 
-    public List<ScopeTreeNode> children() {
+    List<ScopeTreeNode> children() {
         return children;
     }
 
-    public void removeAfter(int offset) {
+    void removeAfter(int offset) {
         children().removeIf(node -> node.open().position() >= offset);
         children().forEach(node -> node.removeAfter(offset));
     }
 
-    public ScopeTreeNode at(int offset) {
+    ScopeTreeNode at(int offset) {
         if (open.position() > offset) {
             return null;
         } else if (open.position() <= offset && !children.isEmpty()) {
@@ -96,7 +113,7 @@ public class ScopeTreeNode implements ScopeNode {
         return this;
     }
 
-    public boolean within(int offset) {
+    boolean within(int offset) {
         return (isOpen() && open.position() <= offset) ||
             (isClosed() && open.position() <= offset && offset < close.position());
     }

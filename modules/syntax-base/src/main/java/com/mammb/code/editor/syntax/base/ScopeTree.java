@@ -27,8 +27,17 @@ public interface ScopeTree {
      */
     void push(Token token);
 
+    /**
+     * Get the current(edge) scope node.
+     * @return the current(edge) scope node
+     */
     ScopeNode current();
 
+    /**
+     * Get the scope node at the specified offset position.
+     * @param offset the specified offset position
+     * @return the scope node at the specified offset position
+     */
     ScopeNode at(int offset);
 
 }

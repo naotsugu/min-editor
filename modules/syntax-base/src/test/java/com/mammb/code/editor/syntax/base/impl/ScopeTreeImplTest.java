@@ -34,8 +34,7 @@ class ScopeTreeImplTest {
         TokenType BLOCK2 = TokenType.build();
     }
 
-    @Test
-    void push() {
+    @Test void push() {
 
         ScopeTree scope = ScopeTreeImpl.of();
         var node = scope.current();

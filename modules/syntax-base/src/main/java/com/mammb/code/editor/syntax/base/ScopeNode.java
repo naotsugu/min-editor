@@ -21,12 +21,29 @@ package com.mammb.code.editor.syntax.base;
  */
 public interface ScopeNode {
 
+    /**
+     * Get the parent node.
+     * @return the parent node.
+     * {@code null} if this node is the root node
+     */
     ScopeNode parent();
 
+    /**
+     * Get the token in open position.
+     * @return the token in open position
+     */
     Token open();
 
+    /**
+     * Get the token in close position.
+     * @return the token in close position
+     */
     Token close();
 
+    /**
+     * Gets the scope level of this node.
+     * @return the scope level of this node
+     */
     default int level() {
         ScopeNode node = this;
         int level = 0;
@@ -37,14 +54,26 @@ public interface ScopeNode {
         return level;
     }
 
+    /**
+     * Get whether this node is the root or not.
+     * @return {@code true}, if this node is the root
+     */
     default boolean isRoot() {
         return parent() == null;
     }
 
+    /**
+     * Gets whether this node is an open node or not.
+     * @return {@code true}, if this node is an open node
+     */
     default boolean isOpen() {
         return close() == null;
-    };
+    }
 
+    /**
+     * Gets whether this node is a closed node or not.
+     * @return {@code true}, if this node is a closed node
+     */
     default boolean isClosed() {
         return !isOpen();
     }
