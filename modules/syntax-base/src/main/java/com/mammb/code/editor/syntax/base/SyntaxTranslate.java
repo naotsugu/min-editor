@@ -15,12 +15,12 @@
  */
 package com.mammb.code.editor.syntax.base;
 
+import com.mammb.code.editor.syntax.base.impl.ScopeTreeImpl;
 import com.mammb.code.editor2.model.style.Style;
 import com.mammb.code.editor2.model.style.StyleSpan;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
-import com.mammb.code.editor.syntax.base.impl.LexicalScope;
 
 import java.util.Objects;
 
@@ -34,7 +34,7 @@ public class SyntaxTranslate implements StylingTranslate {
     private final Lexer lexer;
 
     /** The scopes. */
-    private final LexicalScope scopes = new LexicalScope();
+    private final ScopeTree scopes = ScopeTreeImpl.of();
 
     /** The ColorPalette. */
     private final ColorPalette palette;
@@ -65,7 +65,6 @@ public class SyntaxTranslate implements StylingTranslate {
 
         final StyledText styledText = StyledText.of(textual);
 
-        scopes.start(textual.offset());
         lexer.setSource(LexerSource.of(textual));
 
         Token prev = null;
@@ -76,11 +75,14 @@ public class SyntaxTranslate implements StylingTranslate {
              token = lexer.nextToken()) {
 
             if (!token.scope().isNeutral()) {
-                scopes.put(token.position(), token);
+                scopes.push(token);
             }
 
-            Token current = scopes.current().orElse(token);
-
+            ScopeNode scopeNode = scopes.current();
+            if (scopeNode.open().scope().isInline() && !scopeNode.parent().isRoot()) {
+                scopeNode = scopeNode.parent();
+            }
+            Token current = scopeNode.isRoot() ? token : scopeNode.open();
             if (prev == null) {
                 prev = current;
                 beginPos = token.position();

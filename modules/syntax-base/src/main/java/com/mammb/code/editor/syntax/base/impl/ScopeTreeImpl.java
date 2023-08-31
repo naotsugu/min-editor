@@ -18,6 +18,7 @@ package com.mammb.code.editor.syntax.base.impl;
 import com.mammb.code.editor.syntax.base.ScopeNode;
 import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
+import com.mammb.code.editor.syntax.base.TokenType;
 
 /**
  * ScopeTreeImpl.
@@ -64,7 +65,11 @@ public class ScopeTreeImpl implements ScopeTree {
             return;
         }
 
-        if (node.isOpen() && node.open().type() == token.type() &&
+        if (node.isOpen() && node.open().scope().isInline() &&
+                token.type() == TokenType.EOL) {
+            node.closeOn(token);
+
+        } else if (node.isOpen() && node.open().type() == token.type() &&
                 node.open().scope().isPair(token.scope())) {
             node.closeOn(token);
 
