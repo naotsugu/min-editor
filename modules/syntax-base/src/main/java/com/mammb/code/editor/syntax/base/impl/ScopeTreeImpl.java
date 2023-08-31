@@ -20,11 +20,16 @@ import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
 import com.mammb.code.editor.syntax.base.TokenType;
 
+import static java.lang.System.Logger.Level;
+
 /**
  * ScopeTreeImpl.
  * @author Naotsugu Kobayashi
  */
 public class ScopeTreeImpl implements ScopeTree {
+
+    /** logger. */
+    private static final System.Logger log = System.getLogger(ScopeTreeImpl.class.getName());
 
     /** The root node. */
     private ScopeTreeNode root;
@@ -57,6 +62,11 @@ public class ScopeTreeImpl implements ScopeTree {
         }
         hwm = token.position();
 
+        if (token.scope().isNeutral()) {
+            log.log(Level.WARNING, "ignored neutral scope.{0}", token);
+            return;
+        }
+
         final ScopeTreeNode node = root.at(hwm);
         if (node == null) {
             if (!token.scope().isEnd()) {
@@ -65,15 +75,17 @@ public class ScopeTreeImpl implements ScopeTree {
             return;
         }
 
-        if (node.isOpen() && node.open().scope().isInline() &&
-                token.type() == TokenType.EOL) {
-            node.closeOn(token);
+        if (token.type() == TokenType.EOL) {
+            // if current token is end of line, close all inline scopes
+            node.closeAncestorOn(token, t -> t.scope().isInline());
 
         } else if (node.isOpen() && node.open().type() == token.type() &&
                 node.open().scope().isPair(token.scope())) {
+            // if it is an open scope of the same type, it closes the scope
             node.closeOn(token);
 
         } else if (!token.scope().isEnd()) {
+            // add scope
             node.children().add(ScopeTreeNode.startOf(node, token));
         }
 

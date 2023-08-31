@@ -20,6 +20,7 @@ import com.mammb.code.editor.syntax.base.Token;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * ScopeTreeNodeImpl.
@@ -84,19 +85,54 @@ public class ScopeTreeNode implements ScopeNode {
         return close;
     }
 
+
+    /**
+     * Close this scope with the specified token.
+     * @param token the close token
+     */
     void closeOn(Token token) {
         this.close = token;
     }
 
+
+    /**
+     * Close open scopes for all ancestors matching the given predicate.
+     * @param token the close token
+     * @param predicate the given predicate
+     */
+    void closeAncestorOn(Token token, Predicate<Token> predicate) {
+        if (isRoot()) {
+            return;
+        }
+        if (isOpen() && predicate.test(open)) {
+            closeOn(token);
+        }
+        parent.closeAncestorOn(token, predicate);
+    }
+
+    /**
+     * Get the children node.
+     * @return the children node
+     */
     List<ScopeTreeNode> children() {
         return children;
     }
 
+    /**
+     * Remove the scope after the specified offset.
+     * @param offset the specified offset
+     */
     void removeAfter(int offset) {
         children().removeIf(node -> node.open().position() >= offset);
         children().forEach(node -> node.removeAfter(offset));
     }
 
+
+    /**
+     * Get the scope node at the specified offset.
+     * @param offset the specified offset
+     * @return the scope node at the specified offset
+     */
     ScopeTreeNode at(int offset) {
         if (open.position() > offset) {
             return null;
@@ -113,7 +149,8 @@ public class ScopeTreeNode implements ScopeNode {
         return this;
     }
 
-    boolean within(int offset) {
+
+    private boolean within(int offset) {
         return (isOpen() && open.position() <= offset) ||
             (isClosed() && open.position() <= offset && offset < close.position());
     }
