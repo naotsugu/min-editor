@@ -115,7 +115,7 @@ public class ScopeTreeNode implements ScopeNode {
 
     boolean within(int offset) {
         return (isOpen() && open.position() <= offset) ||
-            (isClosed() && open.position() <= offset && offset <= close.position());
+            (isClosed() && open.position() <= offset && offset < close.position());
     }
 
 }
