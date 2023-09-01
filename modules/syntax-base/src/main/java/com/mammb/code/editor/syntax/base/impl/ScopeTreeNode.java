@@ -85,6 +85,10 @@ public class ScopeTreeNode implements ScopeNode {
         return close;
     }
 
+    @Override
+    public boolean hasScope(Predicate<ScopeNode> predicate) {
+        return predicate.test(this) || (!isRoot() && parent.hasScope(predicate));
+    }
 
     /**
      * Close this scope with the specified token.

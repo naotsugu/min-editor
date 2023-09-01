@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.syntax.base;
 
+import java.util.function.Predicate;
+
 /**
  * ScopeNode.
  * @author Naotsugu Kobayashi
@@ -39,6 +41,9 @@ public interface ScopeNode {
      * @return the token in close position
      */
     Token close();
+
+
+    boolean hasScope(Predicate<ScopeNode> predicate);
 
     /**
      * Gets the scope level of this node.
