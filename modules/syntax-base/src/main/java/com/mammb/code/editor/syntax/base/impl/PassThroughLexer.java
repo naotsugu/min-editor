@@ -18,6 +18,7 @@ package com.mammb.code.editor.syntax.base.impl;
 import com.mammb.code.editor.syntax.base.Lexer;
 import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
+import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
 import com.mammb.code.editor.syntax.base.TokenType;
 
@@ -36,20 +37,28 @@ public class PassThroughLexer implements Lexer {
     /** The string length. */
     private int length = 0;
 
+
+    /**
+     * Constructor.
+     * @param name the name
+     */
     public PassThroughLexer(String name) {
         this.name = name;
     }
+
 
     @Override
     public String name() {
         return name;
     }
 
+
     @Override
-    public void setSource(LexerSource source) {
+    public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;
         this.length = source.length();
     }
+
 
     @Override
     public Token nextToken() {

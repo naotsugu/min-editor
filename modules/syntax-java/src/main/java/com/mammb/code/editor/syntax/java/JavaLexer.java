@@ -18,11 +18,17 @@ package com.mammb.code.editor.syntax.java;
 import com.mammb.code.editor.syntax.base.Lexer;
 import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
+import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
 import com.mammb.code.editor.syntax.base.Trie;
 
-import static com.mammb.code.editor.syntax.java.Java.JavaToken.*;
-import static com.mammb.code.editor.syntax.base.TokenType.*;
+import static com.mammb.code.editor.syntax.java.Java.JavaToken.ANY;
+import static com.mammb.code.editor.syntax.java.Java.JavaToken.CHAR_LITERAL;
+import static com.mammb.code.editor.syntax.java.Java.JavaToken.COMMENT;
+import static com.mammb.code.editor.syntax.java.Java.JavaToken.KEYWORD;
+import static com.mammb.code.editor.syntax.java.Java.JavaToken.LINE_COMMENT;
+import static com.mammb.code.editor.syntax.java.Java.JavaToken.NUMBER;
+import static com.mammb.code.editor.syntax.java.Java.JavaToken.TEXT;
 
 /**
  * JavaLexer.
@@ -36,10 +42,14 @@ public class JavaLexer implements Lexer {
     /** The input string. */
     private LexerSource source;
 
+    /** The scope. */
+    private ScopeTree scope;
+
 
     @Override
-    public void setSource(LexerSource source) {
+    public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;
+        this.scope = scope;
     }
 
     @Override

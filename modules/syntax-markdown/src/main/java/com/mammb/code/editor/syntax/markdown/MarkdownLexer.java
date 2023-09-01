@@ -19,6 +19,7 @@ import com.mammb.code.editor.syntax.base.Lexer;
 import com.mammb.code.editor.syntax.base.LexerProvider;
 import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
+import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
 import com.mammb.code.editor.syntax.base.TokenType;
 
@@ -36,17 +37,22 @@ public class MarkdownLexer implements Lexer {
     /** The lexer provider. */
     private LexerProvider lexerProvider;
 
+    /** The scope. */
+    private ScopeTree scope;
+
     /**
-     *
-     * @param lexerProvider
+     * Constructor.
+     * @param lexerProvider the lexer provider
      */
     public MarkdownLexer(LexerProvider lexerProvider) {
         this.lexerProvider = lexerProvider;
     }
 
+
     @Override
-    public void setSource(LexerSource source) {
+    public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;
+        this.scope = scope;
     }
 
     @Override

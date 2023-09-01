@@ -30,9 +30,9 @@ public interface Lexer {
     /**
      * Set the source.
      * @param source the source.
-     * @param lexicalScope the lexicalScope.
+     * @param scope the scope.
      */
-    void setSource(LexerSource source);
+    void setSource(LexerSource source, ScopeTree scope);
 
     /**
      * Gets the next token.
