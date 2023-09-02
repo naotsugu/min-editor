@@ -15,9 +15,18 @@
  */
 package com.mammb.code.editor.syntax.java;
 
+import com.mammb.code.editor.syntax.base.Hue;
+import com.mammb.code.editor.syntax.base.TokenType;
+
 /**
  * JavaDoc.
  * @author Naotsugu Kobayashi
  */
 public class JavaDoc {
+
+    /** Java Token type. */
+    public interface JavaDocToken extends com.mammb.code.editor.syntax.base.TokenType {
+        TokenType TEXT = TokenType.build(Hue.GREEN);
+    }
+
 }

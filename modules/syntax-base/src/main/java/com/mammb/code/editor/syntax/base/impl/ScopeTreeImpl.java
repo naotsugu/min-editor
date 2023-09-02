@@ -41,16 +41,18 @@ public class ScopeTreeImpl implements ScopeTree {
     /**
      * Constructor.
      */
-    private ScopeTreeImpl() {
-        this.root = ScopeTreeNode.root();
+    private ScopeTreeImpl(ScopeTreeNode root) {
+        this.root = root;
     }
+
 
     /**
      * Create a new ScopeTree.
+     * @param context the name of context
      * @return a new ScopeTree
      */
-    public static ScopeTree of() {
-        return new ScopeTreeImpl();
+    public static ScopeTree of(String context) {
+        return new ScopeTreeImpl(ScopeTreeNode.root(context));
     }
 
 

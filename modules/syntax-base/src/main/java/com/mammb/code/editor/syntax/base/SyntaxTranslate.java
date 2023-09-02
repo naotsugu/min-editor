@@ -34,19 +34,10 @@ public class SyntaxTranslate implements StylingTranslate {
     private final Lexer lexer;
 
     /** The scopes. */
-    private final ScopeTree scopes = ScopeTreeImpl.of();
+    private final ScopeTree scopes;
 
     /** The ColorPalette. */
     private final ColorPalette palette;
-
-
-    /**
-     * Create a new {@link SyntaxTranslate}.
-     * @param lexer the source lexer
-     */
-    public SyntaxTranslate(Lexer lexer) {
-        this(lexer, "");
-    }
 
 
     /**
@@ -56,6 +47,7 @@ public class SyntaxTranslate implements StylingTranslate {
      */
     public SyntaxTranslate(Lexer lexer, String baseColorString) {
         this.lexer = Objects.requireNonNull(lexer);
+        this.scopes = ScopeTreeImpl.of(lexer.name());
         this.palette = new ColorPalette(baseColorString);
     }
 

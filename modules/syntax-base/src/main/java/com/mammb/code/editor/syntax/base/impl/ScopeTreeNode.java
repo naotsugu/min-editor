@@ -17,9 +17,11 @@ package com.mammb.code.editor.syntax.base.impl;
 
 import com.mammb.code.editor.syntax.base.ScopeNode;
 import com.mammb.code.editor.syntax.base.Token;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -49,13 +51,16 @@ public class ScopeTreeNode implements ScopeNode {
         this.open = open;
     }
 
+
     /**
      * Create a root node.
+     * @param context the name of context
      * @return a root node
      */
-    public static ScopeTreeNode root() {
-        return new ScopeTreeNode(null, Token.empty(null));
+    public static ScopeTreeNode root(String context) {
+        return new ScopeTreeNode(null, Token.implicit(context));
     }
+
 
     /**
      * Create a node of scope started.
@@ -88,6 +93,17 @@ public class ScopeTreeNode implements ScopeNode {
     @Override
     public boolean hasScope(Predicate<ScopeNode> predicate) {
         return predicate.test(this) || (!isRoot() && parent.hasScope(predicate));
+    }
+
+    @Override
+    public Optional<ScopeNode> select(Predicate<ScopeNode> predicate) {
+        if (predicate.test(this)) {
+            return Optional.of(this);
+        } else if (isRoot()) {
+            return Optional.empty();
+        } else {
+            return parent().select(predicate);
+        }
     }
 
     /**

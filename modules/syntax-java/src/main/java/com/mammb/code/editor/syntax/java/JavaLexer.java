@@ -16,6 +16,7 @@
 package com.mammb.code.editor.syntax.java;
 
 import com.mammb.code.editor.syntax.base.Lexer;
+import com.mammb.code.editor.syntax.base.LexerProvider;
 import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
 import com.mammb.code.editor.syntax.base.ScopeTree;
@@ -39,11 +40,25 @@ public class JavaLexer implements Lexer {
     /** The syntax keywords. */
     private static final Trie keywords = Java.keywords();
 
+    /** The lexer provider. */
+    private LexerProvider lexerProvider;
+
     /** The input string. */
     private LexerSource source;
 
     /** The scope. */
     private ScopeTree scope;
+
+    private Lexer delegate = null;
+
+
+    /**
+     * Constructor.
+     * @param lexerProvider the lexer provider
+     */
+    public JavaLexer(LexerProvider lexerProvider) {
+        this.lexerProvider = lexerProvider;
+    }
 
 
     @Override
@@ -80,6 +95,7 @@ public class JavaLexer implements Lexer {
                 : Token.any(source);
         };
     }
+
 
     /**
      * Read comment.

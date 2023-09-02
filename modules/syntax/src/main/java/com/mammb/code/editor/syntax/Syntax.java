@@ -15,12 +15,14 @@
  */
 package com.mammb.code.editor.syntax;
 
-import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
-import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor.syntax.base.Lexer;
 import com.mammb.code.editor.syntax.base.LexerProvider;
 import com.mammb.code.editor.syntax.base.SyntaxTranslate;
+import com.mammb.code.editor.syntax.java.JavaDocLexer;
 import com.mammb.code.editor.syntax.java.JavaLexer;
+import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
+import com.mammb.code.editor2.model.style.StylingTranslate;
+
 import java.nio.file.Path;
 
 /**
@@ -34,9 +36,10 @@ public class Syntax {
         @Override
         public Lexer get(String name) {
             return switch (name) {
-                case "java" -> new JavaLexer();
-                case "md"   -> new MarkdownLexer(lexerProvider);
-                default     -> null;
+                case "java"    -> new JavaLexer(lexerProvider);
+                case "javadoc" -> new JavaDocLexer(lexerProvider);
+                case "md"      -> new MarkdownLexer(lexerProvider);
+                default        -> null;
             };
         }
     };

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.syntax.base;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -44,6 +45,8 @@ public interface ScopeNode {
 
 
     boolean hasScope(Predicate<ScopeNode> predicate);
+
+    Optional<ScopeNode> select(Predicate<ScopeNode> predicate);
 
     /**
      * Gets the scope level of this node.

@@ -61,6 +61,16 @@ public interface Token {
 
 
     /**
+     * Get the context implicit empty token.
+     * @param context the name of context
+     * @return the context implicit empty token
+     */
+    static Token implicit(String context) {
+        return of(TokenType.EMPTY, Scope.CONTEXT_ANY, 0, 0, context);
+    }
+
+
+    /**
      * Get the empty token.
      * @param source the lexer source
      * @return the empty token
