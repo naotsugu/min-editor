@@ -66,7 +66,7 @@ public interface Token {
      * @return the context implicit empty token
      */
     static Token implicit(String context) {
-        return of(TokenType.EMPTY, Scope.CONTEXT_ANY, 0, 0, context);
+        return of(TokenType.EMPTY, Scope.BLOCK_ANY, 0, 0, context);
     }
 
 

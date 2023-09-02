@@ -36,7 +36,7 @@ class ScopeTreeImplTest {
 
     @Test void push() {
 
-        ScopeTree scope = ScopeTreeImpl.of();
+        ScopeTree scope = ScopeTreeImpl.of("");
         var node = scope.current();
         assertEquals(true, node.isOpen());
         assertEquals(TestToken.EMPTY, node.open().type());

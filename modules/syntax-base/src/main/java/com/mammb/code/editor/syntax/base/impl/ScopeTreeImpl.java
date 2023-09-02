@@ -20,8 +20,6 @@ import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
 import com.mammb.code.editor.syntax.base.TokenType;
 
-import static java.lang.System.Logger.Level;
-
 /**
  * ScopeTreeImpl.
  * @author Naotsugu Kobayashi
@@ -65,7 +63,6 @@ public class ScopeTreeImpl implements ScopeTree {
         hwm = token.position();
 
         if (token.scope().isNeutral()) {
-            log.log(Level.WARNING, "ignored neutral scope.{0}", token);
             return;
         }
 
@@ -104,6 +101,10 @@ public class ScopeTreeImpl implements ScopeTree {
     public ScopeNode at(int offset) {
         final ScopeNode node = root.at(offset);
         return (node == null) ? root : node;
+    }
+
+    public String toString() {
+        return "hwm:" + hwm + ", " + root.toString();
     }
 
 }

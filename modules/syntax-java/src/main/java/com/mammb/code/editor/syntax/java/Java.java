@@ -18,6 +18,7 @@ package com.mammb.code.editor.syntax.java;
 import com.mammb.code.editor.syntax.base.Hue;
 import com.mammb.code.editor.syntax.base.TokenType;
 import com.mammb.code.editor.syntax.base.Trie;
+
 import java.util.Arrays;
 import java.util.stream.Stream;
 

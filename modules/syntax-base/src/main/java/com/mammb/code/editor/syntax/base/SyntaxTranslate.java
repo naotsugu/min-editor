@@ -66,9 +66,7 @@ public class SyntaxTranslate implements StylingTranslate {
              !token.isEmpty();
              token = lexer.nextToken()) {
 
-            if (!token.scope().isNeutral()) {
-                scopes.push(token);
-            }
+            scopes.push(token);
 
             ScopeNode scopeNode = scopes.current();
             if (scopeNode.open().scope().isInline() && !scopeNode.parent().isRoot()) {

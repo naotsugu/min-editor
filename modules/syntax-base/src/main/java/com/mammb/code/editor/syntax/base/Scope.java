@@ -37,13 +37,6 @@ public enum Scope {
     INLINE_ANY,
     /** The type of inline end. */
     INLINE_END,
-
-    /** The type of context start. */
-    CONTEXT_START,
-    /** The type of context any. */
-    CONTEXT_ANY,
-    /** The type of context end. */
-    CONTEXT_END,
     ;
 
     /**
@@ -71,19 +64,11 @@ public enum Scope {
     }
 
     /**
-     * Get whether this type is the type of context.
-     * @return {@code true}, if this type is the type of context
-     */
-    public boolean isContext() {
-        return this == CONTEXT_START || this == CONTEXT_ANY || this == CONTEXT_END;
-    }
-
-    /**
      * Get whether this type is the type of start.
      * @return {@code true}, if this type is the type of start
      */
     public boolean isStart() {
-        return this == BLOCK_START || this == INLINE_START || this == CONTEXT_START;
+        return this == BLOCK_START || this == INLINE_START;
     }
 
     /**
@@ -91,7 +76,7 @@ public enum Scope {
      * @return {@code true}, if this type is the type of end
      */
     public boolean isEnd() {
-        return this == BLOCK_END || this == INLINE_END || this == CONTEXT_END;
+        return this == BLOCK_END || this == INLINE_END;
     }
 
     /**
@@ -99,7 +84,7 @@ public enum Scope {
      * @return {@code true}, if this type is the type of any
      */
     public boolean isAny() {
-        return this == BLOCK_ANY || this == INLINE_ANY || this == CONTEXT_ANY;
+        return this == BLOCK_ANY || this == INLINE_ANY;
     }
 
     /**
@@ -115,9 +100,6 @@ public enum Scope {
             case INLINE_START  -> other == INLINE_END    || other == INLINE_ANY;
             case INLINE_ANY    -> other.isInline();
             case INLINE_END    -> other == INLINE_START  || other == INLINE_ANY;
-            case CONTEXT_START -> other == CONTEXT_END   || other == CONTEXT_ANY;
-            case CONTEXT_ANY   -> other.isContext();
-            case CONTEXT_END   -> other == CONTEXT_START || other == CONTEXT_ANY;
             default -> false;
         };
     }

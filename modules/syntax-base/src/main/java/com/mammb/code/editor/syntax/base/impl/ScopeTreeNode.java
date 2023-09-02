@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * ScopeTreeNodeImpl.
@@ -130,6 +131,7 @@ public class ScopeTreeNode implements ScopeNode {
         parent.closeAncestorOn(token, predicate);
     }
 
+
     /**
      * Get the children node.
      * @return the children node
@@ -138,13 +140,19 @@ public class ScopeTreeNode implements ScopeNode {
         return children;
     }
 
+
     /**
      * Remove the scope after the specified offset.
      * @param offset the specified offset
      */
     void removeAfter(int offset) {
         children().removeIf(node -> node.open().position() >= offset);
-        children().forEach(node -> node.removeAfter(offset));
+        children().forEach(node -> {
+            if (node.isClosed() && node.close().position() >= offset) {
+                node.closeOn(null);
+            }
+            node.removeAfter(offset);
+        });
     }
 
 
@@ -173,6 +181,13 @@ public class ScopeTreeNode implements ScopeNode {
     private boolean within(int offset) {
         return (isOpen() && open.position() <= offset) ||
             (isClosed() && open.position() <= offset && offset < close.position());
+    }
+
+    @Override
+    public String toString() {
+        String indent = "  ".repeat(level());
+        return indent + "open:" + open + ", close:" + close + "\n" +
+               indent + "children:" + children.stream().map(Object::toString).collect(Collectors.joining("\n"));
     }
 
 }

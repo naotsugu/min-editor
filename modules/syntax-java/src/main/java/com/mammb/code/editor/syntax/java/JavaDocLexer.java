@@ -84,7 +84,7 @@ public class JavaDocLexer implements Lexer {
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
-            return Token.of(COMMENT, Scope.CONTEXT_END, source.offset() + pos, 2, name());
+            return Token.of(COMMENT, Scope.BLOCK_END, source.offset() + pos, 2, name());
         } else {
             return text(source);
         }

@@ -122,10 +122,10 @@ public class MarkdownLexer implements Lexer {
                     sb.append(ch);
                 } else if (ch == '\r' || ch == '\n' || ch == 0) {
                     source.commitPeekBefore();
-                    return Token.of(FENCE, Scope.CONTEXT_START, source.offset() + pos, source.position() + 1 - pos, sb.toString());
+                    return Token.of(FENCE, Scope.BLOCK_START, source.offset() + pos, source.position() + 1 - pos, sb.toString());
                 } else {
                     source.rollbackPeek();
-                    return Token.of(FENCE, Scope.CONTEXT_ANY, source.offset() + pos, source.position() + 1 - pos);
+                    return Token.of(FENCE, Scope.BLOCK_ANY, source.offset() + pos, source.position() + 1 - pos);
                 }
             }
         } else {
