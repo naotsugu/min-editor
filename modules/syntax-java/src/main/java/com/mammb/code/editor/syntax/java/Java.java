@@ -18,7 +18,6 @@ package com.mammb.code.editor.syntax.java;
 import com.mammb.code.editor.syntax.base.Hue;
 import com.mammb.code.editor.syntax.base.TokenType;
 import com.mammb.code.editor.syntax.base.Trie;
-
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -34,9 +33,9 @@ public class Java {
         TokenType KEYWORD = TokenType.build(Hue.DEEP_ORANGE);
         TokenType TEXT = TokenType.build(Hue.GREEN);
         TokenType NUMBER = TokenType.build(Hue.CYAN);
+        TokenType CHAR_LITERAL = TokenType.build(Hue.TEAL);
         TokenType LINE_COMMENT = TokenType.build(Hue.GREY);
         TokenType COMMENT = TokenType.build(Hue.GREEN);
-        TokenType CHAR_LITERAL = TokenType.build(Hue.TEAL);
 
     }
 

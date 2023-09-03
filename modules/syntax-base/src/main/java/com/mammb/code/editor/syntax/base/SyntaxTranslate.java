@@ -62,27 +62,19 @@ public class SyntaxTranslate implements StylingTranslate {
         Token prev = null;
         int beginPos = 0;
 
-        for (Token token = lexer.nextToken();
-             !token.isEmpty();
-             token = lexer.nextToken()) {
+        for (Token token = lexer.nextToken(); !token.isEmpty(); token = lexer.nextToken()) {
 
             scopes.push(token);
 
-            ScopeNode scopeNode = scopes.current();
-            if (scopeNode.open().scope().isInline() && !scopeNode.parent().isRoot()) {
-                scopeNode = scopeNode.parent();
-            }
-            Token current = scopeNode.isRoot() ? token : scopeNode.open();
+            ScopeNode scopeNode = scopes.primeInContext();
+            Token current = (scopeNode == null) ? token : scopeNode.open();
+
             if (prev == null) {
                 prev = current;
                 beginPos = token.position();
             } else {
                 if (prev.type() != current.type()) {
-                    var hue = prev.type().hue();
-                    if (hue != Hue.NONE) {
-                        styledText.putStyle(StyleSpan.of(
-                            new Style.Color(palette.on(hue), 1.0), beginPos - textual.offset(), token.position() - beginPos));
-                    }
+                    putStyle(styledText, prev, beginPos - textual.offset(), token.position() - beginPos);
                     prev = current;
                     beginPos = token.position();
                 }
@@ -90,14 +82,21 @@ public class SyntaxTranslate implements StylingTranslate {
         }
 
         if (prev != null) {
-            var hue = prev.type().hue();
-            if (hue != Hue.NONE) {
-                int pos = beginPos - textual.offset();
-                styledText.putStyle(StyleSpan.of(
-                    new Style.Color(palette.on(hue), 1.0), pos, textual.length() - pos));
-            }
+            int pos = beginPos - textual.offset();
+            putStyle(styledText, prev, pos, textual.length() - pos);
         }
 
         return styledText;
     }
+
+
+    private void putStyle(StyledText styledText, Token token, int point, int length) {
+        var hue = token.type().hue();
+        if (hue != Hue.NONE) {
+            Style style = new Style.Color(palette.on(hue), 1.0);
+            StyleSpan styleSpan = StyleSpan.of(style, point, length);
+            styledText.putStyle(styleSpan);
+        }
+    }
+
 }

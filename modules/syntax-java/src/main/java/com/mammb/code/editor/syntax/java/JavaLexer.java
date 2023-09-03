@@ -19,6 +19,7 @@ import com.mammb.code.editor.syntax.base.Lexer;
 import com.mammb.code.editor.syntax.base.LexerProvider;
 import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
+import com.mammb.code.editor.syntax.base.ScopeNode;
 import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
 import com.mammb.code.editor.syntax.base.Trie;
@@ -49,7 +50,7 @@ public class JavaLexer implements Lexer {
     /** The scope. */
     private ScopeTree scope;
 
-    private Lexer delegate = null;
+    private Lexer delegate;
 
 
     /**
@@ -67,6 +68,7 @@ public class JavaLexer implements Lexer {
         this.scope = scope;
     }
 
+
     @Override
     public String name() {
         return "java";
@@ -80,20 +82,40 @@ public class JavaLexer implements Lexer {
             return Token.empty(null);
         }
 
+        if (delegate()) {
+            return delegate.nextToken();
+        }
+
         char ch = source.readChar();
         return switch (ch) {
             case ' ', '\t'  -> Token.whitespace(source);
             case '\n', '\r' -> Token.lineEnd(source);
-            case '/' -> readComment(source);
+            case '/'  -> readComment(source);
             case '*'  -> readCommentBlockClosed(source);
             case '"'  -> readText(source);
             case '\'' -> readChar(source);
             case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-' -> readNumber(source);
-            case 0 -> Token.empty(source);
+            case 0  -> Token.empty(source);
             default -> Character.isJavaIdentifierStart(ch)
                 ? readIdentifier(source)
                 : Token.any(source);
         };
+    }
+
+
+    private boolean delegate() {
+        var context = scope.current().select(n ->
+                !n.context().isEmpty() && !n.context().equals(name()))
+            .map(ScopeNode::context).orElse("");
+        if (context.isEmpty()) {
+            delegate = null;
+        } else {
+            if (delegate == null || !delegate.name().equals(context)) {
+                delegate = lexerProvider.get(context);
+                delegate.setSource(source, scope);
+            }
+        }
+        return delegate != null;
     }
 
 
@@ -116,6 +138,7 @@ public class JavaLexer implements Lexer {
         }
     }
 
+
     /**
      * Read block comment.
      * @param source the lexer source
@@ -132,6 +155,7 @@ public class JavaLexer implements Lexer {
         }
     }
 
+
     /**
      * Read text.
      * @param source the lexer source
@@ -145,6 +169,7 @@ public class JavaLexer implements Lexer {
         source.rollbackPeek();
         return readString(source);
     }
+
 
     /**
      * Read string.
@@ -167,6 +192,7 @@ public class JavaLexer implements Lexer {
         }
     }
 
+
     /**
      * Read char.
      * @param source the lexer source
@@ -188,13 +214,14 @@ public class JavaLexer implements Lexer {
         }
     }
 
+
     /**
      * Read the number.
      * @param source the lexer source
      * @return the token
      */
     private Token readNumber(LexerSource source) {
-        StringBuilder sb = new StringBuilder();
+        var sb = new StringBuilder();
         sb.append(source.currentChar());
         int pos = source.position();
         for (;;) {
@@ -212,6 +239,7 @@ public class JavaLexer implements Lexer {
             return Token.any(source);
         }
     }
+
 
     /**
      * Read identifier.

@@ -41,9 +41,11 @@ public interface TokenType extends Comparable<TokenType> {
     /** The serial(Used as token priority). */
     int serial();
 
+
     static TokenType build() {
         return build(Hue.NONE);
     }
+
 
     static TokenType build(Hue hue) {
         record TokenTypeRecord(int serial, Hue hue) implements TokenType { }

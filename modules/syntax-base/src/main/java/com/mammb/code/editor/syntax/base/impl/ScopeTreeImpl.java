@@ -98,6 +98,21 @@ public class ScopeTreeImpl implements ScopeTree {
 
 
     @Override
+    public ScopeNode primeInContext() {
+        ScopeNode ret = null;
+        for (ScopeNode n = root.at(hwm); !n.isRoot(); n = n.parent()) {
+            if (ret == null || n.open().type().serial() > ret.open().type().serial()) {
+                ret = n;
+            }
+            if (!ret.context().isEmpty()) {
+                break;
+            }
+        }
+        return ret;
+    }
+
+
+    @Override
     public ScopeNode at(int offset) {
         final ScopeNode node = root.at(offset);
         return (node == null) ? root : node;

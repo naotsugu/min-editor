@@ -62,6 +62,10 @@ public interface ScopeNode {
         return level;
     }
 
+    default String context() {
+        return open().context();
+    }
+
     /**
      * Get whether this node is the root or not.
      * @return {@code true}, if this node is the root
