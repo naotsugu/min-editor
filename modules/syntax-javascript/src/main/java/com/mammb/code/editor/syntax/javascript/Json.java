@@ -13,19 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.javascript;
+
+import com.mammb.code.editor.syntax.base.Hue;
+import com.mammb.code.editor.syntax.base.TokenType;
 
 /**
- * The syntax module.
+ * Json.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax {
+public class Json {
 
-    requires transitive code.editor.syntax.base;
-    requires code.editor.syntax.java;
-    requires code.editor.syntax.javascript;
-    requires code.editor.syntax.markdown;
-    requires code.editor.model.text;
+    /** JSON Token type. */
+    public interface JsonToken extends com.mammb.code.editor.syntax.base.TokenType {
 
-    exports com.mammb.code.editor.syntax;
+        TokenType KEY = TokenType.build(Hue.DEEP_ORANGE);
+        TokenType TEXT = TokenType.build(Hue.GREEN);
+        TokenType NUMBER = TokenType.build(Hue.CYAN);
+        TokenType LITERAL  = TokenType.build(Hue.CYAN);
+        TokenType LINE_COMMENT = TokenType.build(Hue.GREY);
+        TokenType COMMENT = TokenType.build(Hue.GREEN);
+
+    }
 
 }

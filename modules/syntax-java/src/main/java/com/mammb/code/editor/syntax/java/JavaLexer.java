@@ -49,13 +49,6 @@ public class JavaLexer implements Lexer {
     private Lexer delegate;
 
 
-    /**
-     * Constructor.
-     */
-    public JavaLexer() {
-    }
-
-
     @Override
     public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;

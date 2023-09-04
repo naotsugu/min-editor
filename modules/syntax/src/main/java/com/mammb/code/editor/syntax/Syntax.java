@@ -19,6 +19,7 @@ import com.mammb.code.editor.syntax.base.Lexer;
 import com.mammb.code.editor.syntax.base.LexerProvider;
 import com.mammb.code.editor.syntax.base.SyntaxTranslate;
 import com.mammb.code.editor.syntax.java.JavaLexer;
+import com.mammb.code.editor.syntax.javascript.JsonLexer;
 import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import java.nio.file.Path;
@@ -35,6 +36,7 @@ public class Syntax {
         public Lexer get(String name) {
             return switch (name) {
                 case "java"    -> new JavaLexer();
+                case "json"    -> new JsonLexer();
                 case "md"      -> new MarkdownLexer(lexerProvider);
                 default        -> null;
             };
