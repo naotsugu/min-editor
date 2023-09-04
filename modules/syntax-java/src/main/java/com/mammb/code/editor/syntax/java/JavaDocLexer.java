@@ -20,12 +20,21 @@ import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
 import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
+import com.mammb.code.editor.syntax.base.Trie;
+
+import static com.mammb.code.editor.syntax.java.JavaDoc.JavaDocToken.*;
 
 /**
  * JavaDocLexer.
  * @author Naotsugu Kobayashi
  */
 public class JavaDocLexer implements Lexer {
+
+    /** The block tags. */
+    private static final Trie blockTags = JavaDoc.blockTags();
+
+    /** The inline tags. */
+    private static final Trie inlineTags = JavaDoc.inlineTags();
 
     /** The input string. */
     private LexerSource source;
@@ -52,11 +61,55 @@ public class JavaDocLexer implements Lexer {
         return switch (ch) {
             case ' ', '\t'  -> Token.whitespace(source);
             case '\n', '\r' -> Token.lineEnd(source);
+            case '@' -> readBlockTag(source);
+            case '{' -> readInlineTag(source);
             case 0 -> Token.empty(source);
             default -> Token.any(source);
         };
     }
 
+
+    private Token readBlockTag(LexerSource source) {
+
+        int pos = source.position();
+        StringBuilder sb = new StringBuilder();
+        sb.append(source.currentChar());
+
+        for (;;) {
+            char ch = source.peekChar();
+            if (!Character.isAlphabetic(ch)) {
+                String str = sb.toString();
+                source.commitPeekBefore();
+                if (blockTags.match(str)) {
+                    return Token.of(TAG, Scope.NEUTRAL, source.offset() + pos, str.length());
+                } else {
+                    return Token.of(ANY, Scope.NEUTRAL, source.offset() + pos, str.length());
+                }
+            }
+            sb.append(source.readChar());
+        }
+    }
+
+
+    private Token readInlineTag(LexerSource source) {
+
+        int pos = source.position();
+        StringBuilder sb = new StringBuilder();
+
+        for (;;) {
+            char ch = source.peekChar();
+            if (!Character.isAlphabetic(ch)) {
+                String str = sb.toString();
+                source.commitPeekBefore();
+                if (inlineTags.match(str)) {
+                    return Token.of(TAG, Scope.NEUTRAL, source.offset() + pos, str.length());
+                } else {
+                    return Token.of(ANY, Scope.NEUTRAL, source.offset() + pos, str.length());
+                }
+            }
+            sb.append(source.readChar());
+        }
+    }
 
     /**
      * Get an any token.

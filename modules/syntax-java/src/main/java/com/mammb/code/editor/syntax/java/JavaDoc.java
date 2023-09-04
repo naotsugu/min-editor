@@ -17,6 +17,9 @@ package com.mammb.code.editor.syntax.java;
 
 import com.mammb.code.editor.syntax.base.Hue;
 import com.mammb.code.editor.syntax.base.TokenType;
+import com.mammb.code.editor.syntax.base.Trie;
+
+import java.util.stream.Stream;
 
 /**
  * JavaDoc.
@@ -27,6 +30,41 @@ public class JavaDoc {
     /** Java Token type. */
     public interface JavaDocToken extends com.mammb.code.editor.syntax.base.TokenType {
         TokenType TEXT = TokenType.build(Hue.GREEN);
+        TokenType TAG = TokenType.build(Hue.YELLOW);
+    }
+
+
+    /**
+     * Get the block tags trie.
+     * @return the keyword trie
+     */
+    public static Trie blockTags() {
+
+        Trie trie = Trie.of();
+
+        Stream.of("""
+        @author,@deprecated,@exception,@hidden,@param,@provides,@return,@see,@serial,
+        @serialData,@serialField,@since,@throws,@uses,@version"""
+            .split("[,\\s]")).forEach(trie::put);
+
+        return trie;
+    }
+
+
+    /**
+     * Get the Inline tags trie.
+     * `{@code }`
+     * @return the keyword trie
+     */
+    public static Trie inlineTags() {
+
+        Trie trie = Trie.of();
+
+        Stream.of("""
+        @code,@docRoot,@index,@inheritDoc,@link,@linkplain,@literal,@summary,@systemProperty,@value"""
+            .split("[,\\s]")).forEach(trie::put);
+
+        return trie;
     }
 
 }
