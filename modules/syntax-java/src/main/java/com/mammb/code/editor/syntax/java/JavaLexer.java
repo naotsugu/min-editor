@@ -16,7 +16,6 @@
 package com.mammb.code.editor.syntax.java;
 
 import com.mammb.code.editor.syntax.base.Lexer;
-import com.mammb.code.editor.syntax.base.LexerProvider;
 import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
 import com.mammb.code.editor.syntax.base.ScopeNode;
@@ -41,9 +40,6 @@ public class JavaLexer implements Lexer {
     /** The syntax keywords. */
     private static final Trie keywords = Java.keywords();
 
-    /** The lexer provider. */
-    private LexerProvider lexerProvider;
-
     /** The input string. */
     private LexerSource source;
 
@@ -55,10 +51,8 @@ public class JavaLexer implements Lexer {
 
     /**
      * Constructor.
-     * @param lexerProvider the lexer provider
      */
-    public JavaLexer(LexerProvider lexerProvider) {
-        this.lexerProvider = lexerProvider;
+    public JavaLexer() {
     }
 
 
@@ -66,6 +60,9 @@ public class JavaLexer implements Lexer {
     public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;
         this.scope = scope;
+        if (delegate != null) {
+            delegate.setSource(source,scope);
+        }
     }
 
 
@@ -104,14 +101,23 @@ public class JavaLexer implements Lexer {
 
 
     private boolean delegate() {
-        var context = scope.current().select(n ->
-                !n.context().isEmpty() && !n.context().equals(name()))
+
+        if (delegate != null) {
+            char[] ch = new char[] { source.peekChar(), source.peekChar() };
+            source.rollbackPeek();
+            if (ch[0] == '*' && ch[1] == '/') {
+                delegate = null;
+                return false;
+            }
+        }
+
+        var context = scope.current().select(n -> n.context().equals("javadoc"))
             .map(ScopeNode::context).orElse("");
         if (context.isEmpty()) {
             delegate = null;
         } else {
             if (delegate == null || !delegate.name().equals(context)) {
-                delegate = lexerProvider.get(context);
+                delegate = new JavaDocLexer();
                 delegate.setSource(source, scope);
             }
         }
@@ -132,6 +138,11 @@ public class JavaLexer implements Lexer {
             return Token.of(LINE_COMMENT, Scope.INLINE_START, source.offset() + pos, 2);
         } else if (ch == '*') {
             source.commitPeek();
+            if (source.peekChar() == '*') {
+                source.commitPeek();
+                return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 3, "javadoc");
+            }
+            source.rollbackPeek();
             return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 2);
         } else {
             return Token.any(source);

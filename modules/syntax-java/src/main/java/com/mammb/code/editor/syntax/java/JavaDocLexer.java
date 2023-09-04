@@ -16,13 +16,10 @@
 package com.mammb.code.editor.syntax.java;
 
 import com.mammb.code.editor.syntax.base.Lexer;
-import com.mammb.code.editor.syntax.base.LexerProvider;
 import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
 import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
-
-import static com.mammb.code.editor.syntax.java.Java.JavaToken.COMMENT;
 
 /**
  * JavaDocLexer.
@@ -32,18 +29,6 @@ public class JavaDocLexer implements Lexer {
 
     /** The input string. */
     private LexerSource source;
-
-    /** The lexer provider. */
-    private LexerProvider lexerProvider;
-
-
-    /**
-     * Constructor.
-     * @param lexerProvider the lexer provider
-     */
-    public JavaDocLexer(LexerProvider lexerProvider) {
-        this.lexerProvider = lexerProvider;
-    }
 
 
     @Override
@@ -67,28 +52,11 @@ public class JavaDocLexer implements Lexer {
         return switch (ch) {
             case ' ', '\t'  -> Token.whitespace(source);
             case '\n', '\r' -> Token.lineEnd(source);
-            case '*'  -> readCommentBlockClosed(source);
             case 0 -> Token.empty(source);
-            default -> text(source);
+            default -> Token.any(source);
         };
     }
 
-
-    /**
-     * Read block comment.
-     * @param source the lexer source
-     * @return the token
-     */
-    private Token readCommentBlockClosed(LexerSource source) {
-        int pos = source.position();
-        char ch = source.peekChar();
-        if (ch == '/') {
-            source.commitPeek();
-            return Token.of(COMMENT, Scope.BLOCK_END, source.offset() + pos, 2, name());
-        } else {
-            return text(source);
-        }
-    }
 
     /**
      * Get an any token.
