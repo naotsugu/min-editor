@@ -29,8 +29,7 @@ public class JavaDoc {
 
     /** Java Token type. */
     public interface JavaDocToken extends com.mammb.code.editor.syntax.base.TokenType {
-        TokenType TEXT = TokenType.build(Hue.GREEN);
-        TokenType TAG = TokenType.build(Hue.YELLOW);
+        TokenType TAG = TokenType.build(Hue.CYAN);
     }
 
 
@@ -52,8 +51,7 @@ public class JavaDoc {
 
 
     /**
-     * Get the Inline tags trie.
-     * `{@code }`
+     * Get the Inline tags trie(like `{@code }`).
      * @return the keyword trie
      */
     public static Trie inlineTags() {

@@ -18,7 +18,6 @@ package com.mammb.code.editor.syntax.java;
 import com.mammb.code.editor.syntax.base.Lexer;
 import com.mammb.code.editor.syntax.base.LexerSource;
 import com.mammb.code.editor.syntax.base.Scope;
-import com.mammb.code.editor.syntax.base.ScopeNode;
 import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
 import com.mammb.code.editor.syntax.base.Trie;
@@ -104,8 +103,8 @@ public class JavaLexer implements Lexer {
             }
         }
 
-        var context = scope.current().select(n -> n.context().equals("javadoc"))
-            .map(ScopeNode::context).orElse("");
+        var context = scope.current().select(n -> n.open().context().equals("javadoc"))
+            .map(n -> n.open().context()).orElse("");
         if (context.isEmpty()) {
             delegate = null;
         } else {

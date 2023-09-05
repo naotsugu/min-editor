@@ -66,8 +66,13 @@ public class SyntaxTranslate implements StylingTranslate {
 
             scopes.push(token);
 
-            ScopeNode scopeNode = scopes.primeInContext();
-            Token current = (scopeNode == null) ? token : scopeNode.open();
+            Token current;
+            ScopeNode scopeNode = scopes.primeInCurrentContext();
+            if (scopeNode == null || scopeNode.currentContext().equals(lexer.name())) {
+                current = (scopeNode == null) ? token : scopeNode.open();
+            } else {
+                current = (token.type().hue() != Hue.NONE) ? token : scopeNode.open();
+            }
 
             if (prev == null) {
                 prev = current;

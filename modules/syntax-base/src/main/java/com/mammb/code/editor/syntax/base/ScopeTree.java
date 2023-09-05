@@ -37,7 +37,7 @@ public interface ScopeTree {
      * Get the current(edge) scope node in the current context.
      * @return the current(edge) scope node
      */
-    ScopeNode primeInContext();
+    ScopeNode primeInCurrentContext();
 
     /**
      * Get the scope node at the specified offset position.

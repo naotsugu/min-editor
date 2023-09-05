@@ -62,8 +62,18 @@ public interface ScopeNode {
         return level;
     }
 
-    default String context() {
-        return open().context();
+    /**
+     * Get the current context name.
+     * @return the current context name
+     */
+    default String currentContext() {
+        for (ScopeNode node = this; !node.isRoot(); node = node.parent()) {
+            String context = node.open().context();
+            if (!context.isEmpty()) {
+                return context;
+            }
+        }
+        return "";
     }
 
     /**

@@ -98,13 +98,13 @@ public class ScopeTreeImpl implements ScopeTree {
 
 
     @Override
-    public ScopeNode primeInContext() {
+    public ScopeNode primeInCurrentContext() {
         ScopeNode ret = null;
-        for (ScopeNode n = root.at(hwm); !n.isRoot(); n = n.parent()) {
+        for (ScopeNode n = current(); !n.isRoot(); n = n.parent()) {
             if (ret == null || n.open().type().serial() > ret.open().type().serial()) {
                 ret = n;
             }
-            if (!ret.context().isEmpty()) {
+            if (!ret.open().context().isEmpty()) {
                 break;
             }
         }

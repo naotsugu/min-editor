@@ -111,13 +111,4 @@ public class JavaDocLexer implements Lexer {
         }
     }
 
-    /**
-     * Get an any token.
-     * @param source the lexer source
-     * @return an any token
-     */
-    static Token text(LexerSource source) {
-        return Token.of(JavaDoc.JavaDocToken.TEXT, Scope.NEUTRAL, source.offset() + source.position(), 1);
-    }
-
 }
