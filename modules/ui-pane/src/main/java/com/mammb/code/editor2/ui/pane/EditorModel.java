@@ -30,7 +30,6 @@ import com.mammb.code.editor2.ui.pane.impl.Draws;
 import com.mammb.code.editor2.ui.pane.impl.ImePalletImpl;
 import com.mammb.code.editor2.ui.pane.impl.SelectBehaviors;
 import com.mammb.code.editor2.ui.pane.impl.SelectionImpl;
-import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -125,7 +124,6 @@ public class EditorModel {
         Canvas canvas = gc.getCanvas();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.save();
-        gc.setTextBaseline(VPos.CENTER);
         maxWidth = width - gutter.width();
         double offsetY = 0;
         for (TextLine line : texts.lines()) {
@@ -157,7 +155,6 @@ public class EditorModel {
      */
     public void draw(GraphicsContext gc, double x, double y, double w, double h) {
         gc.save();
-        gc.setTextBaseline(VPos.CENTER);
         double offsetY = 0;
         for (TextLine line : texts.lines()) {
             double top = offsetY;
