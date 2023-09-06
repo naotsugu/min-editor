@@ -21,14 +21,18 @@ import com.mammb.code.editor2.model.style.StyleSpan;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
-
 import java.util.Objects;
+
+import static java.lang.System.Logger.Level;
 
 /**
  * SyntaxTranslate.
  * @author Naotsugu Kobayashi
  */
 public class SyntaxTranslate implements StylingTranslate {
+
+    /** logger. */
+    private static final System.Logger log = System.getLogger(SyntaxTranslate.class.getName());
 
     /** The lexer. */
     private final Lexer lexer;
@@ -54,6 +58,16 @@ public class SyntaxTranslate implements StylingTranslate {
 
     @Override
     public StyledText applyTo(Textual textual) {
+        try {
+            return applyToInternal(textual);
+        } catch (Exception e) {
+            log.log(Level.ERROR, "syntax translate error", e);
+            return StyledText.of(textual);
+        }
+    }
+
+
+    private StyledText applyToInternal(Textual textual) {
 
         final StyledText styledText = StyledText.of(textual);
 
@@ -92,8 +106,8 @@ public class SyntaxTranslate implements StylingTranslate {
         }
 
         return styledText;
-    }
 
+    }
 
     private void putStyle(StyledText styledText, Token token, int point, int length) {
         var hue = token.type().hue();

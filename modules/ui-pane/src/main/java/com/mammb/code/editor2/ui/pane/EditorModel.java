@@ -34,7 +34,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;

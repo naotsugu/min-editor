@@ -41,29 +41,39 @@ public record StyledTextRecord(
         this(textual, new ArrayList<>());
     }
 
+
     @Override
     public OffsetPoint point() {
         return textual.point();
     }
+
 
     @Override
     public boolean hol() {
         return true;
     }
 
+
     @Override
     public StyledText subText(int start, int length) {
         return StyledSubText.of(this, start, length);
     }
+
 
     @Override
     public String text() {
         return textual.text();
     }
 
+
     @Override
     public void putStyle(StyleSpan style) {
-        styles.add(style);
+        if (style.point() + style.length() <= textual.length()) {
+            styles.add(style);
+        } else {
+            throw new IndexOutOfBoundsException("out of bounds:" + style +
+                "[" + textual.text() + ", " + textual.length() + "]");
+        }
     }
 
 }
