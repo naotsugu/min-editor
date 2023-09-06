@@ -32,14 +32,10 @@ public class JsonLexer implements Lexer {
     /** The input string. */
     private LexerSource source;
 
-    /** The scope. */
-    private ScopeTree scope;
-
 
     @Override
     public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;
-        this.scope = scope;
     }
 
 
@@ -82,10 +78,10 @@ public class JsonLexer implements Lexer {
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
-            return Token.of(LINE_COMMENT, Scope.INLINE_START, pos, 2);
+            return Token.of(LINE_COMMENT, Scope.INLINE_START, source.offset() + pos, 2);
         } else if (ch == '*') {
             source.commitPeek();
-            return Token.of(COMMENT, Scope.BLOCK_START, pos, 2);
+            return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 2);
         } else {
             source.rollbackPeek();
             return Token.any(source);
@@ -106,9 +102,9 @@ public class JsonLexer implements Lexer {
             if (ch < ' ' || (prev != '\\' && ch == '"')) {
                 source.commitPeek();
                 if (peekNextChar(source) == ':') {
-                    return Token.of(KEY, Scope.NEUTRAL, pos, source.position() + 1 - pos);
+                    return Token.of(KEY, Scope.NEUTRAL, source.offset() + pos, source.position() + 1 - pos);
                 } else {
-                    return Token.of(TEXT, Scope.NEUTRAL, pos, source.position() + 1 - pos);
+                    return Token.of(TEXT, Scope.NEUTRAL, source.offset() + pos, source.position() + 1 - pos);
                 }
             }
             prev = ch;
@@ -169,7 +165,7 @@ public class JsonLexer implements Lexer {
             }
         }
         source.commitPeekBefore();
-        return Token.of(NUMBER, Scope.NEUTRAL, pos, source.position() - pos);
+        return Token.of(NUMBER, Scope.NEUTRAL, source.offset() + pos, source.position() - pos);
     }
 
 
@@ -183,7 +179,7 @@ public class JsonLexer implements Lexer {
             source.peekChar() == 'u' &&
             source.peekChar() == 'e') {
             source.commitPeek();
-            return Token.of(LITERAL, Scope.NEUTRAL, source.position() - 4, 4);
+            return Token.of(LITERAL, Scope.NEUTRAL, source.offset() + source.position() - 4, 4);
         }
         source.rollbackPeek();
         return Token.any(source);
@@ -201,7 +197,7 @@ public class JsonLexer implements Lexer {
             source.peekChar() == 's' &&
             source.peekChar() == 'e') {
             source.commitPeek();
-            return Token.of(LITERAL, Scope.NEUTRAL, source.position() - 5, 5);
+            return Token.of(LITERAL, Scope.NEUTRAL, source.offset() + source.position() - 5, 5);
         }
         source.rollbackPeek();
         return Token.any(source);
@@ -218,7 +214,7 @@ public class JsonLexer implements Lexer {
             source.peekChar() == 'l' &&
             source.peekChar() == 'l') {
             source.commitPeek();
-            return Token.of(LITERAL, Scope.NEUTRAL, source.position() - 4, 4);
+            return Token.of(LITERAL, Scope.NEUTRAL, source.offset() + source.position() - 4, 4);
         }
         source.rollbackPeek();
         return Token.any(source);
@@ -234,8 +230,7 @@ public class JsonLexer implements Lexer {
         char ch;
         for (;;) {
             ch = source.peekChar();
-            if (ch == 0) break;
-            if (!Character.isWhitespace(ch)) break;
+            if (ch == 0 || !Character.isWhitespace(ch)) break;
         }
         source.rollbackPeek();
         return ch;
