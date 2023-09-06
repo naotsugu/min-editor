@@ -40,6 +40,8 @@ public class MarkdownLexer implements Lexer {
     /** The scope. */
     private ScopeTree scope;
 
+    private Lexer delegate;
+
     /**
      * Constructor.
      * @param lexerProvider the lexer provider
@@ -53,6 +55,9 @@ public class MarkdownLexer implements Lexer {
     public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;
         this.scope = scope;
+        if (delegate != null) {
+            delegate.setSource(source,scope);
+        }
     }
 
     @Override
@@ -68,6 +73,10 @@ public class MarkdownLexer implements Lexer {
             return Token.empty(null);
         }
 
+        if (fenceDelegate()) {
+            return delegate.nextToken();
+        }
+
         char ch = source.readChar();
         return switch (ch) {
             case ' ', '\t' -> Token.whitespace(source);
@@ -77,6 +86,27 @@ public class MarkdownLexer implements Lexer {
             case 0 -> Token.empty(source);
             default -> Token.any(source);
         };
+    }
+
+
+    private boolean fenceDelegate() {
+        if (delegate != null && source.peekChar() == '`' && source.peekChar() == '`' && source.peekChar() == '`') {
+            source.rollbackPeek();
+            delegate = null;
+            return false;
+        }
+
+        var context = scope.current().select(n -> !n.isRoot() && !n.open().context().isEmpty())
+            .map(n -> n.open().context()).orElse("");
+        if (context.isEmpty()) {
+            delegate = null;
+        } else {
+            if (delegate == null || !delegate.name().equals(context)) {
+                delegate = lexerProvider.get(context);
+                delegate.setSource(source, scope);
+            }
+        }
+        return delegate != null;
     }
 
     /**

@@ -13,14 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.syntax.base.impl;
-
-import com.mammb.code.editor.syntax.base.Lexer;
-import com.mammb.code.editor.syntax.base.LexerSource;
-import com.mammb.code.editor.syntax.base.Scope;
-import com.mammb.code.editor.syntax.base.ScopeTree;
-import com.mammb.code.editor.syntax.base.Token;
-import com.mammb.code.editor.syntax.base.TokenType;
+package com.mammb.code.editor.syntax.base;
 
 /**
  * PassThrough Lexer.
@@ -34,15 +27,10 @@ public class PassThroughLexer implements Lexer {
     /** The input string. */
     private LexerSource source;
 
-    /** The string length. */
-    private int length = 0;
-
 
     /**
-     * Constructor.
-     * @param name the name
-     */
-    public PassThroughLexer(String name) {
+     * Constructor.     * @param name the name
+     */    public PassThroughLexer(String name) {
         this.name = name;
     }
 
@@ -56,19 +44,23 @@ public class PassThroughLexer implements Lexer {
     @Override
     public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;
-        this.length = source.length();
     }
 
 
     @Override
     public Token nextToken() {
-        if (source != null && source.length() > 0) {
-            length = source.length();
-            source = null;
-            return Token.of(TokenType.ANY, Scope.NEUTRAL, 0, length);
-        } else {
-            return Token.of(TokenType.EMPTY, Scope.NEUTRAL, length, 0);
+
+        if (source == null) {
+            return Token.empty(null);
         }
+
+        char ch = source.readChar();
+        return switch (ch) {
+            case ' ', '\t'  -> Token.whitespace(source);
+            case '\n', '\r' -> Token.lineEnd(source);
+            case 0  -> Token.empty(source);
+            default -> Token.any(source);
+        };
     }
 
 }

@@ -17,11 +17,13 @@ package com.mammb.code.editor.syntax;
 
 import com.mammb.code.editor.syntax.base.Lexer;
 import com.mammb.code.editor.syntax.base.LexerProvider;
+import com.mammb.code.editor.syntax.base.PassThroughLexer;
 import com.mammb.code.editor.syntax.base.SyntaxTranslate;
 import com.mammb.code.editor.syntax.java.JavaLexer;
 import com.mammb.code.editor.syntax.javascript.JsonLexer;
 import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
 import com.mammb.code.editor2.model.style.StylingTranslate;
+
 import java.nio.file.Path;
 
 /**
@@ -38,7 +40,7 @@ public class Syntax {
                 case "java"    -> new JavaLexer();
                 case "json"    -> new JsonLexer();
                 case "md"      -> new MarkdownLexer(lexerProvider);
-                default        -> null;
+                default        -> new PassThroughLexer(name);
             };
         }
     };
@@ -51,9 +53,9 @@ public class Syntax {
      */
     public static StylingTranslate of(Path path, String baseColor) {
         Lexer lexer = lexerProvider.get(getExtension(path).toLowerCase());
-        return (lexer != null)
-            ? new SyntaxTranslate(lexer, baseColor)
-            : StylingTranslate.passThrough();
+        return (lexer instanceof PassThroughLexer)
+            ? StylingTranslate.passThrough()
+            : new SyntaxTranslate(lexer, baseColor);
     }
 
 
