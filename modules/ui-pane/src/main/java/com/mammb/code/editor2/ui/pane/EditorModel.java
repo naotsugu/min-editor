@@ -314,6 +314,7 @@ public class EditorModel {
     private void vScrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
         if (!scrolled) return;
+        texts.markDirty();
         caret.markDirty();
         vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
