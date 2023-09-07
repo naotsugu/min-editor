@@ -55,12 +55,18 @@ public class ScopeTreeImpl implements ScopeTree {
 
 
     @Override
+    public void truncate(int offset) {
+        if (offset <= hwm) {
+            root.removeAfter(offset);
+        }
+        hwm = offset;
+    }
+
+
+    @Override
     public void push(Token token) {
 
-        if (token.position() <= hwm) {
-            root.removeAfter(token.position());
-        }
-        hwm = token.position();
+        truncate(token.position());
 
         if (token.scope().isNeutral()) {
             return;

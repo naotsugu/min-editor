@@ -22,6 +22,12 @@ package com.mammb.code.editor.syntax.base;
 public interface ScopeTree {
 
     /**
+     * Truncates the scope after the specified offset.
+     * @param offset the specified offset
+     */
+    void truncate(int offset);
+
+    /**
      * push the token.
      * @param token the token
      */

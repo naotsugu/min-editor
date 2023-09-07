@@ -71,7 +71,9 @@ public class SyntaxTranslate implements StylingTranslate {
 
         final StyledText styledText = StyledText.of(textual);
 
-        lexer.setSource(LexerSource.of(textual), scopes);
+        LexerSource source = LexerSource.of(textual);
+        scopes.truncate(source.offset());
+        lexer.setSource(source, scopes);
 
         Token prev = null;
         int beginPos = 0;
