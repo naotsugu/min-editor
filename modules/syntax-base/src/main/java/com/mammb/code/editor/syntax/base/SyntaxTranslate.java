@@ -21,6 +21,7 @@ import com.mammb.code.editor2.model.style.StyleSpan;
 import com.mammb.code.editor2.model.style.StyledText;
 import com.mammb.code.editor2.model.style.StylingTranslate;
 import com.mammb.code.editor2.model.text.Textual;
+
 import java.util.Objects;
 
 import static java.lang.System.Logger.Level;
@@ -82,21 +83,15 @@ public class SyntaxTranslate implements StylingTranslate {
 
             scopes.push(token);
 
-            Token current;
-            ScopeNode scopeNode = scopes.primeInCurrentContext();
-            if (scopeNode == null || scopeNode.currentContext().equals(lexer.name())) {
-                current = (scopeNode == null) ? token : scopeNode.open();
-            } else {
-                current = (token.type().hue() != Hue.NONE) ? token : scopeNode.open();
-            }
+            Token selected = selectToken(token, scopes.current());
 
             if (prev == null) {
-                prev = current;
+                prev = selected;
                 beginPos = token.position();
             } else {
-                if (prev.type() != current.type()) {
+                if (prev.type() != selected.type()) {
                     putStyle(styledText, prev, beginPos - textual.offset(), token.position() - beginPos);
-                    prev = current;
+                    prev = selected;
                     beginPos = token.position();
                 }
             }
@@ -110,6 +105,39 @@ public class SyntaxTranslate implements StylingTranslate {
         return styledText;
 
     }
+
+
+    private Token selectToken(Token current, ScopeNode scopeNode) {
+
+        var contextNode = scopeNode.select(node -> !node.open().context().isEmpty()).orElseThrow();
+        if (contextNode.open().context().equals(lexer.name())) {
+            // if the current context is route lexer
+            var prime = scopeNode.selectPrime(node -> !node.isRoot());
+            if (prime.isPresent()) {
+                if (prime.get().open().type().serial() > current.type().serial()) {
+                    return prime.get().open();
+                } else {
+                    return current;
+                }
+            } else {
+                return current;
+            }
+        } else {
+            // if the current context is different from the lexer context,
+            // the delegated definition takes precedence
+            var prime = scopeNode.selectPrime(node -> !node.open().context().isEmpty());
+            if (prime.isPresent()) {
+                if (prime.get().open().type().serial() > current.type().serial()) {
+                    return prime.get().open();
+                } else {
+                    return current;
+                }
+            } else {
+                return contextNode.open();
+            }
+        }
+    }
+
 
     private void putStyle(StyledText styledText, Token token, int point, int length) {
         var hue = token.type().hue();

@@ -107,6 +107,20 @@ public class ScopeTreeNode implements ScopeNode {
         }
     }
 
+    @Override
+    public Optional<ScopeNode> selectPrime(Predicate<ScopeNode> until) {
+        ScopeNode ret = null;
+        for (ScopeNode n = this; !n.isRoot(); n = n.parent()) {
+            if (!until.test(n)) {
+                break;
+            }
+            if (ret == null || n.open().type().serial() > ret.open().type().serial()) {
+                ret = n;
+            }
+        }
+        return Optional.ofNullable(ret);
+    }
+
     /**
      * Close this scope with the specified token.
      * @param token the close token

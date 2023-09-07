@@ -48,6 +48,8 @@ public interface ScopeNode {
 
     Optional<ScopeNode> select(Predicate<ScopeNode> predicate);
 
+    Optional<ScopeNode> selectPrime(Predicate<ScopeNode> until);
+
     /**
      * Gets the scope level of this node.
      * @return the scope level of this node
