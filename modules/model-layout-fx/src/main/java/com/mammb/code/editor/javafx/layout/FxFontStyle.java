@@ -25,7 +25,7 @@ import javafx.scene.text.Font;
  */
 public interface FxFontStyle extends FontStyle<Font, Color> {
 
-    String defaultName = "Consolas";
+    String defaultName = System.getProperty("os.name").toLowerCase().startsWith("windows") ? "MS Gothic" : "Consolas";
     double defaultSize = 15;
     Color defaultColor = Color.BLACK;
     Color defaultBgColor = Color.TRANSPARENT;

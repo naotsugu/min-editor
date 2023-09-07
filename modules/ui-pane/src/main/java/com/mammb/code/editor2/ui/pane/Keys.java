@@ -62,7 +62,7 @@ public class Keys {
     private static final KeyCombination SC_HOME = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.SHORTCUT_DOWN);
 
     public static final Predicate<KeyEvent> controlKeysFilter = e ->
-        System.getProperty("os.name").startsWith("Windows")
+        System.getProperty("os.name").toLowerCase().startsWith("windows")
             ? !e.isControlDown() && !e.isAltDown() && !e.isMetaDown() && e.getCharacter().length() == 1 && e.getCharacter().getBytes()[0] != 0
             : !e.isControlDown() && !e.isAltDown() && !e.isMetaDown();
 

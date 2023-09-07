@@ -53,7 +53,7 @@ public class JavaLexer implements Lexer {
         this.source = source;
         this.scope = scope;
         if (delegate != null) {
-            delegate.setSource(source,scope);
+            delegate.setSource(source, scope);
         }
     }
 

@@ -51,8 +51,8 @@ public record Rect(double x, double y, double w, double h) {
             throw new IllegalArgumentException("illegal scale.[" + scale + "]");
         }
         return new Rect(
-            x + w * (1 - scale) / 2,
-            y + h * (1 - scale) / 2,
+            x + (w * (1 - scale)) / 2,
+            y + (h * (1 - scale)) / 2,
             w * scale,
             h * scale);
     }

@@ -10,6 +10,9 @@ dependencies {
 application {
     mainClass.set("com.mammb.code.editor.bootstrap.Main")
     mainModule.set("code.editor.bootstrap")
+    if (providers.systemProperty("debug").isPresent) {
+        applicationDefaultJvmArgs = listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005")
+    }
 }
 
 tasks.register<Jar>("uberJar") {

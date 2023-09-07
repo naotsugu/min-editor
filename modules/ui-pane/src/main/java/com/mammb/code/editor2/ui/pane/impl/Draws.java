@@ -47,7 +47,7 @@ public class Draws {
             double w = (ch == '　')
                 ? textLeft + run.offsetToX().apply(i + 1) - x
                 : Global.numberCharacterWidth(gc.getFont());
-            var rect = new Rect(x, top + lineHeight * 0.1, w, lineHeight).smaller(0.8);
+            var rect = new Rect(x, top, w, lineHeight).smaller(0.8);
 
             gc.setStroke(Color.GRAY);
             if (ch == '\r') {
