@@ -23,6 +23,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.AccessibleRole;
+import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -74,6 +75,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         setWidth(WIDTH);
         setPrefWidth(WIDTH);
         setMaxWidth(WIDTH);
+        setCursor(Cursor.DEFAULT);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
 
         thumb = new ScrollThumb(WIDTH, WIDTH, baseColor);

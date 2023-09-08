@@ -26,6 +26,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -77,6 +78,7 @@ public class EditorPane extends StackPane {
      */
     public EditorPane(double width, double height) {
 
+        setCursor(Cursor.TEXT);
         setWidth(width);
         setHeight(height);
         double canvasWidth = width - margin;
