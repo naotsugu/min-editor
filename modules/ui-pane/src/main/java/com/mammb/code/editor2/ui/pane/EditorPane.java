@@ -145,23 +145,6 @@ public class EditorPane extends StackPane {
         confirmIfDirty(() -> updateModel(path));
     }
 
-    private void confirmIfDirty(Runnable runnable) {
-        if (editorModel.metrics().isDirty()) {
-            OverlayDialog.confirm(this, "Are you sure you want to discard your changes?",
-                runnable);
-        } else {
-            runnable.run();
-        }
-    }
-
-    private void updateModel(Path path) {
-        editorModel = new EditorModel(
-            getWidth(), getHeight(),
-            fgColor, path,
-            Syntax.of(path, fgColor.toString().substring(2, 8)),
-            vScrollBar, hScrollBar);
-        editorModel.draw(gc);
-    }
 
     private void openChoose() {
         confirmIfDirty(() -> {
@@ -426,6 +409,25 @@ public class EditorPane extends StackPane {
             edit.run();
             editorModel.selectTo();
         });
+    }
+
+    private void confirmIfDirty(Runnable runnable) {
+        if (editorModel.metrics().isDirty()) {
+            OverlayDialog.confirm(this,
+                "Are you sure you want to discard your changes?",
+                runnable);
+        } else {
+            runnable.run();
+        }
+    }
+
+    private void updateModel(Path path) {
+        editorModel = new EditorModel(
+            getWidth(), getHeight(),
+            fgColor, path,
+            Syntax.of(path, fgColor.toString().substring(2, 8)),
+            vScrollBar, hScrollBar);
+        editorModel.draw(gc);
     }
 
 

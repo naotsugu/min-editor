@@ -497,11 +497,10 @@ public class EditorModel {
             return;
         }
         if (caret.offset() == 0) return;
-        // TODO backspace at the leading position
         OffsetPoint caretPoint = caret.offsetPoint();
-        LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
-        if (layoutLine == null) return;
         moveCaretLeft();
+        LayoutLine layoutLine = texts.layoutLine(caret.offset());
+        if (layoutLine == null) return;
         buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
         texts.markDirty();
         adjustVScroll();
