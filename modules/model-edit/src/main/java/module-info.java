@@ -21,5 +21,5 @@
 module code.editor.model.edit {
     requires code.editor.model.text;
 
-    exports com.mammb.code.editor2.model.edit;
+    exports com.mammb.code.editor.model.edit;
 }

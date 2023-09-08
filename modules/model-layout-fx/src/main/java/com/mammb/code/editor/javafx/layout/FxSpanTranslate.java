@@ -15,12 +15,12 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.Span;
-import com.mammb.code.editor2.model.layout.SpanTranslate;
-import com.mammb.code.editor2.model.style.Style;
-import com.mammb.code.editor2.model.style.StyleSpan;
-import com.mammb.code.editor2.model.style.StyledText;
-import com.mammb.code.editor2.model.text.Translate;
+import com.mammb.code.editor.model.layout.Span;
+import com.mammb.code.editor.model.layout.SpanTranslate;
+import com.mammb.code.editor.model.style.Style;
+import com.mammb.code.editor.model.style.StyleSpan;
+import com.mammb.code.editor.model.style.StyledText;
+import com.mammb.code.editor.model.text.Translate;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.util.ArrayList;

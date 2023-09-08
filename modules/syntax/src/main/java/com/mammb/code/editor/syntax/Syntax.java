@@ -22,7 +22,7 @@ import com.mammb.code.editor.syntax.base.SyntaxTranslate;
 import com.mammb.code.editor.syntax.java.JavaLexer;
 import com.mammb.code.editor.syntax.javascript.JsonLexer;
 import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
-import com.mammb.code.editor2.model.style.StylingTranslate;
+import com.mammb.code.editor.model.style.StylingTranslate;
 
 import java.nio.file.Path;
 

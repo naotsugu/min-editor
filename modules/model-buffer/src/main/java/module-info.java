@@ -23,5 +23,5 @@ module code.editor.model.buffer {
     requires code.editor.model.text;
     requires com.mammb.code.piecetable;
 
-    exports com.mammb.code.editor2.model.buffer;
+    exports com.mammb.code.editor.model.buffer;
 }

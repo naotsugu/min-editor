@@ -15,13 +15,13 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.HitPosition;
-import com.mammb.code.editor2.model.layout.Layout;
-import com.mammb.code.editor2.model.layout.LineLayout;
-import com.mammb.code.editor2.model.layout.Span;
-import com.mammb.code.editor2.model.layout.TextLine;
-import com.mammb.code.editor2.model.layout.TextRun;
-import com.mammb.code.editor2.model.text.OffsetPoint;
+import com.mammb.code.editor.model.layout.HitPosition;
+import com.mammb.code.editor.model.layout.Layout;
+import com.mammb.code.editor.model.layout.LineLayout;
+import com.mammb.code.editor.model.layout.Span;
+import com.mammb.code.editor.model.layout.TextLine;
+import com.mammb.code.editor.model.layout.TextRun;
+import com.mammb.code.editor.model.text.OffsetPoint;
 import com.sun.javafx.geom.Point2D;
 import com.sun.javafx.geom.RectBounds;
 import com.sun.javafx.scene.text.FontHelper;

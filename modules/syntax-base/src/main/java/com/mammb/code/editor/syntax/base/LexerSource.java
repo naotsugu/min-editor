@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.syntax.base;
 
-import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.syntax.base.impl.LexerSourceImpl;
 
 /**

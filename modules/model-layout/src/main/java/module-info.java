@@ -20,5 +20,5 @@
  */
 module code.editor.model.layout {
     requires code.editor.model.text;
-    exports com.mammb.code.editor2.model.layout;
+    exports com.mammb.code.editor.model.layout;
 }

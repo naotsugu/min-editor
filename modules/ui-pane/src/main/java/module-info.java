@@ -30,6 +30,6 @@ module code.editor.ui.pane {
 
     requires code.editor.ui.control;
 
-    exports com.mammb.code.editor2.ui.pane;
-    exports com.mammb.code.editor2.ui.pane.impl;
+    exports com.mammb.code.editor.ui.pane;
+    exports com.mammb.code.editor.ui.pane.impl;
 }

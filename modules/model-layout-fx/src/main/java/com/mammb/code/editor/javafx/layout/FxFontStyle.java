@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.FontStyle;
+import com.mammb.code.editor.model.layout.FontStyle;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 

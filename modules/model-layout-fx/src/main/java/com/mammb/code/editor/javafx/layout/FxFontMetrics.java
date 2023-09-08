@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor2.model.layout.FontStyle;
+import com.mammb.code.editor.model.layout.FontStyle;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
@@ -28,7 +28,7 @@ import java.util.WeakHashMap;
  * FxFontMetrics.
  * @author Naotsugu Kobayashi
  */
-public class FxFontMetrics implements com.mammb.code.editor2.model.layout.FontMetrics<Font> {
+public class FxFontMetrics implements com.mammb.code.editor.model.layout.FontMetrics<Font> {
 
     /** The FontMetrics. */
     private final Map<Font, FontMetrics> metrics = new WeakHashMap<>();

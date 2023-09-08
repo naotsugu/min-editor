@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.syntax.base.impl;
 
-import com.mammb.code.editor2.model.text.OffsetPoint;
-import com.mammb.code.editor2.model.text.Textual;
+import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.Textual;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

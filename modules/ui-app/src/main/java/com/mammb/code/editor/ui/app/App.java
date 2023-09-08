@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.app;
 
-import com.mammb.code.editor2.ui.pane.EditorPane;
+import com.mammb.code.editor.ui.pane.EditorPane;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
