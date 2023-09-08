@@ -121,6 +121,7 @@ public class EditorPane extends StackPane {
         setOnKeyPressed(this::handleKeyPressed);
         setOnKeyTyped(this::handleKeyTyped);
         setOnScroll(this::handleScroll);
+        setOnMouseMoved(this::handleMouseMoved);
         setOnMouseClicked(this::handleMouseClicked);
         setOnMouseDragged(this::handleMouseDragged);
         setOnDragOver(DragDrops.dragOverHandler());
@@ -178,6 +179,14 @@ public class EditorPane extends StackPane {
                 editorModel.scrollNext(Math.min(Math.abs((int) e.getDeltaY()), 3));
             }
             editorModel.draw(gc);
+        }
+    }
+
+    public void handleMouseMoved(MouseEvent event) {
+        if (event.getY() > 0 && event.getX() > editorModel.textAreaRect().x()) {
+            setCursor(Cursor.TEXT);
+        } else {
+            setCursor(Cursor.DEFAULT);
         }
     }
 

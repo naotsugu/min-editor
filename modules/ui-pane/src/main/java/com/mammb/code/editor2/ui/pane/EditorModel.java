@@ -184,7 +184,7 @@ public class EditorModel {
             gc.setFill(bg);
             gc.fillRect(left, top, run.layout().width(), lineHeight);
         } else if (overlay) {
-            gc.clearRect(left - 0.5, top, run.layout().width() + 1, lineHeight);
+            gc.clearRect(left, top, run.layout().width(), lineHeight);
         }
 
         if (selection.started()) {
@@ -252,6 +252,10 @@ public class EditorModel {
      */
     public Metrics metrics() {
         return buffer.metrics();
+    }
+
+    public Rect textAreaRect() {
+        return new Rect(gutter.width(), 0, width - gutter.width(), height);
     }
 
 
