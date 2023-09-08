@@ -248,6 +248,9 @@ public class WrapTextList implements TextList {
         return lines.size();
     }
 
+    public void setWrapWidth(double wrapWidth) {
+        layout.setWrapWidth(wrapWidth);
+    }
 
     private static Translate<Textual, List<TextLine>> translator(
             LineLayout layout, double wrapWidth,

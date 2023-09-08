@@ -182,6 +182,7 @@ public class EditorPane extends StackPane {
         }
     }
 
+
     public void handleMouseMoved(MouseEvent event) {
         if (event.getY() > 0 && event.getX() > editorModel.textAreaRect().x()) {
             setCursor(Cursor.TEXT);

@@ -614,6 +614,9 @@ public class EditorModel {
         this.buffer.setMaxLineSize(screenRowSize(height));
         texts.markDirty();
         caret.markDirty();
+        if (texts instanceof WrapTextList wrap) {
+            wrap.setWrapWidth(width - gutter.width());
+        }
         adjustVScroll();
         adjustHScroll();
     }
