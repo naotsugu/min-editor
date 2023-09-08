@@ -142,24 +142,37 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        final Runnable openAction = () -> {
-            editorModel = new EditorModel(
-                getWidth(), getHeight(), fgColor, path, Syntax.of(path, fgColor.toString().substring(2, 8)), vScrollBar, hScrollBar);
-            editorModel.draw(gc);
-        };
+        confirmIfDirty(() -> updateModel(path));
+    }
+
+    private void confirmIfDirty(Runnable runnable) {
         if (editorModel.metrics().isDirty()) {
-            OverlayDialog.confirm(this, "Are you sure you want to discard your changes?", openAction);
+            OverlayDialog.confirm(this, "Are you sure you want to discard your changes?",
+                runnable);
         } else {
-            openAction.run();
+            runnable.run();
         }
     }
 
+    private void updateModel(Path path) {
+        editorModel = new EditorModel(
+            getWidth(), getHeight(),
+            fgColor, path,
+            Syntax.of(path, fgColor.toString().substring(2, 8)),
+            vScrollBar, hScrollBar);
+        editorModel.draw(gc);
+    }
+
     private void openChoose() {
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Select file...");
-        fc.setInitialDirectory(initialDirectory(null));
-        File file = fc.showOpenDialog(getScene().getWindow());
-        if (file != null && file.canRead()) open(file.toPath());
+        confirmIfDirty(() -> {
+            FileChooser fc = new FileChooser();
+            fc.setTitle("Select file...");
+            fc.setInitialDirectory(initialDirectory(null));
+            File file = fc.showOpenDialog(getScene().getWindow());
+            if (file != null && file.canRead()) {
+                updateModel(file.toPath());
+            }
+        });
     }
 
     private void saveChoose() {
