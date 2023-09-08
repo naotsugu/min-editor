@@ -56,7 +56,7 @@ public class MarkdownLexer implements Lexer {
         this.source = source;
         this.scope = scope;
         if (delegate != null) {
-            delegate.setSource(source,scope);
+            delegate.setSource(source, scope);
         }
     }
 
@@ -90,6 +90,16 @@ public class MarkdownLexer implements Lexer {
 
 
     private boolean fenceDelegate() {
+
+        if (delegate != null) {
+            char[] ch = new char[] { source.peekChar(), source.peekChar(), source.peekChar() };
+            source.rollbackPeek();
+            if (ch[0] == '`' && ch[1] == '`' && ch[1] == '`') {
+                delegate = null;
+                return false;
+            }
+        }
+
         if (delegate != null && source.peekChar() == '`' && source.peekChar() == '`' && source.peekChar() == '`') {
             source.rollbackPeek();
             delegate = null;
@@ -118,6 +128,7 @@ public class MarkdownLexer implements Lexer {
         int pos = source.position();
         char[] ca = new char[] { source.peekChar(), source.peekChar(),
             source.peekChar(), source.peekChar(), source.peekChar()};
+        source.rollbackPeek();
 
         TokenType type = null;
         if (ca[0] == ' ') type = H1;
@@ -127,11 +138,13 @@ public class MarkdownLexer implements Lexer {
         else if (ca[0] == '#' && ca[1] == '#' && ca[2] == '#' && ca[3] == '#' && ca[4] == ' ') type = H5;
 
         if (type != null) {
-            for (;;) { if (source.peekChar() == '\n') break; }
+            for (;;) {
+                char ch = source.peekChar();
+                if (ch == '\n' || ch == 0) break;
+            }
             source.commitPeekBefore();
             return Token.of(type, Scope.INLINE_ANY, source.offset() + pos, source.position() + 1 - pos);
         } else {
-            source.rollbackPeek();
             return Token.any(source);
         }
     }
@@ -150,7 +163,7 @@ public class MarkdownLexer implements Lexer {
                 char ch = source.peekChar();
                 if (Character.isLetterOrDigit(ch)) {
                     sb.append(ch);
-                } else if (ch == '\r' || ch == '\n' || ch == 0) {
+                } else if (!sb.isEmpty()) {
                     source.commitPeekBefore();
                     return Token.of(FENCE, Scope.BLOCK_START, source.offset() + pos, source.position() + 1 - pos, sb.toString());
                 } else {
