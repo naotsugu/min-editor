@@ -130,7 +130,7 @@ public class EditorModel {
                 maxWidth = line.width();
             }
             for (TextRun run : line.runs()) {
-                drawRun(gc, run, false, offsetY, line.height());
+                drawRun(gc, run, offsetY, line.height());
             }
             offsetY += line.leadingHeight();
         }
@@ -151,21 +151,20 @@ public class EditorModel {
         if (layoutLine.width() > maxWidth) {
             maxWidth = layoutLine.width();
         }
+        gc.clearRect(gutter.width(), layoutLine.offsetY(), width, layoutLine.height());
         for (TextRun run : layoutLine.runs()) {
-            drawRun(gc, run, true, layoutLine.offsetY(), layoutLine.height());
+            drawRun(gc, run, layoutLine.offsetY(), layoutLine.height());
         }
     }
 
 
-    private void drawRun(GraphicsContext gc, TextRun run, boolean overlay, double top, double lineHeight) {
+    private void drawRun(GraphicsContext gc, TextRun run, double top, double lineHeight) {
 
         double left = run.layout().x() + textLeft();
 
         if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
             gc.setFill(bg);
             gc.fillRect(left, top, run.layout().width(), lineHeight);
-        } else if (overlay) {
-            gc.clearRect(left, top, run.layout().width(), lineHeight);
         }
 
         if (selection.started()) {
@@ -270,6 +269,7 @@ public class EditorModel {
     public void imeComposed(List<ImePallet.Run> runs) {
         ime.composed(buffer, runs);
         texts.markDirty();
+        caret.markDirty();
     }
     public boolean isImeOn() {
         return ime.enabled();
@@ -478,6 +478,7 @@ public class EditorModel {
         if (layoutLine == null) return;
         buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
         texts.markDirty();
+        caret.markDirty();
         adjustVScroll();
     }
     private void selectionReplace(String string) {
