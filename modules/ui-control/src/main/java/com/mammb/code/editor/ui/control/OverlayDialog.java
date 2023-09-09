@@ -36,6 +36,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import java.util.function.Consumer;
 
@@ -45,11 +46,24 @@ import java.util.function.Consumer;
  */
 public class OverlayDialog extends StackPane {
 
-    private static Color bgColor = Color.WHITE;
-    private static Color fgColor = Color.BLACK;
+    /** The background color. */
+    private final Color bgColor;
+
+    /** The foreground color. */
+    private final Color fgColor;
 
 
-    public OverlayDialog(String headerText, String contentText, Node... buttons) {
+    /**
+     * Create a new {@link OverlayDialog}.
+     * @param headerText the header text
+     * @param contentText the content text
+     * @param bgColor the background color
+     * @param buttons the buttons
+     */
+    public OverlayDialog(String headerText, String contentText, Color bgColor, Node... buttons) {
+
+        this.bgColor = bgColor;
+        this.fgColor = flip(bgColor);
 
         setBackground(new Background(new BackgroundFill(
             Color.color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 0.75),
@@ -61,15 +75,33 @@ public class OverlayDialog extends StackPane {
     }
 
 
+    /**
+     * Show confirm dialog.
+     * @param parent the node displaying dialog
+     * @param contentText the content text
+     * @param ok the ok action
+     */
     public static void confirm(Pane parent, String contentText, Runnable ok) {
+
+        Color color = (parent.getBackground() == null) ? Color.WHITE : parent.getBackground().getFills().stream()
+            .map(BackgroundFill::getFill)
+            .filter(Color.class::isInstance)
+            .map(Color.class::cast)
+            .findFirst()
+            .orElse(Color.WHITE);
+
         Runnable[] ra = new Runnable[1];
+
         var dialog = new OverlayDialog(
             "Confirmation",
             contentText,
-            button(" OK ", e -> { e.consume(); ra[0].run(); ok.run(); }),
-            button("Cancel", e -> { e.consume(); ra[0].run(); }));
+            color,
+            button(color, "  OK  ", e -> { e.consume(); ra[0].run(); ok.run(); }),
+            button(color, "Cancel", e -> { e.consume(); ra[0].run(); }));
+
         parent.getChildren().add(dialog);
         ra[0] = () -> parent.getChildren().remove(dialog);
+
     }
 
 
@@ -102,7 +134,7 @@ public class OverlayDialog extends StackPane {
 
         var hText = new Text(headerText);
         hText.setFill(fgColor);
-
+        hText.setFont(new Font(Font.getDefault().getSize() * 1.3));
 
         var cText = new Text(contentText);
         cText.setFill(fgColor);
@@ -135,11 +167,13 @@ public class OverlayDialog extends StackPane {
     /**
      * Create button.
      * @param caption the caption
+     * @param clickHandler the click handler
      * @return the button
      */
     private static Node button(
-        String caption,
-        EventHandler<MouseEvent> clickHandler) {
+            Color bgColor, String caption, EventHandler<MouseEvent> clickHandler) {
+
+        Color fgColor = flip(bgColor);
 
         var text = new Text(caption);
         text.setFill(fgColor);
@@ -162,10 +196,17 @@ public class OverlayDialog extends StackPane {
         button.setAlignment(Pos.CENTER);
         button.setPadding(new Insets(6));
         colorFn.accept(bgColor);
-        button.setOnMouseEntered(e -> colorFn.accept(bgColor.darker()));
+        button.setOnMouseEntered(e -> colorFn.accept(bgColor.deriveColor(0.0, 1.0, 0.9, 1.0)));
         button.setOnMouseExited(e -> colorFn.accept(bgColor));
         button.setOnMouseClicked(clickHandler);
+
         return button;
+
+    }
+
+
+    private static Color flip(Color base) {
+        return base.deriveColor(0.0, 1.0, (base.getBrightness() > 0.5) ? 0.2 : 2.0, 1.0);
     }
 
 }
