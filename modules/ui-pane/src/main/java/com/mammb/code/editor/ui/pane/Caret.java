@@ -32,14 +32,6 @@ public interface Caret {
      */
     void draw(GraphicsContext gc, double margin, double hScrolled);
 
-
-    /**
-     * Clear.
-     * @param gc the graphics context
-     */
-    Rect clear(GraphicsContext gc, double left);
-
-
     /**
      * Mark the caret to dirty.
      */
@@ -51,7 +43,6 @@ public interface Caret {
      * @param syncLogicalX whether to synchronize x position
      */
     void at(int charOffset, boolean syncLogicalX);
-
 
     /**
      * Move the caret to the right.
@@ -98,5 +89,14 @@ public interface Caret {
     double width();
 
     boolean drawn();
+
+    /**
+     * Switches to undrawn if already drawn.
+     * @return whether it has been drawn or not
+     */
+    boolean flipIfDrawn();
+
+
+    LayoutLine layoutLine();
 
 }

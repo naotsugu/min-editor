@@ -126,9 +126,10 @@ public class EditorModel {
         maxWidth = width - gutter.width();
         double offsetY = 0;
         for (TextLine line : texts.lines()) {
-            if (line.width() > maxWidth) maxWidth = line.width();
-            List<TextRun> runs = line.runs();
-            for (TextRun run : runs) {
+            if (line.width() > maxWidth) {
+                maxWidth = line.width();
+            }
+            for (TextRun run : line.runs()) {
                 drawRun(gc, run, false, offsetY, line.height());
             }
             offsetY += line.leadingHeight();
@@ -143,38 +144,18 @@ public class EditorModel {
         }
     }
 
-
-    /**
-     * Draw the screen partly.
-     * @param gc the GraphicsContext
-     * @param x the x position of dirty area
-     * @param y the y position of dirty area
-     * @param w the width of dirty area
-     * @param h the height of dirty area
-     */
-    public void draw(GraphicsContext gc, double x, double y, double w, double h) {
-        gc.save();
-        double offsetY = 0;
-        for (TextLine line : texts.lines()) {
-            double top = offsetY;
-            double bottom = top + line.height();
-            if (bottom < y) {
-                offsetY += line.leadingHeight();
-                continue;
-            }
-            if (top >= (y + h)) break;
-
-            if (line.width() > maxWidth) maxWidth = line.width();
-            List<TextRun> runs = line.runs();
-            for (TextRun run : runs) {
-                if ((run.layout().right()) < x) continue;
-                if (run.layout().x() > (x + w)) break;
-                drawRun(gc, run, true, top, line.height());
-            }
-            offsetY += line.leadingHeight();
+    private void draw(GraphicsContext gc, LayoutLine layoutLine) {
+        if (layoutLine == null) {
+            return;
         }
-        gc.restore();
+        if (layoutLine.width() > maxWidth) {
+            maxWidth = layoutLine.width();
+        }
+        for (TextRun run : layoutLine.runs()) {
+            drawRun(gc, run, true, layoutLine.offsetY(), layoutLine.height());
+        }
     }
+
 
     private void drawRun(GraphicsContext gc, TextRun run, boolean overlay, double top, double lineHeight) {
 
@@ -211,12 +192,6 @@ public class EditorModel {
     }
 
 
-    public void draw(GraphicsContext gc, Rect rect) {
-        if (rect == null) return;
-        draw(gc, rect.x(), rect.y(), rect.w(), rect.h());
-    }
-
-
     /**
      * Tick.
      * @param gc the GraphicsContext
@@ -243,7 +218,7 @@ public class EditorModel {
      * @param gc the GraphicsContext
      */
     public void hideCaret(GraphicsContext gc) {
-        if (caret.drawn()) draw(gc, caret.clear(gc, textLeft()));
+        if (caret.flipIfDrawn()) draw(gc, caret.layoutLine());
     }
 
     /**
@@ -281,7 +256,7 @@ public class EditorModel {
         if (ime.enabled()) new Rect(caret.x() + textLeft(), caret.y(), caret.width(), caret.height());
         vScrollToCaret();
         ime.on(caret.offsetPoint());
-        draw(gc, caret.clear(gc, textLeft()));
+        draw(gc, caret.layoutLine());
         return new Rect(caret.x() + textLeft(), caret.y(), caret.width(), caret.height());
     }
     public void imeOff() {

@@ -19,9 +19,9 @@ import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.pane.Caret;
 import com.mammb.code.editor.ui.pane.LayoutLine;
-import com.mammb.code.editor.ui.pane.Rect;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+
 import java.util.function.Function;
 
 import static java.lang.System.Logger.Level.DEBUG;
@@ -48,7 +48,7 @@ public class CaretImpl implements Caret {
     private double logicalX = 0;
 
     /** The text line. */
-    private TextLine line = null;
+    private LayoutLine line = null;
     /** The caret position x. */
     private double x = 0;
     /** The caret position y. */
@@ -85,19 +85,6 @@ public class CaretImpl implements Caret {
         gc.setStroke(Color.ORANGE);
         gc.setLineWidth(width);
         gc.strokeLine(x, top + 1, x, top + height - 1);
-    }
-
-
-    @Override
-    public Rect clear(GraphicsContext gc, double left) {
-        if (ensureLayout() == null) return null;
-        double dx = x + left - 0.5;
-        double dy = y;
-        double dw = width + 1;
-        double dh = line.height();
-        gc.clearRect(dx, dy, dw, dh);
-        drawn = false;
-        return new Rect(dx - left, dy, dw, dh);
     }
 
 
@@ -276,6 +263,23 @@ public class CaretImpl implements Caret {
     @Override
     public boolean drawn() {
         return drawn;
+    }
+
+
+    @Override
+    public boolean flipIfDrawn() {
+        if (drawn) {
+            drawn = false;
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public LayoutLine layoutLine() {
+        ensureLayout();
+        return line;
     }
 
 
