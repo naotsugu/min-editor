@@ -13,16 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.prefs;
+package com.mammb.code.editor.ui.prefs.impl;
+
+import com.mammb.code.editor.ui.prefs.Context;
+import com.mammb.code.editor.ui.prefs.Preference;
 
 /**
- * Preference.
+ * Context.
  * @author Naotsugu Kobayashi
  */
-public interface Preference {
-    ColorScheme colorScheme();
-    double fontSize();
-    String fontName();
-    String bgColor();
-    String fgColor();
+public class ContextImpl implements Context {
+
+    private Preference preference = PreferenceImpl.of();
+    private double nodeWidth = 800;
+    private double nodeHeight = 480;
+
+    @Override
+    public Preference preference() {
+        return preference;
+    }
+
+    @Override
+    public double regionWidth() {
+        return nodeWidth;
+    }
+
+    @Override
+    public double regionHeight() {
+        return nodeHeight;
+    }
 }

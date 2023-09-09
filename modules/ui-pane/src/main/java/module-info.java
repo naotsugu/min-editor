@@ -29,6 +29,7 @@ module code.editor.ui.pane {
     requires code.editor.syntax;
 
     requires code.editor.ui.control;
+    requires code.editor.ui.prefs;
 
     exports com.mammb.code.editor.ui.pane;
     exports com.mammb.code.editor.ui.pane.impl;

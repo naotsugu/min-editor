@@ -28,17 +28,40 @@ import static java.lang.System.Logger.*;
  */
 public enum ColorScheme {
 
-    LIGHT, DARK;
+    /** The light scheme. */
+    LIGHT,
+
+    /** The dark scheme. */
+    DARK,
+    ;
 
     /** logger. */
     private static final System.Logger log = System.getLogger(ColorScheme.class.getName());
 
 
     /**
+     * Gets whether the color scheme is in dark mode.
+     * @return {@code true}, if the color scheme is in dark mode
+     */
+    public boolean isDark() {
+        return this == DARK;
+    }
+
+
+    /**
+     * Gets whether the color scheme is in light mode.
+     * @return {@code true}, if the color scheme is in light mode
+     */
+    public boolean isLight() {
+        return this == LIGHT;
+    }
+
+
+    /**
      * Get the platform color scheme.
      * @return the platform color scheme
      */
-    public ColorScheme platform() {
+    public static ColorScheme platform() {
         String os = System.getProperty("os.name").toLowerCase();
         if (os.contains("windows")) {
             return windowsMode();

@@ -13,4 +13,5 @@ dependencies {
     implementation(project(":model-layout-fx"))
     implementation(project(":syntax"))
     implementation(project(":ui-control"))
+    implementation(project(":ui-prefs"))
 }

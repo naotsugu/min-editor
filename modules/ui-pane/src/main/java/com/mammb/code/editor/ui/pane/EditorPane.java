@@ -19,6 +19,7 @@ import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.OverlayDialog;
 import com.mammb.code.editor.ui.control.VScrollBar;
+import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
@@ -55,6 +56,8 @@ public class EditorPane extends StackPane {
 
     /** The timeline. */
     private final Timeline timeline = new Timeline();
+    /** The Context. */
+    private final Context context;
 
     /** The Canvas. */
     private Canvas canvas;
@@ -73,16 +76,16 @@ public class EditorPane extends StackPane {
 
     /**
      * Constructor.
-     * @param width the width
-     * @param height the height
+     * @param context the context
      */
-    public EditorPane(double width, double height) {
+    public EditorPane(Context context) {
 
+        this.context = context;
         setCursor(Cursor.TEXT);
-        setWidth(width);
-        setHeight(height);
-        double canvasWidth = width - margin;
-        double canvasHeight = height - margin;
+        setWidth(context.regionWidth());
+        setHeight(context.regionHeight());
+        double canvasWidth = context.regionWidth() - margin;
+        double canvasHeight = context.regionHeight() - margin;
 
         editorModel = new EditorModel(canvasWidth, canvasHeight, fgColor);
 
@@ -355,7 +358,7 @@ public class EditorPane extends StackPane {
         Bounds bounds = localToScreen(getBoundsInLocal());
         newStage.setX(bounds.getMinX() + 15);
         newStage.setY(bounds.getMinY() + 15);
-        new EditorPane(getWidth(), getHeight()).showOn(newStage);
+        new EditorPane(context).showOn(newStage);
     }
 
     public void showOn(Stage stage) {

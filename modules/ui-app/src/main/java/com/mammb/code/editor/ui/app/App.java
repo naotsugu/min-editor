@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.pane.EditorPane;
+import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -27,8 +28,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        AppContext context = AppContext.of(getParameters());
-        new EditorPane(context.width, context.height).showOn(stage);
+        Context context = Context.of();
+        new EditorPane(context).showOn(stage);
     }
 
 }

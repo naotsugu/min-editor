@@ -15,14 +15,20 @@
  */
 package com.mammb.code.editor.ui.prefs;
 
+import com.mammb.code.editor.ui.prefs.impl.ContextImpl;
+
 /**
- * Preference.
+ * Context.
  * @author Naotsugu Kobayashi
  */
-public interface Preference {
-    ColorScheme colorScheme();
-    double fontSize();
-    String fontName();
-    String bgColor();
-    String fgColor();
+public interface Context {
+
+    Preference preference();
+    double regionWidth();
+    double regionHeight();
+
+    static Context of() {
+        return new ContextImpl();
+    }
+
 }
