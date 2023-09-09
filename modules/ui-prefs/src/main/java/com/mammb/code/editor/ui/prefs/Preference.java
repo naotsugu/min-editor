@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.ui.prefs;
 
 /**
- * The ui preference module.
+ * Preference.
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui.pref {
-    requires code.editor.javafx;
-    exports com.mammb.code.editor.ui.pref;
+public interface Preference {
+    double fontSize();
+    String fontName();
+    String bgColor();
+    String fgColor();
 }
