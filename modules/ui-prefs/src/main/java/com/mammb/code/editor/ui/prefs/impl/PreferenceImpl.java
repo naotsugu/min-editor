@@ -50,8 +50,8 @@ public class PreferenceImpl implements Preference {
             colorScheme,
             15,
             fontName,
-            colorScheme.isDark() ? "#000000" : "#FFFFFF",
-            colorScheme.isDark() ? "#FFFFFF" : "#000000"
+            colorScheme.isDark() ? "#292929" : "#FEFEFE",
+            colorScheme.isDark() ? "#FEFEFE" : "#292929"
         );
     }
 
