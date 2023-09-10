@@ -22,9 +22,9 @@ import com.mammb.code.editor.model.layout.LayoutWrapTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.style.StyledText;
-import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.Translate;
+import com.mammb.code.editor.ui.prefs.Context;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -36,6 +36,8 @@ import java.util.List;
  */
 public class WrapTextList implements TextList {
 
+    /** The Context. */
+    private final Context context;
     /** The edit buffer. */
     private final TextBuffer<Textual> buffer;
     /** The text translator. */
@@ -57,31 +59,25 @@ public class WrapTextList implements TextList {
 
     /**
      * Constructor.
-     * @param buffer the edit buffer
-     */
-    public WrapTextList(TextBuffer<Textual> buffer) {
-        this(buffer, StylingTranslate.passThrough(), -1);
-    }
-
-
-    /**
-     * Constructor.
+     * @param context the context
      * @param buffer the edit buffer
      * @param styling the styling
      * @param wrapWidth the wrap width
      */
     public WrapTextList(
+            Context context,
             TextBuffer<Textual> buffer,
             Translate<Textual, StyledText> styling,
             double wrapWidth) {
+        this.context = context;
         this.buffer = buffer;
         this.styling = styling;
-        this.translator = translator(layout, wrapWidth, styling);
+        this.translator = translator(context, layout, wrapWidth, styling);
     }
 
 
     public TextList asLinear() {
-        return new LinearTextList(buffer, styling);
+        return new LinearTextList(context, buffer, styling);
     }
 
 
@@ -253,11 +249,17 @@ public class WrapTextList implements TextList {
     }
 
     private static Translate<Textual, List<TextLine>> translator(
-            LineLayout layout, double wrapWidth,
+            Context ctx,
+            LineLayout layout,
+            double wrapWidth,
             Translate<Textual, StyledText> styling) {
         layout.setWrapWidth(wrapWidth);
-        return styling.compound(FxSpanTranslate.of())
-                      .compound(LayoutWrapTranslate.of(layout));
+        return styling.compound(FxSpanTranslate.of(
+                ctx.preference().fontName(),
+                ctx.preference().fontSize(),
+                ctx.preference().fgColor(),
+                ctx.preference().bgColor()))
+            .compound(LayoutWrapTranslate.of(layout));
     }
 
 

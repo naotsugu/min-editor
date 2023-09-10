@@ -22,9 +22,9 @@ import com.mammb.code.editor.model.layout.LayoutTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.style.StyledText;
-import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.Translate;
+import com.mammb.code.editor.ui.prefs.Context;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +35,8 @@ import java.util.List;
  */
 public class LinearTextList implements TextList {
 
+    /** The Context. */
+    private final Context context;
     /** The edit buffer. */
     private final TextBuffer<Textual> buffer;
     /** The text translator. */
@@ -54,27 +56,23 @@ public class LinearTextList implements TextList {
 
     /**
      * Constructor.
-     * @param buffer the edit buffer
-     */
-    public LinearTextList(TextBuffer<Textual> buffer) {
-        this(buffer, StylingTranslate.passThrough());
-    }
-
-
-    /**
-     * Constructor.
+     * @param context the context
      * @param buffer the edit buffer
      * @param styling the styling
      */
-    public LinearTextList(TextBuffer<Textual> buffer, Translate<Textual, StyledText> styling) {
+    public LinearTextList(
+            Context context,
+            TextBuffer<Textual> buffer,
+            Translate<Textual, StyledText> styling) {
+        this.context = context;
         this.buffer = buffer;
         this.styling = styling;
-        this.translator = translator(layout, styling);
+        this.translator = translator(context, layout, styling);
     }
 
 
     public TextList asWrapped(double width) {
-        return new WrapTextList(buffer, styling, width);
+        return new WrapTextList(context, buffer, styling, width);
     }
 
     @Override
@@ -201,9 +199,15 @@ public class LinearTextList implements TextList {
      * @return the translator
      */
     private static Translate<Textual, TextLine> translator(
-            LineLayout layout, Translate<Textual, StyledText> styling) {
-        return styling.compound(FxSpanTranslate.of())
-                      .compound(LayoutTranslate.of(layout));
+            Context ctx,
+            LineLayout layout,
+            Translate<Textual, StyledText> styling) {
+        return styling.compound(FxSpanTranslate.of(
+                    ctx.preference().fontName(),
+                    ctx.preference().fontSize(),
+                    ctx.preference().fgColor(),
+                    ctx.preference().bgColor()))
+            .compound(LayoutTranslate.of(layout));
     }
 
 }

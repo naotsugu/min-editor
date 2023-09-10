@@ -30,15 +30,9 @@ import java.util.stream.IntStream;
  */
 public class Global {
 
-    public static final Color fgColor = Color.BLACK;
-    public static final Color bgColor = Color.WHITE;
-
-    public static final FontStyle<Font, Color> style = FxFontStyle.of(fgColor);
-
+    public static final FontStyle<Font, Color> style = FxFontStyle.of(Color.WHITE);
 
     public static final FontMetrics<Font> fontMetrics = new FxFontMetrics(style.font());
-
-    public static final double numWidth = numberCharacterWidth(style.font());
 
     /**
      * Get the maximum unit width of a number character when drawn in the specified font.
@@ -50,25 +44,5 @@ public class Global {
             .mapToDouble(c -> fontMetrics.getCharWidth(font, (char) c))
             .max().orElse(0.0);
     }
-
-
-    public static Color flipBrightness(Color color) {
-
-        final double factor = 0.2;
-
-        if (color.getBrightness() < 0.4) {
-            double brightnessFactor = 1.0 / (color.getBrightness() + factor);
-            return color.deriveColor(0, 1.0, brightnessFactor, 1.0);
-
-        } else if (color.getBrightness() > 0.6) {
-            double brightnessFactor = (1 - color.getBrightness()) + factor;
-            return color.deriveColor(0, 1.0, brightnessFactor, 1.0);
-
-        } else {
-            return color;
-        }
-
-    }
-
 
 }

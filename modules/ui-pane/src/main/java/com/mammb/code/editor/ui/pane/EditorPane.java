@@ -24,6 +24,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
@@ -37,6 +38,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
@@ -72,7 +76,7 @@ public class EditorPane extends StackPane {
 
     /** The margin. */
     private double margin = 5.5;
-    private Color fgColor = Global.fgColor;
+
 
     /**
      * Constructor.
@@ -84,10 +88,14 @@ public class EditorPane extends StackPane {
         setCursor(Cursor.TEXT);
         setWidth(context.regionWidth());
         setHeight(context.regionHeight());
+        setBackground(new Background(new BackgroundFill(
+            Color.web(context.preference().bgColor()),
+            CornerRadii.EMPTY, Insets.EMPTY)));
+
         double canvasWidth = context.regionWidth() - margin;
         double canvasHeight = context.regionHeight() - margin;
 
-        editorModel = new EditorModel(canvasWidth, canvasHeight, fgColor);
+        editorModel = new EditorModel(context, canvasWidth, canvasHeight);
 
         canvas = new Canvas(canvasWidth, canvasHeight);
         canvas.setFocusTraversable(true);
@@ -96,9 +104,9 @@ public class EditorPane extends StackPane {
         canvas.setLayoutY(margin);
         getChildren().add(canvas);
 
-        vScrollBar = new VScrollBar(fgColor);
+        vScrollBar = new VScrollBar(Color.web(context.preference().fgColor()));
         StackPane.setAlignment(vScrollBar, Pos.CENTER_RIGHT);
-        hScrollBar = new HScrollBar(fgColor);
+        hScrollBar = new HScrollBar(Color.web(context.preference().fgColor()));
         StackPane.setAlignment(hScrollBar, Pos.BOTTOM_LEFT);
         getChildren().addAll(vScrollBar, hScrollBar);
         editorModel.setScroll(vScrollBar, hScrollBar);
@@ -426,9 +434,10 @@ public class EditorPane extends StackPane {
 
     private void updateModel(Path path) {
         editorModel = new EditorModel(
+            context,
             getWidth(), getHeight(),
-            fgColor, path,
-            Syntax.of(path, fgColor.toString().substring(2, 8)),
+            path,
+            Syntax.of(path, context.preference().fgColor()),
             vScrollBar, hScrollBar);
         editorModel.draw(gc);
     }

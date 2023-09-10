@@ -30,6 +30,7 @@ import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.ui.pane.impl.Clipboard;
 import com.mammb.code.editor.ui.pane.impl.ImePalletImpl;
 import com.mammb.code.editor.ui.pane.impl.SelectionImpl;
+import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -50,6 +51,8 @@ public class EditorModel {
     /** logger. */
     private static final System.Logger log = System.getLogger(EditorModel.class.getName());
 
+    /** The Context. */
+    private final Context context;
     /** The text buffer. */
     private final TextBuffer<Textual> buffer;
     /** The gutter. */
@@ -70,20 +73,18 @@ public class EditorModel {
     private double height;
     /** The text list. */
     private TextList texts;
-
     /** The max width. */
     private double maxWidth = 0;
 
-    private Color fgColor;
 
     /**
      * Constructor.
+     * @param context the context
      * @param width the screen width
      * @param height the screen height
-     * @param fgColor the fgColor
      */
-    public EditorModel(double width, double height, Color fgColor) {
-        this(width, height, fgColor,
+    public EditorModel(Context context, double width, double height) {
+        this(context, width, height,
             null, StylingTranslate.passThrough(),
             ScrollBar.vEmpty(), ScrollBar.hEmpty());
     }
@@ -91,26 +92,30 @@ public class EditorModel {
 
     /**
      * Constructor.
+     * @param context the context
      * @param width the screen width
      * @param height the screen height
-     * @param fgColor the fgColor
      * @param path the path
      */
     public EditorModel(
-            double width, double height, Color fgColor,
-            Path path, StylingTranslate styling,
+            Context context,
+            double width, double height,
+            Path path,
+            StylingTranslate styling,
             ScrollBar<Integer> vScroll,
             ScrollBar<Double> hScroll) {
-        this.fgColor = fgColor;
+
+        this.context = context;
         this.buffer = TextBuffer.editBuffer(path, screenRowSize(height));
-        this.texts = new LinearTextList(buffer, styling);
-        this.gutter = new Gutter();
+        this.texts = new LinearTextList(context, buffer, styling);
+        this.gutter = new Gutter(context);
         this.caret = new CaretImpl(this::layoutLine);
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.width = width;
         this.height = height;
         this.maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
+
         setScroll(vScroll, hScroll);
     }
 

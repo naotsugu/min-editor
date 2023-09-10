@@ -32,18 +32,33 @@ import java.util.List;
  */
 public class FxSpanTranslate implements SpanTranslate {
 
+    private final String defaultName;
+    private final double defaultSize;
+    private final Color defaultColor;
+    private final Color defaultBgColor;
+
     /**
      * Constructor.
      */
-    private FxSpanTranslate() {
+    public FxSpanTranslate(String defaultName, double defaultSize, Color defaultColor, Color defaultBgColor) {
+        this.defaultName = defaultName;
+        this.defaultSize = defaultSize;
+        this.defaultColor = defaultColor;
+        this.defaultBgColor = defaultBgColor;
     }
+
 
     /**
      * Create a new translation.
+     * @param defaultName
+     * @param defaultSize
+     * @param defaultColor
+     * @param defaultBgColor
      * @return a new translation
      */
-    public static Translate<StyledText, List<Span>> of() {
-        return new FxSpanTranslate();
+    public static Translate<StyledText, List<Span>> of(
+            String defaultName, double defaultSize, String defaultColor, String defaultBgColor) {
+        return new FxSpanTranslate(defaultName, defaultSize, Color.web(defaultColor), Color.web(defaultBgColor));
     }
 
 
@@ -52,10 +67,10 @@ public class FxSpanTranslate implements SpanTranslate {
         var list = new ArrayList<Span>();
         for (StyledText text : row.spans()) {
 
-            String fontName = FxFontStyle.defaultName;
-            double fontSize = FxFontStyle.defaultSize;
-            Color fgColor = FxFontStyle.defaultColor;
-            Color bgColor = FxFontStyle.defaultBgColor;
+            String fontName = defaultName;
+            double fontSize = defaultSize;
+            Color fgColor = defaultColor;
+            Color bgColor = defaultBgColor;
 
             for (StyleSpan styleSpan : text.styles()) {
                 Style style = styleSpan.style();

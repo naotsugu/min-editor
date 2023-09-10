@@ -15,11 +15,16 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import com.mammb.code.editor.javafx.layout.FxFontMetrics;
+import com.mammb.code.editor.model.layout.FontMetrics;
 import com.mammb.code.editor.model.layout.TextRun;
+import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+
+import java.util.stream.IntStream;
 
 /**
  * Gutter.
@@ -33,12 +38,14 @@ public class Gutter {
     private double width;
     private boolean widthChanged;
 
-    public Gutter() {
-        this.font = Global.style.font();
-        this.chWidth = Global.numWidth;
+    public Gutter(Context ctx) {
+        this.font = Font.font(ctx.preference().fontName(), ctx.preference().fontSize());
+        this.chWidth = numberCharacterWidth(font);
         this.width = Math.ceil(chWidth * 5);
         this.widthChanged = false;
-        this.color = Global.flipBrightness(Global.style.color());
+        this.color = ctx.preference().colorScheme().isDark()
+            ? Color.web(ctx.preference().fgColor()).darker().darker()
+            : Color.web(ctx.preference().fgColor()).brighter().brighter();
     }
 
 
@@ -82,7 +89,7 @@ public class Gutter {
 
     public void setFont(Font font) {
         this.font = font;
-        this.chWidth = Global.numberCharacterWidth(font);
+        this.chWidth = numberCharacterWidth(font);
         this.widthChanged = true;
     }
 
@@ -93,6 +100,18 @@ public class Gutter {
             width = w;
             widthChanged = true;
         }
+    }
+
+    /**
+     * Get the maximum unit width of a number character when drawn in the specified font.
+     * @param font the specified font
+     * @return the unit width
+     */
+    private static double numberCharacterWidth(Font font) {
+        FontMetrics<Font> fontMetrics = new FxFontMetrics(font);
+        return IntStream.rangeClosed('0', '9')
+            .mapToDouble(c -> fontMetrics.getCharWidth(font, (char) c))
+            .max().orElse(0.0);
     }
 
 }

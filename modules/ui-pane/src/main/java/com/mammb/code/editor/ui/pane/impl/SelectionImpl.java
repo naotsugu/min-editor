@@ -37,6 +37,8 @@ public class SelectionImpl implements Selection {
     /** The selection dragging. */
     private boolean dragging = false;
 
+    private Color color = new Color(0.6784314F, 0.84705883F, 0.9019608F, 0.3);
+
 
     @Override
     public void start(OffsetPoint offset) {
@@ -104,7 +106,7 @@ public class SelectionImpl implements Selection {
                 ((text.length() == 1 && text.charAt(0) == '\n') ||
                  (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
 
-                gc.setFill(Color.LIGHTBLUE);
+                gc.setFill(color);
                 gc.fillRect(run.layout().x() + left, top, Global.numberCharacterWidth(gc.getFont()), run.textLine().height());
 
             } else {
@@ -112,7 +114,7 @@ public class SelectionImpl implements Selection {
                 double x1 = run.offsetToX().apply(Math.max(min().offset(), runStart) - runStart);
                 double x2 = run.offsetToX().apply(Math.min(max().offset(), runEnd) - runStart);
 
-                gc.setFill(Color.LIGHTBLUE);
+                gc.setFill(color);
                 gc.fillRect(x1 + left, top, x2 - x1, run.textLine().height());
 
             }
