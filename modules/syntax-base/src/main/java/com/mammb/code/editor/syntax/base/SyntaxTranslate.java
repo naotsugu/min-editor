@@ -112,7 +112,7 @@ public class SyntaxTranslate implements StylingTranslate {
         var contextNode = scopeNode.select(node -> !node.open().context().isEmpty()).orElseThrow();
         if (contextNode.open().context().equals(lexer.name())) {
             // if the current context is route lexer
-            var prime = scopeNode.selectPrime(node -> !node.isRoot());
+            var prime = scopeNode.selectPrime(ScopeNode::isRoot);
             if (prime.isPresent()) {
                 if (prime.get().open().type().serial() > current.type().serial()) {
                     return prime.get().open();
@@ -133,7 +133,11 @@ public class SyntaxTranslate implements StylingTranslate {
                     return current;
                 }
             } else {
-                return contextNode.open();
+                if (current.type().hue() != Hue.NONE) {
+                    return current;
+                } else {
+                    return contextNode.open();
+                }
             }
         }
     }

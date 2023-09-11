@@ -156,6 +156,9 @@ public class EditorPane extends StackPane {
         confirmIfDirty(() -> updateModel(path));
     }
 
+    /**
+     * Save the current model.
+     */
     private void save() {
         if (editorModel.metrics().path() == null) {
             saveChoose();
@@ -181,7 +184,10 @@ public class EditorPane extends StackPane {
         fc.setTitle("Save As...");
         fc.setInitialDirectory(initialDirectory(null));
         File file = fc.showSaveDialog(getScene().getWindow());
-        if (file != null) editorModel.saveAs(file.toPath());
+        if (file != null) {
+            editorModel.saveAs(file.toPath());
+            updateModel(file.toPath());
+        }
     }
 
 
