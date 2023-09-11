@@ -10,4 +10,11 @@ $ cd min-editor
 $ ./gradlew run
 ```
 
+If a debug run is required, do the following
+
+```console
+$ ./gradlew run -Ddebug
+```
+
+
 

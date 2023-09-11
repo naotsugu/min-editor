@@ -156,6 +156,13 @@ public class EditorPane extends StackPane {
         confirmIfDirty(() -> updateModel(path));
     }
 
+    private void save() {
+        if (editorModel.metrics().path() == null) {
+            saveChoose();
+        } else {
+            editorModel.save();
+        }
+    }
 
     private void openChoose() {
         confirmIfDirty(() -> {
@@ -226,7 +233,7 @@ public class EditorPane extends StackPane {
         if (action != Keys.Action.EMPTY) {
             switch (action) {
                 case OPEN       -> openChoose();
-                case SAVE       -> editorModel.save();
+                case SAVE       -> save();
                 case SAVE_AS    -> saveChoose();
                 case COPY       -> editorModel.copyToClipboard();
                 case PASTE      -> aroundEdit(editorModel::pasteFromClipboard);

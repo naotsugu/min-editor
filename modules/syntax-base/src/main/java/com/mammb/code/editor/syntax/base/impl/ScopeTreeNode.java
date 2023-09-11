@@ -111,7 +111,7 @@ public class ScopeTreeNode implements ScopeNode {
     public Optional<ScopeNode> selectPrime(Predicate<ScopeNode> until) {
         ScopeNode ret = null;
         for (ScopeNode n = this; !n.isRoot(); n = n.parent()) {
-            if (!until.test(n)) {
+            if (until.test(n)) {
                 break;
             }
             if (ret == null || n.open().type().serial() > ret.open().type().serial()) {
