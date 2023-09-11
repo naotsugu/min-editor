@@ -143,7 +143,7 @@ public interface TextRun {
      * @return a created TextRun
      */
     static TextRun of(Layout layout, double y, int start, int length, Span source,
-                      Function<Integer, Float> offsetToX, Function<Double, Integer> xToOffset) {
+            Function<Integer, Float> offsetToX, Function<Double, Integer> xToOffset) {
         return new TextRunRecord(layout, y, start, length, null, source, offsetToX, xToOffset);
     }
 
@@ -154,7 +154,8 @@ public interface TextRun {
      * @return a created TextRun
      */
     static TextRun of(TextLine textLine, TextRun textRun) {
-        return new TextRunRecord(textRun.layout(), textRun.y(), textRun.start(), textRun.length(), textLine, textRun.source(), textRun.offsetToX(), textRun.xToOffset());
+        return new TextRunRecord(textRun.layout(), textRun.y(), textRun.start(), textRun.length(),
+            textLine, textRun.source(), textRun.offsetToX(), textRun.xToOffset());
     }
 
 }

@@ -15,26 +15,29 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.ui.control.ScrollBar;
+import com.mammb.code.editor.javafx.layout.FxFontMetrics;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.edit.Edit;
+import com.mammb.code.editor.model.layout.FontMetrics;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
-import com.mammb.code.editor.ui.pane.impl.CaretImpl;
-import com.mammb.code.editor.ui.pane.impl.Draws;
-import com.mammb.code.editor.ui.pane.impl.SelectBehaviors;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.ui.control.ScrollBar;
+import com.mammb.code.editor.ui.pane.impl.CaretImpl;
 import com.mammb.code.editor.ui.pane.impl.Clipboard;
+import com.mammb.code.editor.ui.pane.impl.Draws;
 import com.mammb.code.editor.ui.pane.impl.ImePalletImpl;
+import com.mammb.code.editor.ui.pane.impl.SelectBehaviors;
 import com.mammb.code.editor.ui.pane.impl.SelectionImpl;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -156,7 +159,7 @@ public class EditorModel {
         if (layoutLine.width() > maxWidth) {
             maxWidth = layoutLine.width();
         }
-        gc.clearRect(gutter.width(), layoutLine.offsetY(), width, layoutLine.height());
+        gc.clearRect(gutter.width(), layoutLine.offsetY(), width - gutter.width(), layoutLine.height());
         for (TextRun run : layoutLine.runs()) {
             drawRun(gc, run, layoutLine.offsetY(), layoutLine.height());
         }
@@ -616,7 +619,10 @@ public class EditorModel {
 
 
     int screenRowSize(double height) {
-        return (int) Math.ceil(height / Global.fontMetrics.lineHeight());
+        FontMetrics<Font> fontMetrics = new FxFontMetrics(Font.font(
+            context.preference().fontName(),
+            context.preference().fontSize()));
+        return (int) Math.ceil(height / fontMetrics.lineHeight());
     }
 
     private double textLeft() {

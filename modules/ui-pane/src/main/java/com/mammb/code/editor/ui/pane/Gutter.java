@@ -110,7 +110,7 @@ public class Gutter {
     private static double numberCharacterWidth(Font font) {
         FontMetrics<Font> fontMetrics = new FxFontMetrics(font);
         return IntStream.rangeClosed('0', '9')
-            .mapToDouble(c -> fontMetrics.getCharWidth(font, (char) c))
+            .mapToDouble(c -> fontMetrics.getCharWidth((char) c))
             .max().orElse(0.0);
     }
 

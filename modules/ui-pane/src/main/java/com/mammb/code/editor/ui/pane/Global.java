@@ -16,10 +16,7 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.javafx.layout.FxFontMetrics;
-import com.mammb.code.editor.javafx.layout.FxFontStyle;
 import com.mammb.code.editor.model.layout.FontMetrics;
-import com.mammb.code.editor.model.layout.FontStyle;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.util.stream.IntStream;
@@ -30,18 +27,15 @@ import java.util.stream.IntStream;
  */
 public class Global {
 
-    public static final FontStyle<Font, Color> style = FxFontStyle.of(Color.WHITE);
-
-    public static final FontMetrics<Font> fontMetrics = new FxFontMetrics(style.font());
-
     /**
      * Get the maximum unit width of a number character when drawn in the specified font.
      * @param font the specified font
      * @return the unit width
      */
     public static double numberCharacterWidth(Font font) {
+        FontMetrics<Font> fontMetrics = new FxFontMetrics(font);
         return IntStream.rangeClosed('0', '9')
-            .mapToDouble(c -> fontMetrics.getCharWidth(font, (char) c))
+            .mapToDouble(c -> fontMetrics.getCharWidth((char) c))
             .max().orElse(0.0);
     }
 
