@@ -19,6 +19,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -109,6 +110,7 @@ public class OverlayDialog extends StackPane {
 
         GridPane grid = new GridPane();
 
+        grid.setCursor(Cursor.DEFAULT);
         grid.setMaxSize(300, 150);
         grid.setMinSize(300, 150);
         grid.setPrefSize(300, 150);
@@ -196,7 +198,7 @@ public class OverlayDialog extends StackPane {
         button.setAlignment(Pos.CENTER);
         button.setPadding(new Insets(6));
         colorFn.accept(bgColor);
-        button.setOnMouseEntered(e -> colorFn.accept(bgColor.deriveColor(0.0, 1.0, 0.9, 1.0)));
+        button.setOnMouseEntered(e -> colorFn.accept(flip(bgColor).deriveColor(0.0, 1.0, 0.5, 1.0)));
         button.setOnMouseExited(e -> colorFn.accept(bgColor));
         button.setOnMouseClicked(clickHandler);
 
@@ -206,7 +208,7 @@ public class OverlayDialog extends StackPane {
 
 
     private static Color flip(Color base) {
-        return base.deriveColor(0.0, 1.0, (base.getBrightness() > 0.5) ? 0.2 : 2.0, 1.0);
+        return base.deriveColor(0.0, 1.0, (base.getBrightness() > 0.5) ? 0.2 : 6.0, 1.0);
     }
 
 }

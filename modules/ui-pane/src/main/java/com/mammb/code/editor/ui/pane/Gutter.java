@@ -38,6 +38,10 @@ public class Gutter {
     private double width;
     private boolean widthChanged;
 
+    /**
+     * Constructor.
+     * @param ctx the context
+     */
     public Gutter(Context ctx) {
         this.font = Font.font(ctx.preference().fontName(), ctx.preference().fontSize());
         this.chWidth = numberCharacterWidth(font);
@@ -101,6 +105,7 @@ public class Gutter {
             widthChanged = true;
         }
     }
+
 
     /**
      * Get the maximum unit width of a number character when drawn in the specified font.
