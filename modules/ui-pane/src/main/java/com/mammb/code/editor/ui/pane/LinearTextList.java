@@ -75,6 +75,7 @@ public class LinearTextList implements TextList {
         return new WrapTextList(context, buffer, styling, width);
     }
 
+
     @Override
     public List<TextLine> lines() {
         if (lines.isEmpty()) {
@@ -82,16 +83,20 @@ public class LinearTextList implements TextList {
                 lines.add(translator.applyTo(textual));
             }
         }
-        List<TextLine> ret = (rollup > 0) ? lines.subList(rollup, lines.size()): lines;
+        List<TextLine> ret = (rollup > 0)
+            ? lines.subList(rollup, lines.size())
+            : lines;
         head = ret.get(0);
         return ret;
     }
+
 
     @Override
     public TextLine head() {
         if (lines.isEmpty()) lines();
         return head;
     }
+
 
     @Override
     public void markDirty() {
@@ -147,7 +152,9 @@ public class LinearTextList implements TextList {
         List<Textual> added = buffer.next(n);
         int size = added.size();
         if (size < n) {
-            rollup = Math.min(rollup + (n - size), buffer.maxLineSize() / 2);
+            if (lines.size() > buffer.maxLineSize() / 2) {
+                rollup = Math.min(rollup + (n - size), buffer.maxLineSize() / 2);
+            }
         }
         if (size == 0) {
             return 0;
