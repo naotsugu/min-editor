@@ -152,9 +152,7 @@ public class LinearTextList implements TextList {
         List<Textual> added = buffer.next(n);
         int size = added.size();
         if (size < n) {
-            if (lines.size() > buffer.maxLineSize() / 2) {
-                rollup = Math.min(rollup + (n - size), buffer.maxLineSize() / 2);
-            }
+            rollup = Math.min(rollup + (n - size), lines.size() - buffer.maxLineSize() / 2);
         }
         if (size == 0) {
             return 0;
@@ -170,7 +168,6 @@ public class LinearTextList implements TextList {
 
         // add lines added by scrolling to the end.
         lines.addAll(list);
-        // TODO if it is the last line, add an empty TextLine
 
         return size;
     }

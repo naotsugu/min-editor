@@ -285,16 +285,16 @@ public class EditorModel {
     // -- scroll behavior  ----------------------------------------------------
     public void scrollPrev(int n) {
         int size = texts.prev(n);
+        caret.markDirty();
         if (size == 0) return;
         texts.markDirty();
-        caret.markDirty();
         vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
     public void scrollNext(int n) {
         int size = texts.next(n);
+        caret.markDirty();
         if (size == 0) return;
         texts.markDirty();
-        caret.markDirty();
         vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
     private void vScrollToCaret() {

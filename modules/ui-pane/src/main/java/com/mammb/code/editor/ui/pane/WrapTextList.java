@@ -149,8 +149,12 @@ public class WrapTextList implements TextList {
 
 
     @Override
-    public int next(int n) {
-        if (n <= 0) return 0;
+    public int next(final int n) {
+
+        if (n <= 0) {
+            return 0;
+        }
+
         int count = 0;
         for (int i = 0; i < n; i++) {
             int ret = next();
