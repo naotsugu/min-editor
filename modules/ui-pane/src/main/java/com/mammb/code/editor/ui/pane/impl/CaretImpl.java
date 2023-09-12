@@ -158,9 +158,9 @@ public class CaretImpl implements Caret {
         offset--;
         if (offset < line.point().offset()) {
             row--;
-            logicalX = 0;
             markDirty();
             ensureLayout();
+            logicalX = x;
             return;
         }
         if (Character.isHighSurrogate(line.charAt(offset))) {
