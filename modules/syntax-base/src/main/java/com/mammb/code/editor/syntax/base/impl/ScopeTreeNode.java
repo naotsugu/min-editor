@@ -121,6 +121,17 @@ public class ScopeTreeNode implements ScopeNode {
         return Optional.ofNullable(ret);
     }
 
+    @Override
+    public List<ScopeNode> collect(Predicate<ScopeNode> filter) {
+        List<ScopeNode> ret = new ArrayList<>();
+        for (ScopeNode n = this; !n.isRoot(); n = n.parent()) {
+            if (filter.test(n)) {
+                ret.add(0, n);
+            }
+        }
+        return ret;
+    }
+
     /**
      * Close this scope with the specified token.
      * @param token the close token

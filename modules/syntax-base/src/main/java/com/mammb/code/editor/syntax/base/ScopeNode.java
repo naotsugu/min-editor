@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.syntax.base;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -49,6 +50,8 @@ public interface ScopeNode {
     Optional<ScopeNode> select(Predicate<ScopeNode> predicate);
 
     Optional<ScopeNode> selectPrime(Predicate<ScopeNode> until);
+
+    List<ScopeNode> collect(Predicate<ScopeNode> filter);
 
     /**
      * Gets the scope level of this node.

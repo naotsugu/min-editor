@@ -100,14 +100,10 @@ public class MarkdownLexer implements Lexer {
             }
         }
 
-        if (delegate != null && source.peekChar() == '`' && source.peekChar() == '`' && source.peekChar() == '`') {
-            source.rollbackPeek();
-            delegate = null;
-            return false;
-        }
-
-        var context = scope.current().select(n -> !n.isRoot() && !n.open().context().isEmpty())
-            .map(n -> n.open().context()).orElse("");
+        var context = scope.current().collect(n -> !n.open().context().isEmpty()).stream()
+                .filter(n -> !n.open().context().equals(name())).findFirst()
+                .map(n -> n.open().context())
+                .orElse("");
         if (context.isEmpty()) {
             delegate = null;
         } else {
