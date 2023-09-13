@@ -27,8 +27,12 @@ class ColorPaletteTest {
 
     @Test
     void getLuminance() {
-        assertEquals(0.0, new ColorPalette("000000").getLuminance());
-        assertEquals(100.0, new ColorPalette("FFFFFF").getLuminance());
+        assertEquals(  0, (int) new ColorPalette("000000").getLuminance()); // black
+        assertEquals(  8, (int) new ColorPalette("191919").getLuminance());
+        assertEquals( 16, (int) new ColorPalette("292929").getLuminance());
+        assertEquals( 85, (int) new ColorPalette("C9D7E6").getLuminance());
+        assertEquals( 94, (int) new ColorPalette("F0F0F0").getLuminance());
+        assertEquals(100, (int) new ColorPalette("FFFFFF").getLuminance()); // white
     }
 
 }

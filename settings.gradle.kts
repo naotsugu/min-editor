@@ -4,8 +4,6 @@ plugins {
 
 rootProject.name = "min-editor"
 
-// main module
-//include("app")
 include("bootstrap")
 
 // git submodule
@@ -17,12 +15,11 @@ include("model-text", "model-edit", "model-buffer", "model-layout")
 include("syntax", "syntax-base", "syntax-basic", "syntax-java", "syntax-javascript", "syntax-markdown")
 include("ui-app", "ui-prefs", "ui-pane", "ui-control")
 
+// javaFX
 include("javafx", "javafx-peep", "javafx-original")
-
 include("model-layout-fx")
 
 
-for (project in rootProject.children.filterNot {
-        it.name == "app" || it.name == "piecetable" }) {
+for (project in rootProject.children.filterNot { it.name == "piecetable" }) {
     project.projectDir = file("modules/${project.name}")
 }

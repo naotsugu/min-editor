@@ -28,6 +28,10 @@ public class ColorPalette {
     private double luminance;
 
 
+    /**
+     * Constructor.
+     * @param baseRgb the base rgb
+     */
     public ColorPalette(String baseRgb) {
         base = (baseRgb == null || baseRgb.isEmpty())
             ? "000000" : baseRgb.startsWith("#")
@@ -56,7 +60,19 @@ public class ColorPalette {
     public String blueGrey() { return on(Hue.BLUE_GREY); }
 
     public String on(Hue hue) {
-        return (hue == Hue.NONE) ? "" : '#' + colors[hue.ordinal()][index()];
+        if (!hue.isColored()) {
+            return "";
+        }
+        String selected = "";
+        double distance = 100;
+        for (String rgb : colors[hue.ordinal()]) {
+            double d = Math.abs(luminance - (luminance(rgb) * 1.16));
+            if (d < distance) {
+                selected = '#' + rgb;
+                distance = d;
+            }
+        }
+        return selected;
     }
 
     public String getBase() {
