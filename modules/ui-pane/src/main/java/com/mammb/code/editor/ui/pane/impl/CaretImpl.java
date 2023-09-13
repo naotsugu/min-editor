@@ -152,12 +152,17 @@ public class CaretImpl implements Caret {
 
     @Override
     public void left() {
-        if (offset == 0) return;
-        if (ensureLayout() == null) return;
+
+        if (offset == 0 || ensureLayout() == null) {
+            return;
+        }
 
         offset--;
         if (offset < line.point().offset()) {
             row--;
+            if (offsetToLine.apply(offset).endMarkCount() > 1) {
+                offset--;
+            }
             markDirty();
             ensureLayout();
             logicalX = x;

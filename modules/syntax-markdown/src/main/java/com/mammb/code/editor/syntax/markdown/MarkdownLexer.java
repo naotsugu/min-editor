@@ -136,7 +136,7 @@ public class MarkdownLexer implements Lexer {
         if (type != null) {
             for (;;) {
                 char ch = source.peekChar();
-                if (ch == '\n' || ch == 0) break;
+                if (ch == '\r' || ch == '\n' || ch == 0) break;
             }
             source.commitPeekBefore();
             return Token.of(type, Scope.INLINE_ANY, source.offset() + pos, source.position() + 1 - pos);
