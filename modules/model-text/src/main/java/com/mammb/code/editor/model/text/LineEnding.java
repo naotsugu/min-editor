@@ -30,6 +30,24 @@ public enum LineEnding {
 
 
     /**
+     * Get whether CRLF or not.
+     * @return {@code true}, if CRLF
+     */
+    public boolean isCrLf() {
+        return this == CRLF;
+    }
+
+
+    /**
+     * Get whether LF or not.
+     * @return {@code true}, if LF
+     */
+    public boolean isLf() {
+        return this == LF;
+    }
+
+
+    /**
      * Get the char array.
      * @return the char array
      */

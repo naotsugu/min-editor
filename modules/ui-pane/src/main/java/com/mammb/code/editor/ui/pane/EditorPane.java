@@ -298,8 +298,8 @@ public class EditorPane extends StackPane {
             }
         }
 
-        String ch = (ascii == 13)
-            ? editorModel.metrics().lineEnding().str()
+        String ch = (ascii == 13) // 13:CR
+            ? "\n"
             : e.getCharacter();
         aroundEdit(() -> editorModel.input(ch));
     }

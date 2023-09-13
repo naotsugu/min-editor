@@ -443,7 +443,14 @@ public class EditorModel {
         }
     }
     // -- edit behavior -------------------------------------------------------
-    public void input(String value) {
+    public void input(String input) {
+
+        if (input == null || input.isEmpty()) {
+            return;
+        }
+
+        String value = metrics().lineEnding().unify(input);
+
         if (selection.length() > 0) {
             selectionReplace(value);
             return;
@@ -454,10 +461,16 @@ public class EditorModel {
         texts.markDirty();
         caret.markDirty();
         adjustVScroll();
-        for (int i = 0; i < Character.codePointCount(value, 0, value.length()); i++) {
+
+        int count = Character.codePointCount(value, 0, value.length());
+        if (metrics().lineEnding().isCrLf()) {
+            count -= (int) value.chars().filter(c -> c == '\r').count();
+        }
+        for (int i = 0; i < count; i++) {
             moveCaretRight();
         }
     }
+
     public void delete() {
         vScrollToCaret();
         if (selection.length() > 0) {
@@ -564,10 +577,7 @@ public class EditorModel {
      * Paste the text from the clipboard.
      */
     public void pasteFromClipboard() {
-        var text = Clipboard.get();
-        if (!text.isEmpty()) {
-            input(metrics().lineEnding().unify(text));
-        }
+        input(Clipboard.get());
     }
     /**
      * Copy the selection text to the clipboard.
