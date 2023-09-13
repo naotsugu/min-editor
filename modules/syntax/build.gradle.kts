@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     api(project(":syntax-base"))
+    implementation(project(":syntax-basic"))
     implementation(project(":syntax-java"))
     implementation(project(":syntax-javascript"))
     implementation(project(":syntax-markdown"))

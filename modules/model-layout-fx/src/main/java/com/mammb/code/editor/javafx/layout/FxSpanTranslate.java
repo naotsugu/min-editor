@@ -32,15 +32,20 @@ import java.util.List;
  */
 public class FxSpanTranslate implements SpanTranslate {
 
+    /** The default font name. */
     private final String defaultName;
+    /** The default font size. */
     private final double defaultSize;
+    /** The default foreground color. */
     private final Color defaultColor;
+    /** The default background color. */
     private final Color defaultBgColor;
+
 
     /**
      * Constructor.
      */
-    public FxSpanTranslate(String defaultName, double defaultSize, Color defaultColor, Color defaultBgColor) {
+    private FxSpanTranslate(String defaultName, double defaultSize, Color defaultColor, Color defaultBgColor) {
         this.defaultName = defaultName;
         this.defaultSize = defaultSize;
         this.defaultColor = defaultColor;
@@ -50,21 +55,30 @@ public class FxSpanTranslate implements SpanTranslate {
 
     /**
      * Create a new translation.
-     * @param defaultName
-     * @param defaultSize
-     * @param defaultColor
-     * @param defaultBgColor
+     * @param defaultName the default font name
+     * @param defaultSize the default font size
+     * @param defaultColor the default foreground color
+     * @param defaultBgColor the default background color
      * @return a new translation
      */
     public static Translate<StyledText, List<Span>> of(
-            String defaultName, double defaultSize, String defaultColor, String defaultBgColor) {
-        return new FxSpanTranslate(defaultName, defaultSize, Color.web(defaultColor), Color.web(defaultBgColor));
+            String defaultName,
+            double defaultSize,
+            String defaultColor,
+            String defaultBgColor) {
+        return new FxSpanTranslate(
+            defaultName,
+            defaultSize,
+            Color.web(defaultColor),
+            Color.web(defaultBgColor));
     }
 
 
     @Override
     public List<Span> applyTo(StyledText row) {
+
         var list = new ArrayList<Span>();
+
         for (StyledText text : row.spans()) {
 
             String fontName = defaultName;
@@ -89,7 +103,9 @@ public class FxSpanTranslate implements SpanTranslate {
             Span span = Span.of(text, FxFontStyle.of(font, fgColor, bgColor));
             list.add(span);
         }
+
         return list;
+
     }
 
 }

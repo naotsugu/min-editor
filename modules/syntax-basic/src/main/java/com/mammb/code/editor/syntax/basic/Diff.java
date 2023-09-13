@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.basic;
+
+import com.mammb.code.editor.syntax.base.Hue;
+import com.mammb.code.editor.syntax.base.TokenType;
 
 /**
- * The syntax module.
+ * Diff.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax {
+public class Diff {
 
-    requires transitive code.editor.syntax.base;
-    requires code.editor.syntax.basic;
-    requires code.editor.syntax.java;
-    requires code.editor.syntax.javascript;
-    requires code.editor.syntax.markdown;
-    requires code.editor.model.text;
-
-    exports com.mammb.code.editor.syntax;
+    /** Diff Token type. */
+    public interface DiffToken extends com.mammb.code.editor.syntax.base.TokenType {
+        TokenType ADD = TokenType.build(Hue.GREEN);
+        TokenType DEL = TokenType.build(Hue.RED);
+        TokenType SUM = TokenType.build(Hue.CYAN);
+    }
 
 }
