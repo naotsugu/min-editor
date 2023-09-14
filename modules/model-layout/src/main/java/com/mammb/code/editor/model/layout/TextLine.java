@@ -84,7 +84,7 @@ public interface TextLine extends Textual {
      * @return the leading height(leading + height)
      */
     default double leadingHeight() {
-        return height() + 0.5;
+        return height() + 0.2;
     }
 
     /**

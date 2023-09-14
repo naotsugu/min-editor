@@ -74,7 +74,7 @@ public class CaretImpl implements Caret {
         if ((x - hScrolled) < 0) {
             drawn = false;
         } else {
-            drawCaretAt(gc, x - hScrolled + margin, y, line.height());
+            drawCaretAt(gc, x - hScrolled + margin, y, line.leadingHeight());
             drawn = true;
         }
     }
@@ -248,14 +248,14 @@ public class CaretImpl implements Caret {
     @Override
     public double y2() {
         ensureLayout();
-        return y + line.height();
+        return y + line.leadingHeight();
     }
 
 
     @Override
     public double height() {
         ensureLayout();
-        return line.height();
+        return line.leadingHeight();
     }
 
 

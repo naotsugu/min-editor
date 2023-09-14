@@ -137,9 +137,9 @@ public class EditorModel {
                 maxWidth = line.width();
             }
             List<TextRun> runs = line.runs();
-            fillContextBand(gc, runs, offsetY, line.height());
+            fillContextBand(gc, runs, offsetY, line.leadingHeight());
             for (TextRun run : runs) {
-                drawRun(gc, run, offsetY, line.height());
+                drawRun(gc, run, offsetY, line.leadingHeight());
             }
             offsetY += line.leadingHeight();
         }
@@ -160,18 +160,18 @@ public class EditorModel {
         if (layoutLine.width() > maxWidth) {
             maxWidth = layoutLine.width();
         }
-        gc.clearRect(gutter.width(), layoutLine.offsetY(), width - gutter.width(), layoutLine.height());
+        gc.clearRect(gutter.width(), layoutLine.offsetY(), width - gutter.width(), layoutLine.leadingHeight());
         List<TextRun> runs = layoutLine.runs();
-        fillContextBand(gc, runs, layoutLine.offsetY(), layoutLine.height());
+        fillContextBand(gc, runs, layoutLine.offsetY(), layoutLine.leadingHeight());
         for (TextRun run : runs) {
-            drawRun(gc, run, layoutLine.offsetY(), layoutLine.height());
+            drawRun(gc, run, layoutLine.offsetY(), layoutLine.leadingHeight());
         }
     }
 
     private void fillContextBand(GraphicsContext gc, List<TextRun> runs, double top, double lineHeight) {
         if (runs.stream().anyMatch(r -> !r.source().context().isEmpty())) {
-            gc.setFill(Color.LIGHTGRAY.deriveColor(0, 0, 0, 0.2));
-            gc.fillRect(textLeft(), top, width - textLeft(), lineHeight + 0.5);
+            gc.setFill(Color.LIGHTGRAY.deriveColor(0, 0, 0, 0.1));
+            gc.fillRect(textLeft(), top, width - textLeft(), lineHeight);
             gc.setFill(Color.TRANSPARENT);
         }
     }

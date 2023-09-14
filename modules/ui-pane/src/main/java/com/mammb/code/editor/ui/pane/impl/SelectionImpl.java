@@ -107,7 +107,7 @@ public class SelectionImpl implements Selection {
                  (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
 
                 gc.setFill(color);
-                gc.fillRect(run.layout().x() + left, top, Global.numberCharacterWidth(gc.getFont()), run.textLine().height());
+                gc.fillRect(run.layout().x() + left, top, Global.numberCharacterWidth(gc.getFont()), run.textLine().leadingHeight());
 
             } else {
 
@@ -115,7 +115,7 @@ public class SelectionImpl implements Selection {
                 double x2 = run.offsetToX().apply(Math.min(max().offset(), runEnd) - runStart);
 
                 gc.setFill(color);
-                gc.fillRect(x1 + left, top, x2 - x1, run.textLine().height());
+                gc.fillRect(x1 + left, top, x2 - x1, run.textLine().leadingHeight());
 
             }
         }
