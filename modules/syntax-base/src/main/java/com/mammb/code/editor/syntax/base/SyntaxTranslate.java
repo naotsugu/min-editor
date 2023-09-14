@@ -133,7 +133,7 @@ public class SyntaxTranslate implements StylingTranslate {
                     return current;
                 }
             } else {
-                if (current.type().hue() != Hue.NONE) {
+                if (current.type().hue().isColored()) {
                     return current;
                 } else {
                     return contextNode.open();
@@ -145,7 +145,7 @@ public class SyntaxTranslate implements StylingTranslate {
 
     private void putStyle(StyledText styledText, Token token, int point, int length) {
         var hue = token.type().hue();
-        if (hue != Hue.NONE) {
+        if (hue.isColored()) {
             Style style = new Style.Color(palette.on(hue), 1.0);
             StyleSpan styleSpan = StyleSpan.of(style, point, length);
             styledText.putStyle(styleSpan);
