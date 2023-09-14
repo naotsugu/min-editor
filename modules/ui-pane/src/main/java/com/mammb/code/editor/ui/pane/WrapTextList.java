@@ -261,8 +261,7 @@ public class WrapTextList implements TextList {
         return styling.compound(FxSpanTranslate.of(
                 ctx.preference().fontName(),
                 ctx.preference().fontSize(),
-                ctx.preference().fgColor(),
-                ctx.preference().bgColor()))
+                ctx.preference().fgColor()))
             .compound(LayoutWrapTranslate.of(layout));
     }
 

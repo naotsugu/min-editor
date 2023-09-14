@@ -45,11 +45,11 @@ public class FxSpanTranslate implements SpanTranslate {
     /**
      * Constructor.
      */
-    private FxSpanTranslate(String defaultName, double defaultSize, Color defaultColor, Color defaultBgColor) {
+    private FxSpanTranslate(String defaultName, double defaultSize, Color defaultColor) {
         this.defaultName = defaultName;
         this.defaultSize = defaultSize;
         this.defaultColor = defaultColor;
-        this.defaultBgColor = defaultBgColor;
+        this.defaultBgColor = Color.TRANSPARENT;
     }
 
 
@@ -58,19 +58,16 @@ public class FxSpanTranslate implements SpanTranslate {
      * @param defaultName the default font name
      * @param defaultSize the default font size
      * @param defaultColor the default foreground color
-     * @param defaultBgColor the default background color
      * @return a new translation
      */
     public static Translate<StyledText, List<Span>> of(
             String defaultName,
             double defaultSize,
-            String defaultColor,
-            String defaultBgColor) {
+            String defaultColor) {
         return new FxSpanTranslate(
             defaultName,
             defaultSize,
-            Color.web(defaultColor),
-            Color.web(defaultBgColor));
+            Color.web(defaultColor));
     }
 
 
