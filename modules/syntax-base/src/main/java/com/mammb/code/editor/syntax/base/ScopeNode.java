@@ -51,6 +51,11 @@ public interface ScopeNode {
 
     Optional<ScopeNode> selectPrime(Predicate<ScopeNode> until);
 
+    /**
+     * Collects nodes that meet specified conditions(Excluding root node).
+     * @param filter the filter
+     * @return Nodes matching the specified conditions
+     */
     List<ScopeNode> collect(Predicate<ScopeNode> filter);
 
     /**

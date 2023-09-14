@@ -82,6 +82,7 @@ public class FxSpanTranslate implements SpanTranslate {
             double fontSize = defaultSize;
             Color fgColor = defaultColor;
             Color bgColor = defaultBgColor;
+            String context = "";
 
             for (StyleSpan styleSpan : text.styles()) {
                 Style style = styleSpan.style();
@@ -93,11 +94,13 @@ public class FxSpanTranslate implements SpanTranslate {
                     fgColor = Color.web(fg.colorString());
                 } else if (style instanceof Style.BgColor bg) {
                     bgColor = Color.web(bg.colorString());
+                } else if (style instanceof Style.Context ctx) {
+                    context = ctx.name();
                 }
             }
 
             Font font = Font.font(fontName, fontSize);
-            Span span = Span.of(text, FxFontStyle.of(font, fgColor, bgColor));
+            Span span = Span.of(text, context, FxFontStyle.of(font, fgColor, bgColor));
             list.add(span);
         }
 

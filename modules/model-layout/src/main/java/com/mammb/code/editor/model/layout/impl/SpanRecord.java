@@ -24,8 +24,14 @@ import com.mammb.code.editor.model.text.OffsetPoint;
  * @param text the text string
  * @param point the offset point
  * @param hol head of line?
+ * @param context the context
  * @param style the style of span
  * @author Naotsugu Kobayashi
  */
-public record SpanRecord(String text, OffsetPoint point, boolean hol, FontStyle<?, ?> style) implements Span {
+public record SpanRecord(
+    String text,
+    OffsetPoint point,
+    boolean hol,
+    String context,
+    FontStyle<?, ?> style) implements Span {
 }

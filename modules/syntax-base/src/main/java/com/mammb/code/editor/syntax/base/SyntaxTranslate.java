@@ -15,14 +15,15 @@
  */
 package com.mammb.code.editor.syntax.base;
 
-import com.mammb.code.editor.syntax.base.impl.ScopeTreeImpl;
 import com.mammb.code.editor.model.style.Style;
 import com.mammb.code.editor.model.style.StyleSpan;
 import com.mammb.code.editor.model.style.StyledText;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.syntax.base.impl.ScopeTreeImpl;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.lang.System.Logger.Level;
 
@@ -76,9 +77,11 @@ public class SyntaxTranslate implements StylingTranslate {
         scopes.truncate(source.offset());
         lexer.setSource(source, scopes);
 
+        currentContext().ifPresent(n ->
+            styledText.putStyle(StyleSpan.of(new Style.Context(n.open().context()), 0)));
+
         Token prev = null;
         int beginPos = 0;
-
         for (Token token = lexer.nextToken(); !token.isEmpty(); token = lexer.nextToken()) {
 
             scopes.push(token);
@@ -101,6 +104,9 @@ public class SyntaxTranslate implements StylingTranslate {
             int pos = beginPos - textual.offset();
             putStyle(styledText, prev, pos, textual.length() - pos);
         }
+
+        currentContext().ifPresent(n ->
+            styledText.putStyle(StyleSpan.of(new Style.Context(n.open().context()), textual.length())));
 
         return styledText;
 
@@ -140,6 +146,14 @@ public class SyntaxTranslate implements StylingTranslate {
                 }
             }
         }
+    }
+
+
+    private Optional<ScopeNode> currentContext() {
+        return scopes.current()
+            .collect(n -> !n.open().context().isEmpty() && !n.open().context().contains("@"))
+            .stream()
+            .reduce((f, s) -> s);
     }
 
 

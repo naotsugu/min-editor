@@ -38,14 +38,16 @@ public interface Span extends Textual {
      */
     FontStyle<?, ?> style();
 
+    String context();
+
     /**
      * Create a new Span.
      * @param textual the text of span
      * @param fontStyle the style of span
      * @return a created Span
      */
-    static Span of(StyledText textual, FontStyle<?, ?> fontStyle) {
-        return new SpanRecord(textual.text(), textual.point(), textual.hol(), fontStyle);
+    static Span of(StyledText textual, String context, FontStyle<?, ?> fontStyle) {
+        return new SpanRecord(textual.text(), textual.point(), textual.hol(), context, fontStyle);
     }
 
 }

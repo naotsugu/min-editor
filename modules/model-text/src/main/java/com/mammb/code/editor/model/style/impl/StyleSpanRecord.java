@@ -32,6 +32,8 @@ public record StyleSpanRecord(Style style, int point, int length) implements Sty
     public StyleSpanRecord {
         if (length < 0)
             throw new IllegalArgumentException();
+        if (length == 0 && !(style instanceof Style.Boundary))
+            throw new IllegalArgumentException();
         Objects.requireNonNull(style);
     }
 
@@ -42,6 +44,9 @@ public record StyleSpanRecord(Style style, int point, int length) implements Sty
      * @return {@code true} if the specified index is included in the range of this span
      */
     public boolean inRange(int index) {
+        if (style instanceof Style.Boundary) {
+            return point == index;
+        }
         return point <= index && index < point + length;
     }
 
@@ -53,6 +58,9 @@ public record StyleSpanRecord(Style style, int point, int length) implements Sty
      * @return {@code true} if the specified range is included in the range of this span
      */
     public boolean inRange(int thatPoint, int thatLength) {
+        if (style instanceof Style.Boundary) {
+            return thatPoint <= point && point <= thatPoint + thatLength;
+        }
         final int thisStart = point;
         final int thisEnd   = point + length - 1;
         final int thatStart = thatPoint;

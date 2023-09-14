@@ -51,4 +51,15 @@ public sealed interface Style {
         public BgColor(String colorString) { this(colorString, 1); }
     }
 
+    /**
+     * The boundary style(zero width).
+     */
+    sealed interface Boundary extends Style {}
+
+    /**
+     * Context.
+     * @param name the name of context
+     */
+    record Context(String name) implements Boundary {}
+
 }
