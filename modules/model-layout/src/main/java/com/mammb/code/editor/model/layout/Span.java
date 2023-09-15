@@ -38,6 +38,10 @@ public interface Span extends Textual {
      */
     FontStyle<?, ?> style();
 
+    /**
+     * Get the name of context.
+     * @return the name of context
+     */
     String context();
 
     /**

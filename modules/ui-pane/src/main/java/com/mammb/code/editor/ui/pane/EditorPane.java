@@ -19,6 +19,8 @@ import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.OverlayDialog;
 import com.mammb.code.editor.ui.control.VScrollBar;
+import com.mammb.code.editor.ui.pane.impl.DragDrops;
+import com.mammb.code.editor.ui.pane.impl.FileChoosers;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -44,7 +46,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -167,26 +168,27 @@ public class EditorPane extends StackPane {
         }
     }
 
+
     private void openChoose() {
         confirmIfDirty(() -> {
-            FileChooser fc = new FileChooser();
-            fc.setTitle("Select file...");
-            fc.setInitialDirectory(initialDirectory(null));
-            File file = fc.showOpenDialog(getScene().getWindow());
+            Path current = editorModel.metrics().path();
+            File file = FileChoosers.fileOpenChoose(getScene().getWindow(), current);
             if (file != null && file.canRead()) {
                 updateModel(file.toPath());
             }
         });
     }
 
+
     private void saveChoose() {
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Save As...");
-        fc.setInitialDirectory(initialDirectory(null));
-        File file = fc.showSaveDialog(getScene().getWindow());
+        Path current = editorModel.metrics().path();
+        File file = FileChoosers.fileSaveChoose(getScene().getWindow(), current);
         if (file != null) {
-            editorModel.saveAs(file.toPath());
-            updateModel(file.toPath());
+            Path path = file.toPath();
+            editorModel.saveAs(path);
+            if (!equalsExtension(path, current)) {
+                updateModel(path);
+            }
         }
     }
 
@@ -455,13 +457,15 @@ public class EditorPane extends StackPane {
         editorModel.draw(gc);
     }
 
-
-    private static File initialDirectory(Path base) {
-        return (base == null)
-            ? new File(System.getProperty("user.home"))
-            : base.toFile().isDirectory()
-                ? base.toFile()
-                : base.getParent().toFile();
+    private static boolean equalsExtension(Path path1, Path path2) {
+        if (path1 == null || path2 == null) {
+            return false;
+        }
+        String name1 = path1.toString();
+        String ext1 = name1.substring(name1.lastIndexOf('.') + 1);
+        String name2 = path2.toString();
+        String ext2 = name2.substring(name2.lastIndexOf('.') + 1);
+        return ext1.equals(ext2);
     }
 
 }
