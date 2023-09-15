@@ -139,7 +139,7 @@ public class EditorModel {
             List<TextRun> runs = line.runs();
             fillContextBand(gc, runs, offsetY, line.leadingHeight());
             for (TextRun run : runs) {
-                drawRun(gc, run, offsetY, line.leadingHeight());
+                drawRun(gc, run, offsetY);
             }
             offsetY += line.leadingHeight();
         }
@@ -164,21 +164,22 @@ public class EditorModel {
         List<TextRun> runs = layoutLine.runs();
         fillContextBand(gc, runs, layoutLine.offsetY(), layoutLine.leadingHeight());
         for (TextRun run : runs) {
-            drawRun(gc, run, layoutLine.offsetY(), layoutLine.leadingHeight());
+            drawRun(gc, run, layoutLine.offsetY());
         }
     }
 
     private void fillContextBand(GraphicsContext gc, List<TextRun> runs, double top, double lineHeight) {
         if (runs.stream().anyMatch(r -> !r.source().context().isEmpty())) {
-            gc.setFill(Color.LIGHTGRAY.deriveColor(0, 0, 0, 0.1));
+            gc.setFill(Color.LIGHTGRAY.deriveColor(0, 0, 0, 0.2));
             gc.fillRect(textLeft(), top, width - textLeft(), lineHeight);
             gc.setFill(Color.TRANSPARENT);
         }
     }
 
-    private void drawRun(GraphicsContext gc, TextRun run, double top, double lineHeight) {
+    private void drawRun(GraphicsContext gc, TextRun run, double top) {
 
         double left = run.layout().x() + textLeft();
+        double lineHeight = run.textLine().leadingHeight();
 
         if (run.style().background() instanceof Color bg && !bg.equals(Color.TRANSPARENT)) {
             gc.setFill(bg);

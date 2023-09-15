@@ -198,6 +198,7 @@ public interface TextLine extends Textual {
         return lineIndex() == (lineSize() - 1) && endMarkCount() == 0;
     }
 
+
     /**
      * Get the char offset(total) from the specified x position.
      * @param x the specified x position
@@ -211,7 +212,9 @@ public interface TextLine extends Textual {
         for (TextRun run : runs()) {
             double runStart = run.layout().x();
             double runEnd = runStart + run.layout().width();
-            if (runStart <= x && x < runEnd) {
+            // if the text line is a newline only, its width is zero.
+            // zero position is the offset to the left of LF
+            if (runStart <= x && x < runEnd || runStart == runEnd && x <= runStart) {
                 offset += run.xToOffset().apply(x - run.layout().x());
                 return offset;
             }
@@ -219,6 +222,7 @@ public interface TextLine extends Textual {
         }
         return Math.max(offset - 1, 0);
     }
+
 
     /**
      * Create a new TextLine.
