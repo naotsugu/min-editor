@@ -68,7 +68,8 @@ public class Gutter {
         gc.setTextAlign(TextAlignment.RIGHT);
         gc.setFont(font);
         gc.setFill(color);
-        gc.fillText(num, width - chWidth, top + run.baseline());
+        gc.fillText(num, width - chWidth, top + run.layoutHeight());
+
         gc.setTextAlign(TextAlignment.LEFT);
 
     }

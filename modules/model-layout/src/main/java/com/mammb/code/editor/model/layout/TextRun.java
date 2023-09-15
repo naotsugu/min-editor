@@ -57,6 +57,18 @@ public interface TextRun {
     }
 
     /**
+     * Get the descent height.
+     * @return the descent height.
+     */
+    default double descent() {
+        return layout().height() - baseline();
+    }
+
+    default double layoutHeight() {
+        return baseline() + descent() / 2 + textLine().marginTop();
+    }
+
+    /**
      * Get the end char index at the source span.
      * @return the start char index at the source span
      */

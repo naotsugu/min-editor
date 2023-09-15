@@ -60,7 +60,7 @@ public record StyleSpanRecord(Style style, int point, int length) implements Sty
     public boolean inRange(int thatPoint, int thatLength) {
         if (style instanceof Style.Boundary) {
             return thatPoint <= point && point <= thatPoint + thatLength;
-            // return thatPoint <= point && point < thatPoint + thatLength;
+            //return thatPoint <= point && point < thatPoint + thatLength;
         }
         final int thisStart = point;
         final int thisEnd   = point + length - 1;

@@ -80,11 +80,27 @@ public interface TextLine extends Textual {
     double height();
 
     /**
-     * Get the leading height(leading + height).
-     * @return the leading height(leading + height)
+     * Get the margin top.
+     * @return the margin top
+     */
+    default double marginTop() {
+        return 1;
+    }
+
+    /**
+     * Get the margin bottom.
+     * @return the margin bottom
+     */
+    default double marginBottom() {
+        return 1;
+    }
+
+    /**
+     * Get the leading height(height + marginTop + marginBottom).
+     * @return the leading height(height + marginTop + marginBottom)
      */
     default double leadingHeight() {
-        return height() + 0.2;
+        return height() + marginTop() + marginBottom();
     }
 
     /**

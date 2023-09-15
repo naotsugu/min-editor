@@ -193,7 +193,7 @@ public class EditorModel {
         if (run.style().font() instanceof Font font) gc.setFont(font);
         if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
         final String text = run.text();
-        gc.fillText(text, left, top + run.baseline());
+        gc.fillText(text, left, top + run.layoutHeight());
 
         if (!text.isEmpty() && (
                 run.textLine().point().row() == caret.row()) ||

@@ -68,7 +68,7 @@ public record StyledTextRecord(
 
     @Override
     public void putStyle(StyleSpan style) {
-        if (style.point() + style.length() <= textual.length()) {
+        if (style.point() + style.length() <= textual.length()) { // FIXME Are these conditions right?
             styles.add(style);
         } else {
             throw new IndexOutOfBoundsException("out of bounds:" + style +
