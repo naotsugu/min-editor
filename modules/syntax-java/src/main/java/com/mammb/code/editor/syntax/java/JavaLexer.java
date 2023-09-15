@@ -108,7 +108,9 @@ public class JavaLexer implements Lexer {
         if (context.isEmpty()) {
             delegate = null;
         } else {
-            if (delegate == null || !delegate.name().equals(context)) {
+            if (existsCommentBlockClosed()) {
+                delegate = null;
+            } else if (delegate == null || !delegate.name().equals(context)) {
                 delegate = new JavaDocLexer();
                 delegate.setSource(source, scope);
             }
@@ -268,6 +270,13 @@ public class JavaLexer implements Lexer {
             }
             sb.append(source.readChar());
         }
+    }
+
+
+    private boolean existsCommentBlockClosed() {
+        char[] ch = new char[] { source.peekChar(), source.peekChar() };
+        source.rollbackPeek();
+        return ch[0] == '*' && ch[1] == '/';
     }
 
 }

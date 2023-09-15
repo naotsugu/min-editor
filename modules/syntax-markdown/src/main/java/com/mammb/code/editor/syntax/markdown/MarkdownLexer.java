@@ -91,29 +91,23 @@ public class MarkdownLexer implements Lexer {
 
     private boolean fenceDelegate() {
 
-        if (delegate != null) {
-            char[] ch = new char[] { source.peekChar(), source.peekChar(), source.peekChar() };
-            source.rollbackPeek();
-            if (ch[0] == '`' && ch[1] == '`' && ch[1] == '`') {
-                delegate = null;
-                return false;
-            }
-        }
-
         var context = scope.current().collect(n -> !n.open().context().isEmpty()).stream()
                 .filter(n -> !n.open().context().equals(name())).findFirst()
-                .map(n -> n.open().context())
-                .orElse("");
+                .map(n -> n.open().context()).orElse("");
+
         if (context.isEmpty()) {
             delegate = null;
         } else {
-            if (delegate == null || !delegate.name().equals(context)) {
+            if (existsFence()) {
+                delegate = null;
+            } else if (delegate == null || !delegate.name().equals(context)) {
                 delegate = lexerProvider.get(context);
                 delegate.setSource(source, scope);
             }
         }
         return delegate != null;
     }
+
 
     /**
      * Read header.
@@ -171,6 +165,13 @@ public class MarkdownLexer implements Lexer {
             source.rollbackPeek();
             return Token.of(CODE, Scope.INLINE_ANY, source.offset() + pos, 1);
         }
+    }
+
+
+    private boolean existsFence() {
+        char[] ch = new char[] { source.peekChar(), source.peekChar(), source.peekChar() };
+        source.rollbackPeek();
+        return ch[0] == '`' && ch[1] == '`' && ch[2] == '`';
     }
 
 }
