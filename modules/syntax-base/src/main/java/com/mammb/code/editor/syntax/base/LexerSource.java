@@ -18,6 +18,8 @@ package com.mammb.code.editor.syntax.base;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.syntax.base.impl.LexerSourceImpl;
 
+import java.util.Arrays;
+
 /**
  * LexerSource.
  * @author Naotsugu Kobayashi
@@ -76,6 +78,22 @@ public interface LexerSource {
      * @return the start char (total) offset.
      */
     int offset();
+
+
+    default char[] lookahead(int n) {
+        char[] peeks = new char[n];
+        for (int i = 0; i < n; i++) {
+            peeks[0] = peekChar();
+        }
+        rollbackPeek();
+        return peeks;
+    }
+
+
+    default boolean matchLookahead(char... chars) {
+        return Arrays.equals(chars, lookahead(chars.length));
+    }
+
 
     /**
      * Create a new LexerSource.

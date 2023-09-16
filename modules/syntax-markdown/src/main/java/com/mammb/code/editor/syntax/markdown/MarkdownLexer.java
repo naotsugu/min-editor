@@ -95,7 +95,7 @@ public class MarkdownLexer implements Lexer {
                 .filter(n -> !n.open().context().equals(name())).findFirst()
                 .map(n -> n.open().context()).orElse("");
 
-        if (!context.isEmpty() && !existsFence() && (delegate == null || !delegate.name().equals(context))) {
+        if (!context.isEmpty() && !source.matchLookahead('`', '`', '`') && (delegate == null || !delegate.name().equals(context))) {
             delegate = lexerProvider.get(context);
             delegate.setSource(source, scope);
             return true;
@@ -113,9 +113,7 @@ public class MarkdownLexer implements Lexer {
      */
     private Token readHeader(LexerSource source) {
         int pos = source.position();
-        char[] ca = new char[] { source.peekChar(), source.peekChar(),
-            source.peekChar(), source.peekChar(), source.peekChar()};
-        source.rollbackPeek();
+        char[] ca = source.lookahead(5);
 
         TokenType type = null;
         if (ca[0] == ' ') type = H1;
@@ -162,13 +160,6 @@ public class MarkdownLexer implements Lexer {
             source.rollbackPeek();
             return Token.of(CODE, Scope.INLINE_ANY, source.offset() + pos, 1);
         }
-    }
-
-
-    private boolean existsFence() {
-        char[] ch = new char[] { source.peekChar(), source.peekChar(), source.peekChar() };
-        source.rollbackPeek();
-        return ch[0] == '`' && ch[1] == '`' && ch[2] == '`';
     }
 
 }

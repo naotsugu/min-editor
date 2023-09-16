@@ -98,7 +98,7 @@ public class JavaLexer implements Lexer {
         var context = scope.current().select(n -> n.open().context().equals("javadoc"))
             .map(n -> n.open().context()).orElse("");
 
-        if (!context.isEmpty() && !existsCommentBlockClosed() && (delegate == null || !delegate.name().equals(context))) {
+        if (!context.isEmpty() && !source.matchLookahead('*', '/') && (delegate == null || !delegate.name().equals(context))) {
             delegate = new JavaDocLexer();
             delegate.setSource(source, scope);
             return true;
@@ -261,13 +261,6 @@ public class JavaLexer implements Lexer {
             }
             sb.append(source.readChar());
         }
-    }
-
-
-    private boolean existsCommentBlockClosed() {
-        char[] ch = new char[] { source.peekChar(), source.peekChar() };
-        source.rollbackPeek();
-        return ch[0] == '*' && ch[1] == '/';
     }
 
 }
