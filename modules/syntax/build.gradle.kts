@@ -8,5 +8,6 @@ dependencies {
     implementation(project(":syntax-java"))
     implementation(project(":syntax-javascript"))
     implementation(project(":syntax-markdown"))
+    implementation(project(":syntax-rust"))
     implementation(project(":model-text"))
 }

@@ -24,6 +24,7 @@ import com.mammb.code.editor.syntax.basic.DiffLexer;
 import com.mammb.code.editor.syntax.java.JavaLexer;
 import com.mammb.code.editor.syntax.javascript.JsonLexer;
 import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
+import com.mammb.code.editor.syntax.rust.RustLexer;
 
 import java.nio.file.Path;
 
@@ -39,6 +40,7 @@ public class Syntax {
         public Lexer get(String name) {
             return switch (name) {
                 case "java"    -> new JavaLexer();
+                case "rust"    -> new RustLexer();
                 case "json"    -> new JsonLexer();
                 case "md"      -> new MarkdownLexer(lexerProvider);
                 case "diff"    -> new DiffLexer();

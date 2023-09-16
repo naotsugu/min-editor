@@ -12,7 +12,8 @@ project(":piecetable").projectDir = file("modules/piecetable/lib")
 
 // other module
 include("model-text", "model-edit", "model-buffer", "model-layout")
-include("syntax", "syntax-base", "syntax-basic", "syntax-java", "syntax-javascript", "syntax-markdown")
+include("syntax", "syntax-base", "syntax-basic", "syntax-java", "syntax-javascript",
+    "syntax-rust", "syntax-markdown")
 include("ui-app", "ui-prefs", "ui-pane", "ui-control")
 
 // javaFX
