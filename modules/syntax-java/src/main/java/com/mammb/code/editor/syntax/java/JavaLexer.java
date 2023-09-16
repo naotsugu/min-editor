@@ -45,6 +45,7 @@ public class JavaLexer implements Lexer {
     /** The scope. */
     private ScopeTree scope;
 
+    /** The delegate lexer. */
     private Lexer delegate;
 
 
@@ -94,28 +95,18 @@ public class JavaLexer implements Lexer {
 
     private boolean delegate() {
 
-        if (delegate != null) {
-            char[] ch = new char[] { source.peekChar(), source.peekChar() };
-            source.rollbackPeek();
-            if (ch[0] == '*' && ch[1] == '/') {
-                delegate = null;
-                return false;
-            }
-        }
-
         var context = scope.current().select(n -> n.open().context().equals("javadoc"))
             .map(n -> n.open().context()).orElse("");
-        if (context.isEmpty()) {
-            delegate = null;
-        } else {
-            if (existsCommentBlockClosed()) {
-                delegate = null;
-            } else if (delegate == null || !delegate.name().equals(context)) {
-                delegate = new JavaDocLexer();
-                delegate.setSource(source, scope);
-            }
+
+        if (!context.isEmpty() && !existsCommentBlockClosed() && (delegate == null || !delegate.name().equals(context))) {
+            delegate = new JavaDocLexer();
+            delegate.setSource(source, scope);
+            return true;
+
         }
-        return delegate != null;
+        delegate = null;
+        return false;
+
     }
 
 
