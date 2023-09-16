@@ -83,7 +83,7 @@ public interface LexerSource {
     default char[] lookahead(int n) {
         char[] peeks = new char[n];
         for (int i = 0; i < n; i++) {
-            peeks[0] = peekChar();
+            peeks[i] = peekChar();
         }
         rollbackPeek();
         return peeks;

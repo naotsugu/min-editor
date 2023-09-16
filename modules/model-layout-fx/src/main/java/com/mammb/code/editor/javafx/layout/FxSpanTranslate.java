@@ -37,19 +37,26 @@ public class FxSpanTranslate implements SpanTranslate {
     /** The default font size. */
     private final double defaultSize;
     /** The default foreground color. */
-    private final Color defaultColor;
+    private final ColorString defaultColor;
     /** The default background color. */
-    private final Color defaultBgColor;
+    private final ColorString defaultBgColor;
+
+    /** The font cache. */
+    private Font fontCache;
+    /** The color cache. */
+    private ColorString colorCache;
+    /** The background cache. */
+    private ColorString bgColorCache;
 
 
     /**
      * Constructor.
      */
-    private FxSpanTranslate(String defaultName, double defaultSize, Color defaultColor) {
+    private FxSpanTranslate(String defaultName, double defaultSize, String defaultColor) {
         this.defaultName = defaultName;
         this.defaultSize = defaultSize;
-        this.defaultColor = defaultColor;
-        this.defaultBgColor = Color.TRANSPARENT;
+        this.defaultColor = new ColorString(defaultColor);
+        this.defaultBgColor = new ColorString("rgba(0,0,0,0)"); // Color.TRANSPARENT;
     }
 
 
@@ -67,7 +74,7 @@ public class FxSpanTranslate implements SpanTranslate {
         return new FxSpanTranslate(
             defaultName,
             defaultSize,
-            Color.web(defaultColor));
+            defaultColor);
     }
 
 
@@ -80,8 +87,8 @@ public class FxSpanTranslate implements SpanTranslate {
 
             String fontName = defaultName;
             double fontSize = defaultSize;
-            Color fgColor = defaultColor;
-            Color bgColor = defaultBgColor;
+            ColorString fgColor = defaultColor;
+            ColorString bgColor = defaultBgColor;
             String context = "";
 
             for (StyleSpan styleSpan : text.styles()) {
@@ -91,21 +98,59 @@ public class FxSpanTranslate implements SpanTranslate {
                 } else if (style instanceof Style.FontSize size) {
                     fontSize = size.size();
                 } else if (style instanceof Style.Color fg) {
-                    fgColor = Color.web(fg.colorString());
+                    fgColor = color(fg.colorString());
                 } else if (style instanceof Style.BgColor bg) {
-                    bgColor = Color.web(bg.colorString());
+                    bgColor = bgColor(bg.colorString());
                 } else if (style instanceof Style.Context ctx) {
                     context = ctx.name();
                 }
             }
 
-            Font font = Font.font(fontName, fontSize);
-            Span span = Span.of(text, context, FxFontStyle.of(font, fgColor, bgColor));
+            Span span = Span.of(text, context, FxFontStyle.of(
+                font(fontName, fontSize), fgColor.color, bgColor.color));
             list.add(span);
         }
 
         return list;
 
+    }
+
+
+    private Font font(String fontName, double fontSize) {
+        if (fontCache != null && fontCache.getName().equals(fontName) && fontCache.getSize() == fontSize) {
+            return fontCache;
+        }
+        return fontCache = Font.font(fontName, fontSize);
+    }
+
+
+    private ColorString color(String colorString) {
+        if (defaultColor.colorString().equals(colorString)) {
+            return defaultColor;
+        }
+        return colorCache = (colorCache == null)
+            ? defaultColor.of(colorString)
+            : colorCache.of(colorString);
+    }
+
+
+    private ColorString bgColor(String colorString) {
+        if (defaultBgColor.colorString().equals(colorString)) {
+            return defaultBgColor;
+        }
+        return bgColorCache = (bgColorCache == null)
+            ? defaultColor.of(colorString)
+            : bgColorCache.of(colorString);
+    }
+
+
+    private record ColorString(Color color, String colorString) {
+        ColorString(String colorString) {
+            this(Color.web(colorString), colorString);
+        }
+        ColorString of(String cs) {
+            return colorString.equals(cs) ? this : new ColorString(cs);
+        }
     }
 
 }

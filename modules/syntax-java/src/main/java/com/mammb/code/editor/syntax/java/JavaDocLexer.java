@@ -42,7 +42,7 @@ public class JavaDocLexer implements Lexer {
 
     @Override
     public String name() {
-        return "javadoc@java";
+        return JavaDoc.name;
     }
 
     @Override

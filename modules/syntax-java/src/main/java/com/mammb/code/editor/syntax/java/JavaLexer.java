@@ -95,7 +95,7 @@ public class JavaLexer implements Lexer {
 
     private boolean delegate() {
 
-        var context = scope.current().select(n -> n.open().context().equals("javadoc"))
+        var context = scope.current().select(n -> n.open().context().equals(JavaDoc.name))
             .map(n -> n.open().context()).orElse("");
 
         if (!context.isEmpty() && !source.matchLookahead('*', '/') && (delegate == null || !delegate.name().equals(context))) {
@@ -125,7 +125,7 @@ public class JavaLexer implements Lexer {
             source.commitPeek();
             if (source.peekChar() == '*') {
                 source.commitPeek();
-                return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 3, "javadoc");
+                return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 3, JavaDoc.name);
             }
             source.rollbackPeek();
             return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 2);

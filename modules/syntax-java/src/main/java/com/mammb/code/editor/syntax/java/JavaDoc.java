@@ -27,6 +27,10 @@ import java.util.stream.Stream;
  */
 public class JavaDoc {
 
+    /** The name. */
+    public static final String name = "javadoc@java";
+
+
     /** Java Token type. */
     public interface JavaDocToken extends com.mammb.code.editor.syntax.base.TokenType {
         TokenType TAG = TokenType.build(Hue.CYAN);

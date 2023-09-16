@@ -427,6 +427,7 @@ public class EditorModel {
         caret.at(offset, true);
         hScrollToCaret();
     }
+
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
         if (selection.isDragging()) {
@@ -454,6 +455,7 @@ public class EditorModel {
             selection.startDragging(caret.offsetPoint());
         }
     }
+
     // -- edit behavior -------------------------------------------------------
     public void input(String input) {
 
@@ -632,6 +634,7 @@ public class EditorModel {
         adjustVScroll();
         adjustHScroll();
     }
+
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
         if (texts instanceof LinearTextList linear)  {
@@ -644,8 +647,8 @@ public class EditorModel {
         }
         setScroll(vScroll, hScroll);
     }
-    // -- private -------------------------------------------------------------
 
+    // -- private -------------------------------------------------------------
 
     int screenRowSize(double height) {
         FontMetrics<Font> fontMetrics = new FxFontMetrics(Font.font(
