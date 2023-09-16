@@ -9,5 +9,6 @@ dependencies {
     implementation(project(":syntax-javascript"))
     implementation(project(":syntax-markdown"))
     implementation(project(":syntax-rust"))
+    implementation(project(":syntax-kotlin"))
     implementation(project(":model-text"))
 }

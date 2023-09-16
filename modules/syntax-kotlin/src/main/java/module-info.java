@@ -15,20 +15,11 @@
  */
 
 /**
- * The syntax module.
+ * The kotlin syntax module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax {
-
-    requires transitive code.editor.syntax.base;
-    requires code.editor.syntax.basic;
-    requires code.editor.syntax.java;
-    requires code.editor.syntax.javascript;
-    requires code.editor.syntax.markdown;
-    requires code.editor.syntax.rust;
-    requires code.editor.syntax.kotlin;
+module code.editor.syntax.kotlin {
     requires code.editor.model.text;
-
-    exports com.mammb.code.editor.syntax;
-
+    requires code.editor.syntax.base;
+    exports com.mammb.code.editor.syntax.kotlin;
 }

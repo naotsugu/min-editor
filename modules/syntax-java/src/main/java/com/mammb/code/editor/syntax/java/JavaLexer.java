@@ -50,18 +50,18 @@ public class JavaLexer implements Lexer {
 
 
     @Override
+    public String name() {
+        return "java";
+    }
+
+
+    @Override
     public void setSource(LexerSource source, ScopeTree scope) {
         this.source = source;
         this.scope = scope;
         if (delegate != null) {
             delegate.setSource(source, scope);
         }
-    }
-
-
-    @Override
-    public String name() {
-        return "java";
     }
 
 
