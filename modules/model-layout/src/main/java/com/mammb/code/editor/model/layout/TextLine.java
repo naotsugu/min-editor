@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
  */
 public interface TextLine extends Textual {
 
+    double DEFAULT_MARGIN_TOP = 1;
+    double DEFAULT_MARGIN_BOTTOM = 1;
+
     @Override
     default String text() {
         return runs().stream()
@@ -84,7 +87,7 @@ public interface TextLine extends Textual {
      * @return the margin top
      */
     default double marginTop() {
-        return 1;
+        return DEFAULT_MARGIN_TOP;
     }
 
     /**
@@ -92,7 +95,7 @@ public interface TextLine extends Textual {
      * @return the margin bottom
      */
     default double marginBottom() {
-        return 1;
+        return DEFAULT_MARGIN_BOTTOM;
     }
 
     /**

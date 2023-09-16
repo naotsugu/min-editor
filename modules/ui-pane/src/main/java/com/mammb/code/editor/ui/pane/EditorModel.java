@@ -651,7 +651,7 @@ public class EditorModel {
         FontMetrics<Font> fontMetrics = new FxFontMetrics(Font.font(
             context.preference().fontName(),
             context.preference().fontSize()));
-        return (int) Math.ceil(height / fontMetrics.lineHeight());
+        return (int) Math.ceil(height / (fontMetrics.lineHeight() + TextLine.DEFAULT_MARGIN_TOP + TextLine.DEFAULT_MARGIN_BOTTOM));
     }
 
     private double textLeft() {
