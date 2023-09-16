@@ -50,10 +50,10 @@ public class Rust {
         Trie trie = Trie.of();
 
         Stream.of("""
-            as, break, const, continue, crate, else, enum, extern, false, fn, for, if, impl, in,
-            let, loop, match, mod, move, mut, pub, ref, return, self, Self, static, struct, super,
-            trait, true, type, unsafe, use, where, while, async, await, dyn, try
-            abstract, become, box, do, final, macro, override, priv, typeof, unsized, virtual,yield"""
+            as,break,const,continue,crate,else,enum,extern,false,fn,for,if,impl,in,
+            let,loop,match,mod,move,mut,pub,ref,return,self,Self,static,struct,super,
+            trait,true,type,unsafe,use,where,while,async,await,dyn,try,
+            abstract,become,box,do,final,macro,override,priv,typeof,unsized,virtual,yield"""
             .split("[,\\s]")).forEach(trie::put);
 
         return trie;

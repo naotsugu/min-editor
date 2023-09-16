@@ -95,14 +95,16 @@ public class MarkdownLexer implements Lexer {
                 .filter(n -> !n.open().context().equals(name())).findFirst()
                 .map(n -> n.open().context()).orElse("");
 
-        if (!context.isEmpty() && !source.matchLookahead('`', '`', '`') && (delegate == null || !delegate.name().equals(context))) {
-            delegate = lexerProvider.get(context);
-            delegate.setSource(source, scope);
-            return true;
+        if (context.isEmpty() || source.matchLookahead('`', '`', '`')) {
+            delegate = null;
+            return false;
         }
 
-        delegate = null;
-        return false;
+        if (delegate == null || !delegate.name().equals(context)) {
+            delegate = lexerProvider.get(context);
+            delegate.setSource(source, scope);
+        }
+        return delegate != null;
     }
 
 

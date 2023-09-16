@@ -82,26 +82,27 @@ public class RustLexer implements Lexer {
         };
     }
 
+
     /**
      * Read comment.
      * @param source the lexer source
      * @return the token
      */
     private Token readComment(LexerSource source) {
-        int pos = source.position();
+        int pos = source.offset() + source.position();
         char ch = source.peekChar();
         if (ch == '/') {
             char nch = source.peekChar();
             if (nch == '/' || nch == '!') {
                 source.commitPeek();
-                return Token.of(DOC_COMMENT, Scope.INLINE_START, source.offset() + pos, 3);
+                return Token.of(DOC_COMMENT, Scope.INLINE_START, pos, 3);
             } else {
                 source.commitPeek();
-                return Token.of(LINE_COMMENT, Scope.INLINE_START, source.offset() + pos, 2);
+                return Token.of(LINE_COMMENT, Scope.INLINE_START, pos, 2);
             }
         } else if (ch == '*') {
             source.commitPeek();
-            return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 2);
+            return Token.of(COMMENT, Scope.BLOCK_START, pos, 2);
         } else {
             return Token.any(source);
         }
@@ -114,11 +115,11 @@ public class RustLexer implements Lexer {
      * @return the token
      */
     private Token readCommentBlockClosed(LexerSource source) {
-        int pos = source.position();
+        int pos = source.offset() + source.position();
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
-            return Token.of(COMMENT, Scope.BLOCK_END, source.offset() + pos, 2);
+            return Token.of(COMMENT, Scope.BLOCK_END, pos, 2);
         } else {
             return Token.any(source);
         }
@@ -154,7 +155,7 @@ public class RustLexer implements Lexer {
      */
     private Token readIdentifier(LexerSource source, int cp) {
 
-        int pos = source.position();
+        int pos = source.offset() + source.position();
         StringBuilder sb = new StringBuilder();
         sb.append(Character.toChars(cp));
 
@@ -164,9 +165,9 @@ public class RustLexer implements Lexer {
                 String str = sb.toString();
                 source.commitPeekBefore();
                 if (keywords.match(str)) {
-                    return Token.of(KEYWORD, Scope.NEUTRAL, source.offset() + pos, str.length());
+                    return Token.of(KEYWORD, Scope.NEUTRAL, pos, str.length());
                 } else {
-                    return Token.of(ANY, Scope.NEUTRAL, source.offset() + pos, str.length());
+                    return Token.of(ANY, Scope.NEUTRAL, pos, str.length());
                 }
             }
             sb.append(source.readChar());

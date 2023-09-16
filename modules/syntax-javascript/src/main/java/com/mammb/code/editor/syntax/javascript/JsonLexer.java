@@ -74,14 +74,14 @@ public class JsonLexer implements Lexer {
      * @return the token
      */
     private Token readComment(LexerSource source) {
-        int pos = source.position();
+        int pos = source.offset() + source.position();
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
-            return Token.of(LINE_COMMENT, Scope.INLINE_START, source.offset() + pos, 2);
+            return Token.of(LINE_COMMENT, Scope.INLINE_START, pos, 2);
         } else if (ch == '*') {
             source.commitPeek();
-            return Token.of(COMMENT, Scope.BLOCK_START, source.offset() + pos, 2);
+            return Token.of(COMMENT, Scope.BLOCK_START, pos, 2);
         } else {
             source.rollbackPeek();
             return Token.any(source);
