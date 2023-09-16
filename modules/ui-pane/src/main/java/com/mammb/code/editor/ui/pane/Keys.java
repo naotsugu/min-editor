@@ -67,19 +67,6 @@ public class Keys {
             : !e.isControlDown() && !e.isAltDown() && !e.isMetaDown();
 
 
-    /**
-     * Get whether the shift down key combination.
-     * @param e the key event
-     * @return {@code true}, if whether the shift down key combination
-     */
-    public static boolean isSelectCombination(KeyEvent e) {
-        final KeyCode code = e.getCode();
-        return code == KeyCode.LEFT    || code ==  KeyCode.RIGHT ||
-               code == KeyCode.UP      || code ==  KeyCode.DOWN  ||
-               code == KeyCode.HOME    || code ==  KeyCode.END   ||
-               code == KeyCode.PAGE_UP || code ==  KeyCode.PAGE_DOWN;
-    }
-
     public static Action asAction(KeyEvent e) {
         if (Keys.SC_O.match(e)) return Action.OPEN;
         else if (Keys.SC_S.match(e)) return Action.SAVE;
