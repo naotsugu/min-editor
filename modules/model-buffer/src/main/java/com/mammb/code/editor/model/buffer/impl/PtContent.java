@@ -44,15 +44,6 @@ public class PtContent implements Content {
     /**
      * Create content for specified path.
      * @param path the content path
-     */
-    public PtContent(Path path) {
-        this.pt = PieceTable.of(path);
-        this.path = path;
-    }
-
-    /**
-     * Create content for specified path.
-     * @param path the content path
      * @param traverse the bytes traverse at initial loading
      */
     public PtContent(Path path, Consumer<byte[]> traverse) {

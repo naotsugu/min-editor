@@ -157,6 +157,7 @@ public class EditorPane extends StackPane {
         confirmIfDirty(() -> updateModel(path));
     }
 
+
     /**
      * Save the current model.
      */

@@ -37,13 +37,13 @@ public class PtContentMirror implements Content {
     private Path original;
 
     /** The charset of the original content. */
-    private Charset originalCs;
+    private final Charset originalCs;
 
     /** The copied path. */
-    private Path mirror;
+    private final Path mirror;
 
     /** The peer. */
-    private PtContent peer;
+    private final PtContent peer;
 
 
     /**

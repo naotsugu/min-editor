@@ -605,12 +605,20 @@ public class EditorModel {
     }
 
     // -- file behavior -------------------------------------------------------
+    /**
+     * Save.
+     */
     public void save() {
         buffer.save();
     }
+    /**
+     * Save as.
+     * @param path the path
+     */
     public void saveAs(Path path) {
         buffer.saveAs(path);
     }
+
     // -- layout behavior -----------------------------------------------------
     public void layoutBounds(double width, double height) {
         this.width = width;
