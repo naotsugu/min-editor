@@ -69,7 +69,7 @@ public class Rust {
         int type = Character.getType(cp);
         return (type == Character.UPPERCASE_LETTER || type == Character.LOWERCASE_LETTER ||
             type == Character.TITLECASE_LETTER || type == Character.MODIFIER_LETTER ||
-            type == Character.OTHER_LETTER ||  type == Character.LETTER_NUMBER);
+            type == Character.OTHER_LETTER || type == Character.LETTER_NUMBER);
     }
 
 

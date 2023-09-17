@@ -77,4 +77,56 @@ public class Kotlin {
         return trie;
     }
 
+
+    /**
+     * Determines if the character (Unicode code point) is permissible as the first character in an identifier.
+     * @param cp the character (Unicode code point) to be tested
+     * @return {@code true}, if the character may start an identifier
+     */
+    public static boolean isIdentifierStart(int cp) {
+        return cp == '_' || isLetter(cp);
+    }
+
+
+    /**
+     * Determines if the specified character may be part of a rust identifier
+     * as other than the first character.
+     * @param cp the character to be tested
+     * @return {@code true}, if the character may be part of a rust identifier
+     */
+    public static boolean isIdentifierPart(int cp) {
+        return cp == '_' || isLetter(cp) || isUnicodeDigit(cp);
+    }
+
+
+    /**
+     * Gets whether the specified character (Unicode code point) is letter(Lu, Ll, Lt, Lm or Lo) or not.
+     * @param cp the character (Unicode code point) to be tested
+     * @return {@code true}, if the character is the letter
+     */
+    private static boolean isLetter(int cp) {
+        int type = Character.getType(cp);
+        return (type == Character.UPPERCASE_LETTER // Lu
+            || type == Character.LOWERCASE_LETTER  // Ll
+            || type == Character.TITLECASE_LETTER  // Lt
+            || type == Character.MODIFIER_LETTER   // Lm
+            || type == Character.OTHER_LETTER);    // Lo
+    }
+
+
+    public static boolean isQuotedSymbol(int cp) {
+        return cp != '\r' && cp != '\n' && cp != '`';
+    }
+
+
+    /**
+     * Gets whether the specified character (Unicode code point) is the unicode digit (Nd) or not.
+     * @param cp the character (Unicode code point) to be tested
+     * @return {@code true}, if the character is the unicode digit
+     */
+    private static boolean isUnicodeDigit(int cp) {
+        return Character.getType(cp) == Character.DECIMAL_DIGIT_NUMBER; // Nd
+    }
+
+
 }
