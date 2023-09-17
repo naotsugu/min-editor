@@ -38,6 +38,10 @@ public class FxFontMetrics implements com.mammb.code.editor.model.layout.FontMet
     private Font base;
 
 
+    public FxFontMetrics() {
+        this(Font.getDefault());
+    }
+
     public FxFontMetrics(Font font) {
         fontLoader = Toolkit.getToolkit().getFontLoader();
         base = Objects.requireNonNull(font);

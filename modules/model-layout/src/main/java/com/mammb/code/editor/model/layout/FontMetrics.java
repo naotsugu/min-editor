@@ -67,4 +67,5 @@ public interface FontMetrics<F> {
      * @return the width of the char
      */
     float getCharWidth(F font, char ch);
+
 }

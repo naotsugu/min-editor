@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.ui.pane.impl;
 
+import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextRun;
-import com.mammb.code.editor.ui.pane.Global;
 import com.mammb.code.editor.ui.pane.Rect;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -46,7 +46,7 @@ public class Draws {
             double x = textLeft + run.offsetToX().apply(i);
             double w = (ch == '　')
                 ? textLeft + run.offsetToX().apply(i + 1) - x
-                : Global.numberCharacterWidth(gc.getFont());
+                : FxFonts.uppercaseLetterWidth(gc.getFont());
             var rect = new Rect(x, top, w, lineHeight).smaller(0.8);
 
             gc.setStroke(Color.GRAY);

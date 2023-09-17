@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.ui.pane.impl;
 
+import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.ui.pane.Global;
 import com.mammb.code.editor.ui.pane.Selection;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -107,7 +107,7 @@ public class SelectionImpl implements Selection {
                  (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
 
                 gc.setFill(color);
-                gc.fillRect(run.layout().x() + left, top, Global.numberCharacterWidth(gc.getFont()), run.textLine().leadingHeight());
+                gc.fillRect(run.layout().x() + left, top, FxFonts.uppercaseLetterWidth(gc.getFont()), run.textLine().leadingHeight());
 
             } else {
 
