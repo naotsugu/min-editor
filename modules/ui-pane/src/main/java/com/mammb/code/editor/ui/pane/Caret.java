@@ -76,18 +76,46 @@ public interface Caret {
      */
     int offset();
 
+    /**
+     * Get the row number(zero origin) of the row where the caret exists.
+     * @return the row number
+     */
     int row();
 
+    /**
+     * Get the x position of the row where the caret exists.
+     * @return the x position
+     */
     double x();
 
+    /**
+     * Get the y position of the row where the caret exists.
+     * @return the y position
+     */
     double y();
 
+    /**
+     * Get the bottom position of the row where the caret exists.
+     * @return the bottom position
+     */
     double y2();
 
+    /**
+     * Get the caret height.
+     * @return the caret height
+     */
     double height();
 
+    /**
+     * Get the caret width.
+     * @return the caret width
+     */
     double width();
 
+    /**
+     * Get whether the caret is drawn or not
+     * @return
+     */
     boolean drawn();
 
     /**
@@ -96,7 +124,10 @@ public interface Caret {
      */
     boolean flipIfDrawn();
 
-
+    /**
+     * Get the layoutLine at caret.
+     * @return the layoutLine
+     */
     LayoutLine layoutLine();
 
 }

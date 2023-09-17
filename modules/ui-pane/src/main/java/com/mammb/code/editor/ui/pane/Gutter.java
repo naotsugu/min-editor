@@ -32,11 +32,17 @@ import java.util.stream.IntStream;
  */
 public class Gutter {
 
+    /** The font. */
     private Font font;
+    /** The text color. */
     private Color color;
+    /** The width of a character. */
     private double chWidth;
+    /** The width of the gutter. */
     private double width;
+    /** width changed?. */
     private boolean widthChanged;
+
 
     /**
      * Constructor.
