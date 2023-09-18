@@ -59,14 +59,14 @@ import java.util.ArrayList;
  */
 public class EditorPane extends StackPane {
 
-    /** The timeline. */
+    /** The timeline for caret blink. */
     private final Timeline timeline = new Timeline();
     /** The Context. */
     private final Context context;
 
-    /** The Canvas. */
+    /** The canvas. */
     private Canvas canvas;
-    /** The FX GraphicsContext. */
+    /** The graphics context. */
     private GraphicsContext gc;
     /** The editor model. */
     private EditorModel editorModel;
@@ -170,6 +170,9 @@ public class EditorPane extends StackPane {
     }
 
 
+    /**
+     * File open choose.
+     */
     private void openChoose() {
         confirmIfDirty(() -> {
             Path current = editorModel.metrics().path();
@@ -181,6 +184,9 @@ public class EditorPane extends StackPane {
     }
 
 
+    /**
+     * File save choose.
+     */
     private void saveChoose() {
         Path current = editorModel.metrics().path();
         File file = FileChoosers.fileSaveChoose(getScene().getWindow(), current);
@@ -194,7 +200,11 @@ public class EditorPane extends StackPane {
     }
 
 
-    public void handleScroll(ScrollEvent e) {
+    /**
+     * Scroll event handler.
+     * @param e the scroll event
+     */
+    private void handleScroll(ScrollEvent e) {
         if (e.getEventType() == ScrollEvent.SCROLL && e.getDeltaY() != 0) {
             if (e.getDeltaY() > 0) {
                 editorModel.scrollPrev(Math.min((int) e.getDeltaY(), 3));
@@ -206,8 +216,12 @@ public class EditorPane extends StackPane {
     }
 
 
-    public void handleMouseMoved(MouseEvent event) {
-        if (event.getY() > 0 && event.getX() > editorModel.textAreaRect().x()) {
+    /**
+     * Mouse moved handler.
+     * @param e the mouse event
+     */
+    private void handleMouseMoved(MouseEvent e) {
+        if (e.getY() > 0 && e.getX() > editorModel.textAreaRect().x()) {
             setCursor(Cursor.TEXT);
         } else {
             setCursor(Cursor.DEFAULT);
@@ -215,26 +229,38 @@ public class EditorPane extends StackPane {
     }
 
 
-    public void handleMouseClicked(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY && event.getTarget() == canvas) {
-            switch (event.getClickCount()) {
-                case 1 -> editorModel.click(event.getSceneX(), event.getSceneY());
-                case 2 -> editorModel.clickDouble(event.getSceneX(), event.getSceneY());
+    /**
+     * Mouse clicked handler.
+     * @param e the mouse event
+     */
+    private void handleMouseClicked(MouseEvent e) {
+        if (e.getButton() == MouseButton.PRIMARY && e.getTarget() == canvas) {
+            switch (e.getClickCount()) {
+                case 1 -> editorModel.click(e.getSceneX(), e.getSceneY());
+                case 2 -> editorModel.clickDouble(e.getSceneX(), e.getSceneY());
             }
             editorModel.draw(gc);
         }
     }
 
 
-    public void handleMouseDragged(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY && event.getTarget() == canvas) {
-            editorModel.dragged(event.getSceneX(), event.getSceneY());
+    /**
+     * Mouse dragged handler.
+     * @param e the mouse event
+     */
+    private void handleMouseDragged(MouseEvent e) {
+        if (e.getButton() == MouseButton.PRIMARY && e.getTarget() == canvas) {
+            editorModel.dragged(e.getSceneX(), e.getSceneY());
         }
         editorModel.draw(gc);
     }
 
 
-    public void handleKeyPressed(KeyEvent e) {
+    /**
+     * Key pressed handler.
+     * @param e the key event
+     */
+    private void handleKeyPressed(KeyEvent e) {
 
         final Keys.Action action = Keys.asAction(e);
         final boolean withSelect = e.isShiftDown();
@@ -274,7 +300,11 @@ public class EditorPane extends StackPane {
     }
 
 
-    public void handleKeyTyped(KeyEvent e) {
+    /**
+     * Key typed handler.
+     * @param e the key event
+     */
+    private void handleKeyTyped(KeyEvent e) {
 
         if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
             e.getCode().isArrowKey()    || e.getCode().isModifierKey() ||
@@ -308,14 +338,18 @@ public class EditorPane extends StackPane {
     }
 
 
-    public void handleInputMethod(InputMethodEvent event) {
-        if (!event.getCommitted().isEmpty()) {
-            editorModel.imeCommitted(event.getCommitted());
-        } else if (!event.getComposed().isEmpty()) {
+    /**
+     * Input method handler
+     * @param e the input method event
+     */
+    private void handleInputMethod(InputMethodEvent e) {
+        if (!e.getCommitted().isEmpty()) {
+            editorModel.imeCommitted(e.getCommitted());
+        } else if (!e.getComposed().isEmpty()) {
             if (!editorModel.isImeOn()) editorModel.imeOn(gc);
             var runs = new ArrayList<ImePallet.Run>();
             int offset = 0;
-            for (var run : event.getComposed()) {
+            for (var run : e.getComposed()) {
                 var r = new ImePallet.Run(
                     offset,
                     run.getText(),
@@ -368,14 +402,27 @@ public class EditorPane extends StackPane {
         }
     }
 
-    public void handleVScrolled(Integer oldValue, Integer newValue) {
+
+    /**
+     * Vertical scrolled handler.
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
+    private void handleVScrolled(Integer oldValue, Integer newValue) {
         editorModel.vScrolled(oldValue, newValue);
         editorModel.draw(gc);
     }
 
-    public void handleHScrolled(Double oldValue, Double newValue) {
+
+    /**
+     * Horizontal scrolled handler.
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
+    private void handleHScrolled(Double oldValue, Double newValue) {
         editorModel.draw(gc);
     }
+
 
     private void newPane() {
         Stage newStage = new Stage();
@@ -385,12 +432,14 @@ public class EditorPane extends StackPane {
         new EditorPane(context).showOn(newStage);
     }
 
+
     public void showOn(Stage stage) {
         Scene scene = new Scene(this, getWidth(), getHeight());
         stage.setScene(scene);
         stage.setTitle("min-editor");
         stage.show();
     }
+
 
     /**
      * Create input method request.
@@ -418,6 +467,7 @@ public class EditorPane extends StackPane {
         };
     }
 
+
     private void aroundEdit(Runnable runnable) {
         timeline.stop();
         editorModel.showCaret(gc);
@@ -425,6 +475,7 @@ public class EditorPane extends StackPane {
         editorModel.draw(gc);
         timeline.play();
     }
+
 
     private void aroundEdit(Runnable edit, boolean withSelect) {
         aroundEdit(() -> {
@@ -438,6 +489,7 @@ public class EditorPane extends StackPane {
         });
     }
 
+
     private void confirmIfDirty(Runnable runnable) {
         if (editorModel.metrics().isDirty()) {
             OverlayDialog.confirm(this,
@@ -448,6 +500,7 @@ public class EditorPane extends StackPane {
         }
     }
 
+
     private void updateModel(Path path) {
         editorModel = new EditorModel(
             context,
@@ -457,6 +510,7 @@ public class EditorPane extends StackPane {
             vScrollBar, hScrollBar);
         editorModel.draw(gc);
     }
+
 
     private static boolean equalsExtension(Path path1, Path path2) {
         if (path1 == null || path2 == null) {
