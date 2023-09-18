@@ -64,4 +64,14 @@ public class FxFonts {
         );
     }
 
+
+    /**
+     * Get the font line height(ascent + descent + leading).
+     * @param font the font
+     * @return the font line height(ascent + descent + leading)
+     */
+    public static double lineHeight(Font font) {
+        return fontMetrics.lineHeight(font);
+    }
+
 }

@@ -15,11 +15,10 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.javafx.layout.FxFontMetrics;
+import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.edit.Edit;
-import com.mammb.code.editor.model.layout.FontMetrics;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
@@ -649,10 +648,10 @@ public class EditorModel {
     // -- private -------------------------------------------------------------
 
     int screenRowSize(double height) {
-        FontMetrics<Font> fontMetrics = new FxFontMetrics(Font.font(
+        double lineHeight = FxFonts.lineHeight(Font.font(
             context.preference().fontName(),
             context.preference().fontSize()));
-        return (int) Math.ceil(height / (fontMetrics.lineHeight() + TextLine.DEFAULT_MARGIN_TOP + TextLine.DEFAULT_MARGIN_BOTTOM));
+        return (int) Math.ceil(height / (lineHeight + TextLine.DEFAULT_MARGIN_TOP + TextLine.DEFAULT_MARGIN_BOTTOM));
     }
 
     private double textLeft() {

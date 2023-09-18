@@ -15,11 +15,11 @@
  */
 package com.mammb.code.editor.javafx.layout;
 
-import com.mammb.code.editor.model.layout.FontStyle;
 import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.WeakHashMap;
@@ -69,11 +69,8 @@ public class FxFontMetrics implements com.mammb.code.editor.model.layout.FontMet
     }
 
     @Override
-    public double lineHeight(FontStyle<Font, ?> font) {
-        return metrics.computeIfAbsent(
-                font.font(),
-                fontLoader::getFontMetrics)
-            .getLineHeight();
+    public double lineHeight(Font font) {
+        return metrics.computeIfAbsent(font, fontLoader::getFontMetrics).getLineHeight();
     }
 
     @Override

@@ -51,7 +51,7 @@ public interface FontMetrics<F> {
      * @param font the font style
      * @return the font line height(ascent + descent + leading)
      */
-    double lineHeight(FontStyle<F, ?> font);
+    double lineHeight(F font);
 
     /**
      * Computes the width of the char when rendered with the font represented by this FontMetrics instance.
