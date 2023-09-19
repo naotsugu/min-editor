@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.ui.pane.impl.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 
 /**

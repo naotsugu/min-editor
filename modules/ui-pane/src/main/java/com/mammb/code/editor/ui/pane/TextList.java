@@ -17,6 +17,8 @@ package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
+import com.mammb.code.editor.ui.pane.impl.LayoutLine;
+
 import java.util.List;
 import java.util.Optional;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane;
+package com.mammb.code.editor.ui.pane.impl;
 
 import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
 import com.mammb.code.editor.javafx.layout.FxSpanTranslate;
@@ -24,6 +24,7 @@ import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.style.StyledText;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.Translate;
+import com.mammb.code.editor.ui.pane.TextList;
 import com.mammb.code.editor.ui.prefs.Context;
 
 import java.util.LinkedList;

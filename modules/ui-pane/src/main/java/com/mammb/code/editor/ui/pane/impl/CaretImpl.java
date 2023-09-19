@@ -18,7 +18,6 @@ package com.mammb.code.editor.ui.pane.impl;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.pane.Caret;
-import com.mammb.code.editor.ui.pane.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

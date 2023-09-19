@@ -13,61 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane;
+package com.mammb.code.editor.ui.pane.impl;
 
-import com.mammb.code.editor.model.layout.Layout;
-import com.mammb.code.editor.model.layout.Span;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
-import java.util.function.Function;
+import com.mammb.code.editor.model.text.OffsetPoint;
+
+import java.util.List;
 
 /**
- * LayoutRun.
+ * LayoutLine.
+ * @param line the TextLine
+ * @param offsetY the offset of position y
  * @author Naotsugu Kobayashi
  */
-public record LayoutRun(TextRun run, double offsetY) implements TextRun {
+public record LayoutLine(TextLine line, double offsetY) implements TextLine {
 
-    public double x() {
-        return run.layout().x();
-    }
-
-    public double y() {
-        return run.layout().y() + offsetY();
+    @Override
+    public OffsetPoint point() {
+        return line.point();
     }
 
     @Override
-    public Layout layout() {
-        return run.layout();
+    public int lineIndex() {
+        return line.lineIndex();
     }
 
     @Override
-    public int start() {
-        return run.start();
+    public int lineSize() {
+        return line.lineSize();
     }
 
     @Override
     public int length() {
-        return run.length();
+        return line.length();
     }
 
     @Override
-    public Function<Integer, Float> offsetToX() {
-        return run.offsetToX();
+    public double width() {
+        return line.width();
     }
 
     @Override
-    public Function<Double, Integer> xToOffset() {
-        return run.xToOffset();
+    public double height() {
+        return line.height();
     }
 
     @Override
-    public TextLine textLine() {
-        return run.textLine();
+    public List<TextRun> runs() {
+        return line.runs();
     }
 
-    @Override
-    public Span source() {
-        return run.source();
+    public List<LayoutRun> layoutRuns() {
+        return line.runs().stream()
+            .map(run -> new LayoutRun(run, offsetY)).toList();
     }
 
 }
