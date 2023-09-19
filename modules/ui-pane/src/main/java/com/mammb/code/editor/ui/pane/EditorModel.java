@@ -85,8 +85,10 @@ public class EditorModel {
      * @param height the screen height
      */
     public EditorModel(Context context, double width, double height) {
-        this(context, width, height,
-            null, StylingTranslate.passThrough(),
+        this(context,
+            width, height,
+            null,
+            StylingTranslate.passThrough(),
             ScrollBar.vEmpty(), ScrollBar.hEmpty());
     }
 
@@ -298,6 +300,7 @@ public class EditorModel {
         int size = texts.prev(n);
         caret.markDirty();
         if (size == 0) return;
+        texts.markDirty();
         vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
     public void scrollNext(int n) {
