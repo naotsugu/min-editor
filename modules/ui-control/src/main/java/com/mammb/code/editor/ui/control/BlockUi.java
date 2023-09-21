@@ -52,28 +52,28 @@ public class BlockUi extends StackPane {
     private static final System.Logger log = System.getLogger(BlockUi.class.getName());
 
     /** The executor. */
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
-        Thread t = new Thread(r);
-        t.setDaemon(true);
-        return t ;
-    });
+    private static final ExecutorService executor = Executors.newSingleThreadExecutor(new DaemonThreadFactory());
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(executor::shutdownNow));
     }
 
+    /** The truck height. */
+    private static final double TRUCK_HEIGHT = 8;
+
+    /** The indeterminate bar width. */
+    private static final double INDETERMINATE_BAR_WIDTH = 50;
+
     /** The background color. */
     private final Color bgColor;
 
-    /** The foreground color. */
-    private final Color fgColor;
-
+    /** The progress truck. */
     private final StackPane progressTruck;
+    /** The progress bar. */
     private final StackPane progressBar;
 
+    /** The indeterminate transition. */
     private IndeterminateTransition indeterminateTransition;
 
-    private static final double TRUCK_HEIGHT = 8;
-    private static final double INDETERMINATE_BAR_WIDTH = 50;
 
     /**
      * Constructor.
@@ -82,7 +82,6 @@ public class BlockUi extends StackPane {
     private BlockUi(Color bgColor) {
 
         this.bgColor = bgColor;
-        this.fgColor = bgColor.invert();
         this.progressTruck = createProgressTruck();
         this.progressBar = createProgressBar();
         this.indeterminateTransition = createIndeterminateTimeline();
@@ -90,20 +89,10 @@ public class BlockUi extends StackPane {
         progressTruck.getChildren().add(progressBar);
         indeterminateTransition.endProperty().bind(progressTruck.widthProperty());
 
-        Rectangle clip = new Rectangle();
-        clip.setArcWidth(4);
-        clip.setArcHeight(4);
-        progressTruck.layoutBoundsProperty().addListener((ov, oldValue, newValue) -> {
-            clip.setWidth(newValue.getWidth());
-            clip.setHeight(newValue.getHeight());
-        });
-        progressTruck.setClip(clip);
-
         setBackground(new Background(new BackgroundFill(
             Color.color(bgColor.getRed(), bgColor.getGreen(), bgColor.getBlue(), 0.75),
             CornerRadii.EMPTY, Insets.EMPTY)));
         setCursor(Cursor.DEFAULT);
-
         setOnKeyPressed(Event::consume);
         setOnKeyTyped(Event::consume);
         setOnMouseClicked(Event::consume);
@@ -125,7 +114,7 @@ public class BlockUi extends StackPane {
 
 
     private static EventHandler<WorkerStateEvent> withRelease(
-        EventHandler<WorkerStateEvent> handler, Pane blocked, Pane block) {
+            EventHandler<WorkerStateEvent> handler, Pane blocked, Pane block) {
         return e -> {
             if (e.getSource().getException() != null) {
                 log.log(ERROR, e.getSource().getException());
@@ -149,6 +138,7 @@ public class BlockUi extends StackPane {
 
 
     private StackPane createProgressTruck() {
+
         var truck = new StackPane();
         truck.setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY.deriveColor(0, 1, 1, 0.1),
@@ -157,7 +147,16 @@ public class BlockUi extends StackPane {
         truck.setMinHeight(TRUCK_HEIGHT);
         truck.setPrefHeight(TRUCK_HEIGHT);
         truck.setMaxHeight(TRUCK_HEIGHT);
-        StackPane.setMargin(truck, new Insets(0,50,0,50));
+        StackPane.setMargin(truck, new Insets(0, 50, 0, 50));
+
+        Rectangle clip = new Rectangle();
+        clip.setArcWidth(4);
+        clip.setArcHeight(4);
+        truck.layoutBoundsProperty().addListener((observable, ov, nv) -> {
+            clip.setWidth(nv.getWidth());
+            clip.setHeight(nv.getHeight());
+        });
+        truck.setClip(clip);
 
         return truck;
     }
@@ -177,7 +176,7 @@ public class BlockUi extends StackPane {
 
 
     private IndeterminateTransition createIndeterminateTimeline() {
-        var transition = new IndeterminateTransition(-50, 100, progressBar);
+        var transition = new IndeterminateTransition(-INDETERMINATE_BAR_WIDTH, 100, progressBar);
         transition.play();
         return transition;
     }
