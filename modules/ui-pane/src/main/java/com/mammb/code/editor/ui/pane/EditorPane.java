@@ -25,6 +25,8 @@ import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -502,15 +504,28 @@ public class EditorPane extends StackPane {
 
 
     private void updateModel(Path path) {
-        editorModel = new EditorModel(
-            context,
-            getWidth(), getHeight(),
-            path,
-            Syntax.of(path, context.preference().fgColor()),
-            vScrollBar, hScrollBar);
-        editorModel.draw(gc);
+        Task<EditorModel> task = new Task<>() {
+            @Override
+            protected EditorModel call() throws Exception {
+                return new EditorModel(
+                    context,
+                    getWidth(), getHeight(),
+                    path,
+                    Syntax.of(path, context.preference().fgColor()),
+                    vScrollBar, hScrollBar);
+            }
+        };
+        task.setOnSucceeded(this::handleModelCreated);
+        Thread th = new Thread(task);
+        th.setDaemon(true);
+        th.start();
     }
 
+
+    private void handleModelCreated(WorkerStateEvent e) {
+        editorModel = (EditorModel) e.getSource().getValue();
+        editorModel.draw(gc);
+    }
 
     private static boolean equalsExtension(Path path1, Path path2) {
         if (path1 == null || path2 == null) {
