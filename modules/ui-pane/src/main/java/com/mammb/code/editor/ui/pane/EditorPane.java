@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.syntax.Syntax;
+import com.mammb.code.editor.ui.control.BlockUi;
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.OverlayDialog;
 import com.mammb.code.editor.ui.control.VScrollBar;
@@ -516,9 +517,7 @@ public class EditorPane extends StackPane {
             }
         };
         task.setOnSucceeded(this::handleModelCreated);
-        Thread th = new Thread(task);
-        th.setDaemon(true);
-        th.start();
+        BlockUi.run(this, task);
     }
 
 
