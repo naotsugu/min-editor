@@ -118,7 +118,7 @@ public class BlockUi extends StackPane {
             EventHandler<WorkerStateEvent> handler, Pane blocked, Pane block) {
         return e -> {
             if (e.getSource().getException() != null) {
-                log.log(ERROR, e.getSource().getException());
+                log.log(ERROR, e.getSource().getMessage(), e.getSource().getException());
             }
             if (handler != null) {
                 handler.handle(e);
