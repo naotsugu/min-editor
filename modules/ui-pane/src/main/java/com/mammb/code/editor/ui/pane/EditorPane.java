@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.pane;
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import com.mammb.code.editor.ui.pane.behavior.FileBehavior;
+import com.mammb.code.editor.ui.pane.behavior.ImeBehavior;
 import com.mammb.code.editor.ui.pane.impl.DragDrops;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
@@ -26,7 +27,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Cursor;
@@ -47,8 +47,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
 import java.nio.file.Path;
-import java.util.ArrayList;
 
 /**
  * EditorPane.
@@ -294,33 +294,6 @@ public class EditorPane extends StackPane {
 
 
     /**
-     * Input method handler
-     * @param e the input method event
-     */
-    private void handleInputMethod(InputMethodEvent e) {
-        if (!e.getCommitted().isEmpty()) {
-            model.imeCommitted(e.getCommitted());
-        } else if (!e.getComposed().isEmpty()) {
-            if (!model.isImeOn()) model.imeOn(gc);
-            var runs = new ArrayList<ImePallet.Run>();
-            int offset = 0;
-            for (var run : e.getComposed()) {
-                var r = new ImePallet.Run(
-                    offset,
-                    run.getText(),
-                    ImePallet.RunType.valueOf(run.getHighlight().name()));
-                runs.add(r);
-                offset += r.length();
-            }
-            model.imeComposed(runs);
-        } else {
-            model.imeOff();
-        }
-        model.draw(gc);
-    }
-
-
-    /**
      * Called when the value of the layout changes.
      * @param observable the ObservableValue which value changed
      * @param oldValue the old value
@@ -397,29 +370,20 @@ public class EditorPane extends StackPane {
 
 
     /**
+     * Input method handler
+     * @param e the input method event
+     */
+    private void handleInputMethod(InputMethodEvent e) {
+        ImeBehavior.of(gc, model).handle(e);
+    }
+
+
+    /**
      * Create input method request.
      * @return the InputMethodRequests
      */
     private InputMethodRequests inputMethodRequests() {
-        return new InputMethodRequests() {
-            @Override
-            public Point2D getTextLocation(int offset) {
-                var rect = model.imeOn(gc);
-                return localToScreen(rect.x(), rect.y() + rect.h() + 5);
-            }
-            @Override
-            public void cancelLatestCommittedText() {
-                model.imeOff();
-            }
-            @Override
-            public int getLocationOffset(int x, int y) {
-                return 0;
-            }
-            @Override
-            public String getSelectedText() {
-                return "";
-            }
-        };
+        return ImeBehavior.of(gc, model).createRequest(this);
     }
 
 
