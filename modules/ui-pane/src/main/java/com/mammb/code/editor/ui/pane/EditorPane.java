@@ -109,8 +109,6 @@ public class EditorPane extends StackPane {
         getChildren().addAll(vScrollBar, hScrollBar);
         model.setScroll(vScrollBar, hScrollBar);
 
-        initHandler();
-
         gc = canvas.getGraphicsContext2D();
         gc.setLineCap(StrokeLineCap.BUTT);
 
@@ -119,6 +117,9 @@ public class EditorPane extends StackPane {
                 e -> model.tick(gc)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+
+        initHandler();
+
     }
 
 
