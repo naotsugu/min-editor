@@ -53,6 +53,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -168,7 +170,7 @@ public class EditorPane extends StackPane {
         if (editorModel.metrics().path() == null) {
             saveChoose();
         } else {
-            editorModel.save();
+            runAsTask(editorModel::save);
         }
     }
 
@@ -195,9 +197,10 @@ public class EditorPane extends StackPane {
         File file = FileChoosers.fileSaveChoose(getScene().getWindow(), current);
         if (file != null) {
             Path path = file.toPath();
-            editorModel.saveAs(path);
-            if (!equalsExtension(path, current)) {
-                updateModel(path);
+            if (equalsExtension(path, current)) {
+                runAsTask(() -> editorModel.saveAs(path));
+            } else {
+                saveAndUpdate(path);
             }
         }
     }
@@ -505,19 +508,54 @@ public class EditorPane extends StackPane {
 
 
     private void updateModel(Path path) {
+
+        try {
+            Path org = editorModel.metrics().path();
+            if (org != null && Files.isSameFile(path, org)) {
+                return;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         Task<EditorModel> task = new Task<>() {
-            @Override
-            protected EditorModel call() throws Exception {
-                return new EditorModel(
-                    context,
-                    getWidth(), getHeight(),
-                    path,
-                    Syntax.of(path, context.preference().fgColor()),
-                    vScrollBar, hScrollBar);
+            @Override protected EditorModel call() {
+                return createModel(path);
             }
         };
         task.setOnSucceeded(this::handleModelCreated);
         BlockUi.run(this, task);
+    }
+
+
+    private void saveAndUpdate(Path path) {
+        Task<EditorModel> task = new Task<>() {
+            @Override protected EditorModel call() {
+                editorModel.saveAs(path);
+                return createModel(path);
+            }
+        };
+        task.setOnSucceeded(this::handleModelCreated);
+        BlockUi.run(this, task);
+    }
+
+
+    private EditorModel createModel(Path path) {
+        return new EditorModel(
+            context,
+            getWidth(), getHeight(),
+            path,
+            Syntax.of(path, context.preference().fgColor()),
+            vScrollBar, hScrollBar);
+    }
+
+    private void runAsTask(Runnable runnable) {
+        BlockUi.run(this, new Task<Void>() {
+            @Override protected Void call() {
+                runnable.run();
+                return null;
+            }
+        });
     }
 
 
