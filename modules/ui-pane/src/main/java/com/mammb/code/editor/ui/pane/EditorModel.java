@@ -24,6 +24,7 @@ import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.pane.impl.CaretImpl;
 import com.mammb.code.editor.ui.pane.impl.Clipboard;
@@ -271,6 +272,15 @@ public class EditorModel {
         this.hScroll = hScroll;
         adjustHScroll();
         hScroll.setValue(0.0);
+    }
+
+    public EditorModel as(Path path) {
+        return new EditorModel(
+            context,
+            width, height,
+            path,
+            Syntax.of(path, context.preference().fgColor()),
+            vScroll, hScroll);
     }
 
     // -- ime behavior  ----------------------------------------------------

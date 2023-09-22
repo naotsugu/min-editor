@@ -1,0 +1,216 @@
+/*
+ * Copyright 2019-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mammb.code.editor.ui.pane.behavior;
+
+import com.mammb.code.editor.ui.control.BlockUi;
+import com.mammb.code.editor.ui.control.OverlayDialog;
+import com.mammb.code.editor.ui.pane.EditorModel;
+import com.mammb.code.editor.ui.pane.impl.FileChoosers;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
+import javafx.scene.layout.Pane;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
+import static java.lang.System.Logger.Level.ERROR;
+
+/**
+ * FileBehavior.
+ * @author Naotsugu Kobayashi
+ */
+public class FileBehavior {
+
+    /** logger. */
+    private static final System.Logger log = System.getLogger(FileBehavior.class.getName());
+
+    /** The pane. */
+    private final Pane pane;
+
+    /** The editor model. */
+    private final EditorModel model;
+
+
+    /**
+     * Constructor.
+     * @param pane the pane
+     * @param model the editor model
+     */
+    private FileBehavior(Pane pane, EditorModel model) {
+        this.pane = Objects.requireNonNull(pane);
+        this.model = Objects.requireNonNull(model);
+    }
+
+
+    /**
+     * Create a new FileBehavior.
+     * @param pane the pane
+     * @param model the editor model
+     * @return FileBehavior
+     */
+    public static FileBehavior of(Pane pane, EditorModel model) {
+        return new FileBehavior(pane, model);
+    }
+
+
+    /**
+     * Open the file with a path.
+     * @param path the content file path
+     * @param handler the model created handler
+     */
+    public void open(Path path, EventHandler<WorkerStateEvent> handler) {
+        confirmIfDirty(() -> updateModel(path, handler));
+    }
+
+
+    /**
+     * Open the file.
+     * @param handler the model created handler
+     */
+    public void open(EventHandler<WorkerStateEvent> handler) {
+        confirmIfDirty(() -> {
+            Path current = model.metrics().path();
+            File file = FileChoosers.fileOpenChoose(pane.getScene().getWindow(), current);
+            if (file != null && file.canRead()) {
+                updateModel(file.toPath(), handler);
+            }
+        });
+    }
+
+
+    /**
+     * Save the current model.
+     * @param handler the model created handler
+     */
+    public void save(EventHandler<WorkerStateEvent> handler) {
+        if (model.metrics().path() == null) {
+            saveAs(handler);
+        } else {
+            runAsTask(model::save);
+        }
+    }
+
+
+    /**
+     * Save the current model as new path.
+     * @param handler the model created handler
+     */
+    public void saveAs(EventHandler<WorkerStateEvent> handler) {
+        Path current = model.metrics().path();
+        File file = FileChoosers.fileSaveChoose(pane.getScene().getWindow(), current);
+        if (file != null) {
+            Path path = file.toPath();
+            if (!pathChanged(path)) {
+                return;
+            } else if (equalsExtension(path, current)) {
+                runAsTask(() -> model.saveAs(path));
+            } else {
+                saveAndUpdate(path, handler);
+            }
+        }
+    }
+
+    // -- private -------------------------------------------------------------
+
+    private void updateModel(Path path, EventHandler<WorkerStateEvent> handler) {
+
+        if (!pathChanged(path)) {
+            return;
+        }
+
+        Task<EditorModel> task = new Task<>() {
+            @Override protected EditorModel call() {
+                return model.as(path);
+            }
+        };
+        task.setOnSucceeded(handler);
+
+        BlockUi.run(pane, task);
+
+    }
+
+
+    private void saveAndUpdate(Path path, EventHandler<WorkerStateEvent> handler) {
+
+        Task<EditorModel> task = new Task<>() {
+            @Override protected EditorModel call() {
+                model.saveAs(path);
+                return model.as(path);
+            }
+        };
+        task.setOnSucceeded(handler);
+
+        BlockUi.run(pane, task);
+
+    }
+
+
+    private void runAsTask(Runnable runnable) {
+
+        BlockUi.run(pane, new Task<Void>() {
+            @Override protected Void call() {
+                runnable.run();
+                return null;
+            }
+        });
+
+    }
+
+    private void confirmIfDirty(Runnable runnable) {
+
+        if (model.metrics().isDirty()) {
+            OverlayDialog.confirm(pane,
+                "Are you sure you want to discard your changes?",
+                runnable);
+        } else {
+            runnable.run();
+        }
+
+    }
+
+
+    private boolean pathChanged(Path path) {
+        try {
+            Path org = model.metrics().path();
+            if (org != null && Files.isSameFile(path, org)) {
+                return false;
+            }
+        } catch (IOException e) {
+            log.log(ERROR, e.getMessage(), e);
+        }
+        return true;
+    }
+
+
+    private static boolean equalsExtension(Path path1, Path path2) {
+
+        if (path1 == null || path2 == null) {
+            return false;
+        }
+
+        String name1 = path1.toString();
+        String ext1 = name1.substring(name1.lastIndexOf('.') + 1);
+        String name2 = path2.toString();
+        String ext2 = name2.substring(name2.lastIndexOf('.') + 1);
+
+        return ext1.equals(ext2);
+
+    }
+
+}

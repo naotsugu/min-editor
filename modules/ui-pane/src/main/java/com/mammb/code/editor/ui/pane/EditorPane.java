@@ -15,18 +15,14 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.syntax.Syntax;
-import com.mammb.code.editor.ui.control.BlockUi;
 import com.mammb.code.editor.ui.control.HScrollBar;
-import com.mammb.code.editor.ui.control.OverlayDialog;
 import com.mammb.code.editor.ui.control.VScrollBar;
+import com.mammb.code.editor.ui.pane.behavior.FileBehavior;
 import com.mammb.code.editor.ui.pane.impl.DragDrops;
-import com.mammb.code.editor.ui.pane.impl.FileChoosers;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -51,10 +47,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
@@ -74,7 +66,7 @@ public class EditorPane extends StackPane {
     /** The graphics context. */
     private GraphicsContext gc;
     /** The editor model. */
-    private EditorModel editorModel;
+    private EditorModel model;
     /** The vertical scroll bar for line scroll. */
     private VScrollBar vScrollBar;
     /** The horizontal scroll bar for line scroll. */
@@ -101,7 +93,7 @@ public class EditorPane extends StackPane {
         double canvasWidth = context.regionWidth() - margin;
         double canvasHeight = context.regionHeight() - margin;
 
-        editorModel = new EditorModel(context, canvasWidth, canvasHeight);
+        model = new EditorModel(context, canvasWidth, canvasHeight);
 
         canvas = new Canvas(canvasWidth, canvasHeight);
         canvas.setFocusTraversable(true);
@@ -115,7 +107,7 @@ public class EditorPane extends StackPane {
         hScrollBar = new HScrollBar(Color.web(context.preference().fgColor()));
         StackPane.setAlignment(hScrollBar, Pos.BOTTOM_LEFT);
         getChildren().addAll(vScrollBar, hScrollBar);
-        editorModel.setScroll(vScrollBar, hScrollBar);
+        model.setScroll(vScrollBar, hScrollBar);
 
         initHandler();
 
@@ -124,7 +116,7 @@ public class EditorPane extends StackPane {
 
         timeline.getKeyFrames().add(
             new KeyFrame(Duration.millis(500),
-                e -> editorModel.tick(gc)));
+                e -> model.tick(gc)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
@@ -159,50 +151,7 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        confirmIfDirty(() -> updateModel(path));
-    }
-
-
-    /**
-     * Save the current model.
-     */
-    private void save() {
-        if (editorModel.metrics().path() == null) {
-            saveChoose();
-        } else {
-            runAsTask(editorModel::save);
-        }
-    }
-
-
-    /**
-     * File open choose.
-     */
-    private void openChoose() {
-        confirmIfDirty(() -> {
-            Path current = editorModel.metrics().path();
-            File file = FileChoosers.fileOpenChoose(getScene().getWindow(), current);
-            if (file != null && file.canRead()) {
-                updateModel(file.toPath());
-            }
-        });
-    }
-
-
-    /**
-     * File save choose.
-     */
-    private void saveChoose() {
-        Path current = editorModel.metrics().path();
-        File file = FileChoosers.fileSaveChoose(getScene().getWindow(), current);
-        if (file != null) {
-            Path path = file.toPath();
-            if (equalsExtension(path, current)) {
-                runAsTask(() -> editorModel.saveAs(path));
-            } else {
-                saveAndUpdate(path);
-            }
-        }
+        FileBehavior.of(this, model).open(path, this::handleModelCreated);
     }
 
 
@@ -213,11 +162,11 @@ public class EditorPane extends StackPane {
     private void handleScroll(ScrollEvent e) {
         if (e.getEventType() == ScrollEvent.SCROLL && e.getDeltaY() != 0) {
             if (e.getDeltaY() > 0) {
-                editorModel.scrollPrev(Math.min((int) e.getDeltaY(), 3));
+                model.scrollPrev(Math.min((int) e.getDeltaY(), 3));
             } else {
-                editorModel.scrollNext(Math.min(Math.abs((int) e.getDeltaY()), 3));
+                model.scrollNext(Math.min(Math.abs((int) e.getDeltaY()), 3));
             }
-            editorModel.draw(gc);
+            model.draw(gc);
         }
     }
 
@@ -227,7 +176,7 @@ public class EditorPane extends StackPane {
      * @param e the mouse event
      */
     private void handleMouseMoved(MouseEvent e) {
-        if (e.getY() > 0 && e.getX() > editorModel.textAreaRect().x()) {
+        if (e.getY() > 0 && e.getX() > model.textAreaRect().x()) {
             setCursor(Cursor.TEXT);
         } else {
             setCursor(Cursor.DEFAULT);
@@ -242,10 +191,10 @@ public class EditorPane extends StackPane {
     private void handleMouseClicked(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY && e.getTarget() == canvas) {
             switch (e.getClickCount()) {
-                case 1 -> editorModel.click(e.getSceneX(), e.getSceneY());
-                case 2 -> editorModel.clickDouble(e.getSceneX(), e.getSceneY());
+                case 1 -> model.click(e.getSceneX(), e.getSceneY());
+                case 2 -> model.clickDouble(e.getSceneX(), e.getSceneY());
             }
-            editorModel.draw(gc);
+            model.draw(gc);
         }
     }
 
@@ -256,9 +205,9 @@ public class EditorPane extends StackPane {
      */
     private void handleMouseDragged(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY && e.getTarget() == canvas) {
-            editorModel.dragged(e.getSceneX(), e.getSceneY());
+            model.dragged(e.getSceneX(), e.getSceneY());
         }
-        editorModel.draw(gc);
+        model.draw(gc);
     }
 
 
@@ -273,35 +222,35 @@ public class EditorPane extends StackPane {
 
         if (action != Keys.Action.EMPTY) {
             switch (action) {
-                case OPEN       -> openChoose();
-                case SAVE       -> save();
-                case SAVE_AS    -> saveChoose();
-                case COPY       -> editorModel.copyToClipboard();
-                case PASTE      -> aroundEdit(editorModel::pasteFromClipboard);
-                case CUT        -> aroundEdit(editorModel::cutToClipboard);
-                case UNDO       -> aroundEdit(editorModel::undo);
-                case REDO       -> aroundEdit(editorModel::redo);
-                case SELECT_ALL -> aroundEdit(editorModel::selectAll);
-                case WRAP       -> aroundEdit(editorModel::toggleWrap);
-                case HOME       -> aroundEdit(editorModel::moveCaretLineHome, withSelect);
-                case END        -> aroundEdit(editorModel::moveCaretLineEnd, withSelect);
+                case OPEN       -> FileBehavior.of(this, model).open(this::handleModelCreated);
+                case SAVE       -> FileBehavior.of(this, model).save(this::handleModelCreated);
+                case SAVE_AS    -> FileBehavior.of(this, model).saveAs(this::handleModelCreated);
+                case COPY       -> model.copyToClipboard();
+                case PASTE      -> aroundEdit(model::pasteFromClipboard);
+                case CUT        -> aroundEdit(model::cutToClipboard);
+                case UNDO       -> aroundEdit(model::undo);
+                case REDO       -> aroundEdit(model::redo);
+                case SELECT_ALL -> aroundEdit(model::selectAll);
+                case WRAP       -> aroundEdit(model::toggleWrap);
+                case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
+                case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
                 case NEW        -> newPane();
             }
             return;
         }
 
         switch (e.getCode()) {
-            case RIGHT      -> aroundEdit(editorModel::moveCaretRight, withSelect);
-            case LEFT       -> aroundEdit(editorModel::moveCaretLeft, withSelect);
-            case UP         -> aroundEdit(editorModel::moveCaretUp, withSelect);
-            case DOWN       -> aroundEdit(editorModel::moveCaretDown, withSelect);
-            case HOME       -> aroundEdit(editorModel::moveCaretLineHome, withSelect);
-            case END        -> aroundEdit(editorModel::moveCaretLineEnd, withSelect);
-            case PAGE_UP    -> aroundEdit(editorModel::moveCaretPageUp, withSelect);
-            case PAGE_DOWN  -> aroundEdit(editorModel::moveCaretPageDown, withSelect);
-            case DELETE     -> aroundEdit(editorModel::delete);
-            case BACK_SPACE -> aroundEdit(editorModel::backspace);
-            case ESCAPE     -> aroundEdit(editorModel::selectOff);
+            case RIGHT      -> aroundEdit(model::moveCaretRight, withSelect);
+            case LEFT       -> aroundEdit(model::moveCaretLeft, withSelect);
+            case UP         -> aroundEdit(model::moveCaretUp, withSelect);
+            case DOWN       -> aroundEdit(model::moveCaretDown, withSelect);
+            case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
+            case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
+            case PAGE_UP    -> aroundEdit(model::moveCaretPageUp, withSelect);
+            case PAGE_DOWN  -> aroundEdit(model::moveCaretPageDown, withSelect);
+            case DELETE     -> aroundEdit(model::delete);
+            case BACK_SPACE -> aroundEdit(model::backspace);
+            case ESCAPE     -> aroundEdit(model::selectOff);
         }
     }
 
@@ -323,10 +272,10 @@ public class EditorPane extends StackPane {
         if (ascii < 32 || ascii == 127) { // 127:DEL
 
             if (ascii == 9 || ascii == 25) { // 9:TAB 25:ME(shift+tab)
-                if (editorModel.peekSelection(t -> t.text().contains("\n"))) {
+                if (model.peekSelection(t -> t.text().contains("\n"))) {
                     aroundEdit(() -> {
-                        if (e.isShiftDown()) editorModel.unindent();
-                        else editorModel.indent();
+                        if (e.isShiftDown()) model.unindent();
+                        else model.indent();
                     });
                     return;
                 }
@@ -340,7 +289,7 @@ public class EditorPane extends StackPane {
         String ch = (ascii == 13) // 13:CR
             ? "\n"
             : e.getCharacter();
-        aroundEdit(() -> editorModel.input(ch));
+        aroundEdit(() -> model.input(ch));
     }
 
 
@@ -350,9 +299,9 @@ public class EditorPane extends StackPane {
      */
     private void handleInputMethod(InputMethodEvent e) {
         if (!e.getCommitted().isEmpty()) {
-            editorModel.imeCommitted(e.getCommitted());
+            model.imeCommitted(e.getCommitted());
         } else if (!e.getComposed().isEmpty()) {
-            if (!editorModel.isImeOn()) editorModel.imeOn(gc);
+            if (!model.isImeOn()) model.imeOn(gc);
             var runs = new ArrayList<ImePallet.Run>();
             int offset = 0;
             for (var run : e.getComposed()) {
@@ -363,11 +312,11 @@ public class EditorPane extends StackPane {
                 runs.add(r);
                 offset += r.length();
             }
-            editorModel.imeComposed(runs);
+            model.imeComposed(runs);
         } else {
-            editorModel.imeOff();
+            model.imeOff();
         }
-        editorModel.draw(gc);
+        model.draw(gc);
     }
 
 
@@ -387,8 +336,8 @@ public class EditorPane extends StackPane {
             double canvasHeight = newValue.getHeight() - margin;
             canvas.setWidth(canvasWidth);
             canvas.setHeight(canvasHeight);
-            editorModel.layoutBounds(canvasWidth, canvasHeight);
-            editorModel.draw(gc);
+            model.layoutBounds(canvasWidth, canvasHeight);
+            model.draw(gc);
         }
     }
 
@@ -400,11 +349,11 @@ public class EditorPane extends StackPane {
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
         if (focused) {
-            editorModel.showCaret(gc);
+            model.showCaret(gc);
             timeline.play();
         } else {
             timeline.stop();
-            editorModel.hideCaret(gc);
+            model.hideCaret(gc);
         }
     }
 
@@ -415,8 +364,8 @@ public class EditorPane extends StackPane {
      * @param newValue the new value
      */
     private void handleVScrolled(Integer oldValue, Integer newValue) {
-        editorModel.vScrolled(oldValue, newValue);
-        editorModel.draw(gc);
+        model.vScrolled(oldValue, newValue);
+        model.draw(gc);
     }
 
 
@@ -426,7 +375,7 @@ public class EditorPane extends StackPane {
      * @param newValue the new value
      */
     private void handleHScrolled(Double oldValue, Double newValue) {
-        editorModel.draw(gc);
+        model.draw(gc);
     }
 
 
@@ -455,12 +404,12 @@ public class EditorPane extends StackPane {
         return new InputMethodRequests() {
             @Override
             public Point2D getTextLocation(int offset) {
-                var rect = editorModel.imeOn(gc);
+                var rect = model.imeOn(gc);
                 return localToScreen(rect.x(), rect.y() + rect.h() + 5);
             }
             @Override
             public void cancelLatestCommittedText() {
-                editorModel.imeOff();
+                model.imeOff();
             }
             @Override
             public int getLocationOffset(int x, int y) {
@@ -476,9 +425,9 @@ public class EditorPane extends StackPane {
 
     private void aroundEdit(Runnable runnable) {
         timeline.stop();
-        editorModel.showCaret(gc);
+        model.showCaret(gc);
         runnable.run();
-        editorModel.draw(gc);
+        model.draw(gc);
         timeline.play();
     }
 
@@ -486,93 +435,18 @@ public class EditorPane extends StackPane {
     private void aroundEdit(Runnable edit, boolean withSelect) {
         aroundEdit(() -> {
             if (withSelect) {
-                editorModel.selectOn();
+                model.selectOn();
             } else {
-                editorModel.selectOff();
+                model.selectOff();
             }
             edit.run();
-            editorModel.selectTo();
+            model.selectTo();
         });
     }
-
-
-    private void confirmIfDirty(Runnable runnable) {
-        if (editorModel.metrics().isDirty()) {
-            OverlayDialog.confirm(this,
-                "Are you sure you want to discard your changes?",
-                runnable);
-        } else {
-            runnable.run();
-        }
-    }
-
-
-    private void updateModel(Path path) {
-
-        try {
-            Path org = editorModel.metrics().path();
-            if (org != null && Files.isSameFile(path, org)) {
-                return;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        Task<EditorModel> task = new Task<>() {
-            @Override protected EditorModel call() {
-                return createModel(path);
-            }
-        };
-        task.setOnSucceeded(this::handleModelCreated);
-        BlockUi.run(this, task);
-    }
-
-
-    private void saveAndUpdate(Path path) {
-        Task<EditorModel> task = new Task<>() {
-            @Override protected EditorModel call() {
-                editorModel.saveAs(path);
-                return createModel(path);
-            }
-        };
-        task.setOnSucceeded(this::handleModelCreated);
-        BlockUi.run(this, task);
-    }
-
-
-    private EditorModel createModel(Path path) {
-        return new EditorModel(
-            context,
-            getWidth(), getHeight(),
-            path,
-            Syntax.of(path, context.preference().fgColor()),
-            vScrollBar, hScrollBar);
-    }
-
-    private void runAsTask(Runnable runnable) {
-        BlockUi.run(this, new Task<Void>() {
-            @Override protected Void call() {
-                runnable.run();
-                return null;
-            }
-        });
-    }
-
 
     private void handleModelCreated(WorkerStateEvent e) {
-        editorModel = (EditorModel) e.getSource().getValue();
-        editorModel.draw(gc);
-    }
-
-    private static boolean equalsExtension(Path path1, Path path2) {
-        if (path1 == null || path2 == null) {
-            return false;
-        }
-        String name1 = path1.toString();
-        String ext1 = name1.substring(name1.lastIndexOf('.') + 1);
-        String name2 = path2.toString();
-        String ext2 = name2.substring(name2.lastIndexOf('.') + 1);
-        return ext1.equals(ext2);
+        model = (EditorModel) e.getSource().getValue();
+        model.draw(gc);
     }
 
 }
