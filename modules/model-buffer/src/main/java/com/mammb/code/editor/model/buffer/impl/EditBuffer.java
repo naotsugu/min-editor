@@ -18,6 +18,7 @@ package com.mammb.code.editor.model.buffer.impl;
 import com.mammb.code.editor.model.buffer.Content;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextBuffer;
+import com.mammb.code.editor.model.buffer.Traverse;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.edit.EditListener;
 import com.mammb.code.editor.model.edit.EditQueue;
@@ -26,6 +27,7 @@ import com.mammb.code.editor.model.edit.EditToListener;
 import com.mammb.code.editor.model.slice.Slice;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,10 +55,14 @@ public class EditBuffer implements TextBuffer<Textual> {
      * Constructor.
      * @param path the path of content
      * @param maxRowSize the row size of slice
+     * @param loadingTraverse the loading traverse
      */
-    public EditBuffer(Path path, int maxRowSize) {
+    public EditBuffer(Path path, int maxRowSize, Traverse loadingTraverse) {
         this.metrics = new MetricsImpl(path);
-        this.content = Content.of(path, metrics);
+        this.content = Content.of(path, bytes -> {
+                metrics.accept(bytes);
+                if (loadingTraverse != null) loadingTraverse.accept(bytes);
+        });
         this.slice = Slice.of(maxRowSize, new RawAdapter(content));
         this.editQueue = EditQueue.of(editTo(content));
         metrics.setDirty(false);

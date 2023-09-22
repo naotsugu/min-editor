@@ -68,6 +68,7 @@ public class BlockUi extends StackPane {
 
     /** The progress truck. */
     private final StackPane progressTruck;
+
     /** The progress bar. */
     private final StackPane progressBar;
 

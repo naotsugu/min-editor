@@ -113,7 +113,7 @@ public interface TextBuffer<T extends Textual> extends TextualList<T> {
      * @return a new text buffer
      */
     static TextBuffer<Textual> editBuffer(Path path, int maxRowSize) {
-        return new EditBuffer(path, maxRowSize);
+        return new EditBuffer(path, maxRowSize, null);
     }
 
 }
