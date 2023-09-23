@@ -32,8 +32,8 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 public sealed interface Edit extends TextTranslate
         permits InsertEdit, DeleteEdit,
             BsInsertEdit, BsDeleteEdit,
-        ReplaceEdit, CompoundEdit,
-        FlushInsertEdit, EmptyEdit {
+            ReplaceEdit, CompoundEdit,
+            FlushInsertEdit, EmptyEdit {
 
     /** The empty edit. */
     Edit empty = new EmptyEdit();
@@ -69,12 +69,20 @@ public sealed interface Edit extends TextTranslate
     void apply(EditTo editTo);
 
     /**
+     * Get whether this edit is empty.
+     * @return {@code true} if this edit is empty
+     */
+    default boolean isEmpty() {
+        return this instanceof EmptyEdit;
+    }
+
+    /**
      * Get whether other edit can be merged into this edit.
      * @param other the merging edit
-     * @return {@code true} if other edit can be merged into this edit.
+     * @return {@code true} if other edit can be merged into this edit
      */
     default boolean canMerge(Edit other) {
-        return other instanceof EmptyEdit;
+        return other.isEmpty();
     }
 
     /**

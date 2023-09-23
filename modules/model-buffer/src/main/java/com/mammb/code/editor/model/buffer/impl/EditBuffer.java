@@ -151,6 +151,11 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public boolean readOnly() {
+        return false;
+    }
+
+    @Override
     public Metrics metrics() {
         return metrics;
     }

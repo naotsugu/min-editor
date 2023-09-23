@@ -101,6 +101,12 @@ public interface TextBuffer<T extends Textual> extends TextualList<T> {
     void saveAs(Path path);
 
     /**
+     * Get whether this buffer is read-only or not.
+     * @return {@code true}, if this buffer is read-only
+     */
+    boolean readOnly();
+
+    /**
      * Get the metrics.
      * @return the metrics
      */

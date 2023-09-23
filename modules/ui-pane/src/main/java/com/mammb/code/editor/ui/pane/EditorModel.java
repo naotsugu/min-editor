@@ -472,7 +472,7 @@ public class EditorModel {
     // -- edit behavior -------------------------------------------------------
     public void input(String input) {
 
-        if (input == null || input.isEmpty()) {
+        if (input == null || input.isEmpty() || buffer.readOnly()) {
             return;
         }
 
@@ -500,6 +500,9 @@ public class EditorModel {
 
     public void delete() {
         vScrollToCaret();
+        if (buffer.readOnly()) {
+            return;
+        }
         if (selection.length() > 0) {
             selectionDelete();
             return;
@@ -514,6 +517,9 @@ public class EditorModel {
     }
     public void backspace() {
         vScrollToCaret();
+        if (buffer.readOnly()) {
+            return;
+        }
         if (selection.length() > 0) {
             selectionDelete();
             return;
@@ -529,8 +535,11 @@ public class EditorModel {
         adjustVScroll();
     }
     private void selectionReplace(String string) {
+        vScrollToCaret();
+        if (buffer.readOnly()) {
+            return;
+        }
         if (string == null || string.isEmpty()) {
-            vScrollToCaret();
             selectionDelete();
             return;
         }
@@ -538,7 +547,6 @@ public class EditorModel {
             input(string);
             return;
         }
-        vScrollToCaret();
         Textual text = buffer.subText(selection.min(), selection.length());
         buffer.push(Edit.replace(text.point(), text.text(), string));
         SelectBehaviors.select(text.offset(), text.offset() + string.length(), caret, selection);
@@ -564,6 +572,7 @@ public class EditorModel {
     public void undo() {
         selection.clear();
         Edit edit = buffer.undo();
+        if (edit.isEmpty()) return;
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         adjustVScroll();
@@ -573,6 +582,7 @@ public class EditorModel {
     public void redo() {
         selection.clear();
         Edit edit = buffer.redo();
+        if (edit.isEmpty()) return;
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         adjustVScroll();
@@ -581,6 +591,9 @@ public class EditorModel {
     }
 
     public void indent() {
+        if (buffer.readOnly()) {
+            return;
+        }
         SelectBehaviors.selectCurrentRow(caret, selection, texts);
         replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
@@ -588,6 +601,9 @@ public class EditorModel {
     }
 
     public void unindent() {
+        if (buffer.readOnly()) {
+            return;
+        }
         SelectBehaviors.selectCurrentRow(caret, selection, texts);
         replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
@@ -617,6 +633,24 @@ public class EditorModel {
      */
     public void cutToClipboard() {
         copyToClipboard(true);
+    }
+
+    /**
+     * Copy the selection text to the clipboard.
+     * @param cut need cut?
+     */
+    private void copyToClipboard(boolean cut) {
+        if (selection.length() > 0) {
+            Textual text = buffer.subText(selection.min(), selection.length());
+            Clipboard.put(text.text());
+            if (cut && !buffer.readOnly()) {
+                buffer.push(Edit.delete(text.point(), text.text()));
+                selection.clear();
+                caret.at(text.point().offset(), true);
+                texts.markDirty();
+                caret.markDirty();
+            }
+        }
     }
 
     // -- file behavior -------------------------------------------------------
@@ -699,24 +733,6 @@ public class EditorModel {
         } else {
             hScroll.setMax(width - gutter.width());
             hScroll.setVisibleAmount(width - gutter.width());
-        }
-    }
-
-    /**
-     * Copy the selection text to the clipboard.
-     * @param cut need cut?
-     */
-    private void copyToClipboard(boolean cut) {
-        if (selection.length() > 0) {
-            Textual text = buffer.subText(selection.min(), selection.length());
-            Clipboard.put(text.text());
-            if (cut) {
-                buffer.push(Edit.delete(text.point(), text.text()));
-                selection.clear();
-                caret.at(text.point().offset(), true);
-                texts.markDirty();
-                caret.markDirty();
-            }
         }
     }
 
