@@ -73,10 +73,10 @@ public interface Metrics {
     int lfCount();
 
     /**
-     * Get whether dirty.
-     * @return whether dirty
+     * Get whether modified.
+     * @return whether modified
      */
-    boolean isDirty();
+    boolean modified();
 
     /**
      * Get the total row count.

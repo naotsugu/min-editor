@@ -174,7 +174,7 @@ public class FileAction {
 
     private void confirmIfDirty(Runnable runnable) {
 
-        if (model.metrics().isDirty()) {
+        if (model.metrics().modified()) {
             OverlayDialog.confirm(pane,
                 "Are you sure you want to discard your changes?",
                 runnable);

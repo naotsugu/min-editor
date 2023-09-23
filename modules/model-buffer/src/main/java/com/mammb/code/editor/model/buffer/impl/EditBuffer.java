@@ -65,7 +65,7 @@ public class EditBuffer implements TextBuffer<Textual> {
         });
         this.slice = Slice.of(maxRowSize, new RawAdapter(content));
         this.editQueue = EditQueue.of(editTo(content));
-        metrics.setDirty(false);
+        metrics.setModified(false);
     }
 
 
@@ -107,7 +107,7 @@ public class EditBuffer implements TextBuffer<Textual> {
     @Override
     public Edit undo() {
         Edit edit = editQueue.undo();
-        metrics.setDirty(editQueue.hasUndo());
+        metrics.setModified(editQueue.hasUndo());
         return edit;
     }
 
@@ -139,7 +139,7 @@ public class EditBuffer implements TextBuffer<Textual> {
     public void save() {
         editQueue.flush();
         content.save();
-        metrics.setDirty(false);
+        metrics.setModified(false);
     }
 
     @Override
@@ -147,7 +147,7 @@ public class EditBuffer implements TextBuffer<Textual> {
         editQueue.flush();
         content.saveAs(path);
         metrics.setPath(path);
-        metrics.setDirty(false);
+        metrics.setModified(false);
     }
 
     @Override

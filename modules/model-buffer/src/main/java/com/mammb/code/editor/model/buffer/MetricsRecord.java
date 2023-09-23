@@ -44,7 +44,7 @@ public record MetricsRecord(
      * @param m the source metrics
      */
     public MetricsRecord(Metrics m) {
-        this(m.path(), m.byteLen(), m.cpCount(), m.chCount(), m.invalidCpCount(), m.crCount(), m.lfCount(), m.isDirty());
+        this(m.path(), m.byteLen(), m.cpCount(), m.chCount(), m.invalidCpCount(), m.crCount(), m.lfCount(), m.modified());
     }
 
 }
