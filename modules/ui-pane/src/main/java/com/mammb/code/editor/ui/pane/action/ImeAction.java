@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane.behavior;
+package com.mammb.code.editor.ui.pane.action;
 
 import com.mammb.code.editor.ui.pane.EditorModel;
 import com.mammb.code.editor.ui.pane.ImePallet;
@@ -26,13 +26,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 /**
- * ImeBehavior.
+ * ImeAction.
  * @author Naotsugu Kobayashi
  */
-public class ImeBehavior {
+public class ImeAction {
 
     /** logger. */
-    private static final System.Logger log = System.getLogger(ImeBehavior.class.getName());
+    private static final System.Logger log = System.getLogger(ImeAction.class.getName());
 
     /** The graphics context. */
     private final GraphicsContext gc;
@@ -46,7 +46,7 @@ public class ImeBehavior {
      * @param gc the graphics context
      * @param model the editor model
      */
-    private ImeBehavior(GraphicsContext gc, EditorModel model) {
+    private ImeAction(GraphicsContext gc, EditorModel model) {
         this.gc = Objects.requireNonNull(gc);
         this.model = Objects.requireNonNull(model);
     }
@@ -58,8 +58,8 @@ public class ImeBehavior {
      * @param model the editor model
      * @return ImeBehavior
      */
-    public static ImeBehavior of(GraphicsContext gc, EditorModel model) {
-        return new ImeBehavior(gc, model);
+    public static ImeAction of(GraphicsContext gc, EditorModel model) {
+        return new ImeAction(gc, model);
     }
 
 

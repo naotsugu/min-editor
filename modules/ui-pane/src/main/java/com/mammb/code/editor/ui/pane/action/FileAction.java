@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane.behavior;
+package com.mammb.code.editor.ui.pane.action;
 
 import com.mammb.code.editor.ui.control.BlockUi;
 import com.mammb.code.editor.ui.control.OverlayDialog;
@@ -32,13 +32,13 @@ import java.util.Objects;
 import static java.lang.System.Logger.Level.ERROR;
 
 /**
- * FileBehavior.
+ * FileAction.
  * @author Naotsugu Kobayashi
  */
-public class FileBehavior {
+public class FileAction {
 
     /** logger. */
-    private static final System.Logger log = System.getLogger(FileBehavior.class.getName());
+    private static final System.Logger log = System.getLogger(FileAction.class.getName());
 
     /** The pane. */
     private final Pane pane;
@@ -52,7 +52,7 @@ public class FileBehavior {
      * @param pane the pane
      * @param model the editor model
      */
-    private FileBehavior(Pane pane, EditorModel model) {
+    private FileAction(Pane pane, EditorModel model) {
         this.pane = Objects.requireNonNull(pane);
         this.model = Objects.requireNonNull(model);
     }
@@ -64,8 +64,8 @@ public class FileBehavior {
      * @param model the editor model
      * @return FileBehavior
      */
-    public static FileBehavior of(Pane pane, EditorModel model) {
-        return new FileBehavior(pane, model);
+    public static FileAction of(Pane pane, EditorModel model) {
+        return new FileAction(pane, model);
     }
 
 

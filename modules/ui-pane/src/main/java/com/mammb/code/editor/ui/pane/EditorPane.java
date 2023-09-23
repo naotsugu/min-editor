@@ -17,8 +17,8 @@ package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.VScrollBar;
-import com.mammb.code.editor.ui.pane.behavior.FileBehavior;
-import com.mammb.code.editor.ui.pane.behavior.ImeBehavior;
+import com.mammb.code.editor.ui.pane.action.FileAction;
+import com.mammb.code.editor.ui.pane.action.ImeAction;
 import com.mammb.code.editor.ui.pane.impl.DragDrops;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
@@ -152,7 +152,7 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        FileBehavior.of(this, model).open(path, this::handleModelCreated);
+        FileAction.of(this, model).open(path, this::handleModelCreated);
     }
 
 
@@ -223,9 +223,9 @@ public class EditorPane extends StackPane {
 
         if (action != Keys.Action.EMPTY) {
             switch (action) {
-                case OPEN       -> FileBehavior.of(this, model).open(this::handleModelCreated);
-                case SAVE       -> FileBehavior.of(this, model).save(this::handleModelCreated);
-                case SAVE_AS    -> FileBehavior.of(this, model).saveAs(this::handleModelCreated);
+                case OPEN       -> FileAction.of(this, model).open(this::handleModelCreated);
+                case SAVE       -> FileAction.of(this, model).save(this::handleModelCreated);
+                case SAVE_AS    -> FileAction.of(this, model).saveAs(this::handleModelCreated);
                 case COPY       -> model.copyToClipboard();
                 case PASTE      -> aroundEdit(model::pasteFromClipboard);
                 case CUT        -> aroundEdit(model::cutToClipboard);
@@ -315,6 +315,7 @@ public class EditorPane extends StackPane {
         }
     }
 
+
     /**
      * Focus changed handler.
      * @param observable the ObservableValue which value changed
@@ -375,7 +376,7 @@ public class EditorPane extends StackPane {
      * @param e the input method event
      */
     private void handleInputMethod(InputMethodEvent e) {
-        ImeBehavior.of(gc, model).handle(e);
+        ImeAction.of(gc, model).handle(e);
     }
 
 
@@ -384,7 +385,7 @@ public class EditorPane extends StackPane {
      * @return the InputMethodRequests
      */
     private InputMethodRequests inputMethodRequests() {
-        return ImeBehavior.of(gc, model).createRequest(this);
+        return ImeAction.of(gc, model).createRequest(this);
     }
 
 
@@ -408,6 +409,7 @@ public class EditorPane extends StackPane {
             model.selectTo();
         });
     }
+
 
     private void handleModelCreated(WorkerStateEvent e) {
         model = (EditorModel) e.getSource().getValue();
