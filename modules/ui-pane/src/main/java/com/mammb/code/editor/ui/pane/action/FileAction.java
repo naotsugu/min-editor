@@ -126,6 +126,17 @@ public class FileAction {
         }
     }
 
+    public void confirmIfDirty(Runnable runnable) {
+        if (model.metrics().modified()) {
+            OverlayDialog.confirm(pane,
+                "Are you sure you want to discard your changes?",
+                runnable);
+        } else {
+            runnable.run();
+        }
+
+    }
+
     // -- private -------------------------------------------------------------
 
     private void updateModel(Path path, EventHandler<WorkerStateEvent> handler) {
@@ -169,18 +180,6 @@ public class FileAction {
                 return null;
             }
         });
-
-    }
-
-    private void confirmIfDirty(Runnable runnable) {
-
-        if (model.metrics().modified()) {
-            OverlayDialog.confirm(pane,
-                "Are you sure you want to discard your changes?",
-                runnable);
-        } else {
-            runnable.run();
-        }
 
     }
 

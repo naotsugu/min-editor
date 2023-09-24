@@ -29,6 +29,7 @@ import com.mammb.code.editor.ui.prefs.Context;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * LinearTextList.
@@ -162,7 +163,7 @@ public class LinearTextList implements TextList {
         // delete rows to avoid inadvertently increasing the list size.
         lines.subList(0, Math.min(size, lines.size())).clear();
 
-        List<TextLine> list = added.stream().map(translator::applyTo).toList();
+        List<TextLine> list = added.stream().map(translator::applyTo).collect(Collectors.toList());
         if (size > buffer.maxLineSize()) {
             list.subList(0, size - buffer.maxLineSize()).clear();
         }

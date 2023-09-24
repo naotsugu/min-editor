@@ -26,7 +26,7 @@ import java.nio.file.Path;
  * @param invalidCpCount the invalid code point count
  * @param crCount the carriage return count
  * @param lfCount the line feed count
- * @param isDirty dirty or not
+ * @param modified modified or not
  * @author Naotsugu Kobayashi
  */
 public record MetricsRecord(
@@ -37,7 +37,7 @@ public record MetricsRecord(
         int invalidCpCount,
         int crCount,
         int lfCount,
-        boolean isDirty) implements Metrics {
+        boolean modified) implements Metrics {
 
     /**
      * Create a new Metrics by given metrics.

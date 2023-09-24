@@ -46,6 +46,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.nio.file.Path;
@@ -367,7 +368,16 @@ public class EditorPane extends StackPane {
         Scene scene = new Scene(this, getWidth(), getHeight());
         stage.setScene(scene);
         stage.setTitle("min-editor");
+        stage.setOnCloseRequest(this::handleCloseRequest);
         stage.show();
+    }
+
+
+    private void handleCloseRequest(WindowEvent e) {
+        if (e.getTarget() instanceof Stage stage) {
+            e.consume();
+            FileAction.of(this, model).confirmIfDirty(stage::close);
+        }
     }
 
 
