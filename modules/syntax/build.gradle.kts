@@ -10,5 +10,6 @@ dependencies {
     implementation(project(":syntax-markdown"))
     implementation(project(":syntax-rust"))
     implementation(project(":syntax-kotlin"))
+    implementation(project(":syntax-python"))
     implementation(project(":model-text"))
 }

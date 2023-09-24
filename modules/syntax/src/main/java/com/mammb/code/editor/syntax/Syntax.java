@@ -25,6 +25,7 @@ import com.mammb.code.editor.syntax.java.JavaLexer;
 import com.mammb.code.editor.syntax.javascript.JsonLexer;
 import com.mammb.code.editor.syntax.kotlin.KotlinLexer;
 import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
+import com.mammb.code.editor.syntax.python.PythonLexer;
 import com.mammb.code.editor.syntax.rust.RustLexer;
 
 import java.nio.file.Path;
@@ -40,13 +41,14 @@ public class Syntax {
         @Override
         public Lexer get(String name) {
             return switch (name) {
-                case "java"    -> new JavaLexer();
-                case "rust"    -> new RustLexer();
-                case "kotlin"  -> new KotlinLexer();
-                case "json"    -> new JsonLexer();
-                case "md"      -> new MarkdownLexer(lexerProvider);
-                case "diff"    -> new DiffLexer();
-                default        -> new PassThroughLexer(name);
+                case "java"     -> new JavaLexer();
+                case "json"     -> new JsonLexer();
+                case "md"       -> new MarkdownLexer(lexerProvider);
+                case "diff"     -> new DiffLexer();
+                case "rust", "rs" -> new RustLexer();
+                case "python", "py" -> new PythonLexer();
+                case "kotlin", "kt", "kts" -> new KotlinLexer();
+                default         -> new PassThroughLexer(name);
             };
         }
     };
