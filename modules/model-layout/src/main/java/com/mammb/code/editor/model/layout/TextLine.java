@@ -233,7 +233,7 @@ public interface TextLine extends Textual {
             double runEnd = runStart + run.layout().width();
             // if the text line is a newline only, its width is zero.
             // zero position is the offset to the left of LF
-            if (runStart <= x && x < runEnd || runStart == runEnd && x <= runStart) {
+            if (runStart <= x && x < runEnd || runStart == runEnd) {
                 offset += run.xToOffset().apply(x - run.layout().x());
                 return offset;
             }
