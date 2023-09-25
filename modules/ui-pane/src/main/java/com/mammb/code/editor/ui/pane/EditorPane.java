@@ -94,7 +94,7 @@ public class EditorPane extends StackPane {
         double canvasWidth = context.regionWidth() - margin;
         double canvasHeight = context.regionHeight() - margin;
 
-        model = new EditorModel(context, canvasWidth, canvasHeight);
+        model = EditorModel.of(context, canvasWidth, canvasHeight);
 
         canvas = new Canvas(canvasWidth, canvasHeight);
         canvas.setFocusTraversable(true);

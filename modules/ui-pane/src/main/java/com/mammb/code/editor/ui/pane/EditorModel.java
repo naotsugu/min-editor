@@ -40,6 +40,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -87,24 +88,9 @@ public class EditorModel {
      * @param context the context
      * @param width the screen width
      * @param height the screen height
-     */
-    public EditorModel(Context context, double width, double height) {
-        this(context,
-            width, height,
-            null,
-            StylingTranslate.passThrough(),
-            ScrollBar.vEmpty(), ScrollBar.hEmpty());
-    }
-
-
-    /**
-     * Constructor.
-     * @param context the context
-     * @param width the screen width
-     * @param height the screen height
      * @param path the path
      */
-    public EditorModel(
+    private EditorModel(
             Context context,
             double width, double height,
             Path path,
@@ -124,6 +110,33 @@ public class EditorModel {
         this.maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
 
         setScroll(vScroll, hScroll);
+    }
+
+
+    /**
+     * Create a new EditorModel.
+     * @param context the context
+     * @param width the screen width
+     * @param height the screen height
+     * @return a new EditorModel
+     */
+    public static EditorModel of(Context context, double width, double height) {
+        return new EditorModel(
+            context,
+            width, height,
+            null,
+            StylingTranslate.passThrough(),
+            ScrollBar.vEmpty(), ScrollBar.hEmpty());
+    }
+
+
+    public EditorModel as(Path path) {
+        return new EditorModel(
+            context,
+            width, height,
+            path,
+            Syntax.of(path, context.preference().fgColor()),
+            vScroll, hScroll);
     }
 
 
@@ -252,6 +265,7 @@ public class EditorModel {
         return buffer.metrics();
     }
 
+
     public Rect textAreaRect() {
         return new Rect(gutter.width(), 0, width - gutter.width(), height);
     }
@@ -272,15 +286,6 @@ public class EditorModel {
         this.hScroll = hScroll;
         adjustHScroll();
         hScroll.setValue(0.0);
-    }
-
-    public EditorModel as(Path path) {
-        return new EditorModel(
-            context,
-            width, height,
-            path,
-            Syntax.of(path, context.preference().fgColor()),
-            vScroll, hScroll);
     }
 
     // -- ime behavior  ----------------------------------------------------
