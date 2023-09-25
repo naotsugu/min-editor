@@ -615,19 +615,22 @@ public class EditorModel {
         selectionReplace(replace.apply(text.text()));
     }
 
-    // -- clipboard behavior --------------------------------------------------
+    // <editor-fold defaultstate="collapsed" desc="clipboard behavior">
+
     /**
      * Paste the text from the clipboard.
      */
     public void pasteFromClipboard() {
         input(Clipboard.get());
     }
+
     /**
      * Copy the selection text to the clipboard.
      */
     public void copyToClipboard() {
         copyToClipboard(false);
     }
+
     /**
      * Cut the selection text to the clipboard.
      */
@@ -653,13 +656,17 @@ public class EditorModel {
         }
     }
 
-    // -- file behavior -------------------------------------------------------
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="file behavior">
+
     /**
      * Save.
      */
     public void save() {
         buffer.save();
     }
+
     /**
      * Save as.
      * @param path the path
@@ -667,6 +674,8 @@ public class EditorModel {
     public void saveAs(Path path) {
         buffer.saveAs(path);
     }
+
+    // </editor-fold>
 
     // -- layout behavior -----------------------------------------------------
     public void layoutBounds(double width, double height) {

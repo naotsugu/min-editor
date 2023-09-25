@@ -355,32 +355,6 @@ public class EditorPane extends StackPane {
     }
 
 
-    private void newPane() {
-        Stage newStage = new Stage();
-        Bounds bounds = localToScreen(getBoundsInLocal());
-        newStage.setX(bounds.getMinX() + 15);
-        newStage.setY(bounds.getMinY() + 15);
-        new EditorPane(context).showOn(newStage);
-    }
-
-
-    public void showOn(Stage stage) {
-        Scene scene = new Scene(this, getWidth(), getHeight());
-        stage.setScene(scene);
-        stage.setTitle("min-editor");
-        stage.setOnCloseRequest(this::handleCloseRequest);
-        stage.show();
-    }
-
-
-    private void handleCloseRequest(WindowEvent e) {
-        if (e.getTarget() instanceof Stage stage) {
-            e.consume();
-            FileAction.of(this, model).confirmIfDirty(stage::close);
-        }
-    }
-
-
     /**
      * Input method handler
      * @param e the input method event
@@ -396,6 +370,46 @@ public class EditorPane extends StackPane {
      */
     private InputMethodRequests inputMethodRequests() {
         return ImeAction.of(gc, model).createRequest(this);
+    }
+
+
+    /**
+     * Model update task handler.
+     * @param e the worker state event
+     */
+    private void handleModelCreated(WorkerStateEvent e) {
+        model = (EditorModel) e.getSource().getValue();
+        model.draw(gc);
+    }
+
+
+    /**
+     * Window close request handler.
+     * @param e the window event
+     */
+    private void handleCloseRequest(WindowEvent e) {
+        if (e.getTarget() instanceof Stage stage) {
+            e.consume();
+            FileAction.of(this, model).confirmIfDirty(stage::close);
+        }
+    }
+
+
+    private void newPane() {
+        Stage newStage = new Stage();
+        Bounds bounds = localToScreen(getBoundsInLocal());
+        newStage.setX(bounds.getMinX() + 15);
+        newStage.setY(bounds.getMinY() + 15);
+        new EditorPane(context).showOn(newStage);
+    }
+
+
+    public void showOn(Stage stage) {
+        Scene scene = new Scene(this, getWidth(), getHeight());
+        stage.setScene(scene);
+        stage.setTitle("min-editor");
+        stage.setOnCloseRequest(this::handleCloseRequest);
+        stage.show();
     }
 
 
@@ -418,12 +432,6 @@ public class EditorPane extends StackPane {
             edit.run();
             model.selectTo();
         });
-    }
-
-
-    private void handleModelCreated(WorkerStateEvent e) {
-        model = (EditorModel) e.getSource().getValue();
-        model.draw(gc);
     }
 
 }
