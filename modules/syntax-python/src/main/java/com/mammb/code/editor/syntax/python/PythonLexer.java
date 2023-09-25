@@ -65,7 +65,7 @@ public class PythonLexer implements Lexer {
             case ' ', '\t'  -> Token.whitespace(source);
             case '\n', '\r' -> Token.lineEnd(source);
             case 0    -> Token.empty(source);
-            case '/' -> readComment(source);
+            case '#' -> readComment(source);
             default -> Python.isIdentifierStart(ch)
                 ? readIdentifier(source, ch)
                 : Token.any(source);
@@ -81,13 +81,8 @@ public class PythonLexer implements Lexer {
      */
     private Token readComment(LexerSource source) {
         int pos = source.offset() + source.position();
-        char ch = source.peekChar();
-        if (ch == ' ') {
-            source.commitPeek();
-            return Token.of(LINE_COMMENT, Scope.INLINE_START, pos, 2);
-        } else {
-            return Token.any(source);
-        }
+        source.commitPeek();
+        return Token.of(LINE_COMMENT, Scope.INLINE_START, pos, 1);
     }
 
 
