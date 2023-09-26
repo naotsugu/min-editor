@@ -21,7 +21,6 @@ import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.piecetable.buffer.Charsets;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -38,19 +37,28 @@ import java.util.List;
  */
 public class FixedText implements TextBuffer<Textual> {
 
+    /** The list of textual. */
     private final List<Textual> list = new ArrayList<>();
-
+    /** The metrics. */
+    private final MetricsImpl metrics;
+    /** The row index. */
     private int rowIndex = 0;
-
+    /** The row size. */
     private int maxRowSize = 10;
-
+    /** The capacity of the buffer. */
     private int rowCapacity = 3_000;
 
-    private Metrics metrics;
 
-
+    /**
+     * Create a new FixedText.
+     * @param path the path
+     * @param maxRowSize the max row size
+     */
     public FixedText(Path path, int maxRowSize) {
+
         this.maxRowSize = maxRowSize;
+        this.metrics = new MetricsImpl(path);
+
         final Charset cs;
         try (var is = Files.newInputStream(path)) {
             cs = Charsets.charsetOf(is);
@@ -68,6 +76,7 @@ public class FixedText implements TextBuffer<Textual> {
                 offset += text.length();
                 cpOffset += Character.codePointCount(text, 0, text.length());
                 list.add(Textual.of(p, text));
+                metrics.accept(text.getBytes(cs));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

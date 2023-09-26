@@ -195,11 +195,6 @@ public class LinearTextList implements TextList {
         return buffer.maxLineSize();
     }
 
-    @Override
-    public LineLayout lineLayout() {
-        return layout;
-    }
-
     /**
      * Build the translator.
      * @return the translator

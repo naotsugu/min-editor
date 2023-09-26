@@ -236,11 +236,6 @@ public class WrapTextList implements TextList {
         return buffer.maxLineSize();
     }
 
-    @Override
-    public LineLayout lineLayout() {
-        return layout;
-    }
-
 
     public int wrappedSize() {
         if (lines.isEmpty()) {

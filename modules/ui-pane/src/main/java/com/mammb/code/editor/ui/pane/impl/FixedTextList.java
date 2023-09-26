@@ -1,6 +1,5 @@
 package com.mammb.code.editor.ui.pane.impl;
 
-import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.ui.pane.TextList;
 
@@ -41,11 +40,6 @@ public class FixedTextList implements TextList {
     @Override
     public int capacity() {
         return 0;
-    }
-
-    @Override
-    public LineLayout lineLayout() {
-        return null;
     }
 
     @Override

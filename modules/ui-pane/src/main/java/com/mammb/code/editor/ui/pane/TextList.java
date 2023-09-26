@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.ui.pane.impl.LayoutLine;
 
@@ -66,12 +65,6 @@ public interface TextList {
      * @return the size of text lines capacity
      */
     int capacity();
-
-    /**
-     * Get the LineLayout.
-     * @return the LineLayout
-     */
-    LineLayout lineLayout();
 
     /**
      * Get the char offset at the specified position.
