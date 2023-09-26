@@ -70,30 +70,10 @@ class FixedTextTest {
 
         //  a b c d e f g h i j k l m n o p q r s t u v w x y z
         //                                 |                   |
-        //                                       |             |
+        //                                 |                   |
         assertEquals(
             "",
             target.next(3).stream().map(Textual::text).collect(Collectors.joining()));
-        assertEquals(
-            IntStream.rangeClosed('t', 'z').mapToObj(i -> (char) i + "\n").collect(Collectors.joining()),
-            target.texts().stream().map(Textual::text).collect(Collectors.joining()));
-
-        //  a b c d e f g h i j k l m n o p q r s t u v w x y z
-        //                                       |             |
-        //                                     |               |
-        assertEquals(
-            "s\n",
-            target.prev(1).stream().map(Textual::text).collect(Collectors.joining()));
-        assertEquals(
-            IntStream.rangeClosed('s', 'z').mapToObj(i -> (char) i + "\n").collect(Collectors.joining()),
-            target.texts().stream().map(Textual::text).collect(Collectors.joining()));
-
-        //  a b c d e f g h i j k l m n o p q r s t u v w x y z
-        //                                     |               |
-        //                                 |                   |
-        assertEquals(
-            "q\nr\n",
-            target.prev(2).stream().map(Textual::text).collect(Collectors.joining()));
         assertEquals(
             IntStream.rangeClosed('q', 'z').mapToObj(i -> (char) i + "\n").collect(Collectors.joining()),
             target.texts().stream().map(Textual::text).collect(Collectors.joining()));
@@ -110,9 +90,20 @@ class FixedTextTest {
 
         //  a b c d e f g h i j k l m n o p q r s t u v w x y z
         //                               |                   |
+        //                           |                   |
+        assertEquals(
+            "n\no\n",
+            target.prev(2).stream().map(Textual::text).collect(Collectors.joining()));
+        assertEquals(
+            IntStream.rangeClosed('n', 'w').mapToObj(i -> (char) i + "\n").collect(Collectors.joining()),
+            target.texts().stream().map(Textual::text).collect(Collectors.joining()));
+
+
+        //  a b c d e f g h i j k l m n o p q r s t u v w x y z
+        //                           |                   |
         // |                   |
         assertEquals(
-            "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\nn\no\n",
+            "a\nb\nc\nd\ne\nf\ng\nh\ni\nj\nk\nl\nm\n",
             target.prev(16).stream().map(Textual::text).collect(Collectors.joining()));
         assertEquals(
             IntStream.rangeClosed('a', 'j').mapToObj(i -> (char) i + "\n").collect(Collectors.joining()),

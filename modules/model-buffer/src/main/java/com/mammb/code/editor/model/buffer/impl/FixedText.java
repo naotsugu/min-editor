@@ -122,11 +122,10 @@ public class FixedText implements TextBuffer<Textual> {
 
     @Override
     public List<Textual> next(int n) {
-        if (rowIndex + 1 >= list.size()) {
+        n = Math.min(list.size() - (rowIndex + maxRowSize), n);
+        if (n <= 0) {
             return Collections.emptyList();
         }
-
-        n = (rowIndex + n) < list.size() ? n : list.size() - rowIndex + n;
         List<Textual> delta = list.subList(
             Math.min(rowIndex + maxRowSize, list.size()),
             Math.min(rowIndex + maxRowSize + n, list.size()));

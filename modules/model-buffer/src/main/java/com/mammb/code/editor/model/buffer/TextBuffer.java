@@ -16,6 +16,7 @@
 package com.mammb.code.editor.model.buffer;
 
 import com.mammb.code.editor.model.buffer.impl.EditBuffer;
+import com.mammb.code.editor.model.buffer.impl.FixedText;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.TextualList;
@@ -120,6 +121,16 @@ public interface TextBuffer<T extends Textual> extends TextualList<T> {
      */
     static TextBuffer<Textual> editBuffer(Path path, int maxRowSize) {
         return new EditBuffer(path, maxRowSize, null);
+    }
+
+    /**
+     * Create a new fixed text buffer.
+     * @param path the path of content
+     * @param maxRowSize the max row size
+     * @return a new fixed text buffer
+     */
+    static TextBuffer<Textual> fixed(Path path, int maxRowSize) {
+        return new FixedText(path, maxRowSize);
     }
 
 }

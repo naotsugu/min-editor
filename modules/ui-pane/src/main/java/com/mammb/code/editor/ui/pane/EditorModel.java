@@ -130,6 +130,11 @@ public class EditorModel {
     }
 
 
+    /**
+     * Re-create the model at the specified path.
+     * @param path the specified path
+     * @return a new EditorModel
+     */
     public EditorModel as(Path path) {
         return new EditorModel(
             context,
