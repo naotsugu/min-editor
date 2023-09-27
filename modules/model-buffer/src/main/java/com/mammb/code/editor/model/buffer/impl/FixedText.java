@@ -44,7 +44,7 @@ public class FixedText implements TextBuffer<Textual> {
     /** The row index. */
     private int rowIndex = 0;
     /** The row size. */
-    private int maxRowSize = 10;
+    private int pageSize = 10;
     /** The capacity of the buffer. */
     private int rowCapacity = 3_000;
 
@@ -52,11 +52,11 @@ public class FixedText implements TextBuffer<Textual> {
     /**
      * Create a new FixedText.
      * @param path the path
-     * @param maxRowSize the max row size
+     * @param pageSize the max row size
      */
-    public FixedText(Path path, int maxRowSize) {
+    public FixedText(Path path, int pageSize) {
 
-        this.maxRowSize = maxRowSize;
+        this.pageSize = pageSize;
         this.metrics = new MetricsImpl(path);
 
         final Charset cs;
@@ -85,17 +85,17 @@ public class FixedText implements TextBuffer<Textual> {
 
     @Override
     public List<Textual> texts() {
-        return list.subList(rowIndex, Math.min(rowIndex + maxRowSize, list.size()));
+        return list.subList(rowIndex, Math.min(rowIndex + pageSize, list.size()));
     }
 
     @Override
     public int pageSize() {
-        return maxRowSize;
+        return pageSize;
     }
 
     @Override
-    public void setMaxLineSize(int maxSize) {
-        maxRowSize = maxSize;
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
     }
 
     @Override
@@ -131,13 +131,13 @@ public class FixedText implements TextBuffer<Textual> {
 
     @Override
     public List<Textual> next(int n) {
-        n = Math.min(list.size() - (rowIndex + maxRowSize), n);
+        n = Math.min(list.size() - (rowIndex + pageSize), n);
         if (n <= 0) {
             return Collections.emptyList();
         }
         List<Textual> delta = list.subList(
-            Math.min(rowIndex + maxRowSize, list.size()),
-            Math.min(rowIndex + maxRowSize + n, list.size()));
+            Math.min(rowIndex + pageSize, list.size()),
+            Math.min(rowIndex + pageSize + n, list.size()));
         rowIndex += n;
         return delta;
     }

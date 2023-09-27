@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.model.slice;
 
-import com.mammb.code.editor.model.text.TextualList;
 import com.mammb.code.editor.model.slice.impl.RowSlice;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.text.TextualScroll;
 
 import java.util.List;
 
@@ -26,42 +26,28 @@ import java.util.List;
  * @param <T> type of row content
  * @author Naotsugu Kobayashi
  */
-public interface Slice<T extends Textual> extends TextualList<T> {
+public interface Slice<T extends Textual> extends TextualScroll<T> {
 
     @Override
     List<T> texts();
 
-    /**
-     * Get the capacity of row.
-     * @return the capacity of row
-     */
-    int maxRowSize();
+    @Override
+    int pageSize();
 
-    /**
-     * Set the capacity of row.
-     * @param capacity the capacity of row
-     */
-    void setMaxRowSize(int capacity);
+    @Override
+    List<T> prev(int n);
+
+    @Override
+    List<T> next(int n);
+
+    @Override
+    void setPageSize(int capacity);
 
     /**
      * Refresh below the specified rowNumber(inclusive).
      * @param rowNumber the specified rowNumber(inclusive)
      */
     void refresh(int rowNumber);
-
-    /**
-     * Scroll previous line.
-     * @param n the number of line
-     * @return the added lines
-     */
-    List<T> prev(int n);
-
-    /**
-     * Scroll next line.
-     * @param n the number of line
-     * @return the added lines
-     */
-    List<T> next(int n);
 
     /**
      * Create a new RowSlice from the specified size and rowSupplier.

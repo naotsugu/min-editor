@@ -27,10 +27,16 @@ public interface TextualScroll<T extends Textual> extends TextualList<T> {
     List<T> texts();
 
     /**
-     * Get the capacity of lines.
-     * @return the capacity of lines
+     * Get the page size.
+     * @return the page size
      */
     int pageSize();
+
+    /**
+     * Set the page size.
+     * @param size the page size
+     */
+    void setPageSize(int size);
 
     /**
      * Scroll previous line.

@@ -43,11 +43,8 @@ public interface TextBuffer<T extends Textual> extends TextualScroll<T> {
     @Override
     List<T> next(int n);
 
-    /**
-     * Set the capacity of lines.
-     * @param maxSize the capacity of lines
-     */
-    void setMaxLineSize(int maxSize);
+    @Override
+    void setPageSize(int pageSize);
 
     /**
      * Push the edit.

@@ -691,7 +691,7 @@ public class EditorModel {
     public void layoutBounds(double width, double height) {
         this.width = width;
         this.height = height;
-        this.buffer.setMaxLineSize(screenRowSize(height));
+        this.buffer.setPageSize(screenRowSize(height));
         texts.markDirty();
         caret.markDirty();
         if (texts instanceof WrapTextList wrap) {

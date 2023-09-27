@@ -62,13 +62,13 @@ public class RowSlice implements Slice<Textual> {
 
 
     @Override
-    public int maxRowSize() {
+    public int pageSize() {
         return maxRowSize;
     }
 
 
     @Override
-    public void setMaxRowSize(int capacity) {
+    public void setPageSize(int capacity) {
 
         if (capacity <= 1) {
             throw new IllegalArgumentException("Too small capacity. " + capacity);
