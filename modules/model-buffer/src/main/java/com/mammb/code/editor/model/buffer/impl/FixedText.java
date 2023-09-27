@@ -89,7 +89,7 @@ public class FixedText implements TextBuffer<Textual> {
     }
 
     @Override
-    public int maxLineSize() {
+    public int pageSize() {
         return maxRowSize;
     }
 

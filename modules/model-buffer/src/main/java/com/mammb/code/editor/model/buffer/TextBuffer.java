@@ -19,8 +19,9 @@ import com.mammb.code.editor.model.buffer.impl.EditBuffer;
 import com.mammb.code.editor.model.buffer.impl.FixedText;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.model.text.TextualList;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.text.TextualScroll;
+
 import java.nio.file.Path;
 import java.util.List;
 
@@ -28,16 +29,19 @@ import java.util.List;
  * The edit buffer.
  * @author Naotsugu Kobayashi
  */
-public interface TextBuffer<T extends Textual> extends TextualList<T> {
+public interface TextBuffer<T extends Textual> extends TextualScroll<T> {
 
     @Override
     List<T> texts();
 
-    /**
-     * Get the capacity of lines.
-     * @return the capacity of lines
-     */
-    int maxLineSize();
+    @Override
+    int pageSize();
+
+    @Override
+    List<T> prev(int n);
+
+    @Override
+    List<T> next(int n);
 
     /**
      * Set the capacity of lines.
@@ -67,20 +71,6 @@ public interface TextBuffer<T extends Textual> extends TextualList<T> {
      * @return the redone edit.
      */
     Edit redo();
-
-    /**
-     * Scroll previous line.
-     * @param n the number of line
-     * @return the added lines
-     */
-    List<T> prev(int n);
-
-    /**
-     * Scroll next line.
-     * @param n the number of line
-     * @return the added lines
-     */
-    List<T> next(int n);
 
     /**
      * Get the sub text.

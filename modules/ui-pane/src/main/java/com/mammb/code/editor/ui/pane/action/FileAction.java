@@ -147,7 +147,7 @@ public class FileAction {
 
         Task<EditorModel> task = new Task<>() {
             @Override protected EditorModel call() {
-                return model.as(path);
+                return model.with(path);
             }
         };
         task.setOnSucceeded(handler);
@@ -162,7 +162,7 @@ public class FileAction {
         Task<EditorModel> task = new Task<>() {
             @Override protected EditorModel call() {
                 model.saveAs(path);
-                return model.as(path);
+                return model.with(path);
             }
         };
         task.setOnSucceeded(handler);

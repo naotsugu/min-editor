@@ -135,7 +135,7 @@ public class EditorModel {
      * @param path the specified path
      * @return a new EditorModel
      */
-    public EditorModel as(Path path) {
+    public EditorModel with(Path path) {
         return new EditorModel(
             context,
             width, height,
@@ -717,10 +717,9 @@ public class EditorModel {
     // -- private -------------------------------------------------------------
 
     int screenRowSize(double height) {
-        double lineHeight = FxFonts.lineHeight(Font.font(
-            context.preference().fontName(),
-            context.preference().fontSize()));
-        return (int) Math.ceil(height / (lineHeight + TextLine.DEFAULT_MARGIN_TOP + TextLine.DEFAULT_MARGIN_BOTTOM));
+        Font font = Font.font(context.preference().fontName(), context.preference().fontSize());
+        double lineHeight = FxFonts.lineHeight(font) + TextLine.DEFAULT_MARGIN_TOP + TextLine.DEFAULT_MARGIN_BOTTOM;
+        return (int) Math.ceil(height / lineHeight);
     }
 
     private double textLeft() {
@@ -734,12 +733,12 @@ public class EditorModel {
     private void adjustVScroll() {
         int lines = buffer.metrics().rowCount();
         if (texts instanceof WrapTextList w) {
-            lines += w.wrappedSize() - buffer.maxLineSize();
+            lines += w.wrappedSize() - buffer.pageSize();
         }
-        int adjustedMax = Math.max(0, lines - buffer.maxLineSize());
+        int adjustedMax = Math.max(0, lines - buffer.pageSize());
         double ratio = (double) adjustedMax / lines; // reduction ratio
         vScroll.setMax(adjustedMax);
-        vScroll.setVisibleAmount((int) Math.floor(buffer.maxLineSize() * ratio));
+        vScroll.setVisibleAmount((int) Math.floor(buffer.pageSize() * ratio));
     }
 
     private void adjustHScroll() {

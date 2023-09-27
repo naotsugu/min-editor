@@ -17,12 +17,12 @@ package com.mammb.code.editor.ui.pane.impl;
 
 import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
 import com.mammb.code.editor.javafx.layout.FxSpanTranslate;
-import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.layout.LayoutTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.style.StyledText;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
 import com.mammb.code.editor.ui.pane.TextList;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -40,7 +40,7 @@ public class LinearTextList implements TextList {
     /** The Context. */
     private final Context context;
     /** The edit buffer. */
-    private final TextBuffer<Textual> buffer;
+    private final TextualScroll<Textual> scroll;
     /** The text translator. */
     private final Translate<Textual, TextLine> translator;
     /** The lines. */
@@ -56,29 +56,29 @@ public class LinearTextList implements TextList {
     /**
      * Constructor.
      * @param context the context
-     * @param buffer the edit buffer
+     * @param scroll the edit buffer
      * @param styling the styling
      */
     public LinearTextList(
             Context context,
-            TextBuffer<Textual> buffer,
+            TextualScroll<Textual> scroll,
             Translate<Textual, StyledText> styling) {
         this.context = context;
-        this.buffer = buffer;
+        this.scroll = scroll;
         this.styling = styling;
         this.translator = translator(context, new FxLayoutBuilder(), styling);
     }
 
 
     public TextList asWrapped(double width) {
-        return new WrapTextList(context, buffer, styling, width);
+        return new WrapTextList(context, scroll, styling, width);
     }
 
 
     @Override
     public List<TextLine> lines() {
         if (lines.isEmpty()) {
-            for (Textual textual : buffer.texts()) {
+            for (Textual textual : scroll.texts()) {
                 lines.add(translator.applyTo(textual));
             }
         }
@@ -120,16 +120,16 @@ public class LinearTextList implements TextList {
             return 0;
         }
 
-        List<Textual> added = buffer.prev(n);
+        List<Textual> added = scroll.prev(n);
         int size = added.size();
         if (size == 0) {
             return 0;
         }
 
-        if (size >= buffer.maxLineSize()) {
+        if (size >= scroll.pageSize()) {
             // if N exceeds the number of page lines, clear and add all.
             // forward scrolling can skip re-parsing syntax.
-            added.subList(buffer.maxLineSize(), size).clear();
+            added.subList(scroll.pageSize(), size).clear();
             lines.clear();
             lines.addAll(added.stream().map(translator::applyTo).toList());
         } else {
@@ -148,10 +148,10 @@ public class LinearTextList implements TextList {
             return 0;
         }
 
-        List<Textual> added = buffer.next(n);
+        List<Textual> added = scroll.next(n);
         int size = added.size();
         if (size < n) {
-            rollup = Math.min(rollup + (n - size), lines.size() - buffer.maxLineSize() / 2);
+            rollup = Math.min(rollup + (n - size), lines.size() - scroll.pageSize() / 2);
         }
         if (size == 0) {
             return 0;
@@ -161,8 +161,8 @@ public class LinearTextList implements TextList {
         lines.subList(0, Math.min(size, lines.size())).clear();
 
         List<TextLine> list = added.stream().map(translator::applyTo).collect(Collectors.toList());
-        if (size > buffer.maxLineSize()) {
-            list.subList(0, size - buffer.maxLineSize()).clear();
+        if (size > scroll.pageSize()) {
+            list.subList(0, size - scroll.pageSize()).clear();
         }
 
         // add lines added by scrolling to the end.
@@ -189,7 +189,7 @@ public class LinearTextList implements TextList {
 
     @Override
     public int capacity() {
-        return buffer.maxLineSize();
+        return scroll.pageSize();
     }
 
     /**

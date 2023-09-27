@@ -17,12 +17,12 @@ package com.mammb.code.editor.ui.pane.impl;
 
 import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
 import com.mammb.code.editor.javafx.layout.FxSpanTranslate;
-import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.layout.LayoutWrapTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.style.StyledText;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
 import com.mammb.code.editor.ui.pane.TextList;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -39,8 +39,8 @@ public class WrapTextList implements TextList {
 
     /** The Context. */
     private final Context context;
-    /** The edit buffer. */
-    private final TextBuffer<Textual> buffer;
+    /** The textual scroll. */
+    private final TextualScroll<Textual> scroll;
     /** The text translator. */
     private final Translate<Textual, List<TextLine>> translator;
     /** The styling. */
@@ -61,35 +61,35 @@ public class WrapTextList implements TextList {
     /**
      * Constructor.
      * @param context the context
-     * @param buffer the edit buffer
+     * @param scroll the textual scroll
      * @param styling the styling
      * @param wrapWidth the wrap width
      */
     public WrapTextList(
             Context context,
-            TextBuffer<Textual> buffer,
+            TextualScroll<Textual> scroll,
             Translate<Textual, StyledText> styling,
             double wrapWidth) {
         this.context = context;
-        this.buffer = buffer;
+        this.scroll = scroll;
         this.styling = styling;
         this.translator = translator(context, layout, wrapWidth, styling);
     }
 
 
     public TextList asLinear() {
-        return new LinearTextList(context, buffer, styling);
+        return new LinearTextList(context, scroll, styling);
     }
 
 
     @Override
     public List<TextLine> lines() {
         if (lines.isEmpty()) {
-            for (Textual textual : buffer.texts()) {
+            for (Textual textual : scroll.texts()) {
                 lines.addAll(translator.applyTo(textual));
             }
         }
-        int toIndex = lineOffset + buffer.maxLineSize();
+        int toIndex = lineOffset + scroll.pageSize();
 
         List<TextLine> ret = lines.subList(lineOffset + rollup, Math.min(toIndex, lines.size()));
         head = ret.get(0);
@@ -134,7 +134,7 @@ public class WrapTextList implements TextList {
 
     private int prev() {
         if (lineOffset == 0) {
-            List<Textual> added = buffer.prev(1);
+            List<Textual> added = scroll.prev(1);
             int size = added.size();
             if (size == 0) return 0;
 
@@ -160,7 +160,7 @@ public class WrapTextList implements TextList {
         for (int i = 0; i < n; i++) {
             int ret = next();
             if (ret == 0) {
-                rollup = Math.min(rollup + (n - i), buffer.maxLineSize() / 2);
+                rollup = Math.min(rollup + (n - i), scroll.pageSize() / 2);
                 return count;
             }
             count += ret;
@@ -170,8 +170,8 @@ public class WrapTextList implements TextList {
 
 
     private int next() {
-        if (lines.size() <= lineOffset + buffer.maxLineSize()) {
-            List<Textual> added = buffer.next(1);
+        if (lines.size() <= lineOffset + scroll.pageSize()) {
+            List<Textual> added = scroll.next(1);
             int size = added.size();
             if (size == 0) return 0;
 
@@ -200,9 +200,9 @@ public class WrapTextList implements TextList {
         if (first > row || row > last) {
             if (row < first) {
                 int nRow = first - row;
-                List<Textual> added = buffer.prev(nRow);
-                if (added.size() >= buffer.maxLineSize()) {
-                    added.subList(buffer.maxLineSize(), added.size()).clear();
+                List<Textual> added = scroll.prev(nRow);
+                if (added.size() >= scroll.pageSize()) {
+                    added.subList(scroll.pageSize(), added.size()).clear();
                 }
                 removeTailRow(lines, added.size());
                 List<TextLine> list = added.stream().map(translator::applyTo)
@@ -210,7 +210,7 @@ public class WrapTextList implements TextList {
                 lines.addAll(0, list);
             } else {
                 int nRow = row - last;
-                List<Textual> added = buffer.next(nRow);
+                List<Textual> added = scroll.next(nRow);
                 int removedCount = removeHeadRow(lines, added.size());
                 List<TextLine> list = added.stream().map(translator::applyTo)
                     .flatMap(Collection::stream).toList();
@@ -233,7 +233,7 @@ public class WrapTextList implements TextList {
 
     @Override
     public int capacity() {
-        return buffer.maxLineSize();
+        return scroll.pageSize();
     }
 
 
