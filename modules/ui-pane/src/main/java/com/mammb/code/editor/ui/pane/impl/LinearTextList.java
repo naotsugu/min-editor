@@ -47,12 +47,9 @@ public class LinearTextList implements TextList {
     private final List<TextLine> lines = new LinkedList<>();
     /** The styling. */
     private final Translate<Textual, StyledText> styling;
-
-    /** The LineLayout. */
-    private final LineLayout layout = new FxLayoutBuilder();
     /** The count of rollup lines. */
     private int rollup = 0;
-
+    /** The line of head. */
     private TextLine head = null;
 
 
@@ -69,7 +66,7 @@ public class LinearTextList implements TextList {
         this.context = context;
         this.buffer = buffer;
         this.styling = styling;
-        this.translator = translator(context, layout, styling);
+        this.translator = translator(context, new FxLayoutBuilder(), styling);
     }
 
 
@@ -199,7 +196,7 @@ public class LinearTextList implements TextList {
      * Build the translator.
      * @return the translator
      */
-    private static Translate<Textual, TextLine> translator(
+    private Translate<Textual, TextLine> translator(
             Context ctx,
             LineLayout layout,
             Translate<Textual, StyledText> styling) {

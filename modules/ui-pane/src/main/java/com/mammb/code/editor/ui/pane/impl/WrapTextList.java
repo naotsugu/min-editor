@@ -248,7 +248,11 @@ public class WrapTextList implements TextList {
         layout.setWrapWidth(wrapWidth);
     }
 
-    private static Translate<Textual, List<TextLine>> translator(
+    /**
+     * Build the translator.
+     * @return the translator
+     */
+    private Translate<Textual, List<TextLine>> translator(
             Context ctx,
             LineLayout layout,
             double wrapWidth,
