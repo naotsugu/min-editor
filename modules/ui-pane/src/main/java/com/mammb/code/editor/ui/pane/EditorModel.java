@@ -31,10 +31,10 @@ import com.mammb.code.editor.ui.pane.impl.Clipboard;
 import com.mammb.code.editor.ui.pane.impl.Draws;
 import com.mammb.code.editor.ui.pane.impl.ImePalletImpl;
 import com.mammb.code.editor.ui.pane.impl.LayoutLine;
-import com.mammb.code.editor.ui.pane.impl.LinearTextList;
+import com.mammb.code.editor.ui.pane.impl.PlainScreenText;
 import com.mammb.code.editor.ui.pane.impl.SelectBehaviors;
 import com.mammb.code.editor.ui.pane.impl.SelectionImpl;
-import com.mammb.code.editor.ui.pane.impl.WrapTextList;
+import com.mammb.code.editor.ui.pane.impl.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -78,7 +78,7 @@ public class EditorModel {
     /** The screen height. */
     private double height;
     /** The text list. */
-    private TextList texts;
+    private ScreenText texts;
     /** The max width. */
     private double maxWidth = 0;
 
@@ -100,7 +100,7 @@ public class EditorModel {
 
         this.context = context;
         this.buffer = TextBuffer.editBuffer(path, screenRowSize(height));
-        this.texts = new LinearTextList(context, buffer, styling);
+        this.texts = new PlainScreenText(context, buffer, styling);
         this.gutter = new Gutter(context);
         this.caret = new CaretImpl(this::layoutLine);
         this.selection = new SelectionImpl();
@@ -340,7 +340,7 @@ public class EditorModel {
         vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
     private void hScrollToCaret() {
-        if (texts instanceof WrapTextList) return;
+        if (texts instanceof WrapScreenText) return;
         adjustHScroll();
         double gap = width / 10;
         if (caret.x() <= hScroll.getValue()) {
@@ -694,7 +694,7 @@ public class EditorModel {
         this.buffer.setPageSize(screenRowSize(height));
         texts.markDirty();
         caret.markDirty();
-        if (texts instanceof WrapTextList wrap) {
+        if (texts instanceof WrapScreenText wrap) {
             wrap.setWrapWidth(width - gutter.width());
         }
         adjustVScroll();
@@ -703,11 +703,11 @@ public class EditorModel {
 
     // -- conf behavior -------------------------------------------------------
     public void toggleWrap() {
-        if (texts instanceof LinearTextList linear)  {
+        if (texts instanceof PlainScreenText linear)  {
             texts = linear.asWrapped(width - gutter.width());
             caret.markDirty();
-        } else if (texts instanceof WrapTextList wrap) {
-            texts = wrap.asLinear();
+        } else if (texts instanceof WrapScreenText wrap) {
+            texts = wrap.asPlain();
             maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
             caret.markDirty();
         }
@@ -732,7 +732,7 @@ public class EditorModel {
 
     private void adjustVScroll() {
         int lines = buffer.metrics().rowCount();
-        if (texts instanceof WrapTextList w) {
+        if (texts instanceof WrapScreenText w) {
             lines += w.wrappedSize() - buffer.pageSize();
         }
         int adjustedMax = Math.max(0, lines - buffer.pageSize());
@@ -742,7 +742,7 @@ public class EditorModel {
     }
 
     private void adjustHScroll() {
-        if (texts instanceof LinearTextList) {
+        if (texts instanceof PlainScreenText) {
             double w = Math.max(0, width - gutter.width());
             double adjustedMax = Math.max(0, maxWidth - w);
             double ratio = adjustedMax / maxWidth; // reduction ratio

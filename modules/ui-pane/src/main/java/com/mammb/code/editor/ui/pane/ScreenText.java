@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * TextList.
+ * ScreenText.
  * @author Naotsugu Kobayashi
  */
-public interface TextList {
+public interface ScreenText {
 
     /**
      * Get the text lines.

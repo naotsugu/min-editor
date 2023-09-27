@@ -1,15 +1,15 @@
 package com.mammb.code.editor.ui.pane.impl;
 
 import com.mammb.code.editor.model.layout.TextLine;
-import com.mammb.code.editor.ui.pane.TextList;
+import com.mammb.code.editor.ui.pane.ScreenText;
 
 import java.nio.file.Path;
 import java.util.List;
 
-public class FixedTextList implements TextList {
+public class FixedScreenText implements ScreenText {
 
 
-    public FixedTextList(Path path, int maxRowSize) {
+    public FixedScreenText(Path path, int maxRowSize) {
     }
 
     @Override

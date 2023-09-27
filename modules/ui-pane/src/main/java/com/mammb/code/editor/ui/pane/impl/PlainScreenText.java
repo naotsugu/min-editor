@@ -24,7 +24,7 @@ import com.mammb.code.editor.model.style.StyledText;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
-import com.mammb.code.editor.ui.pane.TextList;
+import com.mammb.code.editor.ui.pane.ScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 
 import java.util.LinkedList;
@@ -32,10 +32,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * LinearTextList.
+ * PlainScreenText.
  * @author Naotsugu Kobayashi
  */
-public class LinearTextList implements TextList {
+public class PlainScreenText implements ScreenText {
 
     /** The Context. */
     private final Context context;
@@ -59,7 +59,7 @@ public class LinearTextList implements TextList {
      * @param scroll the edit buffer
      * @param styling the styling
      */
-    public LinearTextList(
+    public PlainScreenText(
             Context context,
             TextualScroll<Textual> scroll,
             Translate<Textual, StyledText> styling) {
@@ -70,8 +70,8 @@ public class LinearTextList implements TextList {
     }
 
 
-    public TextList asWrapped(double width) {
-        return new WrapTextList(context, scroll, styling, width);
+    public ScreenText asWrapped(double width) {
+        return new WrapScreenText(context, scroll, styling, width);
     }
 
 

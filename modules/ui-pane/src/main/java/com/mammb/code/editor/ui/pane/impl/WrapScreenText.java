@@ -24,7 +24,7 @@ import com.mammb.code.editor.model.style.StyledText;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
-import com.mammb.code.editor.ui.pane.TextList;
+import com.mammb.code.editor.ui.pane.ScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 
 import java.util.Collection;
@@ -35,7 +35,7 @@ import java.util.List;
  * WrapTextList.
  * @author Naotsugu Kobayashi
  */
-public class WrapTextList implements TextList {
+public class WrapScreenText implements ScreenText {
 
     /** The Context. */
     private final Context context;
@@ -65,7 +65,7 @@ public class WrapTextList implements TextList {
      * @param styling the styling
      * @param wrapWidth the wrap width
      */
-    public WrapTextList(
+    public WrapScreenText(
             Context context,
             TextualScroll<Textual> scroll,
             Translate<Textual, StyledText> styling,
@@ -77,8 +77,8 @@ public class WrapTextList implements TextList {
     }
 
 
-    public TextList asLinear() {
-        return new LinearTextList(context, scroll, styling);
+    public ScreenText asPlain() {
+        return new PlainScreenText(context, scroll, styling);
     }
 
 

@@ -19,7 +19,7 @@ import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.pane.Caret;
 import com.mammb.code.editor.ui.pane.Selection;
-import com.mammb.code.editor.ui.pane.TextList;
+import com.mammb.code.editor.ui.pane.ScreenText;
 import java.util.List;
 import java.util.Objects;
 
@@ -90,7 +90,7 @@ public class SelectBehaviors {
      * @param selection the selection
      * @param texts the texts
      */
-    public static void selectCurrentLine(Caret caret, Selection selection, TextList texts) {
+    public static void selectCurrentLine(Caret caret, Selection selection, ScreenText texts) {
         SelectBehaviors.select(linePointRange(caret.offset(), texts), caret, selection);
     }
 
@@ -100,7 +100,7 @@ public class SelectBehaviors {
      * @param selection the selection
      * @param texts the texts
      */
-    public static void selectCurrentRow(Caret caret, Selection selection, TextList texts) {
+    public static void selectCurrentRow(Caret caret, Selection selection, ScreenText texts) {
         if (selection.length() == 0 || selection.min().row() == selection.max().row()) {
             // if not selected or within a row selected, select current row
             SelectBehaviors.select(rowPointRange(caret.offset(), texts), caret, selection);
@@ -121,7 +121,7 @@ public class SelectBehaviors {
      * @param texts the texts
      * @return the point of the current caret row
      */
-    private static OffsetPoint[] rowPointRange(int charOffset, TextList texts) {
+    private static OffsetPoint[] rowPointRange(int charOffset, ScreenText texts) {
         List<TextLine> lines = texts.rowAt(charOffset);
         return new OffsetPoint[] {
             lines.get(0).point(),
@@ -135,7 +135,7 @@ public class SelectBehaviors {
      * @param texts the texts
      * @return the point of the current caret line
      */
-    private static OffsetPoint[] linePointRange(int charOffset, TextList texts) {
+    private static OffsetPoint[] linePointRange(int charOffset, ScreenText texts) {
         var line = texts.lineAt(charOffset);
         return new OffsetPoint[] {
             line.point(),
