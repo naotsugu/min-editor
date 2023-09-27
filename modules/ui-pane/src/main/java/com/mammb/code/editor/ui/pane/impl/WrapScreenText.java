@@ -32,7 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * WrapTextList.
+ * WrapScreenText.
  * @author Naotsugu Kobayashi
  */
 public class WrapScreenText implements ScreenText {

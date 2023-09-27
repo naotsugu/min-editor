@@ -71,7 +71,7 @@ public class EditorModel {
     private final ImePallet ime;
     /** The vertical scroll. */
     private ScrollBar<Integer> vScroll;
-    /** The horizontal scrollBar. */
+    /** The horizontal scroll. */
     private ScrollBar<Double> hScroll;
     /** The screen width. */
     private double width;
@@ -86,20 +86,23 @@ public class EditorModel {
     /**
      * Constructor.
      * @param context the context
+     * @param buffer the text buffer
      * @param width the screen width
      * @param height the screen height
-     * @param path the path
+     * @param styling the styling
+     * @param vScroll the vertical scroll
+     * @param hScroll the horizontal scroll
      */
     private EditorModel(
             Context context,
+            TextBuffer<Textual> buffer,
             double width, double height,
-            Path path,
             StylingTranslate styling,
             ScrollBar<Integer> vScroll,
             ScrollBar<Double> hScroll) {
 
         this.context = context;
-        this.buffer = TextBuffer.editBuffer(path, screenRowSize(height));
+        this.buffer = buffer;
         this.texts = new PlainScreenText(context, buffer, styling);
         this.gutter = new Gutter(context);
         this.caret = new CaretImpl(this::layoutLine);
@@ -123,8 +126,26 @@ public class EditorModel {
     public static EditorModel of(Context context, double width, double height) {
         return new EditorModel(
             context,
+            TextBuffer.editBuffer(null, screenRowSize(height, context)),
             width, height,
-            null,
+            StylingTranslate.passThrough(),
+            ScrollBar.vEmpty(), ScrollBar.hEmpty());
+    }
+
+
+    /**
+     * Create a new partially editor model.
+     * @param context the context
+     * @param path the specified path
+     * @param width the screen width
+     * @param height the screen height
+     * @return a new partially EditorModel
+     */
+    public static EditorModel partiallyOf(Context context, Path path, double width, double height) {
+        return new EditorModel(
+            context,
+            TextBuffer.fixed(path, screenRowSize(height, context)),
+            width, height,
             StylingTranslate.passThrough(),
             ScrollBar.vEmpty(), ScrollBar.hEmpty());
     }
@@ -138,8 +159,8 @@ public class EditorModel {
     public EditorModel with(Path path) {
         return new EditorModel(
             context,
+            TextBuffer.editBuffer(path, screenRowSize(height, context)),
             width, height,
-            path,
             Syntax.of(path, context.preference().fgColor()),
             vScroll, hScroll);
     }
@@ -717,6 +738,10 @@ public class EditorModel {
     // -- private -------------------------------------------------------------
 
     int screenRowSize(double height) {
+        return screenRowSize(height, context);
+    }
+
+    static int screenRowSize(double height, Context context) {
         Font font = Font.font(context.preference().fontName(), context.preference().fontSize());
         double lineHeight = FxFonts.lineHeight(font) + TextLine.DEFAULT_MARGIN_TOP + TextLine.DEFAULT_MARGIN_BOTTOM;
         return (int) Math.ceil(height / lineHeight);
