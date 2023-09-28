@@ -148,7 +148,7 @@ public class FileAction {
             return;
         }
 
-        if (size(path) > 30_000_000) {
+        if (size(path) > 3_000_000) {
             BlockUi.run(pane, createModelTask(() -> model.partiallyWith(path), handler));
             BackgroundRun.run(pane, createModelTask(() -> model.with(path), handler));
         } else {

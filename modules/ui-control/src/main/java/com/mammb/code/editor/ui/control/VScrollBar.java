@@ -209,7 +209,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
                 }
             };
 
-        final KeyFrame kf = new KeyFrame(Duration.millis(100), step);
+        final KeyFrame kf = new KeyFrame(Duration.millis(50), step);
         timeline.getKeyFrames().add(kf);
         // do the first step immediately
         timeline.play();

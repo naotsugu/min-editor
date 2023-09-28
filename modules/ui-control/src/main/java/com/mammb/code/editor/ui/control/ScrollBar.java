@@ -22,7 +22,7 @@ package com.mammb.code.editor.ui.control;
 public interface ScrollBar<T extends Number> {
 
     /** The width of scroll bar. */
-    double WIDTH = 9;
+    double WIDTH = 10;
 
     /**
      * Get the minimum value represented by this {@code ScrollBar}.

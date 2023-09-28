@@ -157,6 +157,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         preDragThumbPos = (clamp(getMin(), getValue(), getMax()) - getMin()) / valueLength();
         event.consume();
     }
+
     private void handleThumbMouseDragged(MouseEvent event) {
         if (event.isSynthesized()) {
             event.consume();
@@ -197,7 +198,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
                 }
             };
 
-        final KeyFrame kf = new KeyFrame(Duration.millis(100), step);
+        final KeyFrame kf = new KeyFrame(Duration.millis(50), step);
         timeline.getKeyFrames().add(kf);
         // do the first step immediately
         timeline.play();
