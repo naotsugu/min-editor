@@ -34,11 +34,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -84,12 +88,7 @@ public class OverlayDialog extends StackPane {
      */
     public static void confirm(Pane parent, String contentText, Runnable ok) {
 
-        Color color = (parent.getBackground() == null) ? Color.WHITE : parent.getBackground().getFills().stream()
-            .map(BackgroundFill::getFill)
-            .filter(Color.class::isInstance)
-            .map(Color.class::cast)
-            .findFirst()
-            .orElse(Color.WHITE);
+        Color color = selectBackground(parent);
 
         Runnable[] ra = new Runnable[1];
 
@@ -209,6 +208,30 @@ public class OverlayDialog extends StackPane {
 
     private static Color flip(Color base) {
         return base.deriveColor(0.0, 1.0, (base.getBrightness() > 0.5) ? 0.2 : 6.0, 1.0);
+    }
+
+
+    /**
+     * Selects the background color for the specified region.
+     * @param region the specified region
+     * @return the background color
+     */
+    private static Color selectBackground(Region region) {
+
+        if (region.getBackground() == null) {
+            return Color.TRANSPARENT;
+        }
+
+        List<BackgroundFill> fills = region.getBackground().getFills();
+        for (BackgroundFill fill : fills) {
+            Paint paint = fill.getFill();
+            if (paint instanceof Color color) {
+                return color;
+            }
+        }
+
+        return Color.TRANSPARENT;
+
     }
 
 }

@@ -28,8 +28,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import static java.lang.System.Logger.Level.ERROR;
 
@@ -41,17 +39,6 @@ public class BlockUi extends StackPane {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(BlockUi.class.getName());
-
-    /** The executor. */
-    private static final ExecutorService executor;
-    static {
-        executor = Executors.newSingleThreadExecutor(r -> {
-            Thread t = new Thread(r);
-            t.setDaemon(true);
-            return t;
-        });
-        Runtime.getRuntime().addShutdownHook(new Thread(executor::shutdownNow));
-    }
 
 
     /**
@@ -74,13 +61,13 @@ public class BlockUi extends StackPane {
 
 
     public static void run(Pane blocked, Task<?> task) {
-        var block = new BlockUi(backgroundColor(blocked));
+        var block = new BlockUi(selectBackground(blocked));
         blocked.getChildren().add(block);
         block.requestFocus();
         task.setOnSucceeded(withRelease(task.getOnSucceeded(), blocked, block));
         task.setOnCancelled(withRelease(task.getOnCancelled(), blocked, block));
         task.setOnFailed(withRelease(task.getOnFailed(), blocked, block));
-        executor.submit(task);
+        TaskExecutor.submit(task);
     }
 
 
@@ -98,13 +85,25 @@ public class BlockUi extends StackPane {
     }
 
 
-    private static Color backgroundColor(Region region) {
-        return (region.getBackground() == null) ? Color.WHITE : region.getBackground().getFills().stream()
-            .map(BackgroundFill::getFill)
-            .filter(Color.class::isInstance)
-            .map(Color.class::cast)
-            .findFirst()
-            .orElse(Color.WHITE);
+    /**
+     * Selects the background color for the specified region.
+     * @param region the specified region
+     * @return the background color
+     */
+    private static Color selectBackground(Region region) {
+
+        if (region.getBackground() == null) {
+            return Color.TRANSPARENT;
+        }
+
+        for (BackgroundFill fill : region.getBackground().getFills()) {
+            if (fill.getFill() instanceof Color color) {
+                return color;
+            }
+        }
+
+        return Color.TRANSPARENT;
+
     }
 
 }
