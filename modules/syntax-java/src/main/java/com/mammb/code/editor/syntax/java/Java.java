@@ -202,6 +202,7 @@ public class Java {
         return ch >= '0' && ch <= '9';
     }
 
+
     /**
      * Strip the underscore on java number literal.
      * Underscores located in incorrect places will not be removed.

@@ -135,13 +135,10 @@ public class EditorModel {
 
     /**
      * Create a new partially editor model.
-     * @param context the context
      * @param path the specified path
-     * @param width the screen width
-     * @param height the screen height
      * @return a new partially EditorModel
      */
-    public static EditorModel partiallyOf(Context context, Path path, double width, double height) {
+    public EditorModel partiallyWith(Path path) {
         return new EditorModel(
             context,
             TextBuffer.fixed(path, screenRowSize(height, context)),

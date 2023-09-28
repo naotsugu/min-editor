@@ -15,16 +15,22 @@
  */
 package com.mammb.code.editor.ui.control;
 
-import javafx.scene.paint.Color;
-
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static java.lang.System.Logger.Level.ERROR;
 
 /**
  * BackgroundRun.
  * @author Naotsugu Kobayashi
  */
-public class BackgroundRun {
+public class BackgroundRun extends StackPane {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(BackgroundRun.class.getName());
@@ -43,10 +49,35 @@ public class BackgroundRun {
 
     /**
      * Constructor.
-     * @param bgColor the background color
      */
-    private BackgroundRun(Color bgColor) {
+    private BackgroundRun() {
+        IndeterminateProgress progress = IndeterminateProgress.elongatedOf();
+        StackPane.setAlignment(progress, Pos.TOP_CENTER);
+        getChildren().add(progress);
+    }
 
+    
+    public static void run(Pane pane, Task<?> task) {
+        var run = new BackgroundRun();
+        pane.getChildren().add(run);
+        task.setOnSucceeded(withRelease(task.getOnSucceeded(), pane, run));
+        task.setOnCancelled(withRelease(task.getOnCancelled(), pane, run));
+        task.setOnFailed(withRelease(task.getOnFailed(), pane, run));
+        executor.submit(task);
+    }
+
+
+    private static EventHandler<WorkerStateEvent> withRelease(
+            EventHandler<WorkerStateEvent> handler, Pane blocked, Pane block) {
+        return e -> {
+            if (e.getSource().getException() != null) {
+                log.log(ERROR, e.getSource().getMessage(), e.getSource().getException());
+            }
+            if (handler != null) {
+                handler.handle(e);
+            }
+            blocked.getChildren().remove(block);
+        };
     }
 
 }

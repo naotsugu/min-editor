@@ -38,12 +38,6 @@ import java.lang.ref.WeakReference;
  */
 public class IndeterminateProgress extends StackPane {
 
-    /** The height. */
-    private static final double HEIGHT = 8;
-
-    /** The radii. */
-    private static final double RADII = 4;
-
     /** The progress bar. */
     private final Rectangle bar;
 
@@ -54,24 +48,24 @@ public class IndeterminateProgress extends StackPane {
     /**
      * Constructor.
      */
-    public IndeterminateProgress() {
+    private IndeterminateProgress(double height, double radii, double lrMargin) {
 
         setBackground(new Background(new BackgroundFill(
             Color.LIGHTGRAY.deriveColor(0, 1, 1, 0.1),
-            new CornerRadii(RADII), Insets.EMPTY)));
-        setMinHeight(HEIGHT);
-        setPrefHeight(HEIGHT);
-        setMaxHeight(HEIGHT);
+            new CornerRadii(radii), Insets.EMPTY)));
+        setMinHeight(height);
+        setPrefHeight(height);
+        setMaxHeight(height);
         setCursor(Cursor.DEFAULT);
-        StackPane.setMargin(this, new Insets(0, 50, 0, 50));
+        StackPane.setMargin(this, new Insets(0, lrMargin, 0, lrMargin));
 
-        initClip();
+        initClip(radii);
 
         bar = new Rectangle();
         bar.setFill(Color.LIGHTGRAY.deriveColor(0, 1, 1, 0.5));
-        bar.setArcWidth(RADII);
-        bar.setArcHeight(RADII);
-        bar.setHeight(HEIGHT);
+        bar.setArcWidth(radii);
+        bar.setArcHeight(radii);
+        bar.setHeight(height);
         layoutBoundsProperty().addListener((observable, ov, nv)
             -> bar.setWidth(nv.getWidth() / 10));
         StackPane.setAlignment(bar, Pos.CENTER_LEFT);
@@ -85,13 +79,22 @@ public class IndeterminateProgress extends StackPane {
     }
 
 
+    public static IndeterminateProgress of() {
+        return new IndeterminateProgress(8, 4, 50);
+    }
+
+
+    public static IndeterminateProgress elongatedOf() {
+        return new IndeterminateProgress(2, 0, 0);
+    }
+
     /**
      * Initialize clip.
      */
-    private void initClip() {
+    private void initClip(double radii) {
         Rectangle clip = new Rectangle();
-        clip.setArcWidth(RADII);
-        clip.setArcHeight(RADII);
+        clip.setArcWidth(radii);
+        clip.setArcHeight(radii);
         layoutBoundsProperty().addListener((observable, ov, nv) -> {
             clip.setWidth(nv.getWidth());
             clip.setHeight(nv.getHeight());

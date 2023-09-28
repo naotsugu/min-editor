@@ -68,7 +68,7 @@ public class BlockUi extends StackPane {
         setOnKeyTyped(Event::consume);
         setOnMouseClicked(Event::consume);
 
-        getChildren().add(new IndeterminateProgress());
+        getChildren().add(IndeterminateProgress.of());
 
     }
 

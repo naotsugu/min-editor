@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.pane.action;
 
+import com.mammb.code.editor.ui.control.BackgroundRun;
 import com.mammb.code.editor.ui.control.BlockUi;
 import com.mammb.code.editor.ui.control.OverlayDialog;
 import com.mammb.code.editor.ui.pane.EditorModel;
@@ -23,11 +24,13 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.Pane;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static java.lang.System.Logger.Level.ERROR;
 
@@ -145,30 +148,36 @@ public class FileAction {
             return;
         }
 
-        Task<EditorModel> task = new Task<>() {
-            @Override protected EditorModel call() {
-                return model.with(path);
-            }
-        };
-        task.setOnSucceeded(handler);
-
-        BlockUi.run(pane, task);
+        if (size(path) > 30_000_000) {
+            BlockUi.run(pane, createModelTask(() -> model.partiallyWith(path), handler));
+            BackgroundRun.run(pane, createModelTask(() -> model.with(path), handler));
+        } else {
+            BlockUi.run(pane, createModelTask(() -> model.with(path), handler));
+        }
 
     }
 
 
-    private void saveAndUpdate(Path path, EventHandler<WorkerStateEvent> handler) {
+    private Task<EditorModel> createModelTask(
+            Supplier<EditorModel> supplier, EventHandler<WorkerStateEvent> handler) {
 
         Task<EditorModel> task = new Task<>() {
             @Override protected EditorModel call() {
-                model.saveAs(path);
-                return model.with(path);
+                return supplier.get();
             }
         };
         task.setOnSucceeded(handler);
 
-        BlockUi.run(pane, task);
+        return task;
+    }
 
+
+    private void saveAndUpdate(Path path, EventHandler<WorkerStateEvent> handler) {
+        BlockUi.run(pane, createModelTask(() -> {
+                model.saveAs(path);
+                return model.with(path);
+            },
+            handler));
     }
 
 
@@ -210,6 +219,15 @@ public class FileAction {
 
         return ext1.equals(ext2);
 
+    }
+
+
+    private static long size(Path path) {
+        try {
+            return Files.size(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
