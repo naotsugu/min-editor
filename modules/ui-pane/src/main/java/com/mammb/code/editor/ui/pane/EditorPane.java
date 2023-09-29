@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import com.mammb.code.editor.ui.control.FloatPanel;
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import com.mammb.code.editor.ui.pane.action.FileAction;
@@ -120,6 +121,8 @@ public class EditorPane extends StackPane {
         timeline.play();
 
         initHandler();
+
+        getChildren().add(new FloatPanel(Color.web(context.preference().fgColor())));
 
     }
 

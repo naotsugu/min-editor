@@ -38,11 +38,9 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -222,10 +220,8 @@ public class OverlayDialog extends StackPane {
             return Color.TRANSPARENT;
         }
 
-        List<BackgroundFill> fills = region.getBackground().getFills();
-        for (BackgroundFill fill : fills) {
-            Paint paint = fill.getFill();
-            if (paint instanceof Color color) {
+        for (BackgroundFill fill : region.getBackground().getFills()) {
+            if (fill.getFill() instanceof Color color) {
                 return color;
             }
         }

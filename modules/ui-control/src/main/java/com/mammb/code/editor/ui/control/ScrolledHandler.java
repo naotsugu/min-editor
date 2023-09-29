@@ -21,5 +21,12 @@ package com.mammb.code.editor.ui.control;
  * @author Naotsugu Kobayashi
  */
 public interface ScrolledHandler<T extends Number> {
+
+    /**
+     * Handle scrolled.
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
     void handle(T oldValue, T newValue);
+
 }
