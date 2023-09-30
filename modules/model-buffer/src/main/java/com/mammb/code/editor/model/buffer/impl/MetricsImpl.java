@@ -16,6 +16,8 @@
 package com.mammb.code.editor.model.buffer.impl;
 
 import com.mammb.code.editor.model.buffer.Metrics;
+import com.mammb.code.editor.model.buffer.MetricsChangeListener;
+import com.mammb.code.editor.model.buffer.MetricsRecord;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.edit.EditTo;
 import com.mammb.code.editor.model.text.OffsetPoint;
@@ -23,6 +25,8 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
 
@@ -51,6 +55,10 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     /** whether modified. */
     private boolean modified = false;
 
+    /** The metrics change listener. */
+    private final List<MetricsChangeListener> listeners = new ArrayList<>();
+
+
     /**
      * Constructor.
      * @param path the content path
@@ -65,7 +73,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
      * @param path the content path
      */
     public void setPath(Path path) {
-        this.path = path;
+        handleChange(() -> this.path = path);
     }
 
     /**
@@ -73,7 +81,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
      * @param modified whether modified
      */
     public void setModified(boolean modified) {
-        this.modified = modified;
+        handleChange(() -> this.modified = modified);
     }
 
     /**
@@ -81,7 +89,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
      * @param charset the charset
      */
     public void setCharset(Charset charset) {
-        this.charset = charset;
+        handleChange(() -> this.charset = charset);
     }
 
     /**
@@ -89,7 +97,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
      * @param edit the edit
      */
     public void apply(Edit edit) {
-        edit.apply(editTo);
+        handleChange(() -> edit.apply(editTo));
     }
 
     @Override
@@ -143,6 +151,11 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     @Override
+    public void addListener(MetricsChangeListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
     public String toString() {
         return new StringJoiner(", ", MetricsImpl.class.getSimpleName() + "[", "]")
             .add("path=" + path)
@@ -157,6 +170,12 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     // -- private -------------------------------------------------------------
+
+    private void handleChange(Runnable runnable) {
+        Metrics old = new MetricsRecord(this);
+        runnable.run();
+        listeners.forEach(l -> l.changed(old, new MetricsRecord(this)));
+    }
 
     private void plus(byte[] bytes) {
 

@@ -57,18 +57,23 @@ public class StatusPanel extends HBox {
 
 
     public void push(String key, String string) {
-        texts.computeIfAbsent(key, k -> createText("")).setText(string);
-        getChildren().clear();
-        getChildren().addAll(texts.values());
+        texts.computeIfAbsent(key, k -> createText()).setText(string);
     }
 
 
-    private Text createText(String string) {
-        var text = new Text(string);
+    public void clear() {
+        getChildren().clear();
+    }
+
+
+    private Text createText() {
+        var text = new Text();
         text.setFill(baseColor);
         text.setFont(new Font(HEIGHT * 0.75));
+        getChildren().add(text);
         return text;
     }
+
 
     private void adjustFontSize(Text text, double height) {
         double textHeight = text.getBoundsInLocal().getHeight();

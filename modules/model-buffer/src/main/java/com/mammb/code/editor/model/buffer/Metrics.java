@@ -18,7 +18,6 @@ package com.mammb.code.editor.model.buffer;
 import com.mammb.code.editor.model.text.LineEnding;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 import static java.lang.System.Logger.Level.WARNING;
@@ -88,6 +87,12 @@ public interface Metrics {
     boolean modified();
 
     /**
+     * Add the metrics change listener.
+     * @param listener the metrics change listener
+     */
+    void addListener(MetricsChangeListener listener);
+
+    /**
      * Get the total row count.
      * @return the total row count
      */
@@ -112,5 +117,4 @@ public interface Metrics {
         }
     }
 
-    Metrics empty = new MetricsRecord(null, StandardCharsets.UTF_8, 0, 0, 0, 0, 0, 0, false);
 }

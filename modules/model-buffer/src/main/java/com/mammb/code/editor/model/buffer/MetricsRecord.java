@@ -32,22 +32,36 @@ import java.nio.file.Path;
  * @author Naotsugu Kobayashi
  */
 public record MetricsRecord(
-        Path path,
-        Charset charset,
-        long byteLen,
-        int cpCount,
-        int chCount,
-        int invalidCpCount,
-        int crCount,
-        int lfCount,
-        boolean modified) implements Metrics {
+    Path path,
+    Charset charset,
+    long byteLen,
+    int cpCount,
+    int chCount,
+    int invalidCpCount,
+    int crCount,
+    int lfCount,
+    boolean modified) implements Metrics {
 
     /**
      * Create a new Metrics by given metrics.
      * @param m the source metrics
      */
     public MetricsRecord(Metrics m) {
-        this(m.path(), m.charset(), m.byteLen(), m.cpCount(), m.chCount(), m.invalidCpCount(), m.crCount(), m.lfCount(), m.modified());
+        this(
+            m.path(),
+            m.charset(),
+            m.byteLen(),
+            m.cpCount(),
+            m.chCount(),
+            m.invalidCpCount(),
+            m.crCount(),
+            m.lfCount(),
+            m.modified());
+    }
+
+    @Override
+    public void addListener(MetricsChangeListener listener) {
+
     }
 
 }
