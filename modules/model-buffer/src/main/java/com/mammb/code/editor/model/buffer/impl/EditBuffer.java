@@ -66,6 +66,7 @@ public class EditBuffer implements TextBuffer<Textual> {
         this.slice = Slice.of(maxRowSize, new RawAdapter(content));
         this.editQueue = EditQueue.of(editTo(content));
         metrics.setModified(false);
+        metrics.setCharset(content.charset());
     }
 
 

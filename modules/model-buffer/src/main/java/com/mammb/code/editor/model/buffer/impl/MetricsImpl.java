@@ -20,6 +20,7 @@ import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.edit.EditTo;
 import com.mammb.code.editor.model.text.OffsetPoint;
 
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.StringJoiner;
@@ -33,6 +34,8 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
 
     /** The content path. */
     private Path path;
+    /** The charset. */
+    private Charset charset;
     /** The byte length of content. */
     private long byteLen = 0;
     /** The code point count. */
@@ -74,6 +77,14 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     /**
+     * Set the charset.
+     * @param charset the charset
+     */
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+    }
+
+    /**
      * Apply the edit.
      * @param edit the edit
      */
@@ -89,6 +100,11 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     @Override
     public Path path() {
         return path;
+    }
+
+    @Override
+    public Charset charset() {
+        return charset;
     }
 
     @Override

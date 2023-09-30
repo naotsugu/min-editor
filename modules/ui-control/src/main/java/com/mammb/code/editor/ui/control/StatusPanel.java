@@ -20,6 +20,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -33,7 +34,8 @@ import java.util.Map;
  */
 public class StatusPanel extends HBox {
 
-    private static final double HEIGHT = 15;
+    public static final double HEIGHT = 15;
+    public static final double WIDTH = 200;
 
     private Color baseColor;
     private Map<String, Text> texts = new HashMap<>();
@@ -47,18 +49,17 @@ public class StatusPanel extends HBox {
             baseColor.deriveColor(0, 1, 1, 0.1),
             new CornerRadii(3, 0, 0, 0, false),
             Insets.EMPTY)));
-        setMaxSize(200, HEIGHT);
-        setPrefSize(200, HEIGHT);
-        setMinSize(200, HEIGHT);
+        setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+        setPrefSize(WIDTH, HEIGHT);
         setSpacing(HEIGHT / 2);
         setPadding(new Insets(0, HEIGHT / 3, 0, HEIGHT / 3));
-
-
     }
 
 
     public void push(String key, String string) {
         texts.computeIfAbsent(key, k -> createText("")).setText(string);
+        getChildren().clear();
+        getChildren().addAll(texts.values());
     }
 
 

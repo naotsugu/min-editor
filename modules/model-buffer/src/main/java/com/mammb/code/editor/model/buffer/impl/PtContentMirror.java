@@ -98,6 +98,10 @@ public class PtContentMirror implements Content {
         return original;
     }
 
+    @Override
+    public Charset charset() {
+        return originalCs;
+    }
 
     private static Path createMirror(Path original) {
         try {

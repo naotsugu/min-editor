@@ -15,11 +15,13 @@
  */
 package com.mammb.code.editor.model.buffer;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 
 /**
  * MetricsRecord.
  * @param path the content path
+ * @param charset the charset
  * @param byteLen the byte length of content
  * @param cpCount the code point count
  * @param chCount the char count
@@ -31,6 +33,7 @@ import java.nio.file.Path;
  */
 public record MetricsRecord(
         Path path,
+        Charset charset,
         long byteLen,
         int cpCount,
         int chCount,
@@ -44,7 +47,7 @@ public record MetricsRecord(
      * @param m the source metrics
      */
     public MetricsRecord(Metrics m) {
-        this(m.path(), m.byteLen(), m.cpCount(), m.chCount(), m.invalidCpCount(), m.crCount(), m.lfCount(), m.modified());
+        this(m.path(), m.charset(), m.byteLen(), m.cpCount(), m.chCount(), m.invalidCpCount(), m.crCount(), m.lfCount(), m.modified());
     }
 
 }

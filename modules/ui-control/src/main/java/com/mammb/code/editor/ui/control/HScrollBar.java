@@ -28,6 +28,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -70,9 +71,8 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
         this.baseColor = baseColor.deriveColor(0, 1, 1, 0.1);
 
-        setHeight(WIDTH);
+        setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_PREF_SIZE);
         setPrefHeight(WIDTH);
-        setMaxHeight(WIDTH);
         setCursor(Cursor.DEFAULT);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
 

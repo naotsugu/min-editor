@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.ui.control.StatusPanel;
 import com.mammb.code.editor.ui.control.HScrollBar;
+import com.mammb.code.editor.ui.control.StatusPanel;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import com.mammb.code.editor.ui.pane.action.FileAction;
 import com.mammb.code.editor.ui.pane.action.ImeAction;
@@ -123,9 +123,13 @@ public class EditorPane extends StackPane {
 
         initHandler();
 
-//        statusPanel = new StatusPanel(Color.web(context.preference().fgColor()));
-//        StackPane.setAlignment(statusPanel, Pos.BOTTOM_RIGHT);
-//        getChildren().add(statusPanel);
+        statusPanel = new StatusPanel(Color.web(context.preference().fgColor()));
+        StackPane.setAlignment(statusPanel, Pos.BOTTOM_RIGHT);
+        getChildren().add(statusPanel);
+        StackPane.setMargin(vScrollBar, new Insets(0, 0, StatusPanel.HEIGHT, 0));
+        StackPane.setMargin(hScrollBar, new Insets(0, StatusPanel.WIDTH, 0, 0));
+        statusPanel.push("lineEnding", model.metrics().lineEnding().toString());
+        statusPanel.push("charset", model.metrics().charset().toString());
 
     }
 
@@ -319,6 +323,7 @@ public class EditorPane extends StackPane {
             canvas.setWidth(canvasWidth);
             canvas.setHeight(canvasHeight);
             model.layoutBounds(canvasWidth, canvasHeight);
+
             model.draw(gc);
         }
     }

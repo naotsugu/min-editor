@@ -28,6 +28,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -72,9 +73,8 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
         backGround = baseColor.deriveColor(0, 1, 1, 0.1);
 
-        setWidth(WIDTH);
+        setMaxSize(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE);
         setPrefWidth(WIDTH);
-        setMaxWidth(WIDTH);
         setCursor(Cursor.DEFAULT);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
 
