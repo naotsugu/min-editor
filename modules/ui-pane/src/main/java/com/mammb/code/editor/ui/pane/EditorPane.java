@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.ui.control.FloatPanel;
+import com.mammb.code.editor.ui.control.StatusPanel;
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import com.mammb.code.editor.ui.pane.action.FileAction;
@@ -77,6 +77,7 @@ public class EditorPane extends StackPane {
     /** The margin. */
     private double margin = 5.5;
 
+    private StatusPanel statusPanel;
 
     /**
      * Constructor.
@@ -122,7 +123,9 @@ public class EditorPane extends StackPane {
 
         initHandler();
 
-        getChildren().add(new FloatPanel(Color.web(context.preference().fgColor())));
+//        statusPanel = new StatusPanel(Color.web(context.preference().fgColor()));
+//        StackPane.setAlignment(statusPanel, Pos.BOTTOM_RIGHT);
+//        getChildren().add(statusPanel);
 
     }
 
@@ -148,6 +151,7 @@ public class EditorPane extends StackPane {
 
         vScrollBar.setOnScrolled(this::handleVScrolled);
         hScrollBar.setOnScrolled(this::handleHScrolled);
+
     }
 
 
