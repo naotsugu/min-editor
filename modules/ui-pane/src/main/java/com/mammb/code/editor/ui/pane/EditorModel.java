@@ -34,6 +34,7 @@ import com.mammb.code.editor.ui.pane.impl.LayoutLine;
 import com.mammb.code.editor.ui.pane.impl.PlainScreenText;
 import com.mammb.code.editor.ui.pane.impl.SelectBehaviors;
 import com.mammb.code.editor.ui.pane.impl.SelectionImpl;
+import com.mammb.code.editor.ui.pane.impl.StateChangeImpl;
 import com.mammb.code.editor.ui.pane.impl.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.Canvas;
@@ -73,6 +74,8 @@ public class EditorModel {
     private ScrollBar<Integer> vScroll;
     /** The horizontal scroll. */
     private ScrollBar<Double> hScroll;
+    /** The state change. */
+    private StateChangeImpl stateChange;
     /** The screen width. */
     private double width;
     /** The screen height. */
@@ -81,7 +84,6 @@ public class EditorModel {
     private ScreenText texts;
     /** The max width. */
     private double maxWidth = 0;
-
 
     /**
      * Constructor.
@@ -108,10 +110,10 @@ public class EditorModel {
         this.caret = new CaretImpl(this::layoutLine);
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
+        this.stateChange = new StateChangeImpl();
         this.width = width;
         this.height = height;
         this.maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
-
         setScroll(vScroll, hScroll);
     }
 
@@ -192,6 +194,7 @@ public class EditorModel {
             caret.markDirty();
             draw(gc);
         }
+        stateChange.push(metrics());
     }
 
     private void draw(GraphicsContext gc, LayoutLine layoutLine) {
@@ -286,6 +289,11 @@ public class EditorModel {
      */
     public Metrics metrics() {
         return buffer.metrics();
+    }
+
+
+    public StateChange stateChange() {
+        return stateChange;
     }
 
 

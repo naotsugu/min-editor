@@ -128,8 +128,7 @@ public class EditorPane extends StackPane {
         getChildren().add(statusPanel);
         StackPane.setMargin(vScrollBar, new Insets(0, 0, StatusPanel.HEIGHT, 0));
         StackPane.setMargin(hScrollBar, new Insets(0, StatusPanel.WIDTH, 0, 0));
-        statusPanel.push("lineEnding", model.metrics().lineEnding().toString());
-        statusPanel.push("charset", model.metrics().charset().toString());
+        initModelChanged();
 
     }
 
@@ -156,6 +155,11 @@ public class EditorPane extends StackPane {
         vScrollBar.setOnScrolled(this::handleVScrolled);
         hScrollBar.setOnScrolled(this::handleHScrolled);
 
+    }
+
+    private void initModelChanged() {
+        model.stateChange().charset(cs -> statusPanel.push("charset", cs.toString()));
+        model.stateChange().lineEnding(le -> statusPanel.push("lineEnding", le.toString()));
     }
 
 
@@ -391,6 +395,7 @@ public class EditorPane extends StackPane {
      */
     private void handleModelCreated(WorkerStateEvent e) {
         model = (EditorModel) e.getSource().getValue();
+        initModelChanged();
         model.draw(gc);
     }
 
