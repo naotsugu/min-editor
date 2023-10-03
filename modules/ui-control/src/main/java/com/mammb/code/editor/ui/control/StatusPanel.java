@@ -20,7 +20,9 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -70,7 +72,9 @@ public class StatusPanel extends HBox {
         var text = new Text();
         text.setFill(baseColor);
         text.setFont(new Font(HEIGHT * 0.75));
-        getChildren().add(text);
+        var pane = new StackPane(text);
+        HBox.setHgrow(pane, Priority.ALWAYS);
+        getChildren().add(pane);
         return text;
     }
 

@@ -9,5 +9,5 @@ repositories {
 
 javafx {
     version = "20.0.2"
-    modules("javafx.graphics")
+    modules("javafx.controls")
 }
