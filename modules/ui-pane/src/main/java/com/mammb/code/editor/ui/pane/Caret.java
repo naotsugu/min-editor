@@ -66,10 +66,10 @@ public interface Caret {
     void down();
 
     /**
-     * Get the offsetPoint at caret.
-     * @return the offsetPoint at caret
+     * Get the point at caret.
+     * @return the point at caret
      */
-    OffsetPoint offsetPoint();
+    CaretPoint caretPoint();
 
     /**
      * Get the char offset.
@@ -131,4 +131,5 @@ public interface Caret {
      */
     LayoutLine layoutLine();
 
+    record CaretPoint(OffsetPoint head, OffsetPoint current) {}
 }

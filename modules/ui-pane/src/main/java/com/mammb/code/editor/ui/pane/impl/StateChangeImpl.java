@@ -18,7 +18,9 @@ package com.mammb.code.editor.ui.pane.impl;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.MetricsRecord;
 import com.mammb.code.editor.model.text.LineEnding;
+import com.mammb.code.editor.ui.pane.Caret;
 import com.mammb.code.editor.ui.pane.StateChange;
+
 import java.nio.charset.Charset;
 import java.util.function.Consumer;
 
@@ -28,28 +30,48 @@ import java.util.function.Consumer;
  */
 public class StateChangeImpl implements StateChange {
 
-    private Metrics prev;
+    private Metrics prevMetrics;
+    private Caret.CaretPoint prevCaretPoint;
     private Consumer<LineEnding> lineEndingHandler;
     private Consumer<Charset> charsetHandler;
+    private Consumer<Caret.CaretPoint> caretPointHandler;
+
+    public void push(Metrics metrics, Caret.CaretPoint caretPoint) {
+        push(metrics);
+        push(caretPoint);
+    }
 
     public void push(Metrics metrics) {
-        if (prev == null || prev.lineEnding() != metrics.lineEnding()) {
+        if (prevMetrics == null || prevMetrics.lineEnding() != metrics.lineEnding()) {
             lineEndingHandler.accept(metrics.lineEnding());
         }
-        if (prev == null || !prev.path().equals(metrics.path())) {
+        if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
+
             charsetHandler.accept(metrics.charset());
         }
-        prev = new MetricsRecord(metrics);
+        prevMetrics = new MetricsRecord(metrics);
+    }
+
+    public void push(Caret.CaretPoint caretPoint) {
+        if (prevCaretPoint == null || !prevCaretPoint.equals(caretPoint)) {
+            caretPointHandler.accept(caretPoint);
+        }
+        prevCaretPoint = caretPoint;
     }
 
     @Override
-    public void lineEnding(Consumer<LineEnding> handler) {
+    public void lineEndingListener(Consumer<LineEnding> handler) {
         this.lineEndingHandler = handler;
     }
 
     @Override
-    public void charset(Consumer<Charset> handler) {
+    public void charsetListener(Consumer<Charset> handler) {
         this.charsetHandler = handler;
+    }
+
+    @Override
+    public void caretPointListener(Consumer<Caret.CaretPoint> handler) {
+        this.caretPointHandler = handler;
     }
 
 }

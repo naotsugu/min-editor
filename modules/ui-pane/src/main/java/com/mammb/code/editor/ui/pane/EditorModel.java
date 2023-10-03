@@ -194,7 +194,7 @@ public class EditorModel {
             caret.markDirty();
             draw(gc);
         }
-        stateChange.push(metrics());
+        stateChange.push(metrics(), caret.caretPoint());
     }
 
     private void draw(GraphicsContext gc, LayoutLine layoutLine) {
@@ -323,7 +323,7 @@ public class EditorModel {
     public Rect imeOn(GraphicsContext gc) {
         if (ime.enabled()) new Rect(caret.x() + textLeft(), caret.y(), caret.width(), caret.height());
         vScrollToCaret();
-        ime.on(caret.offsetPoint());
+        ime.on(caret.caretPoint().current());
         draw(gc, caret.layoutLine());
         return new Rect(caret.x() + textLeft(), caret.y(), caret.width(), caret.height());
     }
@@ -391,7 +391,7 @@ public class EditorModel {
     // -- select behavior -----------------------------------------------------
     public void selectOn() {
         if (!selection.started()) {
-            selection.start(caret.offsetPoint());
+            selection.start(caret.caretPoint().current());
         }
     }
     public void selectOff() {
@@ -399,7 +399,7 @@ public class EditorModel {
     }
     public void selectTo() {
         if (selection.started()) {
-            selection.to(caret.offsetPoint());
+            selection.to(caret.caretPoint().current());
         }
     }
     public void selectAll() {
@@ -480,7 +480,7 @@ public class EditorModel {
     // -- mouse behavior ------------------------------------------------------
     public void click(double x, double y) {
         if (selection.isDragging()) {
-            selection.to(caret.offsetPoint());
+            selection.to(caret.caretPoint().current());
             selection.endDragging();
             return;
         }
@@ -499,9 +499,9 @@ public class EditorModel {
     public void dragged(double x, double y) {
         caret.at(texts.at(x - textLeft(), y), true);
         if (selection.isDragging()) {
-            selection.to(caret.offsetPoint());
+            selection.to(caret.caretPoint().current());
         } else {
-            selection.startDragging(caret.offsetPoint());
+            selection.startDragging(caret.caretPoint().current());
         }
     }
 
@@ -519,7 +519,7 @@ public class EditorModel {
             return;
         }
         vScrollToCaret();
-        OffsetPoint caretPoint = caret.offsetPoint();
+        OffsetPoint caretPoint = caret.caretPoint().current();
         buffer.push(Edit.insert(caretPoint, value));
         texts.markDirty();
         caret.markDirty();
@@ -543,7 +543,7 @@ public class EditorModel {
             selectionDelete();
             return;
         }
-        OffsetPoint caretPoint = caret.offsetPoint();
+        OffsetPoint caretPoint = caret.caretPoint().current();
         LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
         if (layoutLine == null) return;
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
@@ -561,7 +561,7 @@ public class EditorModel {
             return;
         }
         if (caret.offset() == 0) return;
-        OffsetPoint caretPoint = caret.offsetPoint();
+        OffsetPoint caretPoint = caret.caretPoint().current();
         moveCaretLeft();
         LayoutLine layoutLine = texts.layoutLine(caret.offset());
         if (layoutLine == null) return;

@@ -158,8 +158,9 @@ public class EditorPane extends StackPane {
     }
 
     private void initModelChanged() {
-        model.stateChange().charset(cs -> statusPanel.push("charset", cs.toString()));
-        model.stateChange().lineEnding(le -> statusPanel.push("lineEnding", le.toString()));
+        model.stateChange().caretPointListener(c -> statusPanel.push("caret", (c.current().row() + 1) + ":" + c.current().offset()));
+        model.stateChange().lineEndingListener(c -> statusPanel.push("lineEnding", c.toString()));
+        model.stateChange().charsetListener(c -> statusPanel.push("charset", c.toString()));
     }
 
 

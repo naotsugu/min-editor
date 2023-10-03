@@ -35,7 +35,7 @@ import java.util.Map;
 public class StatusPanel extends HBox {
 
     public static final double HEIGHT = 15;
-    public static final double WIDTH = 200;
+    public static final double WIDTH = 150;
 
     private Color baseColor;
     private Map<String, Text> texts = new HashMap<>();
@@ -51,7 +51,7 @@ public class StatusPanel extends HBox {
             Insets.EMPTY)));
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
         setPrefSize(WIDTH, HEIGHT);
-        setSpacing(HEIGHT / 2);
+        setSpacing(HEIGHT);
         setPadding(new Insets(0, HEIGHT / 3, 0, HEIGHT / 3));
     }
 

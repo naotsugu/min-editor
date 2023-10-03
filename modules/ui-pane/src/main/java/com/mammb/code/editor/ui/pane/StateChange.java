@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.model.text.LineEnding;
+
 import java.nio.charset.Charset;
 import java.util.function.Consumer;
 
@@ -25,7 +26,9 @@ import java.util.function.Consumer;
  */
 public interface StateChange {
 
-    void lineEnding(Consumer<LineEnding> handler);
-    void charset(Consumer<Charset> handler);
+    void lineEndingListener(Consumer<LineEnding> handler);
+    void charsetListener(Consumer<Charset> handler);
+    void caretPointListener(Consumer<Caret.CaretPoint> handler);
+
 
 }
