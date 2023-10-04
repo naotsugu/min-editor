@@ -14,4 +14,5 @@ dependencies {
     implementation(project(":syntax"))
     implementation(project(":ui-control"))
     implementation(project(":ui-prefs"))
+    implementation(project(":ui-model"))
 }

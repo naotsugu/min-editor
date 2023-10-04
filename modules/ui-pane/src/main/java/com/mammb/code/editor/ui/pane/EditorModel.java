@@ -26,6 +26,10 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.control.ScrollBar;
+import com.mammb.code.editor.ui.model.EditorUiModel;
+import com.mammb.code.editor.ui.model.ImeRun;
+import com.mammb.code.editor.ui.model.Rect;
+import com.mammb.code.editor.ui.model.StateChange;
 import com.mammb.code.editor.ui.pane.impl.CaretImpl;
 import com.mammb.code.editor.ui.pane.impl.Clipboard;
 import com.mammb.code.editor.ui.pane.impl.Draws;
@@ -53,7 +57,7 @@ import java.util.stream.Collectors;
  * EditorModel.
  * @author Naotsugu Kobayashi
  */
-public class EditorModel {
+public class EditorModel implements EditorUiModel {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(EditorModel.class.getName());
@@ -125,13 +129,13 @@ public class EditorModel {
      * @param height the screen height
      * @return a new EditorModel
      */
-    public static EditorModel of(Context context, double width, double height) {
+    public static EditorModel of(Context context, double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
         return new EditorModel(
             context,
             TextBuffer.editBuffer(null, screenRowSize(height, context)),
             width, height,
             StylingTranslate.passThrough(),
-            ScrollBar.vEmpty(), ScrollBar.hEmpty());
+            vScroll, hScroll);
     }
 
 
@@ -140,13 +144,14 @@ public class EditorModel {
      * @param path the specified path
      * @return a new partially EditorModel
      */
+    @Override
     public EditorModel partiallyWith(Path path) {
         return new EditorModel(
             context,
             TextBuffer.fixed(path, screenRowSize(height, context)),
             width, height,
             StylingTranslate.passThrough(),
-            ScrollBar.vEmpty(), ScrollBar.hEmpty());
+            vScroll, hScroll);
     }
 
 
@@ -155,6 +160,7 @@ public class EditorModel {
      * @param path the specified path
      * @return a new EditorModel
      */
+    @Override
     public EditorModel with(Path path) {
         return new EditorModel(
             context,
@@ -165,10 +171,7 @@ public class EditorModel {
     }
 
 
-    /**
-     * Draw the screen.
-     * @param gc the GraphicsContext
-     */
+    @Override
     public void draw(GraphicsContext gc) {
         Canvas canvas = gc.getCanvas();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -194,7 +197,7 @@ public class EditorModel {
             caret.markDirty();
             draw(gc);
         }
-        stateChange.push(metrics(), caret.caretPoint());
+        stateChange.push(metrics(), caret);
     }
 
     private void draw(GraphicsContext gc, LayoutLine layoutLine) {
@@ -254,10 +257,7 @@ public class EditorModel {
     }
 
 
-    /**
-     * Tick.
-     * @param gc the GraphicsContext
-     */
+    @Override
     public void tick(GraphicsContext gc) {
         if (ime.enabled()) return;
         if (caret.drawn()) {
@@ -267,18 +267,12 @@ public class EditorModel {
         }
     }
 
-    /**
-     * Show caret.
-     * @param gc the GraphicsContext
-     */
+    @Override
     public void showCaret(GraphicsContext gc) {
         if (!ime.enabled()) caret.draw(gc, gutter.width(), hScroll.getValue());
     }
 
-    /**
-     * Hide caret.
-     * @param gc the GraphicsContext
-     */
+    @Override
     public void hideCaret(GraphicsContext gc) {
         if (caret.flipIfDrawn()) draw(gc, caret.layoutLine());
     }
@@ -291,24 +285,24 @@ public class EditorModel {
         return buffer.metrics();
     }
 
-
+    @Override
     public StateChange stateChange() {
         return stateChange;
     }
 
-
+    @Override
     public Rect textAreaRect() {
         return new Rect(gutter.width(), 0, width - gutter.width(), height);
     }
 
-
+    @Override
     public boolean peekSelection(Predicate<Textual> predicate) {
         return (selection.length() > 0) &&
             predicate.test(buffer.subText(selection.min(), selection.length()));
     }
 
 
-    public void setScroll(ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
+    private void setScroll(ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
 
         this.vScroll = vScroll;
         adjustVScroll();
@@ -320,31 +314,37 @@ public class EditorModel {
     }
 
     // -- ime behavior  ----------------------------------------------------
+    @Override
     public Rect imeOn(GraphicsContext gc) {
         if (ime.enabled()) new Rect(caret.x() + textLeft(), caret.y(), caret.width(), caret.height());
         vScrollToCaret();
-        ime.on(caret.caretPoint().current());
+        ime.on(caret.caretPoint());
         draw(gc, caret.layoutLine());
         return new Rect(caret.x() + textLeft(), caret.y(), caret.width(), caret.height());
     }
+    @Override
     public void imeOff() {
         ime.off();
         buffer.flush();
     }
+    @Override
     public void imeCommitted(String text) {
         ime.off();
         input(text);
     }
-    public void imeComposed(List<ImePallet.Run> runs) {
+    @Override
+    public void imeComposed(List<ImeRun> runs) {
         ime.composed(buffer, runs);
         texts.markDirty();
         caret.markDirty();
     }
+    @Override
     public boolean isImeOn() {
         return ime.enabled();
     }
 
     // -- scroll behavior  ----------------------------------------------------
+    @Override
     public void scrollPrev(int n) {
         int size = texts.prev(n);
         caret.markDirty();
@@ -352,6 +352,7 @@ public class EditorModel {
         texts.markDirty();
         vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
+    @Override
     public void scrollNext(int n) {
         int size = texts.next(n);
         caret.markDirty();
@@ -379,6 +380,7 @@ public class EditorModel {
             hScroll.setValue(hScroll.getValue() + delta);
         }
     }
+    @Override
     public void vScrolled(int oldValue, int newValue) {
         int delta = newValue - oldValue;
         if (delta == 0) return;
@@ -389,19 +391,23 @@ public class EditorModel {
     }
 
     // -- select behavior -----------------------------------------------------
+    @Override
     public void selectOn() {
         if (!selection.started()) {
-            selection.start(caret.caretPoint().current());
+            selection.start(caret.caretPoint());
         }
     }
+    @Override
     public void selectOff() {
         selection.clear();
     }
+    @Override
     public void selectTo() {
         if (selection.started()) {
-            selection.to(caret.caretPoint().current());
+            selection.to(caret.caretPoint());
         }
     }
+    @Override
     public void selectAll() {
         var metrics = buffer.metrics();
         SelectBehaviors.select(
@@ -410,6 +416,7 @@ public class EditorModel {
             selection);
     }
     // -- arrow behavior ------------------------------------------------------
+    @Override
     public void moveCaretRight() {
         vScrollToCaret();
         if (caret.y2() + 4 >= height) scrollNext(1);
@@ -417,6 +424,7 @@ public class EditorModel {
         if (caret.y2() > height) scrollNext(1);
         hScrollToCaret();
     }
+    @Override
     public void moveCaretLeft() {
         vScrollToCaret();
         if (texts.head().offset() > 0 && texts.head().offset() == caret.offset()) {
@@ -425,6 +433,7 @@ public class EditorModel {
         caret.left();
         hScrollToCaret();
     }
+    @Override
     public void moveCaretUp() {
         vScrollToCaret();
         if (texts.head().offset() > 0 && caret.offset() < texts.head().tailOffset()) {
@@ -433,6 +442,7 @@ public class EditorModel {
         caret.up();
         hScrollToCaret();
     }
+    @Override
     public void moveCaretDown() {
         vScrollToCaret();
         if (caret.y2() + 4 >= height) scrollNext(1);
@@ -440,6 +450,7 @@ public class EditorModel {
         if (caret.y2() > height) scrollNext(1);
         hScrollToCaret();
     }
+    @Override
     public void moveCaretPageUp() {
         vScrollToCaret();
         double x = caret.x();
@@ -447,6 +458,7 @@ public class EditorModel {
         scrollPrev(texts.capacity() - 1);
         caret.at(texts.at(x, y), false);
     }
+    @Override
     public void moveCaretPageDown() {
         vScrollToCaret();
         double x = caret.x();
@@ -454,6 +466,7 @@ public class EditorModel {
         scrollNext(texts.capacity() - 1);
         caret.at(texts.at(x, y), false);
     }
+    @Override
     public void moveCaretLineHome() {
         vScrollToCaret();
         LayoutLine line = texts.layoutLine(caret.offset());
@@ -469,6 +482,7 @@ public class EditorModel {
         }
         hScrollToCaret();
     }
+    @Override
     public void moveCaretLineEnd() {
         vScrollToCaret();
         LayoutLine line = texts.layoutLine(caret.offset());
@@ -478,9 +492,10 @@ public class EditorModel {
     }
 
     // -- mouse behavior ------------------------------------------------------
+    @Override
     public void click(double x, double y) {
         if (selection.isDragging()) {
-            selection.to(caret.caretPoint().current());
+            selection.to(caret.caretPoint());
             selection.endDragging();
             return;
         }
@@ -488,6 +503,7 @@ public class EditorModel {
         int offset = texts.at(x - textLeft(), y);
         caret.at(offset, true);
     }
+    @Override
     public void clickDouble(double x, double y) {
         int[] offsets = texts.atAroundWord(x - textLeft(), y);
         if (offsets.length == 2) {
@@ -496,16 +512,18 @@ public class EditorModel {
             caret.at(offsets[0], true);
         }
     }
+    @Override
     public void dragged(double x, double y) {
         caret.at(texts.at(x - textLeft(), y), true);
         if (selection.isDragging()) {
-            selection.to(caret.caretPoint().current());
+            selection.to(caret.caretPoint());
         } else {
-            selection.startDragging(caret.caretPoint().current());
+            selection.startDragging(caret.caretPoint());
         }
     }
 
     // -- edit behavior -------------------------------------------------------
+    @Override
     public void input(String input) {
 
         if (input == null || input.isEmpty() || buffer.readOnly()) {
@@ -519,7 +537,7 @@ public class EditorModel {
             return;
         }
         vScrollToCaret();
-        OffsetPoint caretPoint = caret.caretPoint().current();
+        OffsetPoint caretPoint = caret.caretPoint();
         buffer.push(Edit.insert(caretPoint, value));
         texts.markDirty();
         caret.markDirty();
@@ -534,6 +552,7 @@ public class EditorModel {
         }
     }
 
+    @Override
     public void delete() {
         vScrollToCaret();
         if (buffer.readOnly()) {
@@ -543,7 +562,7 @@ public class EditorModel {
             selectionDelete();
             return;
         }
-        OffsetPoint caretPoint = caret.caretPoint().current();
+        OffsetPoint caretPoint = caret.caretPoint();
         LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
         if (layoutLine == null) return;
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
@@ -551,6 +570,8 @@ public class EditorModel {
         caret.markDirty();
         adjustVScroll();
     }
+
+    @Override
     public void backspace() {
         vScrollToCaret();
         if (buffer.readOnly()) {
@@ -561,7 +582,7 @@ public class EditorModel {
             return;
         }
         if (caret.offset() == 0) return;
-        OffsetPoint caretPoint = caret.caretPoint().current();
+        OffsetPoint caretPoint = caret.caretPoint();
         moveCaretLeft();
         LayoutLine layoutLine = texts.layoutLine(caret.offset());
         if (layoutLine == null) return;
@@ -570,6 +591,7 @@ public class EditorModel {
         caret.markDirty();
         adjustVScroll();
     }
+
     private void selectionReplace(String string) {
         vScrollToCaret();
         if (buffer.readOnly()) {
@@ -605,6 +627,7 @@ public class EditorModel {
             hScrollToCaret();
         }
     }
+    @Override
     public void undo() {
         selection.clear();
         Edit edit = buffer.undo();
@@ -615,6 +638,7 @@ public class EditorModel {
         vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
         hScrollToCaret();
     }
+    @Override
     public void redo() {
         selection.clear();
         Edit edit = buffer.redo();
@@ -626,6 +650,7 @@ public class EditorModel {
         hScrollToCaret();
     }
 
+    @Override
     public void indent() {
         if (buffer.readOnly()) {
             return;
@@ -636,6 +661,7 @@ public class EditorModel {
             .collect(Collectors.joining()));
     }
 
+    @Override
     public void unindent() {
         if (buffer.readOnly()) {
             return;
@@ -653,23 +679,17 @@ public class EditorModel {
 
     // <editor-fold defaultstate="collapsed" desc="clipboard behavior">
 
-    /**
-     * Paste the text from the clipboard.
-     */
+    @Override
     public void pasteFromClipboard() {
         input(Clipboard.get());
     }
 
-    /**
-     * Copy the selection text to the clipboard.
-     */
+    @Override
     public void copyToClipboard() {
         copyToClipboard(false);
     }
 
-    /**
-     * Cut the selection text to the clipboard.
-     */
+    @Override
     public void cutToClipboard() {
         copyToClipboard(true);
     }
@@ -711,9 +731,20 @@ public class EditorModel {
         buffer.saveAs(path);
     }
 
+    @Override
+    public Path path() {
+        return buffer.metrics().path();
+    }
+
+    @Override
+    public boolean modified() {
+        return buffer.metrics().modified();
+    }
+
     // </editor-fold>
 
     // -- layout behavior -----------------------------------------------------
+    @Override
     public void layoutBounds(double width, double height) {
         this.width = width;
         this.height = height;
@@ -728,6 +759,7 @@ public class EditorModel {
     }
 
     // -- conf behavior -------------------------------------------------------
+    @Override
     public void toggleWrap() {
         if (texts instanceof PlainScreenText linear)  {
             texts = linear.asWrapped(width - gutter.width());

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane;
+package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.text.LineEnding;
+import com.mammb.code.editor.model.text.OffsetPoint;
 
 import java.nio.charset.Charset;
 import java.util.function.Consumer;
@@ -28,7 +29,7 @@ public interface StateChange {
 
     void lineEndingListener(Consumer<LineEnding> handler);
     void charsetListener(Consumer<Charset> handler);
-    void caretPointListener(Consumer<Caret.CaretPoint> handler);
+    void caretPointListener(Consumer<OffsetPoint> handler);
 
 
 }

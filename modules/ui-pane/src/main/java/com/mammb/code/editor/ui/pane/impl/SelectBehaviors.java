@@ -59,9 +59,9 @@ public class SelectBehaviors {
      */
     public static void select(int offset1, int offset2, Caret caret, Selection selection) {
         caret.at(offset1, true);
-        selection.start(caret.caretPoint().current());
+        selection.start(caret.caretPoint());
         caret.at(offset2, true);
-        selection.to(caret.caretPoint().current());
+        selection.to(caret.caretPoint());
     }
 
     /**

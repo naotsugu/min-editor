@@ -19,6 +19,7 @@ import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.ui.model.ImeRun;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.List;
@@ -35,24 +36,8 @@ public interface ImePallet {
 
     boolean enabled();
 
-    void composed(TextBuffer<Textual> buffer, List<Run> runs);
+    void composed(TextBuffer<Textual> buffer, List<ImeRun> runs);
 
     void drawCompose(GraphicsContext gc, TextRun run, double top, double height, double left);
 
-    /** The Ime run. */
-    record Run(int offset, String text, RunType type) {
-        public int length() { return text.length(); }
-    }
-
-    /** The RunType. */
-    enum RunType {
-        /** The selected converted input method text. */
-        SELECTED_CONVERTED,
-        /** The unselected converted input method text. */
-        UNSELECTED_CONVERTED,
-        /** The selected raw input method text. */
-        SELECTED_RAW,
-        /** The unselected raw input method text. */
-        UNSELECTED_RAW,
-    }
 }

@@ -15,13 +15,14 @@
  */
 package com.mammb.code.editor.ui.pane.action;
 
-import com.mammb.code.editor.ui.pane.EditorModel;
-import com.mammb.code.editor.ui.pane.ImePallet;
+import com.mammb.code.editor.ui.model.EditorUiModel;
+import com.mammb.code.editor.ui.model.ImeRun;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.InputMethodRequests;
 import javafx.scene.layout.Pane;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -38,7 +39,7 @@ public class ImeAction {
     private final GraphicsContext gc;
 
     /** The editor model. */
-    private final EditorModel model;
+    private final EditorUiModel model;
 
 
     /**
@@ -46,7 +47,7 @@ public class ImeAction {
      * @param gc the graphics context
      * @param model the editor model
      */
-    private ImeAction(GraphicsContext gc, EditorModel model) {
+    private ImeAction(GraphicsContext gc, EditorUiModel model) {
         this.gc = Objects.requireNonNull(gc);
         this.model = Objects.requireNonNull(model);
     }
@@ -58,7 +59,7 @@ public class ImeAction {
      * @param model the editor model
      * @return ImeBehavior
      */
-    public static ImeAction of(GraphicsContext gc, EditorModel model) {
+    public static ImeAction of(GraphicsContext gc, EditorUiModel model) {
         return new ImeAction(gc, model);
     }
 
@@ -78,13 +79,13 @@ public class ImeAction {
                 model.imeOn(gc);
             }
 
-            var runs = new ArrayList<ImePallet.Run>();
+            var runs = new ArrayList<ImeRun>();
             int offset = 0;
             for (var run : e.getComposed()) {
-                var r = new ImePallet.Run(
+                var r = new ImeRun(
                     offset,
                     run.getText(),
-                    ImePallet.RunType.valueOf(run.getHighlight().name()));
+                    ImeRun.RunType.valueOf(run.getHighlight().name()));
                 runs.add(r);
                 offset += r.length();
             }

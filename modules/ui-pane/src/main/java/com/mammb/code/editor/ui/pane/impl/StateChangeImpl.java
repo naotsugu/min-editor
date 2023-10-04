@@ -18,8 +18,9 @@ package com.mammb.code.editor.ui.pane.impl;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.MetricsRecord;
 import com.mammb.code.editor.model.text.LineEnding;
+import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.ui.model.StateChange;
 import com.mammb.code.editor.ui.pane.Caret;
-import com.mammb.code.editor.ui.pane.StateChange;
 
 import java.nio.charset.Charset;
 import java.util.function.Consumer;
@@ -31,14 +32,14 @@ import java.util.function.Consumer;
 public class StateChangeImpl implements StateChange {
 
     private Metrics prevMetrics;
-    private Caret.CaretPoint prevCaretPoint;
+    private OffsetPoint prevCaretPoint;
     private Consumer<LineEnding> lineEndingHandler;
     private Consumer<Charset> charsetHandler;
-    private Consumer<Caret.CaretPoint> caretPointHandler;
+    private Consumer<OffsetPoint> caretPointHandler;
 
-    public void push(Metrics metrics, Caret.CaretPoint caretPoint) {
+    public void push(Metrics metrics, Caret caret) {
         push(metrics);
-        push(caretPoint);
+        push(caret);
     }
 
     public void push(Metrics metrics) {
@@ -52,7 +53,8 @@ public class StateChangeImpl implements StateChange {
         prevMetrics = new MetricsRecord(metrics);
     }
 
-    public void push(Caret.CaretPoint caretPoint) {
+    public void push(Caret caret) {
+        OffsetPoint caretPoint = caret.caretPoint();
         if (prevCaretPoint == null || !prevCaretPoint.equals(caretPoint)) {
             caretPointHandler.accept(caretPoint);
         }
@@ -70,7 +72,7 @@ public class StateChangeImpl implements StateChange {
     }
 
     @Override
-    public void caretPointListener(Consumer<Caret.CaretPoint> handler) {
+    public void caretPointListener(Consumer<OffsetPoint> handler) {
         this.caretPointHandler = handler;
     }
 

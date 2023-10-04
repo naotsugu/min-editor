@@ -18,13 +18,12 @@ package com.mammb.code.editor.ui.pane.action;
 import com.mammb.code.editor.ui.control.BackgroundRun;
 import com.mammb.code.editor.ui.control.BlockUi;
 import com.mammb.code.editor.ui.control.OverlayDialog;
-import com.mammb.code.editor.ui.pane.EditorModel;
+import com.mammb.code.editor.ui.model.EditorUiModel;
 import com.mammb.code.editor.ui.pane.impl.FileChoosers;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.Pane;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,7 +46,7 @@ public class FileAction {
     private final Pane pane;
 
     /** The editor model. */
-    private final EditorModel model;
+    private final EditorUiModel model;
 
 
     /**
@@ -55,7 +54,7 @@ public class FileAction {
      * @param pane the pane
      * @param model the editor model
      */
-    private FileAction(Pane pane, EditorModel model) {
+    private FileAction(Pane pane, EditorUiModel model) {
         this.pane = Objects.requireNonNull(pane);
         this.model = Objects.requireNonNull(model);
     }
@@ -67,7 +66,7 @@ public class FileAction {
      * @param model the editor model
      * @return FileBehavior
      */
-    public static FileAction of(Pane pane, EditorModel model) {
+    public static FileAction of(Pane pane, EditorUiModel model) {
         return new FileAction(pane, model);
     }
 
@@ -88,7 +87,7 @@ public class FileAction {
      */
     public void open(EventHandler<WorkerStateEvent> handler) {
         confirmIfDirty(() -> {
-            Path current = model.metrics().path();
+            Path current = model.path();
             File file = FileChoosers.fileOpenChoose(pane.getScene().getWindow(), current);
             if (file != null && file.canRead()) {
                 updateModel(file.toPath(), handler);
@@ -102,7 +101,7 @@ public class FileAction {
      * @param handler the model created handler
      */
     public void save(EventHandler<WorkerStateEvent> handler) {
-        if (model.metrics().path() == null) {
+        if (model.path() == null) {
             saveAs(handler);
         } else {
             runAsTask(model::save);
@@ -115,7 +114,7 @@ public class FileAction {
      * @param handler the model created handler
      */
     public void saveAs(EventHandler<WorkerStateEvent> handler) {
-        Path current = model.metrics().path();
+        Path current = model.path();
         File file = FileChoosers.fileSaveChoose(pane.getScene().getWindow(), current);
         if (file != null) {
             Path path = file.toPath();
@@ -130,7 +129,7 @@ public class FileAction {
     }
 
     public void confirmIfDirty(Runnable runnable) {
-        if (model.metrics().modified()) {
+        if (model.modified()) {
             OverlayDialog.confirm(pane,
                 "Are you sure you want to discard your changes?",
                 runnable);
@@ -158,11 +157,11 @@ public class FileAction {
     }
 
 
-    private Task<EditorModel> createModelTask(
-            Supplier<EditorModel> supplier, EventHandler<WorkerStateEvent> handler) {
+    private Task<EditorUiModel> createModelTask(
+            Supplier<EditorUiModel> supplier, EventHandler<WorkerStateEvent> handler) {
 
-        Task<EditorModel> task = new Task<>() {
-            @Override protected EditorModel call() {
+        Task<EditorUiModel> task = new Task<>() {
+            @Override protected EditorUiModel call() {
                 return supplier.get();
             }
         };
@@ -195,7 +194,7 @@ public class FileAction {
 
     private boolean pathChanged(Path path) {
         try {
-            Path org = model.metrics().path();
+            Path org = model.path();
             if (org != null && Files.isSameFile(path, org)) {
                 return false;
             }

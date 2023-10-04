@@ -17,7 +17,7 @@ package com.mammb.code.editor.ui.pane.impl;
 
 import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextRun;
-import com.mammb.code.editor.ui.pane.Rect;
+import com.mammb.code.editor.ui.model.Rect;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

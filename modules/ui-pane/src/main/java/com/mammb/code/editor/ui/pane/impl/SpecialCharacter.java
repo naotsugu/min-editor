@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.pane.impl;
 
-import com.mammb.code.editor.ui.pane.Rect;
+import com.mammb.code.editor.ui.model.Rect;
 import javafx.scene.canvas.GraphicsContext;
 
 /**

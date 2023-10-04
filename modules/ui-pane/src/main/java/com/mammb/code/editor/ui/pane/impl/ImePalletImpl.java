@@ -20,6 +20,7 @@ import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.ui.model.ImeRun;
 import com.mammb.code.editor.ui.pane.ImePallet;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -36,7 +37,7 @@ public class ImePalletImpl implements ImePallet {
 
     private OffsetPoint offsetPoint;
 
-    private List<Run> runs = List.of();
+    private List<ImeRun> runs = List.of();
 
     private static final double width = 1.0;
 
@@ -60,7 +61,7 @@ public class ImePalletImpl implements ImePallet {
     }
 
     @Override
-    public void composed(TextBuffer<Textual> buffer, List<Run> runs) {
+    public void composed(TextBuffer<Textual> buffer, List<ImeRun> runs) {
         this.runs = runs;
         buffer.push(Edit.insertFlush(offsetPoint, composedText()));
     }
@@ -68,7 +69,7 @@ public class ImePalletImpl implements ImePallet {
     @Override
     public void drawCompose(GraphicsContext gc, TextRun textRun, double top, double height, double left) {
         double right = -1;
-        for (Run composedRun : runs) {
+        for (ImeRun composedRun : runs) {
             int start = offsetPoint.offset() + composedRun.offset();
             int end = start + composedRun.length();
             if (start < textRun.tailOffset() && textRun.offset() <= end) {
@@ -90,7 +91,7 @@ public class ImePalletImpl implements ImePallet {
     }
 
     private String composedText() {
-        return (runs == null) ? "" : runs.stream().map(Run::text).collect(Collectors.joining());
+        return (runs == null) ? "" : runs.stream().map(ImeRun::text).collect(Collectors.joining());
     }
 
 }

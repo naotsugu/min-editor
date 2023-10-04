@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.pane;
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.StatusPanel;
 import com.mammb.code.editor.ui.control.VScrollBar;
+import com.mammb.code.editor.ui.model.EditorUiModel;
 import com.mammb.code.editor.ui.pane.action.FileAction;
 import com.mammb.code.editor.ui.pane.action.ImeAction;
 import com.mammb.code.editor.ui.pane.impl.DragDrops;
@@ -68,7 +69,7 @@ public class EditorPane extends StackPane {
     /** The graphics context. */
     private GraphicsContext gc;
     /** The editor model. */
-    private EditorModel model;
+    private EditorUiModel model;
     /** The vertical scroll bar for line scroll. */
     private VScrollBar vScrollBar;
     /** The horizontal scroll bar for line scroll. */
@@ -96,8 +97,6 @@ public class EditorPane extends StackPane {
         double canvasWidth = context.regionWidth() - margin;
         double canvasHeight = context.regionHeight() - margin;
 
-        model = EditorModel.of(context, canvasWidth, canvasHeight);
-
         canvas = new Canvas(canvasWidth, canvasHeight);
         canvas.setFocusTraversable(true);
         canvas.setAccessibleRole(AccessibleRole.TEXT_AREA);
@@ -105,15 +104,16 @@ public class EditorPane extends StackPane {
         canvas.setLayoutY(margin);
         getChildren().add(canvas);
 
+        gc = canvas.getGraphicsContext2D();
+        gc.setLineCap(StrokeLineCap.BUTT);
+
         vScrollBar = new VScrollBar(Color.web(context.preference().fgColor()));
         StackPane.setAlignment(vScrollBar, Pos.CENTER_RIGHT);
         hScrollBar = new HScrollBar(Color.web(context.preference().fgColor()));
         StackPane.setAlignment(hScrollBar, Pos.BOTTOM_LEFT);
         getChildren().addAll(vScrollBar, hScrollBar);
-        model.setScroll(vScrollBar, hScrollBar);
 
-        gc = canvas.getGraphicsContext2D();
-        gc.setLineCap(StrokeLineCap.BUTT);
+        model = EditorModel.of(context, canvasWidth, canvasHeight, vScrollBar, hScrollBar);
 
         timeline.getKeyFrames().add(
             new KeyFrame(Duration.millis(500),
@@ -158,7 +158,7 @@ public class EditorPane extends StackPane {
     }
 
     private void initModelChanged() {
-        model.stateChange().caretPointListener(c -> statusPanel.push("caret", (c.current().row() + 1) + ":" + c.current().offset()));
+        model.stateChange().caretPointListener(c -> statusPanel.push("caret", (c.row() + 1) + ":" + c.offset()));
         model.stateChange().lineEndingListener(c -> statusPanel.push("lineEnding", c.toString()));
         model.stateChange().charsetListener(c -> statusPanel.push("charset", c.toString()));
     }
