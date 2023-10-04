@@ -10,7 +10,7 @@ dependencies {
     //constraints {
     //    implementation("org.apache.commons:commons-text:1.10.0")
     //}
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
