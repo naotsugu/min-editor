@@ -15,36 +15,27 @@
  */
 package com.mammb.code.editor.ui.model.behavior;
 
-import javafx.scene.input.DataFormat;
-
-import java.util.Map;
+import com.mammb.code.editor.ui.model.impl.Editor;
 
 /**
- * Clipboard utilities.
+ * ScrollBehavior.
  * @author Naotsugu Kobayashi
  */
-public class Clipboard {
+public class ScrollBehavior {
 
-    /**
-     * Put the text to clipboard.
-     * @param text the text
-     */
-    public static void put(String text) {
-        if (text == null || text.isBlank()) {
-            return;
-        }
-        javafx.scene.input.Clipboard.getSystemClipboard()
-            .setContent(Map.of(DataFormat.PLAIN_TEXT, text));
+    public static void scrollPrev(Editor self, int n) {
+        int size = self.texts().prev(n);
+        self.caret().markDirty();
+        if (size == 0) return;
+        self.texts().markDirty();
+        self.vScroll().setValue(self.texts().head().point().row() + self.texts().head().lineIndex());
     }
 
-
-    /**
-     * Get the text from clipboard.
-     * @return the text (will not be null)
-     */
-    public static String get() {
-        var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
-        return clipboard.hasString() ? clipboard.getString() : "";
+    public static void scrollNext(Editor self, int n) {
+        int size = self.texts().next(n);
+        self.caret().markDirty();
+        if (size == 0) return;
+        self.vScroll().setValue(self.texts().head().point().row() + self.texts().head().lineIndex());
     }
 
 }

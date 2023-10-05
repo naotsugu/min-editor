@@ -115,6 +115,8 @@ public class SelectBehaviors {
         }
     }
 
+    // -- private -------------------------------------------------------------
+
     /**
      * Get the point of the current caret row.
      * @param charOffset the char offset

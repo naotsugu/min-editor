@@ -35,7 +35,8 @@ import com.mammb.code.editor.ui.model.Rect;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.StateHandler;
-import com.mammb.code.editor.ui.model.behavior.Clipboard;
+import com.mammb.code.editor.ui.model.behavior.ClipboardBehavior;
+import com.mammb.code.editor.ui.model.behavior.ScrollBehavior;
 import com.mammb.code.editor.ui.model.behavior.SelectBehaviors;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
@@ -57,7 +58,7 @@ import java.util.stream.Collectors;
  * EditorModel.
  * @author Naotsugu Kobayashi
  */
-public class EditorModelImpl implements EditorModel {
+public class EditorModelImpl implements EditorModel, Editor {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(EditorModelImpl.class.getName());
@@ -346,18 +347,11 @@ public class EditorModelImpl implements EditorModel {
     // -- scroll behavior  ----------------------------------------------------
     @Override
     public void scrollPrev(int n) {
-        int size = texts.prev(n);
-        caret.markDirty();
-        if (size == 0) return;
-        texts.markDirty();
-        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
+        ScrollBehavior.scrollPrev(this, n);
     }
     @Override
     public void scrollNext(int n) {
-        int size = texts.next(n);
-        caret.markDirty();
-        if (size == 0) return;
-        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
+        ScrollBehavior.scrollNext(this, n);
     }
     private void vScrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
@@ -677,56 +671,29 @@ public class EditorModelImpl implements EditorModel {
         selectionReplace(replace.apply(text.text()));
     }
 
-    // <editor-fold defaultstate="collapsed" desc="clipboard behavior">
-
     @Override
     public void pasteFromClipboard() {
-        input(Clipboard.get());
+        ClipboardBehavior.pasteFromClipboard(this);
     }
 
     @Override
     public void copyToClipboard() {
-        copyToClipboard(false);
+        ClipboardBehavior.copyToClipboard(this);
     }
 
     @Override
     public void cutToClipboard() {
-        copyToClipboard(true);
+        ClipboardBehavior.cutToClipboard(this);
     }
-
-    /**
-     * Copy the selection text to the clipboard.
-     * @param cut need cut?
-     */
-    private void copyToClipboard(boolean cut) {
-        if (selection.length() > 0) {
-            Textual text = buffer.subText(selection.min(), selection.length());
-            Clipboard.put(text.text());
-            if (cut && !buffer.readOnly()) {
-                buffer.push(Edit.delete(text.point(), text.text()));
-                selection.clear();
-                caret.at(text.point().offset(), true);
-                texts.markDirty();
-                caret.markDirty();
-            }
-        }
-    }
-
-    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="file behavior">
 
-    /**
-     * Save.
-     */
+    @Override
     public void save() {
         buffer.save();
     }
 
-    /**
-     * Save as.
-     * @param path the path
-     */
+    @Override
     public void saveAs(Path path) {
         buffer.saveAs(path);
     }
@@ -815,5 +782,40 @@ public class EditorModelImpl implements EditorModel {
             hScroll.setVisibleAmount(width - gutter.width());
         }
     }
+
+    // <editor-fold defaultstate="collapsed" desc="editor accessor">
+
+    @Override
+    public Context context() {
+        return context;
+    }
+    @Override
+    public TextBuffer<Textual> buffer() {
+        return buffer;
+    }
+    @Override
+    public Caret caret() {
+        return caret;
+    }
+    @Override
+    public Selection selection() {
+        return selection;
+    }
+    @Override
+    public ScreenText texts() {
+        return texts;
+    }
+
+    @Override
+    public ScrollBar<Integer> vScroll() {
+        return vScroll;
+    }
+
+    @Override
+    public ScrollBar<Double> hScroll() {
+        return hScroll;
+    }
+
+    // </editor-fold>
 
 }
