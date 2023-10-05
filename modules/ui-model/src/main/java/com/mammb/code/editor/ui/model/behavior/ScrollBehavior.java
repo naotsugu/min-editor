@@ -26,16 +26,37 @@ public class ScrollBehavior {
     public static void scrollPrev(Editor self, int n) {
         int size = self.texts().prev(n);
         self.caret().markDirty();
-        if (size == 0) return;
+        if (size == 0) {
+            return;
+        }
         self.texts().markDirty();
         self.vScroll().setValue(self.texts().head().point().row() + self.texts().head().lineIndex());
     }
 
+
     public static void scrollNext(Editor self, int n) {
         int size = self.texts().next(n);
         self.caret().markDirty();
-        if (size == 0) return;
+        if (size == 0) {
+            return;
+        }
         self.vScroll().setValue(self.texts().head().point().row() + self.texts().head().lineIndex());
+    }
+
+
+    public static void scrolled(Editor self, int oldValue, int newValue) {
+        int delta = newValue - oldValue;
+        if (delta == 0) {
+            return;
+        }
+        int size = (delta > 0)
+            ? self.texts().next(delta)
+            : self.texts().prev(Math.abs(delta));
+        if (size == 0) {
+            return;
+        }
+        self.texts().markDirty();
+        self.caret().markDirty();
     }
 
 }

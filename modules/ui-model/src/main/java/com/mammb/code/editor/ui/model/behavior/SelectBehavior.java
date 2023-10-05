@@ -20,6 +20,8 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.ScreenText;
+import com.mammb.code.editor.ui.model.impl.Editor;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -27,7 +29,30 @@ import java.util.Objects;
  * Select behavior collection.
  * @author Naotsugu Kobayashi
  */
-public class SelectBehaviors {
+public class SelectBehavior {
+
+    public static void selectOn(Editor self) {
+        if (!self.selection().started()) {
+            self.selection().start(self.caret().caretPoint());
+        }
+    }
+
+    public static void selectOff(Editor self) {
+        self.selection().clear();
+    }
+
+    public static void selectTo(Editor self) {
+        if (self.selection().started()) {
+            self.selection().to(self.caret().caretPoint());
+        }
+    }
+
+    public static void selectAll(Editor self) {
+        var metrics = self.buffer().metrics();
+        select(OffsetPoint.zero,
+            OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()),
+            self.selection());
+    }
 
     /**
      * Select the specified range.
@@ -91,7 +116,7 @@ public class SelectBehaviors {
      * @param texts the texts
      */
     public static void selectCurrentLine(Caret caret, Selection selection, ScreenText texts) {
-        SelectBehaviors.select(linePointRange(caret.offset(), texts), caret, selection);
+        SelectBehavior.select(linePointRange(caret.offset(), texts), caret, selection);
     }
 
     /**
@@ -103,7 +128,7 @@ public class SelectBehaviors {
     public static void selectCurrentRow(Caret caret, Selection selection, ScreenText texts) {
         if (selection.length() == 0 || selection.min().row() == selection.max().row()) {
             // if not selected or within a row selected, select current row
-            SelectBehaviors.select(rowPointRange(caret.offset(), texts), caret, selection);
+            SelectBehavior.select(rowPointRange(caret.offset(), texts), caret, selection);
         } else {
             // if selected, reselect all rows in the selection
             OffsetPoint start = rowPointRange(selection.min().offset(), texts)[0];
@@ -111,7 +136,7 @@ public class SelectBehaviors {
             OffsetPoint[] range = (selection.startOffset() == selection.min())
                 ? new OffsetPoint[] { start, end }
                 : new OffsetPoint[] { end, start };
-            SelectBehaviors.select(range, caret, selection);
+            SelectBehavior.select(range, caret, selection);
         }
     }
 

@@ -36,8 +36,9 @@ import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.behavior.ClipboardBehavior;
+import com.mammb.code.editor.ui.model.behavior.MouseBehavior;
 import com.mammb.code.editor.ui.model.behavior.ScrollBehavior;
-import com.mammb.code.editor.ui.model.behavior.SelectBehaviors;
+import com.mammb.code.editor.ui.model.behavior.SelectBehavior;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
 import com.mammb.code.editor.ui.model.screen.WrapScreenText;
@@ -353,6 +354,10 @@ public class EditorModelImpl implements EditorModel, Editor {
     public void scrollNext(int n) {
         ScrollBehavior.scrollNext(this, n);
     }
+    @Override
+    public void vScrolled(int oldValue, int newValue) {
+        ScrollBehavior.scrolled(this, oldValue, newValue);
+    }
     private void vScrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
         if (!scrolled) return;
@@ -374,41 +379,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             hScroll.setValue(hScroll.getValue() + delta);
         }
     }
-    @Override
-    public void vScrolled(int oldValue, int newValue) {
-        int delta = newValue - oldValue;
-        if (delta == 0) return;
-        int size = (delta > 0) ? texts.next(delta) : texts.prev(Math.abs(delta));
-        if (size == 0) return;
-        texts.markDirty();
-        caret.markDirty();
-    }
 
-    // -- select behavior -----------------------------------------------------
-    @Override
-    public void selectOn() {
-        if (!selection.started()) {
-            selection.start(caret.caretPoint());
-        }
-    }
-    @Override
-    public void selectOff() {
-        selection.clear();
-    }
-    @Override
-    public void selectTo() {
-        if (selection.started()) {
-            selection.to(caret.caretPoint());
-        }
-    }
-    @Override
-    public void selectAll() {
-        var metrics = buffer.metrics();
-        SelectBehaviors.select(
-            OffsetPoint.zero,
-            OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()),
-            selection);
-    }
     // -- arrow behavior ------------------------------------------------------
     @Override
     public void moveCaretRight() {
@@ -485,36 +456,6 @@ public class EditorModelImpl implements EditorModel, Editor {
         hScrollToCaret();
     }
 
-    // -- mouse behavior ------------------------------------------------------
-    @Override
-    public void click(double x, double y) {
-        if (selection.isDragging()) {
-            selection.to(caret.caretPoint());
-            selection.endDragging();
-            return;
-        }
-        selection.clear();
-        int offset = texts.at(x - textLeft(), y);
-        caret.at(offset, true);
-    }
-    @Override
-    public void clickDouble(double x, double y) {
-        int[] offsets = texts.atAroundWord(x - textLeft(), y);
-        if (offsets.length == 2) {
-            SelectBehaviors.select(offsets, caret, selection);
-        } else {
-            caret.at(offsets[0], true);
-        }
-    }
-    @Override
-    public void dragged(double x, double y) {
-        caret.at(texts.at(x - textLeft(), y), true);
-        if (selection.isDragging()) {
-            selection.to(caret.caretPoint());
-        } else {
-            selection.startDragging(caret.caretPoint());
-        }
-    }
 
     // -- edit behavior -------------------------------------------------------
     @Override
@@ -601,7 +542,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         }
         Textual text = buffer.subText(selection.min(), selection.length());
         buffer.push(Edit.replace(text.point(), text.text(), string));
-        SelectBehaviors.select(text.offset(), text.offset() + string.length(), caret, selection);
+        SelectBehavior.select(text.offset(), text.offset() + string.length(), caret, selection);
         texts.markDirty();
         caret.markDirty();
         adjustVScroll();
@@ -649,7 +590,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         if (buffer.readOnly()) {
             return;
         }
-        SelectBehaviors.selectCurrentRow(caret, selection, texts);
+        SelectBehavior.selectCurrentRow(caret, selection, texts);
         replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
             .collect(Collectors.joining()));
@@ -660,7 +601,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         if (buffer.readOnly()) {
             return;
         }
-        SelectBehaviors.selectCurrentRow(caret, selection, texts);
+        SelectBehavior.selectCurrentRow(caret, selection, texts);
         replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
             .collect(Collectors.joining()));
@@ -671,46 +612,8 @@ public class EditorModelImpl implements EditorModel, Editor {
         selectionReplace(replace.apply(text.text()));
     }
 
-    @Override
-    public void pasteFromClipboard() {
-        ClipboardBehavior.pasteFromClipboard(this);
-    }
-
-    @Override
-    public void copyToClipboard() {
-        ClipboardBehavior.copyToClipboard(this);
-    }
-
-    @Override
-    public void cutToClipboard() {
-        ClipboardBehavior.cutToClipboard(this);
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="file behavior">
-
-    @Override
-    public void save() {
-        buffer.save();
-    }
-
-    @Override
-    public void saveAs(Path path) {
-        buffer.saveAs(path);
-    }
-
-    @Override
-    public Path path() {
-        return buffer.metrics().path();
-    }
-
-    @Override
-    public boolean modified() {
-        return buffer.metrics().modified();
-    }
-
-    // </editor-fold>
-
     // -- layout behavior -----------------------------------------------------
+
     @Override
     public void layoutBounds(double width, double height) {
         this.width = width;
@@ -726,6 +629,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     }
 
     // -- conf behavior -------------------------------------------------------
+
     @Override
     public void toggleWrap() {
         if (texts instanceof PlainScreenText linear)  {
@@ -737,6 +641,70 @@ public class EditorModelImpl implements EditorModel, Editor {
             caret.markDirty();
         }
         setScroll(vScroll, hScroll);
+    }
+
+    // -- mouse behavior ------------------------------------------------------
+    @Override
+    public void click(double x, double y) {
+        MouseBehavior.click(this, x, y);
+    }
+    @Override
+    public void clickDouble(double x, double y) {
+        MouseBehavior.clickDouble(this, x, y);
+    }
+    @Override
+    public void dragged(double x, double y) {
+        MouseBehavior.dragged(this, x, y);
+    }
+
+    // -- select behavior -----------------------------------------------------
+    @Override
+    public void selectOn() {
+        SelectBehavior.selectOn(this);
+    }
+    @Override
+    public void selectOff() {
+        SelectBehavior.selectOff(this);
+    }
+    @Override
+    public void selectTo() {
+        SelectBehavior.selectTo(this);
+    }
+    @Override
+    public void selectAll() {
+        SelectBehavior.selectAll(this);
+    }
+
+    // -- clipboard behavior --------------------------------------------------
+    @Override
+    public void pasteFromClipboard() {
+        ClipboardBehavior.pasteFromClipboard(this);
+    }
+    @Override
+    public void copyToClipboard() {
+        ClipboardBehavior.copyToClipboard(this);
+    }
+    @Override
+    public void cutToClipboard() {
+        ClipboardBehavior.cutToClipboard(this);
+    }
+
+    // -- file behavior -------------------------------------------------------
+    @Override
+    public void save() {
+        buffer.save();
+    }
+    @Override
+    public void saveAs(Path path) {
+        buffer.saveAs(path);
+    }
+    @Override
+    public Path path() {
+        return buffer.metrics().path();
+    }
+    @Override
+    public boolean modified() {
+        return buffer.metrics().modified();
     }
 
     // -- private -------------------------------------------------------------
@@ -805,12 +773,14 @@ public class EditorModelImpl implements EditorModel, Editor {
     public ScreenText texts() {
         return texts;
     }
-
+    @Override
+    public Gutter gutter() {
+        return gutter;
+    }
     @Override
     public ScrollBar<Integer> vScroll() {
         return vScroll;
     }
-
     @Override
     public ScrollBar<Double> hScroll() {
         return hScroll;
