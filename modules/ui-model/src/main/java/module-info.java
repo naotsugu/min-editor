@@ -32,4 +32,5 @@ module code.editor.ui.model {
     requires code.editor.ui.control;
     requires code.editor.ui.prefs;
     exports com.mammb.code.editor.ui.model;
+
 }

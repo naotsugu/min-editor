@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane.impl;
+package com.mammb.code.editor.ui.model.draw;
 
 import com.mammb.code.editor.ui.model.Rect;
 import javafx.scene.canvas.GraphicsContext;

@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane;
+package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
-import com.mammb.code.editor.ui.model.ImeRun;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.List;

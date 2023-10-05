@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane.action;
+package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.control.BackgroundRun;
 import com.mammb.code.editor.ui.control.BlockUi;
 import com.mammb.code.editor.ui.control.OverlayDialog;
-import com.mammb.code.editor.ui.model.EditorUiModel;
-import com.mammb.code.editor.ui.pane.impl.FileChoosers;
+import com.mammb.code.editor.ui.model.EditorModel;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -46,7 +45,7 @@ public class FileAction {
     private final Pane pane;
 
     /** The editor model. */
-    private final EditorUiModel model;
+    private final EditorModel model;
 
 
     /**
@@ -54,7 +53,7 @@ public class FileAction {
      * @param pane the pane
      * @param model the editor model
      */
-    private FileAction(Pane pane, EditorUiModel model) {
+    private FileAction(Pane pane, EditorModel model) {
         this.pane = Objects.requireNonNull(pane);
         this.model = Objects.requireNonNull(model);
     }
@@ -66,7 +65,7 @@ public class FileAction {
      * @param model the editor model
      * @return FileBehavior
      */
-    public static FileAction of(Pane pane, EditorUiModel model) {
+    public static FileAction of(Pane pane, EditorModel model) {
         return new FileAction(pane, model);
     }
 
@@ -157,11 +156,11 @@ public class FileAction {
     }
 
 
-    private Task<EditorUiModel> createModelTask(
-            Supplier<EditorUiModel> supplier, EventHandler<WorkerStateEvent> handler) {
+    private Task<EditorModel> createModelTask(
+            Supplier<EditorModel> supplier, EventHandler<WorkerStateEvent> handler) {
 
-        Task<EditorUiModel> task = new Task<>() {
-            @Override protected EditorUiModel call() {
+        Task<EditorModel> task = new Task<>() {
+            @Override protected EditorModel call() {
                 return supplier.get();
             }
         };

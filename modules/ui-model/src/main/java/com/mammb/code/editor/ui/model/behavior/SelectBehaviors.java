@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane.impl;
+package com.mammb.code.editor.ui.model.behavior;
 
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.ui.pane.Caret;
-import com.mammb.code.editor.ui.pane.Selection;
-import com.mammb.code.editor.ui.pane.ScreenText;
+import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.Selection;
+import com.mammb.code.editor.ui.model.ScreenText;
 import java.util.List;
 import java.util.Objects;
 

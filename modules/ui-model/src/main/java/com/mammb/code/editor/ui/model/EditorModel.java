@@ -16,6 +16,9 @@
 package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.ui.control.ScrollBar;
+import com.mammb.code.editor.ui.model.impl.EditorModelImpl;
+import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.GraphicsContext;
 import java.nio.file.Path;
 import java.util.List;
@@ -25,7 +28,7 @@ import java.util.function.Predicate;
  * EditorModel.
  * @author Naotsugu Kobayashi
  */
-public interface EditorUiModel {
+public interface EditorModel {
 
     /**
      * Draw the screen.
@@ -51,13 +54,6 @@ public interface EditorUiModel {
      */
     void hideCaret(GraphicsContext gc);
 
-    void scrollPrev(int n);
-    void scrollNext(int n);
-
-    void click(double x, double y);
-    void clickDouble(double x, double y);
-    void dragged(double x, double y);
-
     void moveCaretRight();
     void moveCaretLeft();
     void moveCaretUp();
@@ -66,6 +62,13 @@ public interface EditorUiModel {
     void moveCaretPageDown();
     void moveCaretLineHome();
     void moveCaretLineEnd();
+
+    void scrollPrev(int n);
+    void scrollNext(int n);
+
+    void click(double x, double y);
+    void clickDouble(double x, double y);
+    void dragged(double x, double y);
 
     void input(String input);
     void delete();
@@ -118,7 +121,7 @@ public interface EditorUiModel {
     boolean modified();
 
     Rect textAreaRect();
-    StateChange stateChange();
+    StateHandler stateChange();
     void vScrolled(int oldValue, int newValue);
     void toggleWrap();
     void layoutBounds(double width, double height);
@@ -128,13 +131,18 @@ public interface EditorUiModel {
      * @param path the specified path
      * @return a new partially EditorModel
      */
-    EditorUiModel partiallyWith(Path path);
+    EditorModel partiallyWith(Path path);
 
     /**
      * Re-create the model at the specified path.
      * @param path the specified path
      * @return a new EditorModel
      */
-    EditorUiModel with(Path path);
+    EditorModel with(Path path);
+
+
+    static EditorModel of(Context context, double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
+        return EditorModelImpl.of(context, width, height, vScroll, hScroll);
+    }
 
 }

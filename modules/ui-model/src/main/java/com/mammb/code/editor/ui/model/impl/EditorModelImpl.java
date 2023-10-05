@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane;
+package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.buffer.Metrics;
@@ -26,20 +26,20 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.control.ScrollBar;
-import com.mammb.code.editor.ui.model.EditorUiModel;
+import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.ImePallet;
 import com.mammb.code.editor.ui.model.ImeRun;
+import com.mammb.code.editor.ui.model.LayoutLine;
 import com.mammb.code.editor.ui.model.Rect;
-import com.mammb.code.editor.ui.model.StateChange;
-import com.mammb.code.editor.ui.pane.impl.CaretImpl;
-import com.mammb.code.editor.ui.pane.impl.Clipboard;
-import com.mammb.code.editor.ui.pane.impl.Draws;
-import com.mammb.code.editor.ui.pane.impl.ImePalletImpl;
-import com.mammb.code.editor.ui.pane.impl.LayoutLine;
-import com.mammb.code.editor.ui.pane.impl.PlainScreenText;
-import com.mammb.code.editor.ui.pane.impl.SelectBehaviors;
-import com.mammb.code.editor.ui.pane.impl.SelectionImpl;
-import com.mammb.code.editor.ui.pane.impl.StateChangeImpl;
-import com.mammb.code.editor.ui.pane.impl.WrapScreenText;
+import com.mammb.code.editor.ui.model.ScreenText;
+import com.mammb.code.editor.ui.model.Selection;
+import com.mammb.code.editor.ui.model.StateHandler;
+import com.mammb.code.editor.ui.model.behavior.Clipboard;
+import com.mammb.code.editor.ui.model.behavior.SelectBehaviors;
+import com.mammb.code.editor.ui.model.draw.Draws;
+import com.mammb.code.editor.ui.model.screen.PlainScreenText;
+import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -57,10 +57,10 @@ import java.util.stream.Collectors;
  * EditorModel.
  * @author Naotsugu Kobayashi
  */
-public class EditorModel implements EditorUiModel {
+public class EditorModelImpl implements EditorModel {
 
     /** logger. */
-    private static final System.Logger log = System.getLogger(EditorModel.class.getName());
+    private static final System.Logger log = System.getLogger(EditorModelImpl.class.getName());
 
     /** The Context. */
     private final Context context;
@@ -79,7 +79,7 @@ public class EditorModel implements EditorUiModel {
     /** The horizontal scroll. */
     private ScrollBar<Double> hScroll;
     /** The state change. */
-    private StateChangeImpl stateChange;
+    private StateChange stateChange;
     /** The screen width. */
     private double width;
     /** The screen height. */
@@ -99,7 +99,7 @@ public class EditorModel implements EditorUiModel {
      * @param vScroll the vertical scroll
      * @param hScroll the horizontal scroll
      */
-    private EditorModel(
+    private EditorModelImpl(
             Context context,
             TextBuffer<Textual> buffer,
             double width, double height,
@@ -110,7 +110,7 @@ public class EditorModel implements EditorUiModel {
         this.context = context;
         this.buffer = buffer;
         this.texts = new PlainScreenText(context, buffer, styling);
-        this.gutter = new Gutter(context);
+        this.gutter = new GutterImpl(context);
         this.caret = new CaretImpl(this::layoutLine);
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
@@ -129,8 +129,8 @@ public class EditorModel implements EditorUiModel {
      * @param height the screen height
      * @return a new EditorModel
      */
-    public static EditorModel of(Context context, double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
-        return new EditorModel(
+    public static EditorModelImpl of(Context context, double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
+        return new EditorModelImpl(
             context,
             TextBuffer.editBuffer(null, screenRowSize(height, context)),
             width, height,
@@ -145,8 +145,8 @@ public class EditorModel implements EditorUiModel {
      * @return a new partially EditorModel
      */
     @Override
-    public EditorModel partiallyWith(Path path) {
-        return new EditorModel(
+    public EditorModelImpl partiallyWith(Path path) {
+        return new EditorModelImpl(
             context,
             TextBuffer.fixed(path, screenRowSize(height, context)),
             width, height,
@@ -161,8 +161,8 @@ public class EditorModel implements EditorUiModel {
      * @return a new EditorModel
      */
     @Override
-    public EditorModel with(Path path) {
-        return new EditorModel(
+    public EditorModelImpl with(Path path) {
+        return new EditorModelImpl(
             context,
             TextBuffer.editBuffer(path, screenRowSize(height, context)),
             width, height,
@@ -286,7 +286,7 @@ public class EditorModel implements EditorUiModel {
     }
 
     @Override
-    public StateChange stateChange() {
+    public StateHandler stateChange() {
         return stateChange;
     }
 

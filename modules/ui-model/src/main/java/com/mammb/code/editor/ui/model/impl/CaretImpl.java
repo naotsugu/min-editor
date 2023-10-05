@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane.impl;
+package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.ui.pane.Caret;
+import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 

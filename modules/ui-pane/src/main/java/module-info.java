@@ -19,19 +19,13 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.ui.pane {
+
     requires code.editor.javafx;
-    requires code.editor.model.buffer;
-    requires code.editor.javafx.layout;
     requires code.editor.model.text;
-    requires code.editor.model.layout;
-    requires code.editor.model.edit;
-
-    requires code.editor.syntax;
-
     requires code.editor.ui.control;
     requires code.editor.ui.prefs;
     requires code.editor.ui.model;
 
     exports com.mammb.code.editor.ui.pane;
-    exports com.mammb.code.editor.ui.pane.impl;
+
 }

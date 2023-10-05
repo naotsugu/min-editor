@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane;
+package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextRun;
@@ -27,7 +27,7 @@ import javafx.scene.text.TextAlignment;
  * Gutter.
  * @author Naotsugu Kobayashi
  */
-public class Gutter {
+public class GutterImpl implements Gutter {
 
     /** The font. */
     private Font font;
@@ -45,7 +45,7 @@ public class Gutter {
      * Constructor.
      * @param ctx the context
      */
-    public Gutter(Context ctx) {
+    public GutterImpl(Context ctx) {
         this.font = Font.font(ctx.preference().fontName(), ctx.preference().fontSize());
         this.chWidth = FxFonts.numberCharacterWidth(font);
         this.width = Math.ceil(chWidth * 5);
@@ -55,7 +55,7 @@ public class Gutter {
             : Color.web(ctx.preference().fgColor()).brighter().brighter();
     }
 
-
+    @Override
     public void draw(GraphicsContext gc, TextRun run, double top, double lineHeight) {
 
         if (run.textLine().lineIndex() > 0) {
@@ -77,14 +77,12 @@ public class Gutter {
 
     }
 
-    /**
-     * Get the width of gutter.
-     * @return the width of gutter
-     */
+    @Override
     public double width() {
         return width;
     }
 
+    @Override
     public boolean checkWidthChanged() {
         if (widthChanged) {
             widthChanged = false;

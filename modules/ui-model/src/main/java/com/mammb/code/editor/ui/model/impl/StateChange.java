@@ -13,23 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.model;
+package com.mammb.code.editor.ui.model.impl;
 
-import com.mammb.code.editor.model.text.LineEnding;
-import com.mammb.code.editor.model.text.OffsetPoint;
-
-import java.nio.charset.Charset;
-import java.util.function.Consumer;
+import com.mammb.code.editor.model.buffer.Metrics;
+import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.StateHandler;
 
 /**
  * StateChange.
  * @author Naotsugu Kobayashi
  */
-public interface StateChange {
-
-    void lineEndingListener(Consumer<LineEnding> handler);
-    void charsetListener(Consumer<Charset> handler);
-    void caretPointListener(Consumer<OffsetPoint> handler);
-
-
+public interface StateChange extends StateHandler {
+    void push(Metrics metrics, Caret caret);
 }

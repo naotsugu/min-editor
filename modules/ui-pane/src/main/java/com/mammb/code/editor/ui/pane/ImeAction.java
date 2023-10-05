@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane.action;
+package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.ui.model.EditorUiModel;
+import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.ImeRun;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
@@ -39,7 +39,7 @@ public class ImeAction {
     private final GraphicsContext gc;
 
     /** The editor model. */
-    private final EditorUiModel model;
+    private final EditorModel model;
 
 
     /**
@@ -47,7 +47,7 @@ public class ImeAction {
      * @param gc the graphics context
      * @param model the editor model
      */
-    private ImeAction(GraphicsContext gc, EditorUiModel model) {
+    private ImeAction(GraphicsContext gc, EditorModel model) {
         this.gc = Objects.requireNonNull(gc);
         this.model = Objects.requireNonNull(model);
     }
@@ -59,7 +59,7 @@ public class ImeAction {
      * @param model the editor model
      * @return ImeBehavior
      */
-    public static ImeAction of(GraphicsContext gc, EditorUiModel model) {
+    public static ImeAction of(GraphicsContext gc, EditorModel model) {
         return new ImeAction(gc, model);
     }
 

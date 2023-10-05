@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane.impl;
+package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.MetricsRecord;
 import com.mammb.code.editor.model.text.LineEnding;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.ui.model.StateChange;
-import com.mammb.code.editor.ui.pane.Caret;
+import com.mammb.code.editor.ui.model.Caret;
 
 import java.nio.charset.Charset;
 import java.util.function.Consumer;
@@ -37,6 +36,7 @@ public class StateChangeImpl implements StateChange {
     private Consumer<Charset> charsetHandler;
     private Consumer<OffsetPoint> caretPointHandler;
 
+    @Override
     public void push(Metrics metrics, Caret caret) {
         push(metrics);
         push(caret);
@@ -62,17 +62,17 @@ public class StateChangeImpl implements StateChange {
     }
 
     @Override
-    public void lineEndingListener(Consumer<LineEnding> handler) {
+    public void addLineEndingChanged(Consumer<LineEnding> handler) {
         this.lineEndingHandler = handler;
     }
 
     @Override
-    public void charsetListener(Consumer<Charset> handler) {
+    public void addCharsetChanged(Consumer<Charset> handler) {
         this.charsetHandler = handler;
     }
 
     @Override
-    public void caretPointListener(Consumer<OffsetPoint> handler) {
+    public void addCaretPointChanged(Consumer<OffsetPoint> handler) {
         this.caretPointHandler = handler;
     }
 

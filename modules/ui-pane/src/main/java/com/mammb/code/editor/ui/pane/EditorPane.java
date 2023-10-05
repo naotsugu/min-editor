@@ -18,10 +18,7 @@ package com.mammb.code.editor.ui.pane;
 import com.mammb.code.editor.ui.control.HScrollBar;
 import com.mammb.code.editor.ui.control.StatusPanel;
 import com.mammb.code.editor.ui.control.VScrollBar;
-import com.mammb.code.editor.ui.model.EditorUiModel;
-import com.mammb.code.editor.ui.pane.action.FileAction;
-import com.mammb.code.editor.ui.pane.action.ImeAction;
-import com.mammb.code.editor.ui.pane.impl.DragDrops;
+import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -69,7 +66,7 @@ public class EditorPane extends StackPane {
     /** The graphics context. */
     private GraphicsContext gc;
     /** The editor model. */
-    private EditorUiModel model;
+    private EditorModel model;
     /** The vertical scroll bar for line scroll. */
     private VScrollBar vScrollBar;
     /** The horizontal scroll bar for line scroll. */
@@ -158,9 +155,9 @@ public class EditorPane extends StackPane {
     }
 
     private void initModelChanged() {
-        model.stateChange().caretPointListener(c -> statusPanel.push("caret", (c.row() + 1) + ":" + c.offset()));
-        model.stateChange().lineEndingListener(c -> statusPanel.push("lineEnding", c.toString()));
-        model.stateChange().charsetListener(c -> statusPanel.push("charset", c.toString()));
+        model.stateChange().addCaretPointChanged(c -> statusPanel.push("caret", (c.row() + 1) + ":" + c.offset()));
+        model.stateChange().addLineEndingChanged(c -> statusPanel.push("lineEnding", c.toString()));
+        model.stateChange().addCharsetChanged(c -> statusPanel.push("charset", c.toString()));
     }
 
 

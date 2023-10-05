@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane;
+package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.ui.pane.impl.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
