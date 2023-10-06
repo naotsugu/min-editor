@@ -76,18 +76,19 @@ public class EditorModelImpl implements EditorModel, Editor {
     private final Selection selection;
     /** The ime. */
     private final ImePallet ime;
+    /** The state change. */
+    private StateChange stateChange;
+    /** The text list. */
+    private ScreenText texts;
+
     /** The vertical scroll. */
     private ScrollBar<Integer> vScroll;
     /** The horizontal scroll. */
     private ScrollBar<Double> hScroll;
-    /** The state change. */
-    private StateChange stateChange;
     /** The screen width. */
     private double width;
     /** The screen height. */
     private double height;
-    /** The text list. */
-    private ScreenText texts;
     /** The max width. */
     private double maxWidth = 0;
 
