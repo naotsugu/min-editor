@@ -37,7 +37,6 @@ import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.behavior.ClipboardBehavior;
 import com.mammb.code.editor.ui.model.behavior.MouseBehavior;
-import com.mammb.code.editor.ui.model.behavior.ScrollBehavior;
 import com.mammb.code.editor.ui.model.behavior.SelectBehavior;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
@@ -349,15 +348,38 @@ public class EditorModelImpl implements EditorModel, Editor {
     // -- scroll behavior  ----------------------------------------------------
     @Override
     public void scrollPrev(int n) {
-        ScrollBehavior.scrollPrev(this, n);
+        int size = texts.prev(n);
+        caret.markDirty();
+        if (size == 0) {
+            return;
+        }
+        texts.markDirty();
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
     }
     @Override
     public void scrollNext(int n) {
-        ScrollBehavior.scrollNext(this, n);
+        int size = texts.next(n);
+        caret.markDirty();
+        if (size == 0) {
+            return;
+        }
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
+
     }
     @Override
     public void vScrolled(int oldValue, int newValue) {
-        ScrollBehavior.scrolled(this, oldValue, newValue);
+        int delta = newValue - oldValue;
+        if (delta == 0) {
+            return;
+        }
+        int size = (delta > 0)
+            ? texts.next(delta)
+            : texts.prev(Math.abs(delta));
+        if (size == 0) {
+            return;
+        }
+        texts.markDirty();
+        caret.markDirty();
     }
     private void vScrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());

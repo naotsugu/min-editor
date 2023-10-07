@@ -20,6 +20,7 @@ import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.ui.control.ScrollBar;
+import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.Rect;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
@@ -40,7 +41,7 @@ public class ScreenScroll {
     /** The gutter. */
     private final Gutter gutter;
     /** The text list. */
-    private final ScreenText texts;
+    private ScreenText texts;
 
     /** The vertical scroll. */
     private ScrollBar<Integer> vScroll;
@@ -71,11 +72,25 @@ public class ScreenScroll {
         this.hScroll = hScroll;
         this.width = width;
         this.height = height;
-        this.maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
+        init();
     }
 
-    public ScreenScroll with(TextBuffer<Textual> buffer, ScreenText texts) {
-        return null;
+
+    public void bindTexts(ScreenText texts) {
+        this.texts = texts;
+        init();
+    }
+
+    public void init() {
+        adjustVScroll();
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
+
+        adjustHScroll();
+        hScroll.setValue(0.0);
+
+        if (texts instanceof PlainScreenText) {
+            maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
+        }
     }
 
     public Rect textArea() {
@@ -98,7 +113,7 @@ public class ScreenScroll {
         return maxWidth;
     }
 
-    public void setScreenSize(double width, double height) {
+    public void setSize(double width, double height) {
         this.width = width;
         this.height = height;
         this.buffer.setPageSize(screenRowSize(height));
@@ -158,5 +173,26 @@ public class ScreenScroll {
         return (int) Math.ceil(height / lineHeight);
     }
 
+    public void vScrollToCaret(Caret caret) {
+        boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
+        if (!scrolled) return;
+        texts.markDirty();
+        caret.markDirty();
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
+    }
+    public void hScrollToCaret(Caret caret) {
+        if (texts instanceof WrapScreenText) return;
+        adjustHScroll();
+        double gap = width / 10;
+        if (caret.x() <= hScroll.getValue()) {
+            hScroll.setValue(Math.max(0, caret.x() - gap));
+            return;
+        }
+        double right = hScroll.getValue() + (width - gutter.width());
+        if (caret.x() + gap >= right) {
+            double delta = caret.x() + gap - right;
+            hScroll.setValue(hScroll.getValue() + delta);
+        }
+    }
 
 }
