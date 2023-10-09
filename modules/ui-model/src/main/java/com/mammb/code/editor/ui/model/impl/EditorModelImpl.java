@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.model.impl;
 
-import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.edit.Edit;
@@ -67,8 +66,6 @@ public class EditorModelImpl implements EditorModel, Editor {
     private final Context context;
     /** The text buffer. */
     private final TextBuffer<Textual> buffer;
-    /** The gutter. */
-    private final Gutter gutter;
     /** The caret. */
     private final Caret caret;
     /** The selection. */
@@ -84,12 +81,8 @@ public class EditorModelImpl implements EditorModel, Editor {
     private ScrollBar<Integer> vScroll;
     /** The horizontal scroll. */
     private ScrollBar<Double> hScroll;
-    /** The screen width. */
-    private double width;
-    /** The screen height. */
-    private double height;
-    /** The max width. */
-    private double maxWidth = 0;
+    /** The screen scroll. */
+    private ScreenScroll screen;
 
     /**
      * Constructor.
@@ -112,14 +105,12 @@ public class EditorModelImpl implements EditorModel, Editor {
         this.context = context;
         this.buffer = buffer;
         this.texts = new PlainScreenText(context, buffer, styling);
-        this.gutter = new GutterImpl(context);
         this.caret = new CaretImpl(this::layoutLine);
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.stateChange = new StateChangeImpl();
-        this.width = width;
-        this.height = height;
-        this.maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
+        this.screen = new ScreenScroll(context, vScroll, hScroll, width, height,
+            texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
         setScroll(vScroll, hScroll);
     }
 
@@ -134,7 +125,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     public static EditorModelImpl of(Context context, double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
         return new EditorModelImpl(
             context,
-            TextBuffer.editBuffer(null, screenRowSize(height, context)),
+            TextBuffer.editBuffer(null, ScreenScroll.screenRowSize(height, context)),
             width, height,
             StylingTranslate.passThrough(),
             vScroll, hScroll);
@@ -150,8 +141,8 @@ public class EditorModelImpl implements EditorModel, Editor {
     public EditorModelImpl partiallyWith(Path path) {
         return new EditorModelImpl(
             context,
-            TextBuffer.fixed(path, screenRowSize(height, context)),
-            width, height,
+            TextBuffer.fixed(path, screen.pageSize()),
+            screen.width(), screen.height(),
             StylingTranslate.passThrough(),
             vScroll, hScroll);
     }
@@ -166,8 +157,8 @@ public class EditorModelImpl implements EditorModel, Editor {
     public EditorModelImpl with(Path path) {
         return new EditorModelImpl(
             context,
-            TextBuffer.editBuffer(path, screenRowSize(height, context)),
-            width, height,
+            TextBuffer.editBuffer(path, screen.pageSize()),
+            screen.width(), screen.height(),
             Syntax.of(path, context.preference().fgColor()),
             vScroll, hScroll);
     }
@@ -178,12 +169,10 @@ public class EditorModelImpl implements EditorModel, Editor {
         Canvas canvas = gc.getCanvas();
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.save();
-        maxWidth = width - gutter.width();
+        screen.resetMaxWidth();
         double offsetY = 0;
         for (TextLine line : texts.lines()) {
-            if (line.width() > maxWidth) {
-                maxWidth = line.width();
-            }
+            screen.updateMaxWith(line.width());
             List<TextRun> runs = line.runs();
             fillContextBand(gc, runs, offsetY, line.leadingHeight());
             for (TextRun run : runs) {
@@ -194,7 +183,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         showCaret(gc);
 
         gc.restore();
-        if (gutter.checkWidthChanged()) {
+        if (screen.gutter().checkWidthChanged()) {
             texts.markDirty();
             caret.markDirty();
             draw(gc);
@@ -206,10 +195,8 @@ public class EditorModelImpl implements EditorModel, Editor {
         if (layoutLine == null) {
             return;
         }
-        if (layoutLine.width() > maxWidth) {
-            maxWidth = layoutLine.width();
-        }
-        gc.clearRect(gutter.width(), layoutLine.offsetY(), width - gutter.width(), layoutLine.leadingHeight());
+        screen.updateMaxWith(layoutLine.width());
+        gc.clearRect(screen.gutter().width(), layoutLine.offsetY(), screen.textAreaWidth(), layoutLine.leadingHeight());
         List<TextRun> runs = layoutLine.runs();
         fillContextBand(gc, runs, layoutLine.offsetY(), layoutLine.leadingHeight());
         for (TextRun run : runs) {
@@ -220,7 +207,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     private void fillContextBand(GraphicsContext gc, List<TextRun> runs, double top, double lineHeight) {
         if (runs.stream().anyMatch(r -> !r.source().context().isEmpty())) {
             gc.setFill(Color.LIGHTGRAY.deriveColor(0, 0, 0, 0.2));
-            gc.fillRect(textLeft(), top, width - textLeft(), lineHeight);
+            gc.fillRect(textLeft(), top, screen.width() - textLeft(), lineHeight);
             gc.setFill(Color.TRANSPARENT);
         }
     }
@@ -251,7 +238,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         }
 
         if (run.layout().x() - hScroll.getValue() <= 0) {
-            gutter.draw(gc, run, top, lineHeight);
+            screen.gutter().draw(gc, run, top, lineHeight);
         }
         if (ime.enabled()) {
             ime.drawCompose(gc, run, top, lineHeight, textLeft());
@@ -271,7 +258,7 @@ public class EditorModelImpl implements EditorModel, Editor {
 
     @Override
     public void showCaret(GraphicsContext gc) {
-        if (!ime.enabled()) caret.draw(gc, gutter.width(), hScroll.getValue());
+        if (!ime.enabled()) caret.draw(gc, screen.gutter().width(), hScroll.getValue());
     }
 
     @Override
@@ -294,7 +281,7 @@ public class EditorModelImpl implements EditorModel, Editor {
 
     @Override
     public Rect textAreaRect() {
-        return new Rect(gutter.width(), 0, width - gutter.width(), height);
+        return screen.textArea();
     }
 
     @Override
@@ -391,12 +378,12 @@ public class EditorModelImpl implements EditorModel, Editor {
     private void hScrollToCaret() {
         if (texts instanceof WrapScreenText) return;
         adjustHScroll();
-        double gap = width / 10;
+        double gap = screen.width() / 10;
         if (caret.x() <= hScroll.getValue()) {
             hScroll.setValue(Math.max(0, caret.x() - gap));
             return;
         }
-        double right = hScroll.getValue() + (width - gutter.width());
+        double right = hScroll.getValue() + screen.textAreaWidth();
         if (caret.x() + gap >= right) {
             double delta = caret.x() + gap - right;
             hScroll.setValue(hScroll.getValue() + delta);
@@ -407,9 +394,9 @@ public class EditorModelImpl implements EditorModel, Editor {
     @Override
     public void moveCaretRight() {
         vScrollToCaret();
-        if (caret.y2() + 4 >= height) scrollNext(1);
+        if (caret.y2() + 4 >= screen.height()) scrollNext(1);
         caret.right();
-        if (caret.y2() > height) scrollNext(1);
+        if (caret.y2() > screen.height()) scrollNext(1);
         hScrollToCaret();
     }
     @Override
@@ -433,9 +420,9 @@ public class EditorModelImpl implements EditorModel, Editor {
     @Override
     public void moveCaretDown() {
         vScrollToCaret();
-        if (caret.y2() + 4 >= height) scrollNext(1);
+        if (caret.y2() + 4 >= screen.height()) scrollNext(1);
         caret.down();
-        if (caret.y2() > height) scrollNext(1);
+        if (caret.y2() > screen.height()) scrollNext(1);
         hScrollToCaret();
     }
     @Override
@@ -639,13 +626,12 @@ public class EditorModelImpl implements EditorModel, Editor {
 
     @Override
     public void layoutBounds(double width, double height) {
-        this.width = width;
-        this.height = height;
-        this.buffer.setPageSize(screenRowSize(height));
+        screen.setSize(width, height);
+        this.buffer.setPageSize(screen.pageSize());
         texts.markDirty();
         caret.markDirty();
         if (texts instanceof WrapScreenText wrap) {
-            wrap.setWrapWidth(width - gutter.width());
+            wrap.setWrapWidth(screen.textAreaWidth());
         }
         adjustVScroll();
         adjustHScroll();
@@ -656,11 +642,11 @@ public class EditorModelImpl implements EditorModel, Editor {
     @Override
     public void toggleWrap() {
         if (texts instanceof PlainScreenText linear)  {
-            texts = linear.asWrapped(width - gutter.width());
+            texts = linear.asWrapped(screen.textAreaWidth());
             caret.markDirty();
         } else if (texts instanceof WrapScreenText wrap) {
             texts = wrap.asPlain();
-            maxWidth = texts.lines().stream().mapToDouble(TextLine::width).max().orElse(width - gutter.width());
+            screen.setMaxWidth(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
             caret.markDirty();
         }
         setScroll(vScroll, hScroll);
@@ -732,18 +718,8 @@ public class EditorModelImpl implements EditorModel, Editor {
 
     // -- private -------------------------------------------------------------
 
-    int screenRowSize(double height) {
-        return screenRowSize(height, context);
-    }
-
-    static int screenRowSize(double height, Context context) {
-        Font font = Font.font(context.preference().fontName(), context.preference().fontSize());
-        double lineHeight = FxFonts.lineHeight(font) + TextLine.DEFAULT_MARGIN_TOP + TextLine.DEFAULT_MARGIN_BOTTOM;
-        return (int) Math.ceil(height / lineHeight);
-    }
-
     private double textLeft() {
-        return gutter.width() - hScroll.getValue();
+        return screen.gutter().width() - hScroll.getValue();
     }
 
     private LayoutLine layoutLine(int offset) {
@@ -763,14 +739,14 @@ public class EditorModelImpl implements EditorModel, Editor {
 
     private void adjustHScroll() {
         if (texts instanceof PlainScreenText) {
-            double w = Math.max(0, width - gutter.width());
-            double adjustedMax = Math.max(0, maxWidth - w);
-            double ratio = adjustedMax / maxWidth; // reduction ratio
+            double w = Math.max(0, screen.textAreaWidth());
+            double adjustedMax = Math.max(0, screen.maxWidth() - w);
+            double ratio = adjustedMax / screen.maxWidth(); // reduction ratio
             hScroll.setMax(adjustedMax);
             hScroll.setVisibleAmount(w * ratio);
         } else {
-            hScroll.setMax(width - gutter.width());
-            hScroll.setVisibleAmount(width - gutter.width());
+            hScroll.setMax(screen.textAreaWidth());
+            hScroll.setVisibleAmount(screen.textAreaWidth());
         }
     }
 
@@ -797,16 +773,12 @@ public class EditorModelImpl implements EditorModel, Editor {
         return texts;
     }
     @Override
-    public Gutter gutter() {
-        return gutter;
-    }
-    @Override
-    public ScrollBar<Integer> vScroll() {
-        return vScroll;
-    }
-    @Override
     public ScrollBar<Double> hScroll() {
         return hScroll;
+    }
+    @Override
+    public ScreenScroll screen() {
+        return screen;
     }
 
     // </editor-fold>

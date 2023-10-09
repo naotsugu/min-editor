@@ -30,13 +30,13 @@ public class MouseBehavior {
             return;
         }
         self.selection().clear();
-        double textLeft = self.gutter().width() - self.hScroll().getValue();
+        double textLeft = self.screen().gutter().width() - self.hScroll().getValue();
         int offset = self.texts().at(x - textLeft, y);
         self.caret().at(offset, true);
     }
 
     public static void clickDouble(Editor self, double x, double y) {
-        double textLeft = self.gutter().width() - self.hScroll().getValue();
+        double textLeft = self.screen().gutter().width() - self.hScroll().getValue();
         int[] offsets = self.texts().atAroundWord(x - textLeft, y);
         if (offsets.length == 2) {
             SelectBehavior.select(offsets, self.caret(), self.selection());
@@ -46,7 +46,7 @@ public class MouseBehavior {
     }
 
     public static void dragged(Editor self, double x, double y) {
-        double textLeft = self.gutter().width() - self.hScroll().getValue();
+        double textLeft = self.screen().gutter().width() - self.hScroll().getValue();
         self.caret().at(self.texts().at(x - textLeft, y), true);
         if (self.selection().isDragging()) {
             self.selection().to(self.caret().caretPoint());

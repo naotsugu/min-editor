@@ -54,18 +54,12 @@ public interface Editor {
     ScreenText texts();
 
     /**
-     * Get the gutter.
-     */
-    Gutter gutter();
-
-    /**
-     * Get the vertical scroll.
-     */
-    ScrollBar<Integer> vScroll();
-
-    /**
      * Get the horizontal scroll.
      */
     ScrollBar<Double> hScroll();
 
+    /**
+     * Get the screen scroll.
+     */
+    ScreenScroll screen();
 }
