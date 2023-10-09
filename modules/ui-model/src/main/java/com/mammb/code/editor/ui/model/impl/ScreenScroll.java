@@ -19,6 +19,9 @@ import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.model.Rect;
+import com.mammb.code.editor.ui.model.ScreenText;
+import com.mammb.code.editor.ui.model.screen.PlainScreenText;
+import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.text.Font;
 
@@ -68,6 +71,45 @@ public class ScreenScroll {
         updateMaxWith(width - gutter.width());
     }
 
+    public void initScroll(ScreenText texts, int rowCount) {
+        adjustVScroll(texts, rowCount);
+        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
+        adjustHScroll(texts);
+        hScroll.setValue(0.0);
+    }
+
+    public void adjustVScroll(ScreenText texts, int rowCount) {
+        int lines = rowCount;
+        if (texts instanceof WrapScreenText w) {
+            lines += w.wrappedSize() - pageSize;
+        }
+        int adjustedMax = Math.max(0, lines - pageSize);
+        double ratio = (double) adjustedMax / lines; // reduction ratio
+        vScroll.setMax(adjustedMax);
+        vScroll.setVisibleAmount((int) Math.floor(pageSize * ratio));
+    }
+
+    public void adjustHScroll(ScreenText texts) {
+        if (texts instanceof PlainScreenText) {
+            double w = Math.max(0, textAreaWidth());
+            double adjustedMax = Math.max(0, maxWidth - w);
+            double ratio = adjustedMax / maxWidth; // reduction ratio
+            hScroll.setMax(adjustedMax);
+            hScroll.setVisibleAmount(w * ratio);
+        } else {
+            hScroll.setMax(textAreaWidth());
+            hScroll.setVisibleAmount(textAreaWidth());
+        }
+    }
+
+    public void vScrolled(int value) {
+        vScroll.setValue(value);
+    }
+    public void hScrolled(double value) {
+        hScroll().setValue(Math.max(0, value));
+    }
+
+
     public void setMaxWidth(double maxWidth) {
         this.maxWidth = Math.max(maxWidth, width - gutter.width());
     }
@@ -81,6 +123,11 @@ public class ScreenScroll {
             maxWidth = candidateWidth;
         }
     }
+
+    public double textLeft() {
+        return gutter().width() - hScroll().getValue();
+    }
+
 
     public double width() {
         return width;
@@ -100,6 +147,14 @@ public class ScreenScroll {
 
     public Gutter gutter() {
         return gutter;
+    }
+
+    public ScrollBar<Integer> vScroll() {
+        return vScroll;
+    }
+
+    public ScrollBar<Double> hScroll() {
+        return hScroll;
     }
 
     public Rect textArea() {

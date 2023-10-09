@@ -17,7 +17,6 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.text.Textual;
-import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.Selection;
@@ -52,11 +51,6 @@ public interface Editor {
      * Get the text list.
      */
     ScreenText texts();
-
-    /**
-     * Get the horizontal scroll.
-     */
-    ScrollBar<Double> hScroll();
 
     /**
      * Get the screen scroll.
