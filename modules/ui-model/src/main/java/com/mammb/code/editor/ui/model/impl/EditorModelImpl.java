@@ -35,7 +35,6 @@ import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.behavior.ClipboardBehavior;
-import com.mammb.code.editor.ui.model.behavior.MouseBehavior;
 import com.mammb.code.editor.ui.model.behavior.SelectBehavior;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
@@ -642,15 +641,35 @@ public class EditorModelImpl implements EditorModel, Editor {
     // -- mouse behavior ------------------------------------------------------
     @Override
     public void click(double x, double y) {
-        MouseBehavior.click(this, x, y);
+        if (selection.isDragging()) {
+            selection.to(caret.caretPoint());
+            selection.endDragging();
+            return;
+        }
+        selection.clear();
+        double textLeft = screen.gutter().width() - screen.hScroll().getValue();
+        int offset = texts.at(x - textLeft, y);
+        caret.at(offset, true);
     }
     @Override
     public void clickDouble(double x, double y) {
-        MouseBehavior.clickDouble(this, x, y);
+        double textLeft = screen.gutter().width() - screen.hScroll().getValue();
+        int[] offsets = texts.atAroundWord(x - textLeft, y);
+        if (offsets.length == 2) {
+            SelectBehavior.select(offsets, caret, selection);
+        } else {
+            caret.at(offsets[0], true);
+        }
     }
     @Override
     public void dragged(double x, double y) {
-        MouseBehavior.dragged(this, x, y);
+        double textLeft = screen.gutter().width() - screen.hScroll().getValue();
+        caret.at(texts.at(x - textLeft, y), true);
+        if (selection.isDragging()) {
+            selection.to(caret.caretPoint());
+        } else {
+            selection().startDragging(caret.caretPoint());
+        }
     }
 
     // -- select behavior -----------------------------------------------------
