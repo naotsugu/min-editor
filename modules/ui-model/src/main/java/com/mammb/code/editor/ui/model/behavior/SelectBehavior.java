@@ -37,7 +37,8 @@ public class SelectBehavior {
      * @param selection the selection
      */
     public static void select(OffsetPoint[] range, Caret caret, Selection selection) {
-        select(range, selection);
+        selection.start(Objects.requireNonNull(range[0]));
+        selection.to(Objects.requireNonNull(range[1]));
         caret.at(range[1].offset(), true);
     }
 
@@ -63,26 +64,6 @@ public class SelectBehavior {
         selection.start(caret.caretPoint());
         caret.at(offset2, true);
         selection.to(caret.caretPoint());
-    }
-
-    /**
-     * Selects a range of specified points.
-     * @param range the range of point
-     * @param selection the selection
-     */
-    public static void select(OffsetPoint[] range, Selection selection) {
-        select(range[0], range[1], selection);
-    }
-
-    /**
-     * Selects a range of specified points.
-     * @param from the point at start
-     * @param to the point at end
-     * @param selection the selection
-     */
-    public static void select(OffsetPoint from, OffsetPoint to, Selection selection) {
-        selection.start(Objects.requireNonNull(from));
-        selection.to(Objects.requireNonNull(to));
     }
 
     /**

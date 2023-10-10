@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
@@ -53,6 +54,7 @@ public interface Selection {
      */
     void clear();
 
+
     /**
      * Get the select start offset.
      * @return the select start offset
@@ -85,6 +87,15 @@ public interface Selection {
      * @param left the left position of run(margin included)
      */
     void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
+
+    /**
+     * Select all.
+     * @param metrics the metrics
+     */
+    default void selectAll(Metrics metrics) {
+        start(OffsetPoint.zero);
+        to(OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
+    }
 
     /**
      * Get the selected char length.

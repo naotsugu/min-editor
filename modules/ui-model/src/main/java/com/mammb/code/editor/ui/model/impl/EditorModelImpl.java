@@ -685,11 +685,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     }
     @Override
     public void selectAll() {
-        var metrics = buffer.metrics();
-        SelectBehavior.select(
-                OffsetPoint.zero,
-                OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()),
-                selection);
+        selection.selectAll(buffer.metrics());
     }
 
     // -- clipboard behavior --------------------------------------------------
