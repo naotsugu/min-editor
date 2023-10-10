@@ -18,9 +18,8 @@ package com.mammb.code.editor.ui.model.behavior;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
-import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.ScreenText;
-import com.mammb.code.editor.ui.model.impl.Editor;
+import com.mammb.code.editor.ui.model.Selection;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,29 +29,6 @@ import java.util.Objects;
  * @author Naotsugu Kobayashi
  */
 public class SelectBehavior {
-
-    public static void selectOn(Editor self) {
-        if (!self.selection().started()) {
-            self.selection().start(self.caret().caretPoint());
-        }
-    }
-
-    public static void selectOff(Editor self) {
-        self.selection().clear();
-    }
-
-    public static void selectTo(Editor self) {
-        if (self.selection().started()) {
-            self.selection().to(self.caret().caretPoint());
-        }
-    }
-
-    public static void selectAll(Editor self) {
-        var metrics = self.buffer().metrics();
-        select(OffsetPoint.zero,
-            OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()),
-            self.selection());
-    }
 
     /**
      * Select the specified range.

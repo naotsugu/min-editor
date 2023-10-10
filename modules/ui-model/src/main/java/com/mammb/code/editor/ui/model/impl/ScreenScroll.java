@@ -52,15 +52,14 @@ public class ScreenScroll {
             Context context,
             ScrollBar<Integer> vScroll,
             ScrollBar<Double> hScroll,
-            double width, double height,
-            double maxWidth) {
+            double width, double height) {
         this.context = context;
         this.vScroll = vScroll;
         this.hScroll = hScroll;
         this.gutter = new GutterImpl(context);
         this.width = width;
         this.height = height;
-        this.maxWidth = Math.max(maxWidth, width - gutter.width());
+        this.maxWidth = width - gutter.width();
         this.pageSize = screenRowSize(height, context);
     }
 
@@ -106,7 +105,7 @@ public class ScreenScroll {
         vScroll.setValue(value);
     }
     public void hScrolled(double value) {
-        hScroll().setValue(Math.max(0, value));
+        hScroll.setValue(Math.max(0, value));
     }
 
 
@@ -125,7 +124,7 @@ public class ScreenScroll {
     }
 
     public double textLeft() {
-        return gutter().width() - hScroll().getValue();
+        return gutter().width() - hScroll.getValue();
     }
 
 
@@ -137,10 +136,6 @@ public class ScreenScroll {
         return height;
     }
 
-    public double maxWidth() {
-        return maxWidth;
-    }
-
     public int pageSize() {
         return pageSize;
     }
@@ -149,14 +144,9 @@ public class ScreenScroll {
         return gutter;
     }
 
-    public ScrollBar<Integer> vScroll() {
-        return vScroll;
+    public double hScrollValue() {
+        return hScroll.getValue();
     }
-
-    public ScrollBar<Double> hScroll() {
-        return hScroll;
-    }
-
     public Rect textArea() {
         return new Rect(gutter.width(), 0, textAreaWidth(), height);
     }

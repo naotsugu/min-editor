@@ -20,17 +20,11 @@ import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.Selection;
-import com.mammb.code.editor.ui.prefs.Context;
 
 public interface Editor {
 
     // TODO move
     void input(String input);
-
-    /**
-     * Get the Context.
-     */
-    Context context();
 
     /**
      * Get the text buffer.
@@ -52,8 +46,4 @@ public interface Editor {
      */
     ScreenText texts();
 
-    /**
-     * Get the screen scroll.
-     */
-    ScreenScroll screen();
 }

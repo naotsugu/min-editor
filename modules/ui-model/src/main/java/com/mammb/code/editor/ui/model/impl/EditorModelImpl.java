@@ -83,19 +83,14 @@ public class EditorModelImpl implements EditorModel, Editor {
      * Constructor.
      * @param context the context
      * @param buffer the text buffer
-     * @param width the screen width
-     * @param height the screen height
      * @param styling the styling
-     * @param vScroll the vertical scroll
-     * @param hScroll the horizontal scroll
+     * @param screen the screen scroll
      */
     private EditorModelImpl(
             Context context,
             TextBuffer<Textual> buffer,
             StylingTranslate styling,
-            double width, double height,
-            ScrollBar<Integer> vScroll,
-            ScrollBar<Double> hScroll) {
+            ScreenScroll screen) {
 
         this.context = context;
         this.buffer = buffer;
@@ -104,11 +99,16 @@ public class EditorModelImpl implements EditorModel, Editor {
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.stateChange = new StateChangeImpl();
-        this.screen = new ScreenScroll(context, vScroll, hScroll, width, height,
-            texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
+        this.screen = screen;
+        screen.updateMaxWith(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
         screen.initScroll(texts, buffer.metrics().rowCount());
     }
 
+    private EditorModelImpl(Context context, ScreenScroll scroll) {
+        this(context,
+            TextBuffer.editBuffer(null, scroll.pageSize()),
+            StylingTranslate.passThrough(), scroll);
+    }
 
     /**
      * Create a new EditorModel.
@@ -117,14 +117,9 @@ public class EditorModelImpl implements EditorModel, Editor {
      * @param height the screen height
      * @return a new EditorModel
      */
-    public static EditorModelImpl of(
-            Context context, double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
-        return new EditorModelImpl(
-            context,
-            TextBuffer.editBuffer(null, ScreenScroll.screenRowSize(height, context)),
-            StylingTranslate.passThrough(),
-            width, height,
-            vScroll, hScroll);
+    public static EditorModelImpl of(Context context,
+            double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
+        return new EditorModelImpl(context, new ScreenScroll(context, vScroll, hScroll, width, height));
     }
 
 
@@ -139,8 +134,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             context,
             TextBuffer.fixed(path, screen.pageSize()),
             StylingTranslate.passThrough(),
-            screen.width(), screen.height(),
-            screen.vScroll(), screen.hScroll());
+            screen);
     }
 
 
@@ -155,8 +149,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             context,
             TextBuffer.editBuffer(path, screen.pageSize()),
             Syntax.of(path, context.preference().fgColor()),
-            screen.width(), screen.height(),
-            screen.vScroll(), screen.hScroll());
+            screen);
     }
 
 
@@ -233,7 +226,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             Draws.specialCharacter(gc, run, top, lineHeight, screen.textLeft());
         }
 
-        if (run.layout().x() - screen.hScroll().getValue() <= 0) {
+        if (run.layout().x() - screen.hScrollValue() <= 0) {
             screen.gutter().draw(gc, run, top, lineHeight);
         }
         if (ime.enabled()) {
@@ -255,7 +248,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     @Override
     public void showCaret(GraphicsContext gc) {
         if (!ime.enabled()) {
-            caret.draw(gc, screen.gutter().width(), screen.hScroll().getValue());
+            caret.draw(gc, screen.gutter().width(), screen.hScrollValue());
         }
     }
 
@@ -366,14 +359,14 @@ public class EditorModelImpl implements EditorModel, Editor {
         if (texts instanceof WrapScreenText) return;
         screen.adjustHScroll(texts);
         double gap = screen.width() / 10;
-        if (caret.x() <= screen.hScroll().getValue()) {
+        if (caret.x() <= screen.hScrollValue()) {
             screen.hScrolled(caret.x() - gap);
             return;
         }
-        double right = screen.hScroll().getValue() + screen.textAreaWidth();
+        double right = screen.textAreaWidth() + screen.hScrollValue();
         if (caret.x() + gap >= right) {
             double delta = caret.x() + gap - right;
-            screen.hScrolled(screen.hScroll().getValue() + delta);
+            screen.hScrolled(screen.hScrollValue() + delta);
         }
     }
 
@@ -614,7 +607,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     @Override
     public void layoutBounds(double width, double height) {
         screen.setSize(width, height);
-        this.buffer.setPageSize(screen.pageSize());
+        buffer.setPageSize(screen.pageSize());
         texts.markDirty();
         caret.markDirty();
         if (texts instanceof WrapScreenText wrap) {
@@ -647,13 +640,13 @@ public class EditorModelImpl implements EditorModel, Editor {
             return;
         }
         selection.clear();
-        double textLeft = screen.gutter().width() - screen.hScroll().getValue();
+        double textLeft = screen.gutter().width() - screen.hScrollValue();
         int offset = texts.at(x - textLeft, y);
         caret.at(offset, true);
     }
     @Override
     public void clickDouble(double x, double y) {
-        double textLeft = screen.gutter().width() - screen.hScroll().getValue();
+        double textLeft = screen.gutter().width() - screen.hScrollValue();
         int[] offsets = texts.atAroundWord(x - textLeft, y);
         if (offsets.length == 2) {
             SelectBehavior.select(offsets, caret, selection);
@@ -663,7 +656,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     }
     @Override
     public void dragged(double x, double y) {
-        double textLeft = screen.gutter().width() - screen.hScroll().getValue();
+        double textLeft = screen.gutter().width() - screen.hScrollValue();
         caret.at(texts.at(x - textLeft, y), true);
         if (selection.isDragging()) {
             selection.to(caret.caretPoint());
@@ -675,19 +668,28 @@ public class EditorModelImpl implements EditorModel, Editor {
     // -- select behavior -----------------------------------------------------
     @Override
     public void selectOn() {
-        SelectBehavior.selectOn(this);
+    if (!selection.started()) {
+        selection.start(caret.caretPoint());
+    }
+
     }
     @Override
     public void selectOff() {
-        SelectBehavior.selectOff(this);
+        selection.clear();
     }
     @Override
     public void selectTo() {
-        SelectBehavior.selectTo(this);
+        if (selection.started()) {
+            selection.to(caret.caretPoint());
+        }
     }
     @Override
     public void selectAll() {
-        SelectBehavior.selectAll(this);
+        var metrics = buffer.metrics();
+        SelectBehavior.select(
+                OffsetPoint.zero,
+                OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()),
+                selection);
     }
 
     // -- clipboard behavior --------------------------------------------------
@@ -731,10 +733,6 @@ public class EditorModelImpl implements EditorModel, Editor {
     // <editor-fold defaultstate="collapsed" desc="editor accessor">
 
     @Override
-    public Context context() {
-        return context;
-    }
-    @Override
     public TextBuffer<Textual> buffer() {
         return buffer;
     }
@@ -750,11 +748,6 @@ public class EditorModelImpl implements EditorModel, Editor {
     public ScreenText texts() {
         return texts;
     }
-    @Override
-    public ScreenScroll screen() {
-        return screen;
-    }
-
     // </editor-fold>
 
 }
