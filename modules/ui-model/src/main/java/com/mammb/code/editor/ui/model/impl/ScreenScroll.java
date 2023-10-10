@@ -18,10 +18,8 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.ui.control.ScrollBar;
+import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.Rect;
-import com.mammb.code.editor.ui.model.ScreenText;
-import com.mammb.code.editor.ui.model.screen.PlainScreenText;
-import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.text.Font;
 
@@ -45,7 +43,10 @@ public class ScreenScroll {
     private double height;
     /** The max width. */
     private double maxWidth = 0;
+    /** The page line size. */
     private int pageLineSize;
+    /** The horizontal scroll enabled. */
+    private boolean hScrollEnabled = true;
 
 
     public ScreenScroll(
@@ -70,26 +71,22 @@ public class ScreenScroll {
         updateMaxWith(width - gutter.width());
     }
 
-    public void initScroll(ScreenText texts, int rowCount) {
-        adjustVScroll(texts, rowCount);
-        vScroll.setValue(texts.headlinesIndex());
-        adjustHScroll(texts);
+    public void initScroll(int headlinesIndex, int totalLines) {
+        adjustVScroll(totalLines);
+        vScroll.setValue(headlinesIndex);
+        adjustHScroll();
         hScroll.setValue(0.0);
     }
 
-    public void adjustVScroll(ScreenText texts, int rowCount) {
-        int lines = rowCount;
-        if (texts instanceof WrapScreenText w) {
-            lines += w.wrappedSize() - pageLineSize;
-        }
-        int adjustedMax = Math.max(0, lines - pageLineSize);
-        double ratio = (double) adjustedMax / lines; // reduction ratio
+    public void adjustVScroll(int totalLines) {
+        int adjustedMax = Math.max(0, totalLines - pageLineSize);
+        double ratio = (double) adjustedMax / totalLines; // reduction ratio
         vScroll.setMax(adjustedMax);
         vScroll.setVisibleAmount((int) Math.floor(pageLineSize * ratio));
     }
 
-    public void adjustHScroll(ScreenText texts) {
-        if (texts instanceof PlainScreenText) {
+    public void adjustHScroll() {
+        if (hScrollEnabled) {
             double w = Math.max(0, textAreaWidth());
             double adjustedMax = Math.max(0, maxWidth - w);
             double ratio = adjustedMax / maxWidth; // reduction ratio
@@ -101,12 +98,28 @@ public class ScreenScroll {
         }
     }
 
+    public void hScrollTo(Caret caret) {
+        if (!hScrollEnabled) return;
+        adjustHScroll();
+        double gap = width / 10;
+        if (caret.x() <= hScrollValue()) {
+            hScrolled(caret.x() - gap);
+            return;
+        }
+        double right = textAreaWidth() + hScrollValue();
+        if (caret.x() + gap >= right) {
+            double delta = caret.x() + gap - right;
+            hScrolled(hScrollValue() + delta);
+        }
+    }
+
+
     public void vScrolled(int value) {
         vScroll.setValue(value);
     }
 
     public void hScrolled(double value) {
-        hScroll.setValue(Math.max(0, value));
+        hScroll.setValue(hScrollEnabled ? Math.max(0, value) : 0);
     }
 
     public void setMaxWidth(double maxWidth) {
@@ -121,6 +134,10 @@ public class ScreenScroll {
         if (candidateWidth > maxWidth) {
             maxWidth = candidateWidth;
         }
+    }
+
+    public void sethScrollEnabled(boolean hScrollEnabled) {
+        this.hScrollEnabled = hScrollEnabled;
     }
 
     public double textLeft() {
