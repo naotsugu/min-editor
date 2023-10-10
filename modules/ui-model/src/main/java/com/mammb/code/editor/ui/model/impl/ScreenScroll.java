@@ -45,7 +45,7 @@ public class ScreenScroll {
     private double height;
     /** The max width. */
     private double maxWidth = 0;
-    private int pageSize;
+    private int pageLineSize;
 
 
     public ScreenScroll(
@@ -60,19 +60,19 @@ public class ScreenScroll {
         this.width = width;
         this.height = height;
         this.maxWidth = width - gutter.width();
-        this.pageSize = screenRowSize(height, context);
+        this.pageLineSize = screenRowSize(height, context);
     }
 
     public void setSize(double width, double height) {
         this.width = width;
         this.height = height;
-        this.pageSize = screenRowSize(height, context);
+        this.pageLineSize = screenRowSize(height, context);
         updateMaxWith(width - gutter.width());
     }
 
     public void initScroll(ScreenText texts, int rowCount) {
         adjustVScroll(texts, rowCount);
-        vScroll.setValue(texts.head().point().row() + texts.head().lineIndex());
+        vScroll.setValue(texts.headlinesIndex());
         adjustHScroll(texts);
         hScroll.setValue(0.0);
     }
@@ -80,12 +80,12 @@ public class ScreenScroll {
     public void adjustVScroll(ScreenText texts, int rowCount) {
         int lines = rowCount;
         if (texts instanceof WrapScreenText w) {
-            lines += w.wrappedSize() - pageSize;
+            lines += w.wrappedSize() - pageLineSize;
         }
-        int adjustedMax = Math.max(0, lines - pageSize);
+        int adjustedMax = Math.max(0, lines - pageLineSize);
         double ratio = (double) adjustedMax / lines; // reduction ratio
         vScroll.setMax(adjustedMax);
-        vScroll.setVisibleAmount((int) Math.floor(pageSize * ratio));
+        vScroll.setVisibleAmount((int) Math.floor(pageLineSize * ratio));
     }
 
     public void adjustHScroll(ScreenText texts) {
@@ -104,10 +104,10 @@ public class ScreenScroll {
     public void vScrolled(int value) {
         vScroll.setValue(value);
     }
+
     public void hScrolled(double value) {
         hScroll.setValue(Math.max(0, value));
     }
-
 
     public void setMaxWidth(double maxWidth) {
         this.maxWidth = Math.max(maxWidth, width - gutter.width());
@@ -127,7 +127,6 @@ public class ScreenScroll {
         return gutter().width() - hScroll.getValue();
     }
 
-
     public double width() {
         return width;
     }
@@ -136,8 +135,8 @@ public class ScreenScroll {
         return height;
     }
 
-    public int pageSize() {
-        return pageSize;
+    public int pageLineSize() {
+        return pageLineSize;
     }
 
     public Gutter gutter() {
@@ -147,6 +146,7 @@ public class ScreenScroll {
     public double hScrollValue() {
         return hScroll.getValue();
     }
+
     public Rect textArea() {
         return new Rect(gutter.width(), 0, textAreaWidth(), height);
     }
@@ -154,7 +154,6 @@ public class ScreenScroll {
     public double textAreaWidth() {
         return width - gutter.width();
     }
-
 
     static int screenRowSize(double height, Context context) {
         Font font = Font.font(context.preference().fontName(), context.preference().fontSize());

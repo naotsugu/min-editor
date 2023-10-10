@@ -148,6 +148,11 @@ public interface ScreenText {
     TextLine head();
 
 
+    default int headlinesIndex() {
+        return head().point().row() + head().lineIndex();
+    }
+
+
     /**
      * Get the line at tail.
      * @return the line at tail

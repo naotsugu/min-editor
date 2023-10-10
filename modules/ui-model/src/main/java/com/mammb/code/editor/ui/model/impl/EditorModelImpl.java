@@ -106,7 +106,7 @@ public class EditorModelImpl implements EditorModel, Editor {
 
     private EditorModelImpl(Context context, ScreenScroll scroll) {
         this(context,
-            TextBuffer.editBuffer(null, scroll.pageSize()),
+            TextBuffer.editBuffer(null, scroll.pageLineSize()),
             StylingTranslate.passThrough(), scroll);
     }
 
@@ -132,7 +132,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     public EditorModelImpl partiallyWith(Path path) {
         return new EditorModelImpl(
             context,
-            TextBuffer.fixed(path, screen.pageSize()),
+            TextBuffer.fixed(path, screen.pageLineSize()),
             StylingTranslate.passThrough(),
             screen);
     }
@@ -147,7 +147,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     public EditorModelImpl with(Path path) {
         return new EditorModelImpl(
             context,
-            TextBuffer.editBuffer(path, screen.pageSize()),
+            TextBuffer.editBuffer(path, screen.pageLineSize()),
             Syntax.of(path, context.preference().fgColor()),
             screen);
     }
@@ -322,7 +322,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             return;
         }
         texts.markDirty();
-        screen.vScrolled(texts.head().point().row() + texts.head().lineIndex());
+        screen.vScrolled(texts.headlinesIndex());
     }
     @Override
     public void scrollNext(int n) {
@@ -331,7 +331,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         if (size == 0) {
             return;
         }
-        screen.vScrolled(texts.head().point().row() + texts.head().lineIndex());
+        screen.vScrolled(texts.headlinesIndex());
     }
     @Override
     public void vScrolled(int oldValue, int newValue) {
@@ -353,7 +353,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         if (!scrolled) return;
         texts.markDirty();
         caret.markDirty();
-        screen.vScrolled(texts.head().point().row() + texts.head().lineIndex());
+        screen.vScrolled(texts.headlinesIndex());
     }
     private void hScrollToCaret() {
         if (texts instanceof WrapScreenText) return;
@@ -446,7 +446,6 @@ public class EditorModelImpl implements EditorModel, Editor {
         hScrollToCaret();
     }
 
-
     // -- edit behavior -------------------------------------------------------
     @Override
     public void input(String input) {
@@ -536,7 +535,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         texts.markDirty();
         caret.markDirty();
         screen.adjustVScroll(texts, buffer.metrics().rowCount());
-        screen.vScrolled(texts.head().point().row() + texts.head().lineIndex());
+        screen.vScrolled(texts.headlinesIndex());
         hScrollToCaret();
     }
     private void selectionDelete() {
@@ -548,7 +547,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             texts.markDirty();
             caret.markDirty();
             screen.adjustVScroll(texts, buffer.metrics().rowCount());
-            screen.vScrolled(texts.head().point().row() + texts.head().lineIndex());
+            screen.vScrolled(texts.headlinesIndex());
             hScrollToCaret();
         }
     }
@@ -560,7 +559,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         screen.adjustVScroll(texts, buffer.metrics().rowCount());
-        screen.vScrolled(texts.head().point().row() + texts.head().lineIndex());
+        screen.vScrolled(texts.headlinesIndex());
         hScrollToCaret();
     }
     @Override
@@ -571,7 +570,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         screen.adjustVScroll(texts, buffer.metrics().rowCount());
-        screen.vScrolled(texts.head().point().row() + texts.head().lineIndex());
+        screen.vScrolled(texts.headlinesIndex());
         hScrollToCaret();
     }
 
@@ -607,7 +606,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     @Override
     public void layoutBounds(double width, double height) {
         screen.setSize(width, height);
-        buffer.setPageSize(screen.pageSize());
+        buffer.setPageSize(screen.pageLineSize());
         texts.markDirty();
         caret.markDirty();
         if (texts instanceof WrapScreenText wrap) {
@@ -615,8 +614,6 @@ public class EditorModelImpl implements EditorModel, Editor {
         }
         screen.initScroll(texts, buffer.metrics().rowCount());
     }
-
-    // -- conf behavior -------------------------------------------------------
 
     @Override
     public void toggleWrap() {
@@ -640,14 +637,12 @@ public class EditorModelImpl implements EditorModel, Editor {
             return;
         }
         selection.clear();
-        double textLeft = screen.gutter().width() - screen.hScrollValue();
-        int offset = texts.at(x - textLeft, y);
+        int offset = texts.at(x - screen.textLeft(), y);
         caret.at(offset, true);
     }
     @Override
     public void clickDouble(double x, double y) {
-        double textLeft = screen.gutter().width() - screen.hScrollValue();
-        int[] offsets = texts.atAroundWord(x - textLeft, y);
+        int[] offsets = texts.atAroundWord(x - screen.textLeft(), y);
         if (offsets.length == 2) {
             SelectBehavior.select(offsets, caret, selection);
         } else {
@@ -656,22 +651,18 @@ public class EditorModelImpl implements EditorModel, Editor {
     }
     @Override
     public void dragged(double x, double y) {
-        double textLeft = screen.gutter().width() - screen.hScrollValue();
-        caret.at(texts.at(x - textLeft, y), true);
+        caret.at(texts.at(x - screen.textLeft(), y), true);
         if (selection.isDragging()) {
             selection.to(caret.caretPoint());
         } else {
-            selection().startDragging(caret.caretPoint());
+            selection.startDragging(caret.caretPoint());
         }
     }
 
-    // -- select behavior -----------------------------------------------------
+    // <editor-fold defaultstate="collapsed" desc="select behavior">
     @Override
     public void selectOn() {
-    if (!selection.started()) {
-        selection.start(caret.caretPoint());
-    }
-
+        if (!selection.started()) selection.start(caret.caretPoint());
     }
     @Override
     public void selectOff() {
@@ -679,16 +670,15 @@ public class EditorModelImpl implements EditorModel, Editor {
     }
     @Override
     public void selectTo() {
-        if (selection.started()) {
-            selection.to(caret.caretPoint());
-        }
+        if (selection.started()) selection.to(caret.caretPoint());
     }
     @Override
     public void selectAll() {
         selection.selectAll(buffer.metrics());
     }
+    // </editor-fold>
 
-    // -- clipboard behavior --------------------------------------------------
+    // <editor-fold defaultstate="collapsed" desc="clipboard behavior">
     @Override
     public void pasteFromClipboard() {
         ClipboardBehavior.pasteFromClipboard(this);
@@ -701,8 +691,9 @@ public class EditorModelImpl implements EditorModel, Editor {
     public void cutToClipboard() {
         ClipboardBehavior.cutToClipboard(this);
     }
+    // </editor-fold>
 
-    // -- file behavior -------------------------------------------------------
+    // <editor-fold defaultstate="collapsed" desc="file behavior">
     @Override
     public void save() {
         buffer.save();
@@ -719,15 +710,9 @@ public class EditorModelImpl implements EditorModel, Editor {
     public boolean modified() {
         return buffer.metrics().modified();
     }
-
-    // -- private -------------------------------------------------------------
-
-    private LayoutLine layoutLine(int offset) {
-        return texts.layoutLine(offset);
-    }
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="editor accessor">
-
     @Override
     public TextBuffer<Textual> buffer() {
         return buffer;
@@ -745,5 +730,12 @@ public class EditorModelImpl implements EditorModel, Editor {
         return texts;
     }
     // </editor-fold>
+
+    // -- private -------------------------------------------------------------
+
+    private LayoutLine layoutLine(int offset) {
+        return texts.layoutLine(offset);
+    }
+
 
 }
