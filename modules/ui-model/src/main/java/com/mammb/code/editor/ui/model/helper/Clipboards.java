@@ -13,50 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.model.behavior;
+package com.mammb.code.editor.ui.model.helper;
 
-import com.mammb.code.editor.model.edit.Edit;
-import com.mammb.code.editor.model.text.Textual;
-import com.mammb.code.editor.ui.model.impl.Editor;
 import javafx.scene.input.DataFormat;
+
 import java.util.Map;
 
 /**
- * ClipboardBehavior.
+ * Clipboard utilities.
  * @author Naotsugu Kobayashi
  */
-public class ClipboardBehavior {
-
-    public static void pasteFromClipboard(Editor self) {
-        self.input(get());
-    }
-
-    public static void copyToClipboard(Editor self) {
-        copyToClipboard(self, false);
-    }
-
-    public static void cutToClipboard(Editor self) {
-        copyToClipboard(self, true);
-    }
-
-    /**
-     * Copy the selection text to the clipboard.
-     * @param cut need cut?
-     */
-    private static void copyToClipboard(Editor self, boolean cut) {
-        if (self.selection().length() > 0) {
-            Textual text = self.buffer().subText(self.selection().min(), self.selection().length());
-            put(text.text());
-            if (cut && !self.buffer().readOnly()) {
-                self.buffer().push(Edit.delete(text.point(), text.text()));
-                self.selection().clear();
-                self.caret().at(text.point().offset(), true);
-                self.texts().markDirty();
-                self.caret().markDirty();
-            }
-        }
-    }
-
+public class Clipboards {
 
     /**
      * Put the text to clipboard.

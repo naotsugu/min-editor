@@ -34,8 +34,8 @@ import com.mammb.code.editor.ui.model.Rect;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.StateHandler;
-import com.mammb.code.editor.ui.model.behavior.ClipboardBehavior;
-import com.mammb.code.editor.ui.model.behavior.SelectBehavior;
+import com.mammb.code.editor.ui.model.helper.Clipboards;
+import com.mammb.code.editor.ui.model.helper.Selections;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
 import com.mammb.code.editor.ui.model.screen.WrapScreenText;
@@ -511,7 +511,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         }
         Textual text = buffer.subText(selection.min(), selection.length());
         buffer.push(Edit.replace(text.point(), text.text(), string));
-        SelectBehavior.select(text.offset(), text.offset() + string.length(), caret, selection);
+        Selections.select(text.offset(), text.offset() + string.length(), caret, selection);
         texts.markDirty();
         caret.markDirty();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
@@ -552,7 +552,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         if (buffer.readOnly()) {
             return;
         }
-        SelectBehavior.selectCurrentRow(caret, selection, texts);
+        Selections.selectCurrentRow(caret, selection, texts);
         replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
             .collect(Collectors.joining()));
@@ -563,7 +563,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         if (buffer.readOnly()) {
             return;
         }
-        SelectBehavior.selectCurrentRow(caret, selection, texts);
+        Selections.selectCurrentRow(caret, selection, texts);
         replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
             .collect(Collectors.joining()));
@@ -619,7 +619,7 @@ public class EditorModelImpl implements EditorModel, Editor {
     public void clickDouble(double x, double y) {
         int[] offsets = texts.atAroundWord(x - screen.textLeft(), y);
         if (offsets.length == 2) {
-            SelectBehavior.select(offsets, caret, selection);
+            Selections.select(offsets, caret, selection);
         } else {
             caret.at(offsets[0], true);
         }
@@ -656,15 +656,15 @@ public class EditorModelImpl implements EditorModel, Editor {
     // <editor-fold defaultstate="collapsed" desc="clipboard behavior">
     @Override
     public void pasteFromClipboard() {
-        ClipboardBehavior.pasteFromClipboard(this);
+        input(Clipboards.get());
     }
     @Override
     public void copyToClipboard() {
-        ClipboardBehavior.copyToClipboard(this);
+        copyToClipboard(false);
     }
     @Override
     public void cutToClipboard() {
-        ClipboardBehavior.cutToClipboard(this);
+        copyToClipboard(true);
     }
     // </editor-fold>
 
@@ -721,5 +721,24 @@ public class EditorModelImpl implements EditorModel, Editor {
             ? buffer.metrics().rowCount() + (w.wrappedSize() - buffer.pageSize())
             : buffer.metrics().rowCount();
     }
+
+    /**
+     * Copy the selection text to the clipboard.
+     * @param cut need cut?
+     */
+    private void copyToClipboard(boolean cut) {
+        if (selection.length() > 0) {
+            Textual text = buffer.subText(selection.min(), selection.length());
+            Clipboards.put(text.text());
+            if (cut && !buffer.readOnly()) {
+                buffer.push(Edit.delete(text.point(), text.text()));
+                selection.clear();
+                caret.at(text.point().offset(), true);
+                texts.markDirty();
+                caret.markDirty();
+            }
+        }
+    }
+
 
 }

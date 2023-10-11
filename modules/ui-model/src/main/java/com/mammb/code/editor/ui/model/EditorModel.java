@@ -28,31 +28,7 @@ import java.util.function.Predicate;
  * EditorModel.
  * @author Naotsugu Kobayashi
  */
-public interface EditorModel {
-
-    /**
-     * Draw the screen.
-     * @param gc the GraphicsContext
-     */
-    void draw(GraphicsContext gc);
-
-    /**
-     * Tick.
-     * @param gc the GraphicsContext
-     */
-    void tick(GraphicsContext gc);
-
-    /**
-     * Show caret.
-     * @param gc the GraphicsContext
-     */
-    void showCaret(GraphicsContext gc);
-
-    /**
-     * Hide caret.
-     * @param gc the GraphicsContext
-     */
-    void hideCaret(GraphicsContext gc);
+public interface EditorModel extends EditorDraw {
 
     void moveCaretRight();
     void moveCaretLeft();

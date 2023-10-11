@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.model.behavior;
+package com.mammb.code.editor.ui.model.helper;
 
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Select behavior collection.
+ * Selection utilities.
  * @author Naotsugu Kobayashi
  */
-public class SelectBehavior {
+public class Selections {
 
     /**
      * Select the specified range.
@@ -73,7 +73,7 @@ public class SelectBehavior {
      * @param texts the texts
      */
     public static void selectCurrentLine(Caret caret, Selection selection, ScreenText texts) {
-        SelectBehavior.select(linePointRange(caret.offset(), texts), caret, selection);
+        Selections.select(linePointRange(caret.offset(), texts), caret, selection);
     }
 
     /**
@@ -85,7 +85,7 @@ public class SelectBehavior {
     public static void selectCurrentRow(Caret caret, Selection selection, ScreenText texts) {
         if (selection.length() == 0 || selection.min().row() == selection.max().row()) {
             // if not selected or within a row selected, select current row
-            SelectBehavior.select(rowPointRange(caret.offset(), texts), caret, selection);
+            Selections.select(rowPointRange(caret.offset(), texts), caret, selection);
         } else {
             // if selected, reselect all rows in the selection
             OffsetPoint start = rowPointRange(selection.min().offset(), texts)[0];
@@ -93,7 +93,7 @@ public class SelectBehavior {
             OffsetPoint[] range = (selection.startOffset() == selection.min())
                 ? new OffsetPoint[] { start, end }
                 : new OffsetPoint[] { end, start };
-            SelectBehavior.select(range, caret, selection);
+            Selections.select(range, caret, selection);
         }
     }
 
