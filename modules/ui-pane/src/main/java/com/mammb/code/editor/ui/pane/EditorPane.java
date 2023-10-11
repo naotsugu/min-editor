@@ -125,7 +125,7 @@ public class EditorPane extends StackPane {
         getChildren().add(statusPanel);
         StackPane.setMargin(vScrollBar, new Insets(0, 0, StatusPanel.HEIGHT, 0));
         StackPane.setMargin(hScrollBar, new Insets(0, StatusPanel.WIDTH, 0, 0));
-        initModelChanged();
+        initModelChanged(model);
 
     }
 
@@ -154,12 +154,11 @@ public class EditorPane extends StackPane {
 
     }
 
-    private void initModelChanged() {
-        model.stateChange().addCaretPointChanged(c -> statusPanel.push("caret", (c.row() + 1) + ":" + c.offset()));
-        model.stateChange().addLineEndingChanged(c -> statusPanel.push("lineEnding", c.toString()));
-        model.stateChange().addCharsetChanged(c -> statusPanel.push("charset", c.toString()));
+    private void initModelChanged(EditorModel m) {
+        m.stateChange().addCaretPointChanged(c -> statusPanel.push("caret", (c.row() + 1) + ":" + c.offset()));
+        m.stateChange().addLineEndingChanged(c -> statusPanel.push("lineEnding", c.toString()));
+        m.stateChange().addCharsetChanged(c -> statusPanel.push("charset", c.toString()));
     }
-
 
     /**
      * Open the file content path.
@@ -393,7 +392,7 @@ public class EditorPane extends StackPane {
      */
     private void handleModelCreated(WorkerStateEvent e) {
         model = (EditorModel) e.getSource().getValue();
-        initModelChanged();
+        initModelChanged(model);
         model.draw(gc);
     }
 

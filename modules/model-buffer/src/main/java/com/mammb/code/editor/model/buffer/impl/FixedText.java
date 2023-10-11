@@ -65,6 +65,7 @@ public class FixedText implements TextBuffer<Textual> {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        metrics.setCharset(cs);
 
         try (var r = Files.newBufferedReader(path, cs)) {
             int offset = 0;

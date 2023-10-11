@@ -18,7 +18,6 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.ui.control.ScrollBar;
-import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.Rect;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.text.Font;
@@ -87,32 +86,37 @@ public class ScreenScroll {
 
     public void adjustHScroll() {
         if (hScrollEnabled) {
-            double w = Math.max(0, textAreaWidth());
+            double w = Math.max(0, width - gutter.width());
             double adjustedMax = Math.max(0, maxWidth - w);
             double ratio = adjustedMax / maxWidth; // reduction ratio
             hScroll.setMax(adjustedMax);
             hScroll.setVisibleAmount(w * ratio);
         } else {
-            hScroll.setMax(textAreaWidth());
-            hScroll.setVisibleAmount(textAreaWidth());
+            hScroll.setMax(width - gutter.width());
+            hScroll.setVisibleAmount(width - gutter.width());
         }
     }
 
-    public void hScrollTo(Caret caret) {
+    public void hScrollTo(double caretX) {
         if (!hScrollEnabled) return;
         adjustHScroll();
         double gap = width / 10;
-        if (caret.x() <= hScrollValue()) {
-            hScrolled(caret.x() - gap);
+        if (caretX <= hScrollValue()) {
+            hScrolled(caretX - gap);
             return;
         }
-        double right = textAreaWidth() + hScrollValue();
-        if (caret.x() + gap >= right) {
-            double delta = caret.x() + gap - right;
+        double right = (width - gutter.width()) + hScrollValue();
+        if (caretX + gap >= right) {
+            double delta = caretX + gap - right;
             hScrolled(hScrollValue() + delta);
         }
     }
 
+    public void syncScroll(int headlinesIndex, int totalLines, double caretX) {
+        adjustVScroll(totalLines);
+        vScrolled(headlinesIndex);
+        hScrollTo(caretX);
+    }
 
     public void vScrolled(int value) {
         vScroll.setValue(value);
@@ -141,7 +145,7 @@ public class ScreenScroll {
     }
 
     public double textLeft() {
-        return gutter().width() - hScroll.getValue();
+        return gutter.width() - hScroll.getValue();
     }
 
     public double width() {
@@ -165,11 +169,7 @@ public class ScreenScroll {
     }
 
     public Rect textArea() {
-        return new Rect(gutter.width(), 0, textAreaWidth(), height);
-    }
-
-    public double textAreaWidth() {
-        return width - gutter.width();
+        return new Rect(gutter.width(), 0, width - gutter.width(), height);
     }
 
     static int screenRowSize(double height, Context context) {
