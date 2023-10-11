@@ -16,7 +16,6 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.control.HScrollBar;
-import com.mammb.code.editor.ui.control.StatusPanel;
 import com.mammb.code.editor.ui.control.VScrollBar;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -71,11 +70,12 @@ public class EditorPane extends StackPane {
     private VScrollBar vScrollBar;
     /** The horizontal scroll bar for line scroll. */
     private HScrollBar hScrollBar;
+    /** The status bar. */
+    private StatusBar statusBar;
 
     /** The margin. */
     private double margin = 5.5;
 
-    private StatusPanel statusPanel;
 
     /**
      * Constructor.
@@ -120,12 +120,11 @@ public class EditorPane extends StackPane {
 
         initHandler();
 
-        statusPanel = new StatusPanel(Color.web(context.preference().fgColor()));
-        StackPane.setAlignment(statusPanel, Pos.BOTTOM_RIGHT);
-        getChildren().add(statusPanel);
-        StackPane.setMargin(vScrollBar, new Insets(0, 0, StatusPanel.HEIGHT, 0));
-        StackPane.setMargin(hScrollBar, new Insets(0, StatusPanel.WIDTH, 0, 0));
-        initModelChanged(model);
+        statusBar = new StatusBar(context);
+        getChildren().add(statusBar);
+        StackPane.setMargin(vScrollBar, new Insets(0, 0, StatusBar.HEIGHT, 0));
+        StackPane.setMargin(hScrollBar, new Insets(0, StatusBar.WIDTH, 0, 0));
+        statusBar.bind(model.stateChange());
 
     }
 
@@ -152,12 +151,6 @@ public class EditorPane extends StackPane {
         vScrollBar.setOnScrolled(this::handleVScrolled);
         hScrollBar.setOnScrolled(this::handleHScrolled);
 
-    }
-
-    private void initModelChanged(EditorModel m) {
-        m.stateChange().addCaretPointChanged(c -> statusPanel.push("caret", (c.row() + 1) + ":" + c.offset()));
-        m.stateChange().addLineEndingChanged(c -> statusPanel.push("lineEnding", c.toString()));
-        m.stateChange().addCharsetChanged(c -> statusPanel.push("charset", c.toString()));
     }
 
     /**
@@ -392,7 +385,7 @@ public class EditorPane extends StackPane {
      */
     private void handleModelCreated(WorkerStateEvent e) {
         model = (EditorModel) e.getSource().getValue();
-        initModelChanged(model);
+        statusBar.bind(model.stateChange());
         model.draw(gc);
     }
 
