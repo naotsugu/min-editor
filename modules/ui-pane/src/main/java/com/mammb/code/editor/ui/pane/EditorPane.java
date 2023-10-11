@@ -253,8 +253,8 @@ public class EditorPane extends StackPane {
             case DOWN       -> aroundEdit(model::moveCaretDown, withSelect);
             case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
             case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
-            case PAGE_UP    -> aroundEdit(model::moveCaretPageUp, withSelect);
-            case PAGE_DOWN  -> aroundEdit(model::moveCaretPageDown, withSelect);
+            case PAGE_UP    -> aroundEdit(model::pageUp, withSelect);
+            case PAGE_DOWN  -> aroundEdit(model::pageDown, withSelect);
             case DELETE     -> aroundEdit(model::delete);
             case BACK_SPACE -> aroundEdit(model::backspace);
             case ESCAPE     -> aroundEdit(model::selectOff);

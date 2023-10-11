@@ -34,8 +34,8 @@ public interface EditorModel extends EditorDraw {
     void moveCaretLeft();
     void moveCaretUp();
     void moveCaretDown();
-    void moveCaretPageUp();
-    void moveCaretPageDown();
+    void pageUp();
+    void pageDown();
     void moveCaretLineHome();
     void moveCaretLineEnd();
 

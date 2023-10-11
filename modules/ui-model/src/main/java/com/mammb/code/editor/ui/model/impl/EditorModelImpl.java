@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.model.impl;
 
-import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.layout.TextLine;
@@ -34,9 +33,9 @@ import com.mammb.code.editor.ui.model.Rect;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.StateHandler;
+import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.helper.Clipboards;
 import com.mammb.code.editor.ui.model.helper.Selections;
-import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
 import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -44,11 +43,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -56,7 +53,7 @@ import java.util.stream.Collectors;
  * EditorModel.
  * @author Naotsugu Kobayashi
  */
-public class EditorModelImpl implements EditorModel, Editor {
+public class EditorModelImpl implements EditorModel {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(EditorModelImpl.class.getName());
@@ -177,7 +174,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             caret.markDirty();
             draw(gc);
         }
-        stateChange.push(metrics(), caret);
+        stateChange.push(buffer.metrics(), caret);
     }
 
     private void draw(GraphicsContext gc, LayoutLine layoutLine) {
@@ -259,14 +256,6 @@ public class EditorModelImpl implements EditorModel, Editor {
         }
     }
 
-    /**
-     * Get the metrics.
-     * @return the metrics
-     */
-    public Metrics metrics() {
-        return buffer.metrics();
-    }
-
     @Override
     public StateHandler stateChange() {
         return stateChange;
@@ -283,150 +272,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             predicate.test(buffer.subText(selection.min(), selection.length()));
     }
 
-    // -- ime behavior  ----------------------------------------------------
-    @Override
-    public Rect imeOn(GraphicsContext gc) {
-        if (!ime.enabled()) {
-            vScrollToCaret();
-            ime.on(caret.caretPoint());
-            draw(gc, caret.layoutLine());
-        }
-        return new Rect(caret.x() + screen.textLeft(), caret.y(), caret.width(), caret.height());
-    }
-    @Override
-    public void imeOff() {
-        ime.off();
-        buffer.flush();
-    }
-    @Override
-    public void imeCommitted(String text) {
-        ime.off();
-        input(text);
-    }
-    @Override
-    public void imeComposed(List<ImeRun> runs) {
-        ime.composed(buffer, runs);
-        texts.markDirty();
-        caret.markDirty();
-    }
-    @Override
-    public boolean isImeOn() {
-        return ime.enabled();
-    }
-
-    // -- scroll behavior  ----------------------------------------------------
-    @Override
-    public void scrollPrev(int n) {
-        int size = texts.prev(n);
-        caret.markDirty();
-        if (size == 0) {
-            return;
-        }
-        texts.markDirty();
-        screen.vScrolled(texts.headlinesIndex());
-    }
-    @Override
-    public void scrollNext(int n) {
-        int size = texts.next(n);
-        caret.markDirty();
-        if (size == 0) {
-            return;
-        }
-        screen.vScrolled(texts.headlinesIndex());
-    }
-    @Override
-    public void vScrolled(int oldValue, int newValue) {
-        int delta = newValue - oldValue;
-        if (delta == 0) {
-            return;
-        }
-        int size = (delta > 0)
-            ? texts.next(delta)
-            : texts.prev(Math.abs(delta));
-        if (size == 0) {
-            return;
-        }
-        texts.markDirty();
-        caret.markDirty();
-    }
-
-    // -- arrow behavior ------------------------------------------------------
-    @Override
-    public void moveCaretRight() {
-        vScrollToCaret();
-        if (caret.y2() + 4 >= screen.height()) scrollNext(1);
-        caret.right();
-        if (caret.y2() > screen.height()) scrollNext(1);
-        screen.hScrollTo(caret.x());
-    }
-    @Override
-    public void moveCaretLeft() {
-        vScrollToCaret();
-        if (texts.head().offset() > 0 && texts.head().offset() == caret.offset()) {
-            scrollPrev(1);
-        }
-        caret.left();
-        screen.hScrollTo(caret.x());
-    }
-    @Override
-    public void moveCaretUp() {
-        vScrollToCaret();
-        if (texts.head().offset() > 0 && caret.offset() < texts.head().tailOffset()) {
-            scrollPrev(1);
-        }
-        caret.up();
-        screen.hScrollTo(caret.x());
-    }
-    @Override
-    public void moveCaretDown() {
-        vScrollToCaret();
-        if (caret.y2() + 4 >= screen.height()) scrollNext(1);
-        caret.down();
-        if (caret.y2() > screen.height()) scrollNext(1);
-        screen.hScrollTo(caret.x());
-    }
-    @Override
-    public void moveCaretPageUp() {
-        vScrollToCaret();
-        double x = caret.x();
-        double y = caret.y();
-        scrollPrev(texts.capacity() - 1);
-        caret.at(texts.at(x, y), false);
-    }
-    @Override
-    public void moveCaretPageDown() {
-        vScrollToCaret();
-        double x = caret.x();
-        double y = caret.y();
-        scrollNext(texts.capacity() - 1);
-        caret.at(texts.at(x, y), false);
-    }
-    @Override
-    public void moveCaretLineHome() {
-        vScrollToCaret();
-        LayoutLine line = texts.layoutLine(caret.offset());
-        if (line.offset() == caret.offset()) {
-            if (Character.isWhitespace(line.charAt(caret.offset()))) {
-                while (caret.offset() < line.tailOffset() &&
-                    Character.isWhitespace(line.charAt(caret.offset()))) {
-                    caret.right();
-                }
-            }
-        } else {
-            caret.at(line.offset(), true);
-        }
-        screen.hScrollTo(caret.x());
-    }
-    @Override
-    public void moveCaretLineEnd() {
-        vScrollToCaret();
-        LayoutLine line = texts.layoutLine(caret.offset());
-        int offset = line.tailOffset() - line.endMarkCount();
-        caret.at(offset, true);
-        screen.hScrollTo(caret.x());
-    }
-
-    // -- edit behavior -------------------------------------------------------
+    // <editor-fold defaultstate="collapsed" desc="edit behavior">
     @Override
     public void input(String input) {
 
@@ -434,7 +280,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             return;
         }
 
-        String value = metrics().lineEnding().unify(input);
+        String value = buffer.metrics().lineEnding().unify(input);
 
         if (selection.length() > 0) {
             selectionReplace(value);
@@ -448,7 +294,7 @@ public class EditorModelImpl implements EditorModel, Editor {
         screen.adjustVScroll(totalLines());
 
         int count = Character.codePointCount(value, 0, value.length());
-        if (metrics().lineEnding().isCrLf()) {
+        if (buffer.metrics().lineEnding().isCrLf()) {
             count -= (int) value.chars().filter(c -> c == '\r').count();
         }
         for (int i = 0; i < count; i++) {
@@ -496,38 +342,6 @@ public class EditorModelImpl implements EditorModel, Editor {
         screen.adjustVScroll(totalLines());
     }
 
-    private void selectionReplace(String string) {
-        vScrollToCaret();
-        if (buffer.readOnly()) {
-            return;
-        }
-        if (string == null || string.isEmpty()) {
-            selectionDelete();
-            return;
-        }
-        if (selection.length() <= 0) {
-            input(string);
-            return;
-        }
-        Textual text = buffer.subText(selection.min(), selection.length());
-        buffer.push(Edit.replace(text.point(), text.text(), string));
-        Selections.select(text.offset(), text.offset() + string.length(), caret, selection);
-        texts.markDirty();
-        caret.markDirty();
-        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
-    }
-    private void selectionDelete() {
-        if (selection.length() == 0) {
-            return;
-        }
-        Textual text = buffer.subText(selection.min(), selection.length());
-        buffer.push(Edit.delete(text.point(), text.text()));
-        selection.clear();
-        caret.at(text.point().offset(), true);
-        texts.markDirty();
-        caret.markDirty();
-        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
-    }
     @Override
     public void undo() {
         selection.clear();
@@ -546,16 +360,20 @@ public class EditorModelImpl implements EditorModel, Editor {
         caret.at(edit.point().offset(), true);
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
     }
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="special edit behavior">
     @Override
     public void indent() {
         if (buffer.readOnly()) {
             return;
         }
         Selections.selectCurrentRow(caret, selection, texts);
-        replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
+        Textual text = buffer.subText(selection.min(), selection.length());
+        String replace = Arrays.stream(text.text().split("(?<=\n)"))
             .map(l -> "    " + l)
-            .collect(Collectors.joining()));
+            .collect(Collectors.joining());
+        selectionReplace(replace);
     }
 
     @Override
@@ -564,46 +382,133 @@ public class EditorModelImpl implements EditorModel, Editor {
             return;
         }
         Selections.selectCurrentRow(caret, selection, texts);
-        replaceSelection(text -> Arrays.stream(text.split("(?<=\n)"))
-            .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
-            .collect(Collectors.joining()));
-    }
-
-    private void replaceSelection(Function<String, String> replace) {
         Textual text = buffer.subText(selection.min(), selection.length());
-        selectionReplace(replace.apply(text.text()));
+        String replace = Arrays.stream(text.text().split("(?<=\n)"))
+            .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
+            .collect(Collectors.joining());
+        selectionReplace(replace);
     }
+    // </editor-fold>
 
-    // -- layout behavior -----------------------------------------------------
+    // <editor-fold defaultstate="collapsed" desc="caret behavior">
+    @Override
+    public void moveCaretRight() {
+        vScrollToCaret();
+        if (caret.y2() + 4 >= screen.height()) scrollNext(1);
+        caret.right();
+        if (caret.y2() > screen.height()) scrollNext(1);
+        screen.hScrollTo(caret.x());
+    }
+    @Override
+    public void moveCaretLeft() {
+        vScrollToCaret();
+        if (texts.head().offset() > 0 && texts.head().offset() == caret.offset()) {
+            scrollPrev(1);
+        }
+        caret.left();
+        screen.hScrollTo(caret.x());
+    }
+    @Override
+    public void moveCaretUp() {
+        vScrollToCaret();
+        if (texts.head().offset() > 0 && caret.offset() < texts.head().tailOffset()) {
+            scrollPrev(1);
+        }
+        caret.up();
+        screen.hScrollTo(caret.x());
+    }
+    @Override
+    public void moveCaretDown() {
+        vScrollToCaret();
+        if (caret.y2() + 4 >= screen.height()) scrollNext(1);
+        caret.down();
+        if (caret.y2() > screen.height()) scrollNext(1);
+        screen.hScrollTo(caret.x());
+    }
+    @Override
+    public void moveCaretLineHome() {
+        vScrollToCaret();
+        LayoutLine line = texts.layoutLine(caret.offset());
+        if (line.offset() == caret.offset()) {
+            if (Character.isWhitespace(line.charAt(caret.offset()))) {
+                while (caret.offset() < line.tailOffset() &&
+                    Character.isWhitespace(line.charAt(caret.offset()))) {
+                    caret.right();
+                }
+            }
+        } else {
+            caret.at(line.offset(), true);
+        }
+        screen.hScrollTo(caret.x());
+    }
+    @Override
+    public void moveCaretLineEnd() {
+        vScrollToCaret();
+        LayoutLine line = texts.layoutLine(caret.offset());
+        int offset = line.tailOffset() - line.endMarkCount();
+        caret.at(offset, true);
+        screen.hScrollTo(caret.x());
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="scroll behavior">
+    @Override
+    public void scrollPrev(int n) {
+        int size = texts.prev(n);
+        caret.markDirty();
+        if (size == 0) {
+            return;
+        }
+        texts.markDirty();
+        screen.vScrolled(texts.headlinesIndex());
+    }
 
     @Override
-    public void layoutBounds(double width, double height) {
-        screen.setSize(width, height);
-        buffer.setPageSize(screen.pageLineSize());
+    public void scrollNext(int n) {
+        int size = texts.next(n);
+        caret.markDirty();
+        if (size == 0) {
+            return;
+        }
+        screen.vScrolled(texts.headlinesIndex());
+    }
+
+    @Override
+    public void pageUp() {
+        vScrollToCaret();
+        double x = caret.x();
+        double y = caret.y();
+        scrollPrev(texts.capacity() - 1);
+        caret.at(texts.at(x, y), false);
+    }
+
+    @Override
+    public void pageDown() {
+        vScrollToCaret();
+        double x = caret.x();
+        double y = caret.y();
+        scrollNext(texts.capacity() - 1);
+        caret.at(texts.at(x, y), false);
+    }
+
+    @Override
+    public void vScrolled(int oldValue, int newValue) {
+        int delta = newValue - oldValue;
+        if (delta == 0) {
+            return;
+        }
+        int size = (delta > 0)
+            ? texts.next(delta)
+            : texts.prev(Math.abs(delta));
+        if (size == 0) {
+            return;
+        }
         texts.markDirty();
         caret.markDirty();
-        if (texts instanceof WrapScreenText wrap) {
-            wrap.setWrapWidth(screen.textArea().w());
-        }
-        screen.initScroll(texts.headlinesIndex(), totalLines());
     }
+    // </editor-fold>
 
-    @Override
-    public void toggleWrap() {
-        if (texts instanceof PlainScreenText linear)  {
-            texts = linear.asWrapped(screen.textArea().w());
-            screen.sethScrollEnabled(false);
-            caret.markDirty();
-        } else if (texts instanceof WrapScreenText wrap) {
-            texts = wrap.asPlain();
-            screen.sethScrollEnabled(true);
-            screen.setMaxWidth(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
-            caret.markDirty();
-        }
-        screen.initScroll(texts.headlinesIndex(), totalLines());
-    }
-
-    // -- mouse behavior ------------------------------------------------------
+    // <editor-fold defaultstate="collapsed" desc="mouse behavior">
     @Override
     public void click(double x, double y) {
         if (selection.isDragging()) {
@@ -633,6 +538,7 @@ public class EditorModelImpl implements EditorModel, Editor {
             selection.startDragging(caret.caretPoint());
         }
     }
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="select behavior">
     @Override
@@ -687,26 +593,102 @@ public class EditorModelImpl implements EditorModel, Editor {
     }
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="editor accessor">
+    // <editor-fold defaultstate="collapsed" desc="ime behavior">
     @Override
-    public TextBuffer<Textual> buffer() {
-        return buffer;
+    public Rect imeOn(GraphicsContext gc) {
+        if (!ime.enabled()) {
+            vScrollToCaret();
+            ime.on(caret.caretPoint());
+            draw(gc, caret.layoutLine());
+        }
+        return new Rect(caret.x() + screen.textLeft(), caret.y(), caret.width(), caret.height());
     }
     @Override
-    public Caret caret() {
-        return caret;
+    public void imeOff() {
+        ime.off();
+        buffer.flush();
     }
     @Override
-    public Selection selection() {
-        return selection;
+    public void imeCommitted(String text) {
+        ime.off();
+        input(text);
     }
     @Override
-    public ScreenText texts() {
-        return texts;
+    public void imeComposed(List<ImeRun> runs) {
+        ime.composed(buffer, runs);
+        texts.markDirty();
+        caret.markDirty();
+    }
+    @Override
+    public boolean isImeOn() {
+        return ime.enabled();
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="layout behavior">
+    @Override
+    public void layoutBounds(double width, double height) {
+        screen.setSize(width, height);
+        buffer.setPageSize(screen.pageLineSize());
+        texts.markDirty();
+        caret.markDirty();
+        if (texts instanceof WrapScreenText wrap) {
+            wrap.setWrapWidth(screen.textArea().w());
+        }
+        screen.initScroll(texts.headlinesIndex(), totalLines());
+    }
+
+    @Override
+    public void toggleWrap() {
+        if (texts instanceof PlainScreenText linear)  {
+            texts = linear.asWrapped(screen.textArea().w());
+            screen.sethScrollEnabled(false);
+            caret.markDirty();
+        } else if (texts instanceof WrapScreenText wrap) {
+            texts = wrap.asPlain();
+            screen.sethScrollEnabled(true);
+            screen.setMaxWidth(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
+            caret.markDirty();
+        }
+        screen.initScroll(texts.headlinesIndex(), totalLines());
     }
     // </editor-fold>
 
     // -- private -------------------------------------------------------------
+
+    private void selectionReplace(String string) {
+        vScrollToCaret();
+        if (buffer.readOnly()) {
+            return;
+        }
+        if (string == null || string.isEmpty()) {
+            selectionDelete();
+            return;
+        }
+        if (selection.length() <= 0) {
+            input(string);
+            return;
+        }
+        Textual text = buffer.subText(selection.min(), selection.length());
+        buffer.push(Edit.replace(text.point(), text.text(), string));
+        Selections.select(text.offset(), text.offset() + string.length(), caret, selection);
+        texts.markDirty();
+        caret.markDirty();
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+    }
+
+    private void selectionDelete() {
+        if (selection.length() == 0) {
+            return;
+        }
+        Textual text = buffer.subText(selection.min(), selection.length());
+        buffer.push(Edit.delete(text.point(), text.text()));
+        selection.clear();
+        caret.at(text.point().offset(), true);
+        texts.markDirty();
+        caret.markDirty();
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+    }
 
     private void vScrollToCaret() {
         boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
@@ -739,6 +721,5 @@ public class EditorModelImpl implements EditorModel, Editor {
             }
         }
     }
-
 
 }
