@@ -214,10 +214,11 @@ public class CaretImpl implements Caret {
 
     @Override
     public OffsetPoint caretPoint() {
-        LayoutLine layoutLine = offsetToLine.apply(offset);
-        return (layoutLine == null)
-            ? OffsetPoint.zero
-            : layoutLine.offsetPoint(offset);
+        if (offset == 0) {
+            return OffsetPoint.zero;
+        }
+        LayoutLine line = offsetToLine.apply(offset);
+        return (line == null) ? null : line.offsetPoint(offset);
     }
 
 

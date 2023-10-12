@@ -20,6 +20,7 @@ import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.model.impl.EditorModelImpl;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.GraphicsContext;
+
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Predicate;
@@ -30,25 +31,101 @@ import java.util.function.Predicate;
  */
 public interface EditorModel extends EditorDraw {
 
+    // -- edit behavior -------------------------------------------------------
+    /**
+     * Input the string.
+     * @param input the string.
+     */
+    void input(String input);
+    /**
+     * Delete a character.
+     */
+    void delete();
+    /**
+     * Backspace delete a character.
+     */
+    void backspace();
+    /**
+     * Undo.
+     */
+    void undo();
+    /**
+     * Redo.
+     */
+    void redo();
+
+    // -- special edit behavior -----------------------------------------------
+    /**
+     * Indent.
+     */
+    void indent();
+    /**
+     * Unindent.
+     */
+    void unindent();
+
+    // -- caret behavior ------------------------------------------------------
+
     void moveCaretRight();
     void moveCaretLeft();
     void moveCaretUp();
     void moveCaretDown();
-    void pageUp();
-    void pageDown();
     void moveCaretLineHome();
     void moveCaretLineEnd();
 
+    // -- scroll behavior ------------------------------------------------------
+
     void scrollPrev(int n);
     void scrollNext(int n);
+    void pageUp();
+    void pageDown();
+    void vScrolled(int oldValue, int newValue);
+
+    // -- mouse behavior ------------------------------------------------------
 
     void click(double x, double y);
     void clickDouble(double x, double y);
     void dragged(double x, double y);
 
-    void input(String input);
-    void delete();
-    void backspace();
+    // -- select behavior ---------------------------------------------------
+
+    void selectOn();
+    void selectOff();
+    void selectTo();
+    void selectAll();
+
+    // -- clipboard behavior ---------------------------------------------------
+    /**
+     * Paste the text from the clipboard.
+     */
+    void pasteFromClipboard();
+    /**
+     * Copy the selection text to the clipboard.
+     */
+    void copyToClipboard();
+    /**
+     * Cut the selection text to the clipboard.
+     */
+    void cutToClipboard();
+
+    // -- file behavior -------------------------------------------------------
+    /**
+     * Save.
+     */
+    void save();
+    /**
+     * Save as.
+     * @param path the path
+     */
+    void saveAs(Path path);
+    /**
+     * Get the path.
+     * @return the path
+     */
+    Path path();
+    boolean modified();
+
+    // -- ime behavior --------------------------------------------------------
 
     Rect imeOn(GraphicsContext gc);
     void imeOff();
@@ -56,51 +133,16 @@ public interface EditorModel extends EditorDraw {
     void imeComposed(List<ImeRun> runs);
     boolean isImeOn();
 
-    /**
-     * Paste the text from the clipboard.
-     */
-    void pasteFromClipboard();
+    // -- layout behavior -----------------------------------------------------
 
-    /**
-     * Copy the selection text to the clipboard.
-     */
-    void copyToClipboard();
+    void layoutBounds(double width, double height);
+    void toggleWrap();
 
-    /**
-     * Cut the selection text to the clipboard.
-     */
-    void cutToClipboard();
-
-    void undo();
-    void redo();
-    void indent();
-    void unindent();
-
-    void selectOn();
-    void selectOff();
-    void selectTo();
-    void selectAll();
-    boolean peekSelection(Predicate<Textual> predicate);
-
-    /**
-     * Save.
-     */
-    void save();
-
-    /**
-     * Save as.
-     * @param path the path
-     */
-    void saveAs(Path path);
-
-    Path path();
-    boolean modified();
+    // -- utilities -----------------------------------------------------------
 
     Rect textAreaRect();
     StateHandler stateChange();
-    void vScrolled(int oldValue, int newValue);
-    void toggleWrap();
-    void layoutBounds(double width, double height);
+    boolean peekSelection(Predicate<Textual> predicate);
 
     /**
      * Create a new partially editor model.

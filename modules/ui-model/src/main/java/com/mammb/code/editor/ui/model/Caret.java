@@ -66,6 +66,7 @@ public interface Caret {
 
     /**
      * Get the point at caret.
+     * Return {@code null} if caret is off-screen.
      * @return the point at caret
      */
     OffsetPoint caretPoint();

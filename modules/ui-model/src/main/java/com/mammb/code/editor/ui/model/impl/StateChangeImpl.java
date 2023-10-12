@@ -47,7 +47,6 @@ public class StateChangeImpl implements StateChange {
             lineEndingHandler.accept(metrics.lineEnding());
         }
         if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
-
             charsetHandler.accept(metrics.charset());
         }
         prevMetrics = new MetricsRecord(metrics);
@@ -55,6 +54,9 @@ public class StateChangeImpl implements StateChange {
 
     public void push(Caret caret) {
         OffsetPoint caretPoint = caret.caretPoint();
+        if (caretPoint == null) {
+            return;
+        }
         if (prevCaretPoint == null || !prevCaretPoint.equals(caretPoint)) {
             caretPointHandler.accept(caretPoint);
         }

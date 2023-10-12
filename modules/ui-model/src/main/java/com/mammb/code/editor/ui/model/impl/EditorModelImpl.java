@@ -101,6 +101,12 @@ public class EditorModelImpl implements EditorModel {
         screen.initScroll(texts.headlinesIndex(), totalLines());
     }
 
+
+    /**
+     * Constructor.
+     * @param context the context
+     * @param context the screen scroll
+     */
     private EditorModelImpl(Context context, ScreenScroll scroll) {
         this(context,
             TextBuffer.editBuffer(null, scroll.pageLineSize()),
