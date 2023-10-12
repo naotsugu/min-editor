@@ -59,7 +59,8 @@ public class StatusBar extends HBox {
     public StatusBar(Context context) {
 
         this.context = context;
-        this.selectionText  = createText();
+        this.selectionText = createText();
+        this.selectionText.setVisible(false);
         this.caretPointText = createText();
         this.lineEndingText = createText();
         this.charsetText    = createText();
@@ -89,7 +90,11 @@ public class StatusBar extends HBox {
         stateHandler.addCharsetChanged(c ->
             charsetText.setText(c.toString()));
         stateHandler.addCaretPointChanged(c ->
-            caretPointText.setText(String.valueOf(c.cpOffset())));
+            caretPointText.setText("%d:%d".formatted(c.row() + 1, c.cpOffset())));
+        stateHandler.addSelectionChanged(c -> {
+            selectionText.setVisible(c.length() > 0);
+            selectionText.setText("%d chars".formatted(c.length()));
+        });
     }
 
 

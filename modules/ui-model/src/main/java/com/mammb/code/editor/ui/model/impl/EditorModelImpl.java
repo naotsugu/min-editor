@@ -180,7 +180,7 @@ public class EditorModelImpl implements EditorModel {
             caret.markDirty();
             draw(gc);
         }
-        stateChange.push(buffer.metrics(), caret);
+        stateChange.push(buffer.metrics(), caret, selection);
     }
 
     private void draw(GraphicsContext gc, LayoutLine layoutLine) {

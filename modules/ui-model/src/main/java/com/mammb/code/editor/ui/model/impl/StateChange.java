@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.StateHandler;
 
 /**
@@ -24,5 +25,13 @@ import com.mammb.code.editor.ui.model.StateHandler;
  * @author Naotsugu Kobayashi
  */
 public interface StateChange extends StateHandler {
-    void push(Metrics metrics, Caret caret);
+
+    /**
+     * Push the change of state.
+     * @param metrics the metrics.
+     * @param caret the caret.
+     * @param selection the selection.
+     */
+    void push(Metrics metrics, Caret caret, Selection selection);
+
 }

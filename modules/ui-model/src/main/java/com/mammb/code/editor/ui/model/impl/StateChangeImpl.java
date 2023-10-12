@@ -20,6 +20,7 @@ import com.mammb.code.editor.model.buffer.MetricsRecord;
 import com.mammb.code.editor.model.text.LineEnding;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.Selection;
 
 import java.nio.charset.Charset;
 import java.util.function.Consumer;
@@ -32,35 +33,18 @@ public class StateChangeImpl implements StateChange {
 
     private Metrics prevMetrics;
     private OffsetPoint prevCaretPoint;
+    private Range prevSelectionRange;
+
     private Consumer<LineEnding> lineEndingHandler;
     private Consumer<Charset> charsetHandler;
     private Consumer<OffsetPoint> caretPointHandler;
+    private Consumer<Range> selectionHandler;
 
     @Override
-    public void push(Metrics metrics, Caret caret) {
+    public void push(Metrics metrics, Caret caret, Selection selection) {
         push(metrics);
         push(caret);
-    }
-
-    public void push(Metrics metrics) {
-        if (prevMetrics == null || prevMetrics.lineEnding() != metrics.lineEnding()) {
-            lineEndingHandler.accept(metrics.lineEnding());
-        }
-        if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
-            charsetHandler.accept(metrics.charset());
-        }
-        prevMetrics = new MetricsRecord(metrics);
-    }
-
-    public void push(Caret caret) {
-        OffsetPoint caretPoint = caret.caretPoint();
-        if (caretPoint == null) {
-            return;
-        }
-        if (prevCaretPoint == null || !prevCaretPoint.equals(caretPoint)) {
-            caretPointHandler.accept(caretPoint);
-        }
-        prevCaretPoint = caretPoint;
+        push(selection);
     }
 
     @Override
@@ -76,6 +60,43 @@ public class StateChangeImpl implements StateChange {
     @Override
     public void addCaretPointChanged(Consumer<OffsetPoint> handler) {
         this.caretPointHandler = handler;
+    }
+
+    @Override
+    public void addSelectionChanged(Consumer<Range> handler) {
+        this.selectionHandler = handler;
+    }
+
+    private void push(Metrics metrics) {
+        if (prevMetrics == null || prevMetrics.lineEnding() != metrics.lineEnding()) {
+            lineEndingHandler.accept(metrics.lineEnding());
+        }
+        if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
+            charsetHandler.accept(metrics.charset());
+        }
+        prevMetrics = new MetricsRecord(metrics);
+    }
+
+    private void push(Caret caret) {
+        OffsetPoint caretPoint = caret.caretPoint();
+        if (caretPoint == null || caretPoint.equals(prevCaretPoint)) {
+            return;
+        }
+        caretPointHandler.accept(caretPoint);
+        prevCaretPoint = caretPoint;
+    }
+
+    private void push(Selection selection) {
+        if (selection.length() == 0) {
+            prevSelectionRange = null;
+            selectionHandler.accept(new Range(OffsetPoint.zero, OffsetPoint.zero));
+        } else {
+            var range = new Range(selection.min(), selection.max());
+            if (!range.equals(prevSelectionRange)) {
+                selectionHandler.accept(range);
+                prevSelectionRange = range;
+            }
+        }
     }
 
 }
