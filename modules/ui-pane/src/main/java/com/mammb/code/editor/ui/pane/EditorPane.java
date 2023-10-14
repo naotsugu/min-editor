@@ -112,9 +112,7 @@ public class EditorPane extends StackPane {
 
         model = EditorModel.of(context, canvasWidth, canvasHeight, vScrollBar, hScrollBar);
 
-        timeline.getKeyFrames().add(
-            new KeyFrame(Duration.millis(500),
-                e -> model.tick(gc)));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> model.tick(gc)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -152,6 +150,7 @@ public class EditorPane extends StackPane {
         hScrollBar.setOnScrolled(this::handleHScrolled);
 
     }
+
 
     /**
      * Open the file content path.

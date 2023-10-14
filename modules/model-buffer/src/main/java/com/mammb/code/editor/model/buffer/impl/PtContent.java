@@ -62,6 +62,23 @@ public class PtContent implements Content {
     }
 
     @Override
+    public OffsetPoint jump(OffsetPoint basePoint, int rowDelta) {
+        if (rowDelta > 0) {
+            // forward
+            TraverseUntil traverse = TraverseUntil.of(rowDelta);
+            pt.position(basePoint.offset(), traverse);
+            return basePoint.plus(OffsetPoint.of(traverse.rows(), traverse.chCount(), traverse.cpCount()));
+        } else if (rowDelta < 0) {
+            // backward
+            TraverseUntil traverse = TraverseUntil.beforeOf(rowDelta);
+            pt.positionBefore(basePoint.offset(), traverse);
+            return basePoint.minus(OffsetPoint.of(traverse.rows(), traverse.chCount(), traverse.cpCount()));
+        } else {
+            return basePoint;
+        }
+    }
+
+    @Override
     public void insert(OffsetPoint point, CharSequence cs) {
         pt.insert(point.cpOffset(), cs);
     }

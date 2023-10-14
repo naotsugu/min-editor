@@ -65,6 +65,14 @@ public interface OffsetPoint {
 
 
     /**
+     * Minus the offset.
+     * @param that the offset
+     * @return the offset
+     */
+    OffsetPoint minus(OffsetPoint that);
+
+
+    /**
      * Plus offset.
      * @param str the text string
      * @return the new offset point

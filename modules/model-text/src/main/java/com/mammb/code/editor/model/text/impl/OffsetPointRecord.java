@@ -35,8 +35,20 @@ public record OffsetPointRecord(
      * @param that the offset
      * @return the offset
      */
+    @Override
     public OffsetPointRecord plus(OffsetPoint that) {
         return new OffsetPointRecord(row + that.row(), offset + that.offset(), cpOffset + that.cpOffset());
+    }
+
+
+    /**
+     * Minus the offset.
+     * @param that the offset
+     * @return the offset
+     */
+    @Override
+    public OffsetPoint minus(OffsetPoint that) {
+        return new OffsetPointRecord(row - that.row(), offset - that.offset(), cpOffset - that.cpOffset());
     }
 
 
@@ -45,6 +57,7 @@ public record OffsetPointRecord(
      * @param str the text string
      * @return the new offset point
      */
+    @Override
     public OffsetPointRecord plus(String str) {
         return new OffsetPointRecord(
             row + countRow(str),
@@ -58,6 +71,7 @@ public record OffsetPointRecord(
      * @param str the text string
      * @return the new offset point
      */
+    @Override
     public OffsetPointRecord minus(String str) {
         return new OffsetPointRecord(
             row - countRow(str),

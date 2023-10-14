@@ -153,7 +153,7 @@ public class Until {
      * @param utf8FirstByte the first byte of UTF-8
      * @return the number of bytes when expressed in UTF-16
      */
-    private static short lengthByteAsUtf16(byte utf8FirstByte) {
+    public static short lengthByteAsUtf16(byte utf8FirstByte) {
         if ((utf8FirstByte & 0x80) == 0x00) {
             return 1; // BMP
         } else if ((utf8FirstByte & 0xE0) == 0xC0) {
