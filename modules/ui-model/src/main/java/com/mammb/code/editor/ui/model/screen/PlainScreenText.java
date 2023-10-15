@@ -25,7 +25,6 @@ import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
 import com.mammb.code.editor.ui.model.ScreenText;
-import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 
 import java.util.LinkedList;

@@ -62,19 +62,19 @@ public class PtContent implements Content {
     }
 
     @Override
-    public OffsetPoint jump(OffsetPoint basePoint, int rowDelta) {
+    public OffsetPoint relativePoint(int startPos, int rowDelta) {
         if (rowDelta > 0) {
             // forward
             TraverseUntil traverse = TraverseUntil.of(rowDelta);
-            pt.position(basePoint.offset(), traverse);
-            return basePoint.plus(OffsetPoint.of(traverse.rows(), traverse.chCount(), traverse.cpCount()));
+            pt.position(startPos, traverse);
+            return OffsetPoint.of(traverse.rows(), traverse.chCount(), traverse.cpCount());
         } else if (rowDelta < 0) {
             // backward
             TraverseUntil traverse = TraverseUntil.beforeOf(rowDelta);
-            pt.positionBefore(basePoint.offset(), traverse);
-            return basePoint.minus(OffsetPoint.of(traverse.rows(), traverse.chCount(), traverse.cpCount()));
+            pt.positionBefore(startPos, traverse);
+            return OffsetPoint.of(traverse.rows(), traverse.chCount(), traverse.cpCount());
         } else {
-            return basePoint;
+            return OffsetPoint.zero;
         }
     }
 

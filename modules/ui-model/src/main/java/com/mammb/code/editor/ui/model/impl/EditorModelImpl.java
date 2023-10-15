@@ -121,8 +121,10 @@ public class EditorModelImpl implements EditorModel {
      * @return a new EditorModel
      */
     public static EditorModelImpl of(Context context,
-            double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
-        return new EditorModelImpl(context, new ScreenScroll(context, vScroll, hScroll, width, height));
+            double width, double height,
+            ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
+        return new EditorModelImpl(context,
+            new ScreenScroll(context, vScroll, hScroll, width, height));
     }
 
 
@@ -503,12 +505,14 @@ public class EditorModelImpl implements EditorModel {
         if (delta == 0) {
             return;
         }
+
         int size = (delta > 0)
             ? texts.next(delta)
             : texts.prev(Math.abs(delta));
         if (size == 0) {
             return;
         }
+
         texts.markDirty();
         caret.markDirty();
     }

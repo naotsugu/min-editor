@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.layout.TextLine;
+import com.mammb.code.editor.model.style.StylingTranslate;
 
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +65,10 @@ public interface ScreenText {
      * @return the size of text lines capacity
      */
     int capacity();
+
+    default boolean isStyled() {
+        return this instanceof StylingTranslate;
+    }
 
     /**
      * Get the char offset at the specified position.
