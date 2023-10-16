@@ -18,6 +18,8 @@ package com.mammb.code.editor.model.slice.impl;
 import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.until.Until;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * StringText.
  * @author Naotsugu Kobayashi
@@ -67,13 +69,29 @@ public class StringText implements RowSupplier {
         return (from <= 0) ? head : head.substring(from);
     }
 
+
     @Override
     public int offset(int startCpOffset, Until<byte[]> until) {
-        return 0;
+        int[] codePoints = string.codePoints().skip(startCpOffset).toArray();
+        for (int i = 0; i < codePoints.length; i++) {
+            if (until.test(Character.toString(codePoints[i])
+                    .getBytes(StandardCharsets.UTF_8))) {
+                return startCpOffset + i;
+            }
+        }
+        return codePointCount;
     }
+
 
     @Override
     public int offsetBefore(int startCpOffset, Until<byte[]> until) {
+        int[] codePoints = string.codePoints().skip(startCpOffset).toArray();
+        for (int i = startCpOffset; i >= 0; i--) {
+            if (until.test(Character.toString(codePoints[i])
+                    .getBytes(StandardCharsets.UTF_8))) {
+                return startCpOffset - i;
+            }
+        }
         return 0;
     }
 

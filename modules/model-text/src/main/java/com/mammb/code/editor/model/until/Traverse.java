@@ -18,7 +18,6 @@ package com.mammb.code.editor.model.until;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.until.impl.TraverseBackward;
 import com.mammb.code.editor.model.until.impl.TraverseForward;
-
 import java.util.function.Consumer;
 
 /**
