@@ -79,7 +79,7 @@ public class TraverseUntil implements Predicate<byte[]> {
             if (bytes[0] == '\n') {
                 rows++;
             }
-            chCount -= Until.lengthByteAsUtf16(bytes[0]);
+            chCount -= lengthByteAsUtf16(bytes[0]);
         }
         return ret;
     }
@@ -104,4 +104,22 @@ public class TraverseUntil implements Predicate<byte[]> {
         return chCount;
     }
 
+    /**
+     * Get the number of bytes from the first byte of UTF-8 when expressed in UTF-16.
+     * @param utf8FirstByte the first byte of UTF-8
+     * @return the number of bytes when expressed in UTF-16
+     */
+    public static short lengthByteAsUtf16(byte utf8FirstByte) {
+        if ((utf8FirstByte & 0x80) == 0x00) {
+            return 1; // BMP
+        } else if ((utf8FirstByte & 0xE0) == 0xC0) {
+            return 1; // BMP
+        } else if ((utf8FirstByte & 0xF0) == 0xE0) {
+            return 1; // BMP
+        } else if ((utf8FirstByte & 0xF8) == 0xF0) {
+            return 2;
+        } else {
+            return 0;
+        }
+    }
 }

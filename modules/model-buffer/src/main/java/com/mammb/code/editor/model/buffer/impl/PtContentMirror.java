@@ -71,9 +71,10 @@ public class PtContentMirror implements Content {
     }
 
     @Override
-    public OffsetPoint jump(OffsetPoint basePoint, int rowDelta) {
-        return peer.relativePoint(basePoint, rowDelta);
+    public OffsetPoint relativePoint(int cpOffset, int rowDelta) {
+        return peer.relativePoint(cpOffset, rowDelta);
     }
+
 
     @Override
     public void insert(OffsetPoint point, CharSequence cs) {

@@ -17,9 +17,10 @@ package com.mammb.code.editor.model.buffer;
 
 import com.mammb.code.editor.model.buffer.impl.PtContent;
 import com.mammb.code.editor.model.buffer.impl.PtContentMirror;
-import com.mammb.code.editor.model.buffer.impl.Until;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.until.Until;
 import com.mammb.code.piecetable.buffer.Charsets;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

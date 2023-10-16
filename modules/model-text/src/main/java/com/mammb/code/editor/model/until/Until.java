@@ -24,6 +24,10 @@
  */
 package com.mammb.code.editor.model.until;
 
+import com.mammb.code.editor.model.until.impl.UntilCharLen;
+import com.mammb.code.editor.model.until.impl.UntilLf;
+import com.mammb.code.editor.model.until.impl.UntilLfInclusive;
+
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -61,6 +65,32 @@ public interface Until<T> extends Predicate<T> {
             }
             return closed;
         };
+    }
+
+
+    /**
+     * Create a new Until char length.
+     * @return the Until char length
+     */
+    static Until<byte[]> charLen(int length) {
+        return new UntilCharLen(length);
+    }
+
+    /**
+     * Create a new Until LF.
+     * @param count the line feed count
+     * @return the Until LF predicate
+     */
+    static Until<byte[]> lf(int count) {
+        return new UntilLf(count);
+    }
+
+    /**
+     * Create a new Until LF.
+     * @return the Until LF predicate
+     */
+    static Until<byte[]> lfInclusive() {
+        return new UntilLfInclusive(1);
     }
 
 }

@@ -27,6 +27,7 @@ import com.mammb.code.editor.model.edit.EditToListener;
 import com.mammb.code.editor.model.slice.Slice;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.until.Until;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -132,7 +133,7 @@ public class EditBuffer implements TextBuffer<Textual> {
     @Override
     public Textual subText(OffsetPoint point, int length) {
         editQueue.flush();
-        byte[] bytes = content.bytes(point.cpOffset(), Until.charLength(length));
+        byte[] bytes = content.bytes(point.cpOffset(), Until.charLen(length));
         return Textual.of(point, new String(bytes, content.charset()));
     }
 

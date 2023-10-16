@@ -17,6 +17,7 @@ package com.mammb.code.editor.model.buffer.impl;
 
 import com.mammb.code.editor.model.buffer.Content;
 import com.mammb.code.editor.model.slice.RowSupplier;
+import com.mammb.code.editor.model.until.Until;
 
 /**
  * ContentAdapter.

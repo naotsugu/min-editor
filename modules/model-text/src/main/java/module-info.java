@@ -22,4 +22,5 @@ module code.editor.model.text {
     exports com.mammb.code.editor.model.text;
     exports com.mammb.code.editor.model.slice;
     exports com.mammb.code.editor.model.style;
+    exports com.mammb.code.editor.model.until;
 }

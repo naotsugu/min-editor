@@ -27,15 +27,15 @@ package com.mammb.code.editor.model.until.impl;
 import com.mammb.code.editor.model.until.Until;
 
 /**
- * UntilCharLen.
+ * UntilLfExclude.
  * @author Naotsugu Kobayashi
  */
-public class UntilCharLen implements Until<byte[]> {
+public class UntilLfInclusive implements Until<byte[]> {
 
-    /** The original char count. */
+    /** The original line feed count. */
     private final int originalCount;
 
-    /** The char count. */
+    /** The line feed count. */
     private int count;
 
 
@@ -43,7 +43,8 @@ public class UntilCharLen implements Until<byte[]> {
      * Constructor.
      * @param count the line feed count
      */
-    public UntilCharLen(int count) {
+    public UntilLfInclusive(int count) {
+        if (count <= 0) throw new IllegalArgumentException();
         this.originalCount = count;
         this.count = count;
     }
@@ -52,15 +53,13 @@ public class UntilCharLen implements Until<byte[]> {
     @Override
     public boolean test(byte[] bytes) {
 
-        if (bytes == null || bytes.length == 0) {
+        if (bytes == null || bytes.length == 0 || count <= 0) {
             count = originalCount;
             return true;
         }
 
-        count -= Bytes.lengthByteAsUtf16(bytes[0]);
-        if (count < 0) {
-            count = originalCount;
-            return true;
+        if (bytes[0] == '\n') {
+            count--;
         }
         return false;
     }
