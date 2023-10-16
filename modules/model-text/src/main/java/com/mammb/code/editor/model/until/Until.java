@@ -93,4 +93,12 @@ public interface Until<T> extends Predicate<T> {
         return new UntilLfInclusive(1);
     }
 
+    /**
+     * Create a new Until LF.
+     * @return the Until LF predicate
+     */
+    static Until<byte[]> lfInclusive(int count) {
+        return new UntilLfInclusive(count);
+    }
+
 }

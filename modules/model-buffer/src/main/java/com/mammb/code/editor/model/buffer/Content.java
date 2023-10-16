@@ -61,13 +61,9 @@ public interface Content {
      */
     byte[] bytesBefore(int cpOffset, Predicate<byte[]> until);
 
-    /**
-     * Get the relative point.
-     * @param cpOffset start position(code point index), inclusive
-     * @param rowDelta the Number of lines to jump
-     * @return the OffsetPoint delta after jump
-     */
-    OffsetPoint relativePoint(int cpOffset, int rowDelta);
+    int offset(int startCpOffset, Predicate<byte[]> until);
+
+    int offsetBefore(int startCpOffset, Predicate<byte[]> until);
 
     /**
      * Inserts the char sequence into this {@code PieceTable}.

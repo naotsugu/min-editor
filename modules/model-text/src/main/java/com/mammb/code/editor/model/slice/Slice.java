@@ -49,6 +49,9 @@ public interface Slice<T extends Textual> extends TextualScroll<T> {
      */
     void refresh(int rowNumber);
 
+
+    void move(int rowDelta);
+
     /**
      * Create a new RowSlice from the specified size and rowSupplier.
      * @param maxRowSize the row size of slice

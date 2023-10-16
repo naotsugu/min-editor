@@ -19,6 +19,8 @@ import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.slice.Slice;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.until.Traverse;
+import com.mammb.code.editor.model.until.Until;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -97,6 +99,35 @@ public class RowSlice implements Slice<Textual> {
         }
     }
 
+    @Override
+    public void move(int rowDelta) {
+        if (rowDelta == 0) {
+            return;
+        }
+        OffsetPoint head = texts.isEmpty() ? OffsetPoint.zero : texts.get(0).point();
+        Traverse traverse;
+        if (rowDelta > 0) {
+            // forward
+            traverse = Traverse.forwardOf(head);
+            var until = Until.lfInclusive(rowDelta).with(traverse);
+            rowSupplier.offset(head.cpOffset(), until);
+        } else {
+            // backward
+            traverse = Traverse.backwardOf(head);
+            var until = Until.lf(rowDelta).with(traverse);
+            rowSupplier.offsetBefore(head.cpOffset(), until);
+        }
+        OffsetPoint point = traverse.asOffsetPoint();
+        texts.clear();
+        for (int i = 0; i < maxRowSize; i++) {
+            String str = rowSupplier.at(point.cpOffset());
+            texts.add(Textual.of(point, str));
+            if (str.isEmpty() || str.charAt(str.length() - 1) != '\n') {
+                break;
+            }
+            point = point.plus(str);
+        }
+    }
 
     @Override
     public List<Textual> prev(int n) {

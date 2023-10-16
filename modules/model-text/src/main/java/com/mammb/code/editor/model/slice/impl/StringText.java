@@ -16,6 +16,7 @@
 package com.mammb.code.editor.model.slice.impl;
 
 import com.mammb.code.editor.model.slice.RowSupplier;
+import com.mammb.code.editor.model.until.Until;
 
 /**
  * StringText.
@@ -64,6 +65,16 @@ public class StringText implements RowSupplier {
             from = head.substring(0, head.length() - 1).lastIndexOf('\n') + 1;
         }
         return (from <= 0) ? head : head.substring(from);
+    }
+
+    @Override
+    public int offset(int startCpOffset, Until<byte[]> until) {
+        return 0;
+    }
+
+    @Override
+    public int offsetBefore(int startCpOffset, Until<byte[]> until) {
+        return 0;
     }
 
 }

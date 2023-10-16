@@ -16,6 +16,7 @@
 package com.mammb.code.editor.model.slice;
 
 import com.mammb.code.editor.model.slice.impl.StringText;
+import com.mammb.code.editor.model.until.Until;
 
 /**
  * RowSupplier.
@@ -59,6 +60,10 @@ public interface RowSupplier {
      * @return the row string, non-null
      */
     String before(int cpOffset);
+
+
+    int offset(int startCpOffset, Until<byte[]> until);
+    int offsetBefore(int startCpOffset, Until<byte[]> until);
 
 
     /**

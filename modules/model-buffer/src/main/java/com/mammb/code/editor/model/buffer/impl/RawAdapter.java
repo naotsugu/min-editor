@@ -40,4 +40,14 @@ public record RawAdapter(Content content) implements RowSupplier {
         return (bytes.length == 0) ? empty : new String( bytes, content.charset());
     }
 
+    @Override
+    public int offset(int startCpOffset, Until<byte[]> until) {
+        return content.offset(startCpOffset, until);
+    }
+
+    @Override
+    public int offsetBefore(int startCpOffset, Until<byte[]> until) {
+        return content.offsetBefore(startCpOffset, until);
+    }
+
 }
