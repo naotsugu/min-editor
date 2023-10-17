@@ -15,13 +15,12 @@
  */
 package com.mammb.code.editor.ui.model.impl;
 
-import com.mammb.code.editor.model.buffer.TextBuffer;
+import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.model.text.Textual;
-import com.mammb.code.editor.ui.model.ImeRun;
 import com.mammb.code.editor.ui.model.ImePallet;
+import com.mammb.code.editor.ui.model.ImeRun;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -61,7 +60,7 @@ public class ImePalletImpl implements ImePallet {
     }
 
     @Override
-    public void composed(TextBuffer<Textual> buffer, List<ImeRun> runs) {
+    public void composed(TextEdit buffer, List<ImeRun> runs) {
         this.runs = runs;
         buffer.push(Edit.insertFlush(offsetPoint, composedText()));
     }

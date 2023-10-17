@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.buffer.TextBuffer;
+import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
@@ -43,6 +44,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +63,7 @@ public class EditorModelImpl implements EditorModel {
     /** The Context. */
     private final Context context;
     /** The text buffer. */
-    private final TextBuffer<Textual> buffer;
+    private final TextEdit buffer;
     /** The caret. */
     private final Caret caret;
     /** The selection. */
@@ -639,7 +641,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void layoutBounds(double width, double height) {
         screen.setSize(width, height);
-        buffer.setPageSize(screen.pageLineSize());
+        texts.setPageSize(screen.pageLineSize());
         texts.markDirty();
         caret.markDirty();
         if (texts instanceof WrapScreenText wrap) {

@@ -15,10 +15,9 @@
  */
 package com.mammb.code.editor.ui.model;
 
-import com.mammb.code.editor.model.buffer.TextBuffer;
+import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.model.text.Textual;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public interface ImePallet {
 
     boolean enabled();
 
-    void composed(TextBuffer<Textual> buffer, List<ImeRun> runs);
+    void composed(TextEdit buffer, List<ImeRun> runs);
 
     void drawCompose(GraphicsContext gc, TextRun run, double top, double height, double left);
 
