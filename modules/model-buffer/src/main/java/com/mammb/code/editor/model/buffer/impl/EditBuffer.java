@@ -131,10 +131,10 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
-    public Textual subText(OffsetPoint point, int length) {
+    public String subText(OffsetPoint point, int length) {
         editQueue.flush();
         byte[] bytes = content.bytes(point.cpOffset(), Until.charLen(length));
-        return Textual.of(point, new String(bytes, content.charset()));
+        return new String(bytes, content.charset());
     }
 
     @Override

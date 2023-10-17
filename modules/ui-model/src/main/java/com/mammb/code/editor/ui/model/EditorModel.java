@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.model;
 
-import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.model.impl.EditorModelImpl;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -142,7 +141,7 @@ public interface EditorModel extends EditorDraw {
 
     Rect textAreaRect();
     StateHandler stateChange();
-    boolean peekSelection(Predicate<Textual> predicate);
+    boolean peekSelection(Predicate<String> predicate);
 
     /**
      * Create a new partially editor model.

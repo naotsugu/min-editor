@@ -144,7 +144,7 @@ public class FixedText implements TextBuffer<Textual> {
     }
 
     @Override
-    public Textual subText(OffsetPoint point, int length) {
+    public String subText(OffsetPoint point, int length) {
         final StringBuilder sb = new StringBuilder();
         for (Textual textual : list) {
             if (textual.tailOffset() > point.offset() && textual.offset() < (point.offset() + length)) {
@@ -153,7 +153,7 @@ public class FixedText implements TextBuffer<Textual> {
                     Math.min(point.offset() + length - textual.offset(), textual.length()));
             }
         }
-        return Textual.of(point, sb.toString());
+        return sb.toString();
     }
 
     @Override

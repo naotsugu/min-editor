@@ -278,7 +278,7 @@ public class EditorPane extends StackPane {
         if (ascii < 32 || ascii == 127) { // 127:DEL
 
             if (ascii == 9 || ascii == 25) { // 9:TAB 25:ME(shift+tab)
-                if (model.peekSelection(t -> t.text().contains("\n"))) {
+                if (model.peekSelection(t -> t.contains("\n"))) {
                     aroundEdit(() -> {
                         if (e.isShiftDown()) model.unindent();
                         else model.indent();

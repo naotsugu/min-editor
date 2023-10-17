@@ -126,17 +126,17 @@ class FixedTextTest {
             .mapToObj(i -> (char) i + "\n").collect(Collectors.joining()));
         var target = new FixedText(path, 10);
 
-        assertEquals("a", target.subText(OffsetPoint.zero, 1).text());
-        assertEquals("a\n", target.subText(OffsetPoint.zero, 2).text());
-        assertEquals("a\nb", target.subText(OffsetPoint.zero, 3).text());
+        assertEquals("a", target.subText(OffsetPoint.zero, 1));
+        assertEquals("a\n", target.subText(OffsetPoint.zero, 2));
+        assertEquals("a\nb", target.subText(OffsetPoint.zero, 3));
 
-        assertEquals("\n", target.subText(OffsetPoint.of(0, 1, 0), 1).text());
-        assertEquals("\nb", target.subText(OffsetPoint.of(0, 1, 0), 2).text());
-        assertEquals("\nb\n", target.subText(OffsetPoint.of(0, 1, 0), 3).text());
+        assertEquals("\n", target.subText(OffsetPoint.of(0, 1, 0), 1));
+        assertEquals("\nb", target.subText(OffsetPoint.of(0, 1, 0), 2));
+        assertEquals("\nb\n", target.subText(OffsetPoint.of(0, 1, 0), 3));
 
-        assertEquals("z", target.subText(OffsetPoint.of(25, 25 * 2, 0), 1).text());
-        assertEquals("z\n", target.subText(OffsetPoint.of(25, 25 * 2, 0), 2).text());
-        assertEquals("z\n", target.subText(OffsetPoint.of(25, 25 * 2, 0), 3).text());
+        assertEquals("z", target.subText(OffsetPoint.of(25, 25 * 2, 0), 1));
+        assertEquals("z\n", target.subText(OffsetPoint.of(25, 25 * 2, 0), 2));
+        assertEquals("z\n", target.subText(OffsetPoint.of(25, 25 * 2, 0), 3));
     }
 
 

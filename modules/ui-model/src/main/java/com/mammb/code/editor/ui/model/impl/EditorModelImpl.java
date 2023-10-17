@@ -275,7 +275,7 @@ public class EditorModelImpl implements EditorModel {
     }
 
     @Override
-    public boolean peekSelection(Predicate<Textual> predicate) {
+    public boolean peekSelection(Predicate<String> predicate) {
         return (selection.length() > 0) &&
             predicate.test(buffer.subText(selection.min(), selection.length()));
     }
@@ -377,8 +377,8 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         Selections.selectCurrentRow(caret, selection, texts);
-        Textual text = buffer.subText(selection.min(), selection.length());
-        String replace = Arrays.stream(text.text().split("(?<=\n)"))
+        String text = buffer.subText(selection.min(), selection.length());
+        String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
             .collect(Collectors.joining());
         selectionReplace(replace);
@@ -390,8 +390,8 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         Selections.selectCurrentRow(caret, selection, texts);
-        Textual text = buffer.subText(selection.min(), selection.length());
-        String replace = Arrays.stream(text.text().split("(?<=\n)"))
+        String text = buffer.subText(selection.min(), selection.length());
+        String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
             .collect(Collectors.joining());
         selectionReplace(replace);
@@ -679,9 +679,10 @@ public class EditorModelImpl implements EditorModel {
             input(string);
             return;
         }
-        Textual text = buffer.subText(selection.min(), selection.length());
-        buffer.push(Edit.replace(text.point(), text.text(), string));
-        Selections.select(text.offset(), text.offset() + string.length(), caret, selection);
+        OffsetPoint point = selection.min();
+        String text = buffer.subText(point, selection.length());
+        buffer.push(Edit.replace(point, text, string));
+        Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
         texts.markDirty();
         caret.markDirty();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
@@ -691,10 +692,11 @@ public class EditorModelImpl implements EditorModel {
         if (selection.length() == 0) {
             return;
         }
-        Textual text = buffer.subText(selection.min(), selection.length());
-        buffer.push(Edit.delete(text.point(), text.text()));
+        OffsetPoint point = selection.min();
+        String text = buffer.subText(point, selection.length());
+        buffer.push(Edit.delete(point, text));
         selection.clear();
-        caret.at(text.point().offset(), true);
+        caret.at(point.offset(), true);
         texts.markDirty();
         caret.markDirty();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
@@ -720,12 +722,13 @@ public class EditorModelImpl implements EditorModel {
      */
     private void copyToClipboard(boolean cut) {
         if (selection.length() > 0) {
-            Textual text = buffer.subText(selection.min(), selection.length());
-            Clipboards.put(text.text());
+            OffsetPoint point = selection.min();
+            String text = buffer.subText(point, selection.length());
+            Clipboards.put(text);
             if (cut && !buffer.readOnly()) {
-                buffer.push(Edit.delete(text.point(), text.text()));
+                buffer.push(Edit.delete(point, text));
                 selection.clear();
-                caret.at(text.point().offset(), true);
+                caret.at(point.offset(), true);
                 texts.markDirty();
                 caret.markDirty();
             }

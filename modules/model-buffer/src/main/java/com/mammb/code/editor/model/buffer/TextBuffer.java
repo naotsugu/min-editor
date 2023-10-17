@@ -29,7 +29,7 @@ import java.util.List;
  * The edit buffer.
  * @author Naotsugu Kobayashi
  */
-public interface TextBuffer<T extends Textual> extends TextualScroll<T> {
+public interface TextBuffer<T extends Textual> extends TextualScroll<T>, TextEdit {
 
     @Override
     List<T> texts();
@@ -46,58 +46,31 @@ public interface TextBuffer<T extends Textual> extends TextualScroll<T> {
     @Override
     void setPageSize(int pageSize);
 
-    /**
-     * Push the edit.
-     * @param edit the edit
-     */
+    @Override
     void push(Edit edit);
 
-    /**
-     * Flush.
-     */
+    @Override
     void flush();
 
-    /**
-     * Undo.
-     * @return the undone edit.
-     */
+    @Override
     Edit undo();
 
-    /**
-     * Redo.
-     * @return the redone edit.
-     */
+    @Override
     Edit redo();
 
-    /**
-     * Get the sub text.
-     * @param point the start point
-     * @param length the char length to be gets
-     * @return the sub text
-     */
-    Textual subText(OffsetPoint point, int length);
-
-    /**
-     * Save.
-     */
+    @Override
     void save();
 
-    /**
-     * Save as.
-     * @param path the path to be saved
-     */
+    @Override
     void saveAs(Path path);
 
-    /**
-     * Get whether this buffer is read-only or not.
-     * @return {@code true}, if this buffer is read-only
-     */
+    @Override
     boolean readOnly();
 
-    /**
-     * Get the metrics.
-     * @return the metrics
-     */
+    @Override
+    String subText(OffsetPoint point, int length);
+
+    @Override
     Metrics metrics();
 
     /**
