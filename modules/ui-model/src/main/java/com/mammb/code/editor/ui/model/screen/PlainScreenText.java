@@ -188,7 +188,7 @@ public class PlainScreenText implements ScreenText {
 
 
     @Override
-    public int capacity() {
+    public int pageSize() {
         return scroll.pageSize();
     }
 

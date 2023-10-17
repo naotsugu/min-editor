@@ -63,7 +63,7 @@ public interface ScreenText {
      * Get the size of text lines capacity.
      * @return the size of text lines capacity
      */
-    int capacity();
+    int pageSize();
 
     /**
      * Get the char offset at the specified position.

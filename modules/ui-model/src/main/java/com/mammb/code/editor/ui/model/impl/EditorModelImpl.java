@@ -486,7 +486,7 @@ public class EditorModelImpl implements EditorModel {
         vScrollToCaret();
         double x = caret.x();
         double y = caret.y();
-        scrollPrev(texts.capacity() - 1);
+        scrollPrev(texts.pageSize() - 1);
         caret.at(texts.at(x, y), false);
     }
 
@@ -495,7 +495,7 @@ public class EditorModelImpl implements EditorModel {
         vScrollToCaret();
         double x = caret.x();
         double y = caret.y();
-        scrollNext(texts.capacity() - 1);
+        scrollNext(texts.pageSize() - 1);
         caret.at(texts.at(x, y), false);
     }
 
