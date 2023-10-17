@@ -710,7 +710,7 @@ public class EditorModelImpl implements EditorModel {
 
     private int totalLines() {
         return (texts instanceof WrapScreenText w)
-            ? buffer.metrics().rowCount() + (w.wrappedSize() - buffer.pageSize())
+            ? buffer.metrics().rowCount() + (w.wrappedSize() - texts.pageSize())
             : buffer.metrics().rowCount();
     }
 

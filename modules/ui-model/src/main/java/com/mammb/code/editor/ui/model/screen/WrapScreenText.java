@@ -236,6 +236,10 @@ public class WrapScreenText implements ScreenText {
         return scroll.pageSize();
     }
 
+    @Override
+    public void setPageSize(int size) {
+        scroll.setPageSize(size);
+    }
 
     public int wrappedSize() {
         if (lines.isEmpty()) {

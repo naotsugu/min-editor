@@ -192,6 +192,11 @@ public class PlainScreenText implements ScreenText {
         return scroll.pageSize();
     }
 
+    @Override
+    public void setPageSize(int size) {
+        scroll.setPageSize(size);
+    }
+
     /**
      * Build the translator.
      * @return the translator

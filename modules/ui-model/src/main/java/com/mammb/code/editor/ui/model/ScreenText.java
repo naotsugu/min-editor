@@ -66,6 +66,12 @@ public interface ScreenText {
     int pageSize();
 
     /**
+     * Set the page size.
+     * @param size the page size
+     */
+    void setPageSize(int size);
+
+    /**
      * Get the char offset at the specified position.
      * @param x the x position
      * @param y the y position
