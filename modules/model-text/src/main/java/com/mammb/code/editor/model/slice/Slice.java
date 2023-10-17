@@ -43,14 +43,14 @@ public interface Slice<T extends Textual> extends TextualScroll<T> {
     @Override
     void setPageSize(int capacity);
 
+    void move(int rowDelta);
+
     /**
      * Refresh below the specified rowNumber(inclusive).
      * @param rowNumber the specified rowNumber(inclusive)
      */
     void refresh(int rowNumber);
 
-
-    void move(int rowDelta);
 
     /**
      * Create a new RowSlice from the specified size and rowSupplier.

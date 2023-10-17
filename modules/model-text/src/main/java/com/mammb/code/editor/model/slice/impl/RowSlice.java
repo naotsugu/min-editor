@@ -129,6 +129,7 @@ public class RowSlice implements Slice<Textual> {
         }
     }
 
+
     @Override
     public List<Textual> prev(int n) {
 
