@@ -31,7 +31,7 @@ public interface EditQueue {
 
     /**
      * Peek the edit.
-     * @return the edit
+     * @return the head of the queue, or null if this queue is empty
      */
     Edit peek();
 

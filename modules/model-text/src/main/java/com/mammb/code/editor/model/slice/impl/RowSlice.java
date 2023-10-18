@@ -100,9 +100,9 @@ public class RowSlice implements Slice<Textual> {
     }
 
     @Override
-    public void move(int rowDelta) {
+    public boolean move(int rowDelta) {
         if (rowDelta == 0) {
-            return;
+            return false;
         }
         OffsetPoint head = texts.isEmpty() ? OffsetPoint.zero : texts.get(0).point();
         Traverse traverse;
@@ -118,6 +118,9 @@ public class RowSlice implements Slice<Textual> {
             rowSupplier.offsetBefore(head.cpOffset(), until);
         }
         OffsetPoint point = traverse.asOffsetPoint();
+        if (head.equals(point)) {
+            return false;
+        }
         texts.clear();
         for (int i = 0; i < maxRowSize; i++) {
             String str = rowSupplier.at(point.cpOffset());
@@ -127,6 +130,7 @@ public class RowSlice implements Slice<Textual> {
             }
             point = point.plus(str);
         }
+        return true;
     }
 
 

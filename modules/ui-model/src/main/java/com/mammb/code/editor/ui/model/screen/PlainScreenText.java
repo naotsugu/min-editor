@@ -24,6 +24,7 @@ import com.mammb.code.editor.model.style.StyledText;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
+import com.mammb.code.editor.syntax.base.SyntaxTranslate;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 
@@ -171,19 +172,30 @@ public class PlainScreenText implements ScreenText {
         return size;
     }
 
+    @Override
+    public boolean move(int rowDelta) {
+        if (rowDelta == 0) return false;
+        if (styling instanceof SyntaxTranslate && Math.abs(rowDelta) < pageSize()) {
+            if (rowDelta < 0) {
+                return prev(-rowDelta) > 0;
+            } else {
+                return next(rowDelta) > 0;
+            }
+        } else {
+            return scroll.move(rowDelta);
+        }
+    }
+
 
     @Override
-    public boolean scrollAt(int row, int offset) {
+    public boolean scrollAtScreen(int row, int offset) {
         final int head = head().point().row();
         final int tail = tail().point().row();
         if (head <= row && row <= tail) {
             return false;
         }
-        if (row < head) {
-            return prev(head - row) > 0;
-        } else {
-            return next(row - tail) > 0;
-        }
+        int delta = (row < head) ? row - head : row - tail;
+        return move(delta);
     }
 
 

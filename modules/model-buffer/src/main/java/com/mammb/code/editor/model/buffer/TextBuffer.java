@@ -38,13 +38,17 @@ public interface TextBuffer<T extends Textual> extends TextualScroll<T>, TextEdi
     int pageSize();
 
     @Override
+    void setPageSize(int pageSize);
+
+    @Override
     List<T> prev(int n);
 
     @Override
     List<T> next(int n);
 
     @Override
-    void setPageSize(int pageSize);
+    boolean move(int rowDelta);
+
 
     @Override
     void push(Edit edit);

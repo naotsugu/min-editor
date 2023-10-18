@@ -131,6 +131,12 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public boolean move(int rowDelta) {
+        editQueue.flush();
+        return slice.move(rowDelta);
+    }
+
+    @Override
     public String subText(OffsetPoint point, int length) {
         editQueue.flush();
         byte[] bytes = content.bytes(point.cpOffset(), Until.charLen(length));

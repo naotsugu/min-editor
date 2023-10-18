@@ -507,16 +507,10 @@ public class EditorModelImpl implements EditorModel {
         if (delta == 0) {
             return;
         }
-
-        int size = (delta > 0)
-            ? texts.next(delta)
-            : texts.prev(Math.abs(delta));
-        if (size == 0) {
-            return;
+        if (texts.move(delta)) {
+            texts.markDirty();
+            caret.markDirty();
         }
-
-        texts.markDirty();
-        caret.markDirty();
     }
     // </editor-fold>
 
@@ -705,7 +699,7 @@ public class EditorModelImpl implements EditorModel {
     }
 
     private void vScrollToCaret() {
-        boolean scrolled = texts.scrollAt(caret.row(), caret.offset());
+        boolean scrolled = texts.scrollAtScreen(caret.row(), caret.offset());
         if (!scrolled) return;
         texts.markDirty();
         caret.markDirty();

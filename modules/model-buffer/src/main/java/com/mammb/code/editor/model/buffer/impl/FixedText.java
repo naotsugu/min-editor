@@ -144,6 +144,13 @@ public class FixedText implements TextBuffer<Textual> {
     }
 
     @Override
+    public boolean move(int rowDelta) {
+        if (rowDelta == 0) return false;
+        return (rowDelta > 0) ? !next(rowDelta).isEmpty() : !prev(-rowDelta).isEmpty();
+    }
+
+
+    @Override
     public String subText(OffsetPoint point, int length) {
         final StringBuilder sb = new StringBuilder();
         for (Textual textual : list) {

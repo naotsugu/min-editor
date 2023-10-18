@@ -43,7 +43,8 @@ public interface Slice<T extends Textual> extends TextualScroll<T> {
     @Override
     void setPageSize(int capacity);
 
-    void move(int rowDelta);
+    @Override
+    boolean move(int rowDelta);
 
     /**
      * Refresh below the specified rowNumber(inclusive).

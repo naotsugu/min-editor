@@ -185,8 +185,16 @@ public class WrapScreenText implements ScreenText {
         return 1;
     }
 
+
     @Override
-    public boolean scrollAt(int row, int offset) {
+    public boolean move(int rowDelta) {
+        if (rowDelta == 0) return false;
+        return scrollAtScreen(head().point().row() + rowDelta, 0);
+    }
+
+
+    @Override
+    public boolean scrollAtScreen(int row, int offset) {
 
         List<TextLine> visibleLines = lines();
         int start = visibleLines.get(0).offset();

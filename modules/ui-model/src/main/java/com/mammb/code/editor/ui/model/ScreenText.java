@@ -51,13 +51,15 @@ public interface ScreenText {
      */
     int next(int n);
 
+    boolean move(int rowDelta);
+
     /**
      * Scrolls to the specified position.
      * @param row the number of row
      * @param offset the char offset
      * @return {@code true} if scrolled.
      */
-    boolean scrollAt(int row, int offset);
+    boolean scrollAtScreen(int row, int offset);
 
     /**
      * Get the size of text lines capacity.
