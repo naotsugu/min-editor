@@ -16,17 +16,17 @@
 package com.mammb.code.editor.model.text;
 
 import com.mammb.code.editor.model.slice.RowSupplier;
-import com.mammb.code.editor.model.slice.Slice;
+import com.mammb.code.editor.model.slice.TextualSlice;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test of {@link Slice}.
+ * Test of {@link TextualSlice}.
  * @author Naotsugu Kobayashi
  */
 class RowSliceTest {
 
     @Test void of() {
-        var slice = Slice.of(5, RowSupplier.stringOf("abc"));
+        var slice = TextualSlice.of(5, RowSupplier.stringOf("abc"));
         // TODO add test
     }
 }

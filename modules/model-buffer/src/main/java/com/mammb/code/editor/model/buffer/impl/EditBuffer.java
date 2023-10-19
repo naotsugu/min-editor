@@ -24,7 +24,7 @@ import com.mammb.code.editor.model.edit.EditListener;
 import com.mammb.code.editor.model.edit.EditQueue;
 import com.mammb.code.editor.model.edit.EditTo;
 import com.mammb.code.editor.model.edit.EditToListener;
-import com.mammb.code.editor.model.slice.Slice;
+import com.mammb.code.editor.model.slice.TextualSlice;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.until.Until;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 public class EditBuffer implements TextBuffer<Textual> {
 
     /** The peer slice. */
-    private final Slice<Textual> slice;
+    private final TextualSlice<Textual> slice;
 
     /** The content. */
     private final Content content;
@@ -64,7 +64,7 @@ public class EditBuffer implements TextBuffer<Textual> {
                 metrics.accept(bytes);
                 if (loadingTraverse != null) loadingTraverse.accept(bytes);
         });
-        this.slice = Slice.of(maxRowSize, new RawAdapter(content));
+        this.slice = TextualSlice.of(maxRowSize, new RawAdapter(content));
         this.editQueue = EditQueue.of(editTo(content));
         metrics.setModified(false);
         metrics.setCharset(content.charset());

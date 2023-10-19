@@ -54,7 +54,7 @@ public interface TextualScroll<T extends Textual> extends TextualList<T> {
 
     /**
      * Scroll.
-     * @param rowDelta
+     * @param rowDelta the row delta
      */
     boolean move(int rowDelta);
 

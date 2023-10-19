@@ -26,7 +26,7 @@ import java.util.List;
  * @param <T> type of row content
  * @author Naotsugu Kobayashi
  */
-public interface Slice<T extends Textual> extends TextualScroll<T> {
+public interface TextualSlice<T extends Textual> extends TextualScroll<T> {
 
     @Override
     List<T> texts();
@@ -59,7 +59,7 @@ public interface Slice<T extends Textual> extends TextualScroll<T> {
      * @param rowSupplier the row supplier
      * @return the created RowSlice
      */
-    static Slice<Textual> of(int maxRowSize, RowSupplier rowSupplier) {
+    static TextualSlice<Textual> of(int maxRowSize, RowSupplier rowSupplier) {
         return new RowSlice(maxRowSize, rowSupplier);
     }
 

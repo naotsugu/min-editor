@@ -16,7 +16,7 @@
 package com.mammb.code.editor.model.slice.impl;
 
 import com.mammb.code.editor.model.slice.RowSupplier;
-import com.mammb.code.editor.model.slice.Slice;
+import com.mammb.code.editor.model.slice.TextualSlice;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.until.Traverse;
@@ -31,10 +31,10 @@ import java.util.Objects;
  * RowSlice.
  * @author Naotsugu Kobayashi
  */
-public class RowSlice implements Slice<Textual> {
+public class RowSlice implements TextualSlice<Textual> {
 
     /** The row list. */
-    private List<Textual> texts = new LinkedList<>();
+    private List<Textual> rows = new LinkedList<>();
 
     /** The row source. */
     private RowSupplier rowSupplier;
@@ -56,10 +56,10 @@ public class RowSlice implements Slice<Textual> {
 
     @Override
     public List<Textual> texts() {
-        if (texts.isEmpty()) {
-            fulfillTexts();
+        if (rows.isEmpty()) {
+            fulfillRows();
         }
-        return texts;
+        return rows;
     }
 
 
@@ -78,22 +78,22 @@ public class RowSlice implements Slice<Textual> {
 
         if (maxRowSize > capacity) {
             this.maxRowSize = capacity;
-            if (texts.size() > capacity) {
-                texts.subList(capacity, texts.size()).clear();
+            if (rows.size() > capacity) {
+                rows.subList(capacity, rows.size()).clear();
             }
         } else if (maxRowSize < capacity) {
             this.maxRowSize = capacity;
-            fulfillTexts();
+            fulfillRows();
         }
     }
 
 
     @Override
     public void refresh(int rowNumber) {
-        for (int i = 0; i < texts.size(); i++) {
-            if (texts.get(i).point().row() >= rowNumber) {
-                texts.subList(i, texts.size()).clear();
-                fulfillTexts();
+        for (int i = 0; i < rows.size(); i++) {
+            if (rows.get(i).point().row() >= rowNumber) {
+                rows.subList(i, rows.size()).clear();
+                fulfillRows();
                 return;
             }
         }
@@ -104,7 +104,7 @@ public class RowSlice implements Slice<Textual> {
         if (rowDelta == 0) {
             return false;
         }
-        OffsetPoint head = texts.isEmpty() ? OffsetPoint.zero : texts.get(0).point();
+        OffsetPoint head = rows.isEmpty() ? OffsetPoint.zero : rows.get(0).point();
         Traverse traverse;
         if (rowDelta > 0) {
             // forward
@@ -121,10 +121,10 @@ public class RowSlice implements Slice<Textual> {
         if (head.equals(point)) {
             return false;
         }
-        texts.clear();
+        rows.clear();
         for (int i = 0; i < maxRowSize; i++) {
             String str = rowSupplier.at(point.cpOffset());
-            texts.add(Textual.of(point, str));
+            rows.add(Textual.of(point, str));
             if (str.isEmpty() || str.charAt(str.length() - 1) != '\n') {
                 break;
             }
@@ -141,7 +141,7 @@ public class RowSlice implements Slice<Textual> {
 
         for (int i = 0; i < n; i++) {
 
-            Textual head = texts.get(0);
+            Textual head = rows.get(0);
             int cpOffset = head.point().cpOffset();
             if (cpOffset == 0) break;
 
@@ -162,7 +162,7 @@ public class RowSlice implements Slice<Textual> {
 
         for (int i = 0; i < n; i++) {
 
-            Textual tail = texts.get(texts.size() - 1);
+            Textual tail = rows.get(rows.size() - 1);
             if (tail.isEmpty()) {
                 break;
             }
@@ -179,40 +179,40 @@ public class RowSlice implements Slice<Textual> {
 
 
     private void pushFirst(Textual row) {
-        texts.add(0, row);
-        while (texts.size() > maxRowSize) {
-            texts.remove(texts.size() - 1);
+        rows.add(0, row);
+        while (rows.size() > maxRowSize) {
+            rows.remove(rows.size() - 1);
         }
     }
 
 
     private void pushLast(Textual row) {
-        texts.add(row);
-        while (texts.size() > maxRowSize) {
-            texts.remove(0);
+        rows.add(row);
+        while (rows.size() > maxRowSize) {
+            rows.remove(0);
         }
     }
 
 
-    private void fulfillTexts() {
+    private void fulfillRows() {
 
-        if (texts.size() > maxRowSize) {
-            texts.subList(maxRowSize, texts.size()).clear();
+        if (rows.size() > maxRowSize) {
+            rows.subList(maxRowSize, rows.size()).clear();
             return;
         }
 
-        while (texts.size() < maxRowSize) {
+        while (rows.size() < maxRowSize) {
 
             OffsetPoint next;
-            if (texts.isEmpty()) {
+            if (rows.isEmpty()) {
                 next = OffsetPoint.zero;
             } else {
-                Textual tail = texts.get(texts.size() - 1);
+                Textual tail = rows.get(rows.size() - 1);
                 next = tail.point().plus(tail.text());
             }
 
             String str = rowSupplier.at(next.cpOffset());
-            texts.add(Textual.of(next, str));
+            rows.add(Textual.of(next, str));
             if (str.isEmpty() || str.charAt(str.length() - 1) != '\n') {
                 break;
             }

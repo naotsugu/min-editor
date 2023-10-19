@@ -123,7 +123,6 @@ public interface Content {
 
     /**
      * Create a new Content
-     * @param traverse
      * @param path the content path
      * @param traverse the bytes traverse at initial loading
      * @return a created Content
