@@ -16,11 +16,13 @@
 package com.mammb.code.editor.model.buffer.impl;
 
 import com.mammb.code.editor.model.buffer.Metrics;
-import com.mammb.code.editor.model.buffer.TextBuffer;
+import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.piecetable.buffer.Charsets;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -35,7 +37,7 @@ import java.util.List;
  * FixedText.
  * @author Naotsugu Kobayashi
  */
-public class FixedText implements TextBuffer<Textual> {
+public class FixedText implements TextEdit, TextualScroll<Textual> {
 
     /** The list of textual. */
     private final List<Textual> list = new ArrayList<>();
@@ -52,11 +54,9 @@ public class FixedText implements TextBuffer<Textual> {
     /**
      * Create a new FixedText.
      * @param path the path
-     * @param pageSize the max row size
      */
-    public FixedText(Path path, int pageSize) {
+    public FixedText(Path path) {
 
-        this.pageSize = pageSize;
         this.metrics = new MetricsImpl(path);
 
         final Charset cs;
@@ -176,6 +176,12 @@ public class FixedText implements TextBuffer<Textual> {
     @Override
     public boolean readOnly() {
         return true;
+    }
+
+    @Override
+    public TextualScroll<Textual> createView(int maxRowSize) {
+        pageSize = maxRowSize;
+        return this;
     }
 
     @Override

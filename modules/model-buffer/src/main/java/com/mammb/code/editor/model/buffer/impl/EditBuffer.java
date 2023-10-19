@@ -17,7 +17,7 @@ package com.mammb.code.editor.model.buffer.impl;
 
 import com.mammb.code.editor.model.buffer.Content;
 import com.mammb.code.editor.model.buffer.Metrics;
-import com.mammb.code.editor.model.buffer.TextBuffer;
+import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.buffer.Traverse;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.edit.EditListener;
@@ -30,17 +30,14 @@ import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.until.Until;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * EditBuffer.
  * @author Naotsugu Kobayashi
  */
-public class EditBuffer implements TextBuffer<Textual> {
-
-    /** The peer slice. */
-    private final TextualSlice<Textual> slice;
+public class EditBuffer implements TextEdit {
 
     /** The content. */
     private final Content content;
@@ -51,66 +48,23 @@ public class EditBuffer implements TextBuffer<Textual> {
     /** The metrics. */
     private final MetricsImpl metrics;
 
+    private final List<TextualSlice<Textual>> views = new ArrayList<>();
+
 
     /**
      * Constructor.
      * @param path the path of content
-     * @param maxRowSize the row size of slice
      * @param loadingTraverse the loading traverse
      */
-    public EditBuffer(Path path, int maxRowSize, Traverse loadingTraverse) {
+    public EditBuffer(Path path, Traverse loadingTraverse) {
         this.metrics = new MetricsImpl(path);
         this.content = Content.of(path, bytes -> {
                 metrics.accept(bytes);
                 if (loadingTraverse != null) loadingTraverse.accept(bytes);
         });
-        this.slice = TextualSlice.of(maxRowSize, new RawAdapter(content));
         this.editQueue = EditQueue.of(editTo(content));
         metrics.setModified(false);
         metrics.setCharset(content.charset());
-    }
-
-
-    @Override
-    public List<Textual> texts() {
-
-        if (editQueue.isEmpty()) {
-            return slice.texts();
-        }
-
-        Edit edit = editQueue.peek();
-        return slice.texts().stream()
-            .map(edit::applyTo)
-            .collect(Collectors.toList());
-
-    }
-
-    @Override
-    public int pageSize() {
-        return slice.pageSize();
-    }
-
-    @Override
-    public void setPageSize(int pageSize) {
-        slice.setPageSize(pageSize);
-    }
-
-    @Override
-    public List<Textual> prev(int n) {
-        editQueue.flush();
-        return slice.prev(n);
-    }
-
-    @Override
-    public List<Textual> next(int n) {
-        editQueue.flush();
-        return slice.next(n);
-    }
-
-    @Override
-    public boolean move(int rowDelta) {
-        editQueue.flush();
-        return slice.move(rowDelta);
     }
 
 
@@ -169,17 +123,25 @@ public class EditBuffer implements TextBuffer<Textual> {
         return metrics;
     }
 
+    public EditView createView(int maxRowSize) {
+        EditView view = new EditView(
+            TextualSlice.of(maxRowSize, new RawAdapter(content)),
+            editQueue);
+        views.add(view);
+        return view;
+    }
+
     private EditListener editTo(Content content) {
         return new EditToListener(new EditTo() {
             @Override
             public void insert(OffsetPoint point, String text) {
                 content.insert(point, text);
-                slice.refresh(point.row());
+                views.forEach(s -> s.refresh(point.row()));
             }
             @Override
             public void delete(OffsetPoint point, String text) {
                 content.delete(point, text.length());
-                slice.refresh(point.row());
+                views.forEach(s -> s.refresh(point.row()));
             }
         });
     }

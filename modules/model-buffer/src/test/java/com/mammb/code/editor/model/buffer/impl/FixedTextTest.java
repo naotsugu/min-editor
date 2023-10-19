@@ -40,7 +40,7 @@ class FixedTextTest {
         var path = tempDir.resolve("test.txt");
         Files.writeString(path, IntStream.rangeClosed('a', 'z')
             .mapToObj(i -> (char) i + "\n").collect(Collectors.joining()));
-        var target = new FixedText(path, 10);
+        var target = new FixedText(path);
 
         //  a b c d e f g h i j k l m n o p q r s t u v w x y z
         // |                   |
@@ -124,7 +124,7 @@ class FixedTextTest {
         var path = tempDir.resolve("test.txt");
         Files.writeString(path, IntStream.rangeClosed('a', 'z')
             .mapToObj(i -> (char) i + "\n").collect(Collectors.joining()));
-        var target = new FixedText(path, 10);
+        var target = new FixedText(path);
 
         assertEquals("a", target.subText(OffsetPoint.zero, 1));
         assertEquals("a\n", target.subText(OffsetPoint.zero, 2));

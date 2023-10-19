@@ -15,14 +15,12 @@
  */
 package com.mammb.code.editor.ui.model.impl;
 
-import com.mammb.code.editor.model.buffer.TextBuffer;
 import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.model.Caret;
@@ -87,13 +85,13 @@ public class EditorModelImpl implements EditorModel {
      */
     private EditorModelImpl(
             Context context,
-            TextBuffer<Textual> buffer,
+            TextEdit buffer,
             StylingTranslate styling,
             ScreenScroll screen) {
 
         this.context = context;
         this.buffer = buffer;
-        this.texts = new PlainScreenText(context, buffer, styling);
+        this.texts = new PlainScreenText(context, buffer.createView(screen.pageLineSize()), styling);
         this.caret = new CaretImpl(offset -> texts.layoutLine(offset));
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
@@ -107,12 +105,12 @@ public class EditorModelImpl implements EditorModel {
     /**
      * Constructor.
      * @param context the context
-     * @param context the screen scroll
+     * @param screen the screen scroll
      */
-    private EditorModelImpl(Context context, ScreenScroll scroll) {
+    private EditorModelImpl(Context context, ScreenScroll screen) {
         this(context,
-            TextBuffer.editBuffer(null, scroll.pageLineSize()),
-            StylingTranslate.passThrough(), scroll);
+            TextEdit.editBuffer(null),
+            StylingTranslate.passThrough(), screen);
     }
 
     /**
@@ -139,7 +137,7 @@ public class EditorModelImpl implements EditorModel {
     public EditorModelImpl partiallyWith(Path path) {
         return new EditorModelImpl(
             context,
-            TextBuffer.fixed(path, screen.pageLineSize()),
+            TextEdit.fixed(path),
             StylingTranslate.passThrough(),
             screen);
     }
@@ -154,7 +152,7 @@ public class EditorModelImpl implements EditorModel {
     public EditorModelImpl with(Path path) {
         return new EditorModelImpl(
             context,
-            TextBuffer.editBuffer(path, screen.pageLineSize()),
+            TextEdit.editBuffer(path),
             Syntax.of(path, context.preference().fgColor()),
             screen);
     }

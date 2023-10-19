@@ -15,8 +15,12 @@
  */
 package com.mammb.code.editor.model.buffer;
 
+import com.mammb.code.editor.model.buffer.impl.EditBuffer;
+import com.mammb.code.editor.model.buffer.impl.FixedText;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.text.TextualScroll;
 
 import java.nio.file.Path;
 
@@ -67,6 +71,13 @@ public interface TextEdit {
     boolean readOnly();
 
     /**
+     * Create a view.
+     * @param maxRowSize the number of row
+     * @return a view
+     */
+    TextualScroll<Textual> createView(int maxRowSize);
+
+    /**
      * Get the sub text.
      * @param point the start point
      * @param length the char length to be gets
@@ -79,5 +90,24 @@ public interface TextEdit {
      * @return the metrics
      */
     Metrics metrics();
+
+    /**
+     * Create a new text buffer.
+     * @param path the path of content
+     * @return a new text buffer
+     */
+    static TextEdit editBuffer(Path path) {
+        return new EditBuffer(path, null);
+    }
+
+    /**
+     * Create a new fixed text buffer.
+     * @param path the path of content
+     * @return a new fixed text buffer
+     */
+    static TextEdit fixed(Path path) {
+        return new FixedText(path);
+    }
+
 
 }
