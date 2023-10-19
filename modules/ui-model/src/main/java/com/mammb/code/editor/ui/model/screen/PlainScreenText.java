@@ -41,7 +41,7 @@ public class PlainScreenText implements ScreenText {
     /** The Context. */
     private final Context context;
     /** The edit buffer. */
-    private final TextualScroll<Textual> scroll;
+    private final TextualScroll<? extends Textual> scroll;
     /** The text translator. */
     private final Translate<Textual, TextLine> translator;
     /** The lines. */
@@ -62,7 +62,7 @@ public class PlainScreenText implements ScreenText {
      */
     public PlainScreenText(
             Context context,
-            TextualScroll<Textual> scroll,
+            TextualScroll<? extends Textual> scroll,
             Translate<Textual, StyledText> styling) {
         this.context = context;
         this.scroll = scroll;
@@ -121,7 +121,7 @@ public class PlainScreenText implements ScreenText {
             return 0;
         }
 
-        List<Textual> added = scroll.prev(n);
+        var added = scroll.prev(n);
         int size = added.size();
         if (size == 0) {
             return 0;
@@ -149,7 +149,7 @@ public class PlainScreenText implements ScreenText {
             return 0;
         }
 
-        List<Textual> added = scroll.next(n);
+        var added = scroll.next(n);
         int size = added.size();
         if (size < n) {
             rollup = Math.min(rollup + (n - size), lines.size() - scroll.pageSize() / 2);

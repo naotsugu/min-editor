@@ -75,7 +75,7 @@ public interface TextEdit {
      * @param maxRowSize the number of row
      * @return a view
      */
-    TextualScroll<Textual> createView(int maxRowSize);
+    TextualScroll<? extends Textual> createView(int maxRowSize);
 
     /**
      * Get the sub text.

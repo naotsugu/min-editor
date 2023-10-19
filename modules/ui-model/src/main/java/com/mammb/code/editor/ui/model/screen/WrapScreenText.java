@@ -40,7 +40,7 @@ public class WrapScreenText implements ScreenText {
     /** The Context. */
     private final Context context;
     /** The textual scroll. */
-    private final TextualScroll<Textual> scroll;
+    private final TextualScroll<? extends Textual> scroll;
     /** The text translator. */
     private final Translate<Textual, List<TextLine>> translator;
     /** The styling. */
@@ -67,7 +67,7 @@ public class WrapScreenText implements ScreenText {
      */
     public WrapScreenText(
             Context context,
-            TextualScroll<Textual> scroll,
+            TextualScroll<? extends Textual> scroll,
             Translate<Textual, StyledText> styling,
             double wrapWidth) {
         this.context = context;
@@ -134,7 +134,7 @@ public class WrapScreenText implements ScreenText {
 
     private int prev() {
         if (lineOffset == 0) {
-            List<Textual> added = scroll.prev(1);
+            var added = scroll.prev(1);
             int size = added.size();
             if (size == 0) return 0;
 
@@ -171,7 +171,7 @@ public class WrapScreenText implements ScreenText {
 
     private int next() {
         if (lines.size() <= lineOffset + scroll.pageSize()) {
-            List<Textual> added = scroll.next(1);
+            var added = scroll.next(1);
             int size = added.size();
             if (size == 0) return 0;
 
@@ -208,7 +208,7 @@ public class WrapScreenText implements ScreenText {
         if (first > row || row > last) {
             if (row < first) {
                 int nRow = first - row;
-                List<Textual> added = scroll.prev(nRow);
+                var added = scroll.prev(nRow);
                 if (added.size() >= scroll.pageSize()) {
                     added.subList(scroll.pageSize(), added.size()).clear();
                 }
@@ -218,7 +218,7 @@ public class WrapScreenText implements ScreenText {
                 lines.addAll(0, list);
             } else {
                 int nRow = row - last;
-                List<Textual> added = scroll.next(nRow);
+                var added = scroll.next(nRow);
                 int removedCount = removeHeadRow(lines, added.size());
                 List<TextLine> list = added.stream().map(translator::applyTo)
                     .flatMap(Collection::stream).toList();

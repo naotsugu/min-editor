@@ -48,6 +48,7 @@ public class EditBuffer implements TextEdit {
     /** The metrics. */
     private final MetricsImpl metrics;
 
+    /** The slice views. */
     private final List<TextualSlice<Textual>> views = new ArrayList<>();
 
 
@@ -123,8 +124,9 @@ public class EditBuffer implements TextEdit {
         return metrics;
     }
 
-    public EditView createView(int maxRowSize) {
-        EditView view = new EditView(
+    @Override
+    public SliceView createView(int maxRowSize) {
+        var view = new SliceView(
             TextualSlice.of(maxRowSize, new RawAdapter(content)),
             editQueue);
         views.add(view);
