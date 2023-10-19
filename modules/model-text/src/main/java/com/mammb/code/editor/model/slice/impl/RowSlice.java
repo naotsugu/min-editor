@@ -114,7 +114,7 @@ public class RowSlice implements Slice<Textual> {
         } else {
             // backward
             traverse = Traverse.backwardOf(head);
-            var until = Until.lf(rowDelta).with(traverse);
+            var until = Until.lf(Math.abs(rowDelta)).with(traverse);
             rowSupplier.offsetBefore(head.cpOffset(), until);
         }
         OffsetPoint point = traverse.asOffsetPoint();

@@ -96,6 +96,25 @@ public class EditBuffer implements TextBuffer<Textual> {
     }
 
     @Override
+    public List<Textual> prev(int n) {
+        editQueue.flush();
+        return slice.prev(n);
+    }
+
+    @Override
+    public List<Textual> next(int n) {
+        editQueue.flush();
+        return slice.next(n);
+    }
+
+    @Override
+    public boolean move(int rowDelta) {
+        editQueue.flush();
+        return slice.move(rowDelta);
+    }
+
+
+    @Override
     public void push(Edit edit) {
         editQueue.push(edit);
         metrics.apply(edit);
@@ -116,24 +135,6 @@ public class EditBuffer implements TextBuffer<Textual> {
     @Override
     public Edit redo() {
         return editQueue.redo();
-    }
-
-    @Override
-    public List<Textual> prev(int n) {
-        editQueue.flush();
-        return slice.prev(n);
-    }
-
-    @Override
-    public List<Textual> next(int n) {
-        editQueue.flush();
-        return slice.next(n);
-    }
-
-    @Override
-    public boolean move(int rowDelta) {
-        editQueue.flush();
-        return slice.move(rowDelta);
     }
 
     @Override
