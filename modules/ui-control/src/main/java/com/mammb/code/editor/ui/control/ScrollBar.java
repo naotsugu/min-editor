@@ -73,7 +73,10 @@ public interface ScrollBar<T extends Number> {
      */
     void setValue(T value);
 
-
+    /**
+     * Set the scrolled handler.
+     * @param listener the scrolled handler
+     */
     void setOnScrolled(ScrolledHandler<T> listener);
 
     /**
@@ -81,6 +84,7 @@ public interface ScrollBar<T extends Number> {
      * @return the track length
      */
     double getTrackLength();
+
 
     /**
      * Gets the ratio of the display area.
@@ -93,6 +97,7 @@ public interface ScrollBar<T extends Number> {
             : 1.0;
     }
 
+
     /**
      * Get the length from the minimum value to the maximum value.
      * @return the length from the minimum value to the maximum value
@@ -102,48 +107,19 @@ public interface ScrollBar<T extends Number> {
         return (length > 0) ? length : 0;
     }
 
+
     /**
      * Get the size of the scroll bar's thumb.
      * @return the size of the scroll bar's thumb
      */
     default double thumbSize() {
         double thumbLength = getTrackLength() * visiblePortion();
-        if (thumbLength < WIDTH) {
-            return WIDTH;
+        if (thumbLength < WIDTH * 2) {
+            return WIDTH * 2;
         } else if (thumbLength > getTrackLength()) {
             return getTrackLength();
         }
         return thumbLength;
-    }
-
-    static ScrollBar<Integer> vEmpty() {
-        return new ScrollBar<>() {
-            @Override public Integer getMin() { return 0; }
-            @Override public void setMin(Integer min) { }
-            @Override public Integer getMax() { return 0; }
-            @Override public void setMax(Integer max) { }
-            @Override public Integer getVisibleAmount() { return 0; }
-            @Override public void setVisibleAmount(Integer amount) { }
-            @Override public Integer getValue() { return 0; }
-            @Override public void setValue(Integer value) { }
-            @Override public void setOnScrolled(ScrolledHandler<Integer> listener) { }
-            @Override public double getTrackLength() { return 0; }
-        };
-    }
-
-    static ScrollBar<Double> hEmpty() {
-        return new ScrollBar<>() {
-            @Override public Double getMin() { return 0.0; }
-            @Override public void setMin(Double min) { }
-            @Override public Double getMax() { return 0.0; }
-            @Override public void setMax(Double max) { }
-            @Override public Double getVisibleAmount() { return 0.0; }
-            @Override public void setVisibleAmount(Double amount) { }
-            @Override public Double getValue() { return 0.0; }
-            @Override public void setValue(Double value) { }
-            @Override public void setOnScrolled(ScrolledHandler<Double> listener) { }
-            @Override public double getTrackLength() { return 0.0; }
-        };
     }
 
 }

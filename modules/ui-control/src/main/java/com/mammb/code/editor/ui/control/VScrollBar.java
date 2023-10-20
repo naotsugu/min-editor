@@ -248,7 +248,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
             setVisible(false);
         } else {
             setVisible(true);
-            thumb.setHeight(thumbSize());
+            thumb.setHeight(thumbLength);
         }
     }
 

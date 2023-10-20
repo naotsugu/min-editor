@@ -28,6 +28,7 @@ public class ScrollThumb extends Rectangle {
 
     private final Color baseColor;
 
+
     /**
      * Constructor.
      * @param width the width of thumb
@@ -58,7 +59,7 @@ public class ScrollThumb extends Rectangle {
     }
 
     private void handleMouseEntered(MouseEvent event) {
-        setFill(baseColor.deriveColor(0, 1, 1, 0.3));
+        setFill(baseColor.deriveColor(0, 1, 1, 0.5));
     }
 
     private void handleMouseExited(MouseEvent event) {
