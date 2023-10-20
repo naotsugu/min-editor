@@ -87,7 +87,7 @@ public class EditorModelImpl implements EditorModel {
             TextEdit buffer,
             StylingTranslate styling,
             ScreenScroll screen) {
-"".repeat()
+
         this.context = context;
         this.buffer = buffer;
         this.texts = new PlainScreenText(context, buffer.createView(screen.pageLineSize()), styling);
