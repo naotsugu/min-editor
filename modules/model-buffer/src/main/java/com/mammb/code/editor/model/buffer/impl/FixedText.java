@@ -194,7 +194,7 @@ public class FixedText implements TextEdit, TextualScroll<Textual> {
      * Read line with line ending.
      * @param reader the reader
      * @return the line
-     * @throws IOException
+     * @throws IOException IOException
      */
     static String readLine(Reader reader) throws IOException {
 

@@ -28,10 +28,18 @@ import java.util.stream.Collectors;
  */
 public class SliceView implements TextualSlice<Textual> {
 
+    /** The slice. */
     private final TextualSlice<Textual> slice;
+
     /** The edit queue ref. */
     private final EditQueue editQueueRef;
 
+
+    /**
+     * Constructor.
+     * @param slice the slice
+     * @param editQueue the edit queue ref
+     */
     public SliceView(
             TextualSlice<Textual> slice,
             EditQueue editQueue) {
@@ -50,9 +58,7 @@ public class SliceView implements TextualSlice<Textual> {
         return slice.texts().stream()
             .map(edit::applyTo)
             .collect(Collectors.toList());
-
     }
-
 
     @Override
     public int pageSize() {
@@ -86,4 +92,5 @@ public class SliceView implements TextualSlice<Textual> {
     public void refresh(int rowNumber) {
         slice.refresh(rowNumber);
     }
+
 }
