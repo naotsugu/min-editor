@@ -224,7 +224,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
     private void adjustValue(double position) {
         // figure out the "value" associated with the specified position
-        int posValue = (int) (valueLength() * clamp(0, position, 1)) + getMin();
+        int posValue = (int) (valueLength() * Math.clamp(position, 0, 1)) + getMin();
         if (Integer.compare(posValue, getValue()) != 0) {
             int old = value.getValue();
             int newValue = (posValue > getValue())
@@ -265,15 +265,6 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     private int clamp(int value) {
         if (value < min.getValue()) return min.getValue();
         if (value > max.getValue()) return max.getValue();
-        return value;
-    }
-
-    /**
-     * Clamps the given value to be strictly between the min and max values.
-     */
-    private double clamp(double min, double value, double max) {
-        if (value < min) return min;
-        if (value > max) return max;
         return value;
     }
 

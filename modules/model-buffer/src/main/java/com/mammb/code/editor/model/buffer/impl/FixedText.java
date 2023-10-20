@@ -149,7 +149,6 @@ public class FixedText implements TextEdit, TextualScroll<Textual> {
         return (rowDelta > 0) ? !next(rowDelta).isEmpty() : !prev(-rowDelta).isEmpty();
     }
 
-
     @Override
     public String subText(OffsetPoint point, int length) {
         final StringBuilder sb = new StringBuilder();

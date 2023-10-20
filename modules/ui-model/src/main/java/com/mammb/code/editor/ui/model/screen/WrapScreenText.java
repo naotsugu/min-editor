@@ -178,7 +178,6 @@ public class WrapScreenText implements ScreenText {
             int removedCount = removeHeadRow(lines, 1);
             List<TextLine> list = translator.applyTo(added.get(0));
             lines.addAll(list);
-            // TODO if it is the last line, add an empty TextLine
             lineOffset -= removedCount;
         }
         lineOffset++;
@@ -278,33 +277,14 @@ public class WrapScreenText implements ScreenText {
     }
 
 
-    /**
-     *
-     * @param lines
-     * @param n
-     * @return the number of removed row
-     */
     private static int removeHeadRow(List<TextLine> lines, int n) {
         return removeRow(lines, n, true);
     }
 
-    /**
-     *
-     * @param lines
-     * @param n
-     * @return the number of removed row
-     */
     private static int removeTailRow(List<TextLine> lines, int n) {
         return removeRow(lines, n, false);
     }
 
-    /**
-     *
-     * @param lines
-     * @param n
-     * @param asc
-     * @return the number of removed row
-     */
     private static int removeRow(List<TextLine> lines, int n, boolean asc) {
 
         if (n <= 0) return 0;

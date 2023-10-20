@@ -154,7 +154,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
             return;
         }
         dragStart = thumb.localToParent(event.getX(), event.getY()).getX();
-        preDragThumbPos = (clamp(getMin(), getValue(), getMax()) - getMin()) / valueLength();
+        preDragThumbPos = (Math.clamp(getValue(), getMin(), getMax()) - getMin()) / valueLength();
         event.consume();
     }
 
@@ -174,7 +174,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         if (!isFocused() && isFocusTraversable()) requestFocus();
         double newValue = (position * valueLength()) + min.getValue();
         double oldValue = value.getValue();
-        value.setValue(clamp(getMin(), newValue, getMax()));
+        value.setValue(Math.clamp(newValue, getMin(), getMax()));
         listener.handle(oldValue, value.getValue());
     }
 
@@ -212,18 +212,18 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
     private void adjustValue(double position) {
         // figure out the "value" associated with the specified position
-        double posValue = valueLength() * clamp(0, position, 1) + getMin();
+        double posValue = valueLength() * Math.clamp(position, 0, 1) + getMin();
         if (Double.compare(posValue, getValue()) != 0) {
             double newValue = (posValue > getValue())
                 ? getValue() + getVisibleAmount()
                 : getValue() - getVisibleAmount();
-            setValue(clamp(getMin(), newValue, getMax()));
+            setValue(Math.clamp(newValue, getMin(), getMax()));
         }
     }
 
 
     private void positionThumb() {
-        double clampedValue = clamp(getMin(), getValue(), getMax());
+        double clampedValue = Math.clamp(getValue(), getMin(), getMax());
         double trackPos = (valueLength() > 0)
             ? ((getWidth() - thumb.getWidth()) * (clampedValue - getMin()) / valueLength()) : (0.0F);
         thumb.setTranslateX(snapPositionX(trackPos + snappedLeftInset()));
@@ -246,15 +246,6 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
             timeline.stop();
             timeline = null;
         }
-    }
-
-    /**
-     * Clamps the given value to be strictly between the min and max values.
-     */
-    private double clamp(double min, double value, double max) {
-        if (value < min) return min;
-        if (value > max) return max;
-        return value;
     }
 
     @Override
