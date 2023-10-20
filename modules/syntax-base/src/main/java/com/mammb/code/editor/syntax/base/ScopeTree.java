@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.syntax.base;
 
+import com.mammb.code.editor.syntax.base.impl.ScopeTreeImpl;
+
 /**
  * ScopeTree.
  * @author Naotsugu Kobayashi
@@ -45,5 +47,14 @@ public interface ScopeTree {
      * @return the scope node at the specified offset position
      */
     ScopeNode at(int offset);
+
+    /**
+     * Create a new ScopeTree.
+     * @param context the name of context
+     * @return a new ScopeTree
+     */
+    static ScopeTree of(String context) {
+        return ScopeTreeImpl.of(context);
+    }
 
 }

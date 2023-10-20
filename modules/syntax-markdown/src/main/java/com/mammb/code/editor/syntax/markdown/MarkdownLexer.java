@@ -40,7 +40,9 @@ public class MarkdownLexer implements Lexer {
     /** The scope. */
     private ScopeTree scope;
 
+    /** The delegated lexer. */
     private Lexer delegate;
+
 
     /**
      * Constructor.
@@ -91,9 +93,10 @@ public class MarkdownLexer implements Lexer {
 
     private boolean fenceDelegate() {
 
-        var context = scope.current().collect(n -> !n.open().context().isEmpty()).stream()
-                .filter(n -> !n.open().context().equals(name())).findFirst()
-                .map(n -> n.open().context()).orElse("");
+        var context = scope.current()
+            .collect(n -> !n.open().context().isEmpty()).stream()
+            .filter(n -> !n.open().context().equals(name())).findFirst()
+            .map(n -> n.open().context()).orElse("");
 
         if (context.isEmpty() || source.matchLookahead('`', '`', '`')) {
             delegate = null;
@@ -114,6 +117,7 @@ public class MarkdownLexer implements Lexer {
      * @return the token
      */
     private Token readHeader(LexerSource source) {
+
         int pos = source.position();
         char[] ca = source.lookahead(5);
 
@@ -135,6 +139,7 @@ public class MarkdownLexer implements Lexer {
             return Token.any(source);
         }
     }
+
 
     /**
      * Read fence.

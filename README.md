@@ -33,8 +33,12 @@ $ ./gradlew run -Ddebug
 
 ## Implementation Notes
 
-### Editor part
+### Editor
 
 ![editor part](docs/images/implementation-note-01.svg)
 
+
+### Translate
+
+![ranslate part](docs/images/implementation-note-02.svg)
 

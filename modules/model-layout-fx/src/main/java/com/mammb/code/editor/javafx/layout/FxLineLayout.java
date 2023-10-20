@@ -37,10 +37,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * FxLayoutBuilder.
+ * FxLineLayout.
  * @author Naotsugu Kobayashi
  */
-public class FxLayoutBuilder implements LineLayout {
+public class FxLineLayout implements LineLayout {
 
     /** The delegated text layout. */
     private final TextLayout textLayout;
@@ -57,7 +57,7 @@ public class FxLayoutBuilder implements LineLayout {
     /**
      * Create a new Layout.
      */
-    public FxLayoutBuilder() {
+    public FxLineLayout() {
         this(-1);
     }
 
@@ -66,7 +66,7 @@ public class FxLayoutBuilder implements LineLayout {
      * Create a new Layout.
      * @param wrapWidth the wrap width
      */
-    public FxLayoutBuilder(double wrapWidth) {
+    public FxLineLayout(double wrapWidth) {
         textLayout = Toolkit.getToolkit().getTextLayoutFactory().getLayout();
         textLayout.setTabSize(4);
         textLayout.setWrapWidth((float) wrapWidth);
@@ -78,6 +78,10 @@ public class FxLayoutBuilder implements LineLayout {
     }
 
 
+    /**
+     * Perform layout.
+     * @return the row to which layout is applied
+     */
     public List<TextLine> layout() {
 
         record TextSpan(String getText, Object getFont, RectBounds getBounds, Span peer)

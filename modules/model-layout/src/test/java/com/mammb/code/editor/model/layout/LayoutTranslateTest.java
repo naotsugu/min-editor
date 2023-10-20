@@ -13,27 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.bootstrap;
+package com.mammb.code.editor.model.layout;
 
-import com.mammb.code.editor.ui.app.AppLauncher;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * The Application entry point.
+ * Test of {@link LayoutTranslate}.
  * @author Naotsugu Kobayashi
  */
-public class Main {
+class LayoutTranslateTest {
 
-    /**
-     * Launch application.
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-
-        System.setProperty(
-            "java.util.logging.SimpleFormatter.format",
-            "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
-
-        new AppLauncher().launch(args);
+    @Test void applyTo() {
     }
-
 }

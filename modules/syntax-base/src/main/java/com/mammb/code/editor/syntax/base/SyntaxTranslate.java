@@ -20,7 +20,6 @@ import com.mammb.code.editor.model.style.StyleSpan;
 import com.mammb.code.editor.model.style.StyledText;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.Textual;
-import com.mammb.code.editor.syntax.base.impl.ScopeTreeImpl;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -53,7 +52,7 @@ public class SyntaxTranslate implements StylingTranslate {
      */
     public SyntaxTranslate(Lexer lexer, String baseColorString) {
         this.lexer = Objects.requireNonNull(lexer);
-        this.scopes = ScopeTreeImpl.of(lexer.name());
+        this.scopes = ScopeTree.of(lexer.name());
         this.palette = new ColorPalette(baseColorString);
     }
 

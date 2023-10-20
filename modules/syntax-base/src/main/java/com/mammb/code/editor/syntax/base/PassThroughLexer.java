@@ -29,8 +29,10 @@ public class PassThroughLexer implements Lexer {
 
 
     /**
-     * Constructor.     * @param name the name
-     */    public PassThroughLexer(String name) {
+     * Constructor.
+     * @param name the name
+     */
+    public PassThroughLexer(String name) {
         this.name = name;
     }
 

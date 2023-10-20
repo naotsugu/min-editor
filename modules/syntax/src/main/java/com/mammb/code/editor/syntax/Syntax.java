@@ -53,10 +53,11 @@ public class Syntax {
         }
     };
 
+
     /**
      * Get the StylingTranslate for the specified path file type.
      * @param path the path of the target file
-     * @param baseColor
+     * @param baseColor the base color string
      * @return the StylingTranslate
      */
     public static StylingTranslate of(Path path, String baseColor) {

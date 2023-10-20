@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.model.screen;
 
-import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
+import com.mammb.code.editor.javafx.layout.FxLineLayout;
 import com.mammb.code.editor.javafx.layout.FxSpanTranslate;
 import com.mammb.code.editor.model.layout.LayoutWrapTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
@@ -46,7 +46,7 @@ public class WrapScreenText implements ScreenText {
     /** The styling. */
     private final Translate<Textual, StyledText> styling;
     /** The LineLayout. */
-    private final LineLayout layout = new FxLayoutBuilder();
+    private final LineLayout layout = new FxLineLayout();
 
     /** The lines maybe wrapped. */
     private final List<TextLine> lines = new LinkedList<>();

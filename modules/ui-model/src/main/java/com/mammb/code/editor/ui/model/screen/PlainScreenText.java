@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.model.screen;
 
-import com.mammb.code.editor.javafx.layout.FxLayoutBuilder;
+import com.mammb.code.editor.javafx.layout.FxLineLayout;
 import com.mammb.code.editor.javafx.layout.FxSpanTranslate;
 import com.mammb.code.editor.model.layout.LayoutTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
@@ -67,7 +67,7 @@ public class PlainScreenText implements ScreenText {
         this.context = context;
         this.scroll = scroll;
         this.styling = styling;
-        this.translator = translator(context, new FxLayoutBuilder(), styling);
+        this.translator = translator(context, new FxLineLayout(), styling);
     }
 
 
