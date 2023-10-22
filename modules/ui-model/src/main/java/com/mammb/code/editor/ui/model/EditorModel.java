@@ -65,11 +65,29 @@ public interface EditorModel extends EditorDraw {
 
     // -- caret behavior ------------------------------------------------------
 
+    /**
+     * Move the caret to the right.
+     */
     void moveCaretRight();
+    /**
+     * Move the caret to the left.
+     */
     void moveCaretLeft();
+    /**
+     * Move the caret to the Up.
+     */
     void moveCaretUp();
+    /**
+     * Move the caret to the Down.
+     */
     void moveCaretDown();
+    /**
+     * Move caret to the beginning of the line.
+     */
     void moveCaretLineHome();
+    /**
+     * Move caret to the ending of the line.
+     */
     void moveCaretLineEnd();
 
     // -- scroll behavior ------------------------------------------------------
