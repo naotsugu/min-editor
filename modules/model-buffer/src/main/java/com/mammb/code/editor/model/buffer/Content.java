@@ -61,8 +61,20 @@ public interface Content {
      */
     byte[] bytesBefore(int cpOffset, Predicate<byte[]> until);
 
+    /**
+     * Get the code point offset.
+     * @param startCpOffset the start position
+     * @param until the until
+     * @return the code point offset
+     */
     int offset(int startCpOffset, Predicate<byte[]> until);
 
+    /**
+     * Get the code point offset.
+     * @param startCpOffset the start position
+     * @param until the until
+     * @return the code point offset
+     */
     int offsetBefore(int startCpOffset, Predicate<byte[]> until);
 
     /**
