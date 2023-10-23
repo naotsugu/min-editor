@@ -62,7 +62,7 @@ public interface StyledText extends Textual, Styled {
 
     default List<StyledText> spans() {
 
-        if (styles().isEmpty()) {
+        if (styles().isEmpty() || length() == 0) {
             return List.of(this);
         }
 

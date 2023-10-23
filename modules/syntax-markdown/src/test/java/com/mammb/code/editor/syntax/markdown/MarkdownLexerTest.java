@@ -34,18 +34,18 @@ class MarkdownLexerTest {
     @Test void nextToken() {
 
         var target = new MarkdownLexer(PassThroughLexer::new);
-        var source = LexerSource.of(Textual.of(OffsetPoint.zero, "```j\n"));
+        var source = LexerSource.of(Textual.of(OffsetPoint.zero, "```java\n"));
         var scope = ScopeTree.of("md");
         target.setSource(source, scope);
 
         Token token = target.nextToken();
         assertEquals(Markdown.MdToken.FENCE, token.type());
         assertEquals(0, token.position());
-        assertEquals(4, token.length());
+        assertEquals(7, token.length());
 
         token = target.nextToken();
         assertEquals(Markdown.MdToken.EOL, token.type());
-        assertEquals(4, token.position());
+        assertEquals(7, token.position());
         assertEquals(1, token.length());
     }
 

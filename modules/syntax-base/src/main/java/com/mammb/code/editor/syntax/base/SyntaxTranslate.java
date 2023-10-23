@@ -104,8 +104,10 @@ public class SyntaxTranslate implements StylingTranslate {
             putStyle(styledText, prev, pos, textual.length() - pos);
         }
 
-        currentContext().ifPresent(n ->
-            styledText.putStyle(StyleSpan.of(new Style.Context(n.open().context()), textual.length())));
+        currentContext().ifPresent(n -> {
+            if (!textual.isEmpty())
+                styledText.putStyle(StyleSpan.of(new Style.Context(n.open().context()), textual.length()));
+        });
 
         return styledText;
 
