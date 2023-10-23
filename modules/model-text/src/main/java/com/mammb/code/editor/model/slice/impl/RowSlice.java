@@ -99,6 +99,7 @@ public class RowSlice implements TextualSlice<Textual> {
         }
     }
 
+
     @Override
     public boolean move(int rowDelta) {
         if (rowDelta == 0) {

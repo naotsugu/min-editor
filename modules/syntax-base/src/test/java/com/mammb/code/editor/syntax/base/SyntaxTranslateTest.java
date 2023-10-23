@@ -58,7 +58,7 @@ class SyntaxTranslateTest {
 
     private Lexer lexer(Token... tokens) {
         return new Lexer() {
-            Deque<Token> queue = new ArrayDeque<>(Arrays.asList(tokens));
+            final Deque<Token> queue = new ArrayDeque<>(Arrays.asList(tokens));
             @Override public String name() { return "md"; }
             @Override public void setSource(LexerSource source, ScopeTree scope) { }
             @Override public Token nextToken() {

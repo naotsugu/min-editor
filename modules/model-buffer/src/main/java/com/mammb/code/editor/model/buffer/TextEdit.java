@@ -16,7 +16,7 @@
 package com.mammb.code.editor.model.buffer;
 
 import com.mammb.code.editor.model.buffer.impl.EditBuffer;
-import com.mammb.code.editor.model.buffer.impl.FixedText;
+import com.mammb.code.editor.model.buffer.impl.TextualArray;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
@@ -106,7 +106,7 @@ public interface TextEdit {
      * @return a new fixed text buffer
      */
     static TextEdit fixed(Path path) {
-        return new FixedText(path);
+        return new TextualArray(path);
     }
 
 

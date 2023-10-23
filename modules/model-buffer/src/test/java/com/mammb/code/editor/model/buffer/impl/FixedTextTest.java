@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
- * The test of {@link FixedText}.
+ * The test of {@link TextualArray}.
  * @author Naotsugu Kobayashi
  */
 class FixedTextTest {
@@ -40,7 +40,7 @@ class FixedTextTest {
         var path = tempDir.resolve("test.txt");
         Files.writeString(path, IntStream.rangeClosed('a', 'z')
             .mapToObj(i -> (char) i + "\n").collect(Collectors.joining()));
-        var target = new FixedText(path);
+        var target = new TextualArray(path);
 
         //  a b c d e f g h i j k l m n o p q r s t u v w x y z
         // |                   |
@@ -124,7 +124,7 @@ class FixedTextTest {
         var path = tempDir.resolve("test.txt");
         Files.writeString(path, IntStream.rangeClosed('a', 'z')
             .mapToObj(i -> (char) i + "\n").collect(Collectors.joining()));
-        var target = new FixedText(path);
+        var target = new TextualArray(path);
 
         assertEquals("a", target.subText(OffsetPoint.zero, 1));
         assertEquals("a\n", target.subText(OffsetPoint.zero, 2));
@@ -142,26 +142,26 @@ class FixedTextTest {
 
     @Test void readLineLf() throws Exception {
         Reader r = new StringReader("a\n𠀋\nc");
-        assertEquals("a\n", FixedText.readLine(r));
-        assertEquals("𠀋\n", FixedText.readLine(r));
-        assertEquals("c", FixedText.readLine(r));
-        assertNull(FixedText.readLine(r));
+        assertEquals("a\n", TextualArray.readLine(r));
+        assertEquals("𠀋\n", TextualArray.readLine(r));
+        assertEquals("c", TextualArray.readLine(r));
+        assertNull(TextualArray.readLine(r));
     }
 
     @Test void readLineCrLf() throws Exception {
         Reader r = new StringReader("a\r\n𠀋\r\nc");
-        assertEquals("a\r\n", FixedText.readLine(r));
-        assertEquals("𠀋\r\n", FixedText.readLine(r));
-        assertEquals("c", FixedText.readLine(r));
-        assertNull(FixedText.readLine(r));
+        assertEquals("a\r\n", TextualArray.readLine(r));
+        assertEquals("𠀋\r\n", TextualArray.readLine(r));
+        assertEquals("c", TextualArray.readLine(r));
+        assertNull(TextualArray.readLine(r));
     }
 
     @Test void readLineCr() throws Exception {
         Reader r = new StringReader("a\r𠀋\rc");
-        assertEquals("a\r", FixedText.readLine(r));
-        assertEquals("𠀋\r", FixedText.readLine(r));
-        assertEquals("c", FixedText.readLine(r));
-        assertNull(FixedText.readLine(r));
+        assertEquals("a\r", TextualArray.readLine(r));
+        assertEquals("𠀋\r", TextualArray.readLine(r));
+        assertEquals("c", TextualArray.readLine(r));
+        assertNull(TextualArray.readLine(r));
     }
 
 }

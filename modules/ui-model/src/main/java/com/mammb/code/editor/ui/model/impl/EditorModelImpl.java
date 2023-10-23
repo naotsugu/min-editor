@@ -504,7 +504,8 @@ public class EditorModelImpl implements EditorModel {
         if (delta == 0) {
             return;
         }
-        if (texts.move(delta)) {
+        boolean scrolled = texts.move(delta);
+        if (scrolled) {
             texts.markDirty();
             caret.markDirty();
         }

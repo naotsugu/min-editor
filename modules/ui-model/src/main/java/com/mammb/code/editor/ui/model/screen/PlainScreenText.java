@@ -176,12 +176,12 @@ public class PlainScreenText implements ScreenText {
     public boolean move(int rowDelta) {
         if (rowDelta == 0) return false;
         if (styling instanceof SyntaxTranslate && Math.abs(rowDelta) < pageSize()) {
-            if (rowDelta < 0) {
-                return prev(-rowDelta) > 0;
-            } else {
-                return next(rowDelta) > 0;
-            }
+            // syntax support or scroll to the display area, scroll one line at a time
+            return (rowDelta > 0)
+                ? next(rowDelta) > 0
+                : prev(-rowDelta) > 0;
         } else {
+            // jumping scroll
             return scroll.move(rowDelta);
         }
     }

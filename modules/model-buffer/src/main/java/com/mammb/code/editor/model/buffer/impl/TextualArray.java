@@ -34,10 +34,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * FixedText.
+ * TextualArray.
  * @author Naotsugu Kobayashi
  */
-public class FixedText implements TextEdit, TextualScroll<Textual> {
+public class TextualArray implements TextEdit, TextualScroll<Textual> {
 
     /** The list of textual. */
     private final List<Textual> list = new ArrayList<>();
@@ -55,7 +55,7 @@ public class FixedText implements TextEdit, TextualScroll<Textual> {
      * Create a new FixedText.
      * @param path the path
      */
-    public FixedText(Path path) {
+    public TextualArray(Path path) {
 
         this.metrics = new MetricsImpl(path);
 
