@@ -15,17 +15,16 @@
  */
 package com.mammb.code.editor.model.buffer.impl;
 
-import com.mammb.code.editor.model.text.OffsetPoint;
 import java.util.Arrays;
 
 /**
- * RowAnchor.
+ * Anchor.
  * @author Naotsugu Kobayashi
  */
-public class RowAnchor {
+public class Anchor {
 
     /** The span of anchor. */
-    private final int span = 1000;
+    private final int span = 10000;
 
     /** The row anchor flatten table. */
     private long[] table;
@@ -34,7 +33,7 @@ public class RowAnchor {
     private int length;
 
 
-    public RowAnchor(int initialEntryCapacity) {
+    public Anchor(int initialEntryCapacity) {
         if (initialEntryCapacity <= 0) {
             initialEntryCapacity = 5;
         }
@@ -44,43 +43,50 @@ public class RowAnchor {
     }
 
 
-    public void push(int row, long chOffset, long cpOffset) {
-        if ((row % span) != 0) {
-            throw new IllegalArgumentException("illegal row " + row);
+    public void push(long anchorPoint, long value1, long value2) {
+        if ((anchorPoint % span) != 0) {
+            throw new IllegalArgumentException("illegal anchorPoint.[" + anchorPoint + "]");
         }
-        // [0] row    0 chOffset    0 / (1000 / 2) = 0
-        // [1] row    0 cpOffset
-        // [2] row 1000 chOffset 1000 / (1000 / 2) = 2
-        // [3] row 1000 cpOffset
-        // [4] row 2000 chOffset 2000 / (1000 / 2) = 4
-        // [5] row 2000 cpOffset
+        // [0] anchorPoint    0  value1     0 / (1000 / 2) = 0
+        // [1] anchorPoint    0  value2
+        // [2] anchorPoint 1000  value1  1000 / (1000 / 2) = 2
+        // [3] anchorPoint 1000  value2
+        // [4] anchorPoint 2000  value1  2000 / (1000 / 2) = 4
+        // [5] anchorPoint 2000  value2
         if (length >= table.length) {
             grow();
         }
-        int index = row / (span >> 1);
-        table[index] = chOffset;
-        table[index + 1] = cpOffset;
+        int index = Math.toIntExact(anchorPoint / (span >> 1));
+        table[index] = value1;
+        table[index + 1] = value2;
         length += 2;
     }
 
 
-    public OffsetPoint nearest(int row) {
-        int n = Math.round(((float) row) / span) * span;
+    public AnchorValue nearest(long point) {
+        int n = Math.round(((float) point) / span) * span;
         int index = n / (span >> 1);
         if (index + 1 >= length) {
             index = length - 2;
         }
-        return OffsetPoint.of(
+        return new AnchorValue(
             (index / 2) * span,
-            (int) table[index],
-            (int) table[index + 1]
+            table[index],
+            table[index + 1]
         );
     }
 
+    public record AnchorValue(long anchorPoint, long value1, long value2) {}
 
+
+    /**
+     * Get the span.
+     * @return the span
+     */
     public int span() {
         return span;
     }
+
 
     /**
      * Grow this array.
