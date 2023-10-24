@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class Anchor {
 
     /** The span of anchor. */
-    private final int span = 10000;
+    private final int span;
 
     /** The row anchor flatten table. */
     private long[] table;
@@ -33,12 +33,13 @@ public class Anchor {
     private int length;
 
 
-    public Anchor(int initialEntryCapacity) {
+    public Anchor(int initialEntryCapacity, int span) {
         if (initialEntryCapacity <= 0) {
             initialEntryCapacity = 5;
         }
         this.table = new long[initialEntryCapacity * 2];
         this.length = 0;
+        this.span = span;
         push(0, 0, 0);
     }
 

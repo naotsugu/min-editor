@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AnchorTest {
 
     @Test void nearest() {
-        var target = new Anchor(2);
+        var target = new Anchor(2, 1000);
         target.push(1000, 1001, 1002);
         target.push(2000, 2001, 2002);
 
