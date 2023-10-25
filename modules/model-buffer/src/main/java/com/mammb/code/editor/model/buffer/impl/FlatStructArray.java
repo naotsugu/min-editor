@@ -101,7 +101,7 @@ public class FlatStructArray {
         int physicalIndex = fromIndex * unit;
         for (int i = physicalIndex; i < array.length; i += unit) {
             for (int j = 0; j < deltas.length; j++) {
-                modified[i] += Math.abs(deltas[j]);
+                modified[j] += Math.abs(deltas[j]);
                 array[i + j] += deltas[j];
             }
         }
