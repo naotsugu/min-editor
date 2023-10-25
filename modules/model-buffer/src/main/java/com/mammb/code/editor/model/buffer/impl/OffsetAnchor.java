@@ -38,11 +38,15 @@ public class OffsetAnchor {
         array.add(point.row(), point.offset(), point.cpOffset());
     }
 
-    public OffsetPoint nearest(long row) {
+    public OffsetPoint closestAnchorPoint(long row) {
         int index = array.binarySearch(0, row);
         long[] values = array.get(index);
         return OffsetPoint.of((int) values[0], (int) values[1], (int) values[2]);
     }
 
+    public void edited(long chOffset,
+            int rowDelta, long chOffsetDelta, long cpOffsetDelta) {
+
+    }
 
 }

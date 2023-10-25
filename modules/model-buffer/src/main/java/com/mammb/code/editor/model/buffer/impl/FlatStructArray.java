@@ -108,11 +108,6 @@ public class FlatStructArray {
     }
 
 
-    public void plusValuesAfter(int fromIndexExclude, long... deltas) {
-        plusValues(fromIndexExclude + 1, deltas);
-    }
-
-
     public void plusValues(int fromIndex, long... deltas) {
 
         if (fromIndex >= length) {
@@ -156,10 +151,8 @@ public class FlatStructArray {
         low = Math.clamp(low, 0, length - 1);
         high = Math.clamp(high, 0, length - 1);
 
-        long d1 = Math.abs(get(low)[offset] - key);
-        long d2 = Math.abs(get(high)[offset] - key);
-
-        return (d1 <= d2) ? low : high;
+        return (Math.abs(get(low)[offset] - key) <= Math.abs(get(high)[offset] - key))
+            ? low : high;
     }
 
 
