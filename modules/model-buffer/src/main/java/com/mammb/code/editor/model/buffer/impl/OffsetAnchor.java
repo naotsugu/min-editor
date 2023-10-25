@@ -15,9 +15,34 @@
  */
 package com.mammb.code.editor.model.buffer.impl;
 
+import com.mammb.code.editor.model.text.OffsetPoint;
+
 /**
  * OffsetAnchor.
  * @author Naotsugu Kobayashi
  */
 public class OffsetAnchor {
+
+    private FlatStructArray array;
+
+
+    public OffsetAnchor() {
+        array = new FlatStructArray(3);
+    }
+
+    public void put(int row, long chOffset, long cpOffset) {
+        array.add(row, chOffset, cpOffset);
+    }
+
+    public void put(OffsetPoint point) {
+        array.add(point.row(), point.offset(), point.cpOffset());
+    }
+
+    public OffsetPoint nearest(long row) {
+        int index = array.binarySearch(0, row);
+        long[] values = array.get(index);
+        return OffsetPoint.of((int) values[0], (int) values[1], (int) values[2]);
+    }
+
+
 }

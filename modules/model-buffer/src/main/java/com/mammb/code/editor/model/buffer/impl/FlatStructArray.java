@@ -23,7 +23,7 @@ import java.util.Arrays;
  */
 public class FlatStructArray {
 
-    /** The number of elements. */
+    /** The number of elements in a unit. */
     private final int unit;
 
     /** The internal flatten array. */
@@ -32,9 +32,15 @@ public class FlatStructArray {
     /** The length of element. */
     private int length;
 
-    private long[] modified;
+    /** The value modified stack. */
+    private long[] valueModifiedStack;
 
 
+    /**
+     * Constructor.
+     * @param unit the number of elements in a unit
+     * @param initial the initial capacity
+     */
     public FlatStructArray(int unit, int initial) {
         if (unit <= 0) {
             throw new IllegalArgumentException();
@@ -42,15 +48,24 @@ public class FlatStructArray {
         this.unit = unit;
         this.array = new long[initial * unit];
         this.length = 0;
-        this.modified = new long[unit];
+        this.valueModifiedStack = new long[unit];
     }
 
 
+    /**
+     * Constructor.
+     * @param unit the number of elements in a unit
+     */
     public FlatStructArray(int unit) {
         this(unit, 5);
     }
 
 
+    /**
+     * Set the elements.
+     * @param index the index to set element
+     * @param values the element values
+     */
     public void set(int index, long... values) {
         if (values.length != unit) {
             throw new IllegalArgumentException();
@@ -66,11 +81,20 @@ public class FlatStructArray {
     }
 
 
+    /**
+     * Add an element at the end.
+     * @param values the element values
+     */
     public void add(long... values) {
         set(length, values);
     }
 
 
+    /**
+     * Get the elements at the specified position in this array.
+     * @param index the index of the element
+     * @return the elements
+     */
     public long[] get(int index) {
         if (index >= length) {
             throw new IndexOutOfBoundsException();
@@ -101,7 +125,7 @@ public class FlatStructArray {
         int physicalIndex = fromIndex * unit;
         for (int i = physicalIndex; i < array.length; i += unit) {
             for (int j = 0; j < deltas.length; j++) {
-                modified[j] += Math.abs(deltas[j]);
+                valueModifiedStack[j] += Math.abs(deltas[j]);
                 array[i + j] += deltas[j];
             }
         }
@@ -128,7 +152,14 @@ public class FlatStructArray {
                 return mid;
             }
         }
-        return Math.clamp(low, 0, length - 1);
+
+        low = Math.clamp(low, 0, length - 1);
+        high = Math.clamp(high, 0, length - 1);
+
+        long d1 = Math.abs(get(low)[offset] - key);
+        long d2 = Math.abs(get(high)[offset] - key);
+
+        return (d1 <= d2) ? low : high;
     }
 
 
@@ -166,4 +197,5 @@ public class FlatStructArray {
             ? new long[newCapacity]
             : Arrays.copyOf(array, newCapacity);
     }
+
 }
