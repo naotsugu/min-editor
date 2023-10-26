@@ -55,6 +55,8 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     /** whether modified. */
     private boolean modified = false;
 
+    private OffsetAnchor anchor = new OffsetAnchor();
+
     /** The metrics change listener. */
     private final List<MetricsChangeListener> listeners = new ArrayList<>();
 
@@ -103,6 +105,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     @Override
     public void accept(byte[] bytes) {
         plus(bytes);
+        anchor.put(this);
     }
 
     @Override
@@ -237,12 +240,22 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
 
         @Override
         public void insert(OffsetPoint point, String text) {
+            Metrics old = new MetricsRecord(MetricsImpl.this);
             plus(text.getBytes(StandardCharsets.UTF_8));
+            anchor.edited(point.cpOffset(),
+                rowCount() - old.rowCount(),
+                chCount - old.chCount(),
+                cpCount - old.cpCount());
         }
 
         @Override
         public void delete(OffsetPoint point, String text) {
+            Metrics old = new MetricsRecord(MetricsImpl.this);
             minus(text.getBytes(StandardCharsets.UTF_8));
+            anchor.edited(point.cpOffset(),
+                rowCount() - old.rowCount(),
+                chCount - old.chCount(),
+                cpCount - old.cpCount());
         }
     };
 

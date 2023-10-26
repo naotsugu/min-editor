@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.model.buffer.impl;
 
+import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.text.OffsetPoint;
 
 /**
@@ -23,20 +24,28 @@ import com.mammb.code.editor.model.text.OffsetPoint;
  */
 public class OffsetAnchor {
 
+    private int span = 10_000;
+
     private FlatStructArray array;
 
 
     public OffsetAnchor() {
         array = new FlatStructArray(3);
+        put(0, 0, 0);
     }
+
 
     public void put(int row, long chOffset, long cpOffset) {
-        array.add(row, chOffset, cpOffset);
+        if ((cpOffset % span) == 0) {
+            array.add(row, chOffset, cpOffset);
+        }
     }
 
-    public void put(OffsetPoint point) {
-        array.add(point.row(), point.offset(), point.cpOffset());
+
+    public void put(Metrics metrics) {
+        put(metrics.rowCount(), metrics.chCount(), metrics.cpCount());
     }
+
 
     public OffsetPoint closestAnchorPoint(long row) {
         int index = array.binarySearch(0, row);
@@ -44,9 +53,17 @@ public class OffsetAnchor {
         return OffsetPoint.of((int) values[0], (int) values[1], (int) values[2]);
     }
 
-    public void edited(long chOffset,
-            int rowDelta, long chOffsetDelta, long cpOffsetDelta) {
 
+    public void edited(long cpOffset,
+            int rowDelta, long chOffsetDelta, long cpOffsetDelta) {
+        int index = array.binarySearch(2, cpOffset);
+        if (array.get(index)[2] <= cpOffset) {
+            index++;
+        }
+        if (index >= array.length()) {
+            return;
+        }
+        array.plusValues(index, rowDelta, chOffsetDelta, cpOffsetDelta);
     }
 
 }
