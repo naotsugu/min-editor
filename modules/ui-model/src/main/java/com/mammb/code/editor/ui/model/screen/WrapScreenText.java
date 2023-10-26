@@ -21,6 +21,7 @@ import com.mammb.code.editor.model.layout.LayoutWrapTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.style.StyledText;
+import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
@@ -169,6 +170,13 @@ public class WrapScreenText implements ScreenText {
     }
 
 
+    @Override
+    public boolean move(OffsetPoint base, int rowDelta) {
+        if (rowDelta == 0) return false;
+        return scrollAtScreen(head().point().row() + rowDelta, 0);
+    }
+
+
     private int next() {
         if (lines.size() <= lineOffset + scroll.pageSize()) {
             var added = scroll.next(1);
@@ -182,13 +190,6 @@ public class WrapScreenText implements ScreenText {
         }
         lineOffset++;
         return 1;
-    }
-
-
-    @Override
-    public boolean move(int rowDelta) {
-        if (rowDelta == 0) return false;
-        return scrollAtScreen(head().point().row() + rowDelta, 0);
     }
 
 

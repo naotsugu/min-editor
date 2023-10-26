@@ -21,6 +21,7 @@ import com.mammb.code.editor.model.layout.LayoutTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.style.StyledText;
+import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
@@ -173,7 +174,7 @@ public class PlainScreenText implements ScreenText {
     }
 
     @Override
-    public boolean move(int rowDelta) {
+    public boolean move(OffsetPoint base, int rowDelta) {
         if (rowDelta == 0) return false;
         if (styling instanceof SyntaxTranslate && Math.abs(rowDelta) < pageSize()) {
             // syntax support or scroll to the display area, scroll one line at a time
@@ -195,7 +196,7 @@ public class PlainScreenText implements ScreenText {
             return false;
         }
         int delta = (row < head) ? row - head : row - tail;
-        return move(delta);
+        return move(head().point(), delta);
     }
 
 

@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.layout.TextLine;
+import com.mammb.code.editor.model.text.OffsetPoint;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,7 @@ public interface ScreenText {
      */
     int next(int n);
 
-    boolean move(int rowDelta);
+    boolean move(OffsetPoint base, int rowDelta);
 
     /**
      * Scrolls to the specified position.

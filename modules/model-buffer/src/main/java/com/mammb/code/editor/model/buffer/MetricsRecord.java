@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.model.buffer;
 
+import com.mammb.code.editor.model.text.OffsetPoint;
+
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
@@ -57,6 +59,11 @@ public record MetricsRecord(
             m.crCount(),
             m.lfCount(),
             m.modified());
+    }
+
+    @Override
+    public OffsetPoint anchorPoint(int row) {
+        return OffsetPoint.zero;
     }
 
     @Override

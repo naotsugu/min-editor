@@ -16,6 +16,7 @@
 package com.mammb.code.editor.model.buffer;
 
 import com.mammb.code.editor.model.text.LineEnding;
+import com.mammb.code.editor.model.text.OffsetPoint;
 
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -85,6 +86,8 @@ public interface Metrics {
      * @return whether modified
      */
     boolean modified();
+
+    OffsetPoint anchorPoint(int row);
 
     /**
      * Add the metrics change listener.

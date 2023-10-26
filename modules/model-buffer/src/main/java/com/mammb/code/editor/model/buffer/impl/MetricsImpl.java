@@ -157,6 +157,11 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     @Override
+    public OffsetPoint anchorPoint(int row) {
+        return anchor.closestAnchorPoint(row);
+    }
+
+    @Override
     public void addListener(MetricsChangeListener listener) {
         listeners.add(listener);
     }
