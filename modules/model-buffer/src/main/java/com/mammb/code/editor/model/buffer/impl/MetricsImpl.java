@@ -78,6 +78,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
         handleChange(() -> this.path = path);
     }
 
+
     /**
      * Set the modified.
      * @param modified whether modified
@@ -86,6 +87,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
         handleChange(() -> this.modified = modified);
     }
 
+
     /**
      * Set the charset.
      * @param charset the charset
@@ -93,6 +95,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     public void setCharset(Charset charset) {
         handleChange(() -> this.charset = charset);
     }
+
 
     /**
      * Apply the edit.
@@ -180,6 +183,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
         listeners.forEach(l -> l.changed(old, new MetricsRecord(this)));
     }
 
+
     private void plus(byte[] bytes) {
 
         if (bytes == null || bytes.length == 0) return;
@@ -207,6 +211,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
         modified = true;
         byteLen += bytes.length;
     }
+
 
     private void minus(byte[] bytes) {
 
@@ -236,22 +241,24 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
         byteLen -= bytes.length;
     }
 
+
     private final EditTo editTo = new EditTo() {
 
         @Override
         public void insert(OffsetPoint point, String text) {
             Metrics old = new MetricsRecord(MetricsImpl.this);
             plus(text.getBytes(StandardCharsets.UTF_8));
-            anchor.edited(point.cpOffset(),
-                rowCount() - old.rowCount(),
-                chCount - old.chCount(),
-                cpCount - old.cpCount());
+            applyAnchor(point, old);
         }
 
         @Override
         public void delete(OffsetPoint point, String text) {
             Metrics old = new MetricsRecord(MetricsImpl.this);
             minus(text.getBytes(StandardCharsets.UTF_8));
+            applyAnchor(point, old);
+        }
+
+        private void applyAnchor(OffsetPoint point, Metrics old) {
             anchor.edited(point.cpOffset(),
                 rowCount() - old.rowCount(),
                 chCount - old.chCount(),

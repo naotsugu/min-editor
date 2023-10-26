@@ -175,7 +175,15 @@ public interface EditorModel extends EditorDraw {
      */
     EditorModel with(Path path);
 
-
+    /**
+     * Create a EditorModel.
+     * @param context the Context
+     * @param width the width
+     * @param height the height
+     * @param vScroll the vertical scroll
+     * @param hScroll the horizontal scroll
+     * @return a EditorModel
+     */
     static EditorModel of(Context context, double width, double height, ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
         return EditorModelImpl.of(context, width, height, vScroll, hScroll);
     }
