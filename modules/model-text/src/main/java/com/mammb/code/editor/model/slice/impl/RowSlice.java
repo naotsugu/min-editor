@@ -114,7 +114,7 @@ public class RowSlice implements TextualSlice<Textual> {
         } else {
             // backward
             traverse = Traverse.backwardOf(base);
-            var until = Until.lf(Math.abs(rowDelta)).with(traverse);
+            var until = Until.lf(Math.abs(rowDelta)).withLess(traverse);
             rowSupplier.offsetBefore(base.cpOffset(), until);
         }
         OffsetPoint point = traverse.asOffsetPoint();
@@ -123,7 +123,7 @@ public class RowSlice implements TextualSlice<Textual> {
         }
         rows.clear();
         for (int i = 0; i < maxRowSize; i++) {
-            String str = rowSupplier.at(point.cpOffset() + ((rowDelta < 0) ? 1 : 0));
+            String str = rowSupplier.at(point.cpOffset());
             rows.add(Textual.of(point, str));
             if (str.isEmpty() || str.charAt(str.length() - 1) != '\n') {
                 break;
