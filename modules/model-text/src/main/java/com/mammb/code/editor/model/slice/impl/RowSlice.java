@@ -105,21 +105,20 @@ public class RowSlice implements TextualSlice<Textual> {
         if (rowDelta == 0) {
             return false;
         }
-        OffsetPoint head = rows.isEmpty() ? OffsetPoint.zero : rows.get(0).point();
         Traverse traverse;
         if (rowDelta > 0) {
             // forward
-            traverse = Traverse.forwardOf(head);
+            traverse = Traverse.forwardOf(base);
             var until = Until.lfInclusive(rowDelta).with(traverse);
-            rowSupplier.offset(head.cpOffset(), until);
+            rowSupplier.offset(base.cpOffset(), until);
         } else {
             // backward
-            traverse = Traverse.backwardOf(head);
+            traverse = Traverse.backwardOf(base);
             var until = Until.lf(Math.abs(rowDelta)).with(traverse);
-            rowSupplier.offsetBefore(head.cpOffset(), until);
+            rowSupplier.offsetBefore(base.cpOffset(), until);
         }
         OffsetPoint point = traverse.asOffsetPoint();
-        if (head.equals(point)) {
+        if (point.equals((rows.isEmpty() ? OffsetPoint.zero : rows.get(0).point()))) {
             return false;
         }
         rows.clear();

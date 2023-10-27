@@ -108,7 +108,6 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     @Override
     public void accept(byte[] bytes) {
         plus(bytes, anchor);
-        anchor.put(this);
     }
 
     @Override
@@ -212,7 +211,9 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
             }
             chCount++;
             cpCount++;
-            if (anchor != null) anchor.put(this);
+            if (anchor != null) {
+                anchor.put(this);
+            }
         }
         modified = true;
         byteLen += bytes.length;

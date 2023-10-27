@@ -46,7 +46,7 @@ public class OffsetAnchor {
 
 
     public void put(Metrics metrics) {
-        put(metrics.rowCount(), metrics.chCount(), metrics.cpCount());
+        put(metrics.lfCount(), metrics.chCount(), metrics.cpCount());
     }
 
 

@@ -38,6 +38,7 @@ public class Keys {
         SELECT_ALL,
         WRAP, EMPTY,
         NEW,
+        DEBUG,
         ;
     }
 
@@ -61,6 +62,8 @@ public class Keys {
     private static final KeyCombination SC_END  = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_HOME = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.SHORTCUT_DOWN);
 
+    private static final KeyCombination SC_D = new KeyCharacterCombination("d", KeyCombination.SHORTCUT_DOWN);
+
     public static final Predicate<KeyEvent> controlKeysFilter = e ->
         System.getProperty("os.name").toLowerCase().startsWith("windows")
             ? !e.isControlDown() && !e.isAltDown() && !e.isMetaDown() && e.getCharacter().length() == 1 && e.getCharacter().getBytes()[0] != 0
@@ -81,6 +84,7 @@ public class Keys {
         else if (Keys.SC_END.match(e)) return Action.END;
         else if (Keys.SC_A.match(e)) return Action.SELECT_ALL;
         else if (Keys.SC_N.match(e)) return Action.NEW;
+        else if (Keys.SC_D.match(e)) return Action.DEBUG;
         else return Action.EMPTY;
     }
 }

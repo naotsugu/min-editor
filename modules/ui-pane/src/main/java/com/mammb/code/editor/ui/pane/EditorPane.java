@@ -241,6 +241,7 @@ public class EditorPane extends StackPane {
                 case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
                 case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
                 case NEW        -> newPane();
+                case DEBUG      -> debug();
             }
             return;
         }
@@ -400,6 +401,10 @@ public class EditorPane extends StackPane {
         }
     }
 
+
+    private void debug() {
+        model.vScrolled(0, 1000);
+    }
 
     private void newPane() {
         Stage newStage = new Stage();
