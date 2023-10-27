@@ -101,7 +101,7 @@ public class RowSlice implements TextualSlice<Textual> {
 
 
     @Override
-    public boolean move(int rowDelta) {
+    public boolean move(OffsetPoint base, int rowDelta) {
         if (rowDelta == 0) {
             return false;
         }

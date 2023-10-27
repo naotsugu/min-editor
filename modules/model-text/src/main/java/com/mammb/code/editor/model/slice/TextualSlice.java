@@ -16,6 +16,7 @@
 package com.mammb.code.editor.model.slice;
 
 import com.mammb.code.editor.model.slice.impl.RowSlice;
+import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 
@@ -44,7 +45,7 @@ public interface TextualSlice<T extends Textual> extends TextualScroll<T> {
     void setPageSize(int capacity);
 
     @Override
-    boolean move(int rowDelta);
+    boolean move(OffsetPoint base, int rowDelta);
 
     /**
      * Refresh below the specified rowNumber(inclusive).

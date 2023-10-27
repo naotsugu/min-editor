@@ -28,7 +28,7 @@ import com.mammb.code.editor.model.text.Translate;
 import com.mammb.code.editor.syntax.base.SyntaxTranslate;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
-
+import com.mammb.code.editor.model.buffer.Metrics;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -174,16 +174,27 @@ public class PlainScreenText implements ScreenText {
     }
 
     @Override
-    public boolean move(OffsetPoint base, int rowDelta) {
-        if (rowDelta == 0) return false;
-        if (styling instanceof SyntaxTranslate && Math.abs(rowDelta) < pageSize()) {
+    public boolean move(int row, Metrics metrics) {
+            final OffsetPoint head = head().point();
+            final int delta = row - head.row();
+            if (delta == 0) {
+                return false;
+            }
+
+            if (styling instanceof SyntaxTranslate || Math.abs(delta) < pageSize()) {
             // syntax support or scroll to the display area, scroll one line at a time
-            return (rowDelta > 0)
-                ? next(rowDelta) > 0
-                : prev(-rowDelta) > 0;
+            return (delta > 0)
+                ? next(delta) > 0
+                : prev(delta) > 0;
         } else {
-            // jumping scroll
-            return scroll.move(rowDelta);
+            OffsetPoint base = head;
+            if (metrics != null) {
+                OffsetPoint anchor = metrics.anchorPoint(row);
+                if (Math.abs(delta) >= Math.abs(row - anchor.row())) {
+                    base = anchor;
+                }
+            }
+            return scroll.move(base, row - base.row());
         }
     }
 
@@ -195,8 +206,7 @@ public class PlainScreenText implements ScreenText {
         if (head <= row && row <= tail) {
             return false;
         }
-        int delta = (row < head) ? row - head : row - tail;
-        return move(head().point(), delta);
+        return move(row, null);
     }
 
 

@@ -18,7 +18,9 @@ package com.mammb.code.editor.model.buffer.impl;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.edit.EditQueue;
 import com.mammb.code.editor.model.slice.TextualSlice;
+import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -83,9 +85,9 @@ public class SliceView implements TextualSlice<Textual> {
     }
 
     @Override
-    public boolean move(int rowDelta) {
+    public boolean move(OffsetPoint base, int rowDelta) {
         editQueueRef.flush();
-        return slice.move(rowDelta);
+        return slice.move(base, rowDelta);
     }
 
     @Override

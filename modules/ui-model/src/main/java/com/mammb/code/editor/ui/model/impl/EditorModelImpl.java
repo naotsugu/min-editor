@@ -500,11 +500,10 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void vScrolled(int oldValue, int newValue) {
-        int delta = newValue - oldValue;
-        if (delta == 0) {
+        if ((newValue - oldValue) == 0) {
             return;
         }
-        boolean scrolled = texts.move(buffer.metrics().anchorPoint(newValue), delta);
+        boolean scrolled = texts.move(newValue, buffer.metrics());
         if (scrolled) {
             texts.markDirty();
             caret.markDirty();

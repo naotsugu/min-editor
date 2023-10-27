@@ -24,7 +24,9 @@ import com.mammb.code.editor.model.text.OffsetPoint;
  */
 public class OffsetAnchor {
 
-    private int span = 10_000;
+    private int span = 50_000;
+
+    private long height = 0;
 
     private FlatStructArray array;
 
@@ -36,8 +38,9 @@ public class OffsetAnchor {
 
 
     public void put(int row, long chOffset, long cpOffset) {
-        if ((cpOffset % span) == 0) {
+        if (cpOffset > height + span) {
             array.add(row, chOffset, cpOffset);
+            height = cpOffset;
         }
     }
 

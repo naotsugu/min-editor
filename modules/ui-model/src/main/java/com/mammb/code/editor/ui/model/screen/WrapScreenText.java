@@ -21,13 +21,12 @@ import com.mammb.code.editor.model.layout.LayoutWrapTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.style.StyledText;
-import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
-
+import com.mammb.code.editor.model.buffer.Metrics;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -171,9 +170,8 @@ public class WrapScreenText implements ScreenText {
 
 
     @Override
-    public boolean move(OffsetPoint base, int rowDelta) {
-        if (rowDelta == 0) return false;
-        return scrollAtScreen(head().point().row() + rowDelta, 0);
+    public boolean move(int row, Metrics metrics) {
+        return scrollAtScreen(row - head().point().row(), 0);
     }
 
 
