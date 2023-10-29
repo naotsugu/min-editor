@@ -107,7 +107,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
 
     @Override
     public void accept(byte[] bytes) {
-        plus(bytes, anchor);
+        plus(bytes);
     }
 
     @Override
@@ -188,7 +188,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
 
-    private void plus(byte[] bytes, OffsetAnchor anchor) {
+    private void plus(byte[] bytes) {
 
         if (bytes == null || bytes.length == 0) return;
 
@@ -211,9 +211,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
             }
             chCount++;
             cpCount++;
-            if (anchor != null) {
-                anchor.put(this);
-            }
+            anchor.put(this);
         }
         modified = true;
         byteLen += bytes.length;
@@ -254,7 +252,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
         @Override
         public void insert(OffsetPoint point, String text) {
             Metrics old = new MetricsRecord(MetricsImpl.this);
-            plus(text.getBytes(StandardCharsets.UTF_8), null);
+            plus(text.getBytes(StandardCharsets.UTF_8));
             applyAnchor(point, old);
         }
 
