@@ -24,19 +24,35 @@ import com.mammb.code.editor.model.until.Traverse;
  */
 public class TraverseForward implements Traverse {
 
+    /** The count of rows. */
     private int rows;
+    /** The count of character. */
     private int chCount;
+    /** The count of code point. */
     private int cpCount;
 
-    public TraverseForward(int rows, int chCount, int cpCount) {
+
+    /**
+     * Constructor.
+     * @param rows the count of rows
+     * @param chCount the count of character
+     * @param cpCount the count of code point
+     */
+    private TraverseForward(int rows, int chCount, int cpCount) {
         this.rows = rows;
         this.chCount = chCount;
         this.cpCount = cpCount;
     }
 
+
+    /**
+     * Create a new traverse forward.
+     * @param base the base offset point
+     */
     public TraverseForward(OffsetPoint base) {
         this(base.row(), base.offset(), base.cpOffset());
     }
+
 
     @Override
     public void accept(byte[] bytes) {
