@@ -18,13 +18,34 @@ package com.mammb.code.editor.model.buffer.impl;
 import java.util.Arrays;
 
 /**
- * FlatStructArray.
+ * FlatElementsArray.
+ *
+ * <pre>
+ *  struct { long row; long offset; long cpOffset; } elms[2];
+ *
+ *  array[0]  elms[0].row
+ *  array[1]  elms[0].offset
+ *  array[2]  elms[0].cpOffset
+ *  array[3]  elms[1].row
+ *  array[4]  elms[1].offset
+ *  array[5]  elms[1].cpOffset
+ *
+ *  numberOfElements:3
+ *  length:2
+ *
+ *  set(1, 10, 20, 30)
+ *   array[3] = 10
+ *   array[4] = 20
+ *   array[5] = 30
+ *
+ * </pre>
+ *
  * @author Naotsugu Kobayashi
  */
-public class FlatStructArray {
+public class FlattenStructArray {
 
     /** The number of elements in a unit. */
-    private final int unit;
+    private final int numberOfElements;
 
     /** The internal flatten array. */
     private long[] array;
@@ -33,22 +54,22 @@ public class FlatStructArray {
     private int length;
 
     /** The value modified stack. */
-    private long[] valueModifiedStack;
+    private final long[] valueModifiedStack;
 
 
     /**
      * Constructor.
-     * @param unit the number of elements in a unit
-     * @param initial the initial capacity
+     * @param numberOfElements the number of elements in a unit
+     * @param initialCapacity the initial capacity
      */
-    public FlatStructArray(int unit, int initial) {
-        if (unit <= 0) {
+    public FlattenStructArray(int numberOfElements, int initialCapacity) {
+        if (numberOfElements <= 0) {
             throw new IllegalArgumentException();
         }
-        this.unit = unit;
-        this.array = new long[initial * unit];
+        this.numberOfElements = numberOfElements;
+        this.array = new long[initialCapacity * numberOfElements];
         this.length = 0;
-        this.valueModifiedStack = new long[unit];
+        this.valueModifiedStack = new long[numberOfElements];
     }
 
 
@@ -56,7 +77,7 @@ public class FlatStructArray {
      * Constructor.
      * @param unit the number of elements in a unit
      */
-    public FlatStructArray(int unit) {
+    public FlattenStructArray(int unit) {
         this(unit, 5);
     }
 
@@ -67,15 +88,16 @@ public class FlatStructArray {
      * @param values the element values
      */
     public void set(int index, long... values) {
-        if (values.length != unit) {
+        if (values.length != numberOfElements) {
             throw new IllegalArgumentException();
         }
-        if (array.length < (index + 1) * unit) {
-            grow((index + 1) * unit);
+        long[] arr = array;
+        if (arr.length < (index + 1) * numberOfElements) {
+            arr = grow((index + 1) * numberOfElements);
         }
-        int physicalIndex = index * unit;
+        int physicalIndex = index * numberOfElements;
         for (long value : values) {
-            array[physicalIndex++] = value;
+            arr[physicalIndex++] = value;
         }
         length = Math.max(length, index + 1);
     }
@@ -99,8 +121,8 @@ public class FlatStructArray {
         if (index >= length) {
             throw new IndexOutOfBoundsException();
         }
-        long[] ret = new long[unit];
-        int physicalIndex = index * unit;
+        long[] ret = new long[numberOfElements];
+        int physicalIndex = index * numberOfElements;
         for (int i = 0; i < ret.length; i++) {
             ret[i] = array[physicalIndex++];
         }
@@ -108,17 +130,22 @@ public class FlatStructArray {
     }
 
 
+    /**
+     * Plus values to all elements after the specified index.
+     * @param fromIndex the specified index
+     * @param deltas the amount to be added
+     */
     public void plusValues(int fromIndex, long... deltas) {
 
         if (fromIndex >= length) {
             throw new IndexOutOfBoundsException();
         }
-        if (deltas.length != unit) {
+        if (deltas.length != numberOfElements) {
             throw new IllegalArgumentException();
         }
 
-        int physicalIndex = fromIndex * unit;
-        for (int i = physicalIndex; i < array.length; i += unit) {
+        int physicalIndex = fromIndex * numberOfElements;
+        for (int i = physicalIndex; i < array.length; i += numberOfElements) {
             for (int j = 0; j < deltas.length; j++) {
                 valueModifiedStack[j] += Math.abs(deltas[j]);
                 array[i + j] += deltas[j];
@@ -128,9 +155,15 @@ public class FlatStructArray {
     }
 
 
+    /**
+     * Get the index with the closest value to the specified element.
+     * @param offset the offset of the value.
+     * @param key the value to be compared
+     * @return the index value
+     */
     public int binarySearch(int offset, long key) {
 
-        if (offset >= unit) {
+        if (offset >= numberOfElements) {
             throw new IllegalArgumentException();
         }
 
@@ -157,11 +190,11 @@ public class FlatStructArray {
 
 
     /**
-     * Get the unit.
-     * @return the unit
+     * Get the number of elements.
+     * @return the number of elements
      */
-    public int unit() {
-        return unit;
+    public int numberOfElements() {
+        return numberOfElements;
     }
 
 
@@ -182,7 +215,7 @@ public class FlatStructArray {
     private long[] grow(int minCapacity) {
         int oldCapacity = array.length;
         int newCapacity = Math.clamp(oldCapacity >> 1, minCapacity, Integer.MAX_VALUE - 8);
-        int remainder = newCapacity % unit;
+        int remainder = newCapacity % numberOfElements;
         if (remainder != 0) {
             newCapacity -= newCapacity;
         }

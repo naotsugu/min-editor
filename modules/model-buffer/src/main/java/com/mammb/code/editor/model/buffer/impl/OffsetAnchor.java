@@ -28,11 +28,11 @@ public class OffsetAnchor {
 
     private long height = 0;
 
-    private FlatStructArray array;
+    private FlattenStructArray array;
 
 
     public OffsetAnchor() {
-        array = new FlatStructArray(3);
+        array = new FlattenStructArray(3);
         put(0, 0, 0);
     }
 

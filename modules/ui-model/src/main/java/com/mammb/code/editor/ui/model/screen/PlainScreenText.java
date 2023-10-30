@@ -173,15 +173,16 @@ public class PlainScreenText implements ScreenText {
         return size;
     }
 
+
     @Override
     public boolean move(int row, Metrics metrics) {
-            final OffsetPoint head = head().point();
-            final int delta = row - head.row();
-            if (delta == 0) {
-                return false;
-            }
+        final OffsetPoint head = head().point();
+        final int delta = row - head.row();
+        if (delta == 0) {
+            return false;
+        }
 
-            if (styling instanceof SyntaxTranslate || Math.abs(delta) < pageSize()) {
+        if (styling instanceof SyntaxTranslate || Math.abs(delta) < pageSize()) {
             // syntax support or scroll to the display area, scroll one line at a time
             return (delta > 0)
                 ? next(delta) > 0

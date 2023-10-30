@@ -87,6 +87,11 @@ public interface Metrics {
      */
     boolean modified();
 
+    /**
+     * Get the nearest anchor to the specified line.
+     * @param row the specified row
+     * @return the nearest anchor
+     */
     OffsetPoint anchorPoint(int row);
 
     /**

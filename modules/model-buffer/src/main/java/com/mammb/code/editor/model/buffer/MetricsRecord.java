@@ -68,7 +68,7 @@ public record MetricsRecord(
 
     @Override
     public void addListener(MetricsChangeListener listener) {
-
+        // no-op
     }
 
 }

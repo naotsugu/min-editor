@@ -20,13 +20,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test of {@link FlatStructArray}.
+ * Test of {@link FlattenStructArray}.
  * @author Naotsugu Kobayashi
  */
 class FlatStructArrayTest {
 
     @Test void test() {
-        var target = new FlatStructArray(3, 2);
+        var target = new FlattenStructArray(3, 2);
         assertEquals(0, target.length());
 
         target.set(0, 10, 20, 30);
@@ -52,7 +52,7 @@ class FlatStructArrayTest {
     }
 
     @Test void binarySearch() {
-        var target = new FlatStructArray(3);
+        var target = new FlattenStructArray(3);
         target.add(100, 200, 300); // 0
         target.add(110, 210, 310); // 1
         target.add(120, 220, 320); // 2
@@ -77,7 +77,7 @@ class FlatStructArrayTest {
 
     @Test void plusValues() {
 
-        var target = new FlatStructArray(3);
+        var target = new FlattenStructArray(3);
         target.add(10, 20, 30); // 0
         target.add(11, 21, 31); // 1
         target.add(12, 22, 32); // 2
