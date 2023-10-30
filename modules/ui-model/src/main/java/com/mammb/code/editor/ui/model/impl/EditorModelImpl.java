@@ -184,6 +184,7 @@ public class EditorModelImpl implements EditorModel {
         stateChange.push(buffer.metrics(), caret, selection);
     }
 
+
     private void draw(GraphicsContext gc, LayoutLine layoutLine) {
         if (layoutLine == null) {
             return;
@@ -197,6 +198,7 @@ public class EditorModelImpl implements EditorModel {
         }
     }
 
+
     private void fillContextBand(GraphicsContext gc, List<TextRun> runs, double top, double lineHeight) {
         if (runs.stream().anyMatch(r -> !r.source().context().isEmpty())) {
             gc.setFill(Color.LIGHTGRAY.deriveColor(0, 0, 0, 0.2));
@@ -204,6 +206,7 @@ public class EditorModelImpl implements EditorModel {
             gc.setFill(Color.TRANSPARENT);
         }
     }
+
 
     private void drawRun(GraphicsContext gc, TextRun run, double top) {
 

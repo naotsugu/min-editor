@@ -52,6 +52,12 @@ public interface ScreenText {
      */
     int next(int n);
 
+    /**
+     * Moves to the specified row.
+     * @param row the specified row
+     * @param metrics the Metrics
+     * @return {@code true} if moved to the specified row
+     */
     boolean move(int row, Metrics metrics);
 
     /**

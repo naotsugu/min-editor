@@ -406,6 +406,7 @@ public class EditorPane extends StackPane {
         model.vScrolled(0, 1000);
     }
 
+
     private void newPane() {
         Stage newStage = new Stage();
         Bounds bounds = localToScreen(getBoundsInLocal());

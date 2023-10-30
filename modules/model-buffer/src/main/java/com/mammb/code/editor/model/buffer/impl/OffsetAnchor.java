@@ -26,11 +26,16 @@ public class OffsetAnchor {
 
     private int span = 50_000;
 
-    private long height = 0;
+    /** The high-water mark. */
+    private long hwm = 0;
 
+    /** The array. */
     private FlattenStructArray array;
 
 
+    /**
+     * Constructor.
+     */
     public OffsetAnchor() {
         array = new FlattenStructArray(3);
         put(0, 0, 0);
@@ -38,9 +43,9 @@ public class OffsetAnchor {
 
 
     public void put(int row, long chOffset, long cpOffset) {
-        if (cpOffset > height + span) {
+        if (cpOffset > hwm + span) {
             array.add(row, chOffset, cpOffset);
-            height = cpOffset;
+            hwm = cpOffset;
         }
     }
 

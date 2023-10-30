@@ -55,6 +55,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     /** whether modified. */
     private boolean modified = false;
 
+    /** the offset anchor. */
     private OffsetAnchor anchor = new OffsetAnchor();
 
     /** The metrics change listener. */
@@ -104,6 +105,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     public void apply(Edit edit) {
         handleChange(() -> edit.apply(editTo));
     }
+
 
     @Override
     public void accept(byte[] bytes) {
