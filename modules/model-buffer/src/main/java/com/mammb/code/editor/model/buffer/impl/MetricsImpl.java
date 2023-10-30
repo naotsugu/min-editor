@@ -55,7 +55,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     /** whether modified. */
     private boolean modified = false;
 
-    /** the offset anchor. */
+    /** The offset anchor. */
     private OffsetAnchor anchor = new OffsetAnchor();
 
     /** The metrics change listener. */

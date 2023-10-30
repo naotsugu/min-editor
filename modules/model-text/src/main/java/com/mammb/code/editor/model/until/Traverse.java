@@ -32,12 +32,26 @@ public interface Traverse extends Consumer<byte[]> {
      */
     void accept(byte[] t);
 
+    /**
+     * Get the result of traverse as OffsetPoint
+     * @return the offset point
+     */
     OffsetPoint asOffsetPoint();
 
+    /**
+     * Create a forward traverse.
+     * @param base the base offset point
+     * @return the traverse
+     */
     static Traverse forwardOf(OffsetPoint base) {
         return new TraverseForward(base);
     }
 
+    /**
+     * Create a backward traverse.
+     * @param base the base offset point
+     * @return the traverse
+     */
     static Traverse backwardOf(OffsetPoint base) {
         return new TraverseBackward(base);
     }

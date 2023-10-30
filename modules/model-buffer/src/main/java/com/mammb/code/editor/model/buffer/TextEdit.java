@@ -109,5 +109,4 @@ public interface TextEdit {
         return new TextualArray(path);
     }
 
-
 }

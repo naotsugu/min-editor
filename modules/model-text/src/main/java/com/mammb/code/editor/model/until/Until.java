@@ -27,7 +27,6 @@ package com.mammb.code.editor.model.until;
 import com.mammb.code.editor.model.until.impl.UntilCharLen;
 import com.mammb.code.editor.model.until.impl.UntilLf;
 import com.mammb.code.editor.model.until.impl.UntilLfInclusive;
-
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -46,6 +45,11 @@ public interface Until<T> extends Predicate<T> {
     boolean test(T t);
 
 
+    /**
+     * Composite the specified consumer.
+     * @param consumer the specified consumer
+     * @return the Until after composited
+     */
     default Until<T> with(Consumer<? super T> consumer) {
         Objects.requireNonNull(consumer);
         return t -> {
@@ -56,6 +60,11 @@ public interface Until<T> extends Predicate<T> {
     }
 
 
+    /**
+     * Composite the specified consumer.
+     * @param consumer the specified consumer
+     * @return the Until after composited
+     */
     default Until<T> withLess(Consumer<? super T> consumer) {
         Objects.requireNonNull(consumer);
         return t -> {
@@ -76,6 +85,7 @@ public interface Until<T> extends Predicate<T> {
         return new UntilCharLen(length);
     }
 
+
     /**
      * Create a new Until LF.
      * @param count the line feed count
@@ -85,6 +95,7 @@ public interface Until<T> extends Predicate<T> {
         return new UntilLf(count);
     }
 
+
     /**
      * Create a new Until LF.
      * @return the Until LF predicate
@@ -92,6 +103,7 @@ public interface Until<T> extends Predicate<T> {
     static Until<byte[]> lfInclusive() {
         return new UntilLfInclusive(1);
     }
+
 
     /**
      * Create a new Until LF.
