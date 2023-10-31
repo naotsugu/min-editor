@@ -122,13 +122,17 @@ public interface Content {
      * @param traverse the traverse
      * @param <T> the type of traverse
      */
-    default <T extends Traverse> void traverseRow(T traverse) {
-        Predicate<byte[]> until = Until.lfInclusive();
-        int cpOffset = 0;
+    default <T extends Traverse> void traverseRow(int startCpOffset, T traverse) {
+        Predicate<byte[]> lf = Until.lfInclusive();
+        int cpOffset = startCpOffset;
         for (;;) {
-            byte[] bytes = bytes(cpOffset, until);
+            byte[] bytes = bytes(cpOffset, lf);
             if (bytes.length == 0) break;
-            cpOffset += traverse.accept(bytes);
+            int count = traverse.accept(bytes);
+            if (count < 0) {
+                break;
+            }
+            cpOffset += count;
         }
     }
 

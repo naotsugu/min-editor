@@ -19,12 +19,13 @@ package com.mammb.code.editor.model.buffer;
  * The traverse.
  * @author Naotsugu Kobayashi
  */
+@FunctionalInterface
 public interface Traverse {
 
     /**
      * Accept the given bytes.
      * @param bytes the given bytes to be accepted
-     * @return the count of accept
+     * @return the count of accept, {@code -1} to interrupt the traverse
      */
     int accept(byte[] bytes);
 
