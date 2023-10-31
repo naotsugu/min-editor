@@ -55,10 +55,10 @@ public class TraverseBackward implements Traverse {
 
 
     @Override
-    public void accept(byte[] bytes) {
+    public void accept(byte[] utf8Bytes) {
         cpCount--;
-        chCount -= Bytes.lengthByteAsUtf16(bytes[0]);
-        if (bytes[0] == '\n') {
+        chCount -= Bytes.lengthByteAsUtf16(utf8Bytes[0]);
+        if (utf8Bytes[0] == '\n') {
             rows--;
         }
     }
