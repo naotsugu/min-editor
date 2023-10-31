@@ -62,7 +62,7 @@ public class IndeterminateProgress extends StackPane {
         initClip(radii);
 
         bar = new Rectangle();
-        bar.setFill(Color.LIGHTGRAY.deriveColor(0, 1, 1, 0.5));
+        bar.setFill(Color.LIGHTGRAY.deriveColor(0, 1, 1, 0.6));
         bar.setArcWidth(radii);
         bar.setArcHeight(radii);
         bar.setHeight(height);
@@ -85,7 +85,7 @@ public class IndeterminateProgress extends StackPane {
 
 
     public static IndeterminateProgress elongatedOf() {
-        return new IndeterminateProgress(2, 0, 0);
+        return new IndeterminateProgress(3, 0, 0);
     }
 
     /**

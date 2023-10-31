@@ -121,7 +121,6 @@ public class EditorPane extends StackPane {
 
         initHandler();
 
-
     }
 
 
