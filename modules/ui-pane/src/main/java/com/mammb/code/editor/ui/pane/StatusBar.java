@@ -94,7 +94,7 @@ public class StatusBar extends HBox {
             caretText.setText(selectionString + " " + caretPointString);
         });
         stateHandler.addSelectionChanged(c -> {
-            selectionString = (c.length() > 0) ? "%,d chars".formatted(c.length()) : "";
+            selectionString = (c.length() > 0) ? "%,d chars ".formatted(c.length()) : "";
             caretText.setText(selectionString + " " + caretPointString);
         });
     }
