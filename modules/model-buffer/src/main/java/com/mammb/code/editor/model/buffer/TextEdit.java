@@ -97,7 +97,7 @@ public interface TextEdit {
      * @return a new text buffer
      */
     static TextEdit editBuffer(Path path) {
-        return new EditBuffer(path, null);
+        return new EditBuffer(path);
     }
 
     /**

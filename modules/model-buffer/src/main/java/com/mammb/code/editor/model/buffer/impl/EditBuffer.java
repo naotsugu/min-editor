@@ -18,7 +18,6 @@ package com.mammb.code.editor.model.buffer.impl;
 import com.mammb.code.editor.model.buffer.Content;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextEdit;
-import com.mammb.code.editor.model.buffer.Traverse;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.edit.EditListener;
 import com.mammb.code.editor.model.edit.EditQueue;
@@ -55,14 +54,10 @@ public class EditBuffer implements TextEdit {
     /**
      * Constructor.
      * @param path the path of content
-     * @param loadingTraverse the loading traverse
      */
-    public EditBuffer(Path path, Traverse loadingTraverse) {
+    public EditBuffer(Path path) {
         this.metrics = new MetricsImpl(path);
-        this.content = Content.of(path, bytes -> {
-                metrics.accept(bytes);
-                if (loadingTraverse != null) loadingTraverse.accept(bytes);
-        });
+        this.content = Content.of(path, metrics);
         this.editQueue = EditQueue.of(editTo(content));
         metrics.setModified(false);
         metrics.setCharset(content.charset());

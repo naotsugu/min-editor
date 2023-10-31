@@ -17,7 +17,6 @@ package com.mammb.code.editor.model.slice.impl;
 
 import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.until.Until;
-
 import java.nio.charset.StandardCharsets;
 
 /**
