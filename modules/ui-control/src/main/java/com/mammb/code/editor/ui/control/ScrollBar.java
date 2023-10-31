@@ -114,7 +114,7 @@ public interface ScrollBar<T extends Number> {
      */
     default double thumbSize() {
         double thumbLength = getTrackLength() * visiblePortion();
-        if (thumbLength < WIDTH * 2) {
+        if (thumbLength <= WIDTH * 2) {
             return WIDTH * 2;
         } else if (thumbLength > getTrackLength()) {
             return getTrackLength();

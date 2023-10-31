@@ -48,6 +48,14 @@ public class ScreenScroll {
     private boolean hScrollEnabled = true;
 
 
+    /**
+     * Constructor.
+     * @param context the Context
+     * @param vScroll the vertical scroll
+     * @param hScroll the horizontal scroll
+     * @param width the screen width
+     * @param height the screen height
+     */
     public ScreenScroll(
             Context context,
             ScrollBar<Integer> vScroll,

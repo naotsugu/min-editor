@@ -54,6 +54,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     /** The thumb. */
     private final ScrollThumb thumb;
 
+    /** The background color. */
     private final Color backGround;
 
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */

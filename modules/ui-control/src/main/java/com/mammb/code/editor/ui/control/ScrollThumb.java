@@ -26,6 +26,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class ScrollThumb extends Rectangle {
 
+    /** The base color. */
     private final Color baseColor;
 
 

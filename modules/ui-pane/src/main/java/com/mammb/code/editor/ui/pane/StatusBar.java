@@ -36,20 +36,22 @@ import javafx.scene.text.Text;
  */
 public class StatusBar extends HBox {
 
-    public static final double HEIGHT = 15;
-    public static final double WIDTH = 150;
+    public static final double HEIGHT = 14;
 
     /** The Context. */
     private final Context context;
 
-    /** The selection text. */
-    private final Text selectionText;
     /** The line ending text. */
     private final Text lineEndingText;
     /** The charset text. */
     private final Text charsetText;
-    /** The caret point text. */
-    private final Text caretPointText;
+    /** The caret text. */
+    private final Text caretText;
+
+    /** The caret text string. */
+    private String caretPointString = "";
+    /** The selection text string. */
+    private String selectionString = "";
 
 
     /**
@@ -59,9 +61,7 @@ public class StatusBar extends HBox {
     public StatusBar(Context context) {
 
         this.context = context;
-        this.selectionText = createText();
-        this.selectionText.setVisible(false);
-        this.caretPointText = createText();
+        this.caretText = createText();
         this.lineEndingText = createText();
         this.charsetText    = createText();
 
@@ -71,7 +71,7 @@ public class StatusBar extends HBox {
             Insets.EMPTY)));
         setCursor(Cursor.TEXT);
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-        setPrefSize(WIDTH, HEIGHT);
+        setPrefSize(0, HEIGHT);
         setSpacing(HEIGHT);
         setPadding(new Insets(0, HEIGHT / 3, 0, HEIGHT / 3));
         setAlignment(Pos.CENTER_RIGHT);
@@ -89,11 +89,13 @@ public class StatusBar extends HBox {
             lineEndingText.setText(c.toString()));
         stateHandler.addCharsetChanged(c ->
             charsetText.setText(c.toString()));
-        stateHandler.addCaretPointChanged(c ->
-            caretPointText.setText("%d:%d".formatted(c.row() + 1, c.cpOffset())));
+        stateHandler.addCaretPointChanged(c -> {
+            caretPointString = "%,d : %,d".formatted(c.row() + 1, c.cpOffset());
+            caretText.setText(selectionString + " " + caretPointString);
+        });
         stateHandler.addSelectionChanged(c -> {
-            selectionText.setVisible(c.length() > 0);
-            selectionText.setText("%d chars".formatted(c.length()));
+            selectionString = (c.length() > 0) ? "%,d chars".formatted(c.length()) : "";
+            caretText.setText(selectionString + " " + caretPointString);
         });
     }
 
@@ -106,8 +108,7 @@ public class StatusBar extends HBox {
         var text = new Text();
         text.setFill(Color.web(context.preference().fgColor()).deriveColor(0, 1, 1, 0.8));
         text.setFont(new Font(HEIGHT * 0.75));
-        var pane = new StackPane(text);
-        getChildren().add(pane);
+        getChildren().add(new StackPane(text));
         return text;
     }
 

@@ -108,9 +108,12 @@ public class EditorPane extends StackPane {
         StackPane.setAlignment(vScrollBar, Pos.CENTER_RIGHT);
         hScrollBar = new HScrollBar(Color.web(context.preference().fgColor()));
         StackPane.setAlignment(hScrollBar, Pos.BOTTOM_LEFT);
-        getChildren().addAll(vScrollBar, hScrollBar);
 
         model = EditorModel.of(context, canvasWidth, canvasHeight, vScrollBar, hScrollBar);
+
+        statusBar = new StatusBar(context);
+        statusBar.bind(model.stateChange());
+        getChildren().addAll(statusBar, vScrollBar, hScrollBar);
 
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> model.tick(gc)));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -118,11 +121,6 @@ public class EditorPane extends StackPane {
 
         initHandler();
 
-        statusBar = new StatusBar(context);
-        getChildren().add(statusBar);
-        StackPane.setMargin(vScrollBar, new Insets(0, 0, StatusBar.HEIGHT, 0));
-        StackPane.setMargin(hScrollBar, new Insets(0, StatusBar.WIDTH, 0, 0));
-        statusBar.bind(model.stateChange());
 
     }
 

@@ -54,8 +54,8 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     /** The thumb. */
     private final ScrollThumb thumb;
 
-    /** The thumb. */
-    private final Color baseColor;
+    /** The background color. */
+    private final Color backGround;
 
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
@@ -69,7 +69,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
     public HScrollBar(Color baseColor) {
 
-        this.baseColor = baseColor.deriveColor(0, 1, 1, 0.1);
+        this.backGround = baseColor.deriveColor(0, 1, 1, 0.1);
 
         setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_PREF_SIZE);
         setPrefHeight(WIDTH);
@@ -122,7 +122,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     }
 
     private void handleMouseEntered(MouseEvent event) {
-        setBackground(new Background(new BackgroundFill(baseColor, null, null)));
+        setBackground(new Background(new BackgroundFill(backGround, null, null)));
     }
 
     private void handleMouseExited(MouseEvent event) {
