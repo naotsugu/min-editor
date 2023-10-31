@@ -78,7 +78,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         setCursor(Cursor.DEFAULT);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
 
-        thumb = new ScrollThumb(WIDTH, WIDTH, baseColor);
+        thumb = new ScrollThumb(WIDTH, WIDTH * 2, baseColor);
         getChildren().add(thumb);
 
         initListener();

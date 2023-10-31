@@ -76,7 +76,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         setCursor(Cursor.DEFAULT);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
 
-        thumb = new ScrollThumb(WIDTH, WIDTH, baseColor);
+        thumb = new ScrollThumb(WIDTH * 2, WIDTH, baseColor);
         getChildren().add(thumb);
 
         initListener();

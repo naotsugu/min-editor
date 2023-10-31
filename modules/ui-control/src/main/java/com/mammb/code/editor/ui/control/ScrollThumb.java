@@ -43,7 +43,7 @@ public class ScrollThumb extends Rectangle {
         setY(0);
         setArcHeight(8);
         setArcWidth(8);
-        setFill(baseColor.deriveColor(0, 1, 1, 0.2));
+        setFill(baseColor.deriveColor(0, 1, 1, 0.3));
         setAccessibleRole(AccessibleRole.THUMB);
 
         initListener();
@@ -59,11 +59,11 @@ public class ScrollThumb extends Rectangle {
     }
 
     private void handleMouseEntered(MouseEvent event) {
-        setFill(baseColor.deriveColor(0, 1, 1, 0.5));
+        setFill(baseColor.deriveColor(0, 1, 1, 0.6));
     }
 
     private void handleMouseExited(MouseEvent event) {
-        setFill(baseColor.deriveColor(0, 1, 1, 0.2));
+        setFill(baseColor.deriveColor(0, 1, 1, 0.3));
     }
 
 }
