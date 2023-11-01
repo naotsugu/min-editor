@@ -19,6 +19,7 @@ package com.mammb.code.editor.model.buffer;
  * The traverse.
  * @author Naotsugu Kobayashi
  */
+@Deprecated
 @FunctionalInterface
 public interface Traverse {
 

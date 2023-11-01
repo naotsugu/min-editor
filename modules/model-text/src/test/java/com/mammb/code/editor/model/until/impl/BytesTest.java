@@ -24,42 +24,30 @@
  */
 package com.mammb.code.editor.model.until.impl;
 
+import org.junit.jupiter.api.Test;
+
+import java.nio.charset.StandardCharsets;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
- * Utilities of bytes.
+ * Test of {@link Bytes}.
  * @author Naotsugu Kobayashi
  */
-public class Bytes {
+class BytesTest {
 
-    /**
-     * Get the number of bytes from the first byte of UTF-8 when expressed in UTF-16.
-     * @param utf8FirstByte the first byte of UTF-8
-     * @return the number of bytes when expressed in UTF-16
-     */
-    public static short lengthByteAsUtf16(byte utf8FirstByte) {
-        return (continuationByteCount(utf8FirstByte) > 2) ? (short) 2 : 1;
+    @Test void lengthByteAsUtf16() {
+        assertEquals(1, Bytes.lengthByteAsUtf16("a".getBytes(StandardCharsets.UTF_8)[0]));
+        assertEquals(1, Bytes.lengthByteAsUtf16("Ω".getBytes(StandardCharsets.UTF_8)[0]));
+        assertEquals(1, Bytes.lengthByteAsUtf16("あ".getBytes(StandardCharsets.UTF_8)[0]));
+        assertEquals(2, Bytes.lengthByteAsUtf16("😊".getBytes(StandardCharsets.UTF_8)[0]));
     }
 
-    /**
-      * Get the number of bytes of utf-8 code following a given byte.
-      * @param utf8FirstByte the utf-8 head byte to be checked
-      * @return the number of bytes of utf-8 code following a given byte
-      */
-    public static short continuationByteCount(byte utf8FirstByte) {
-        if ((utf8FirstByte & 0x80) == 0x00) {
-            // 0... ....
-            return 0;
-        } else if ((utf8FirstByte & 0xE0) == 0xC0) {
-            // 110. ....
-            return 1;
-        } else if ((utf8FirstByte & 0xF0) == 0xE0) {
-            // 1110 ....
-            return 2;
-        } else if ((utf8FirstByte & 0xF8) == 0xF0) {
-            // 1111 0...
-            return 3;
-        } else {
-            throw new IllegalArgumentException(Byte.toString(utf8FirstByte));
-        }
+    @Test void continuationByteCount() {
+        assertEquals(0, Bytes.continuationByteCount("a".getBytes(StandardCharsets.UTF_8)[0]));
+        assertEquals(1, Bytes.continuationByteCount("Ω".getBytes(StandardCharsets.UTF_8)[0]));
+        assertEquals(2, Bytes.continuationByteCount("あ".getBytes(StandardCharsets.UTF_8)[0]));
+        assertEquals(3, Bytes.continuationByteCount("😊".getBytes(StandardCharsets.UTF_8)[0]));
     }
 
 }
