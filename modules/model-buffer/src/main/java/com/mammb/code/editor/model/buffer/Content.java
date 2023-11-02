@@ -18,7 +18,6 @@ package com.mammb.code.editor.model.buffer;
 import com.mammb.code.editor.model.buffer.impl.PtContent;
 import com.mammb.code.editor.model.buffer.impl.PtContentMirror;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.model.until.Until;
 import com.mammb.code.piecetable.buffer.Charsets;
 
 import java.io.IOException;
@@ -48,6 +47,7 @@ public interface Content {
      */
     byte[] bytes(int cpOffset, Predicate<byte[]> until);
 
+
     /**
      * Get the bytes.
      * <pre>
@@ -61,6 +61,7 @@ public interface Content {
      */
     byte[] bytesBefore(int cpOffset, Predicate<byte[]> until);
 
+
     /**
      * Get the code point offset.
      * @param startCpOffset the start position
@@ -68,6 +69,7 @@ public interface Content {
      * @return the code point offset
      */
     int offset(int startCpOffset, Predicate<byte[]> until);
+
 
     /**
      * Get the code point offset.
@@ -77,12 +79,14 @@ public interface Content {
      */
     int offsetBefore(int startCpOffset, Predicate<byte[]> until);
 
+
     /**
      * Inserts the char sequence into this {@code PieceTable}.
      * @param point the offset point
      * @param cs a char sequence
      */
     void insert(OffsetPoint point, CharSequence cs);
+
 
     /**
      * Removes the characters in a substring of this {@code PieceTable}.
@@ -91,18 +95,21 @@ public interface Content {
      */
     void delete(OffsetPoint point, int len);
 
+
     /**
-     * Get the charset.
-     * @return the charset.
+     * Get the charset of (original) content.
+     * @return the charset of (original) content.
      */
     default Charset charset() {
         return StandardCharsets.UTF_8;
     }
 
+
     /**
      * Save this content as current path.
      */
     void save();
+
 
     /**
      * Save as the specified path.
@@ -110,31 +117,12 @@ public interface Content {
      */
     void saveAs(Path path);
 
+
     /**
      * Get the content path.
      * @return the content path
      */
     Path path();
-
-
-    /**
-     * Traverse the all rows
-     * @param traverse the traverse
-     * @param <T> the type of traverse
-     */
-    default <T extends Traverse> void traverseRow(int startCpOffset, T traverse) {
-        Predicate<byte[]> lf = Until.lfInclusive();
-        int cpOffset = startCpOffset;
-        for (;;) {
-            byte[] bytes = bytes(cpOffset, lf);
-            if (bytes.length == 0) break;
-            int count = traverse.accept(bytes);
-            if (count < 0) {
-                break;
-            }
-            cpOffset += count;
-        }
-    }
 
 
     /**
