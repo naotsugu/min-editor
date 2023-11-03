@@ -56,6 +56,9 @@ public class TraverseBackward implements Traverse {
 
     @Override
     public void accept(byte[] utf8Bytes) {
+        if (utf8Bytes.length > 4) {
+            throw new IllegalArgumentException();
+        }
         cpCount--;
         chCount -= Bytes.lengthByteAsUtf16(utf8Bytes[0]);
         if (utf8Bytes[0] == '\n') {

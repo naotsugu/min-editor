@@ -21,6 +21,7 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.until.Traverse;
 import com.mammb.code.editor.model.until.Until;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

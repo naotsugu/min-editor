@@ -217,7 +217,7 @@ public class FlattenStructArray {
         int newCapacity = Math.clamp(oldCapacity >> 1, minCapacity, Integer.MAX_VALUE - 8);
         int remainder = newCapacity % numberOfElements;
         if (remainder != 0) {
-            newCapacity -= newCapacity;
+            newCapacity += remainder;
         }
         return array = (length == 0)
             ? new long[newCapacity]
