@@ -38,6 +38,9 @@ public class TraverseStack implements Traverse {
     private int cpCount;
 
 
+    /**
+     * Constructor.
+     */
     private TraverseStack(byte[] bytes, int rowCount, int chCount, int cpCount) {
         this.bytes = bytes;
         this.bytesLength = 0;
@@ -47,11 +50,20 @@ public class TraverseStack implements Traverse {
     }
 
 
+    /**
+     * Create a new TraverseStack.
+     * @param initialCapacity the initial capacity
+     * @return a new TraverseStack
+     */
     public static TraverseStack of(int initialCapacity) {
         return new TraverseStack(new byte[initialCapacity], 0, 0, 0);
     }
 
 
+    /**
+     * Create a new TraverseStack.
+     * @return a new TraverseStack
+     */
     public static TraverseStack of() {
         return TraverseStack.of(128 * 4);
     }
@@ -86,11 +98,18 @@ public class TraverseStack implements Traverse {
     }
 
 
+    /**
+     * Get the result of traverse as String
+     * @return the string
+     */
     public String asString() {
         return new String(Arrays.copyOf(bytes, bytesLength), StandardCharsets.UTF_8);
     }
 
 
+    /**
+     * Clear.
+     */
     public void clear() {
         bytesLength = 0;
         rowCount = 0;
