@@ -18,6 +18,8 @@ package com.mammb.code.editor.model.until;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.until.impl.TraverseBackward;
 import com.mammb.code.editor.model.until.impl.TraverseForward;
+import com.mammb.code.editor.model.until.impl.TraverseStack;
+
 import java.util.function.Consumer;
 
 /**
@@ -44,7 +46,7 @@ public interface Traverse extends Consumer<byte[]> {
      * @return the traverse
      */
     static Traverse forwardOf(OffsetPoint base) {
-        return new TraverseForward(base);
+        return TraverseForward.of(base);
     }
 
     /**
@@ -53,7 +55,16 @@ public interface Traverse extends Consumer<byte[]> {
      * @return the traverse
      */
     static Traverse backwardOf(OffsetPoint base) {
-        return new TraverseBackward(base);
+        return TraverseBackward.of(base);
+    }
+
+    /**
+     * Create a stack traverse.
+     * @param base the base offset point
+     * @return the traverse
+     */
+    static Traverse stackOf(OffsetPoint base) {
+        return TraverseStack.of();
     }
 
 }

@@ -27,6 +27,7 @@ package com.mammb.code.editor.model.until;
 import com.mammb.code.editor.model.until.impl.UntilCharLen;
 import com.mammb.code.editor.model.until.impl.UntilLf;
 import com.mammb.code.editor.model.until.impl.UntilLfInclusive;
+
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;

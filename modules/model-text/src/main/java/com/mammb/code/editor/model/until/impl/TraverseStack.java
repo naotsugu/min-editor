@@ -69,6 +69,16 @@ public class TraverseStack implements Traverse {
     }
 
 
+    /**
+     * Create a new traverse backward.
+     * @param base the base offset point
+     */
+    public static Traverse of(OffsetPoint base) {
+        return new TraverseStack(new byte[128 * 4],
+            base.row(), base.offset(), base.cpOffset());
+    }
+
+
     @Override
     public void accept(byte[] utf8Bytes) {
 

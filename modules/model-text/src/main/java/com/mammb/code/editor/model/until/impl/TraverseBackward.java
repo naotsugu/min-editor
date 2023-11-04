@@ -49,8 +49,8 @@ public class TraverseBackward implements Traverse {
      * Create a new traverse backward.
      * @param base the base offset point
      */
-    public TraverseBackward(OffsetPoint base) {
-        this(base.row(), base.offset(), base.cpOffset());
+    public static Traverse of(OffsetPoint base) {
+        return new TraverseBackward(base.row(), base.offset(), base.cpOffset());
     }
 
 

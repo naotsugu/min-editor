@@ -49,8 +49,8 @@ public class TraverseForward implements Traverse {
      * Create a new traverse forward.
      * @param base the base offset point
      */
-    public TraverseForward(OffsetPoint base) {
-        this(base.row(), base.offset(), base.cpOffset());
+    public static Traverse of(OffsetPoint base) {
+        return new TraverseForward(base.row(), base.offset(), base.cpOffset());
     }
 
 

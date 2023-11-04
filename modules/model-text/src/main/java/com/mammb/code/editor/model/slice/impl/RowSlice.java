@@ -134,6 +134,20 @@ public class RowSlice implements TextualSlice<Textual> {
     }
 
 
+    public void traverseRow(OffsetPoint base) {
+        Until<byte[]> until = Until.lfInclusive()
+                .with(Traverse.stackOf(base));
+        int cpOffset = base.cpOffset();
+        for (;;) {
+            int n = rowSupplier.offset(cpOffset, until);
+            if (cpOffset == n) {
+                break;
+            }
+            cpOffset = n;
+        }
+    }
+
+
     @Override
     public List<Textual> prev(int n) {
 
