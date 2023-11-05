@@ -64,7 +64,7 @@ public interface Traverse extends Consumer<byte[]> {
      * @return the traverse
      */
     static Traverse stackOf(OffsetPoint base) {
-        return TraverseStack.of();
+        return TraverseStack.of(base);
     }
 
 }
