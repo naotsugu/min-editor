@@ -22,12 +22,14 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -75,6 +77,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         setPrefHeight(WIDTH);
         setCursor(Cursor.DEFAULT);
         setAccessibleRole(AccessibleRole.SCROLL_BAR);
+        setBackground(new Background(new BackgroundFill(backGround, CornerRadii.EMPTY, Insets.EMPTY)));
 
         thumb = new ScrollThumb(WIDTH * 2, WIDTH, baseColor);
         getChildren().add(thumb);
@@ -122,11 +125,11 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     }
 
     private void handleMouseEntered(MouseEvent event) {
-        setBackground(new Background(new BackgroundFill(backGround, null, null)));
+        setBackground(new Background(new BackgroundFill(backGround, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     private void handleMouseExited(MouseEvent event) {
-        setBackground(null);
+        setBackground(new Background(new BackgroundFill(backGround, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     /**
