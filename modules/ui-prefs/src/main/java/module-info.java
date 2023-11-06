@@ -19,6 +19,5 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.ui.prefs {
-    requires code.editor.javafx;
     exports com.mammb.code.editor.ui.prefs;
 }
