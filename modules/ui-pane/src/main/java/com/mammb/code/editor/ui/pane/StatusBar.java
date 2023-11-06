@@ -106,7 +106,7 @@ public class StatusBar extends HBox {
      */
     private Text createText() {
         var text = new Text();
-        text.setFill(Color.web(context.preference().fgColor()).deriveColor(0, 1, 1, 0.8));
+        text.setFill(Color.web(context.preference().fgColor()).deriveColor(0, 1, 1, 0.9));
         text.setFont(new Font(HEIGHT * 0.75));
         getChildren().add(new StackPane(text));
         return text;
