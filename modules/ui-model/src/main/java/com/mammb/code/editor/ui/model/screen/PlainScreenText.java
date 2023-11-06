@@ -186,7 +186,7 @@ public class PlainScreenText implements ScreenText {
             // syntax support or scroll to the display area, scroll one line at a time
             return (delta > 0)
                 ? next(delta) > 0
-                : prev(delta) > 0;
+                : prev(Math.abs(delta)) > 0;
         } else {
             OffsetPoint base = head;
             if (metrics != null) {
