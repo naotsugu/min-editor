@@ -33,6 +33,11 @@ $ ./gradlew run -Ddebug
 
 ## Implementation Notes
 
+### Module dependencies
+
+![module dependencies](docs/images/implementation-note-00.svg)
+
+
 ### Editor
 
 ![editor part](docs/images/implementation-note-01.svg)
