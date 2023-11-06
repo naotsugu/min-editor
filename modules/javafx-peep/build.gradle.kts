@@ -22,11 +22,11 @@ val javafxGraphicsSources: Configuration by configurations.creating
 val javafxBaseSources: Configuration by configurations.creating
 
 dependencies {
-    javafxGraphics("org.openjfx:javafx-graphics:22-ea+11:${artifact}")
-    javafxBase("org.openjfx:javafx-base:22-ea+11:${artifact}")
+    javafxGraphics("org.openjfx:javafx-graphics:21.0.1:${artifact}")
+    javafxBase("org.openjfx:javafx-base:21.0.1:${artifact}")
 
-    javafxGraphicsSources("org.openjfx:javafx-graphics:22-ea+11:sources")
-    javafxBaseSources("org.openjfx:javafx-base:22-ea+11:sources")
+    javafxGraphicsSources("org.openjfx:javafx-graphics:21.0.1:sources")
+    javafxBaseSources("org.openjfx:javafx-base:21.0.1:sources")
 }
 
 
