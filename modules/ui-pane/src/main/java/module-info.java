@@ -21,7 +21,6 @@
 module code.editor.ui.pane {
 
     requires code.editor.javafx;
-    requires code.editor.model.text;
     requires code.editor.ui.control;
     requires code.editor.ui.prefs;
     requires code.editor.ui.model;

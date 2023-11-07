@@ -26,14 +26,38 @@ import java.util.function.Consumer;
  */
 public interface StateHandler {
 
-    void addLineEndingChanged(Consumer<LineEnding> handler);
+    void addLineEndingChanged(Consumer<LineEndingSymbol> handler);
     void addCharsetChanged(Consumer<Charset> handler);
-    void addCaretPointChanged(Consumer<OffsetPoint> handler);
+    void addCaretPointChanged(Consumer<CaretPoint> handler);
     void addSelectionChanged(Consumer<Range> handler);
 
-    record Range(OffsetPoint start, OffsetPoint end) {
+    record LineEndingSymbol(String symbol) {
+        public LineEndingSymbol(LineEnding lineEnding) {
+            this(lineEnding.toString());
+        }
+        public String asString() {
+            return symbol;
+        }
+    }
+
+    record CaretPoint(int rowNumber, long pos) {
+        public CaretPoint(OffsetPoint offsetPoint) {
+            this(offsetPoint.row() + 1, offsetPoint.cpOffset());
+        }
+        public String asString() {
+            return "%,d : %,d".formatted(rowNumber, pos);
+        }
+    }
+
+    record Range(long start, long end) {
+        public Range(OffsetPoint start, OffsetPoint end) {
+            this(start.offset(), end.offset());
+        }
         public long length() {
-            return end.offset() - start.offset();
+            return Math.abs(end - start);
+        }
+        public String asString() {
+            return (length() > 0) ? "%,d chars ".formatted(length()) : "";
         }
     }
 

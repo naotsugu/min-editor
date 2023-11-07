@@ -17,7 +17,6 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.MetricsRecord;
-import com.mammb.code.editor.model.text.LineEnding;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.Selection;
@@ -35,9 +34,9 @@ public class StateChangeImpl implements StateChange {
     private OffsetPoint prevCaretPoint;
     private Range prevSelectionRange;
 
-    private Consumer<LineEnding> lineEndingHandler;
+    private Consumer<LineEndingSymbol> lineEndingHandler;
     private Consumer<Charset> charsetHandler;
-    private Consumer<OffsetPoint> caretPointHandler;
+    private Consumer<CaretPoint> caretPointHandler;
     private Consumer<Range> selectionHandler;
 
     @Override
@@ -48,7 +47,7 @@ public class StateChangeImpl implements StateChange {
     }
 
     @Override
-    public void addLineEndingChanged(Consumer<LineEnding> handler) {
+    public void addLineEndingChanged(Consumer<LineEndingSymbol> handler) {
         this.lineEndingHandler = handler;
     }
 
@@ -58,7 +57,7 @@ public class StateChangeImpl implements StateChange {
     }
 
     @Override
-    public void addCaretPointChanged(Consumer<OffsetPoint> handler) {
+    public void addCaretPointChanged(Consumer<CaretPoint> handler) {
         this.caretPointHandler = handler;
     }
 
@@ -69,7 +68,7 @@ public class StateChangeImpl implements StateChange {
 
     private void push(Metrics metrics) {
         if (prevMetrics == null || prevMetrics.lineEnding() != metrics.lineEnding()) {
-            lineEndingHandler.accept(metrics.lineEnding());
+            lineEndingHandler.accept(new LineEndingSymbol(metrics.lineEnding()));
         }
         if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
             charsetHandler.accept(metrics.charset());
@@ -82,7 +81,7 @@ public class StateChangeImpl implements StateChange {
         if (caretPoint == null || caretPoint.equals(prevCaretPoint)) {
             return;
         }
-        caretPointHandler.accept(caretPoint);
+        caretPointHandler.accept(new CaretPoint(caretPoint));
         prevCaretPoint = caretPoint;
     }
 

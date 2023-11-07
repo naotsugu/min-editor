@@ -66,7 +66,7 @@ public class StatusBar extends HBox {
         this.charsetText    = createText();
 
         setBackground(new Background(new BackgroundFill(
-            Color.web(context.preference().bgColor()).deriveColor(0, 1, 1, 0.8),
+            Color.web(context.preference().bgColor()).deriveColor(0, 1, 1, 0.7),
             new CornerRadii(3, 0, 0, 0, false),
             Insets.EMPTY)));
         setCursor(Cursor.TEXT);
@@ -85,18 +85,10 @@ public class StatusBar extends HBox {
      * @param stateHandler the state handler
      */
     public void bind(StateHandler stateHandler) {
-        stateHandler.addLineEndingChanged(c ->
-            lineEndingText.setText(c.toString()));
-        stateHandler.addCharsetChanged(c ->
-            charsetText.setText(c.toString()));
-        stateHandler.addCaretPointChanged(c -> {
-            caretPointString = "%,d : %,d".formatted(c.row() + 1, c.cpOffset());
-            caretText.setText(selectionString + " " + caretPointString);
-        });
-        stateHandler.addSelectionChanged(c -> {
-            selectionString = (c.length() > 0) ? "%,d chars ".formatted(c.length()) : "";
-            caretText.setText(selectionString + " " + caretPointString);
-        });
+        stateHandler.addLineEndingChanged(c -> lineEndingText.setText(c.asString()));
+        stateHandler.addCharsetChanged(c -> charsetText.setText(c.toString()));
+        stateHandler.addCaretPointChanged(c -> caretText.setText(selectionString + " " + (caretPointString = c.asString())));
+        stateHandler.addSelectionChanged(c -> caretText.setText((selectionString = c.asString()) + " " + caretPointString));
     }
 
 
