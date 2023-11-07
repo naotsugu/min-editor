@@ -190,7 +190,8 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         screen.updateMaxWith(layoutLine.width());
-        gc.clearRect(screen.textArea().x(), layoutLine.offsetY(), screen.textArea().w(), layoutLine.leadingHeight());
+        double gap = 0.01;
+        gc.clearRect(screen.textArea().x(), layoutLine.offsetY() + gap, screen.textArea().w(), layoutLine.leadingHeight() - gap);
         List<TextRun> runs = layoutLine.runs();
         fillContextBand(gc, runs, layoutLine.offsetY(), layoutLine.leadingHeight());
         for (TextRun run : runs) {
