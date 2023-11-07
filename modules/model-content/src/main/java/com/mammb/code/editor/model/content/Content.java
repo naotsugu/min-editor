@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.model.buffer;
+package com.mammb.code.editor.model.content;
 
-import com.mammb.code.editor.model.buffer.impl.PtContent;
-import com.mammb.code.editor.model.buffer.impl.PtContentMirror;
+import com.mammb.code.editor.model.content.impl.PtContent;
+import com.mammb.code.editor.model.content.impl.PtContentMirror;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.piecetable.buffer.Charsets;
-
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -139,7 +139,7 @@ public interface Content {
 
         final Charset cs;
         try (var is = Files.newInputStream(path)) {
-            cs = Charsets.charsetOf(is);
+            cs = charsetOf(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -147,6 +147,16 @@ public interface Content {
         return cs.equals(StandardCharsets.UTF_8)
             ? new PtContent(path, traverse)
             : new PtContentMirror(path, cs, traverse);
+    }
+
+
+    /**
+     * Detect charset.
+     * @param source the source input stream
+     * @return the charset
+     */
+    static Charset charsetOf(InputStream source) {
+        return Charsets.charsetOf(source);
     }
 
 }

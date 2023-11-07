@@ -17,12 +17,11 @@ package com.mammb.code.editor.model.buffer.impl;
 
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextEdit;
+import com.mammb.code.editor.model.content.Content;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
-import com.mammb.code.piecetable.buffer.Charsets;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -61,7 +60,7 @@ public class TextualArray implements TextEdit, TextualScroll<Textual> {
 
         final Charset cs;
         try (var is = Files.newInputStream(path)) {
-            cs = Charsets.charsetOf(is);
+            cs = Content.charsetOf(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

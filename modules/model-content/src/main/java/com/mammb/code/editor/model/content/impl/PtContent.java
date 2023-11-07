@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.model.buffer.impl;
+package com.mammb.code.editor.model.content.impl;
 
-import com.mammb.code.editor.model.buffer.Content;
+import com.mammb.code.editor.model.content.Content;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.piecetable.PieceTable;
 import java.nio.file.Path;

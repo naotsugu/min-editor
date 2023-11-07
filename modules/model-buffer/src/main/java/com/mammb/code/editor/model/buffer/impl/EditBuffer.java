@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.model.buffer.impl;
 
-import com.mammb.code.editor.model.buffer.Content;
+import com.mammb.code.editor.model.content.Content;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.edit.Edit;

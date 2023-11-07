@@ -15,13 +15,12 @@
  */
 
 /**
- * The buffer model module.
+ * The content model module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.model.buffer {
-    requires code.editor.model.content;
-    requires code.editor.model.edit;
+module code.editor.model.content {
     requires code.editor.model.text;
+    requires com.mammb.code.piecetable;
 
-    exports com.mammb.code.editor.model.buffer;
+    exports com.mammb.code.editor.model.content;
 }

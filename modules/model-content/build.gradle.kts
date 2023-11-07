@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":model-content"))
-    implementation(project(":model-edit"))
     implementation(project(":model-text"))
+    implementation(project(":piecetable"))
 }
