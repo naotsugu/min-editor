@@ -4,4 +4,5 @@ plugins {
 
 dependencies {
     implementation(project(":model-content"))
+    implementation(project(":model-text"))
 }
