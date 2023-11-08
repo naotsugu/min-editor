@@ -15,9 +15,43 @@
  */
 package com.mammb.code.editor.model.find;
 
+import com.mammb.code.editor.model.content.Content;
+import com.mammb.code.editor.model.find.impl.FindImpl;
+import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.Textual;
+import java.util.function.Consumer;
+
 /**
  * The Find.
  * @author Naotsugu Kobayashi
  */
 public interface Find {
+
+    /**
+     * Run find.
+     * @param base the base offset point
+     * @param spec the find specification
+     */
+    void run(OffsetPoint base, FindSpec spec);
+
+    /**
+     * Cancel find.
+     */
+    void cancel();
+
+    /**
+     * Add a listener of find result.
+     * @param listener a listener of find result
+     */
+    void addListener(Consumer<Textual> listener);
+
+    /**
+     * Create a new find.
+     * @param content the content
+     * @return a new find
+     */
+    static Find of(Content content) {
+        return new FindImpl(content);
+    }
+
 }

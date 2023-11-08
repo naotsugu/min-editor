@@ -21,6 +21,10 @@ package com.mammb.code.editor.model.find;
  */
 public interface Match {
 
+    /**
+     *
+     * @return
+     */
     int start();
 
     int length();

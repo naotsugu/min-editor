@@ -24,6 +24,7 @@ import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.until.Traverse;
 import com.mammb.code.editor.model.until.Until;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -33,20 +34,34 @@ import java.util.function.Consumer;
  */
 public class FindImpl implements Find {
 
+    /** The content. */
     private Content content;
 
+    /** The listeners of find. */
     private List<Consumer<Textual>> listeners;
 
     private volatile boolean interrupt = false;
 
 
-    public void traverse(OffsetPoint base, FindSpec spec) {
+    public FindImpl(Content content, List<Consumer<Textual>> listeners) {
+        this.content = content;
+        this.listeners = listeners;
+    }
+
+    public FindImpl(Content content) {
+        this(content, new ArrayList<>());
+    }
+
+    public void run(OffsetPoint base, FindSpec spec) {
 
         Traverse traverse = Traverse.forwardOf(base);
         Until<byte[]> until = Until.lfInclusive().with(traverse);
 
         for (;;) {
-            if (interrupt) return;
+            if (interrupt) {
+                interrupt = false;
+                return;
+            }
             byte[] bytes = content.bytes(traverse.asOffsetPoint().cpOffset(), until);
             if (bytes.length == 0) {
                 break;
@@ -64,9 +79,14 @@ public class FindImpl implements Find {
         }
     }
 
-
+    @Override
     public void cancel() {
         this.interrupt = true;
+    }
+
+    @Override
+    public void addListener(Consumer<Textual> listener) {
+        listeners.add(listener);
     }
 
 }

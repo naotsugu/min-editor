@@ -24,6 +24,7 @@ import java.util.Arrays;
  * TraverseStack.
  * @author Naotsugu Kobayashi
  */
+@Deprecated
 public class TraverseStack implements Traverse {
 
     /** The bytes. */
