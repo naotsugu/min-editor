@@ -122,7 +122,7 @@ public class EditBuffer implements TextEdit {
     @Override
     public SliceView createView(int maxRowSize) {
         var view = new SliceView(
-            TextualSlice.of(maxRowSize, new RawAdapter(content)),
+            TextualSlice.of(maxRowSize, new RowAdapter(content)),
             editQueue);
         views.add(view);
         return view;

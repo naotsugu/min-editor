@@ -23,7 +23,7 @@ import com.mammb.code.editor.model.until.Until;
  * ContentAdapter.
  * @author Naotsugu Kobayashi
  */
-public record RawAdapter(Content content) implements RowSupplier {
+public record RowAdapter(Content content) implements RowSupplier {
 
     /** The empty string. */
     private static final String empty = "";
