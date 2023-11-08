@@ -16,17 +16,25 @@
 package com.mammb.code.editor.model.find;
 
 /**
- * The find specification.
+ * The Match.
  * @author Naotsugu Kobayashi
  */
-public interface FindSpec {
+public interface Match {
 
-    Match[] match(String text);
+    int start();
 
-    /**
-     * Get whether it is a one-shot find.
-     * @return {@code true} if it is a one-shot find
-     */
-    boolean oneshot();
+    int length();
+
+    default int end() {
+        return start() + length();
+    }
+
+    static Match of(int start, int length) {
+        if (start < 0 || length <= 0) {
+            throw new IllegalArgumentException();
+        }
+        record MatchRecord(int start, int length) implements Match { }
+        return new MatchRecord(start, length);
+    }
 
 }

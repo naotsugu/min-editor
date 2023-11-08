@@ -21,7 +21,6 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.until.Traverse;
 import com.mammb.code.editor.model.until.Until;
-import com.mammb.code.editor.model.until.impl.TraverseStack;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -132,22 +131,6 @@ public class RowSlice implements TextualSlice<Textual> {
             point = point.plus(str);
         }
         return true;
-    }
-
-
-    public void traverseRow(OffsetPoint base) {
-        var traverseStack = TraverseStack.of(base);
-        Until<byte[]> until = Until.lfInclusive().with(traverseStack);
-        int cpOffset = base.cpOffset();
-        for (;;) {
-            int n = rowSupplier.offset(cpOffset, until);
-            if (cpOffset == n) {
-                break;
-            }
-            //traverseStack.asString();
-            traverseStack.clear();
-            cpOffset = n;
-        }
     }
 
 

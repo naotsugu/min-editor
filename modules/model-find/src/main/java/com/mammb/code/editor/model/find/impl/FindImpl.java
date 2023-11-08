@@ -15,9 +15,58 @@
  */
 package com.mammb.code.editor.model.find.impl;
 
+import com.mammb.code.editor.model.content.Content;
+import com.mammb.code.editor.model.find.Find;
+import com.mammb.code.editor.model.find.FindSpec;
+import com.mammb.code.editor.model.find.Match;
+import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.Textual;
+import com.mammb.code.editor.model.until.Traverse;
+import com.mammb.code.editor.model.until.Until;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.function.Consumer;
+
 /**
  * The Find.
  * @author Naotsugu Kobayashi
  */
-public class FindImpl {
+public class FindImpl implements Find {
+
+    private Content content;
+
+    private List<Consumer<Textual>> listeners;
+
+    private volatile boolean interrupt = false;
+
+
+    public void traverse(OffsetPoint base, FindSpec spec) {
+
+        Traverse traverse = Traverse.forwardOf(base);
+        Until<byte[]> until = Until.lfInclusive().with(traverse);
+
+        for (;;) {
+            if (interrupt) return;
+            byte[] bytes = content.bytes(traverse.asOffsetPoint().cpOffset(), until);
+            if (bytes.length == 0) {
+                break;
+            }
+            String row = new String(bytes, StandardCharsets.UTF_8);
+            var result = spec.match(row);
+            for (Match match : result) {
+                OffsetPoint point = base.plus(row.substring(0, match.end()));
+                String sub = row.substring(match.start(), match.end());
+                listeners.forEach(listener -> listener.accept(Textual.of(point, sub)));
+                if (spec.oneshot()) {
+                    return;
+                }
+            }
+        }
+    }
+
+
+    public void cancel() {
+        this.interrupt = true;
+    }
+
 }
