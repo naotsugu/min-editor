@@ -19,7 +19,6 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.model.find {
-    requires code.editor.model.content;
     requires code.editor.model.text;
     exports com.mammb.code.editor.model.find;
 }
