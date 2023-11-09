@@ -38,7 +38,7 @@ public class OffsetAnchor {
      */
     public OffsetAnchor() {
         array = new FlattenStructArray(3);
-        put(0, 0, 0);
+        array.add(0, 0, 0);
     }
 
 
