@@ -23,6 +23,7 @@ import com.mammb.code.editor.model.edit.EditListener;
 import com.mammb.code.editor.model.edit.EditQueue;
 import com.mammb.code.editor.model.edit.EditTo;
 import com.mammb.code.editor.model.edit.EditToListener;
+import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.slice.TextualSlice;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
@@ -126,6 +127,29 @@ public class EditBuffer implements TextEdit {
             editQueue);
         views.add(view);
         return view;
+    }
+
+    @Override
+    public RowSupplier rowSupplier() {
+        return new RowSupplier() {
+            private final RowSupplier peer = new RowAdapter(content);
+            @Override public String at(int cpOffset) {
+                editQueue.flush();
+                return peer.at(cpOffset);
+            }
+            @Override public String before(int cpOffset) {
+                editQueue.flush();
+                return peer.before(cpOffset);
+            }
+            @Override public int offset(int startCpOffset, Until<byte[]> until) {
+                editQueue.flush();
+                return peer.offset(startCpOffset, until);
+            }
+            @Override public int offsetBefore(int startCpOffset, Until<byte[]> until) {
+                editQueue.flush();
+                return peer.offsetBefore(startCpOffset, until);
+            }
+        };
     }
 
     private EditListener editTo(Content content) {

@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.edit.Edit;
+import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
@@ -25,6 +26,7 @@ import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.FindHandle;
 import com.mammb.code.editor.ui.model.ImePallet;
 import com.mammb.code.editor.ui.model.ImeRun;
 import com.mammb.code.editor.ui.model.LayoutLine;
@@ -659,6 +661,12 @@ public class EditorModelImpl implements EditorModel {
         }
         screen.initScroll(texts.headlinesIndex(), totalLines());
     }
+
+    @Override
+    public FindHandle findHandle() {
+        return new FindHandleImpl(caret.caretPoint(), Find.of(buffer.rowSupplier()));
+    }
+
     // </editor-fold>
 
     // -- private -------------------------------------------------------------

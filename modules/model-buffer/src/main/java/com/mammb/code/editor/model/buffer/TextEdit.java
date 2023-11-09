@@ -18,6 +18,7 @@ package com.mammb.code.editor.model.buffer;
 import com.mammb.code.editor.model.buffer.impl.EditBuffer;
 import com.mammb.code.editor.model.buffer.impl.TextualArray;
 import com.mammb.code.editor.model.edit.Edit;
+import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
@@ -76,6 +77,8 @@ public interface TextEdit {
      * @return a view
      */
     TextualScroll<? extends Textual> createView(int maxRowSize);
+
+    RowSupplier rowSupplier();
 
     /**
      * Get the sub text.

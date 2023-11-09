@@ -157,6 +157,7 @@ public interface EditorModel extends EditorDraw {
 
     // -- utilities -----------------------------------------------------------
 
+    FindHandle findHandle();
     Rect textAreaRect();
     StateHandler stateChange();
     boolean peekSelection(Predicate<String> predicate);

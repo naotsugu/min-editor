@@ -19,6 +19,7 @@ import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.content.Content;
 import com.mammb.code.editor.model.edit.Edit;
+import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
@@ -181,6 +182,11 @@ public class TextualArray implements TextEdit, TextualScroll<Textual> {
     public TextualScroll<Textual> createView(int maxRowSize) {
         pageSize = maxRowSize;
         return this;
+    }
+
+    @Override
+    public RowSupplier rowSupplier() {
+        return null; // TODO
     }
 
     @Override
