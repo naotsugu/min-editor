@@ -166,6 +166,9 @@ public class FlattenStructArray {
         if (offset >= numberOfElements) {
             throw new IllegalArgumentException();
         }
+        if (length == 0) {
+            return -1;
+        }
 
         int low = 0;
         int high = length - 1;

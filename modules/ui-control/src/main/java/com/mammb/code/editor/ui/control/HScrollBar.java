@@ -23,7 +23,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.AccessibleRole;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -76,8 +75,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_PREF_SIZE);
         setPrefHeight(WIDTH);
         setCursor(Cursor.DEFAULT);
-        setAccessibleRole(AccessibleRole.SCROLL_BAR);
-        setBackground(new Background(new BackgroundFill(backGround, CornerRadii.EMPTY, Insets.EMPTY)));
+        setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
 
         thumb = new ScrollThumb(WIDTH * 2, WIDTH, baseColor);
         getChildren().add(thumb);
@@ -129,7 +127,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     }
 
     private void handleMouseExited(MouseEvent event) {
-        setBackground(new Background(new BackgroundFill(backGround, CornerRadii.EMPTY, Insets.EMPTY)));
+        setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
     }
 
     /**
