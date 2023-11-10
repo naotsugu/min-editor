@@ -39,10 +39,11 @@ public class FindSpecImpl implements FindSpec {
     /**
      * Constructor.
      * @param cs the string to be searched
+     * @param oneshot whether it is a one-shot find
      */
-    public FindSpecImpl(String cs) {
+    public FindSpecImpl(String cs, boolean oneshot) {
         this.cs = Objects.requireNonNull(cs);
-        this.oneshot = false;
+        this.oneshot = oneshot;
     }
 
 

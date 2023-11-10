@@ -18,7 +18,6 @@ package com.mammb.code.editor.model.find;
 import com.mammb.code.editor.model.find.impl.FindImpl;
 import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.model.text.Textual;
 import java.util.function.Consumer;
 
 /**
@@ -43,7 +42,7 @@ public interface Find {
      * Add a listener of find result.
      * @param listener a listener of find result
      */
-    void addListener(Consumer<Textual> listener);
+    void addListener(Consumer<FoundRun> listener);
 
     /**
      * Create a new find.

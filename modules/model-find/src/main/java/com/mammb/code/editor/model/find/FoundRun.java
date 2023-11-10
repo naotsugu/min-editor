@@ -15,28 +15,18 @@
  */
 package com.mammb.code.editor.model.find;
 
-import com.mammb.code.editor.model.find.impl.FindSpecImpl;
-
 /**
- * The find specification.
+ * The FoundRun.
+ * @param chOffset
+ * @param length
+ * @param peripheral
+ * @param offsetOnPeripheral
  * @author Naotsugu Kobayashi
  */
-public interface FindSpec {
+public record FoundRun(long chOffset, int length, String peripheral, int offsetOnPeripheral) {
 
-    Match[] match(String text);
-
-    /**
-     * Get whether it is a one-shot find.
-     * @return {@code true} if it is a one-shot find
-     */
-    boolean oneshot();
-
-    static FindSpec of(String string) {
-        return new FindSpecImpl(string, true);
-    }
-
-    static FindSpec allOf(String string) {
-        return new FindSpecImpl(string, false);
+    public String text() {
+        return peripheral.substring(offsetOnPeripheral, offsetOnPeripheral + length);
     }
 
 }

@@ -17,10 +17,10 @@ package com.mammb.code.editor.model.find.impl;
 
 import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FindSpec;
+import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.find.Match;
 import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.model.text.Textual;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -35,12 +35,12 @@ public class FindImpl implements Find {
     private RowSupplier rowSupplier;
 
     /** The listeners of find. */
-    private List<Consumer<Textual>> listeners;
+    private List<Consumer<FoundRun>> listeners;
 
     private volatile boolean interrupt = false;
 
 
-    public FindImpl(RowSupplier rowSupplier, List<Consumer<Textual>> listeners) {
+    public FindImpl(RowSupplier rowSupplier, List<Consumer<FoundRun>> listeners) {
         this.rowSupplier = rowSupplier;
         this.listeners = listeners;
     }
@@ -64,10 +64,15 @@ public class FindImpl implements Find {
 
             var result = spec.match(row);
             for (Match match : result) {
-                Textual textual = Textual.of(
-                    point.plus(row.substring(0, match.start())),
-                    row.substring(match.start(), match.end()));
-                listeners.forEach(listener -> listener.accept(textual));
+                int margin = 60;
+                int peripheralStart = Math.max(0, match.start() - margin);
+                int peripheralEnd = Math.clamp(match.end() + margin, match.end(), row.length());
+                var found = new FoundRun(
+                    point.offset() + match.start(),
+                    match.length(),
+                    row.substring(peripheralStart, peripheralEnd),
+                    point.offset() - peripheralStart);
+                listeners.forEach(listener -> listener.accept(found));
                 if (spec.oneshot()) {
                     return;
                 }
@@ -82,7 +87,7 @@ public class FindImpl implements Find {
     }
 
     @Override
-    public void addListener(Consumer<Textual> listener) {
+    public void addListener(Consumer<FoundRun> listener) {
         listeners.add(listener);
     }
 

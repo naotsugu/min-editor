@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.find.Find;
+import com.mammb.code.editor.model.find.FindSpec;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.FindHandle;
 import java.util.function.Consumer;
@@ -26,19 +27,19 @@ import java.util.function.Consumer;
  */
 public class FindHandleImpl implements FindHandle {
 
-    private final OffsetPoint basePoint;
-
     private final Find find;
 
+    private OffsetPoint basePoint;
 
-    public FindHandleImpl(OffsetPoint basePoint, Find find) {
-        this.basePoint = basePoint;
+
+    public FindHandleImpl(Find find, OffsetPoint basePoint) {
         this.find = find;
+        this.basePoint = basePoint;
     }
 
     @Override
     public void findNext(String string, boolean regexp) {
-
+        find.run(basePoint, FindSpec.of(string));
     }
 
     @Override
