@@ -66,7 +66,7 @@ public class StatusBar extends HBox {
         this.charsetText    = createText();
 
         setBackground(new Background(new BackgroundFill(
-            Color.web(context.preference().bgColor()).deriveColor(0, 1, 1, 0.7),
+            Color.web(context.preference().bgColor()),
             new CornerRadii(3, 0, 0, 0, false),
             Insets.EMPTY)));
         setCursor(Cursor.TEXT);

@@ -56,7 +56,9 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     private final ScrollThumb thumb;
 
     /** The background color. */
-    private final Color backGround;
+    private final Background backGroundActive;
+    private final Background backGroundPassive;
+
 
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
@@ -70,12 +72,15 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
     public HScrollBar(Color baseColor) {
 
-        this.backGround = baseColor.deriveColor(0, 1, 1, 0.1);
+        backGroundActive = new Background(new BackgroundFill(
+            baseColor.deriveColor(0, 1, 1, 0.1), CornerRadii.EMPTY, Insets.EMPTY));
+        backGroundPassive = new Background(new BackgroundFill(
+            Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY));
 
         setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_PREF_SIZE);
         setPrefHeight(WIDTH);
         setCursor(Cursor.DEFAULT);
-        setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        setBackground(backGroundPassive);
 
         thumb = new ScrollThumb(WIDTH * 2, WIDTH, baseColor);
         getChildren().add(thumb);
@@ -123,11 +128,11 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     }
 
     private void handleMouseEntered(MouseEvent event) {
-        setBackground(new Background(new BackgroundFill(backGround, CornerRadii.EMPTY, Insets.EMPTY)));
+        setBackground(backGroundActive);
     }
 
     private void handleMouseExited(MouseEvent event) {
-        setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        setBackground(backGroundPassive);
     }
 
     /**

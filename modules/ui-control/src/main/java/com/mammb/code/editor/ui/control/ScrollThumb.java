@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.control;
 
-import javafx.scene.AccessibleRole;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -45,7 +44,6 @@ public class ScrollThumb extends Rectangle {
         setArcHeight(8);
         setArcWidth(8);
         setFill(baseColor.deriveColor(0, 1, 1, 0.3));
-        setAccessibleRole(AccessibleRole.THUMB);
 
         initListener();
 
