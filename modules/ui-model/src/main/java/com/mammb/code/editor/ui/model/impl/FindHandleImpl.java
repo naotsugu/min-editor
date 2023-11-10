@@ -19,7 +19,6 @@ import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FindSpec;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.FindHandle;
-import java.util.function.Consumer;
 
 /**
  * FindHandle.
@@ -43,7 +42,7 @@ public class FindHandleImpl implements FindHandle {
     }
 
     @Override
-    public void findAll(String string, boolean regexp, Consumer<Found> callback) {
+    public void findAll(String string, boolean regexp) {
 
     }
 }

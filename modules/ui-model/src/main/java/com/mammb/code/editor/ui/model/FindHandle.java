@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor.ui.model;
 
-import java.util.function.Consumer;
-
 /**
  * FindHandle.
  * @author Naotsugu Kobayashi
@@ -25,8 +23,6 @@ public interface FindHandle {
 
     void findNext(String string, boolean regexp);
 
-    void findAll(String string, boolean regexp, Consumer<Found> callback);
-
-    record Found(long chOffset, int length, String peripheral, int offsetOnPeripheral) {}
+    void findAll(String string, boolean regexp);
 
 }
