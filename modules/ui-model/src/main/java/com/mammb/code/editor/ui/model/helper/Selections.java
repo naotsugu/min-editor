@@ -48,7 +48,7 @@ public class Selections {
      * @param caret the caret
      * @param selection the selection
      */
-    public static void select(int[] range, Caret caret, Selection selection) {
+    public static void select(long[] range, Caret caret, Selection selection) {
         select(range[0], range[1], caret, selection);
     }
 
@@ -59,7 +59,7 @@ public class Selections {
      * @param caret the caret
      * @param selection the selection
      */
-    public static void select(int offset1, int offset2, Caret caret, Selection selection) {
+    public static void select(long offset1, long offset2, Caret caret, Selection selection) {
         caret.at(offset1, true);
         selection.start(caret.caretPoint());
         caret.at(offset2, true);
@@ -105,7 +105,7 @@ public class Selections {
      * @param texts the texts
      * @return the point of the current caret row
      */
-    private static OffsetPoint[] rowPointRange(int charOffset, ScreenText texts) {
+    private static OffsetPoint[] rowPointRange(long charOffset, ScreenText texts) {
         List<TextLine> lines = texts.rowAt(charOffset);
         return new OffsetPoint[] {
             lines.get(0).point(),
@@ -119,7 +119,7 @@ public class Selections {
      * @param texts the texts
      * @return the point of the current caret line
      */
-    private static OffsetPoint[] linePointRange(int charOffset, ScreenText texts) {
+    private static OffsetPoint[] linePointRange(long charOffset, ScreenText texts) {
         var line = texts.lineAt(charOffset);
         return new OffsetPoint[] {
             line.point(),

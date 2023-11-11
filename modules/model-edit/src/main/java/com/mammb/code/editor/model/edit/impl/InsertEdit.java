@@ -64,7 +64,7 @@ public record InsertEdit(
             }
             case 0 -> {
                 StringBuilder sb = new StringBuilder(textual.text());
-                sb.insert(point.offset() - textual.point().offset(), text);
+                sb.insert(Math.toIntExact(point.offset() - textual.point().offset()), text);
                 yield Textual.of(textual.point(), sb.toString());
             }
             case 1 -> {

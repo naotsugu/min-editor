@@ -46,14 +46,14 @@ public interface OffsetPoint {
      * Get the offset of content(char base).
      * @return the offset of content
      */
-    int offset();
+    long offset();
 
 
     /**
      * Get the code point offset of content.
      * @return the code point offset of content
      */
-    int cpOffset();
+    long cpOffset();
 
 
     /**
@@ -95,7 +95,7 @@ public interface OffsetPoint {
      * @param cpOffset the code point offset of content
      * @return a new OffsetPoint
      */
-    static OffsetPoint of(int row, int offset, int cpOffset) {
+    static OffsetPoint of(int row, long offset, long cpOffset) {
         return new OffsetPointRecord(row, offset, cpOffset);
     }
 

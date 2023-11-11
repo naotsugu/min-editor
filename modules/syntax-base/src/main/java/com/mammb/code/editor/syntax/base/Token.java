@@ -37,7 +37,7 @@ public interface Token {
      * Get the position.
      * @return the position
      */
-    int position();
+    long position();
 
     /**
      * Get the length.
@@ -125,7 +125,7 @@ public interface Token {
      * @param length the length
      * @return token
      */
-    static Token of(TokenType type, Scope scope, int position, int length) {
+    static Token of(TokenType type, Scope scope, long position, int length) {
         return of(type, scope, position, length, "");
     }
 
@@ -139,8 +139,8 @@ public interface Token {
      * @param context the context
      * @return token
      */
-    static Token of(TokenType type, Scope scope, int position, int length, String context) {
-        record TokenRecode(TokenType type, Scope scope, int position, int length, String context) implements Token { }
+    static Token of(TokenType type, Scope scope, long position, int length, String context) {
+        record TokenRecode(TokenType type, Scope scope, long position, int length, String context) implements Token { }
         return new TokenRecode(type, scope, position, length, context);
     }
 

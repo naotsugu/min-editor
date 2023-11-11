@@ -74,7 +74,7 @@ public class JsonLexer implements Lexer {
      * @return the token
      */
     private Token readComment(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();

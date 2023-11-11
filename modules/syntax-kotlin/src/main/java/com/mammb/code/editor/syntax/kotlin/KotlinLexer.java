@@ -90,7 +90,7 @@ public class KotlinLexer implements Lexer {
      * @return the token
      */
     private Token readComment(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
@@ -115,7 +115,7 @@ public class KotlinLexer implements Lexer {
      * @return the token
      */
     private Token readCommentBlockClosed(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         if (source.peekChar() == '/') {
             source.commitPeek();
             return Token.of(COMMENT, Scope.BLOCK_END, pos, 2);
@@ -131,7 +131,7 @@ public class KotlinLexer implements Lexer {
      * @return the token
      */
     private Token readText(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         if (source.peekChar() == '"' && source.peekChar() == '"') {
             source.commitPeek();
             return Token.of(TEXT, Scope.BLOCK_ANY, pos, 3);
@@ -191,7 +191,7 @@ public class KotlinLexer implements Lexer {
      */
     private Token readIdentifier(LexerSource source, int cp) {
 
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         StringBuilder sb = new StringBuilder();
         sb.append(Character.toChars(cp));
 

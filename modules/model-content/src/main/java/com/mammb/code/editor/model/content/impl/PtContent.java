@@ -52,22 +52,22 @@ public class PtContent implements Content {
     }
 
     @Override
-    public byte[] bytes(int startPos, Predicate<byte[]> until) {
+    public byte[] bytes(long startPos, Predicate<byte[]> until) {
         return pt.bytes(startPos, until);
     }
 
     @Override
-    public byte[] bytesBefore(int startPos, Predicate<byte[]> until) {
+    public byte[] bytesBefore(long startPos, Predicate<byte[]> until) {
         return pt.bytesBefore(startPos, until);
     }
 
     @Override
-    public int offset(int startCpOffset, Predicate<byte[]> until) {
+    public long offset(long startCpOffset, Predicate<byte[]> until) {
         return pt.position(startCpOffset, until);
     }
 
     @Override
-    public int offsetBefore(int startCpOffset, Predicate<byte[]> until) {
+    public long offsetBefore(long startCpOffset, Predicate<byte[]> until) {
         return pt.positionBefore(startCpOffset, until);
     }
 

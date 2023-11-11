@@ -192,11 +192,11 @@ public class WrapScreenText implements ScreenText {
 
 
     @Override
-    public boolean scrollAtScreen(int row, int offset) {
+    public boolean scrollAtScreen(int row, long offset) {
 
         List<TextLine> visibleLines = lines();
-        int start = visibleLines.get(0).offset();
-        int end = visibleLines.get(visibleLines.size() - 1).tailOffset();
+        int start = (int) visibleLines.get(0).offset();
+        int end = (int) visibleLines.get(visibleLines.size() - 1).tailOffset();
         if (start <= offset && offset < end) {
             return false;
         }
@@ -227,8 +227,8 @@ public class WrapScreenText implements ScreenText {
 
         lineOffset = 0;
         while (true) {
-            start = visibleLines.get(0).offset();
-            end = visibleLines.get(visibleLines.size() - 1).tailOffset();
+            start = (int) visibleLines.get(0).offset();
+            end = (int) visibleLines.get(visibleLines.size() - 1).tailOffset();
             if (start <= offset && offset < end) {
                 return true;
             }

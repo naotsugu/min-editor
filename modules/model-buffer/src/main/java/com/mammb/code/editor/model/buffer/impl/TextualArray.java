@@ -156,8 +156,8 @@ public class TextualArray implements TextEdit, TextualScroll<Textual> {
         for (Textual textual : list) {
             if (textual.tailOffset() > point.offset() && textual.offset() < (point.offset() + length)) {
                 sb.append(textual.text(),
-                    Math.max(point.offset()          - textual.offset(), 0),
-                    Math.min(point.offset() + length - textual.offset(), textual.length()));
+                    Math.toIntExact(Math.max(point.offset()          - textual.offset(), 0)),
+                    Math.toIntExact(Math.min(point.offset() + length - textual.offset(), textual.length())));
             }
         }
         return sb.toString();

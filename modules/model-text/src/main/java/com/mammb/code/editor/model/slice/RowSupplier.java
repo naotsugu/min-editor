@@ -40,7 +40,7 @@ public interface RowSupplier {
      * @param cpOffset the codepoint offset
      * @return the row string, non-null
      */
-    String at(int cpOffset);
+    String at(long cpOffset);
 
     /**
      * Get the row string before the specified codepoint offset.
@@ -58,7 +58,7 @@ public interface RowSupplier {
      * @param cpOffset the codepoint offset
      * @return the row string, non-null
      */
-    String before(int cpOffset);
+    String before(long cpOffset);
 
     /**
      * Get the code point offset.
@@ -66,7 +66,7 @@ public interface RowSupplier {
      * @param until the until
      * @return the code point offset
      */
-    int offset(int startCpOffset, Until<byte[]> until);
+    long offset(long startCpOffset, Until<byte[]> until);
 
     /**
      * Get the code point offset.
@@ -74,7 +74,7 @@ public interface RowSupplier {
      * @param until the until
      * @return the code point offset
      */
-    int offsetBefore(int startCpOffset, Until<byte[]> until);
+    long offsetBefore(long startCpOffset, Until<byte[]> until);
 
     /**
      * Create a new RowSupplier from the specified text.

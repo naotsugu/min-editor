@@ -27,8 +27,8 @@ import com.mammb.code.editor.model.text.OffsetPoint;
  */
 public record OffsetPointRecord(
         int row,
-        int offset,
-        int cpOffset) implements OffsetPoint {
+        long offset,
+        long cpOffset) implements OffsetPoint {
 
     /**
      * Plus the offset.

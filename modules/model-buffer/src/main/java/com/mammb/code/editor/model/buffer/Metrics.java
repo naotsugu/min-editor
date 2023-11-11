@@ -55,19 +55,19 @@ public interface Metrics {
      * Get the code point count.
      * @return the code point count
      */
-    int cpCount();
+    long cpCount();
 
     /**
      * Get the char count.
      * @return the char count
      */
-    int chCount();
+    long chCount();
 
     /**
      * Get the invalid code point count.
      * @return the invalid code point count
      */
-    int invalidCpCount();
+    long invalidCpCount();
 
     /**
      * Get the carriage return count.

@@ -66,7 +66,7 @@ public record ReplaceEdit(
             }
             case  0 -> {
                 StringBuilder sb = new StringBuilder(textual.text());
-                int start = point.offset() - textual.point().offset();
+                int start = Math.toIntExact(point.offset() - textual.point().offset());
                 int end = start + beforeText.length();
                 sb.replace(start, end, afterText);
                 yield Textual.of(textual.point(), sb.toString());

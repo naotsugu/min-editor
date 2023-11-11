@@ -117,7 +117,7 @@ public interface TextLine extends Textual {
      * @param offset the specified offset
      * @return the code point offset corresponding to the specified offset
      */
-    default OffsetPoint offsetPoint(int offset) {
+    default OffsetPoint offsetPoint(long offset) {
         TextRun run = textRunAt(offset);
         return OffsetPoint.of(point().row(), offset, run.cpOffset(offset));
     }
@@ -127,7 +127,7 @@ public interface TextLine extends Textual {
      * @param offset the specified char offset(total)
      * @return the x position from the specified x offset
      */
-    default double offsetToX(int offset) {
+    default double offsetToX(long offset) {
         TextRun run;
         if (offset == tailOffset() && endMarkCount() == 0) {
             List<TextRun> runs = runs();
@@ -135,7 +135,7 @@ public interface TextLine extends Textual {
         } else {
             run = textRunAt(offset);
         }
-        return run.offsetToX().apply(offset - run.offset());
+        return run.offsetToX().apply(Math.toIntExact(offset - run.offset()));
     }
 
     /**
@@ -143,9 +143,9 @@ public interface TextLine extends Textual {
      * @param offset the char (total) offset
      * @return the char at offset position
      */
-    default char charAt(int offset) {
+    default char charAt(long offset) {
         TextRun run = textRunAt(offset);
-        int index = offset - run.source().point().offset();
+        int index = Math.toIntExact(offset - run.source().point().offset());
         return run.source().text().charAt(index);
     }
 
@@ -154,7 +154,7 @@ public interface TextLine extends Textual {
      * @param offset the char (total) offset
      * @return the char string at offset position
      */
-    default String charStringAt(int offset) {
+    default String charStringAt(long offset) {
         char ch = charAt(offset);
         if (ch == '\r' && offset < tailOffset() - 1 && charAt(offset + 1) == '\n') {
             return "\r\n";
@@ -173,7 +173,7 @@ public interface TextLine extends Textual {
      * @param offset the char (total) offset
      * @return the text run at offset position
      */
-    default TextRun textRunAt(int offset) {
+    default TextRun textRunAt(long offset) {
         List<TextRun> runs = runs();
         if (containsTailOn(offset)) {
             return runs.get(runs.size() - 1);
@@ -184,8 +184,8 @@ public interface TextLine extends Textual {
         }
         for (TextRun run : runs) {
             if (run.length() == 0) continue;
-            int runStart = run.source().point().offset() + run.start();
-            int runEnd = runStart + run.length();
+            long runStart = run.source().point().offset() + run.start();
+            long runEnd = runStart + run.length();
             if (runStart <= offset && offset < runEnd) {
                 return run;
             }
@@ -199,7 +199,7 @@ public interface TextLine extends Textual {
      * @param offset the char (total) offset
      * @return {@code true}, if the given (total) offset contains on this line
      */
-    default boolean contains(int offset) {
+    default boolean contains(long offset) {
         return offset() <= offset && offset < tailOffset();
     }
 
@@ -209,7 +209,7 @@ public interface TextLine extends Textual {
      * @param offset the char (total) offset
      * @return {@code true}, if the given (total) offset located on tail of this line
      */
-    default boolean containsTailOn(int offset) {
+    default boolean containsTailOn(long offset) {
         return tailOffset() == offset && isBottomLine();
     }
 
@@ -223,8 +223,8 @@ public interface TextLine extends Textual {
      * @param x the specified x position
      * @return the char offset(total) from the specified x position
      */
-    default int xToOffset(double x) {
-        int offset = offset();
+    default long xToOffset(double x) {
+        long offset = offset();
         if (length() == 0) {
             return offset; // end of file
         }

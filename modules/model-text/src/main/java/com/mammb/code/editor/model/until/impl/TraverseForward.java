@@ -27,9 +27,9 @@ public class TraverseForward implements Traverse {
     /** The count of rows. */
     private int rows;
     /** The count of character. */
-    private int chCount;
+    private long chCount;
     /** The count of code point. */
-    private int cpCount;
+    private long cpCount;
 
 
     /**
@@ -38,7 +38,7 @@ public class TraverseForward implements Traverse {
      * @param chCount the count of character
      * @param cpCount the count of code point
      */
-    private TraverseForward(int rows, int chCount, int cpCount) {
+    private TraverseForward(int rows, long chCount, long cpCount) {
         this.rows = rows;
         this.chCount = chCount;
         this.cpCount = cpCount;

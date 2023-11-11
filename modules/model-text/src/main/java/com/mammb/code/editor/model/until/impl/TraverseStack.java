@@ -34,15 +34,15 @@ public class TraverseStack implements Traverse {
     /** The count of rows. */
     private int rowCount;
     /** The count of character. */
-    private int chCount;
+    private long chCount;
     /** The count of code point. */
-    private int cpCount;
+    private long cpCount;
 
 
     /**
      * Constructor.
      */
-    private TraverseStack(byte[] bytes, int rowCount, int chCount, int cpCount) {
+    private TraverseStack(byte[] bytes, int rowCount, long chCount, long cpCount) {
         this.bytes = bytes;
         this.bytesLength = 0;
         this.rowCount = rowCount;

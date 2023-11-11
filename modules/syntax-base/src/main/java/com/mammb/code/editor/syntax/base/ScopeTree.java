@@ -27,7 +27,7 @@ public interface ScopeTree {
      * Truncates the scope after the specified offset.
      * @param offset the specified offset
      */
-    void truncate(int offset);
+    void truncate(long offset);
 
     /**
      * push the token.
@@ -46,7 +46,7 @@ public interface ScopeTree {
      * @param offset the specified offset position
      * @return the scope node at the specified offset position
      */
-    ScopeNode at(int offset);
+    ScopeNode at(long offset);
 
     /**
      * Create a new ScopeTree.

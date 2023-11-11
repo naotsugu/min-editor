@@ -282,7 +282,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public boolean peekSelection(Predicate<String> predicate) {
         return (selection.length() > 0) &&
-            predicate.test(buffer.subText(selection.min(), selection.length()));
+            predicate.test(buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE)));
     }
 
     // <editor-fold defaultstate="collapsed" desc="edit behavior">
@@ -382,7 +382,7 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         Selections.selectCurrentRow(caret, selection, texts);
-        String text = buffer.subText(selection.min(), selection.length());
+        String text = buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
             .collect(Collectors.joining());
@@ -395,7 +395,7 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         Selections.selectCurrentRow(caret, selection, texts);
-        String text = buffer.subText(selection.min(), selection.length());
+        String text = buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
             .collect(Collectors.joining());
@@ -458,7 +458,7 @@ public class EditorModelImpl implements EditorModel {
     public void moveCaretLineEnd() {
         vScrollToCaret();
         LayoutLine line = texts.layoutLine(caret.offset());
-        int offset = line.tailOffset() - line.endMarkCount();
+        long offset = line.tailOffset() - line.endMarkCount();
         caret.at(offset, true);
         screen.hScrollTo(caret.x());
     }
@@ -526,12 +526,12 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         selection.clear();
-        int offset = texts.at(x - screen.textLeft(), y);
+        long offset = texts.at(x - screen.textLeft(), y);
         caret.at(offset, true);
     }
     @Override
     public void clickDouble(double x, double y) {
-        int[] offsets = texts.atAroundWord(x - screen.textLeft(), y);
+        long[] offsets = texts.atAroundWord(x - screen.textLeft(), y);
         if (offsets.length == 2) {
             Selections.select(offsets, caret, selection);
         } else {
@@ -685,7 +685,7 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         OffsetPoint point = selection.min();
-        String text = buffer.subText(point, selection.length());
+        String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
         buffer.push(Edit.replace(point, text, string));
         Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
         texts.markDirty();
@@ -698,7 +698,7 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         OffsetPoint point = selection.min();
-        String text = buffer.subText(point, selection.length());
+        String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
         buffer.push(Edit.delete(point, text));
         selection.clear();
         caret.at(point.offset(), true);
@@ -728,7 +728,7 @@ public class EditorModelImpl implements EditorModel {
     private void copyToClipboard(boolean cut) {
         if (selection.length() > 0) {
             OffsetPoint point = selection.min();
-            String text = buffer.subText(point, selection.length());
+            String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
             Clipboards.put(text);
             if (cut && !buffer.readOnly()) {
                 buffer.push(Edit.delete(point, text));

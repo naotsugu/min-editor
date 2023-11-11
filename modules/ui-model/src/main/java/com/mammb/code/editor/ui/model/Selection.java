@@ -101,7 +101,7 @@ public interface Selection {
      * Get the selected char length.
      * @return the selected char length
      */
-    default int length() {
+    default long length() {
         return started() ? max().offset() - min().offset() : 0;
     }
 

@@ -67,7 +67,7 @@ public class DiffLexer implements Lexer {
             default -> {
                 var sb = new StringBuilder();
                 sb.append(ch);
-                int position = source.offset() + source.position();
+                long position = source.offset() + source.position();
                 for (;;) {
                     char c = source.peekChar();
                     if (c == 0 || c == '\n' || c == '\r') {

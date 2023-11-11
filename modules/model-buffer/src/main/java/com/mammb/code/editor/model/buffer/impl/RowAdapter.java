@@ -29,24 +29,24 @@ public record RowAdapter(Content content) implements RowSupplier {
     private static final String empty = "";
 
     @Override
-    public String at(int cpOffset) {
+    public String at(long cpOffset) {
         byte[] bytes = content.bytes(cpOffset, Until.lfInclusive());
         return (bytes.length == 0) ? empty : new String(bytes, content.charset());
     }
 
     @Override
-    public String before(int cpOffset) {
+    public String before(long cpOffset) {
         byte[] bytes = content.bytesBefore(cpOffset, Until.lf(2));
         return (bytes.length == 0) ? empty : new String( bytes, content.charset());
     }
 
     @Override
-    public int offset(int startCpOffset, Until<byte[]> until) {
+    public long offset(long startCpOffset, Until<byte[]> until) {
         return content.offset(startCpOffset, until);
     }
 
     @Override
-    public int offsetBefore(int startCpOffset, Until<byte[]> until) {
+    public long offsetBefore(long startCpOffset, Until<byte[]> until) {
         return content.offsetBefore(startCpOffset, until);
     }
 

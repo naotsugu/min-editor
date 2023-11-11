@@ -45,7 +45,7 @@ public interface Content {
      * @param until the until predicate, exclusive
      * @return the bytes
      */
-    byte[] bytes(int cpOffset, Predicate<byte[]> until);
+    byte[] bytes(long cpOffset, Predicate<byte[]> until);
 
 
     /**
@@ -59,7 +59,7 @@ public interface Content {
      * @param until the until predicate, exclusive
      * @return the bytes
      */
-    byte[] bytesBefore(int cpOffset, Predicate<byte[]> until);
+    byte[] bytesBefore(long cpOffset, Predicate<byte[]> until);
 
 
     /**
@@ -68,7 +68,7 @@ public interface Content {
      * @param until the until
      * @return the code point offset
      */
-    int offset(int startCpOffset, Predicate<byte[]> until);
+    long offset(long startCpOffset, Predicate<byte[]> until);
 
 
     /**
@@ -77,7 +77,7 @@ public interface Content {
      * @param until the until
      * @return the code point offset
      */
-    int offsetBefore(int startCpOffset, Predicate<byte[]> until);
+    long offsetBefore(long startCpOffset, Predicate<byte[]> until);
 
 
     /**

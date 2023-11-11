@@ -39,7 +39,7 @@ public interface Textual {
      * Get the start char (total) offset.
      * @return the start char (total) offset.
      */
-    default int offset() {
+    default long offset() {
         return point().offset();
     }
 
@@ -47,7 +47,7 @@ public interface Textual {
      * Get the char offset of tail(exclusive).
      * @return the offset of tail(exclusive).
      */
-    default int tailOffset() {
+    default long tailOffset() {
         return offset() + length();
     }
 
@@ -94,7 +94,7 @@ public interface Textual {
      * Get the coed point offset of tail.
      * @return the coed point offset of tail.
      */
-    default int tailCpOffset() {
+    default long tailCpOffset() {
         return point().cpOffset() + Character.codePointCount(text(), 0, length());
     }
 
@@ -113,7 +113,7 @@ public interface Textual {
      *         a value less than {@code 0} if {@code offset < point().offset()}; and
      *         a value greater than {@code 0} if {@code tailOffset() <= offset}
      */
-    default int compareOffsetRangeTo(int offset) {
+    default int compareOffsetRangeTo(long offset) {
         if (offset < point().offset()) {
             return -1;
         } else if (tailOffset() <= offset) {

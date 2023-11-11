@@ -38,10 +38,10 @@ public class CaretImpl implements Caret {
     /** The caret width. */
     private final double width = 2;
     /** The offset to layout line function. */
-    private final Function<Integer, LayoutLine> offsetToLine;
+    private final Function<Long, LayoutLine> offsetToLine;
 
     /** The caret (char) offset. */
-    private int offset = 0;
+    private long offset = 0;
     /** The caret row. */
     private int row = 0;
     /** The logical caret position x. */
@@ -63,7 +63,7 @@ public class CaretImpl implements Caret {
      * Constructor.
      * @param offsetToLine the offset to layout line function
      */
-    public CaretImpl(Function<Integer, LayoutLine> offsetToLine) {
+    public CaretImpl(Function<Long, LayoutLine> offsetToLine) {
         this.offsetToLine = offsetToLine;
     }
 
@@ -97,7 +97,7 @@ public class CaretImpl implements Caret {
 
 
     @Override
-    public void at(int charOffset, boolean syncLogicalX) {
+    public void at(long charOffset, boolean syncLogicalX) {
         offset = charOffset;
         LayoutLine layoutLine = offsetToLine.apply(offset);
         if (layoutLine == null) {
@@ -223,7 +223,7 @@ public class CaretImpl implements Caret {
 
 
     @Override
-    public int offset() {
+    public long offset() {
         return offset;
     }
 

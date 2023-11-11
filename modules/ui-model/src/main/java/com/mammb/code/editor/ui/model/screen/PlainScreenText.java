@@ -201,7 +201,7 @@ public class PlainScreenText implements ScreenText {
 
 
     @Override
-    public boolean scrollAtScreen(int row, int offset) {
+    public boolean scrollAtScreen(int row, long offset) {
         final int head = head().point().row();
         final int tail = tail().point().row();
         if (head <= row && row <= tail) {

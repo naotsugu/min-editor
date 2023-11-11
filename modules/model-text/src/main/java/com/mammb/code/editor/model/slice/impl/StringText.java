@@ -43,7 +43,7 @@ public class StringText implements RowSupplier {
 
 
     @Override
-    public String at(int cpOffset) {
+    public String at(long cpOffset) {
         if (cpOffset < 0 || cpOffset > codePointCount - 1) {
             return null;
         }
@@ -55,7 +55,7 @@ public class StringText implements RowSupplier {
 
 
     @Override
-    public String before(int cpOffset) {
+    public String before(long cpOffset) {
         if (cpOffset <= 0 || cpOffset > codePointCount) {
             return null;
         }
@@ -70,7 +70,7 @@ public class StringText implements RowSupplier {
 
 
     @Override
-    public int offset(int startCpOffset, Until<byte[]> until) {
+    public long offset(long startCpOffset, Until<byte[]> until) {
         int[] codePoints = string.codePoints().skip(startCpOffset).toArray();
         for (int i = 0; i < codePoints.length; i++) {
             if (until.test(Character.toString(codePoints[i])
@@ -83,7 +83,8 @@ public class StringText implements RowSupplier {
 
 
     @Override
-    public int offsetBefore(int startCpOffset, Until<byte[]> until) {
+    public long offsetBefore(long startCpOffsetLong, Until<byte[]> until) {
+        int startCpOffset = (int) startCpOffsetLong;
         int[] codePoints = string.codePoints().skip(startCpOffset).toArray();
         for (int i = startCpOffset; i >= 0; i--) {
             if (until.test(Character.toString(codePoints[i])

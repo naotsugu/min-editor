@@ -33,7 +33,7 @@ public class ScopeTreeImpl implements ScopeTree {
     private ScopeTreeNode root;
 
     /** The high watermark. */
-    private int hwm = 0;
+    private long hwm = 0;
 
 
     /**
@@ -55,7 +55,7 @@ public class ScopeTreeImpl implements ScopeTree {
 
 
     @Override
-    public void truncate(int offset) {
+    public void truncate(long offset) {
         if (offset <= hwm) {
             root.removeAfter(offset);
         }
@@ -104,7 +104,7 @@ public class ScopeTreeImpl implements ScopeTree {
 
 
     @Override
-    public ScopeNode at(int offset) {
+    public ScopeNode at(long offset) {
         final ScopeNode node = root.at(offset);
         return (node == null) ? root : node;
     }

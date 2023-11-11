@@ -117,7 +117,7 @@ public class JavaLexer implements Lexer {
      * @return the token
      */
     private Token readComment(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
@@ -142,7 +142,7 @@ public class JavaLexer implements Lexer {
      * @return the token
      */
     private Token readCommentBlockClosed(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         if (source.peekChar() == '/') {
             source.commitPeek();
             return Token.of(COMMENT, Scope.BLOCK_END, pos, 2);
@@ -158,7 +158,7 @@ public class JavaLexer implements Lexer {
      * @return the token
      */
     private Token readText(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         if (source.peekChar() == '"' && source.peekChar() == '"') {
             source.commitPeek();
             return Token.of(TEXT, Scope.BLOCK_ANY, pos, 3);
@@ -220,7 +220,7 @@ public class JavaLexer implements Lexer {
     private Token readNumber(LexerSource source) {
         var sb = new StringBuilder();
         sb.append(source.currentChar());
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         for (;;) {
             char ch = source.peekChar();
             if (Java.isJavaNumberPart(ch)) {
@@ -245,7 +245,7 @@ public class JavaLexer implements Lexer {
      */
     private Token readIdentifier(LexerSource source) {
 
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         StringBuilder sb = new StringBuilder();
         sb.append(source.currentChar());
 

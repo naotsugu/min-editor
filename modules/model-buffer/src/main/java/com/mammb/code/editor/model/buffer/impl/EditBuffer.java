@@ -133,19 +133,19 @@ public class EditBuffer implements TextEdit {
     public RowSupplier rowSupplier() {
         return new RowSupplier() {
             private final RowSupplier peer = new RowAdapter(content);
-            @Override public String at(int cpOffset) {
+            @Override public String at(long cpOffset) {
                 editQueue.flush();
                 return peer.at(cpOffset);
             }
-            @Override public String before(int cpOffset) {
+            @Override public String before(long cpOffset) {
                 editQueue.flush();
                 return peer.before(cpOffset);
             }
-            @Override public int offset(int startCpOffset, Until<byte[]> until) {
+            @Override public long offset(long startCpOffset, Until<byte[]> until) {
                 editQueue.flush();
                 return peer.offset(startCpOffset, until);
             }
-            @Override public int offsetBefore(int startCpOffset, Until<byte[]> until) {
+            @Override public long offsetBefore(long startCpOffset, Until<byte[]> until) {
                 editQueue.flush();
                 return peer.offsetBefore(startCpOffset, until);
             }

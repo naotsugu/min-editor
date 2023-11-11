@@ -61,22 +61,22 @@ public class PtContentMirror implements Content {
     }
 
     @Override
-    public byte[] bytes(int cpOffset, Predicate<byte[]> until) {
+    public byte[] bytes(long cpOffset, Predicate<byte[]> until) {
         return peer.bytes(cpOffset, until);
     }
 
     @Override
-    public byte[] bytesBefore(int cpOffset, Predicate<byte[]> until) {
+    public byte[] bytesBefore(long cpOffset, Predicate<byte[]> until) {
         return peer.bytesBefore(cpOffset, until);
     }
 
     @Override
-    public int offset(int startCpOffset, Predicate<byte[]> until) {
+    public long offset(long startCpOffset, Predicate<byte[]> until) {
         return peer.offset(startCpOffset, until);
     }
 
     @Override
-    public int offsetBefore(int startCpOffset, Predicate<byte[]> until) {
+    public long offsetBefore(long startCpOffset, Predicate<byte[]> until) {
         return peer.offsetBefore(startCpOffset, until);
     }
 

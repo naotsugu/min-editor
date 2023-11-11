@@ -77,7 +77,7 @@ public interface LexerSource {
      * Get the start char (total) offset.
      * @return the start char (total) offset.
      */
-    int offset();
+    long offset();
 
 
     default char[] lookahead(int n) {

@@ -43,11 +43,11 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     /** The byte length of content. */
     private long byteLen = 0;
     /** The code point count. */
-    private int cpCount = 0;
+    private long cpCount = 0;
     /** The char count. */
-    private int chCount = 0;
+    private long chCount = 0;
     /** The invalid code point count. */
-    private int invalid = 0;
+    private long invalid = 0;
     /** The carriage return count. */
     private int crCount = 0;
     /** The line feed count. */
@@ -128,17 +128,17 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     @Override
-    public int cpCount() {
+    public long cpCount() {
         return cpCount;
     }
 
     @Override
-    public int chCount() {
+    public long chCount() {
         return chCount;
     }
 
     @Override
-    public int invalidCpCount() {
+    public long invalidCpCount() {
         return invalid;
     }
 

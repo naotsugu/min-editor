@@ -63,7 +63,7 @@ public record DeleteEdit(
             }
             case  0 -> {
                 StringBuilder sb = new StringBuilder(textual.text());
-                int start = point.offset() - textual.point().offset();
+                int start = Math.toIntExact(point.offset() - textual.point().offset());
                 int end = start + text.length();
                 sb.replace(start, end, "");
                 yield Textual.of(textual.point(), sb.toString());

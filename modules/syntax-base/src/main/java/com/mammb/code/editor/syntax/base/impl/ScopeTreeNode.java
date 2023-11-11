@@ -170,7 +170,7 @@ public class ScopeTreeNode implements ScopeNode {
      * Remove the scope after the specified offset.
      * @param offset the specified offset
      */
-    void removeAfter(int offset) {
+    void removeAfter(long offset) {
         children().removeIf(node -> node.open().position() >= offset);
         children().forEach(node -> {
             if (node.isClosed() && node.close().position() >= offset) {
@@ -186,7 +186,7 @@ public class ScopeTreeNode implements ScopeNode {
      * @param offset the specified offset
      * @return the scope node at the specified offset
      */
-    ScopeTreeNode at(int offset) {
+    ScopeTreeNode at(long offset) {
         if (open.position() > offset) {
             return null;
         } else if (open.position() <= offset && !children.isEmpty()) {
@@ -203,7 +203,7 @@ public class ScopeTreeNode implements ScopeNode {
     }
 
 
-    private boolean within(int offset) {
+    private boolean within(long offset) {
         return (isOpen() && open.position() <= offset) ||
             (isClosed() && open.position() <= offset && offset < close.position());
     }

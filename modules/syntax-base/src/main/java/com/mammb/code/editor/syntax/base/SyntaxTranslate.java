@@ -80,7 +80,7 @@ public class SyntaxTranslate implements StylingTranslate {
             styledText.putStyle(StyleSpan.of(new Style.Context(n.open().context()), 0)));
 
         Token prev = null;
-        int beginPos = 0;
+        long beginPos = 0;
         for (Token token = lexer.nextToken(); !token.isEmpty(); token = lexer.nextToken()) {
 
             scopes.push(token);
@@ -92,7 +92,7 @@ public class SyntaxTranslate implements StylingTranslate {
                 beginPos = token.position();
             } else {
                 if (prev.type() != selected.type()) {
-                    putStyle(styledText, prev, beginPos - textual.offset(), token.position() - beginPos);
+                    putStyle(styledText, prev, Math.toIntExact(beginPos - textual.offset()), Math.toIntExact(token.position() - beginPos));
                     prev = selected;
                     beginPos = token.position();
                 }
@@ -100,7 +100,7 @@ public class SyntaxTranslate implements StylingTranslate {
         }
 
         if (prev != null) {
-            int pos = beginPos - textual.offset();
+            int pos = Math.toIntExact(beginPos - textual.offset());
             putStyle(styledText, prev, pos, textual.length() - pos);
         }
 

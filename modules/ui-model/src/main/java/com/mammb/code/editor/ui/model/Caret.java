@@ -42,7 +42,7 @@ public interface Caret {
      * @param charOffset the char offset
      * @param syncLogicalX whether to synchronize x position
      */
-    void at(int charOffset, boolean syncLogicalX);
+    void at(long charOffset, boolean syncLogicalX);
 
     /**
      * Move the caret to the right.
@@ -75,7 +75,7 @@ public interface Caret {
      * Get the char offset.
      * @return the char offset
      */
-    int offset();
+    long offset();
 
     /**
      * Get the row number(zero origin) of the row where the caret exists.

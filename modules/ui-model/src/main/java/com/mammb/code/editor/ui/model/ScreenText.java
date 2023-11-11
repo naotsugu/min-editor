@@ -66,7 +66,7 @@ public interface ScreenText {
      * @param offset the char offset
      * @return {@code true} if scrolled.
      */
-    boolean scrollAtScreen(int row, int offset);
+    boolean scrollAtScreen(int row, long offset);
 
     /**
      * Get the size of text lines capacity.
@@ -86,7 +86,7 @@ public interface ScreenText {
      * @param y the y position
      * @return the char offset
      */
-    default int at(double x, double y) {
+    default long at(double x, double y) {
         if (y <= 0) {
             TextLine head = head();
             return head == null ? 0 : head.offset();
@@ -123,25 +123,25 @@ public interface ScreenText {
      * @param y the y position
      * @return the start and end offsets as an array, if word selected, otherwise the single offset.
      */
-    default int[] atAroundWord(double x, double y) {
+    default long[] atAroundWord(double x, double y) {
         Optional<TextLine> maybeLine = at(y);
         if (maybeLine.isEmpty()) {
-            return new int[] { at(x, y) };
+            return new long[] { at(x, y) };
         }
         TextLine line = maybeLine.get();
 
-        int offset = line.xToOffset(x);
-        int start = offset;
-        int end = offset;
+        long offset = line.xToOffset(x);
+        long start = offset;
+        long end = offset;
         int type = Character.getType(Character.toLowerCase(line.charAt(offset)));
 
-        for (int i = offset + 1; i < line.tailOffset(); i++) {
+        for (long i = offset + 1; i < line.tailOffset(); i++) {
             if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
                 end = i;
                 break;
             }
         }
-        for (int i = offset - 1; i >= line.offset(); i--) {
+        for (long i = offset - 1; i >= line.offset(); i--) {
             if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
                 break;
             } else {
@@ -149,9 +149,9 @@ public interface ScreenText {
             }
         }
         if (start != end) {
-            return new int[] { start, end };
+            return new long[] { start, end };
         } else {
-            return new int[] { start };
+            return new long[] { start };
         }
     }
 
@@ -183,7 +183,7 @@ public interface ScreenText {
      * @param offset the specified offset
      * @return the line to which the specified offset contains
      */
-    default TextLine lineAt(int offset) {
+    default TextLine lineAt(long offset) {
         return lines().stream()
             .filter(l -> l.contains(offset))
             .findFirst().orElse(null);
@@ -195,7 +195,7 @@ public interface ScreenText {
      * @param offset the specified offset
      * @return the row to which the specified offset contains
      */
-    default List<TextLine> rowAt(int offset) {
+    default List<TextLine> rowAt(long offset) {
 
         TextLine line = lineAt(offset);
         if (line == null) {
@@ -223,7 +223,7 @@ public interface ScreenText {
      * @param offset the char offset
      * @return the LayoutLine
      */
-    default LayoutLine layoutLine(int offset) {
+    default LayoutLine layoutLine(long offset) {
 
         if (offset < head().point().offset()) {
             return null;

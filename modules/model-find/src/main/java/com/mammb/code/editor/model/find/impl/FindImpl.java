@@ -71,7 +71,7 @@ public class FindImpl implements Find {
                     point.offset() + match.start(),
                     match.length(),
                     row.substring(peripheralStart, peripheralEnd),
-                    point.offset() - peripheralStart);
+                    Math.toIntExact(point.offset() - peripheralStart));
                 listeners.forEach(listener -> listener.accept(found));
                 if (spec.oneshot()) {
                     return;

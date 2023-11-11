@@ -37,9 +37,9 @@ public record MetricsRecord(
     Path path,
     Charset charset,
     long byteLen,
-    int cpCount,
-    int chCount,
-    int invalidCpCount,
+    long cpCount,
+    long chCount,
+    long invalidCpCount,
     int crCount,
     int lfCount,
     boolean modified) implements Metrics {

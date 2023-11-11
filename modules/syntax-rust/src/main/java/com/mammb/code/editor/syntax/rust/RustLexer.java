@@ -89,7 +89,7 @@ public class RustLexer implements Lexer {
      * @return the token
      */
     private Token readComment(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         char ch = source.peekChar();
         if (ch == '/') {
             char nch = source.peekChar();
@@ -115,7 +115,7 @@ public class RustLexer implements Lexer {
      * @return the token
      */
     private Token readCommentBlockClosed(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         char ch = source.peekChar();
         if (ch == '/') {
             source.commitPeek();
@@ -155,7 +155,7 @@ public class RustLexer implements Lexer {
      */
     private Token readIdentifier(LexerSource source, int cp) {
 
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         StringBuilder sb = new StringBuilder();
         sb.append(Character.toChars(cp));
 

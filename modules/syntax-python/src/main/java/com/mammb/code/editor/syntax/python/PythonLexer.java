@@ -80,7 +80,7 @@ public class PythonLexer implements Lexer {
      * @return the token
      */
     private Token readComment(LexerSource source) {
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         source.commitPeek();
         return Token.of(LINE_COMMENT, Scope.INLINE_START, pos, 1);
     }
@@ -93,7 +93,7 @@ public class PythonLexer implements Lexer {
      */
     private Token readIdentifier(LexerSource source, int cp) {
 
-        int pos = source.offset() + source.position();
+        long pos = source.offset() + source.position();
         StringBuilder sb = new StringBuilder();
         sb.append(Character.toChars(cp));
 

@@ -142,7 +142,7 @@ public class RowSlice implements TextualSlice<Textual> {
         for (int i = 0; i < n; i++) {
 
             Textual head = rows.get(0);
-            int cpOffset = head.point().cpOffset();
+            long cpOffset = head.point().cpOffset();
             if (cpOffset == 0) break;
 
             String str = rowSupplier.before(cpOffset);

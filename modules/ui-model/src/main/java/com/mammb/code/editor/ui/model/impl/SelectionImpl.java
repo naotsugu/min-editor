@@ -95,8 +95,8 @@ public class SelectionImpl implements Selection {
             throw new IllegalStateException();
         }
 
-        int runStart = run.offset();
-        int runEnd = runStart + run.length();
+        long runStart = run.offset();
+        long runEnd = runStart + run.length();
 
         if (max().offset() >= runStart && min().offset() < runEnd) {
 
@@ -111,8 +111,8 @@ public class SelectionImpl implements Selection {
 
             } else {
 
-                double x1 = run.offsetToX().apply(Math.max(min().offset(), runStart) - runStart);
-                double x2 = run.offsetToX().apply(Math.min(max().offset(), runEnd) - runStart);
+                double x1 = run.offsetToX().apply(Math.toIntExact(Math.max(min().offset(), runStart) - runStart));
+                double x2 = run.offsetToX().apply(Math.toIntExact(Math.min(max().offset(), runEnd) - runStart));
 
                 gc.setFill(color);
                 gc.fillRect(x1 + left, top, x2 - x1, run.textLine().leadingHeight());
