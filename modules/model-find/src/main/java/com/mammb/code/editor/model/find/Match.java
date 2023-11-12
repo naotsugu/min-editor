@@ -22,8 +22,8 @@ package com.mammb.code.editor.model.find;
 public interface Match {
 
     /**
-     *
-     * @return
+     * Get the matched offset.
+     * @return the matched offset
      */
     int start();
 

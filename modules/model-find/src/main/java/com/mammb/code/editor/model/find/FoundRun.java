@@ -25,6 +25,10 @@ package com.mammb.code.editor.model.find;
  */
 public record FoundRun(long chOffset, int length, String peripheral, int offsetOnPeripheral) {
 
+    /**
+     * Get the matched text.
+     * @return the matched text
+     */
     public String text() {
         return peripheral.substring(offsetOnPeripheral, offsetOnPeripheral + length);
     }
