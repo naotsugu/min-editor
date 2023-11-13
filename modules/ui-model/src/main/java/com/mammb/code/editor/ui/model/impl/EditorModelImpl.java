@@ -664,7 +664,9 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public FindHandle findHandle() {
-        return new FindHandleImpl(Find.of(buffer.rowSupplier()), caret.caretPoint());
+        var find = Find.of(buffer.rowSupplier());
+        find.addListener(System.out::println);
+        return new FindHandleImpl(find, caret.caretPoint());
     }
 
     // </editor-fold>

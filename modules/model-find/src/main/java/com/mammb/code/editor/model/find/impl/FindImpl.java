@@ -58,7 +58,7 @@ public class FindImpl implements Find {
                 return;
             }
             String row = rowSupplier.at(point.cpOffset());
-            if (row == null) {
+            if (row.isEmpty()) {
                 break;
             }
 

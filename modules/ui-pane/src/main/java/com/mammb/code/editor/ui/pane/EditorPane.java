@@ -400,7 +400,7 @@ public class EditorPane extends StackPane {
 
 
     private void debug() {
-        model.vScrolled(0, 1000);
+        model.findHandle().findNext("foo", false);
     }
 
 

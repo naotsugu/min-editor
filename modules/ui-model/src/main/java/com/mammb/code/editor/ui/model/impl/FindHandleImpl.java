@@ -26,6 +26,7 @@ import com.mammb.code.editor.ui.model.FindHandle;
  */
 public class FindHandleImpl implements FindHandle {
 
+    /** The find. */
     private final Find find;
 
     private OffsetPoint basePoint;
@@ -43,6 +44,7 @@ public class FindHandleImpl implements FindHandle {
 
     @Override
     public void findAll(String string, boolean regexp) {
-
+        find.run(basePoint, FindSpec.allOf(string));
     }
+
 }
