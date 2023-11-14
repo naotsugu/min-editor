@@ -540,7 +540,7 @@ public class EditorModelImpl implements EditorModel {
     }
     @Override
     public void dragged(double x, double y) {
-        caret.at(texts.at(x - screen.textLeft(), y), true);
+        caret.at(texts.at(Math.max(x - screen.textLeft(), 0), y), true);
         if (selection.isDragging()) {
             selection.to(caret.caretPoint());
         } else {
