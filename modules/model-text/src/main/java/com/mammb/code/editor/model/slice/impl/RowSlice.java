@@ -102,25 +102,29 @@ public class RowSlice implements TextualSlice<Textual> {
 
     @Override
     public boolean move(OffsetPoint base, int rowDelta) {
+
+        OffsetPoint point;
         if (rowDelta == 0) {
-            return false;
-        }
-        Traverse traverse;
-        if (rowDelta > 0) {
-            // forward
-            traverse = Traverse.forwardOf(base);
-            var until = Until.lfInclusive(rowDelta).with(traverse);
-            rowSupplier.offset(base.cpOffset(), until);
+            point = base;
         } else {
-            // backward
-            traverse = Traverse.backwardOf(base);
-            var until = Until.lf(Math.abs(rowDelta)).withLess(traverse);
-            rowSupplier.offsetBefore(base.cpOffset(), until);
+            Traverse traverse;
+            if (rowDelta > 0) {
+                // forward
+                traverse = Traverse.forwardOf(base);
+                var until = Until.lfInclusive(rowDelta).with(traverse);
+                rowSupplier.offset(base.cpOffset(), until);
+            } else {
+                // backward
+                traverse = Traverse.backwardOf(base);
+                var until = Until.lf(Math.abs(rowDelta)).withLess(traverse);
+                rowSupplier.offsetBefore(base.cpOffset(), until);
+            }
+            point = traverse.asOffsetPoint();
         }
-        OffsetPoint point = traverse.asOffsetPoint();
-        if (point.equals((rows.isEmpty() ? OffsetPoint.zero : rows.get(0).point()))) {
+        if (!rows.isEmpty() && rows.getFirst().point().equals(point)) {
             return false;
         }
+
         rows.clear();
         for (int i = 0; i < maxRowSize; i++) {
             String str = rowSupplier.at(point.cpOffset());
