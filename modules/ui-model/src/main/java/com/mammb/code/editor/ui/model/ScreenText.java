@@ -17,9 +17,9 @@ package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.layout.TextLine;
-
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * ScreenText.
@@ -124,6 +124,17 @@ public interface ScreenText {
      * @return the start and end offsets as an array, if word selected, otherwise the single offset.
      */
     default long[] atAroundWord(double x, double y) {
+        return atAroundWord(x, y, Character::getType);
+    }
+
+    /**
+     * Get the char offset of the word selection at the specified position.
+     * @param x the x position
+     * @param y the y position
+     * @param toType the character specific function
+     * @return the start and end offsets as an array, if word selected, otherwise the single offset.
+     */
+    default long[] atAroundWord(double x, double y, Function<Character, Integer> toType) {
         Optional<TextLine> maybeLine = at(y);
         if (maybeLine.isEmpty()) {
             return new long[] { at(x, y) };
@@ -133,16 +144,16 @@ public interface ScreenText {
         long offset = line.xToOffset(x);
         long start = offset;
         long end = offset;
-        int type = Character.getType(Character.toLowerCase(line.charAt(offset)));
+        int type = toType.apply(Character.toLowerCase(line.charAt(offset)));
 
         for (long i = offset + 1; i < line.tailOffset(); i++) {
-            if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
+            if (type != toType.apply(Character.toLowerCase(line.charAt(i)))) {
                 end = i;
                 break;
             }
         }
         for (long i = offset - 1; i >= line.offset(); i--) {
-            if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
+            if (type != toType.apply(Character.toLowerCase(line.charAt(i)))) {
                 break;
             } else {
                 start = i;
@@ -154,7 +165,6 @@ public interface ScreenText {
             return new long[] { start };
         }
     }
-
 
     /**
      * Get the line at head.

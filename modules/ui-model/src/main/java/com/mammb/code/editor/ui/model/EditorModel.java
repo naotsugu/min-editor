@@ -102,6 +102,7 @@ public interface EditorModel extends EditorDraw {
 
     void click(double x, double y);
     void clickDouble(double x, double y);
+    void clickTriple(double x, double y);
     void dragged(double x, double y);
 
     // -- select behavior ---------------------------------------------------
