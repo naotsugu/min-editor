@@ -76,6 +76,9 @@ public class EditorModelImpl implements EditorModel {
     /** The text list. */
     private ScreenText texts;
 
+    private Find find;
+
+
 
     /**
      * Constructor.
@@ -92,7 +95,10 @@ public class EditorModelImpl implements EditorModel {
 
         this.context = context;
         this.buffer = buffer;
-        this.texts = new PlainScreenText(context, buffer.createView(screen.pageLineSize()), styling);
+        this.find = Find.of(buffer.rowSupplier());
+        this.texts = new PlainScreenText(context,
+            buffer.createView(screen.pageLineSize()),
+            styling.compound(Highlighter.of(find)));
         this.caret = new CaretImpl(offset -> texts.layoutLine(offset));
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
@@ -673,8 +679,6 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public FindHandle findHandle() {
-        var find = Find.of(buffer.rowSupplier());
-        find.addListener(System.out::println);
         return new FindHandleImpl(find, caret.caretPoint());
     }
 
