@@ -40,12 +40,9 @@ public interface StateHandler {
         }
     }
 
-    record CaretPoint(int rowNumber, long pos) {
-        public CaretPoint(OffsetPoint offsetPoint) {
-            this(offsetPoint.row() + 1, offsetPoint.cpOffset());
-        }
+    record CaretPoint(int rowNumber, int posOnLine, long pos) {
         public String asString() {
-            return "%,d : %,d".formatted(rowNumber, pos);
+            return "%,d : %,d : %,d".formatted(rowNumber, posOnLine, pos);
         }
     }
 

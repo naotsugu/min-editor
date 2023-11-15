@@ -81,7 +81,10 @@ public class StateChangeImpl implements StateChange {
         if (caretPoint == null || caretPoint.equals(prevCaretPoint)) {
             return;
         }
-        caretPointHandler.accept(new CaretPoint(caretPoint));
+        caretPointHandler.accept(new CaretPoint(
+            caretPoint.row() + 1,
+            Math.toIntExact(caretPoint.cpOffset() - caret.layoutLine().point().cpOffset()),
+            caretPoint.cpOffset()));
         prevCaretPoint = caretPoint;
     }
 
