@@ -18,6 +18,8 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.style.HighlightTranslate;
+import com.mammb.code.editor.model.style.Style;
+import com.mammb.code.editor.model.style.StyleSpan;
 import com.mammb.code.editor.model.style.StyledText;
 import java.util.TreeMap;
 import java.util.function.Consumer;
@@ -30,10 +32,13 @@ public class Highlighter implements HighlightTranslate, Consumer<FoundRun> {
 
     private TreeMap<Long, FoundRun> founds = new TreeMap<>();
 
-    private Find find;
+    private Style style = new Style.BgColor("FFCDD2", 0.2);
+
+    private final Find find;
 
     public Highlighter(Find find) {
         this.find = find;
+        find.addListener(this);
     }
 
     public static Highlighter of(Find find) {
@@ -42,6 +47,13 @@ public class Highlighter implements HighlightTranslate, Consumer<FoundRun> {
 
     @Override
     public StyledText applyTo(StyledText styledText) {
+        for (FoundRun foundRun : founds.subMap(
+            styledText.offset(),
+            styledText.tailOffset()).values()) {
+            styledText.putStyle(StyleSpan.of(style,
+                Math.toIntExact(foundRun.chOffset() - styledText.offset()),
+                foundRun.length()));
+        }
         return styledText;
     }
 

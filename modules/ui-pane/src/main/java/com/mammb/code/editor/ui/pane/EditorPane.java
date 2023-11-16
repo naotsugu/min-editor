@@ -400,7 +400,7 @@ public class EditorPane extends StackPane {
 
 
     private void debug() {
-        model.findHandle().findNext("foo", false);
+        model.findHandle().findAll("public", false);
     }
 
 
