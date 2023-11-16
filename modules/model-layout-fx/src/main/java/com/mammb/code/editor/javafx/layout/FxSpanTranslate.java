@@ -55,8 +55,8 @@ public class FxSpanTranslate implements SpanTranslate {
     private FxSpanTranslate(String defaultName, double defaultSize, String defaultColor) {
         this.defaultName = defaultName;
         this.defaultSize = defaultSize;
-        this.defaultColor = new ColorString(defaultColor);
-        this.defaultBgColor = new ColorString("rgba(0,0,0,0)"); // Color.TRANSPARENT;
+        this.defaultColor = new ColorString(defaultColor, 1.0);
+        this.defaultBgColor = new ColorString("rgba(0,0,0,0)", 0); // Color.TRANSPARENT;
     }
 
 
@@ -100,7 +100,7 @@ public class FxSpanTranslate implements SpanTranslate {
                 } else if (style instanceof Style.Color fg) {
                     fgColor = color(fg.colorString());
                 } else if (style instanceof Style.BgColor bg) {
-                    bgColor = bgColor(bg.colorString());
+                    bgColor = bgColor(bg.colorString(), bg.opacity());
                 } else if (style instanceof Style.Context ctx) {
                     context = ctx.name();
                 }
@@ -129,27 +129,27 @@ public class FxSpanTranslate implements SpanTranslate {
             return defaultColor;
         }
         return colorCache = (colorCache == null)
-            ? defaultColor.of(colorString)
-            : colorCache.of(colorString);
+            ? defaultColor.of(colorString, 1.0)
+            : colorCache.of(colorString, 1.0);
     }
 
 
-    private ColorString bgColor(String colorString) {
+    private ColorString bgColor(String colorString, double opacity) {
         if (defaultBgColor.colorString().equals(colorString)) {
             return defaultBgColor;
         }
         return bgColorCache = (bgColorCache == null)
-            ? defaultColor.of(colorString)
-            : bgColorCache.of(colorString);
+            ? defaultColor.of(colorString, opacity)
+            : bgColorCache.of(colorString, opacity);
     }
 
 
-    private record ColorString(Color color, String colorString) {
-        ColorString(String colorString) {
-            this(Color.web(colorString), colorString);
+    private record ColorString(Color color, String colorString, double opacity) {
+        ColorString(String colorString, double opacity) {
+            this(Color.web(colorString, opacity), colorString, opacity);
         }
-        ColorString of(String cs) {
-            return colorString.equals(cs) ? this : new ColorString(cs);
+        ColorString of(String cs, double op) {
+            return (colorString.equals(cs) && opacity == op) ? this : new ColorString(cs, op);
         }
     }
 

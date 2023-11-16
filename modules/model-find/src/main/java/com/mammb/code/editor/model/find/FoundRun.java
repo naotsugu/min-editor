@@ -21,9 +21,10 @@ package com.mammb.code.editor.model.find;
  * @param length
  * @param peripheral
  * @param offsetOnPeripheral
+ * @param row
  * @author Naotsugu Kobayashi
  */
-public record FoundRun(long chOffset, int length, String peripheral, int offsetOnPeripheral) {
+public record FoundRun(long chOffset, int length, String peripheral, int offsetOnPeripheral, int row) {
 
     /**
      * Get the matched text.
