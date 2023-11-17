@@ -96,9 +96,11 @@ public class EditorModelImpl implements EditorModel {
         this.context = context;
         this.buffer = buffer;
         this.find = Find.of(buffer.rowSupplier());
+        Highlighter highlighter = Highlighter.of(find);
         this.texts = new PlainScreenText(context,
             buffer.createView(screen.pageLineSize()),
-            styling.compound(Highlighter.of(find)));
+            styling,
+            highlighter);
         this.caret = new CaretImpl(offset -> texts.layoutLine(offset));
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();

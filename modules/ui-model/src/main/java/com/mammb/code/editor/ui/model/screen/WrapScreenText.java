@@ -25,6 +25,7 @@ import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
 import com.mammb.code.editor.ui.model.ScreenText;
+import com.mammb.code.editor.ui.model.impl.Highlighter;
 import com.mammb.code.editor.ui.prefs.Context;
 import com.mammb.code.editor.model.buffer.Metrics;
 import java.util.Collection;
@@ -56,6 +57,9 @@ public class WrapScreenText implements ScreenText {
     private int rollup = 0;
 
     private TextLine head = null;
+    /** The highlighter. */
+    private Highlighter highlighter;
+
 
 
     /**
@@ -69,7 +73,9 @@ public class WrapScreenText implements ScreenText {
             Context context,
             TextualScroll<? extends Textual> scroll,
             Translate<Textual, StyledText> styling,
+            Highlighter highlighter,
             double wrapWidth) {
+        this.highlighter = highlighter;
         this.context = context;
         this.scroll = scroll;
         this.styling = styling;
@@ -78,7 +84,7 @@ public class WrapScreenText implements ScreenText {
 
 
     public ScreenText asPlain() {
-        return new PlainScreenText(context, scroll, styling);
+        return new PlainScreenText(context, scroll, styling, highlighter);
     }
 
 
