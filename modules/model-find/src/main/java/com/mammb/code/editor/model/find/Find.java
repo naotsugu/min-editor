@@ -42,7 +42,7 @@ public interface Find {
      * Add a listener of find result.
      * @param listener a listener of find result
      */
-    void addListener(Consumer<FoundRun> listener);
+    void addListener(Consumer<Found> listener);
 
     /**
      * Create a new find.

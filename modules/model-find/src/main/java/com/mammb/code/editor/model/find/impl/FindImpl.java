@@ -17,6 +17,7 @@ package com.mammb.code.editor.model.find.impl;
 
 import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FindSpec;
+import com.mammb.code.editor.model.find.Found;
 import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.find.Match;
 import com.mammb.code.editor.model.slice.RowSupplier;
@@ -35,12 +36,12 @@ public class FindImpl implements Find {
     private RowSupplier rowSupplier;
 
     /** The listeners of find. */
-    private List<Consumer<FoundRun>> listeners;
+    private List<Consumer<Found>> listeners;
 
     private volatile boolean interrupt = false;
 
 
-    public FindImpl(RowSupplier rowSupplier, List<Consumer<FoundRun>> listeners) {
+    public FindImpl(RowSupplier rowSupplier, List<Consumer<Found>> listeners) {
         this.rowSupplier = rowSupplier;
         this.listeners = listeners;
     }
@@ -88,7 +89,7 @@ public class FindImpl implements Find {
     }
 
     @Override
-    public void addListener(Consumer<FoundRun> listener) {
+    public void addListener(Consumer<Found> listener) {
         listeners.add(listener);
     }
 

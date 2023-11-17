@@ -54,8 +54,6 @@ public class PlainScreenText implements ScreenText {
     private int rollup = 0;
     /** The line of head. */
     private TextLine head = null;
-    /** The highlighter. */
-    private Highlighter highlighter;
 
 
     /**
@@ -67,9 +65,7 @@ public class PlainScreenText implements ScreenText {
     public PlainScreenText(
             Context context,
             TextualScroll<? extends Textual> scroll,
-            Translate<Textual, StyledText> styling,
-            Highlighter highlighter) {
-        this.highlighter = highlighter;
+            Translate<Textual, StyledText> styling) {
         this.context = context;
         this.scroll = scroll;
         this.styling = styling;
@@ -78,7 +74,7 @@ public class PlainScreenText implements ScreenText {
 
 
     public ScreenText asWrapped(double width) {
-        return new WrapScreenText(context, scroll, styling, highlighter, width);
+        return new WrapScreenText(context, scroll, styling, width);
     }
 
 

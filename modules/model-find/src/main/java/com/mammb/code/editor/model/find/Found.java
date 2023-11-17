@@ -16,22 +16,8 @@
 package com.mammb.code.editor.model.find;
 
 /**
- * The FoundRun.
- * @param chOffset
- * @param length
- * @param peripheral
- * @param offsetOnPeripheral
- * @param row
+ * Found.
  * @author Naotsugu Kobayashi
  */
-public record FoundRun(long chOffset, int length, String peripheral, int offsetOnPeripheral, int row) implements Found {
-
-    /**
-     * Get the matched text.
-     * @return the matched text
-     */
-    public String text() {
-        return peripheral.substring(offsetOnPeripheral, offsetOnPeripheral + length);
-    }
-
+public sealed interface Found permits FoundRun, FoundReset {
 }

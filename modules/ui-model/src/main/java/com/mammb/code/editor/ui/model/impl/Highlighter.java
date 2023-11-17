@@ -16,6 +16,8 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.find.Find;
+import com.mammb.code.editor.model.find.Found;
+import com.mammb.code.editor.model.find.FoundReset;
 import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.style.HighlightTranslate;
 import com.mammb.code.editor.model.style.Style;
@@ -28,7 +30,7 @@ import java.util.function.Consumer;
  * The highlight translate.
  * @author Naotsugu Kobayashi
  */
-public class Highlighter implements HighlightTranslate, Consumer<FoundRun> {
+public class Highlighter implements HighlightTranslate, Consumer<Found> {
 
     private TreeMap<Long, FoundRun> founds = new TreeMap<>();
 
@@ -58,8 +60,11 @@ public class Highlighter implements HighlightTranslate, Consumer<FoundRun> {
     }
 
     @Override
-    public void accept(FoundRun foundRun) {
-        founds.put(foundRun.chOffset(), foundRun);
+    public void accept(Found found) {
+        switch (found) {
+            case FoundRun foundRun -> founds.put(foundRun.chOffset(), foundRun);
+            case FoundReset reset  -> founds.clear();
+        }
     }
 
     public void clear() {
