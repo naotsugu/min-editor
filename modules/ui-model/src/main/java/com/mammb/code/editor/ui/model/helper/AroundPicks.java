@@ -30,8 +30,8 @@ public class AroundPicks {
         int type = Character.getType(Character.toLowerCase(line.charAt(offset)));
 
         for (long i = offset + 1; i < line.tailOffset(); i++) {
+            end = i;
             if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
-                end = i;
                 break;
             }
         }
@@ -42,11 +42,11 @@ public class AroundPicks {
                 start = i;
             }
         }
+
         if (start != end) {
             return new long[] { start, end };
         } else {
             return new long[] { start };
         }
-
     }
 }
