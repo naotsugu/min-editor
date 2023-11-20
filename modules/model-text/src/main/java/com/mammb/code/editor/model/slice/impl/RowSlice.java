@@ -207,10 +207,8 @@ public class RowSlice implements TextualSlice<Textual> {
 
         while (rows.size() < maxRowSize) {
 
-            OffsetPoint next;
-            if (rows.isEmpty()) {
-                next = OffsetPoint.zero;
-            } else {
+            OffsetPoint next = OffsetPoint.zero;
+            if (!rows.isEmpty()) {
                 Textual tail = rows.get(rows.size() - 1);
                 next = tail.point().plus(tail.text());
             }

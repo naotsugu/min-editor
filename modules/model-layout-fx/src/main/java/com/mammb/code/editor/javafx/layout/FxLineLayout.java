@@ -77,25 +77,16 @@ public class FxLineLayout implements LineLayout {
         this.spans.addAll(spans);
     }
 
-
     /**
      * Perform layout.
      * @return the row to which layout is applied
      */
     public List<TextLine> layout() {
 
-        record TextSpan(String getText, Object getFont, RectBounds getBounds, Span peer)
-            implements com.sun.javafx.scene.text.TextSpan { }
-
-        TextSpan[] textSpans = new TextSpan[spans.size()];
-        for (int i = 0; i < spans.size(); i++) {
-            Span span = spans.get(i);
-            FxFontStyle fxStyle = (FxFontStyle) span.style();
-            Object font = fonts.computeIfAbsent(fxStyle.font(), FontHelper::getNativeFont);
-            textSpans[i] = new TextSpan(span.text(), font, null, span);
-        }
-
-        OffsetPoint point = textSpans.length > 0 ? spans.get(0).point() : OffsetPoint.zero;
+        TextSpan[] textSpans = textSpans();
+        OffsetPoint point = textSpans.length > 0
+            ? textSpans[0].peer().point()
+            : OffsetPoint.zero;
 
         textLayout.setContent(textSpans);
 
@@ -217,6 +208,20 @@ public class FxLineLayout implements LineLayout {
         clear();
         add(row);
         return layout();
+    }
+
+    record TextSpan(String getText, Object getFont, RectBounds getBounds, Span peer)
+        implements com.sun.javafx.scene.text.TextSpan { }
+
+    private TextSpan[] textSpans() {
+        TextSpan[] textSpans = new TextSpan[spans.size()];
+        for (int i = 0; i < spans.size(); i++) {
+            Span span = spans.get(i);
+            FxFontStyle fxStyle = (FxFontStyle) span.style();
+            Object font = fonts.computeIfAbsent(fxStyle.font(), FontHelper::getNativeFont);
+            textSpans[i] = new TextSpan(span.text(), font, null, span);
+        }
+        return textSpans;
     }
 
 }
