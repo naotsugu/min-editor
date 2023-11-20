@@ -239,7 +239,7 @@ public interface TextLine extends Textual {
             }
             offset += run.length();
         }
-        return Math.max(offset - 1, 0);
+        return Math.max(offset - endMarkCount(), 0);
     }
 
 
