@@ -167,7 +167,7 @@ public class RowSlice implements TextualSlice<Textual> {
         for (int i = 0; i < n; i++) {
 
             Textual tail = rows.get(rows.size() - 1);
-            if (tail.isEmpty()) {
+            if (tail.isEmpty() || tail.text().charAt(tail.text().length() - 1) != '\n') {
                 break;
             }
 
