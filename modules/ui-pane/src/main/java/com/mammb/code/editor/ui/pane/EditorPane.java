@@ -313,7 +313,6 @@ public class EditorPane extends StackPane {
             canvas.setWidth(canvasWidth);
             canvas.setHeight(canvasHeight);
             model.layoutBounds(canvasWidth, canvasHeight);
-
             model.draw(gc);
         }
     }
@@ -383,6 +382,7 @@ public class EditorPane extends StackPane {
         model = (EditorModel) e.getSource().getValue();
         statusBar.bind(model.stateChange());
         canvas.setInputMethodRequests(inputMethodRequests());
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         model.draw(gc);
     }
 
