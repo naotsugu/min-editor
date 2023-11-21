@@ -110,7 +110,7 @@ public class EditorPane extends StackPane {
         StackPane.setAlignment(hScrollBar, Pos.BOTTOM_LEFT);
 
         model = EditorModel.of(context, canvasWidth, canvasHeight, vScrollBar, hScrollBar);
-
+        canvas.setInputMethodRequests(inputMethodRequests());
         statusBar = new StatusBar(context);
         statusBar.bind(model.stateChange());
         getChildren().addAll(statusBar, vScrollBar, hScrollBar);
@@ -139,7 +139,6 @@ public class EditorPane extends StackPane {
         setOnDragDropped(DragDrops.droppedHandler(this::open));
         layoutBoundsProperty().addListener(this::layoutBoundsChanged);
 
-        canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethod);
         canvas.focusedProperty().addListener(this::focusChanged);
 
@@ -383,6 +382,7 @@ public class EditorPane extends StackPane {
     private void handleModelCreated(WorkerStateEvent e) {
         model = (EditorModel) e.getSource().getValue();
         statusBar.bind(model.stateChange());
+        canvas.setInputMethodRequests(inputMethodRequests());
         model.draw(gc);
     }
 
