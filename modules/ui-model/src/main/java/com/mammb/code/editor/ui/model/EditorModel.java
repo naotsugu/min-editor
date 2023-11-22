@@ -92,10 +92,29 @@ public interface EditorModel extends EditorDraw {
 
     // -- scroll behavior ------------------------------------------------------
 
+    /**
+     * Scroll previous a specified number of lines.
+     * @param n a specified number of lines
+     */
     void scrollPrev(int n);
+    /**
+     * Scroll next a specified number of lines.
+     * @param n a specified number of lines
+     */
     void scrollNext(int n);
+    /**
+     * Page up
+     */
     void pageUp();
+    /**
+     * Page down
+     */
     void pageDown();
+    /**
+     * Scroll to the specified line.
+     * @param oldValue the old row value
+     * @param newValue the new row value
+     */
     void vScrolled(int oldValue, int newValue);
 
     // -- mouse behavior ------------------------------------------------------
