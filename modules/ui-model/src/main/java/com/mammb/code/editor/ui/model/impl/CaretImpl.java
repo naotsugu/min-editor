@@ -289,6 +289,12 @@ public class CaretImpl implements Caret {
     }
 
 
+    @Override
+    public boolean isOutOfLines() {
+        return ensureLayout() == null;
+    }
+
+
     private TextLine ensureLayout() {
         if (!dirty) return line;
         dirty = false;

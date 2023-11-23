@@ -114,8 +114,8 @@ public interface Caret {
     double width();
 
     /**
-     * Get whether the caret is drawn or not
-     * @return
+     * Get whether the caret is drawn or not.
+     * @return whether the caret is drawn or not
      */
     boolean drawn();
 
@@ -130,5 +130,11 @@ public interface Caret {
      * @return the layoutLine
      */
     LayoutLine layoutLine();
+
+    /**
+     * Get whether the line is out of line.
+     * @return whether the line is out of line
+     */
+    boolean isOutOfLines();
 
 }

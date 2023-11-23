@@ -294,7 +294,7 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="edit behavior">
     @Override
     public void input(String input) {
-
+System.out.println("input:" + input.replace('\n', '$'));
         if (input == null || input.isEmpty() || buffer.readOnly()) {
             return;
         }
@@ -415,7 +415,7 @@ public class EditorModelImpl implements EditorModel {
         vScrollToCaret();
         if (caret.y2() + 4 >= screen.height()) scrollNext(1);
         caret.right();
-        if (caret.y2() > screen.height()) scrollNext(1);
+        if (caret.isOutOfLines() || caret.y2() > screen.height()) scrollNext(1);
         screen.hScrollTo(caret.x());
     }
     @Override
