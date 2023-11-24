@@ -59,12 +59,7 @@ public class TextualArray implements TextEdit, TextualScroll<Textual> {
 
         this.metrics = new MetricsImpl(path);
 
-        final Charset cs;
-        try (var is = Files.newInputStream(path)) {
-            cs = Content.charsetOf(is);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        Charset cs = Content.estimateCharset(path);
         metrics.setCharset(cs);
 
         try (var r = Files.newBufferedReader(path, cs)) {

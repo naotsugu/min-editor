@@ -21,7 +21,6 @@ import com.mammb.code.editor.model.buffer.MetricsRecord;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.edit.EditTo;
 import com.mammb.code.editor.model.text.OffsetPoint;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -59,7 +58,10 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     private OffsetAnchor anchor = new OffsetAnchor();
 
     /** The metrics change listener. */
-    private final List<MetricsChangeListener> listeners = new ArrayList<>();
+    private final List<MetricsChangeListener> changeListeners = new ArrayList<>();
+    /** The invalid code detection listener. */
+    private final List<MetricsChangeListener> invalidListeners = new ArrayList<>();
+
 
 
     /**
@@ -163,8 +165,23 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     @Override
-    public void addListener(MetricsChangeListener listener) {
-        listeners.add(listener);
+    public void addChangeListener(MetricsChangeListener listener) {
+        changeListeners.add(listener);
+    }
+
+    @Override
+    public void clearChangeListener() {
+        changeListeners.clear();
+    }
+
+    @Override
+    public void addInvalidListener(MetricsChangeListener listener) {
+        invalidListeners.add(listener);
+    }
+
+    @Override
+    public void clearInvalidListener() {
+        invalidListeners.clear();
     }
 
     @Override
@@ -186,7 +203,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     private void handleChange(Runnable runnable) {
         Metrics old = new MetricsRecord(this);
         runnable.run();
-        listeners.forEach(l -> l.changed(old, new MetricsRecord(this)));
+        changeListeners.forEach(l -> l.changed(old, new MetricsRecord(this)));
     }
 
 
@@ -196,7 +213,7 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
 
         for (int i = 0; i < bytes.length;) {
             byte b = bytes[i];
-            if ((b & 0x80) == 0x00){
+            if ((b & 0x80) == 0x00) {
                 if (b == '\r') crCount++;
                 if (b == '\n') lfCount++;
                 i += 1;
@@ -208,7 +225,9 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
                 chCount++;
                 i += 4;
             } else {
+                Metrics old = new MetricsRecord(this);
                 invalid++;
+                invalidListeners.forEach(l -> l.changed(old, new MetricsRecord(this)));
                 i += 1;
             }
             chCount++;

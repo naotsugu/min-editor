@@ -55,8 +55,9 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     /** The thumb. */
     private final ScrollThumb thumb;
 
-    /** The background color. */
+    /** The active background color. */
     private final Background backGroundActive;
+    /** The passive background color. */
     private final Background backGroundPassive;
 
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
@@ -82,7 +83,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE);
         setPrefWidth(WIDTH);
         setCursor(Cursor.DEFAULT);
-        setBackground(backGroundActive);
+        setBackground(backGroundPassive);
 
         thumb = new ScrollThumb(WIDTH, WIDTH * 2, baseColor);
         getChildren().add(thumb);
@@ -104,7 +105,9 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         setOnMousePressed(this::handleTrackMousePressed);
         setOnMouseReleased(this::handleTrackMouseReleased);
         heightProperty().addListener(this::handleHeightChanged);
-        if (!System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+        if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            setBackground(backGroundActive);
+        } else {
             setOnMouseEntered(this::handleMouseEntered);
             setOnMouseExited(this::handleMouseExited);
         }

@@ -98,7 +98,23 @@ public interface Metrics {
      * Add the metrics change listener.
      * @param listener the metrics change listener
      */
-    void addListener(MetricsChangeListener listener);
+    void addChangeListener(MetricsChangeListener listener);
+
+    /**
+     * Clear the metrics change listener.
+     */
+    void clearChangeListener();
+
+    /**
+     * Add the invalid code detection listener.
+     * @param listener the metrics change listener
+     */
+    void addInvalidListener(MetricsChangeListener listener);
+
+    /**
+     * Clear the invalid code detection listener.
+     */
+    void clearInvalidListener();
 
     /**
      * Get the total row count.

@@ -61,20 +61,20 @@ public class EditorPane extends StackPane {
     private final Context context;
 
     /** The canvas. */
-    private Canvas canvas;
+    private final Canvas canvas;
     /** The graphics context. */
     private GraphicsContext gc;
     /** The editor model. */
     private EditorModel model;
     /** The vertical scroll bar for line scroll. */
-    private VScrollBar vScrollBar;
+    private final VScrollBar vScrollBar;
     /** The horizontal scroll bar for line scroll. */
-    private HScrollBar hScrollBar;
+    private final HScrollBar hScrollBar;
     /** The status bar. */
-    private StatusBar statusBar;
+    private final StatusBar statusBar;
 
     /** The margin. */
-    private double margin = 5.5;
+    private final double margin = 5.5;
 
 
     /**

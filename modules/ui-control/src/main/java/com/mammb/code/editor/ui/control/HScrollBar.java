@@ -55,8 +55,9 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     /** The thumb. */
     private final ScrollThumb thumb;
 
-    /** The background color. */
+    /** The active background color. */
     private final Background backGroundActive;
+    /** The passive background color. */
     private final Background backGroundPassive;
 
 
@@ -80,7 +81,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_PREF_SIZE);
         setPrefHeight(WIDTH);
         setCursor(Cursor.DEFAULT);
-        setBackground(backGroundActive);
+        setBackground(backGroundPassive);
 
         thumb = new ScrollThumb(WIDTH * 2, WIDTH, baseColor);
         getChildren().add(thumb);
@@ -100,7 +101,9 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         setOnMousePressed(this::handleTrackMousePressed);
         setOnMouseReleased(this::handleTrackMouseReleased);
         widthProperty().addListener(this::handleWidthChanged);
-        if (!System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+        if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            setBackground(backGroundActive);
+        } else {
             setOnMouseEntered(this::handleMouseEntered);
             setOnMouseExited(this::handleMouseExited);
         }

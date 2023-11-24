@@ -59,7 +59,7 @@ public class EditBuffer implements TextEdit {
     public EditBuffer(Path path) {
         this.metrics = new MetricsImpl(path);
         this.content = Content.of(path, metrics);
-        this.editQueue = EditQueue.of(editTo(content));
+        this.editQueue = EditQueue.of(editTo(content, views));
         metrics.setModified(false);
         metrics.setCharset(content.charset());
     }
@@ -152,7 +152,7 @@ public class EditBuffer implements TextEdit {
         };
     }
 
-    private EditListener editTo(Content content) {
+    private static EditListener editTo(Content content, List<TextualSlice<Textual>> views) {
         return new EditToListener(new EditTo() {
             @Override
             public void insert(OffsetPoint point, String text) {
