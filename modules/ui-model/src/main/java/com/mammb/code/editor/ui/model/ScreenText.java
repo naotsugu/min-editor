@@ -29,7 +29,7 @@ public interface ScreenText {
 
     /**
      * Get the text lines.
-     * @return the text lines
+     * @return the text lines, non-null
      */
     List<TextLine> lines();
 
@@ -132,7 +132,8 @@ public interface ScreenText {
 
     /**
      * Get the line at head.
-     * @return the line at head
+     * If rolled up, the first line on the screen.
+     * @return the line at head.
      */
     TextLine head();
 
@@ -199,11 +200,16 @@ public interface ScreenText {
      */
     default LayoutLine layoutLine(long offset) {
 
-        if (offset < head().point().offset()) {
+        final List<TextLine> lines = lines();
+
+        if (lines.isEmpty() ||
+            offset < lines.get(0).point().offset() ||
+            offset > lines.get(lines.size() - 1).tailOffset()) {
             return null;
         }
+
         double offsetY = 0;
-        for (TextLine line : lines()) {
+        for (TextLine line : lines) {
             if (line.contains(offset) || line.containsTailOn(offset)) {
                 return new LayoutLine(line, offsetY);
             }
