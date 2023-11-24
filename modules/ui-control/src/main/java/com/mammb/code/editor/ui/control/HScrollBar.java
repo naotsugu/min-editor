@@ -80,7 +80,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_PREF_SIZE);
         setPrefHeight(WIDTH);
         setCursor(Cursor.DEFAULT);
-        setBackground(backGroundPassive);
+        setBackground(backGroundActive);
 
         thumb = new ScrollThumb(WIDTH * 2, WIDTH, baseColor);
         getChildren().add(thumb);
@@ -97,12 +97,13 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         value.addListener(this::handleValueChanged);
         visibleAmount.addListener(this::handleVisibleAmountChanged);
 
-        setOnMouseEntered(this::handleMouseEntered);
-        setOnMouseExited(this::handleMouseExited);
         setOnMousePressed(this::handleTrackMousePressed);
         setOnMouseReleased(this::handleTrackMouseReleased);
         widthProperty().addListener(this::handleWidthChanged);
-
+        if (!System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            setOnMouseEntered(this::handleMouseEntered);
+            setOnMouseExited(this::handleMouseExited);
+        }
         thumb.setOnMousePressed(this::handleThumbMousePressed);
         thumb.setOnMouseDragged(this::handleThumbMouseDragged);
     }
@@ -204,7 +205,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
                 }
             };
 
-        final KeyFrame kf = new KeyFrame(Duration.millis(50), step);
+        final KeyFrame kf = new KeyFrame(Duration.millis(100), step);
         timeline.getKeyFrames().add(kf);
         // do the first step immediately
         timeline.play();

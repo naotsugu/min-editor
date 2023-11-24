@@ -82,7 +82,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         setMaxSize(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE);
         setPrefWidth(WIDTH);
         setCursor(Cursor.DEFAULT);
-        setBackground(backGroundPassive);
+        setBackground(backGroundActive);
 
         thumb = new ScrollThumb(WIDTH, WIDTH * 2, baseColor);
         getChildren().add(thumb);
@@ -101,11 +101,13 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         value.addListener(this::handleValueChanged);
         visibleAmount.addListener(this::handleVisibleAmountChanged);
 
-        setOnMouseEntered(this::handleMouseEntered);
-        setOnMouseExited(this::handleMouseExited);
         setOnMousePressed(this::handleTrackMousePressed);
         setOnMouseReleased(this::handleTrackMouseReleased);
         heightProperty().addListener(this::handleHeightChanged);
+        if (!System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            setOnMouseEntered(this::handleMouseEntered);
+            setOnMouseExited(this::handleMouseExited);
+        }
 
         thumb.setOnMousePressed(this::handleThumbMousePressed);
         thumb.setOnMouseDragged(this::handleThumbMouseDragged);
@@ -215,7 +217,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
                 }
             };
 
-        final KeyFrame kf = new KeyFrame(Duration.millis(50), step);
+        final KeyFrame kf = new KeyFrame(Duration.millis(100), step);
         timeline.getKeyFrames().add(kf);
         // do the first step immediately
         timeline.play();

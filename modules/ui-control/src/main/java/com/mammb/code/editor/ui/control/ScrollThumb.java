@@ -53,8 +53,10 @@ public class ScrollThumb extends Rectangle {
      * Initialize listener.
      */
     private void initListener() {
-        setOnMouseEntered(this::handleMouseEntered);
-        setOnMouseExited(this::handleMouseExited);
+        if (!System.getProperty("os.name").toLowerCase().startsWith("windows")) {
+            setOnMouseEntered(this::handleMouseEntered);
+            setOnMouseExited(this::handleMouseExited);
+        }
     }
 
     private void handleMouseEntered(MouseEvent event) {
