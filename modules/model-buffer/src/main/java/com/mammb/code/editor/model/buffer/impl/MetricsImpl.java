@@ -170,8 +170,8 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     @Override
-    public void clearChangeListener() {
-        changeListeners.clear();
+    public void removeChangeListener(MetricsChangeListener listener) {
+        changeListeners.remove(listener);
     }
 
     @Override
@@ -180,8 +180,8 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
     }
 
     @Override
-    public void clearInvalidListener() {
-        invalidListeners.clear();
+    public void removeInvalidListener(MetricsChangeListener listener) {
+        invalidListeners.remove(listener);
     }
 
     @Override
