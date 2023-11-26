@@ -49,6 +49,7 @@ public class SliceView implements TextualSlice<Textual> {
         this.editQueueRef = editQueue;
     }
 
+
     @Override
     public List<Textual> texts() {
 
@@ -62,15 +63,18 @@ public class SliceView implements TextualSlice<Textual> {
             .collect(Collectors.toList());
     }
 
+
     @Override
     public int pageSize() {
         return slice.pageSize();
     }
 
+
     @Override
     public void setPageSize(int pageSize) {
         slice.setPageSize(pageSize);
     }
+
 
     @Override
     public List<Textual> prev(int n) {
@@ -78,17 +82,20 @@ public class SliceView implements TextualSlice<Textual> {
         return slice.prev(n);
     }
 
+
     @Override
     public List<Textual> next(int n) {
         editQueueRef.flush();
         return slice.next(n);
     }
 
+
     @Override
     public boolean move(OffsetPoint base, int rowDelta) {
         editQueueRef.flush();
         return slice.move(base, rowDelta);
     }
+
 
     @Override
     public void refresh(int rowNumber) {

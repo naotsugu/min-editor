@@ -28,11 +28,13 @@ public record RowAdapter(Content content) implements RowSupplier {
     /** The empty string. */
     private static final String empty = "";
 
+
     @Override
     public String at(long cpOffset) {
         byte[] bytes = content.bytes(cpOffset, Until.lfInclusive());
         return (bytes.length == 0) ? empty : new String(bytes, content.charset());
     }
+
 
     @Override
     public String before(long cpOffset) {
@@ -40,10 +42,12 @@ public record RowAdapter(Content content) implements RowSupplier {
         return (bytes.length == 0) ? empty : new String( bytes, content.charset());
     }
 
+
     @Override
     public long offset(long startCpOffset, Until<byte[]> until) {
         return content.offset(startCpOffset, until);
     }
+
 
     @Override
     public long offsetBefore(long startCpOffset, Until<byte[]> until) {

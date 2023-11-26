@@ -71,10 +71,12 @@ public class EditBuffer implements TextEdit {
         metrics.apply(edit);
     }
 
+
     @Override
     public void flush() {
         editQueue.flush();
     }
+
 
     @Override
     public Edit undo() {
@@ -83,10 +85,12 @@ public class EditBuffer implements TextEdit {
         return edit;
     }
 
+
     @Override
     public Edit redo() {
         return editQueue.redo();
     }
+
 
     @Override
     public String subText(OffsetPoint point, int length) {
@@ -95,12 +99,14 @@ public class EditBuffer implements TextEdit {
         return new String(bytes, content.charset());
     }
 
+
     @Override
     public void save() {
         editQueue.flush();
         content.save();
         metrics.setModified(false);
     }
+
 
     @Override
     public void saveAs(Path path) {
@@ -110,15 +116,18 @@ public class EditBuffer implements TextEdit {
         metrics.setModified(false);
     }
 
+
     @Override
     public boolean readOnly() {
         return false;
     }
 
+
     @Override
     public Metrics metrics() {
         return metrics;
     }
+
 
     @Override
     public SliceView createView(int maxRowSize) {
@@ -128,6 +137,7 @@ public class EditBuffer implements TextEdit {
         views.add(view);
         return view;
     }
+
 
     @Override
     public RowSupplier rowSupplier() {
@@ -151,6 +161,7 @@ public class EditBuffer implements TextEdit {
             }
         };
     }
+
 
     private static EditListener editTo(Content content, List<TextualSlice<Textual>> views) {
         return new EditToListener(new EditTo() {

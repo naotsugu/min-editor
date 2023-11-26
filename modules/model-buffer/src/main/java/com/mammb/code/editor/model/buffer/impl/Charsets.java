@@ -116,7 +116,7 @@ public class Charsets {
     }
 
 
-    private static Charset estimate(byte[] bytes) {
+    public static Charset estimate(byte[] bytes) {
 
         if (isUtf8(bytes)) {
             return StandardCharsets.UTF_8;
