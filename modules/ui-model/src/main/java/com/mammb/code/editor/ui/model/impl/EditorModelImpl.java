@@ -546,7 +546,7 @@ System.out.println("input:" + input.replace('\n', '$'));
     }
     @Override
     public void clickTriple(double x, double y) {
-        long[] offsets = texts.atAroundWord(x - screen.textLeft(), y);
+        long[] offsets = texts.atAroundDelimiter(x - screen.textLeft(), y);
         if (offsets.length == 2) {
             Selections.select(offsets, caret, selection);
         } else {

@@ -195,6 +195,7 @@ public class EditorPane extends StackPane {
             switch (e.getClickCount()) {
                 case 1 -> model.click(e.getSceneX(), e.getSceneY());
                 case 2 -> model.clickDouble(e.getSceneX(), e.getSceneY());
+                case 3 -> model.clickTriple(e.getSceneX(), e.getSceneY());
             }
             model.draw(gc);
         }

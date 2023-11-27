@@ -16,31 +16,60 @@
 package com.mammb.code.editor.ui.model.helper;
 
 import com.mammb.code.editor.model.layout.TextLine;
+import java.util.function.Function;
 
 /**
- * ScreenText.
+ * AroundPicks.
  * @author Naotsugu Kobayashi
  */
 public class AroundPicks {
 
+    /**
+     * Around pick by category.
+     * @param line the TextLine
+     * @param x the position of x
+     * @return the around index
+     */
     public static long[] category(TextLine line, double x) {
+        return pick(line, x, ch -> Character.getType(Character.toLowerCase(ch)));
+    }
+
+
+    /**
+     * Around pick by delimiter.
+     * @param line the TextLine
+     * @param x the position of x
+     * @return the around index
+     */
+    public static long[] delimiter(TextLine line, double x) {
+        return pick(line, x, ch -> {
+            if (ch == '\\' || ch == '/' || ch ==  '.' || ch ==  '{' || ch ==  '}' ||
+                Character.isWhitespace(ch) || Character.isISOControl(ch)) return -1;
+            return 0;
+        });
+    }
+
+
+    static long[] pick(TextLine line, double x, Function<Character, Integer> toType) {
+
         long offset = line.xToOffset(x);
         long start = offset;
         long end = offset;
-        int type = Character.getType(Character.toLowerCase(line.charAt(offset)));
+        int type = toType.apply(line.charAt(offset));
 
         for (long i = offset + 1; i < line.tailOffset(); i++) {
             end = i;
-            if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
+            char ch = line.charAt(i);
+            if (type != toType.apply(ch)) {
                 break;
             }
         }
         for (long i = offset - 1; i >= line.offset(); i--) {
-            if (type != Character.getType(Character.toLowerCase(line.charAt(i)))) {
+            char ch = line.charAt(i);
+            if (type != toType.apply(ch)) {
                 break;
-            } else {
-                start = i;
             }
+            start = i;
         }
 
         if (start != end) {
@@ -49,4 +78,6 @@ public class AroundPicks {
             return new long[] { start };
         }
     }
+
+
 }

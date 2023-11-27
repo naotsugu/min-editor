@@ -129,6 +129,16 @@ public interface ScreenText {
             .orElse(new long[] { at(x, y) });
     }
 
+    /**
+     * Get the char offset of the delimiter broken word selection at the specified position.
+     * @param x the x position
+     * @param y the y position
+     * @return the start and end offsets as an array, if word selected, otherwise the single offset.
+     */
+    default long[] atAroundDelimiter(double x, double y) {
+        return at(y).map(line -> AroundPicks.delimiter(line, x))
+            .orElse(new long[] { at(x, y) });
+    }
 
     /**
      * Get the line at head.

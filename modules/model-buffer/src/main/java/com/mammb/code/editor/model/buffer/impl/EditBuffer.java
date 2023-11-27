@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.model.buffer.impl;
 
+import com.mammb.code.editor.model.buffer.CharacterCodeException;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.content.Content;
@@ -61,7 +62,10 @@ public class EditBuffer implements TextEdit {
     public EditBuffer(Path path) {
 
         var metrics = new MetricsImpl(path);
-        metrics.addInvalidListener((o, n) -> log.log(System.Logger.Level.ERROR, n));
+        metrics.addInvalidListener((o, n) -> {
+            log.log(System.Logger.Level.ERROR, n);
+            throw new CharacterCodeException();
+        });
 
         this.content = Content.of(path, metrics);
         this.editQueue = EditQueue.of(editTo(content, views));
