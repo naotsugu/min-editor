@@ -28,8 +28,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        Context context = Context.of();
-        new EditorPane(context).showOn(stage);
+        var context = Context.of();
+        var editorPane = new EditorPane(context);
+        editorPane.showOn(stage);
     }
 
 }
