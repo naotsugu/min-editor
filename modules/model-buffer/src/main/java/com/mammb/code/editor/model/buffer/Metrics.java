@@ -107,18 +107,6 @@ public interface Metrics {
     void removeChangeListener(MetricsChangeListener listener);
 
     /**
-     * Add the invalid code detection listener.
-     * @param listener the metrics change listener
-     */
-    void addInvalidListener(MetricsChangeListener listener);
-
-    /**
-     * Remove the invalid code detection listener.
-     * @param listener the invalid code detection listener to be removed
-     */
-    void removeInvalidListener(MetricsChangeListener listener);
-
-    /**
      * Get the total row count.
      * @return the total row count
      */

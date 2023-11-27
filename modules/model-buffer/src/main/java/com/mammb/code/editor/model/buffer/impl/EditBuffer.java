@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.model.buffer.impl;
 
-import com.mammb.code.editor.model.content.Content;
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.buffer.TextEdit;
+import com.mammb.code.editor.model.content.Content;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.edit.EditListener;
 import com.mammb.code.editor.model.edit.EditQueue;
@@ -28,7 +28,6 @@ import com.mammb.code.editor.model.slice.TextualSlice;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.until.Until;
-
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +37,9 @@ import java.util.List;
  * @author Naotsugu Kobayashi
  */
 public class EditBuffer implements TextEdit {
+
+    /** logger. */
+    private static final System.Logger log = System.getLogger(EditBuffer.class.getName());
 
     /** The content. */
     private final Content content;
@@ -57,11 +59,17 @@ public class EditBuffer implements TextEdit {
      * @param path the path of content
      */
     public EditBuffer(Path path) {
-        this.metrics = new MetricsImpl(path);
+
+        var metrics = new MetricsImpl(path);
+        metrics.addInvalidListener((o, n) -> log.log(System.Logger.Level.ERROR, n));
+
         this.content = Content.of(path, metrics);
         this.editQueue = EditQueue.of(editTo(content, views));
+
+        this.metrics = metrics;
         metrics.setModified(false);
         metrics.setCharset(content.charset());
+
     }
 
 

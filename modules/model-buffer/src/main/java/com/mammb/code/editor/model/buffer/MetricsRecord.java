@@ -76,14 +76,4 @@ public record MetricsRecord(
         // no-op
     }
 
-    @Override
-    public void addInvalidListener(MetricsChangeListener listener) {
-        // no-op
-    }
-
-    @Override
-    public void removeInvalidListener(MetricsChangeListener listener) {
-        // no-op
-    }
-
 }

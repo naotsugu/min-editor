@@ -174,12 +174,10 @@ public class MetricsImpl implements Metrics, Consumer<byte[]> {
         changeListeners.remove(listener);
     }
 
-    @Override
     public void addInvalidListener(MetricsChangeListener listener) {
         invalidListeners.add(listener);
     }
 
-    @Override
     public void removeInvalidListener(MetricsChangeListener listener) {
         invalidListeners.remove(listener);
     }
