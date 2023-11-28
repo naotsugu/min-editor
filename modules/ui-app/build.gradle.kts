@@ -15,12 +15,8 @@ val artifact = when {
     else -> throw Error("Unsupported OS: $os, ARCH: $arch")
 }
 
-val javafxControls: Configuration by configurations.creating
-val javafxControlsSources: Configuration by configurations.creating
-
 dependencies {
-    javafxControls("org.openjfx:javafx-controls:21.0.1:${artifact}")
-    javafxControlsSources("org.openjfx:javafx-controls:21.0.1:sources")
+    implementation("org.openjfx:javafx-controls:21.0.1:${artifact}")
     implementation(project(":javafx"))
     implementation(project(":ui-pane"))
     implementation(project(":ui-prefs"))

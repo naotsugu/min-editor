@@ -392,7 +392,7 @@ public class EditorPane extends StackPane {
      * Window close request handler.
      * @param e the window event
      */
-    private void handleCloseRequest(WindowEvent e) {
+    public void handleCloseRequest(WindowEvent e) {
         if (e.getTarget() instanceof Stage stage) {
             e.consume();
             FileAction.of(this, model).confirmIfDirty(stage::close);

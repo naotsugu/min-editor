@@ -22,5 +22,6 @@ module code.editor.ui.app {
     requires code.editor.javafx;
     requires code.editor.ui.pane;
     requires code.editor.ui.prefs;
+    requires javafx.controls;
     exports com.mammb.code.editor.ui.app;
 }

@@ -33,6 +33,20 @@ public class App extends Application {
         var editorPane = new EditorPane(context);
         editorPane.showOn(stage);
 
+//        var context = Context.of();
+//        var editorPane = new EditorPane(context);
+//        var addressBar = new TextField();
+//
+//        var borderPane = new BorderPane();
+//        borderPane.setTop(addressBar);
+//        borderPane.setCenter(editorPane);
+//
+//        Scene scene = new Scene(borderPane);
+//        stage.setScene(scene);
+//        stage.setTitle("min-editor");
+//        stage.setOnCloseRequest(editorPane::handleCloseRequest);
+//        stage.show();
+
     }
 
 }
