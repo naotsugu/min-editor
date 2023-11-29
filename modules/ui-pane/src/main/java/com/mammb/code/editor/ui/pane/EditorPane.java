@@ -90,6 +90,7 @@ public class EditorPane extends StackPane {
         setBackground(new Background(new BackgroundFill(
             Color.web(context.preference().bgColor()),
             CornerRadii.EMPTY, Insets.EMPTY)));
+        setFocusTraversable(false);
 
         double canvasWidth = context.regionWidth() - margin;
         double canvasHeight = context.regionHeight() - margin;
@@ -237,7 +238,7 @@ public class EditorPane extends StackPane {
                 case WRAP       -> aroundEdit(model::toggleWrap);
                 case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
                 case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
-                case NEW        -> newPane();
+                //case NEW        -> newPane();
                 case DEBUG      -> debug();
             }
             return;

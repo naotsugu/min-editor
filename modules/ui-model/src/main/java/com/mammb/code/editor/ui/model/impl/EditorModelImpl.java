@@ -294,7 +294,7 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="edit behavior">
     @Override
     public void input(String input) {
-System.out.println("input:" + input.replace('\n', '$'));
+
         if (input == null || input.isEmpty() || buffer.readOnly()) {
             return;
         }

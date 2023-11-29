@@ -18,6 +18,17 @@ package com.mammb.code.editor.ui.app;
 import com.mammb.code.editor.ui.pane.EditorPane;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCharacterCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -26,27 +37,49 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
+    private static final KeyCombination SC_N = new KeyCharacterCombination("n", KeyCombination.SHORTCUT_DOWN);
+
     @Override
     public void start(Stage stage) {
+        buildScene(stage, Context.of()).show();
+        stage.requestFocus();
+    }
 
-        var context = Context.of();
+
+    private Stage buildScene(Stage stage, Context context) {
+
         var editorPane = new EditorPane(context);
-        editorPane.showOn(stage);
+        var borderPane = new BorderPane();
+        var scene = new Scene(borderPane);
+        //borderPane.setTop(createAddressBar());
+        borderPane.setCenter(editorPane);
+        borderPane.setFocusTraversable(false);
 
-//        var context = Context.of();
-//        var editorPane = new EditorPane(context);
-//        var addressBar = new TextField();
-//
-//        var borderPane = new BorderPane();
-//        borderPane.setTop(addressBar);
-//        borderPane.setCenter(editorPane);
-//
-//        Scene scene = new Scene(borderPane);
-//        stage.setScene(scene);
-//        stage.setTitle("min-editor");
-//        stage.setOnCloseRequest(editorPane::handleCloseRequest);
-//        stage.show();
+        stage.setScene(scene);
+        stage.setTitle("min-editor");
+        stage.setOnCloseRequest(editorPane::handleCloseRequest);
 
+        borderPane.setOnKeyPressed(e -> {
+            if (SC_N.match(e)) {
+                e.consume();
+                Stage newStage = new Stage();
+                newStage.setX(stage.getX() + 15);
+                newStage.setY(stage.getY() + 15);
+                buildScene(newStage, context);
+                newStage.show();
+                newStage.requestFocus();
+            }
+        });
+        return stage;
+    }
+
+    private Node createAddressBar() {
+        var addressBar = new TextField();
+        addressBar.setBackground(new Background(new BackgroundFill(
+            Color.BLACK,
+            CornerRadii.EMPTY, Insets.EMPTY)));
+        addressBar.setFocusTraversable(false);
+        return addressBar;
     }
 
 }
