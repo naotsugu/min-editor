@@ -192,6 +192,7 @@ public class EditorPane extends StackPane {
      * @param e the mouse event
      */
     private void handleMouseClicked(MouseEvent e) {
+        canvas.requestFocus();
         if (e.getButton() == MouseButton.PRIMARY && e.getTarget() == canvas) {
             switch (e.getClickCount()) {
                 case 1 -> model.click(e.getSceneX(), e.getSceneY());
@@ -386,6 +387,7 @@ public class EditorPane extends StackPane {
         canvas.setInputMethodRequests(inputMethodRequests());
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         model.draw(gc);
+        canvas.requestFocus();
     }
 
 
