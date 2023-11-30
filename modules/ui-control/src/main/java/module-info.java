@@ -19,6 +19,8 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.ui.control {
-    exports com.mammb.code.editor.ui.control;
     requires code.editor.javafx;
+    requires javafx.controls;
+    exports com.mammb.code.editor.ui.control;
+    exports com.mammb.code.editor.ui.control.address;
 }
