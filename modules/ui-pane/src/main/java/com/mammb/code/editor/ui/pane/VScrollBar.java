@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.control;
+package com.mammb.code.editor.ui.pane;
 
+import com.mammb.code.editor.ui.model.ScrollBar;
+import com.mammb.code.editor.ui.model.ScrolledHandler;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -35,22 +37,22 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
- * Horizontal ScrollBar.
+ * Vertical ScrollBar.
  * @author Naotsugu Kobayashi
  */
-public class HScrollBar extends StackPane implements ScrollBar<Double> {
+public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
     /** The min value of scroll bar. */
-    public final DoubleProperty min = new SimpleDoubleProperty(this, "min", 0);
+    public final IntegerProperty min = new SimpleIntegerProperty(this, "min", 0);
 
     /** The max value of scroll bar. */
-    public final DoubleProperty max = new SimpleDoubleProperty(this, "max", 100);
+    public final IntegerProperty max = new SimpleIntegerProperty(this, "max", 100);
 
     /** The value of scroll bar. */
-    public final DoubleProperty value = new SimpleDoubleProperty(this, "value", 0);
+    public final IntegerProperty value = new SimpleIntegerProperty(this, "value", 0);
 
     /** The visible amount. */
-    public final DoubleProperty visibleAmount = new SimpleDoubleProperty(this, "visibleAmount", 100);
+    public final IntegerProperty visibleAmount = new SimpleIntegerProperty(this, "visibleAmount", 100);
 
     /** The thumb. */
     private final ScrollThumb thumb;
@@ -60,7 +62,6 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     /** The passive background color. */
     private final Background backGroundPassive;
 
-
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
 
@@ -68,31 +69,36 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
     private double dragStart;
 
-    private ScrolledHandler<Double> listener = (oldValue, newValue) -> { };
+    private ScrolledHandler<Integer> listener = (oldValue, newValue) -> { };
 
 
-    public HScrollBar(Color baseColor) {
+    /**
+     * Constructor.
+     */
+    public VScrollBar(Color baseColor) {
 
         backGroundActive = new Background(new BackgroundFill(
             baseColor.deriveColor(0, 1, 1, 0.1), CornerRadii.EMPTY, Insets.EMPTY));
         backGroundPassive = new Background(new BackgroundFill(
             Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY));
 
-        setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_PREF_SIZE);
-        setPrefHeight(WIDTH);
+        setMaxSize(Region.USE_PREF_SIZE, Region.USE_COMPUTED_SIZE);
+        setPrefWidth(WIDTH);
         setCursor(Cursor.DEFAULT);
         setBackground(backGroundPassive);
 
-        thumb = new ScrollThumb(WIDTH * 2, WIDTH, baseColor);
+        thumb = new ScrollThumb(WIDTH, WIDTH * 2, baseColor);
         getChildren().add(thumb);
 
         initListener();
     }
 
+
     /**
      * Initialize listener.
      */
     private void initListener() {
+
         min.addListener(this::handleMinValueChanged);
         max.addListener(this::handleMaxValueChanged);
         value.addListener(this::handleValueChanged);
@@ -100,16 +106,18 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
         setOnMousePressed(this::handleTrackMousePressed);
         setOnMouseReleased(this::handleTrackMouseReleased);
-        widthProperty().addListener(this::handleWidthChanged);
+        heightProperty().addListener(this::handleHeightChanged);
         if (System.getProperty("os.name").toLowerCase().startsWith("windows")) {
             setBackground(backGroundActive);
         } else {
             setOnMouseEntered(this::handleMouseEntered);
             setOnMouseExited(this::handleMouseExited);
         }
+
         thumb.setOnMousePressed(this::handleThumbMousePressed);
         thumb.setOnMouseDragged(this::handleThumbMouseDragged);
     }
+
 
     private void handleMinValueChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         adjustThumbLength();
@@ -127,7 +135,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         adjustThumbLength();
     }
 
-    private void handleWidthChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void handleHeightChanged(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         adjustThumbLength();
     }
 
@@ -139,8 +147,9 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         setBackground(backGroundPassive);
     }
 
+
     /**
-     * The truck clicked handler.
+     * The track pressed handler.
      * @param event the MouseEvent
      */
     private void handleTrackMousePressed(MouseEvent event) {
@@ -163,8 +172,8 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
             event.consume();
             return;
         }
-        dragStart = thumb.localToParent(event.getX(), event.getY()).getX();
-        preDragThumbPos = (Math.clamp(getValue(), getMin(), getMax()) - getMin()) / valueLength();
+        dragStart = thumb.localToParent(event.getX(), event.getY()).getY();
+        preDragThumbPos = (clamp(getValue()) - getMin()) / valueLength();
         event.consume();
     }
 
@@ -173,22 +182,27 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
             event.consume();
             return;
         }
-        double cur = thumb.localToParent(event.getX(), event.getY()).getX();
+        double cur = thumb.localToParent(event.getX(), event.getY()).getY();
         double dragPos = cur - dragStart;
-        thumbDragged(preDragThumbPos + dragPos / (getWidth() - thumb.getWidth()));
+        thumbDragged(preDragThumbPos + dragPos / (getHeight() - thumb.getHeight()));
         event.consume();
     }
 
+
     public void thumbDragged(double position) {
+        // stop the timeline for continuous increments as drags take precedence
         stopTimeline();
+
         if (!isFocused() && isFocusTraversable()) requestFocus();
-        double newValue = (position * valueLength()) + min.getValue();
-        double oldValue = value.getValue();
-        value.setValue(Math.clamp(newValue, getMin(), getMax()));
+        int oldValue = value.getValue();
+        int newValue = (int) (position * valueLength()) + min.getValue();
+        value.setValue(clamp(newValue));
         listener.handle(oldValue, value.getValue());
     }
 
+
     public void trackPress(double position) {
+
         if (timeline != null) return;
         if (!isFocused() && isFocusTraversable()) requestFocus();
         final double pos = position;
@@ -200,7 +214,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
             event -> {
                 boolean i = (pos > ((value.getValue() - min.getValue()) / valueLength()));
                 if (incrementing == i) {
-                    double old = value.getValue();
+                    int old = value.getValue();
                     adjustValue(pos);
                     listener.handle(old, value.getValue());
                 } else {
@@ -216,40 +230,40 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
     }
 
+
     public void trackRelease() {
         stopTimeline();
     }
 
     private void adjustValue(double position) {
         // figure out the "value" associated with the specified position
-        double posValue = valueLength() * Math.clamp(position, 0, 1) + getMin();
-        if (Double.compare(posValue, getValue()) != 0) {
-            double newValue = (posValue > getValue())
+        int posValue = (int) (valueLength() * Math.clamp(position, 0, 1)) + getMin();
+        if (Integer.compare(posValue, getValue()) != 0) {
+            int old = value.getValue();
+            int newValue = (posValue > getValue())
                 ? getValue() + getVisibleAmount()
                 : getValue() - getVisibleAmount();
-            setValue(Math.clamp(newValue, getMin(), getMax()));
+            setValue(clamp(newValue));
         }
     }
 
-
     private void positionThumb() {
-        double clampedValue = Math.clamp(getValue(), getMin(), getMax());
+        double clampedValue = clamp(getValue());
         double trackPos = (valueLength() > 0)
-            ? ((getWidth() - thumb.getWidth()) * (clampedValue - getMin()) / valueLength()) : (0.0F);
-        thumb.setTranslateX(snapPositionX(trackPos + snappedLeftInset()));
-    }
+            ? ((getHeight() - thumb.getHeight()) * (clampedValue - getMin()) / valueLength()) : (0.0F);
 
+        thumb.setTranslateY(snapPositionY(trackPos + snappedTopInset()));
+    }
 
     private void adjustThumbLength() {
         double thumbLength = thumbSize();
-        if (thumbLength >= getWidth()) {
+        if (thumbLength >= getHeight()) {
             setVisible(false);
         } else {
             setVisible(true);
-            thumb.setWidth(thumbSize());
+            thumb.setHeight(thumbLength);
         }
     }
-
 
     private void stopTimeline() {
         if (timeline != null) {
@@ -258,56 +272,65 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
         }
     }
 
+    /**
+     * Clamps the given value to be strictly between the min and max values.
+     */
+    private int clamp(int value) {
+        if (value < min.getValue()) return min.getValue();
+        if (value > max.getValue()) return max.getValue();
+        return value;
+    }
+
     @Override
-    public void setOnScrolled(ScrolledHandler<Double> listener) {
+    public void setOnScrolled(ScrolledHandler<Integer> listener) {
         this.listener = listener;
     }
 
     //<editor-fold defaultstate="collapsed" desc="getter/setter">
 
     @Override
-    public Double getMin() {
+    public Integer getMin() {
         return min.getValue();
     }
 
     @Override
-    public void setMin(Double min) {
+    public void setMin(Integer min) {
         this.min.setValue(min);
     }
 
     @Override
-    public Double getMax() {
+    public Integer getMax() {
         return max.getValue();
     }
 
     @Override
-    public void setMax(Double max) {
+    public void setMax(Integer max) {
         this.max.setValue(max);
     }
 
     @Override
-    public Double getVisibleAmount() {
+    public Integer getVisibleAmount() {
         return visibleAmount.getValue();
     }
 
     @Override
-    public void setVisibleAmount(Double amount) {
+    public void setVisibleAmount(Integer amount) {
         this.visibleAmount.setValue(amount);
     }
 
     @Override
-    public Double getValue() {
+    public Integer getValue() {
         return value.getValue();
     }
 
     @Override
-    public void setValue(Double value) {
+    public void setValue(Integer value) {
         this.value.setValue(value);
     }
 
     @Override
     public double getTrackLength() {
-        return getWidth();
+        return getHeight();
     }
 
     //</editor-fold>

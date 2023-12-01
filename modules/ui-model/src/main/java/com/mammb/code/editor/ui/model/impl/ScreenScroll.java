@@ -17,8 +17,8 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextLine;
-import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.model.Rect;
+import com.mammb.code.editor.ui.model.ScrollBar;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.text.Font;
 

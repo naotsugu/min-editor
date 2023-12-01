@@ -15,9 +15,6 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.ui.control.BackgroundRun;
-import com.mammb.code.editor.ui.control.BlockUi;
-import com.mammb.code.editor.ui.control.OverlayDialog;
 import com.mammb.code.editor.ui.model.EditorModel;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;

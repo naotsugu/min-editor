@@ -1,4 +1,4 @@
-package com.mammb.code.editor.ui.control.address;
+package com.mammb.code.editor.ui.app;
 
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;

@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.ui.control.HScrollBar;
-import com.mammb.code.editor.ui.control.VScrollBar;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;

@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.ui.model;
 
 /**
- * The ui control model module.
+ * ScrolledHandler.
+ * @param <T>
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui.control {
-    requires code.editor.javafx;
-    requires javafx.controls;
-    exports com.mammb.code.editor.ui.control;
-    exports com.mammb.code.editor.ui.control.address;
+public interface ScrolledHandler<T extends Number> {
+
+    /**
+     * Handle scrolled.
+     * @param oldValue the old value
+     * @param newValue the new value
+     */
+    void handle(T oldValue, T newValue);
+
 }

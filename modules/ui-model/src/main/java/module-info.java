@@ -27,10 +27,7 @@ module code.editor.ui.model {
     requires code.editor.model.layout;
     requires code.editor.model.edit;
     requires code.editor.model.find;
-
     requires code.editor.syntax;
-
-    requires code.editor.ui.control;
     requires code.editor.ui.prefs;
 
     exports com.mammb.code.editor.ui.model;

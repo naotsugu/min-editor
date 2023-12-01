@@ -15,11 +15,9 @@
  */
 package com.mammb.code.editor.ui.model;
 
-import com.mammb.code.editor.ui.control.ScrollBar;
 import com.mammb.code.editor.ui.model.impl.EditorModelImpl;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.GraphicsContext;
-
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Predicate;
