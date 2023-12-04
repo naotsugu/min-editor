@@ -23,6 +23,8 @@ import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Application.
@@ -31,6 +33,8 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     private static final KeyCombination SC_N = new KeyCharacterCombination("n", KeyCombination.SHORTCUT_DOWN);
+
+    private List<Session> sessions = new ArrayList<>();
 
     @Override
     public void start(Stage stage) {
@@ -44,7 +48,7 @@ public class App extends Application {
         var editorPane = new EditorPane(context);
         var borderPane = new BorderPane();
         var scene = new Scene(borderPane);
-        //borderPane.setTop(new AddressBar());
+        borderPane.setTop(new ToolBar());
         borderPane.setCenter(editorPane);
         borderPane.setFocusTraversable(false);
 
