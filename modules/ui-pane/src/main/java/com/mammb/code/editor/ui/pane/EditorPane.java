@@ -21,12 +21,12 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.AccessibleRole;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.InputMethodEvent;
@@ -44,7 +44,6 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-
 import java.nio.file.Path;
 
 /**
@@ -114,7 +113,7 @@ public class EditorPane extends StackPane {
         statusBar.bind(model.stateChange());
         getChildren().addAll(statusBar, vScrollBar, hScrollBar);
 
-        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), e -> model.tick(gc)));
+        timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), this::handleTick));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
@@ -298,6 +297,15 @@ public class EditorPane extends StackPane {
 
 
     /**
+     * Tick handler.
+     * @param e the action event
+     */
+    private void handleTick(ActionEvent e) {
+        model.tick(gc);
+    }
+
+
+    /**
      * Called when the value of the layout changes.
      * @param observable the ObservableValue which value changed
      * @param oldValue the old value
@@ -403,24 +411,6 @@ public class EditorPane extends StackPane {
 
     private void debug() {
         model.findHandle().findAll("public", false);
-    }
-
-
-    private void newPane() {
-        Stage newStage = new Stage();
-        Bounds bounds = localToScreen(getBoundsInLocal());
-        newStage.setX(bounds.getMinX() + 15);
-        newStage.setY(bounds.getMinY() + 15);
-        new EditorPane(context).showOn(newStage);
-    }
-
-
-    public void showOn(Stage stage) {
-        Scene scene = new Scene(this, getWidth(), getHeight());
-        stage.setScene(scene);
-        stage.setTitle("min-editor");
-        stage.setOnCloseRequest(this::handleCloseRequest);
-        stage.show();
     }
 
 
