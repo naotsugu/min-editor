@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.pane.EditorPane;
+import com.mammb.code.editor.ui.prefs.ColorScheme;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -48,7 +49,14 @@ public class App extends Application {
         var editorPane = new EditorPane(context);
         var borderPane = new BorderPane();
         var scene = new Scene(borderPane);
-        borderPane.setTop(new ToolBar());
+
+        var colorScheme = ColorScheme.DARK;
+        var themeColor = switch (colorScheme) {
+            case DARK  -> ThemeColor.darkDefault();
+            case LIGHT -> ThemeColor.lightDefault();
+        };
+
+        borderPane.setTop(new ToolBar(themeColor));
         borderPane.setCenter(editorPane);
         borderPane.setFocusTraversable(false);
 

@@ -4,9 +4,12 @@ import javafx.scene.layout.StackPane;
 
 public class ToolBar extends StackPane {
 
-    private AddressBar addressBar = new AddressBar();
+    private final ThemeColor themeColor;
+    private AddressBar addressBar;
 
-    public ToolBar() {
+    public ToolBar(ThemeColor themeColor) {
+        this.themeColor = themeColor;
+        addressBar = new AddressBar(themeColor);
         getChildren().add(addressBar);
     }
 
