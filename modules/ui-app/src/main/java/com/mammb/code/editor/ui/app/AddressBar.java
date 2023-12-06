@@ -1,5 +1,6 @@
 package com.mammb.code.editor.ui.app;
 
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -28,6 +29,10 @@ public class AddressBar extends StackPane {
         getChildren().add(hBox);
         HBox.setHgrow(addressText, Priority.ALWAYS);
         setBackground(themeColor.backgroundFill());
+    }
+
+    StringProperty addressTextProperty() {
+        return addressText.textProperty();
     }
 
 }

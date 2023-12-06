@@ -55,8 +55,9 @@ public class App extends Application {
             case DARK  -> ThemeColor.darkDefault();
             case LIGHT -> ThemeColor.lightDefault();
         };
+        var addressBar = new AddressBar(themeColor);
 
-        borderPane.setTop(new ToolBar(themeColor));
+        borderPane.setTop(addressBar);
         borderPane.setCenter(editorPane);
         borderPane.setFocusTraversable(false);
 
@@ -75,6 +76,7 @@ public class App extends Application {
                 newStage.requestFocus();
             }
         });
+
         return stage;
     }
 
