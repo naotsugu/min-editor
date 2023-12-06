@@ -22,6 +22,7 @@ import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.Selection;
 
 import java.nio.charset.Charset;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -34,10 +35,11 @@ public class StateChangeImpl implements StateChange {
     private OffsetPoint prevCaretPoint;
     private Range prevSelectionRange;
 
-    private Consumer<LineEndingSymbol> lineEndingHandler;
-    private Consumer<Charset> charsetHandler;
-    private Consumer<CaretPoint> caretPointHandler;
-    private Consumer<Range> selectionHandler;
+    private Consumer<ContentState> contentStateHandler = e -> {};
+    private Consumer<LineEndingSymbol> lineEndingHandler = e -> {};
+    private Consumer<Charset> charsetHandler = e -> {};
+    private Consumer<CaretPoint> caretPointHandler = e -> {};
+    private Consumer<Range> selectionHandler = e -> {};
 
     @Override
     public void push(Metrics metrics, Caret caret, Selection selection) {
@@ -47,24 +49,30 @@ public class StateChangeImpl implements StateChange {
     }
 
     @Override
+    public void addContentStateChanged(Consumer<ContentState> handler) {
+        this.contentStateHandler = (handler != null) ? handler : e -> {};
+    }
+
+    @Override
     public void addLineEndingChanged(Consumer<LineEndingSymbol> handler) {
-        this.lineEndingHandler = handler;
+        this.lineEndingHandler = (handler != null) ? handler : e -> {};
     }
 
     @Override
     public void addCharsetChanged(Consumer<Charset> handler) {
-        this.charsetHandler = handler;
+        this.charsetHandler = (handler != null) ? handler : e -> {};
     }
 
     @Override
     public void addCaretPointChanged(Consumer<CaretPoint> handler) {
-        this.caretPointHandler = handler;
+        this.caretPointHandler = (handler != null) ? handler : e -> {};
     }
 
     @Override
     public void addSelectionChanged(Consumer<Range> handler) {
-        this.selectionHandler = handler;
+        this.selectionHandler = (handler != null) ? handler : e -> {};
     }
+
 
     private void push(Metrics metrics) {
         if (prevMetrics == null || prevMetrics.lineEnding() != metrics.lineEnding()) {
@@ -72,6 +80,12 @@ public class StateChangeImpl implements StateChange {
         }
         if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
             charsetHandler.accept(metrics.charset());
+        }
+        if (prevMetrics == null || !Objects.equals(prevMetrics.path(), metrics.path())) {
+            contentStateHandler.accept(new ContentState(ContentState.ContentStateType.LOAD, metrics.path()));
+        }
+        if (prevMetrics == null && metrics.modified() || prevMetrics != null && !prevMetrics.modified() && metrics.modified()) {
+            contentStateHandler.accept(new ContentState(ContentState.ContentStateType.MODIFIED, metrics.path()));
         }
         prevMetrics = new MetricsRecord(metrics);
     }

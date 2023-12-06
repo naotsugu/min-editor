@@ -56,22 +56,21 @@ public class EditorPane extends StackPane {
     private final Timeline timeline = new Timeline();
     /** The Context. */
     private final Context context;
-
     /** The canvas. */
     private final Canvas canvas;
     /** The graphics context. */
     private GraphicsContext gc;
-    /** The editor model. */
-    private EditorModel model;
     /** The vertical scroll bar for line scroll. */
     private final VScrollBar vScrollBar;
     /** The horizontal scroll bar for line scroll. */
     private final HScrollBar hScrollBar;
     /** The status bar. */
     private final StatusBar statusBar;
-
     /** The margin. */
     private final double margin = 5.5;
+
+    /** The editor model. */
+    private EditorModel model;
 
 
     /**
