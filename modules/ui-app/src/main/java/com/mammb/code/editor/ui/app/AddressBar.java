@@ -19,8 +19,8 @@ public class AddressBar extends StackPane {
     public AddressBar(ThemeColor themeColor) {
         this.themeColor = themeColor;
         this.addressText = new ThemeTextField(themeColor);
-        this.forward = new ThemeButton("→", themeColor);
-        this.back = new ThemeButton("←", themeColor);
+        this.forward = new ThemeButton(ThemeIcon.arrowRightShort(themeColor), themeColor);
+        this.back = new ThemeButton(ThemeIcon.arrowLeftShort(themeColor), themeColor);
 
         forward.setFocusTraversable(false);
         back.setFocusTraversable(false);

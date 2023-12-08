@@ -65,6 +65,10 @@ public record ThemeColor(
         }
     }
 
+    public void apply(ThemeIcon icon) {
+        icon.setFill(foreground);
+    }
+
     public void applyHover(Region region) {
         region.setOnMouseEntered(e -> region.setBackground(backgroundActiveFill()));
         region.setOnMouseExited(e -> region.setBackground(backgroundFill()));
@@ -72,8 +76,8 @@ public record ThemeColor(
 
     public static ThemeColor darkDefault() {
         return new ThemeColor(
-            Color.web("#26252D"), Color.web("#FAFAFE"),
-            Color.web("#42424A"), Color.web("#FAFAFE"));
+            Color.web("#26252D"), Color.web("#CACACE"),
+            Color.web("#42424A"), Color.web("#CACACE"));
     }
 
     public static ThemeColor lightDefault() {

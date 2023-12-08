@@ -24,8 +24,6 @@ import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The Application.
@@ -35,11 +33,9 @@ public class App extends Application {
 
     private static final KeyCombination SC_N = new KeyCharacterCombination("n", KeyCombination.SHORTCUT_DOWN);
 
-    private List<Session> sessions = new ArrayList<>();
-
     @Override
     public void start(Stage stage) {
-        buildScene(stage, Context.of()).show();
+        buildScene(stage, AppContext.of(getParameters())).show();
         stage.requestFocus();
     }
 

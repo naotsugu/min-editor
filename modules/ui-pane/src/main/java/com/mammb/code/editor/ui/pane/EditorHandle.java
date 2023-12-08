@@ -13,22 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.prefs;
-
-import com.mammb.code.editor.ui.prefs.impl.PreferenceImpl;
+package com.mammb.code.editor.ui.pane;
 
 /**
- * Preference.
+ * The EditorHandle.
  * @author Naotsugu Kobayashi
  */
-public interface Preference {
-    ColorScheme colorScheme();
-    double fontSize();
-    String fontName();
-    String bgColor();
-    String fgColor();
+public interface EditorHandle {
 
-    static Preference of() {
-        return PreferenceImpl.of();
-    }
 }
