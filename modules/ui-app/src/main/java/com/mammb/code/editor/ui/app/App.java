@@ -41,8 +41,8 @@ public class App extends Application {
 
 
     private Stage buildScene(Stage stage, Context context) {
-
-        var editorPane = new EditorPane(context);
+        var handle = new AppEditorHandle();
+        var editorPane = new EditorPane(context, handle);
         var borderPane = new BorderPane();
         var scene = new Scene(borderPane);
 
@@ -72,6 +72,8 @@ public class App extends Application {
                 newStage.requestFocus();
             }
         });
+
+        handle.setAddressPathProperty(addressBar.addressTextProperty());
 
         return stage;
     }

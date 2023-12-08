@@ -16,6 +16,8 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.pane.EditorHandle;
+import javafx.beans.property.StringProperty;
+import java.nio.file.Path;
 
 /**
  * The AppEditorHandle.
@@ -23,4 +25,25 @@ import com.mammb.code.editor.ui.pane.EditorHandle;
  */
 public class AppEditorHandle implements EditorHandle {
 
+    private StringProperty addressPathProperty;
+
+    @Override
+    public void pathChangedUpCall(Path path) {
+        if (addressPathProperty == null) return;
+        addressPathProperty.set((path == null) ? "" : path.toString());
+    }
+
+    @Override
+    public void contentModifiedUpCall(Path path) {
+
+    }
+
+    @Override
+    public void pathChangedDownCall(Path path) {
+
+    }
+
+    public void setAddressPathProperty(StringProperty addressPathProperty) {
+        this.addressPathProperty = addressPathProperty;
+    }
 }

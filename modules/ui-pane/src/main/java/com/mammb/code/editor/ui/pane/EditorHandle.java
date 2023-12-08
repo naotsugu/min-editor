@@ -15,10 +15,18 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import java.nio.file.Path;
+
 /**
  * The EditorHandle.
  * @author Naotsugu Kobayashi
  */
 public interface EditorHandle {
+
+    void pathChangedUpCall(Path path);
+
+    void contentModifiedUpCall(Path path);
+
+    void pathChangedDownCall(Path path);
 
 }

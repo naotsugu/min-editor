@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -56,6 +57,8 @@ public class EditorPane extends StackPane {
     private final Timeline timeline = new Timeline();
     /** The Context. */
     private final Context context;
+    /** The editor handle. */
+    private final EditorHandle editorHandle;
     /** The canvas. */
     private final Canvas canvas;
     /** The graphics context. */
@@ -73,13 +76,17 @@ public class EditorPane extends StackPane {
     private EditorModel model;
 
 
+
     /**
      * Constructor.
      * @param context the context
+     * @param editorHandle the editor handle
      */
-    public EditorPane(Context context) {
+    public EditorPane(Context context, EditorHandle editorHandle) {
 
         this.context = context;
+        this.editorHandle = editorHandle;
+
         setCursor(Cursor.TEXT);
         setWidth(context.regionWidth());
         setHeight(context.regionHeight());
@@ -117,7 +124,17 @@ public class EditorPane extends StackPane {
         timeline.play();
 
         initHandler();
+        bindEditorHandleUpCall(model.stateChange(), editorHandle);
 
+    }
+
+    private void bindEditorHandleUpCall(StateHandler stateHandler, EditorHandle editorHandle) {
+        stateHandler.addContentStateChanged(c -> {
+            switch (c.type()) {
+                case LOAD     -> editorHandle.pathChangedUpCall(c.path());
+                case MODIFIED -> editorHandle.contentModifiedUpCall(c.path());
+            }
+        });
     }
 
 
@@ -389,6 +406,7 @@ public class EditorPane extends StackPane {
     private void handleModelCreated(WorkerStateEvent e) {
         model = (EditorModel) e.getSource().getValue();
         statusBar.bind(model.stateChange());
+        bindEditorHandleUpCall(model.stateChange(), editorHandle);
         canvas.setInputMethodRequests(inputMethodRequests());
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         model.draw(gc);
