@@ -16,12 +16,9 @@
 package com.mammb.code.editor.ui.app;
 
 import javafx.geometry.Insets;
-import javafx.scene.control.Labeled;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
 /**
@@ -30,13 +27,17 @@ import javafx.scene.paint.Color;
  * @param foreground the foreground color
  * @param backgroundActive the background color of active state
  * @param foregroundActive the foreground color of active state
+ * @param backgroundDisable the background color of disable state
+ * @param foregroundDisable the foreground color of disable state
  * @author Naotsugu Kobayashi
  */
 public record ThemeColor(
     Color background,
     Color foreground,
     Color backgroundActive,
-    Color foregroundActive) {
+    Color foregroundActive,
+    Color backgroundDisable,
+    Color foregroundDisable) {
 
     public Background backgroundFill() {
         return new Background(new BackgroundFill(background, CornerRadii.EMPTY, Insets.EMPTY));
@@ -57,30 +58,18 @@ public record ThemeColor(
             (int)(color.getBlue() * 255));
     }
 
-    public void apply(Region region) {
-        region.setBackground(backgroundFill());
-        region.setBorder(Border.EMPTY);
-        if (region instanceof Labeled labeled) {
-            labeled.setTextFill(foreground);
-        }
-    }
-
-
-    public void applyHover(Region region) {
-        region.setOnMouseEntered(e -> region.setBackground(backgroundActiveFill()));
-        region.setOnMouseExited(e -> region.setBackground(backgroundFill()));
-    }
-
     public static ThemeColor darkDefault() {
         return new ThemeColor(
             Color.web("#26252D"), Color.web("#CACACE"),
-            Color.web("#42424A"), Color.web("#CACACE"));
+            Color.web("#42424A"), Color.web("#CACACE"),
+            Color.web("#42424A"), Color.web("#8A8A8E"));
     }
 
     public static ThemeColor lightDefault() {
         return new ThemeColor(
             Color.web("#FFFFFF"), Color.web("#616A71"),
-            Color.web("#F7F8F9"), Color.web("#616A71"));
+            Color.web("#F7F8F9"), Color.web("#616A71"),
+            Color.web("#F7F8F9"), Color.web("#C1CAD1"));
     }
 
 }

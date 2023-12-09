@@ -26,6 +26,11 @@ public class ThemeIcon extends SVGPath {
     /** The theme color. */
     private final ThemeColor themeColor;
 
+    /**
+     * Constructor.
+     * @param tc the theme color
+     * @param d the svg draw
+     */
     private ThemeIcon(ThemeColor tc, String d) {
         this.themeColor = tc;
         setContent(d);
@@ -33,6 +38,7 @@ public class ThemeIcon extends SVGPath {
         setScaleX(1.5);
         setScaleY(1.5);
         setFill(themeColor.foreground());
+        initHandler();
     }
 
     public static ThemeIcon arrowLeft(ThemeColor tc) {
@@ -58,4 +64,12 @@ public class ThemeIcon extends SVGPath {
             default -> new ThemeIcon(tc, "M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z");
         };
     }
+
+    /**
+     * Initialize handler.
+     */
+    private void initHandler() {
+
+    }
+
 }

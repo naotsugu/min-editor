@@ -41,10 +41,10 @@ public class ThemeButton extends Button {
         setGraphic(icon);
         setFocusTraversable(false);
 
+        icon.disableProperty().bind(disableProperty());
         setBackground(themeColor.backgroundFill());
         setBorder(Border.EMPTY);
         setTextFill(themeColor.foreground());
-
         initHandler();
     }
 
