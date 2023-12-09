@@ -65,9 +65,6 @@ public record ThemeColor(
         }
     }
 
-    public void apply(ThemeIcon icon) {
-        icon.setFill(foreground);
-    }
 
     public void applyHover(Region region) {
         region.setOnMouseEntered(e -> region.setBackground(backgroundActiveFill()));

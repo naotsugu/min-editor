@@ -23,15 +23,16 @@ import javafx.scene.shape.SVGPath;
  */
 public class ThemeIcon extends SVGPath {
 
+    /** The theme color. */
     private final ThemeColor themeColor;
 
-    private ThemeIcon(ThemeColor themeColor, String d) {
-        this.themeColor = themeColor;
+    private ThemeIcon(ThemeColor tc, String d) {
+        this.themeColor = tc;
         setContent(d);
         getStyleClass().add("svg");
         setScaleX(1.5);
         setScaleY(1.5);
-        themeColor.apply(this);
+        setFill(themeColor.foreground());
     }
 
     public static ThemeIcon arrowLeft(ThemeColor tc) {

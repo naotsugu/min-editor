@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app;
 
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Border;
 
 /**
  * The ThemeTextField.
@@ -23,11 +24,14 @@ import javafx.scene.control.TextField;
  */
 public class ThemeTextField extends TextField {
 
+    /** The theme color. */
     private final ThemeColor themeColor;
 
-    public ThemeTextField(ThemeColor themeColor) {
-        this.themeColor = themeColor;
-        themeColor.apply(this);
+    public ThemeTextField(ThemeColor tc) {
+        themeColor = tc;
+        setFocusTraversable(false);
+        setBackground(themeColor.backgroundFill());
+        setBorder(Border.EMPTY);
         setStyle("-fx-text-fill: %1$s; -fx-font: 14px \"Consolas\";"
             .formatted(themeColor.foregroundColorString()));
     }
