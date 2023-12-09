@@ -17,48 +17,51 @@ package com.mammb.code.editor.ui.app;
 
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
 /**
- * The AddressBar.
+ * The ThemeBar.
  * @author Naotsugu Kobayashi
  */
-public class AddressBar extends StackPane {
+public class ThemeBar extends StackPane {
 
     /** The theme color. */
     private final ThemeColor themeColor;
 
-    private final TextField addressText;
+    private final ThemePromptField field;
     private final Button forward;
     private final Button back;
+    private final Button menu;
 
     /**
      * Constructor.
-     * @param themeColor the theme color
+     * @param tc the theme color
      */
-    public AddressBar(ThemeColor themeColor) {
+    public ThemeBar(ThemeColor tc) {
 
-        this.themeColor = themeColor;
-        this.addressText = new ThemeTextField(themeColor);
-        this.forward = new ThemeButton(ThemeIcon.arrowRightShort(themeColor), themeColor);
-        this.back = new ThemeButton(ThemeIcon.arrowLeftShort(themeColor), themeColor);
-
+        themeColor = tc;
+        field = new ThemePromptField(themeColor);
+        forward = new ThemeButton(ThemeIcon.arrowRightShort(themeColor).larger(), themeColor);
+        back = new ThemeButton(ThemeIcon.arrowLeftShort(themeColor).larger(), themeColor);
+        menu = new ThemeButton(ThemeIcon.list(themeColor).larger(), themeColor);
         setBackground(themeColor.backgroundFill());
 
-        var hBox = new HBox(4);
-        hBox.getChildren().addAll(back, forward, addressText);
-        HBox.setHgrow(addressText, Priority.ALWAYS);
-        getChildren().add(hBox);
+        var hbox = new HBox(4);
+        hbox.getChildren().addAll(back, forward, field, menu);
+        hbox.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(field, Priority.ALWAYS);
+        HBox.setMargin(field, new Insets(0, 0, 0, 8));
+        getChildren().add(hbox);
 
-        StackPane.setMargin(hBox, new Insets(4));
+        StackPane.setMargin(hbox, new Insets(4));
     }
 
     StringProperty addressTextProperty() {
-        return addressText.textProperty();
+        return field.textProperty();
     }
 
 }

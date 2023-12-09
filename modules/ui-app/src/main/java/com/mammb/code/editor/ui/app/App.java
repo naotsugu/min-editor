@@ -51,9 +51,9 @@ public class App extends Application {
             case DARK  -> ThemeColor.darkDefault();
             case LIGHT -> ThemeColor.lightDefault();
         };
-        var addressBar = new AddressBar(themeColor);
+        var bar = new ThemeBar(themeColor);
 
-        borderPane.setTop(addressBar);
+        borderPane.setTop(bar);
         borderPane.setCenter(editorPane);
         borderPane.setFocusTraversable(false);
 
@@ -73,7 +73,7 @@ public class App extends Application {
             }
         });
 
-        handle.setAddressPathProperty(addressBar.addressTextProperty());
+        handle.setAddressPathProperty(bar.addressTextProperty());
 
         return stage;
     }
