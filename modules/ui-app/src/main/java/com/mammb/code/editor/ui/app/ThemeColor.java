@@ -37,7 +37,8 @@ public record ThemeColor(
     Color backgroundActive,
     Color foregroundActive,
     Color backgroundDisable,
-    Color foregroundDisable) {
+    Color foregroundDisable,
+    Color accent) {
 
     public Background backgroundFill() {
         return new Background(new BackgroundFill(background, CornerRadii.EMPTY, Insets.EMPTY));
@@ -62,14 +63,16 @@ public record ThemeColor(
         return new ThemeColor(
             Color.web("#26252D"), Color.web("#CACACE"),
             Color.web("#42424A"), Color.web("#CACACE"),
-            Color.web("#42424A"), Color.web("#8A8A8E"));
+            Color.web("#42424A"), Color.web("#8A8A8E"),
+            Color.web("#589DF6"));
     }
 
     public static ThemeColor lightDefault() {
         return new ThemeColor(
             Color.web("#FFFFFF"), Color.web("#616A71"),
             Color.web("#F7F8F9"), Color.web("#616A71"),
-            Color.web("#F7F8F9"), Color.web("#C1CAD1"));
+            Color.web("#F7F8F9"), Color.web("#C1CAD1"),
+            Color.web("#589DF6"));
     }
 
 }

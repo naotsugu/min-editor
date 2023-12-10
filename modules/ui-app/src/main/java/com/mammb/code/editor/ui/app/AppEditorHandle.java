@@ -16,6 +16,8 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.pane.EditorHandle;
+import com.mammb.code.editor.ui.pane.EditorHandListener;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import java.nio.file.Path;
 
@@ -26,6 +28,9 @@ import java.nio.file.Path;
 public class AppEditorHandle implements EditorHandle {
 
     private StringProperty addressPathProperty;
+    private BooleanProperty modifiedProperty;
+
+    private EditorHandListener downCallListener;
 
     @Override
     public void pathChangedUpCall(Path path) {
@@ -34,16 +39,32 @@ public class AppEditorHandle implements EditorHandle {
     }
 
     @Override
-    public void contentModifiedUpCall(Path path) {
-
+    public void contentModifiedUpCall(boolean modified, Path path) {
+        if (modifiedProperty == null) return;
+        modifiedProperty.set(modified);
     }
 
     @Override
-    public void pathChangedDownCall(Path path) {
+    public void pathChanged(Path path) {
+        if (downCallListener == null) return;
+        downCallListener.pathChanged(path);
+    }
 
+    @Override
+    public void setEditorHandListener(EditorHandListener listener) {
+        this.downCallListener = listener;
     }
 
     public void setAddressPathProperty(StringProperty addressPathProperty) {
         this.addressPathProperty = addressPathProperty;
     }
+
+    public void setModifiedProperty(BooleanProperty modifiedProperty) {
+        this.modifiedProperty = modifiedProperty;
+    }
+
+    public void setDownCallListener(EditorHandListener downCallListener) {
+        this.downCallListener = downCallListener;
+    }
+
 }

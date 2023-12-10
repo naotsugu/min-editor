@@ -16,12 +16,12 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.pane.EditorPane;
-import com.mammb.code.editor.ui.prefs.ColorScheme;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import java.nio.file.Path;
 
 /**
  * The Application.
@@ -37,13 +37,13 @@ public class App extends Application {
 
 
     private Stage buildScene(Stage stage, Context context) {
+
         var handle = new AppEditorHandle();
         var editorPane = new EditorPane(context, handle);
         var borderPane = new BorderPane();
         var scene = new Scene(borderPane);
 
-        var colorScheme = ColorScheme.DARK;
-        var themeColor = switch (colorScheme) {
+        var themeColor = switch (context.preference().colorScheme()) {
             case DARK  -> ThemeColor.darkDefault();
             case LIGHT -> ThemeColor.lightDefault();
         };
@@ -69,7 +69,9 @@ public class App extends Application {
             }
         });
 
+        // initEditorHandle
         handle.setAddressPathProperty(bar.addressTextProperty());
+        bar.textCommitted(s -> handle.pathChanged(Path.of(s)));
 
         return stage;
     }

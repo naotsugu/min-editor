@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import java.util.function.Consumer;
 
 /**
  * The ThemeBar.
@@ -69,4 +70,7 @@ public class ThemeBar extends StackPane {
         return field.textProperty();
     }
 
+    void textCommitted(Consumer<String> consumer) {
+        field.textCommitted(consumer);
+    }
 }

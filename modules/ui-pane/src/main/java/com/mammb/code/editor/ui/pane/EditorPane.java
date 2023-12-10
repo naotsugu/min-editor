@@ -16,7 +16,6 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -45,13 +44,14 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
  * EditorPane.
  * @author Naotsugu Kobayashi
  */
-public class EditorPane extends StackPane {
+public class EditorPane extends StackPane implements EditorHandListener {
 
     /** The timeline for caret blink. */
     private final Timeline timeline = new Timeline();
@@ -86,6 +86,7 @@ public class EditorPane extends StackPane {
 
         this.context = context;
         this.editorHandle = editorHandle;
+        this.editorHandle.setEditorHandListener(this);
 
         setCursor(Cursor.TEXT);
         setWidth(context.regionWidth());
@@ -124,17 +125,8 @@ public class EditorPane extends StackPane {
         timeline.play();
 
         initHandler();
-        bindEditorHandleUpCall(model.stateChange(), editorHandle);
+        initEditorHandle();
 
-    }
-
-    private void bindEditorHandleUpCall(StateHandler stateHandler, EditorHandle editorHandle) {
-        stateHandler.addContentStateChanged(c -> {
-            switch (c.type()) {
-                case LOAD     -> editorHandle.pathChangedUpCall(c.path());
-                case MODIFIED -> editorHandle.contentModifiedUpCall(c.path());
-            }
-        });
     }
 
 
@@ -163,6 +155,19 @@ public class EditorPane extends StackPane {
 
 
     /**
+     * Initialize editor handle.
+     */
+    private void initEditorHandle() {
+        model.stateChange().addContentStateChanged(c -> {
+            switch (c.type()) {
+                case LOAD     -> editorHandle.pathChangedUpCall(c.path());
+                case MODIFIED -> editorHandle.contentModifiedUpCall(true, c.path());
+            }
+        });
+    }
+
+
+    /**
      * Open the file content path.
      * @param path the content file path
      */
@@ -170,6 +175,12 @@ public class EditorPane extends StackPane {
         FileAction.of(this, model).open(path, this::handleModelCreated);
     }
 
+    @Override
+    public void pathChanged(Path path) {
+        if (Files.isRegularFile(path)) {
+            open(path);
+        }
+    }
 
     /**
      * Scroll event handler.
@@ -406,7 +417,7 @@ public class EditorPane extends StackPane {
     private void handleModelCreated(WorkerStateEvent e) {
         model = (EditorModel) e.getSource().getValue();
         statusBar.bind(model.stateChange());
-        bindEditorHandleUpCall(model.stateChange(), editorHandle);
+        initEditorHandle();
         canvas.setInputMethodRequests(inputMethodRequests());
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         model.draw(gc);
