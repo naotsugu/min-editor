@@ -32,9 +32,13 @@ public class ThemeBar extends StackPane {
     /** The theme color. */
     private final ThemeColor themeColor;
 
+    /** The prompt field. */
     private final ThemePromptField field;
+    /** The forward button. */
     private final Button forward;
+    /** The back button. */
     private final Button back;
+    /** The menu button. */
     private final Button menu;
 
     /**
@@ -48,6 +52,7 @@ public class ThemeBar extends StackPane {
         forward = new ThemeButton(ThemeIcon.arrowRightShort(themeColor).larger(), themeColor);
         back = new ThemeButton(ThemeIcon.arrowLeftShort(themeColor).larger(), themeColor);
         menu = new ThemeButton(ThemeIcon.list(themeColor).larger(), themeColor);
+
         setBackground(themeColor.backgroundFill());
 
         var hbox = new HBox(4);

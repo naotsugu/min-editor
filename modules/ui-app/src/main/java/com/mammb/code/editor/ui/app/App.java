@@ -20,8 +20,6 @@ import com.mammb.code.editor.ui.prefs.ColorScheme;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCharacterCombination;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -30,8 +28,6 @@ import javafx.stage.Stage;
  * @author Naotsugu Kobayashi
  */
 public class App extends Application {
-
-    private static final KeyCombination SC_N = new KeyCharacterCombination("n", KeyCombination.SHORTCUT_DOWN);
 
     @Override
     public void start(Stage stage) {
@@ -62,7 +58,7 @@ public class App extends Application {
         stage.setOnCloseRequest(editorPane::handleCloseRequest);
 
         borderPane.setOnKeyPressed(e -> {
-            if (SC_N.match(e)) {
+            if (AppKeys.SC_N.match(e)) {
                 e.consume();
                 Stage newStage = new Stage();
                 newStage.setX(stage.getX() + 15);

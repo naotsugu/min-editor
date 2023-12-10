@@ -28,6 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import java.util.function.Consumer;
 
 /**
  * The ThemeCommandField.
@@ -55,7 +56,7 @@ public class ThemePromptField extends StackPane {
         text = new ThemeTextField(tc);
         prompt = new Group();
 
-        setPrompt(ThemeIcon.alt(themeColor));
+        setPrompt(ThemeIcon.contentOf(themeColor, ""));
         setFocusTraversable(false);
         setBackground(themeColor.backgroundFill());
         setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT)));
@@ -86,12 +87,21 @@ public class ThemePromptField extends StackPane {
      */
     public void setPrompt(ThemeIcon icon) {
         if (prompt.getChildren().isEmpty()) {
-            prompt.getChildren().add(icon.smaller());
+            prompt.getChildren().add(icon);
         } else {
-            prompt.getChildren().set(0, icon.smaller());
+            prompt.getChildren().set(0, icon);
         }
     }
 
+    public void textCommitted(Consumer<String> consumer) {
+        text.setOnKeyTyped(e -> {
+            var bytes = e.getCharacter().getBytes();
+            if (bytes.length > 0 && bytes[0] == 13) { // enter
+                consumer.accept(text.getText());
+                e.consume();
+            }
+        });
+    }
 
     /**
      * Initialize handler.
@@ -101,6 +111,12 @@ public class ThemePromptField extends StackPane {
             setBorder(new Border(new BorderStroke(
                 n ? themeColor.foreground() : Color.TRANSPARENT,
                 BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT)));
+        });
+        text.textProperty().addListener((ob, o, n) -> {
+            int index = n.lastIndexOf(".") + 1;
+            if (index > 0 && index < n.length()) {
+                setPrompt(ThemeIcon.contentOf(themeColor, n.substring(index)));
+            }
         });
     }
 
