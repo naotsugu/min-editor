@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.pane.EditorPane;
+import com.mammb.code.editor.ui.pane.Session;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -72,7 +73,7 @@ public class App extends Application {
         // initEditorHandle
         upCall.setAddressPathProperty(bar.addressTextProperty());
         var downCall = editorPane.downCall();
-        bar.textCommitted(s -> downCall.pathChangeRequest(Path.of(s)));
+        bar.textCommitted(s -> downCall.pathChangeRequest(Session.of(Path.of(s))));
 
         return stage;
     }

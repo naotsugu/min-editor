@@ -178,8 +178,8 @@ public interface EditorModel extends EditorDraw {
     FindHandle findHandle();
     Rect textAreaRect();
     StateHandler stateChange();
-    Session session();
-    void restore(Session session);
+    ScreenPoint screenPoint();
+    void apply(ScreenPoint screenPoint);
     boolean peekSelection(Predicate<String> predicate);
 
     /**

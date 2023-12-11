@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.ScreenPoint;
 import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
@@ -168,7 +169,13 @@ public class EditorPane extends StackPane {
 
 
     public EditorDownCall downCall() {
-        return this::open;
+        return s -> {
+            var point = model.screenPoint();
+            var prev = Session.of(model.path(), point.row(), point.caretIndex());
+            open(s.path());
+            model.apply(new ScreenPoint(s.row(), s.caretIndex()));
+            return prev;
+        };
     }
 
 

@@ -15,11 +15,9 @@
  */
 package com.mammb.code.editor.ui.model;
 
-import java.nio.file.Path;
-
 /**
- * The Session.
+ * The ScreenPoint.
  * @author Naotsugu Kobayashi
  */
-public record Session(Path path, int row, long caretIndex) {
+public record ScreenPoint(int row, long caretIndex) {
 }

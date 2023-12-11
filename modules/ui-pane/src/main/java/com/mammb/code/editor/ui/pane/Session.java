@@ -15,16 +15,32 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import java.nio.file.Path;
+
 /**
- * The EditorDownCall.
+ * Session.
  * @author Naotsugu Kobayashi
  */
-public interface EditorDownCall {
+public interface Session {
 
-    /**
-     *
-     * @param session the new session
-     * @return the previous session
-     */
-    Session pathChangeRequest(Session session);
+    Path path();
+
+    int row();
+
+    long caretIndex();
+
+    default boolean isEmptyPath() {
+        return path() == null;
+    }
+
+    record SessionRecord(Path path, int row, long caretIndex) implements Session {}
+
+    static Session of(Path path) {
+        return of(path, 0, 0);
+    }
+
+    static Session of(Path path, int row, long caretIndex) {
+        return new SessionRecord(path, row, caretIndex);
+    }
+
 }
