@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.pane.EditorUpCall;
+import com.mammb.code.editor.ui.pane.Session;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import java.nio.file.Path;
@@ -31,7 +32,7 @@ public class AppEditorUpCall implements EditorUpCall {
     private BooleanProperty modifiedProperty;
 
     @Override
-    public void pathChanged(Path path) {
+    public void pathChanged(Path path, Session prev) {
         if (addressPathProperty == null) return;
         addressPathProperty.set((path == null) ? "" : path.toString());
     }

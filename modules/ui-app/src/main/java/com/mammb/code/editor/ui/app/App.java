@@ -41,23 +41,11 @@ public class App extends Application {
 
         var upCall = new AppEditorUpCall();
         var editorPane = new EditorPane(context, upCall);
-        var borderPane = new BorderPane();
-        var scene = new Scene(borderPane);
+        var bar = new ThemeBar(themeColor(context));
+        var session = new EditorSession();
 
-        var themeColor = switch (context.preference().colorScheme()) {
-            case DARK  -> ThemeColor.darkDefault();
-            case LIGHT -> ThemeColor.lightDefault();
-        };
-        var bar = new ThemeBar(themeColor);
-
-        borderPane.setTop(bar);
-        borderPane.setCenter(editorPane);
+        var borderPane = new BorderPane(editorPane, bar, null, null, null);
         borderPane.setFocusTraversable(false);
-
-        stage.setScene(scene);
-        stage.setTitle("min-editor");
-        stage.setOnCloseRequest(editorPane::handleCloseRequest);
-
         borderPane.setOnKeyPressed(e -> {
             if (AppKeys.SC_N.match(e)) {
                 e.consume();
@@ -70,12 +58,31 @@ public class App extends Application {
             }
         });
 
+        stage.setScene(new Scene(borderPane));
+        stage.setTitle("min-editor");
+        stage.setOnCloseRequest(editorPane::handleCloseRequest);
+
         // initEditorHandle
         upCall.setAddressPathProperty(bar.addressTextProperty());
         var downCall = editorPane.downCall();
         bar.textCommitted(s -> downCall.pathChangeRequest(Session.of(Path.of(s))));
 
+        session.setForwardDisableProperty(bar.forwardDisableProperty());
+        session.setBackwardDisableProperty(bar.backwardDisableProperty());
+
         return stage;
+    }
+
+    /**
+     * Get the app theme color.
+     * @param context the context
+     * @return the app theme color
+     */
+    private static ThemeColor themeColor(Context context) {
+        return switch (context.preference().colorScheme()) {
+            case DARK  -> ThemeColor.darkDefault();
+            case LIGHT -> ThemeColor.lightDefault();
+        };
     }
 
 }

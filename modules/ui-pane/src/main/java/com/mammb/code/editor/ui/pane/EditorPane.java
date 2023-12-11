@@ -161,7 +161,7 @@ public class EditorPane extends StackPane {
         statusBar.bind(handler);
         handler.addContentStateChanged(c -> {
             switch (c.type()) {
-                case LOAD     -> upCall.pathChanged(c.path());
+                case LOAD     -> upCall.pathChanged(c.path(), null);
                 case MODIFIED -> upCall.contentModified(true, c.path());
             }
         });
@@ -170,11 +170,8 @@ public class EditorPane extends StackPane {
 
     public EditorDownCall downCall() {
         return s -> {
-            var point = model.screenPoint();
-            var prev = Session.of(model.path(), point.row(), point.caretIndex());
             open(s.path());
             model.apply(new ScreenPoint(s.row(), s.caretIndex()));
-            return prev;
         };
     }
 

@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.app;
 
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Border;
 
@@ -30,13 +29,14 @@ public class ThemeButton extends Button {
 
     /**
      * Constructor.
-     * @param text
-     * @param icon
-     * @param themeColor
+     * @param text the button label text
+     * @param icon the icon image
+     * @param themeColor the theme color
      */
-    private ThemeButton(String text, Node icon, ThemeColor themeColor) {
+    private ThemeButton(String text, ThemeIcon icon, ThemeColor themeColor) {
         super(text);
         this.themeColor = themeColor;
+
         setText(text);
         setGraphic(icon);
         setFocusTraversable(false);
@@ -53,7 +53,7 @@ public class ThemeButton extends Button {
         this(text, null, tc);
     }
 
-    public ThemeButton(Node icon, ThemeColor tc) {
+    public ThemeButton(ThemeIcon icon, ThemeColor tc) {
         this(null, icon, tc);
     }
 
@@ -61,7 +61,9 @@ public class ThemeButton extends Button {
      * Initialize handler.
      */
     private void initHandler() {
-        setOnMouseEntered(e -> setBackground(themeColor.backgroundActiveFill()));
+        setOnMouseEntered(e -> setBackground(disabledProperty().get()
+            ? themeColor.backgroundFill()
+            : themeColor.backgroundActiveFill()));
         setOnMouseExited(e -> setBackground(themeColor.backgroundFill()));
     }
 

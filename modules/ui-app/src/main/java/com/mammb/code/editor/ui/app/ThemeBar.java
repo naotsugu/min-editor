@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -38,7 +39,7 @@ public class ThemeBar extends StackPane {
     /** The forward button. */
     private final Button forward;
     /** The back button. */
-    private final Button back;
+    private final Button backward;
     /** The menu button. */
     private final Button menu;
 
@@ -51,13 +52,16 @@ public class ThemeBar extends StackPane {
         themeColor = tc;
         field = new ThemePromptField(themeColor);
         forward = new ThemeButton(ThemeIcon.arrowRightShort(themeColor).larger(), themeColor);
-        back = new ThemeButton(ThemeIcon.arrowLeftShort(themeColor).larger(), themeColor);
+        backward = new ThemeButton(ThemeIcon.arrowLeftShort(themeColor).larger(), themeColor);
         menu = new ThemeButton(ThemeIcon.list(themeColor).larger(), themeColor);
+
+        forward.setDisable(true);
+        backward.setDisable(true);
 
         setBackground(themeColor.backgroundFill());
 
         var hbox = new HBox(4);
-        hbox.getChildren().addAll(back, forward, field, menu);
+        hbox.getChildren().addAll(backward, forward, field, menu);
         hbox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(field, Priority.ALWAYS);
         HBox.setMargin(field, new Insets(0, 0, 0, 8));
@@ -70,7 +74,16 @@ public class ThemeBar extends StackPane {
         return field.textProperty();
     }
 
+    BooleanProperty backwardDisableProperty() {
+        return backward.disableProperty();
+    }
+
+    BooleanProperty forwardDisableProperty() {
+        return forward.disableProperty();
+    }
+
     void textCommitted(Consumer<String> consumer) {
         field.textCommitted(consumer);
     }
+
 }
