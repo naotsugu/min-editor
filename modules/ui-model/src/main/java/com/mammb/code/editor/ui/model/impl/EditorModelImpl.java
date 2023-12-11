@@ -33,6 +33,7 @@ import com.mammb.code.editor.ui.model.Rect;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.ScrollBar;
 import com.mammb.code.editor.ui.model.Selection;
+import com.mammb.code.editor.ui.model.Session;
 import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.helper.Clipboards;
@@ -278,6 +279,18 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public StateHandler stateChange() {
         return stateChange;
+    }
+
+    @Override
+    public Session session() {
+        return new Session(path(), texts.head().point().row(), caret.caretPoint().offset());
+    }
+
+    @Override
+    public void restore(Session session) {
+        if (!session.path().equals(path())) return;
+        vScrolled(texts.head().point().row(), session.row());
+        caret.at(session.caretIndex(), true);
     }
 
     @Override
