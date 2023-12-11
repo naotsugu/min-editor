@@ -19,6 +19,8 @@ import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -45,6 +47,12 @@ public class ThemePromptField extends StackPane {
     /** The prompt. */
     private final Group prompt;
 
+    /** The border. */
+    private final Border border;
+
+    /** The border active. */
+    private final Border borderActive;
+
 
     /**
      * Constructor.
@@ -55,14 +63,16 @@ public class ThemePromptField extends StackPane {
         themeColor = tc;
         text = new ThemeTextField(tc);
         prompt = new Group();
+        border = new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT));
+        borderActive = new Border(new BorderStroke(themeColor.foreground(), BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT));
+
+        setBackground(new Background(new BackgroundFill(themeColor.background().darker(), new CornerRadii(4), Insets.EMPTY)));
+        setBorder(border);
 
         setPrompt(ThemeIcon.contentOf(themeColor, ""));
         setFocusTraversable(false);
-        setBackground(themeColor.backgroundFill());
-        setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT)));
 
-        var hbox = new HBox();
-        hbox.getChildren().addAll(prompt, text);
+        var hbox = new HBox(prompt, text);
         hbox.setAlignment(Pos.CENTER_LEFT);
         HBox.setHgrow(text, Priority.ALWAYS);
         HBox.setMargin(prompt, new Insets(0, 0, 0, 8));
@@ -93,6 +103,7 @@ public class ThemePromptField extends StackPane {
         }
     }
 
+
     public void textCommitted(Consumer<String> consumer) {
         text.setOnKeyTyped(e -> {
             var bytes = e.getCharacter().getBytes();
@@ -103,21 +114,21 @@ public class ThemePromptField extends StackPane {
         });
     }
 
+
     /**
      * Initialize handler.
      */
     private void initHandler() {
-        text.focusedProperty().addListener((ob, o, n) -> {
-            setBorder(new Border(new BorderStroke(
-                n ? themeColor.foreground() : Color.TRANSPARENT,
-                BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT)));
-        });
-        text.textProperty().addListener((ob, o, n) -> {
-            int index = n.lastIndexOf(".") + 1;
-            if (index > 0 && index < n.length()) {
-                setPrompt(ThemeIcon.contentOf(themeColor, n.substring(index)));
-            }
-        });
+        setOnMouseEntered(e -> { if (!text.isFocused()) setBorder(borderActive); });
+        setOnMouseExited(e -> { if (!text.isFocused()) setBorder(border); });
+        text.focusedProperty().addListener((ob, o, n) -> setBorder(n ? borderActive : border));
+        text.textProperty().addListener((ob, o, n) -> setPrompt(ThemeIcon.contentOf(themeColor, extension(n))));
+    }
+
+
+    private String extension(String string) {
+        int index = string.lastIndexOf(".") + 1;
+        return (index > 0 && index < string.length()) ? string.substring(index) : "";
     }
 
 }
