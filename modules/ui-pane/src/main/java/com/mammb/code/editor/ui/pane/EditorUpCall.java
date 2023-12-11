@@ -18,9 +18,20 @@ package com.mammb.code.editor.ui.pane;
 import java.nio.file.Path;
 
 /**
- * The EditorHandListener.
+ * The EditorUpCall.
  * @author Naotsugu Kobayashi
  */
-public interface EditorHandListener {
+public interface EditorUpCall {
+
     void pathChanged(Path path);
+
+    void contentModified(boolean modified, Path path);
+
+    static EditorUpCall empty() {
+        return new EditorUpCall() {
+            @Override public void pathChanged(Path path) { }
+            @Override public void contentModified(boolean modified, Path path) { }
+        };
+    }
+
 }

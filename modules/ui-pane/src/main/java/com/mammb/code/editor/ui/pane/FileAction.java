@@ -139,7 +139,7 @@ public class FileAction {
 
     private void updateModel(Path path, EventHandler<WorkerStateEvent> handler) {
 
-        if (!pathChanged(path)) {
+        if (!pathChanged(path) || !Files.isRegularFile(path)) {
             return;
         }
 

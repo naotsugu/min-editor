@@ -15,44 +15,31 @@
  */
 package com.mammb.code.editor.ui.app;
 
-import com.mammb.code.editor.ui.pane.EditorHandle;
-import com.mammb.code.editor.ui.pane.EditorHandListener;
+import com.mammb.code.editor.ui.pane.EditorUpCall;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import java.nio.file.Path;
 
 /**
- * The AppEditorHandle.
+ * The AppEditorUpCall.
  * @author Naotsugu Kobayashi
  */
-public class AppEditorHandle implements EditorHandle {
+public class AppEditorUpCall implements EditorUpCall {
 
     private StringProperty addressPathProperty;
+
     private BooleanProperty modifiedProperty;
 
-    private EditorHandListener downCallListener;
-
     @Override
-    public void pathChangedUpCall(Path path) {
+    public void pathChanged(Path path) {
         if (addressPathProperty == null) return;
         addressPathProperty.set((path == null) ? "" : path.toString());
     }
 
     @Override
-    public void contentModifiedUpCall(boolean modified, Path path) {
+    public void contentModified(boolean modified, Path path) {
         if (modifiedProperty == null) return;
         modifiedProperty.set(modified);
-    }
-
-    @Override
-    public void pathChanged(Path path) {
-        if (downCallListener == null) return;
-        downCallListener.pathChanged(path);
-    }
-
-    @Override
-    public void setEditorHandListener(EditorHandListener listener) {
-        this.downCallListener = listener;
     }
 
     public void setAddressPathProperty(StringProperty addressPathProperty) {
@@ -61,10 +48,6 @@ public class AppEditorHandle implements EditorHandle {
 
     public void setModifiedProperty(BooleanProperty modifiedProperty) {
         this.modifiedProperty = modifiedProperty;
-    }
-
-    public void setDownCallListener(EditorHandListener downCallListener) {
-        this.downCallListener = downCallListener;
     }
 
 }

@@ -38,8 +38,8 @@ public class App extends Application {
 
     private Stage buildScene(Stage stage, Context context) {
 
-        var handle = new AppEditorHandle();
-        var editorPane = new EditorPane(context, handle);
+        var upCall = new AppEditorUpCall();
+        var editorPane = new EditorPane(context, upCall);
         var borderPane = new BorderPane();
         var scene = new Scene(borderPane);
 
@@ -70,8 +70,9 @@ public class App extends Application {
         });
 
         // initEditorHandle
-        handle.setAddressPathProperty(bar.addressTextProperty());
-        bar.textCommitted(s -> handle.pathChanged(Path.of(s)));
+        upCall.setAddressPathProperty(bar.addressTextProperty());
+        var downCall = editorPane.downCall();
+        bar.textCommitted(s -> downCall.pathChangeRequest(Path.of(s)));
 
         return stage;
     }

@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -44,21 +45,20 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
  * EditorPane.
  * @author Naotsugu Kobayashi
  */
-public class EditorPane extends StackPane implements EditorHandListener {
+public class EditorPane extends StackPane {
 
     /** The timeline for caret blink. */
     private final Timeline timeline = new Timeline();
     /** The Context. */
     private final Context context;
-    /** The editor handle. */
-    private final EditorHandle editorHandle;
+    /** The editor up call. */
+    private final EditorUpCall upCall;
     /** The canvas. */
     private final Canvas canvas;
     /** The graphics context. */
@@ -80,13 +80,12 @@ public class EditorPane extends StackPane implements EditorHandListener {
     /**
      * Constructor.
      * @param context the context
-     * @param editorHandle the editor handle
+     * @param upCall the editor up call
      */
-    public EditorPane(Context context, EditorHandle editorHandle) {
+    public EditorPane(Context context, EditorUpCall upCall) {
 
         this.context = context;
-        this.editorHandle = editorHandle;
-        this.editorHandle.setEditorHandListener(this);
+        this.upCall = (upCall == null) ? EditorUpCall.empty() : upCall;
 
         setCursor(Cursor.TEXT);
         setWidth(context.regionWidth());
@@ -117,7 +116,6 @@ public class EditorPane extends StackPane implements EditorHandListener {
         model = EditorModel.of(context, canvasWidth, canvasHeight, vScrollBar, hScrollBar);
         canvas.setInputMethodRequests(inputMethodRequests());
         statusBar = new StatusBar(context);
-        statusBar.bind(model.stateChange());
         getChildren().addAll(statusBar, vScrollBar, hScrollBar);
 
         timeline.getKeyFrames().add(new KeyFrame(Duration.millis(500), this::handleTick));
@@ -125,7 +123,7 @@ public class EditorPane extends StackPane implements EditorHandListener {
         timeline.play();
 
         initHandler();
-        initEditorHandle();
+        initModelHandler();
 
     }
 
@@ -155,15 +153,22 @@ public class EditorPane extends StackPane implements EditorHandListener {
 
 
     /**
-     * Initialize editor handle.
+     * Initialize Model handler.
      */
-    private void initEditorHandle() {
-        model.stateChange().addContentStateChanged(c -> {
+    private void initModelHandler() {
+        StateHandler handler = model.stateChange();
+        statusBar.bind(handler);
+        handler.addContentStateChanged(c -> {
             switch (c.type()) {
-                case LOAD     -> editorHandle.pathChangedUpCall(c.path());
-                case MODIFIED -> editorHandle.contentModifiedUpCall(true, c.path());
+                case LOAD     -> upCall.pathChanged(c.path());
+                case MODIFIED -> upCall.contentModified(true, c.path());
             }
         });
+    }
+
+
+    public EditorDownCall downCall() {
+        return this::open;
     }
 
 
@@ -175,12 +180,6 @@ public class EditorPane extends StackPane implements EditorHandListener {
         FileAction.of(this, model).open(path, this::handleModelCreated);
     }
 
-    @Override
-    public void pathChanged(Path path) {
-        if (Files.isRegularFile(path)) {
-            open(path);
-        }
-    }
 
     /**
      * Scroll event handler.
@@ -416,8 +415,7 @@ public class EditorPane extends StackPane implements EditorHandListener {
      */
     private void handleModelCreated(WorkerStateEvent e) {
         model = (EditorModel) e.getSource().getValue();
-        statusBar.bind(model.stateChange());
-        initEditorHandle();
+        initModelHandler();
         canvas.setInputMethodRequests(inputMethodRequests());
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         model.draw(gc);
