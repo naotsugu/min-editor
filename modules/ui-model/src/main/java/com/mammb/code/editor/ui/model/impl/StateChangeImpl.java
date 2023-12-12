@@ -40,6 +40,7 @@ public class StateChangeImpl implements StateChange {
     private final List<Consumer<Charset>> charsetHandlers = new ArrayList<>();
     private final List<Consumer<CaretPoint>> caretPointHandlers = new ArrayList<>();
     private final List<Consumer<Range>> selectionHandlers = new ArrayList<>();
+    private final List<Consumer<Boolean>> contentModifyHandlers = new ArrayList<>();
 
     @Override
     public void push(Metrics metrics, Caret caret, Selection selection) {
@@ -50,26 +51,27 @@ public class StateChangeImpl implements StateChange {
 
     @Override
     public void addLineEndingChanged(Consumer<LineEndingSymbol> handler) {
-        Objects.requireNonNull(handler);
-        this.lineEndingHandlers.add(handler);
+        lineEndingHandlers.add(Objects.requireNonNull(handler));
     }
 
     @Override
     public void addCharsetChanged(Consumer<Charset> handler) {
-        Objects.requireNonNull(handler);
-        this.charsetHandlers.add(handler);
+        charsetHandlers.add(Objects.requireNonNull(handler));
     }
 
     @Override
     public void addCaretPointChanged(Consumer<CaretPoint> handler) {
-        Objects.requireNonNull(handler);
-        this.caretPointHandlers.add(handler);
+        caretPointHandlers.add(Objects.requireNonNull(handler));
     }
 
     @Override
     public void addSelectionChanged(Consumer<Range> handler) {
-        Objects.requireNonNull(handler);
-        this.selectionHandlers.add(handler);
+        selectionHandlers.add(Objects.requireNonNull(handler));
+    }
+
+    @Override
+    public void addContentModifyChanged(Consumer<Boolean> handler) {
+        contentModifyHandlers.add(Objects.requireNonNull(handler));
     }
 
 
@@ -80,8 +82,12 @@ public class StateChangeImpl implements StateChange {
         if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
             charsetHandlers.forEach(h -> h.accept(metrics.charset()));
         }
+        if (prevMetrics == null && metrics.modified() || prevMetrics != null && !prevMetrics.modified() && metrics.modified()) {
+            contentModifyHandlers.forEach(h -> h.accept(metrics.modified()));
+        }
         prevMetrics = new MetricsRecord(metrics);
     }
+
 
     private void push(Caret caret) {
         OffsetPoint caretPoint = caret.caretPoint();

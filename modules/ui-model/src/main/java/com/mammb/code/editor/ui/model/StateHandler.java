@@ -30,6 +30,7 @@ public interface StateHandler {
     void addCharsetChanged(Consumer<Charset> handler);
     void addCaretPointChanged(Consumer<CaretPoint> handler);
     void addSelectionChanged(Consumer<Range> handler);
+    void addContentModifyChanged(Consumer<Boolean> handler);
 
     record LineEndingSymbol(String symbol) {
         public LineEndingSymbol(LineEnding lineEnding) {
