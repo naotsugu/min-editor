@@ -159,6 +159,7 @@ public class EditorPane extends StackPane {
     private void initModelHandler() {
         var stateHandler = model.stateChange();
         statusBar.bind(stateHandler);
+        stateHandler.addContentModifyChanged(c -> upCall.contentModifyChanged(session(), c));
     }
 
 

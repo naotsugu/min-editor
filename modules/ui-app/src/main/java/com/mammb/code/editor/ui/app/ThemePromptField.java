@@ -66,7 +66,9 @@ public class ThemePromptField extends StackPane {
         border = new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT));
         borderActive = new Border(new BorderStroke(themeColor.foreground(), BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT));
 
-        setBackground(new Background(new BackgroundFill(themeColor.background().darker(), new CornerRadii(4), Insets.EMPTY)));
+        var background = new Background(new BackgroundFill(themeColor.background().darker(), new CornerRadii(4), Insets.EMPTY));
+        setBackground(background);
+        text.setBackground(background);
         setBorder(border);
 
         setPrompt(ThemeIcon.contentOf(themeColor, ""));
