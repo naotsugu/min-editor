@@ -67,6 +67,7 @@ public class App extends Application {
             bar.setPathText(c.session().path());
             session.push(c.session());
         });
+        upCall.onContentModified(c -> bar.setPathModified(c.modified()));
 
         var downCall = editorPane.downCall();
         bar.onTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));

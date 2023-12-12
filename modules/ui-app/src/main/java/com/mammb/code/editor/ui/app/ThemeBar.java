@@ -75,6 +75,10 @@ public class ThemeBar extends StackPane {
         field.textProperty().set((path == null) ? "" : path.toFile().getPath());
     }
 
+    void setPathModified(boolean modified) {
+        field.accentuatePrompt(modified);
+    }
+
     BooleanProperty backwardDisableProperty() {
         return backward.disableProperty();
     }

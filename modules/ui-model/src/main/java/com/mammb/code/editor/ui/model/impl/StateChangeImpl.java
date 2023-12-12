@@ -20,8 +20,9 @@ import com.mammb.code.editor.model.buffer.MetricsRecord;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.Selection;
-
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -35,10 +36,10 @@ public class StateChangeImpl implements StateChange {
     private OffsetPoint prevCaretPoint;
     private Range prevSelectionRange;
 
-    private Consumer<LineEndingSymbol> lineEndingHandler = e -> {};
-    private Consumer<Charset> charsetHandler = e -> {};
-    private Consumer<CaretPoint> caretPointHandler = e -> {};
-    private Consumer<Range> selectionHandler = e -> {};
+    private List<Consumer<LineEndingSymbol>> lineEndingHandlers = new ArrayList<>();
+    private List<Consumer<Charset>> charsetHandlers = new ArrayList<>();
+    private List<Consumer<CaretPoint>> caretPointHandlers = new ArrayList<>();
+    private List<Consumer<Range>> selectionHandlers = new ArrayList<>();
 
     @Override
     public void push(Metrics metrics, Caret caret, Selection selection) {
@@ -49,31 +50,35 @@ public class StateChangeImpl implements StateChange {
 
     @Override
     public void addLineEndingChanged(Consumer<LineEndingSymbol> handler) {
-        this.lineEndingHandler = (handler != null) ? handler : e -> {};
+        Objects.requireNonNull(handler);
+        this.lineEndingHandlers.add(handler);
     }
 
     @Override
     public void addCharsetChanged(Consumer<Charset> handler) {
-        this.charsetHandler = (handler != null) ? handler : e -> {};
+        Objects.requireNonNull(handler);
+        this.charsetHandlers.add(handler);
     }
 
     @Override
     public void addCaretPointChanged(Consumer<CaretPoint> handler) {
-        this.caretPointHandler = (handler != null) ? handler : e -> {};
+        Objects.requireNonNull(handler);
+        this.caretPointHandlers.add(handler);
     }
 
     @Override
     public void addSelectionChanged(Consumer<Range> handler) {
-        this.selectionHandler = (handler != null) ? handler : e -> {};
+        Objects.requireNonNull(handler);
+        this.selectionHandlers.add(handler);
     }
 
 
     private void push(Metrics metrics) {
         if (prevMetrics == null || prevMetrics.lineEnding() != metrics.lineEnding()) {
-            lineEndingHandler.accept(new LineEndingSymbol(metrics.lineEnding()));
+            lineEndingHandlers.forEach(h -> h.accept(new LineEndingSymbol(metrics.lineEnding())));
         }
         if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
-            charsetHandler.accept(metrics.charset());
+            charsetHandlers.forEach(h -> h.accept(metrics.charset()));
         }
         prevMetrics = new MetricsRecord(metrics);
     }
@@ -83,21 +88,21 @@ public class StateChangeImpl implements StateChange {
         if (caretPoint == null || caretPoint.equals(prevCaretPoint)) {
             return;
         }
-        caretPointHandler.accept(new CaretPoint(
+        caretPointHandlers.forEach(h -> h.accept(new CaretPoint(
             caretPoint.row() + 1,
             Math.toIntExact(caretPoint.cpOffset() - caret.layoutLine().point().cpOffset()),
-            caretPoint.cpOffset()));
+            caretPoint.cpOffset())));
         prevCaretPoint = caretPoint;
     }
 
     private void push(Selection selection) {
         if (selection.length() == 0) {
             prevSelectionRange = null;
-            selectionHandler.accept(new Range(OffsetPoint.zero, OffsetPoint.zero));
+            selectionHandlers.forEach(h -> h.accept(new Range(OffsetPoint.zero, OffsetPoint.zero)));
         } else {
             var range = new Range(selection.min(), selection.max());
             if (!range.equals(prevSelectionRange)) {
-                selectionHandler.accept(range);
+                selectionHandlers.forEach(h -> h.accept(range));
                 prevSelectionRange = range;
             }
         }

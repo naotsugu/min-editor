@@ -94,6 +94,16 @@ public class ThemeIcon extends SVGPath {
         return this;
     }
 
+    public ThemeIcon fillAccent() {
+        setFill(themeColor.accent());
+        return this;
+    }
+
+    public ThemeIcon fillForeground() {
+        setFill(themeColor.foreground());
+        return this;
+    }
+
     /**
      * Initialize handler.
      */

@@ -103,6 +103,15 @@ public class ThemePromptField extends StackPane {
         }
     }
 
+    public void accentuatePrompt(boolean accentuate) {
+        var icon = (ThemeIcon) prompt.getChildren().get(0);
+        if (accentuate) {
+            icon.fillAccent();
+        } else {
+            icon.fillForeground();
+        }
+    }
+
 
     public void textCommitted(Consumer<String> consumer) {
         text.setOnKeyTyped(e -> {
