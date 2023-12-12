@@ -36,10 +36,10 @@ public class StateChangeImpl implements StateChange {
     private OffsetPoint prevCaretPoint;
     private Range prevSelectionRange;
 
-    private List<Consumer<LineEndingSymbol>> lineEndingHandlers = new ArrayList<>();
-    private List<Consumer<Charset>> charsetHandlers = new ArrayList<>();
-    private List<Consumer<CaretPoint>> caretPointHandlers = new ArrayList<>();
-    private List<Consumer<Range>> selectionHandlers = new ArrayList<>();
+    private final List<Consumer<LineEndingSymbol>> lineEndingHandlers = new ArrayList<>();
+    private final List<Consumer<Charset>> charsetHandlers = new ArrayList<>();
+    private final List<Consumer<CaretPoint>> caretPointHandlers = new ArrayList<>();
+    private final List<Consumer<Range>> selectionHandlers = new ArrayList<>();
 
     @Override
     public void push(Metrics metrics, Caret caret, Selection selection) {
