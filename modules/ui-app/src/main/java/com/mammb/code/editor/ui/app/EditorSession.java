@@ -35,6 +35,7 @@ public class EditorSession {
 
     public void push(Session session) {
         if (session == null || session.isEmptyPath()) return;
+        if (current != null && session.path().equals(current.path())) return;
 
         var currentIndex = histories.indexOf(current);
         if (currentIndex != histories.size() - 1) {
@@ -77,8 +78,8 @@ public class EditorSession {
             forwardDisableProperty.set(true);
             backwardDisableProperty.set(true);
         } else {
-            forwardDisableProperty.set(histories.indexOf(current) < histories.size() - 1);
-            backwardDisableProperty.set(histories.indexOf(current) > 0);
+            forwardDisableProperty.set(histories.indexOf(current) >= histories.size() - 1);
+            backwardDisableProperty.set(histories.indexOf(current) <= 0);
         }
     }
 

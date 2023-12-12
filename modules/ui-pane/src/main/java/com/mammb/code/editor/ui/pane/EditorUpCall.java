@@ -23,14 +23,14 @@ import java.nio.file.Path;
  */
 public interface EditorUpCall {
 
-    void pathChanged(Path path, Session prev);
+    void pathChanged(Session session, Session prevSession);
 
-    void contentModified(boolean modified, Path path);
+    void contentModifyChanged(Session session, boolean modified);
 
     static EditorUpCall empty() {
         return new EditorUpCall() {
-            @Override public void pathChanged(Path path, Session prev) { }
-            @Override public void contentModified(boolean modified, Path path) { }
+            @Override public void pathChanged(Session session, Session prevSession) { }
+            @Override public void contentModifyChanged(Session session, boolean modified) { }
         };
     }
 

@@ -16,13 +16,13 @@
 package com.mammb.code.editor.ui.app;
 
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /**
@@ -57,6 +57,7 @@ public class ThemeBar extends StackPane {
 
         forward.setDisable(true);
         backward.setDisable(true);
+        menu.setDisable(true);
 
         setBackground(themeColor.backgroundFill());
 
@@ -70,8 +71,8 @@ public class ThemeBar extends StackPane {
         StackPane.setMargin(hbox, new Insets(4));
     }
 
-    StringProperty addressTextProperty() {
-        return field.textProperty();
+    void setPathText(Path path) {
+        field.textProperty().set((path == null) ? "" : path.toFile().getPath());
     }
 
     BooleanProperty backwardDisableProperty() {
@@ -82,8 +83,16 @@ public class ThemeBar extends StackPane {
         return forward.disableProperty();
     }
 
-    void textCommitted(Consumer<String> consumer) {
+    void onTextCommitted(Consumer<String> consumer) {
         field.textCommitted(consumer);
+    }
+
+    void onBackwardClicked(Runnable runnable) {
+        backward.setOnMouseClicked(e -> runnable.run());
+    }
+
+    void onForwardClicked(Runnable runnable) {
+        forward.setOnMouseClicked(e -> runnable.run());
     }
 
 }

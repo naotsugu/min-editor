@@ -25,5 +25,5 @@ public interface EditorDownCall {
      *
      * @param session the new session
      */
-    void pathChangeRequest(Session session);
+    void requestPathChange(Session session);
 }

@@ -17,7 +17,6 @@ package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.ScreenPoint;
-import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -47,6 +46,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * EditorPane.
@@ -157,22 +157,12 @@ public class EditorPane extends StackPane {
      * Initialize Model handler.
      */
     private void initModelHandler() {
-        StateHandler handler = model.stateChange();
-        statusBar.bind(handler);
-        handler.addContentStateChanged(c -> {
-            switch (c.type()) {
-                case LOAD     -> upCall.pathChanged(c.path(), null);
-                case MODIFIED -> upCall.contentModified(true, c.path());
-            }
-        });
+        statusBar.bind(model.stateChange());
     }
 
 
     public EditorDownCall downCall() {
-        return s -> {
-            open(s.path());
-            model.apply(new ScreenPoint(s.row(), s.caretIndex()));
-        };
+        return this::open;
     }
 
 
@@ -181,9 +171,29 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        FileAction.of(this, model).open(path, this::handleModelCreated);
+        open(Session.of(path));
     }
 
+
+    private void open(Session session) {
+
+        var prev = session();
+
+        FileAction.of(this, model).open(session.path(), e -> {
+            this.handleModelCreated(e);
+            model.apply(new ScreenPoint(session.row(), session.caretIndex()));
+            var curr = session();
+            if (!Objects.equals(curr.path(), prev.path())) {
+                upCall.pathChanged(curr, prev);
+            }
+        });
+    }
+
+
+    private Session session() {
+        var screenPoint = model.screenPoint();
+        return Session.of(model.path(), screenPoint.row(), screenPoint.caretIndex());
+    }
 
     /**
      * Scroll event handler.

@@ -17,9 +17,9 @@ package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.pane.EditorUpCall;
 import com.mammb.code.editor.ui.pane.Session;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.StringProperty;
-import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * The AppEditorUpCall.
@@ -27,28 +27,28 @@ import java.nio.file.Path;
  */
 public class AppEditorUpCall implements EditorUpCall {
 
-    private StringProperty addressPathProperty;
+    private final List<Consumer<PathChang>> pathChangedHandlers = new ArrayList<>();
+    private final List<Consumer<ContentModifyChang>> contentModifyHandlers = new ArrayList<>();
 
-    private BooleanProperty modifiedProperty;
-
-    @Override
-    public void pathChanged(Path path, Session prev) {
-        if (addressPathProperty == null) return;
-        addressPathProperty.set((path == null) ? "" : path.toString());
-    }
+    record PathChang(Session session, Session prevSession) { }
+    record ContentModifyChang(Session session, boolean modified) { }
 
     @Override
-    public void contentModified(boolean modified, Path path) {
-        if (modifiedProperty == null) return;
-        modifiedProperty.set(modified);
+    public void pathChanged(Session session, Session prevSession) {
+        pathChangedHandlers.forEach(c -> c.accept(new PathChang(session, prevSession)));
     }
 
-    public void setAddressPathProperty(StringProperty addressPathProperty) {
-        this.addressPathProperty = addressPathProperty;
+    @Override
+    public void contentModifyChanged(Session session, boolean modified) {
+        contentModifyHandlers.forEach(c -> c.accept(new ContentModifyChang(session, modified)));
     }
 
-    public void setModifiedProperty(BooleanProperty modifiedProperty) {
-        this.modifiedProperty = modifiedProperty;
+    void onPathChanged(Consumer<PathChang> consumer) {
+        pathChangedHandlers.add(consumer);
+    }
+
+    void onContentModified(Consumer<ContentModifyChang> consumer) {
+        contentModifyHandlers.add(consumer);
     }
 
 }

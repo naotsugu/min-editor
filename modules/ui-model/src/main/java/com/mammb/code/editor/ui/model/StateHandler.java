@@ -18,7 +18,6 @@ package com.mammb.code.editor.ui.model;
 import com.mammb.code.editor.model.text.LineEnding;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /**
@@ -27,15 +26,10 @@ import java.util.function.Consumer;
  */
 public interface StateHandler {
 
-    void addContentStateChanged(Consumer<ContentState> handler);
     void addLineEndingChanged(Consumer<LineEndingSymbol> handler);
     void addCharsetChanged(Consumer<Charset> handler);
     void addCaretPointChanged(Consumer<CaretPoint> handler);
     void addSelectionChanged(Consumer<Range> handler);
-
-    record ContentState(ContentStateType type, Path path) {
-        public enum ContentStateType { LOAD, MODIFIED, }
-    }
 
     record LineEndingSymbol(String symbol) {
         public LineEndingSymbol(LineEnding lineEnding) {

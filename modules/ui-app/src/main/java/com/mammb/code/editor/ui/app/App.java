@@ -63,9 +63,15 @@ public class App extends Application {
         stage.setOnCloseRequest(editorPane::handleCloseRequest);
 
         // initEditorHandle
-        upCall.setAddressPathProperty(bar.addressTextProperty());
+        upCall.onPathChanged(c -> {
+            bar.setPathText(c.session().path());
+            session.push(c.session());
+        });
+
         var downCall = editorPane.downCall();
-        bar.textCommitted(s -> downCall.pathChangeRequest(Session.of(Path.of(s))));
+        bar.onTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));
+        bar.onBackwardClicked(() -> downCall.requestPathChange(session.backward()));
+        bar.onForwardClicked(() -> downCall.requestPathChange(session.forward()));
 
         session.setForwardDisableProperty(bar.forwardDisableProperty());
         session.setBackwardDisableProperty(bar.backwardDisableProperty());
