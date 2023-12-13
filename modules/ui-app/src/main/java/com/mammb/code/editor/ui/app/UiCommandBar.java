@@ -50,7 +50,7 @@ public class UiCommandBar extends StackPane {
     public UiCommandBar(UiColor themeColor) {
 
         uiColor = themeColor;
-        field = new UiPromptField(uiColor);
+        field = new UiAddressField(uiColor);
         forward = new UiButton(UiIcon.arrowRightShort(uiColor).larger(), uiColor);
         backward = new UiButton(UiIcon.arrowLeftShort(uiColor).larger(), uiColor);
         menu = new UiButton(UiIcon.list(uiColor).larger(), uiColor);

@@ -76,7 +76,6 @@ public class UiPromptField extends StackPane {
         HBox.setMargin(prompt, new Insets(0, 0, 0, 8));
         getChildren().addAll(hbox);
 
-        initHandler();
     }
 
 
@@ -123,16 +122,20 @@ public class UiPromptField extends StackPane {
 
 
     /**
-     * Initialize handler.
+     * Get the text field.
+     * @return text field
      */
-    private void initHandler() {
-        text.textProperty().addListener((ob, o, n) -> setPrompt(UiIcon.contentOf(uiColor, extension(n))));
+    protected UiTextField text() {
+        return text;
     }
 
 
-    private String extension(String string) {
-        int index = string.lastIndexOf(".") + 1;
-        return (index > 0 && index < string.length()) ? string.substring(index) : "";
+    /**
+     * Get the theme color.
+     * @return the text field
+     */
+    protected UiColor uiColor() {
+        return uiColor;
     }
 
 }
