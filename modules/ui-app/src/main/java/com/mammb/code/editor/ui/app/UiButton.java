@@ -19,13 +19,13 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.Border;
 
 /**
- * The ThemeButton.
+ * The UiButton.
  * @author Naotsugu Kobayashi
  */
-public class ThemeButton extends Button {
+public class UiButton extends Button {
 
     /** The theme color. */
-    private final ThemeColor themeColor;
+    private final UiColor uiColor;
 
     /**
      * Constructor.
@@ -33,27 +33,27 @@ public class ThemeButton extends Button {
      * @param icon the icon image
      * @param themeColor the theme color
      */
-    private ThemeButton(String text, ThemeIcon icon, ThemeColor themeColor) {
+    private UiButton(String text, UiIcon icon, UiColor themeColor) {
         super(text);
-        this.themeColor = themeColor;
+        uiColor = themeColor;
 
         setText(text);
         setGraphic(icon);
         setFocusTraversable(false);
 
         icon.disableProperty().bind(disableProperty());
-        setBackground(themeColor.backgroundFill());
+        setBackground(uiColor.backgroundFill());
         setBorder(Border.EMPTY);
-        setTextFill(themeColor.foreground());
+        setTextFill(uiColor.foreground());
         initHandler();
     }
 
 
-    public ThemeButton(String text, ThemeColor tc) {
+    public UiButton(String text, UiColor tc) {
         this(text, null, tc);
     }
 
-    public ThemeButton(ThemeIcon icon, ThemeColor tc) {
+    public UiButton(UiIcon icon, UiColor tc) {
         this(null, icon, tc);
     }
 
@@ -62,9 +62,9 @@ public class ThemeButton extends Button {
      */
     private void initHandler() {
         setOnMouseEntered(e -> setBackground(disabledProperty().get()
-            ? themeColor.backgroundFill()
-            : themeColor.backgroundActiveFill()));
-        setOnMouseExited(e -> setBackground(themeColor.backgroundFill()));
+            ? uiColor.backgroundFill()
+            : uiColor.backgroundActiveFill()));
+        setOnMouseExited(e -> setBackground(uiColor.backgroundFill()));
     }
 
 }

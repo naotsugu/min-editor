@@ -33,16 +33,16 @@ import javafx.scene.paint.Color;
 import java.util.function.Consumer;
 
 /**
- * The ThemeCommandField.
+ * The UiPromptField.
  * @author Naotsugu Kobayashi
  */
-public class ThemePromptField extends StackPane {
+public class UiPromptField extends StackPane {
 
     /** The theme color. */
-    private final ThemeColor themeColor;
+    private final UiColor uiColor;
 
     /** The text field. */
-    private final ThemeTextField text;
+    private final UiTextField text;
 
     /** The prompt. */
     private final Group prompt;
@@ -50,28 +50,24 @@ public class ThemePromptField extends StackPane {
     /** The border. */
     private final Border border;
 
-    /** The border active. */
-    private final Border borderActive;
-
 
     /**
      * Constructor.
-     * @param tc the theme color
+     * @param themeColor the theme color
      */
-    public ThemePromptField(ThemeColor tc) {
+    public UiPromptField(UiColor themeColor) {
 
-        themeColor = tc;
-        text = new ThemeTextField(tc);
+        uiColor = themeColor;
+        text = new UiTextField(uiColor);
         prompt = new Group();
         border = new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT));
-        borderActive = new Border(new BorderStroke(themeColor.foreground(), BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT));
 
-        var background = new Background(new BackgroundFill(themeColor.background().darker(), new CornerRadii(4), Insets.EMPTY));
+        var background = new Background(new BackgroundFill(uiColor.background().darker(), new CornerRadii(4), Insets.EMPTY));
         setBackground(background);
         text.setBackground(background);
         setBorder(border);
 
-        setPrompt(ThemeIcon.contentOf(themeColor, ""));
+        setPrompt(UiIcon.contentOf(uiColor, ""));
         setFocusTraversable(false);
 
         var hbox = new HBox(prompt, text);
@@ -97,7 +93,7 @@ public class ThemePromptField extends StackPane {
      * Set the prompt icon.
      * @param icon the prompt icon
      */
-    public void setPrompt(ThemeIcon icon) {
+    public void setPrompt(UiIcon icon) {
         if (prompt.getChildren().isEmpty()) {
             prompt.getChildren().add(icon);
         } else {
@@ -106,7 +102,7 @@ public class ThemePromptField extends StackPane {
     }
 
     public void accentuatePrompt(boolean accentuate) {
-        var icon = (ThemeIcon) prompt.getChildren().get(0);
+        var icon = (UiIcon) prompt.getChildren().get(0);
         if (accentuate) {
             icon.fillAccent();
         } else {
@@ -130,7 +126,7 @@ public class ThemePromptField extends StackPane {
      * Initialize handler.
      */
     private void initHandler() {
-        text.textProperty().addListener((ob, o, n) -> setPrompt(ThemeIcon.contentOf(themeColor, extension(n))));
+        text.textProperty().addListener((ob, o, n) -> setPrompt(UiIcon.contentOf(uiColor, extension(n))));
     }
 
 

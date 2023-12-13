@@ -19,21 +19,21 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Border;
 
 /**
- * The ThemeTextField.
+ * The UiTextField.
  * @author Naotsugu Kobayashi
  */
-public class ThemeTextField extends TextField {
+public class UiTextField extends TextField {
 
     /** The theme color. */
-    private final ThemeColor themeColor;
+    private final UiColor uiColor;
 
-    public ThemeTextField(ThemeColor tc) {
-        themeColor = tc;
+    public UiTextField(UiColor themeColor) {
+        uiColor = themeColor;
         setFocusTraversable(false);
-        setBackground(themeColor.backgroundFill());
+        setBackground(uiColor.backgroundFill());
         setBorder(Border.EMPTY);
         setStyle("-fx-text-fill: %1$s; -fx-font: 14px \"Consolas\";"
-            .formatted(themeColor.foregroundColorString()));
+            .formatted(uiColor.foregroundColorString()));
     }
 
 }

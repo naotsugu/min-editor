@@ -26,16 +26,16 @@ import java.nio.file.Path;
 import java.util.function.Consumer;
 
 /**
- * The ThemeBar.
+ * The UiCommandBar.
  * @author Naotsugu Kobayashi
  */
-public class ThemeBar extends StackPane {
+public class UiCommandBar extends StackPane {
 
     /** The theme color. */
-    private final ThemeColor themeColor;
+    private final UiColor uiColor;
 
     /** The prompt field. */
-    private final ThemePromptField field;
+    private final UiPromptField field;
     /** The forward button. */
     private final Button forward;
     /** The back button. */
@@ -45,21 +45,21 @@ public class ThemeBar extends StackPane {
 
     /**
      * Constructor.
-     * @param tc the theme color
+     * @param themeColor the theme color
      */
-    public ThemeBar(ThemeColor tc) {
+    public UiCommandBar(UiColor themeColor) {
 
-        themeColor = tc;
-        field = new ThemePromptField(themeColor);
-        forward = new ThemeButton(ThemeIcon.arrowRightShort(themeColor).larger(), themeColor);
-        backward = new ThemeButton(ThemeIcon.arrowLeftShort(themeColor).larger(), themeColor);
-        menu = new ThemeButton(ThemeIcon.list(themeColor).larger(), themeColor);
+        uiColor = themeColor;
+        field = new UiPromptField(uiColor);
+        forward = new UiButton(UiIcon.arrowRightShort(uiColor).larger(), uiColor);
+        backward = new UiButton(UiIcon.arrowLeftShort(uiColor).larger(), uiColor);
+        menu = new UiButton(UiIcon.list(uiColor).larger(), uiColor);
 
         forward.setDisable(true);
         backward.setDisable(true);
         menu.setDisable(true);
 
-        setBackground(themeColor.backgroundFill());
+        setBackground(uiColor.backgroundFill());
 
         var hbox = new HBox(4);
         hbox.getChildren().addAll(backward, forward, field, menu);

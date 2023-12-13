@@ -41,7 +41,7 @@ public class App extends Application {
 
         var upCall = new AppEditorUpCall();
         var editorPane = new EditorPane(context, upCall);
-        var bar = new ThemeBar(themeColor(context));
+        var bar = new UiCommandBar(themeColor(context));
         var session = new EditorSession();
 
         var borderPane = new BorderPane(editorPane, bar, null, null, null);
@@ -85,10 +85,10 @@ public class App extends Application {
      * @param context the context
      * @return the app theme color
      */
-    private static ThemeColor themeColor(Context context) {
+    private static UiColor themeColor(Context context) {
         return switch (context.preference().colorScheme()) {
-            case DARK  -> ThemeColor.darkDefault();
-            case LIGHT -> ThemeColor.lightDefault();
+            case DARK  -> UiColor.darkDefault();
+            case LIGHT -> UiColor.lightDefault();
         };
     }
 

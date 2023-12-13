@@ -22,7 +22,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
 /**
- * The ThemeColor.
+ * The UiColor.
  * @param background the background color
  * @param foreground the foreground color
  * @param backgroundActive the background color of active state
@@ -31,7 +31,7 @@ import javafx.scene.paint.Color;
  * @param foregroundDisable the foreground color of disable state
  * @author Naotsugu Kobayashi
  */
-public record ThemeColor(
+public record UiColor(
     Color background,
     Color foreground,
     Color backgroundActive,
@@ -59,16 +59,16 @@ public record ThemeColor(
             (int)(color.getBlue() * 255));
     }
 
-    public static ThemeColor darkDefault() {
-        return new ThemeColor(
+    public static UiColor darkDefault() {
+        return new UiColor(
             Color.web("#26252D"), Color.web("#CACACE"),
             Color.web("#42424A"), Color.web("#CACACE"),
             Color.web("#42424A"), Color.web("#8A8A8E"),
             Color.web("#589DF6"));
     }
 
-    public static ThemeColor lightDefault() {
-        return new ThemeColor(
+    public static UiColor lightDefault() {
+        return new UiColor(
             Color.web("#FFFFFF"), Color.web("#616A71"),
             Color.web("#F7F8F9"), Color.web("#616A71"),
             Color.web("#F7F8F9"), Color.web("#C1CAD1"),
