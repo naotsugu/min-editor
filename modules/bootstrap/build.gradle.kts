@@ -1,6 +1,7 @@
 plugins {
     id("code.editor.base")
     application
+    id("org.beryx.jlink") version "3.0.1"
 }
 
 dependencies {
@@ -31,4 +32,12 @@ tasks.register<Jar>("uberJar") {
     manifest {
         attributes("Main-Class" to "com.mammb.code.editor.bootstrap.Main")
     }
+}
+
+jlink {
+    launcher {
+        name = "min-editor"
+        noConsole = true
+    }
+    enableCds()
 }
