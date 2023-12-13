@@ -130,9 +130,6 @@ public class ThemePromptField extends StackPane {
      * Initialize handler.
      */
     private void initHandler() {
-        setOnMouseEntered(e -> { if (!text.isFocused()) setBorder(borderActive); });
-        setOnMouseExited(e -> { if (!text.isFocused()) setBorder(border); });
-        text.focusedProperty().addListener((ob, o, n) -> setBorder(n ? borderActive : border));
         text.textProperty().addListener((ob, o, n) -> setPrompt(ThemeIcon.contentOf(themeColor, extension(n))));
     }
 
