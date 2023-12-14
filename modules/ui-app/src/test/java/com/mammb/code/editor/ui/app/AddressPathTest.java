@@ -27,24 +27,24 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class AddressPathTest {
 
-    @Test
-    void foo() {
+    @Test void testDirOn() {
         var target = new AddressPath(Path.of("/aa/bb/cc/dd.java"), false);
-        assertEquals("/", target.dirAt(0).toString());          // |/ a a / b b / c c / d d . java
-        assertEquals("/", target.dirAt(1).toString());          //  /|a a / b b / c c / d d . java
-        assertEquals("/", target.dirAt(2).toString());          //  / a|a / b b / c c / d d . java
-        assertEquals("/", target.dirAt(3).toString());          //  / a a|/ b b / c c / d d . java
+        assertEquals("/", target.dirOn(0).toString());          // |/ a a / b b / c c / d d . java
+        assertEquals("/", target.dirOn(1).toString());          //  /|a a / b b / c c / d d . java
+        assertEquals("/", target.dirOn(2).toString());          //  / a|a / b b / c c / d d . java
+        assertEquals("/", target.dirOn(3).toString());          //  / a a|/ b b / c c / d d . java
 
-        assertEquals("/aa", target.dirAt(4).toString());        //  / a a /|b b / c c / d d . java
-        assertEquals("/aa", target.dirAt(5).toString());        //  / a a / b|b / c c / d d . java
-        assertEquals("/aa", target.dirAt(6).toString());        //  / a a / b b|/ c c / d d . java
+        assertEquals("/aa", target.dirOn(4).toString());        //  / a a /|b b / c c / d d . java
+        assertEquals("/aa", target.dirOn(5).toString());        //  / a a / b|b / c c / d d . java
+        assertEquals("/aa", target.dirOn(6).toString());        //  / a a / b b|/ c c / d d . java
 
-        assertEquals("/aa/bb", target.dirAt(7).toString());     //  / a a / b b /|c c / d d . java
-        assertEquals("/aa/bb", target.dirAt(8).toString());     //  / a a / b b / c|c / d d . java
-        assertEquals("/aa/bb", target.dirAt(9).toString());     //  / a a / b b / c c|/ d d . java
+        assertEquals("/aa/bb", target.dirOn(7).toString());     //  / a a / b b /|c c / d d . java
+        assertEquals("/aa/bb", target.dirOn(8).toString());     //  / a a / b b / c|c / d d . java
+        assertEquals("/aa/bb", target.dirOn(9).toString());     //  / a a / b b / c c|/ d d . java
 
-        assertEquals("/aa/bb/cc", target.dirAt(10).toString()); //  / a a / b b / c c /|d d . java
-        assertEquals("/aa/bb/cc", target.dirAt(11).toString()); //  / a a / b b / c c / d|d . java
-        assertEquals("/aa/bb/cc", target.dirAt(12).toString()); //  / a a / b b / c c / d d|. java
+        assertEquals("/aa/bb/cc", target.dirOn(10).toString()); //  / a a / b b / c c /|d d . java
+        assertEquals("/aa/bb/cc", target.dirOn(11).toString()); //  / a a / b b / c c / d|d . java
+        assertEquals("/aa/bb/cc", target.dirOn(12).toString()); //  / a a / b b / c c / d d|. java
     }
+
 }
