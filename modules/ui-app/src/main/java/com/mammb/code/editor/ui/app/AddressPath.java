@@ -15,8 +15,11 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * The AddressPath.
@@ -48,6 +51,15 @@ public class AddressPath {
             }
         }
         return ret;
+    }
+
+
+    public List<Path> listSibling(int index) {
+        try (Stream<Path> s = Files.list(dirOn(index))) {
+            return s.toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

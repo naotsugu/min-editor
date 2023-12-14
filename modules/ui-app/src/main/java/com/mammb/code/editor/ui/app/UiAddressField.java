@@ -15,9 +15,13 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Duration;
+import java.nio.file.Path;
 
 import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
 
@@ -26,6 +30,10 @@ import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
  * @author Naotsugu Kobayashi
  */
 public class UiAddressField extends UiPromptField {
+
+    private Timeline timeline;
+
+    private int pathPositionIndex = -1;
 
     /**
      * Constructor.
@@ -43,6 +51,8 @@ public class UiAddressField extends UiPromptField {
     private void initHandler() {
         text().textProperty().addListener(this::handleTextProperty);
         text().setOnMouseMoved(this::handleMouseMoved);
+        text().setOnMouseExited(e -> stopTimeline());
+        text().disabledProperty().addListener((ob, o, n) -> { if (n) stopTimeline(); });
     }
 
 
@@ -59,15 +69,51 @@ public class UiAddressField extends UiPromptField {
 
     private void handleMouseMoved(MouseEvent e) {
 
-        String text = text().getText();
-        if (text == null || text.isBlank()) return;
+        if (!getScene().getWindow().isFocused()) {
+            return;
+        }
 
-        Integer attr = (Integer) text().queryAccessibleAttribute(OFFSET_AT_POINT, new Point2D(e.getScreenX(), e.getScreenY()));
+        String pathText = text().getText();
+        if (pathText == null || pathText.isBlank()) {
+            stopTimeline();
+            return;
+        }
+
+        var point = new Point2D(e.getScreenX(), e.getScreenY());
+        var attr = (Integer) text().queryAccessibleAttribute(OFFSET_AT_POINT, point);
         if (attr == null) return;
-        int index = Math.clamp(attr, 0, text.length() - 1);
+        int index = Math.clamp(attr, 0, pathText.length() - 1);
 
-        // TODO
+        if (index != pathPositionIndex) {
+            stopTimeline();
+        }
 
+        trackPathPoint(index, pathText);
+
+    }
+
+
+    private void trackPathPoint(int index, String pathText) {
+        if (timeline != null) return;
+        pathPositionIndex = index;
+        timeline = new Timeline();
+        timeline.setCycleCount(1);
+
+        var kf = new KeyFrame(Duration.millis(1000), e -> {
+            var p = AddressPath.of(Path.of(pathText));
+            var popup = new UiFileNavPopup(uiColor(), p.listSibling(index));
+            popup.show(UiAddressField.this.getScene().getWindow());
+        });
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+
+    private void stopTimeline() {
+        if (timeline != null) {
+            timeline.stop();
+            timeline = null;
+        }
+        pathPositionIndex = -1;
     }
 
 }
