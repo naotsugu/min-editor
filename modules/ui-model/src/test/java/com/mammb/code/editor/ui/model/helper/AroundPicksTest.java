@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test of {@link AroundPicks}.
+ * @author Naotsugu Kobayashi
  */
 class AroundPicksTest {
 
