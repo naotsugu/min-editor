@@ -33,8 +33,6 @@ public class UiPopupMenu extends ContextMenu {
     public UiPopupMenu(UiColor themeColor, MenuItem... items) {
         super(items);
         this.uiColor = themeColor;
-        set
-
     }
 
 
