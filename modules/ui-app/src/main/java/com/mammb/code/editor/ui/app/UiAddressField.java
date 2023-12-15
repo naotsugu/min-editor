@@ -56,10 +56,6 @@ public class UiAddressField extends UiPromptField {
     }
 
 
-    private String extension(String string) {
-        int index = string.lastIndexOf(".") + 1;
-        return (index > 0 && index < string.length()) ? string.substring(index) : "";
-    }
 
 
     private void handleTextProperty(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
@@ -101,7 +97,9 @@ public class UiAddressField extends UiPromptField {
 
         var kf = new KeyFrame(Duration.millis(1000), e -> {
             var p = AddressPath.of(Path.of(pathText));
-            var popup = new UiFileNavPopup(uiColor(), p.listSibling(index));
+            //var popup = new UiFileNavPopup(uiColor(), p.listSibling(index));
+            //popup.show(UiAddressField.this.getScene().getWindow());
+            var popup = UiPopupMenu.of(uiColor(), p.listSibling(index));
             popup.show(UiAddressField.this.getScene().getWindow());
         });
         timeline.getKeyFrames().add(kf);
@@ -114,6 +112,11 @@ public class UiAddressField extends UiPromptField {
             timeline = null;
         }
         pathPositionIndex = -1;
+    }
+
+    private static String extension(String string) {
+        int index = string.lastIndexOf(".") + 1;
+        return (index > 0 && index < string.length()) ? string.substring(index) : "";
     }
 
 }
