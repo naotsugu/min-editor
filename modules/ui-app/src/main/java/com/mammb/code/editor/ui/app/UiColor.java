@@ -48,6 +48,9 @@ public record UiColor(
         return new Background(new BackgroundFill(backgroundActive, CornerRadii.EMPTY, Insets.EMPTY));
     }
 
+    public String backgroundColorString() {
+        return toRGBCode(background);
+    }
     public String foregroundColorString() {
         return toRGBCode(foreground);
     }

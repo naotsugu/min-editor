@@ -33,6 +33,8 @@ public class UiPopupMenu extends ContextMenu {
     public UiPopupMenu(UiColor themeColor, MenuItem... items) {
         super(items);
         this.uiColor = themeColor;
+        setStyle(css(uiColor));
+
     }
 
 
@@ -42,4 +44,9 @@ public class UiPopupMenu extends ContextMenu {
         return new UiPopupMenu(tc, items);
     }
 
+    private String css(UiColor tc) {
+        return """
+            -fx-background-color:%s;
+            """.formatted(tc.backgroundColorString());
+    }
 }

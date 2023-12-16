@@ -46,6 +46,7 @@ public class UiButton extends Button {
         setBorder(Border.EMPTY);
         setTextFill(uiColor.foreground());
         initHandler();
+
     }
 
 

@@ -77,9 +77,12 @@ public class UiAddressField extends UiPromptField {
 
         var point = new Point2D(e.getScreenX(), e.getScreenY());
         var attr = (Integer) text().queryAccessibleAttribute(OFFSET_AT_POINT, point);
-        if (attr == null) return;
-        int index = Math.clamp(attr, 0, pathText.length() - 1);
+        if (attr == null || attr >= pathText.length() - 1) {
+            stopTimeline();
+            return;
+        }
 
+        int index = Math.clamp(attr, 0, pathText.length() - 1);
         if (index != pathPositionIndex) {
             stopTimeline();
         }

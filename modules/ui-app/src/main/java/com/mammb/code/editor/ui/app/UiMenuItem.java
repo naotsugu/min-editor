@@ -32,12 +32,23 @@ public class UiMenuItem extends MenuItem {
     public UiMenuItem(UiColor themeColor, String text, Node graphic) {
         super(text, graphic);
         this.uiColor = themeColor;
+        setStyle(css(uiColor));
     }
 
 
     public static UiMenuItem of(UiColor themeColor, Path path) {
         return new UiMenuItem(themeColor,
             path.getFileName().toString(), UiIcon.contentOf(themeColor, path));
+    }
+
+
+    private static String css(UiColor tc) {
+        return """
+            -fx-text-fill: %1$s;
+            -fx-font: 14px \"Consolas\";
+            -fx-background-color: transparent;
+            """.formatted(
+                tc.foregroundColorString());
     }
 
 }
