@@ -22,7 +22,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Base64;
 
 /**
  * The Application.
@@ -39,9 +41,10 @@ public class App extends Application {
 
     private Stage buildScene(Stage stage, Context context) {
 
+        var uiColor = themeColor(context);
         var upCall = new AppEditorUpCall();
         var editorPane = new EditorPane(context, upCall);
-        var bar = new UiCommandBar(themeColor(context));
+        var bar = new UiCommandBar(uiColor);
         var session = new EditorSession();
 
         var borderPane = new BorderPane(editorPane, bar, null, null, null);
@@ -58,7 +61,9 @@ public class App extends Application {
             }
         });
 
-        stage.setScene(new Scene(borderPane));
+        var scene = new Scene(borderPane);
+        scene.getStylesheets().add(css(uiColor));
+        stage.setScene(scene);
         stage.setTitle("min-editor");
         stage.setOnCloseRequest(editorPane::handleCloseRequest);
 
@@ -90,6 +95,16 @@ public class App extends Application {
             case DARK  -> UiColor.darkDefault();
             case LIGHT -> UiColor.lightDefault();
         };
+    }
+
+
+    private String css(UiColor themeColor) {
+        var css = """
+            .root {
+              -fx-accent: rgba(121,134,203,0.5); /* Hue.INDIGO */
+            }
+            """;
+        return "data:text/css;base64," + Base64.getEncoder().encodeToString(css.getBytes(StandardCharsets.UTF_8));
     }
 
 }
