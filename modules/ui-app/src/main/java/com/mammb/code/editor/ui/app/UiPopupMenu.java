@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import java.nio.file.Path;
@@ -34,7 +35,6 @@ public class UiPopupMenu extends ContextMenu {
         super(items);
         this.uiColor = themeColor;
         setStyle(css(uiColor));
-
     }
 
 
@@ -43,6 +43,14 @@ public class UiPopupMenu extends ContextMenu {
             .map(p -> UiMenuItem.of(tc, p)).toArray(MenuItem[]::new);
         return new UiPopupMenu(tc, items);
     }
+
+
+    public void show(Node ownerNode, double anchorX, double anchorY) {
+        setMaxHeight(300);
+        setPrefHeight(300);
+        super.show(ownerNode, anchorX, anchorY);
+    }
+
 
     private String css(UiColor tc) {
         return """

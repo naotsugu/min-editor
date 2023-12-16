@@ -98,10 +98,10 @@ public class App extends Application {
     }
 
 
-    private String css(UiColor themeColor) {
+    private String css(UiColor tc) {
         var css = """
             .root {
-              -fx-accent: rgba(121,134,203,0.5); /* Hue.INDIGO */
+              -fx-accent:rgba(121,134,203,0.5); /* Hue.INDIGO */
             }
             """;
         return "data:text/css;base64," + Base64.getEncoder().encodeToString(css.getBytes(StandardCharsets.UTF_8));

@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.app;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -56,7 +57,7 @@ public class AddressPath {
 
     public List<Path> listSibling(int index) {
         try (Stream<Path> s = Files.list(dirOn(index))) {
-            return s.toList();
+            return s.sorted(Comparator.comparing(p -> Files.isDirectory(p) ? -1 : 1)).toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

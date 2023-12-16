@@ -19,7 +19,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.PopupWindow;
 import javafx.util.Duration;
 import java.nio.file.Path;
 
@@ -31,19 +33,23 @@ import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
  */
 public class UiAddressField extends UiPromptField {
 
+    /** The timeline. */
     private Timeline timeline;
+
+    private PopupWindow popup;
 
     private int pathPositionIndex = -1;
 
+
     /**
      * Constructor.
-     *
      * @param themeColor the theme color
      */
     public UiAddressField(UiColor themeColor) {
         super(themeColor);
         initHandler();
     }
+
 
     /**
      * Initialize handler.
@@ -52,14 +58,22 @@ public class UiAddressField extends UiPromptField {
         text().textProperty().addListener(this::handleTextProperty);
         text().setOnMouseMoved(this::handleMouseMoved);
         text().setOnMouseExited(e -> stopTimeline());
+        text().setOnKeyPressed(this::handleTextKeyPressed);
         text().disabledProperty().addListener((ob, o, n) -> { if (n) stopTimeline(); });
     }
 
 
-
-
     private void handleTextProperty(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
         setPrompt(UiIcon.contentOf(uiColor(), extension(newValue)));
+    }
+
+
+    /**
+     * Key pressed handler.
+     * @param e the key event
+     */
+    private void handleTextKeyPressed(KeyEvent e) {
+        stopTimeline();
     }
 
 
@@ -87,27 +101,30 @@ public class UiAddressField extends UiPromptField {
             stopTimeline();
         }
 
-        trackPathPoint(index, pathText);
+        trackPathPoint(index, pathText, point);
 
     }
 
 
-    private void trackPathPoint(int index, String pathText) {
+    private void trackPathPoint(int index, String pathText, Point2D point) {
         if (timeline != null) return;
         pathPositionIndex = index;
         timeline = new Timeline();
         timeline.setCycleCount(1);
 
-        var kf = new KeyFrame(Duration.millis(1000), e -> {
-            var p = AddressPath.of(Path.of(pathText));
-            //var popup = new UiFileNavPopup(uiColor(), p.listSibling(index));
-            //popup.show(UiAddressField.this.getScene().getWindow());
-            var popup = UiPopupMenu.of(uiColor(), p.listSibling(index));
-            popup.show(UiAddressField.this.getScene().getWindow());
+        var keyFrame = new KeyFrame(Duration.millis(1000), e -> {
+            if (popup != null) {
+                popup.hide();
+            }
+            var addressPath = AddressPath.of(Path.of(pathText));
+            popup = UiPopupMenu.of(uiColor(), addressPath.listSibling(index));
+            popup.show(UiAddressField.this.getScene().getWindow(),
+                point.getX(), text().localToScreen(text().getBoundsInLocal()).getMaxY());
         });
-        timeline.getKeyFrames().add(kf);
+        timeline.getKeyFrames().add(keyFrame);
         timeline.play();
     }
+
 
     private void stopTimeline() {
         if (timeline != null) {
@@ -116,6 +133,7 @@ public class UiAddressField extends UiPromptField {
         }
         pathPositionIndex = -1;
     }
+
 
     private static String extension(String string) {
         int index = string.lastIndexOf(".") + 1;
