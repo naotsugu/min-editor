@@ -19,6 +19,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.PopupWindow;
@@ -62,8 +63,8 @@ public class UiAddressField extends UiPromptField {
         text().textProperty().addListener(this::handleTextProperty);
         text().setOnMouseMoved(this::handleMouseMoved);
         text().setOnMouseExited(e -> stopTimeline());
-        text().setOnKeyPressed(this::handleTextKeyPressed);
         text().disabledProperty().addListener((ob, o, n) -> { if (n) stopTimeline(); });
+        text().addEventFilter(KeyEvent.KEY_PRESSED, this::handleTextKeyPressed);
     }
 
 
@@ -78,6 +79,23 @@ public class UiAddressField extends UiPromptField {
      */
     private void handleTextKeyPressed(KeyEvent e) {
         stopTimeline();
+        if (e.getCode() == KeyCode.DOWN) {
+            if (popup != null) {
+                popup.hide();
+            }
+            var index = text().getCaretPosition();
+            var addressPath = AddressPath.of(Path.of(text().getText()));
+            var bounds = text().localToScreen(text().getBoundsInLocal());
+            popup = UiPopupMenu.of(uiColor(), addressPath.listSibling(index), handlePathSelect());
+            popup.setOnHidden(we -> {
+                text().requestFocus();
+                text().positionCaret(index);
+            });
+            popup.show(UiAddressField.this.getScene().getWindow(),
+                bounds.getMinX() + (index * 8), bounds.getMaxY());
+            requestFocus();
+            e.consume();
+        }
     }
 
 
@@ -123,6 +141,10 @@ public class UiAddressField extends UiPromptField {
             }
             var addressPath = AddressPath.of(Path.of(pathText));
             popup = UiPopupMenu.of(uiColor(), addressPath.listSibling(index), handlePathSelect());
+            popup.setOnHidden(we -> {
+                text().requestFocus();
+                text().positionCaret(index);
+            });
             popup.show(UiAddressField.this.getScene().getWindow(),
                 point.getX(), text().localToScreen(text().getBoundsInLocal()).getMaxY());
             requestFocus();
