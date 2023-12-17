@@ -35,13 +35,14 @@ public class UiCommandBar extends StackPane {
     private final UiColor uiColor;
 
     /** The prompt field. */
-    private final UiPromptField field;
+    private final UiAddressField field;
     /** The forward button. */
     private final Button forward;
     /** The back button. */
     private final Button backward;
     /** The menu button. */
     private final Button menu;
+
 
     /**
      * Constructor.
@@ -89,6 +90,10 @@ public class UiCommandBar extends StackPane {
 
     void onTextCommitted(Consumer<String> consumer) {
         field.textCommitted(consumer);
+    }
+
+    void onPathSelected(Consumer<Path> consumer) {
+        field.onPathSelected(consumer);
     }
 
     void onBackwardClicked(Runnable runnable) {

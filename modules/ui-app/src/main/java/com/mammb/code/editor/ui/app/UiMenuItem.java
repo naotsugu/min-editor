@@ -15,9 +15,12 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 /**
  * The UiMenuItem.
@@ -29,16 +32,22 @@ public class UiMenuItem extends MenuItem {
     private final UiColor uiColor;
 
 
-    public UiMenuItem(UiColor themeColor, String text, Node graphic) {
+    public UiMenuItem(UiColor themeColor, String text, Node graphic, EventHandler<ActionEvent> actionEventHandler) {
         super(text, graphic);
         this.uiColor = themeColor;
         setStyle(css(uiColor));
+        setOnAction(actionEventHandler);
     }
 
 
-    public static UiMenuItem of(UiColor themeColor, Path path) {
-        return new UiMenuItem(themeColor,
-            path.getFileName().toString(), UiIcon.contentOf(themeColor, path));
+    public static UiMenuItem of(UiColor themeColor, Path path, Consumer<Path> consumer) {
+        return new UiMenuItem(
+            themeColor,
+            path.getFileName().toString(), UiIcon.contentOf(themeColor, path),
+            e -> {
+                e.consume();
+                consumer.accept(path);
+            });
     }
 
 

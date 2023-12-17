@@ -20,6 +20,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * The UiPopupMenu.
@@ -31,23 +32,27 @@ public class UiPopupMenu extends ContextMenu {
     private final UiColor uiColor;
 
 
-    public UiPopupMenu(UiColor themeColor, MenuItem... items) {
+    /**
+     * Constructor.
+     * @param themeColor the theme color
+     * @param items the menu item
+     */
+    private UiPopupMenu(UiColor themeColor, MenuItem... items) {
         super(items);
         this.uiColor = themeColor;
         setStyle(css(uiColor));
     }
 
 
-    public static UiPopupMenu of(UiColor tc, List<Path> paths) {
+    public static UiPopupMenu of(UiColor tc, List<Path> paths, Consumer<Path> consumer) {
         var items = paths.stream()
-            .map(p -> UiMenuItem.of(tc, p)).toArray(MenuItem[]::new);
+            .map(path -> UiMenuItem.of(tc, path, consumer))
+            .toArray(MenuItem[]::new);
         return new UiPopupMenu(tc, items);
     }
 
 
     public void show(Node ownerNode, double anchorX, double anchorY) {
-        setMaxHeight(300);
-        setPrefHeight(300);
         super.show(ownerNode, anchorX, anchorY);
     }
 
@@ -57,4 +62,5 @@ public class UiPopupMenu extends ContextMenu {
             -fx-background-color:%s;
             """.formatted(tc.backgroundColorString());
     }
+
 }

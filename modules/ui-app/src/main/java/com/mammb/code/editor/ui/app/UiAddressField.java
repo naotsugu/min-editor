@@ -23,7 +23,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.PopupWindow;
 import javafx.util.Duration;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
 
@@ -39,6 +41,8 @@ public class UiAddressField extends UiPromptField {
     private PopupWindow popup;
 
     private int pathPositionIndex = -1;
+
+    private Consumer<Path> pathSelectConsumer;
 
 
     /**
@@ -107,6 +111,7 @@ public class UiAddressField extends UiPromptField {
 
 
     private void trackPathPoint(int index, String pathText, Point2D point) {
+
         if (timeline != null) return;
         pathPositionIndex = index;
         timeline = new Timeline();
@@ -117,14 +122,36 @@ public class UiAddressField extends UiPromptField {
                 popup.hide();
             }
             var addressPath = AddressPath.of(Path.of(pathText));
-            popup = UiPopupMenu.of(uiColor(), addressPath.listSibling(index));
+            popup = UiPopupMenu.of(uiColor(), addressPath.listSibling(index), handlePathSelect());
             popup.show(UiAddressField.this.getScene().getWindow(),
                 point.getX(), text().localToScreen(text().getBoundsInLocal()).getMaxY());
+            requestFocus();
         });
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
     }
 
+
+    private Consumer<Path> handlePathSelect() {
+        return path -> {
+            if (pathSelectConsumer == null) return;
+            if (Files.isDirectory(path)) {
+                var anchorX = popup.getAnchorX();
+                popup.hide();
+                popup = UiPopupMenu.of(uiColor(), AddressPath.of(path).listSibling(), handlePathSelect());
+                popup.show(UiAddressField.this.getScene().getWindow(), anchorX,
+                    text().localToScreen(text().getBoundsInLocal()).getMaxY());
+                requestFocus();
+            } else if (Files.isRegularFile(path)) {
+                pathSelectConsumer.accept(path);
+            }
+        };
+    }
+
+
+    void onPathSelected(Consumer<Path> consumer) {
+        pathSelectConsumer = consumer;
+    }
 
     private void stopTimeline() {
         if (timeline != null) {

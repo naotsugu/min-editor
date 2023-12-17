@@ -76,6 +76,7 @@ public class App extends Application {
 
         var downCall = editorPane.downCall();
         bar.onTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));
+        bar.onPathSelected(p -> downCall.requestPathChange(Session.of(p)));
         bar.onBackwardClicked(() -> downCall.requestPathChange(session.backward()));
         bar.onForwardClicked(() -> downCall.requestPathChange(session.forward()));
 

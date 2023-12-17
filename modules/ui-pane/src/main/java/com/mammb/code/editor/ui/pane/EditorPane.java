@@ -309,7 +309,7 @@ public class EditorPane extends StackPane {
         if (e.getCode().isFunctionKey() || e.getCode().isNavigationKey() ||
             e.getCode().isArrowKey()    || e.getCode().isModifierKey() ||
             e.getCode().isMediaKey()    || !Keys.controlKeysFilter.test(e) ||
-            e.getCharacter().isEmpty()) {
+            e.getCharacter().isEmpty()  || !(e.getSource() instanceof EditorPane)) {
             return;
         }
 

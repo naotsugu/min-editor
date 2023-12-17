@@ -55,8 +55,18 @@ public class AddressPath {
     }
 
 
+    public List<Path> listSibling() {
+        return list(directory ? path : path.getParent());
+    }
+
+
     public List<Path> listSibling(int index) {
-        try (Stream<Path> s = Files.list(dirOn(index))) {
+        return list(dirOn(index));
+    }
+
+
+    private List<Path> list(Path path) {
+        try (Stream<Path> s = Files.list(path)) {
             return s.sorted(Comparator.comparing(p -> Files.isDirectory(p) ? -1 : 1)).toList();
         } catch (IOException e) {
             throw new RuntimeException(e);

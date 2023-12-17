@@ -100,6 +100,7 @@ public class UiPromptField extends StackPane {
         }
     }
 
+
     public void accentuatePrompt(boolean accentuate) {
         var icon = (UiIcon) prompt.getChildren().get(0);
         if (accentuate) {
