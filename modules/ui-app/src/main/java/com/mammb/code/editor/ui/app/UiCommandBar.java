@@ -58,7 +58,7 @@ public class UiCommandBar extends StackPane {
 
         forward.setDisable(true);
         backward.setDisable(true);
-        menu.setDisable(true);
+        menu.setOnMouseClicked(e -> new UiAboutDialog(uiColor).showAndWait());
 
         setBackground(uiColor.backgroundFill());
 
