@@ -27,3 +27,24 @@ java {
 tasks.withType<JavaCompile> {
     options.encoding = Charsets.UTF_8.name()
 }
+
+// enable-preview
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.add("--enable-preview")
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs("--enable-preview")
+}
+
+tasks.withType<JavaExec>().configureEach {
+    jvmArgs("--enable-preview")
+}
+
+tasks.withType<Javadoc>().configureEach {
+    options {
+        this as StandardJavadocDocletOptions
+        addBooleanOption("-enable-preview", true)
+        addStringOption("-release", "21")
+    }
+}

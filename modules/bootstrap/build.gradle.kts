@@ -11,8 +11,9 @@ dependencies {
 application {
     mainClass.set("com.mammb.code.editor.bootstrap.Main")
     mainModule.set("code.editor.bootstrap")
+    applicationDefaultJvmArgs = listOf("--enable-preview")
     if (providers.systemProperty("debug").isPresent) {
-        applicationDefaultJvmArgs = listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005")
+        applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"))
     }
 }
 
