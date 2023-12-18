@@ -32,50 +32,63 @@ import javafx.scene.paint.Color;
  * @author Naotsugu Kobayashi
  */
 public record UiColor(
-    Color background,
-    Color foreground,
-    Color backgroundActive,
-    Color foregroundActive,
-    Color backgroundDisable,
-    Color foregroundDisable,
-    Color accent) {
-
-    public Background backgroundFill() {
-        return new Background(new BackgroundFill(background, CornerRadii.EMPTY, Insets.EMPTY));
-    }
-
-    public Background backgroundActiveFill() {
-        return new Background(new BackgroundFill(backgroundActive, CornerRadii.EMPTY, Insets.EMPTY));
-    }
-
-    public String backgroundColorString() {
-        return toRGBCode(background);
-    }
-    public String foregroundColorString() {
-        return toRGBCode(foreground);
-    }
-
-    private static String toRGBCode(Color color) {
-        return "#%02X%02X%02X".formatted(
-            (int)(color.getRed() * 255),
-            (int)(color.getGreen() * 255),
-            (int)(color.getBlue() * 255));
-    }
+    String background,
+    String foreground,
+    String backgroundActive,
+    String foregroundActive,
+    String backgroundDisable,
+    String foregroundDisable,
+    String accent) {
 
     public static UiColor darkDefault() {
         return new UiColor(
-            Color.web("#26252D"), Color.web("#CACACE"),
-            Color.web("#42424A"), Color.web("#CACACE"),
-            Color.web("#42424A"), Color.web("#8A8A8E"),
-            Color.web("#589DF6"));
+            "#26252D", "#CACACE",
+            "#42424A", "#CACACE",
+            "#42424A", "#8A8A8E",
+            "#589DF6");
     }
 
     public static UiColor lightDefault() {
         return new UiColor(
-            Color.web("#FFFFFF"), Color.web("#616A71"),
-            Color.web("#F7F8F9"), Color.web("#616A71"),
-            Color.web("#F7F8F9"), Color.web("#C1CAD1"),
-            Color.web("#589DF6"));
+            "#FFFFFF", "#616A71",
+            "#F7F8F9", "#616A71",
+            "#F7F8F9", "#C1CAD1",
+            "#589DF6");
+    }
+    public Color backgroundColor() {
+        return Color.web(background);
+    }
+
+    public Color foregroundColor() {
+        return Color.web(foreground);
+    }
+
+    public Color backgroundActiveColor() {
+        return Color.web(backgroundActive);
+    }
+
+    public Color foregroundActiveColor() {
+        return Color.web(foregroundActive);
+    }
+
+    public Color backgroundDisableColor() {
+        return Color.web(backgroundDisable);
+    }
+
+    public Color foregroundDisableColor() {
+        return Color.web(foregroundDisable);
+    }
+
+    public Color accentColor() {
+        return Color.web(accent);
+    }
+
+    public Background backgroundFill() {
+        return new Background(new BackgroundFill(backgroundColor(), CornerRadii.EMPTY, Insets.EMPTY));
+    }
+
+    public Background backgroundActiveFill() {
+        return new Background(new BackgroundFill(backgroundActiveColor(), CornerRadii.EMPTY, Insets.EMPTY));
     }
 
 }

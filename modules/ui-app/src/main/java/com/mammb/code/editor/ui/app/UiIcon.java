@@ -37,7 +37,7 @@ public class UiIcon extends SVGPath {
         this.uiColor = themeColor;
         setContent(d);
         getStyleClass().add("svg");
-        setFill(uiColor.foreground());
+        setFill(uiColor.foregroundColor());
         initHandler();
     }
 
@@ -108,12 +108,12 @@ public class UiIcon extends SVGPath {
     }
 
     public UiIcon fillAccent() {
-        setFill(uiColor.accent());
+        setFill(uiColor.accentColor());
         return this;
     }
 
     public UiIcon fillForeground() {
-        setFill(uiColor.foreground());
+        setFill(uiColor.foregroundColor());
         return this;
     }
 
@@ -122,7 +122,7 @@ public class UiIcon extends SVGPath {
      */
     private void initHandler() {
         disabledProperty().addListener((ob, o, n) ->
-            setFill(n ? uiColor.foregroundDisable() : uiColor.foreground()));
+            setFill(n ? uiColor.foregroundDisableColor() : uiColor.foregroundColor()));
     }
 
     private static String extension(String string) {

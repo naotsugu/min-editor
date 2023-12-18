@@ -33,7 +33,7 @@ public class UiTextField extends TextField {
         setBackground(uiColor.backgroundFill());
         setBorder(Border.EMPTY);
         setStyle("-fx-text-fill: %1$s; -fx-font: 14px \"Consolas\";"
-            .formatted(uiColor.foregroundColorString()));
+            .formatted(uiColor.foreground()));
     }
 
 }

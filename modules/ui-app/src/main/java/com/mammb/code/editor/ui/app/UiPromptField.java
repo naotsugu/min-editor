@@ -62,7 +62,7 @@ public class UiPromptField extends StackPane {
         prompt = new Group();
         border = new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT));
 
-        var background = new Background(new BackgroundFill(uiColor.background().darker(), new CornerRadii(4), Insets.EMPTY));
+        var background = new Background(new BackgroundFill(uiColor.backgroundColor().darker(), new CornerRadii(4), Insets.EMPTY));
         setBackground(background);
         text.setBackground(background);
         setBorder(border);

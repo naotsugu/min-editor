@@ -22,6 +22,8 @@ import javafx.scene.control.MenuItem;
 import java.nio.file.Path;
 import java.util.function.Consumer;
 
+import static java.lang.StringTemplate.STR;
+
 /**
  * The UiMenuItem.
  * @author Naotsugu Kobayashi
@@ -52,12 +54,11 @@ public class UiMenuItem extends MenuItem {
 
 
     private static String css(UiColor tc) {
-        return """
-            -fx-text-fill: %1$s;
-            -fx-font: 14px \"Consolas\";
-            -fx-background-color: transparent;
-            """.formatted(
-                tc.foregroundColorString());
+        return STR."""
+            -fx-text-fill:\{tc.foreground()};
+            -fx-font: 14px "Consolas";
+            -fx-background-color:transparent;
+            """;
     }
 
 }

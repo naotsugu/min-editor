@@ -44,7 +44,7 @@ public class UiButton extends Button {
         icon.disableProperty().bind(disableProperty());
         setBackground(uiColor.backgroundFill());
         setBorder(Border.EMPTY);
-        setTextFill(uiColor.foreground());
+        setTextFill(uiColor.foregroundColor());
         initHandler();
 
     }

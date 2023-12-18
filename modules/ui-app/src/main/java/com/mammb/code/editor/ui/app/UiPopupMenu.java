@@ -22,6 +22,8 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static java.lang.StringTemplate.STR;
+
 /**
  * The UiPopupMenu.
  * @author Naotsugu Kobayashi
@@ -58,9 +60,9 @@ public class UiPopupMenu extends ContextMenu {
 
 
     private String css(UiColor tc) {
-        return """
-            -fx-background-color:%s;
-            """.formatted(tc.backgroundColorString());
+        return STR."""
+            -fx-background-color:\{tc.background()};
+            """;
     }
 
 }
