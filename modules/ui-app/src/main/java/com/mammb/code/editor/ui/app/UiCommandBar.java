@@ -56,6 +56,7 @@ public class UiCommandBar extends StackPane {
         backward = new UiButton(UiIcon.arrowLeftShort(uiColor).larger(), uiColor);
         menu = new UiButton(UiIcon.list(uiColor).larger(), uiColor);
 
+        field.textProperty().set(Path.of(System.getProperty("user.home")).resolve("Untitled").toString());
         forward.setDisable(true);
         backward.setDisable(true);
         menu.setOnMouseClicked(e -> new UiAboutDialog(uiColor).showAndWait());
@@ -73,7 +74,7 @@ public class UiCommandBar extends StackPane {
     }
 
     void setPathText(Path path) {
-        field.textProperty().set((path == null) ? "" : path.toFile().getPath());
+        field.textProperty().set((path == null) ? "" : path.toString());
     }
 
     void setPathModified(boolean modified) {
