@@ -44,6 +44,7 @@ public class App extends Application {
         var uiColor = themeColor(context);
         var upCall = new AppEditorUpCall();
         var editorPane = new EditorPane(context, upCall);
+        var downCall = editorPane.downCall();
         var bar = new UiCommandBar(uiColor);
         var session = new EditorSession();
 
@@ -58,6 +59,10 @@ public class App extends Application {
                 buildScene(newStage, context);
                 newStage.show();
                 newStage.requestFocus();
+            } else if (AppKeys.SC_FORWARD.match(e)) {
+                downCall.requestPathChange(session.forward());
+            } else if (AppKeys.SC_BACKWARD.match(e)) {
+                downCall.requestPathChange(session.backward());
             }
         });
 
@@ -74,11 +79,10 @@ public class App extends Application {
         });
         upCall.onContentModified(c -> bar.setPathModified(c.modified()));
 
-        var downCall = editorPane.downCall();
         bar.onTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));
         bar.onPathSelected(p -> downCall.requestPathChange(Session.of(p)));
-        bar.onBackwardClicked(() -> downCall.requestPathChange(session.backward()));
         bar.onForwardClicked(() -> downCall.requestPathChange(session.forward()));
+        bar.onBackwardClicked(() -> downCall.requestPathChange(session.backward()));
 
         session.setForwardDisableProperty(bar.forwardDisableProperty());
         session.setBackwardDisableProperty(bar.backwardDisableProperty());
