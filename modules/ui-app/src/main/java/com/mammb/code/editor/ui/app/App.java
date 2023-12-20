@@ -67,6 +67,7 @@ public class App extends Application {
         });
 
         var scene = new Scene(borderPane);
+        //scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
         scene.getStylesheets().add(css(uiColor));
         stage.setScene(scene);
         stage.setTitle("min-editor");
@@ -106,7 +107,7 @@ public class App extends Application {
     private String css(UiColor tc) {
         var css = """
             .root {
-              -fx-accent:rgba(121,134,203,0.5); /* Hue.INDIGO */
+              -fx-accent:#7986CB80; /* Hue.INDIGO */
             }
             """;
         return "data:text/css;base64," + Base64.getEncoder().encodeToString(css.getBytes(StandardCharsets.UTF_8));

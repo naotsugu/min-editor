@@ -1,0 +1,14 @@
+.root {
+  -fx-base: #26252D;
+  -fx-background: -fx-base;
+  -fx-control-inner-background: -fx-base;
+  -fx-control-inner-background-alt: -fx-base;
+  -fx-accent: #589DF633;
+  -fx-faint-focus-color: -fx-accent;
+  -fx-hover-base: #42424A;
+  -fx-pressed-base: derive(-fx-hover-base, -15%);
+  -fx-box-border: -fx-hover-base;
+  -fx-text-box-border: -fx-hover-base;
+  -fx-shadow-highlight-color: -fx-base;
+  -fx-outer-border: -fx-hover-base;
+}
