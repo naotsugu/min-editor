@@ -29,21 +29,3 @@ $ ./gradlew run -Ddebug
 
 ![screenshot1](docs/images/screenshot-01.png)
 
-
-
-## Implementation Notes
-
-### Module dependencies
-
-![module dependencies](docs/images/implementation-note-00.svg)
-
-
-### Editor
-
-![editor part](docs/images/implementation-note-01.svg)
-
-
-### Translate
-
-![ranslate part](docs/images/implementation-note-02.svg)
-
