@@ -6,11 +6,14 @@ import java.util.Base64;
 public class ThemeCss {
 
     private String base = "#26252D";
+    private String text = "#CACACE";
+    private String back = "#1A1A1F";
+    private String accent = "#3A587F";
+
     private String hover = "#42424A";
     private String focused = "";
     private String disabled = base;
 
-    public String text = "#CACACE";
 
     String dataUrl() {
         return "data:text/css;base64," +
@@ -25,7 +28,16 @@ public class ThemeCss {
     String root() {
         return STR."""
         .root {
-          -fx-accent:rgba(121,134,203,0.5); /* Hue.INDIGO */
+          -fx-base:\{base};
+          -fx-accent:\{accent};
+          -fx-background:-fx-base;
+          -fx-control-inner-background:\{back};
+          -fx-control-inner-background-alt: derive(-fx-control-inner-background,-2%);
+          -fx-focus-color: -fx-accent;
+          -fx-faint-focus-color:\{accent}22;
+          -fx-light-text-color:\{text};
+          -fx-mark-color: -fx-light-text-color;
+          -fx-mark-highlight-color: derive(-fx-mark-color,20%);
         }
         """;
     }
