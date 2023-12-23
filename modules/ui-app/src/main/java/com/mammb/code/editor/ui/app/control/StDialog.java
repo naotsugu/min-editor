@@ -10,7 +10,7 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
  */
 public class StDialog <R> extends Dialog<R> {
 
-    public static final Css css = st -> CSS."""
+    static final Css css = st -> CSS."""
     .dialog-pane {
       -fx-background-color:\{st.base};
     }

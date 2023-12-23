@@ -19,10 +19,10 @@ package com.mammb.code.editor.ui.app.control;
  * The CssProcessor.
  * @author Naotsugu Kobayashi
  */
-public class CssProcessor implements StringTemplate.Processor<CssRun, RuntimeException> {
+class CssProcessor implements StringTemplate.Processor<CssRun, RuntimeException> {
 
     /** The CssProcessor instance. */
-    public static final CssProcessor CSS = new CssProcessor();
+    static final CssProcessor CSS = new CssProcessor();
 
     @Override
     public CssRun process(StringTemplate template) throws RuntimeException {

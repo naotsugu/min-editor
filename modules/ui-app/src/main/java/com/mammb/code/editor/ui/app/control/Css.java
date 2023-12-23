@@ -21,7 +21,7 @@ import java.util.Arrays;
  * The Css.
  * @author Naotsugu Kobayashi
  */
-public interface Css {
+interface Css {
 
     Css empty = st -> CssRun.empty;
 

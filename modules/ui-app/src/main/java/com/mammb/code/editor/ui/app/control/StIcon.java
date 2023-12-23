@@ -24,9 +24,11 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
  * @author Naotsugu Kobayashi
  */
 public class StIcon extends SVGPath {
-    public static final Css css = st -> CSS."""
+
+    static final Css css = st -> CSS."""
     .svg-icon {
       -fx-background-color:\{st.base};
     }
     """;
+
 }

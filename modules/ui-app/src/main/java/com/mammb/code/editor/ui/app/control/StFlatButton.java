@@ -15,14 +15,20 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import javafx.scene.control.Button;
+
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 
 /**
  * The StFlatButton.
  * @author Naotsugu Kobayashi
  */
-public class StFlatButton {
-    public static final Css css = st -> CSS."""
+public class StFlatButton extends Button {
+
+    public StFlatButton() {
+    }
+
+    static final Css css = st -> CSS."""
     .flat-button {
       -fx-background-color:\{st.base};
     }

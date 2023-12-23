@@ -19,14 +19,22 @@ package com.mammb.code.editor.ui.app.control;
  * The StyleTheme.
  * @author Naotsugu Kobayashi
  */
-public class StyleTheme {
+class StyleTheme {
+
     String base = "#26252D";
     String text = "#CACACE";
     String back = "#1A1A1F";
     String accent = "#3A587F";
 
-    String hover = "#42424A";
-    String focused = "";
-    String disabled = base;
+    static StyleTheme dark() {
+        return new StyleTheme();
+    }
+
+    static StyleTheme light() {
+        var st = new StyleTheme();
+        st.base = "#FFFFFF";
+        st.text = "#616A71";
+        return st;
+    }
 
 }
