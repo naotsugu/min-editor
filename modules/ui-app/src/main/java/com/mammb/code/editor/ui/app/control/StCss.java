@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app.control;
 
 import com.mammb.code.editor.ui.prefs.ColorScheme;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
@@ -26,23 +27,57 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
  */
 public class StCss {
 
+    /** The StCss instance. */
+    static final StCss instance = new StCss(CssRun.empty);
+
+    /** The css run. */
     private CssRun cssRun;
 
-    private StCss(StyleTheme st) {
-        cssRun = Css.join(root, Icon.css, FlatButton.css).on(st);
+
+    /**
+     * Constructor.
+     * @param cssRun the css run
+     */
+    private StCss(CssRun cssRun) {
+        this.cssRun = cssRun;
     }
 
-    public static StCss of(ColorScheme cs) {
-        return switch (cs) {
-            case DARK  -> new StCss(StyleTheme.dark());
-            case LIGHT -> new StCss(StyleTheme.light());
+
+    /**
+     * Install.
+     * @param cs the color scheme
+     * @return the StCss
+     */
+    public static synchronized StCss install(ColorScheme cs) {
+        var st = switch (cs) {
+            case DARK  -> StyleTheme.dark();
+            case LIGHT -> StyleTheme.light();
         };
+        instance.cssRun = buildCss().on(st);
+        return instance;
     }
+
 
     public void into(Scene scene) {
         cssRun.into(scene);
     }
 
+
+    public void into(Parent parent) {
+        cssRun.into(parent);
+    }
+
+
+    /**
+     * Build css.
+     * @return Css
+     */
+    private static Css buildCss() {
+        return Css.join(root, Icon.css, FlatButton.css);
+    }
+
+
+    /** The root css. */
     private static final Css root = st -> CSS."""
         .root {
           -fx-base:\{st.base};

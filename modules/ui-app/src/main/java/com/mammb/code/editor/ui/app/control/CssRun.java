@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -40,6 +41,10 @@ class CssRun {
     void into(Scene scene) {
         scene.getStylesheets().add("data:text/css;base64," +
             Base64.getEncoder().encodeToString(cssText.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    void into(Parent parent) {
+        parent.getStylesheets().add(cssText);
     }
 
 }

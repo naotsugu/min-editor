@@ -70,7 +70,7 @@ public class App extends Application {
         var scene = new Scene(borderPane);
         //scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
         scene.getStylesheets().add(css(uiColor));
-        StCss.of(context.preference().colorScheme()).into(scene);
+        StCss.install(context.preference().colorScheme()).into(scene);
         stage.setScene(scene);
         stage.setTitle("min-editor");
         stage.setOnCloseRequest(editorPane::handleCloseRequest);
