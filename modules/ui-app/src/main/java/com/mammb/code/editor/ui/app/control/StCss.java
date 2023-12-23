@@ -22,13 +22,13 @@ import javafx.scene.Scene;
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 
 /**
- * The StCss.
+ * The theme css.
  * @author Naotsugu Kobayashi
  */
 public class StCss {
 
-    /** The StCss instance. */
-    static final StCss instance = new StCss(CssRun.empty);
+    /** The style theme. */
+    private static volatile StyleTheme styleTheme = StyleTheme.dark();
 
     /** The css run. */
     private CssRun cssRun;
@@ -44,17 +44,42 @@ public class StCss {
 
 
     /**
-     * Install.
+     * Set the scheme.
      * @param cs the color scheme
-     * @return the StCss
      */
-    public static synchronized StCss install(ColorScheme cs) {
-        var st = switch (cs) {
-            case DARK  -> StyleTheme.dark();
+    public static void setScheme(ColorScheme cs) {
+        styleTheme = switch (cs) {
+            case DARK -> StyleTheme.dark();
             case LIGHT -> StyleTheme.light();
         };
-        instance.cssRun = buildCss().on(st);
-        return instance;
+    }
+
+
+    /**
+     * Create the theme css.
+     * @return the StCss
+     */
+    public static StCss of() {
+        var css = Css.join(root, Icon.css, FlatButton.css);
+        return new StCss(css.on(styleTheme));
+    }
+
+
+    /**
+     * Create the theme css.
+     * @return the StCss
+     */
+    public static StCss of(Css css) {
+        return new StCss(css.on(styleTheme));
+    }
+
+
+    /**
+     * Create the root theme css.
+     * @return the StCss
+     */
+    public static StCss rootOf() {
+        return of(root);
     }
 
 
@@ -65,15 +90,6 @@ public class StCss {
 
     public void into(Parent parent) {
         cssRun.into(parent);
-    }
-
-
-    /**
-     * Build css.
-     * @return Css
-     */
-    private static Css buildCss() {
-        return Css.join(root, Icon.css, FlatButton.css);
     }
 
 

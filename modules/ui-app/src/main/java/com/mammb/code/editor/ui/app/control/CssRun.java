@@ -39,12 +39,16 @@ class CssRun {
     }
 
     void into(Scene scene) {
-        scene.getStylesheets().add("data:text/css;base64," +
-            Base64.getEncoder().encodeToString(cssText.getBytes(StandardCharsets.UTF_8)));
+        scene.getStylesheets().add(dataUrl(cssText));
     }
 
     void into(Parent parent) {
-        parent.getStylesheets().add(cssText);
+        parent.getStylesheets().add(dataUrl(cssText));
+    }
+
+    private String dataUrl(String text) {
+        return "data:text/css;base64," +
+            Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
     }
 
 }
