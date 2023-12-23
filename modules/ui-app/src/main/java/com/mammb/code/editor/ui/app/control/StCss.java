@@ -29,7 +29,7 @@ public class StCss {
     private CssRun cssRun;
 
     private StCss(StyleTheme st) {
-        cssRun = Css.join(root, StFlatButton.css, StIcon.css).on(st);
+        cssRun = Css.join(root, Icon.css, FlatButton.css).on(st);
     }
 
     public static StCss of(ColorScheme cs) {

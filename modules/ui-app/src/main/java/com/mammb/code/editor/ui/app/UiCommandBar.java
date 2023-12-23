@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import com.mammb.code.editor.ui.app.control.FlatButton;
+import com.mammb.code.editor.ui.app.control.Icon;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -52,13 +54,14 @@ public class UiCommandBar extends StackPane {
 
         uiColor = themeColor;
         field = new UiAddressField(uiColor);
-        forward = new UiButton(UiIcon.arrowRightShort(uiColor).larger(), uiColor);
-        backward = new UiButton(UiIcon.arrowLeftShort(uiColor).larger(), uiColor);
-        menu = new UiButton(UiIcon.list(uiColor).larger(), uiColor);
+        forward = new FlatButton(Icon.arrowRightShort().larger());
+        backward = new FlatButton(Icon.arrowLeftShort().larger());
+        menu = new FlatButton(Icon.list().larger());
 
         field.textProperty().set(Path.of(System.getProperty("user.home")).resolve("Untitled").toString());
         forward.setDisable(true);
         backward.setDisable(true);
+
         menu.setOnMouseClicked(e -> new UiAboutDialog(uiColor).showAndWait());
 
         setBackground(uiColor.backgroundFill());

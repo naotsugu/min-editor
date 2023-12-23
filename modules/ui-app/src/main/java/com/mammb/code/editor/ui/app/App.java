@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import com.mammb.code.editor.ui.app.control.StCss;
 import com.mammb.code.editor.ui.pane.EditorPane;
 import com.mammb.code.editor.ui.pane.Session;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -69,6 +70,7 @@ public class App extends Application {
         var scene = new Scene(borderPane);
         //scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
         scene.getStylesheets().add(css(uiColor));
+        StCss.of(context.preference().colorScheme()).into(scene);
         stage.setScene(scene);
         stage.setTitle("min-editor");
         stage.setOnCloseRequest(editorPane::handleCloseRequest);
