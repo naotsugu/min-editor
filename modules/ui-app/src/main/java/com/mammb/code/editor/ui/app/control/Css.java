@@ -23,6 +23,7 @@ import java.util.Arrays;
  */
 interface Css {
 
+    /** The empty css. */
     Css empty = st -> CssRun.empty;
 
     CssRun on(StyleTheme st);

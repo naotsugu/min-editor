@@ -111,7 +111,8 @@ public class Icon extends SVGPath {
         return (index > 0 && index < string.length()) ? string.substring(index) : "";
     }
 
-    static final String styleClass = "icon";
+
+    private static final String styleClass = "icon";
 
     static final Css css = st -> CSS."""
         .\{styleClass} {
