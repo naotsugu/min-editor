@@ -26,7 +26,7 @@ public class AboutDialog extends BasicDialog {
 
     public AboutDialog() {
         var dialogPane = getDialogPane();
-        dialogPane.setContentText("min-editor " + Version.value);
+        dialogPane.setContentText(String.join(" ", Version.appName, Version.value));
         dialogPane.getButtonTypes().addAll(ButtonType.CLOSE);
         setTitle("About");
     }

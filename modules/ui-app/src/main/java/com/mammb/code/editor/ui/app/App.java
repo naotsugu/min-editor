@@ -73,7 +73,7 @@ public class App extends Application {
         StCss.setScheme(context.preference().colorScheme());
         StCss.of().into(scene);
         stage.setScene(scene);
-        stage.setTitle("min-editor");
+        stage.setTitle(Version.appName);
         stage.setOnCloseRequest(editorPane::handleCloseRequest);
 
         // initEditorHandle
