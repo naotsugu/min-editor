@@ -21,9 +21,13 @@ package com.mammb.code.editor.ui.app.control;
  */
 class StyleTheme {
 
+    /** The base color. */
     String base = "#26252D";
+    /** The text color. */
     String text = "#CACACE";
+    /** The control inner background color. */
     String back = "#1A1A1F";
+    /** The accent color. */
     String accent = "#3A587F";
 
     /**

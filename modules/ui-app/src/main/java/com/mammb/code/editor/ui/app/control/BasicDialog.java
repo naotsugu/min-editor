@@ -24,6 +24,9 @@ import javafx.scene.control.Dialog;
  */
 public class BasicDialog extends Dialog<ButtonType> {
 
+    /**
+     * Constructor.
+     */
     public BasicDialog() {
         StCss.rootOf().into(getDialogPane());
     }

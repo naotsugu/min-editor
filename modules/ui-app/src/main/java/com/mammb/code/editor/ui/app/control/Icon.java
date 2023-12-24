@@ -112,8 +112,10 @@ public class Icon extends SVGPath {
     }
 
 
+    /** The style class name. */
     public static final String styleClass = "icon";
 
+    /** The css. */
     static final Css css = st -> CSS."""
         .\{styleClass} {
           -fx-fill:\{st.text};

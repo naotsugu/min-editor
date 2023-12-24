@@ -15,34 +15,55 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 
 /**
- * The PromptField.
+ * The PromptText.
  * @author Naotsugu Kobayashi
  */
-public class PromptField extends StackPane {
+public class PromptText extends StackPane {
 
     /** The text field. */
     private final TextField text;
 
     /** The prompt icon. */
-    private final Icon prompt;
+    private final Group prompt;
 
 
     /**
      * Constructor.
      */
-    public PromptField() {
+    public PromptText() {
         text = new TextField();
-        prompt = Icon.contentOf("");
+        prompt = new Group(Icon.contentOf(""));
         StackPane.setAlignment(prompt, Pos.CENTER_LEFT);
         getChildren().addAll(text, prompt);
         getStyleClass().add(styleClass);
+    }
+
+
+    /**
+     * Set the prompt icon.
+     * @param icon the prompt icon
+     */
+    public void setPrompt(Icon icon) {
+        prompt.getChildren().clear();
+        prompt.getChildren().add(icon);
+    }
+
+
+    /**
+     * Get the text property.
+     * @return the text property
+     */
+    public final StringProperty textProperty() {
+        return text.textProperty();
     }
 
 
