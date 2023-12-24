@@ -19,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * The CssRun.
@@ -26,29 +27,58 @@ import java.util.Base64;
  */
 class CssRun {
 
+    /** The empty css run. */
     static final CssRun empty = new CssRun("");
 
+    /** The css text. */
     private final String cssText;
 
+
+    /**
+     * Constructor.
+     * @param cssText the source css text
+     */
     CssRun(String cssText) {
-        this.cssText = cssText;
+        this.cssText = Objects.requireNonNull(cssText);
     }
 
+
+    /**
+     * Join the css run.
+     * @param other the css run
+     * @return the joined css run
+     */
     CssRun join(CssRun other) {
         return new CssRun(String.join(" ", cssText, other.cssText));
     }
 
+
+    /**
+     * Apply the stylesheet from this css text.
+     * @param scene the scene
+     */
     void into(Scene scene) {
-        scene.getStylesheets().add(dataUrl(cssText));
+        scene.getStylesheets().add(dataUrl());
     }
 
+
+    /**
+     * Apply the stylesheet from this css text.
+     * @param parent the parent
+     */
     void into(Parent parent) {
-        parent.getStylesheets().add(dataUrl(cssText));
+        parent.getStylesheets().add(dataUrl());
     }
 
-    private String dataUrl(String text) {
-        return "data:text/css;base64," +
-            Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
+
+    /**
+     * Get the data url of css.
+     * @return the data url of css
+     */
+    private String dataUrl() {
+        return String.join(",",
+            "data:text/css;base64",
+            Base64.getEncoder().encodeToString(cssText.getBytes(StandardCharsets.UTF_8)));
     }
 
 }

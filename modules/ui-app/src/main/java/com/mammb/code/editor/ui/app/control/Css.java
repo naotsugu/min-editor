@@ -26,12 +26,27 @@ interface Css {
     /** The empty css. */
     Css empty = st -> CssRun.empty;
 
+    /**
+     * Apply the style theme.
+     * @param st the style theme
+     * @return the css run
+     */
     CssRun on(StyleTheme st);
 
+    /**
+     * Join the css.
+     * @param css css
+     * @return joined css
+     */
     static Css join(Css... css) {
         return Arrays.stream(css).reduce((a, b) -> a.join(b)).orElse(empty);
     }
 
+    /**
+     * Join the css.
+     * @param other css
+     * @return joined css
+     */
     default Css join(Css other) {
         return st -> on(st).join(other.on(st));
     }
