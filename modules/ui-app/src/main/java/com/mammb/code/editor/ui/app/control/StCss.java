@@ -67,6 +67,7 @@ public class StCss {
 
     /**
      * Create the theme css.
+     * @param css the css
      * @return the StCss
      */
     public static StCss of(Css css) {

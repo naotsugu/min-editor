@@ -17,8 +17,6 @@ package com.mammb.code.editor.ui.app.control;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
@@ -42,21 +40,22 @@ public class PromptField extends StackPane {
     public PromptField() {
         text = new TextField();
         prompt = Icon.contentOf("");
-        var hbox = new HBox(prompt, text);
-        hbox.setAlignment(Pos.CENTER_LEFT);
-        HBox.setHgrow(text, Priority.ALWAYS);
-        getChildren().addAll(hbox);
+        StackPane.setAlignment(prompt, Pos.CENTER_LEFT);
+        getChildren().addAll(text, prompt);
         getStyleClass().add(styleClass);
     }
+
 
     /** The style class. */
     private static final String styleClass = "prompt-field";
 
+    /** The css. */
     static final Css css = st -> CSS."""
-        .\{styleClass} {
-          -fx-background-color:\{st.back};
-          -fx-background-insets: 0;
-          -fx-background-radius: 2;
+        .\{styleClass} > .text-input {
+          -fx-padding: 0.333333em 0.583em 0.333333em 2.333333em;
+        }
+        .\{styleClass} > .\{Icon.styleClass} {
+          -fx-translate-x:0.8em;
         }
         """;
 

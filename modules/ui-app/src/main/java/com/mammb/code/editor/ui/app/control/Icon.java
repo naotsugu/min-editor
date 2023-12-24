@@ -112,7 +112,7 @@ public class Icon extends SVGPath {
     }
 
 
-    private static final String styleClass = "icon";
+    public static final String styleClass = "icon";
 
     static final Css css = st -> CSS."""
         .\{styleClass} {
