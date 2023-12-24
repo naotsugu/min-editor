@@ -26,10 +26,18 @@ class StyleTheme {
     String back = "#1A1A1F";
     String accent = "#3A587F";
 
+    /**
+     * Get the dark style.
+     * @return the dark style theme
+     */
     static StyleTheme dark() {
         return new StyleTheme();
     }
 
+    /**
+     * Get the light style.
+     * @return the light style theme
+     */
     static StyleTheme light() {
         var st = new StyleTheme();
         st.base = "#FFFFFF";

@@ -84,11 +84,19 @@ public class StCss {
     }
 
 
+    /**
+     * Apply the stylesheet from this css text.
+     * @param scene the scene
+     */
     public void into(Scene scene) {
         cssRun.into(scene);
     }
 
 
+    /**
+     * Apply the stylesheet from this css text.
+     * @param parent the parent
+     */
     public void into(Parent parent) {
         cssRun.into(parent);
     }
