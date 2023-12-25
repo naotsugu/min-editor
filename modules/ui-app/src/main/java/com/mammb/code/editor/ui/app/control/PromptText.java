@@ -16,10 +16,12 @@
 package com.mammb.code.editor.ui.app.control;
 
 import javafx.beans.property.StringProperty;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 
@@ -56,6 +58,23 @@ public class PromptText extends StackPane {
         prompt.getChildren().clear();
         prompt.getChildren().add(icon);
     }
+
+    /**
+     * Get the text offset at point.
+     * @param point the point 2D
+     * @return the text offset at point, {@code -1} if out of range
+     */
+    public int getOffsetAtPoint(Point2D point) {
+        var offset = (Integer) text.queryAccessibleAttribute(OFFSET_AT_POINT, point);
+        return (offset == null || offset > text.getText().length()) ? -1 : offset;
+    }
+
+
+    /**
+     * The current position of the caret within the text.
+     * @return the current position
+     */
+    public final int getCaretPosition() { return text.getCaretPosition(); }
 
 
     /**
