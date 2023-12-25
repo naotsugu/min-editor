@@ -59,6 +59,7 @@ public class PromptText extends StackPane {
         prompt.getChildren().add(icon);
     }
 
+
     /**
      * Get the text offset at point.
      * @param point the point 2D

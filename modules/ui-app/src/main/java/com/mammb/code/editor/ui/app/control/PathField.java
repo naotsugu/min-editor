@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app.control;
 
 import javafx.animation.Timeline;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -103,6 +104,15 @@ public class PathField extends StackPane {
      */
     private void handleTextChanged(ObservableValue<? extends String> ob, String o, String n) {
 
+    }
+
+
+    /**
+     * Get the text property.
+     * @return the text property
+     */
+    public final StringProperty textProperty() {
+        return text.textProperty();
     }
 
 
