@@ -18,9 +18,13 @@ package com.mammb.code.editor.ui.app;
 import com.mammb.code.editor.ui.app.control.FlatButton;
 import com.mammb.code.editor.ui.app.control.Icon;
 import com.mammb.code.editor.ui.app.control.PathField;
+import javafx.beans.property.BooleanProperty;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 /**
  * The CommandBar.
@@ -43,6 +47,9 @@ public class CommandBar extends HBox {
      */
     public CommandBar() {
 
+        super(4);
+        setAlignment(Pos.CENTER_LEFT);
+
         forward = new FlatButton(Icon.arrowRightShort().larger());
         backward = new FlatButton(Icon.arrowLeftShort().larger());
         pathField = new PathField();
@@ -54,7 +61,49 @@ public class CommandBar extends HBox {
             System.getProperty("user.home")).resolve("Untitled").toString());
         menu.setOnMouseClicked(e -> new AboutDialog().showAndWait());
 
+        HBox.setHgrow(pathField, Priority.ALWAYS);
         getChildren().addAll(backward, forward, pathField, menu);
+
+    }
+
+
+    void setPathText(Path path) {
+        //field.textProperty().set((path == null) ? "" : path.toString());
+    }
+
+
+    void setPathModified(boolean modified) {
+        //field.accentuatePrompt(modified);
+    }
+
+
+    BooleanProperty backwardDisableProperty() {
+        return backward.disableProperty();
+    }
+
+
+    BooleanProperty forwardDisableProperty() {
+        return forward.disableProperty();
+    }
+
+
+    void onTextCommitted(Consumer<String> consumer) {
+        //field.textCommitted(consumer);
+    }
+
+
+    void onPathSelected(Consumer<Path> consumer) {
+        //field.onPathSelected(consumer);
+    }
+
+
+    void onBackwardClicked(Runnable runnable) {
+        backward.setOnMouseClicked(e -> runnable.run());
+    }
+
+
+    void onForwardClicked(Runnable runnable) {
+        forward.setOnMouseClicked(e -> runnable.run());
     }
 
 }

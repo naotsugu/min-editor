@@ -116,6 +116,9 @@ public class StCss {
           -fx-mark-color: -fx-light-text-color;
           -fx-mark-highlight-color: derive(-fx-mark-color,20%);
         }
+        .text-input {
+          -fx-font: 14px "Consolas";
+        }
         """;
 
 }

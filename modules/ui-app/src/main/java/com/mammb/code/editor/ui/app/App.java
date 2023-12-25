@@ -47,6 +47,7 @@ public class App extends Application {
         var editorPane = new EditorPane(context, upCall);
         var downCall = editorPane.downCall();
         var bar = new UiCommandBar(uiColor);
+        //var bar = new CommandBar();
         var session = new EditorSession();
 
         var borderPane = new BorderPane(editorPane, bar, null, null, null);

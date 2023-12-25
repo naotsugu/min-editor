@@ -16,14 +16,15 @@
 package com.mammb.code.editor.ui.app.control;
 
 import javafx.beans.property.StringProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
-import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
+import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
 
 /**
  * The PromptText.
@@ -45,6 +46,7 @@ public class PromptText extends StackPane {
         text = new TextField();
         prompt = new Group(Icon.contentOf(""));
         StackPane.setAlignment(prompt, Pos.CENTER_LEFT);
+        StackPane.setMargin(prompt, new Insets(0, 0, 0, 8));
         getChildren().addAll(text, prompt);
         getStyleClass().add(styleClass);
     }
@@ -94,9 +96,6 @@ public class PromptText extends StackPane {
     static final Css css = st -> CSS."""
         .\{styleClass} > .text-input {
           -fx-padding: 0.333333em 0.583em 0.333333em 2.333333em;
-        }
-        .\{styleClass} > .\{Icon.styleClass} {
-          -fx-translate-x:0.8em;
         }
         """;
 
