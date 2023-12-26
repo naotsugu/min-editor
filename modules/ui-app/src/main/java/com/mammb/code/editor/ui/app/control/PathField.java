@@ -54,6 +54,7 @@ public class PathField extends StackPane {
         text.setOnMouseMoved(this::handleTextMouseMoved);
         text.setOnMouseExited(this::handleTextMouseExited);
         text.textProperty().addListener(this::handleTextChanged);
+
     }
 
 

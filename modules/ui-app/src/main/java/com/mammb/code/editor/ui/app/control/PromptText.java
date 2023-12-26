@@ -43,7 +43,7 @@ public class PromptText extends StackPane {
      * Constructor.
      */
     public PromptText() {
-        text = new TextField();
+        text = new InputText();
         prompt = new Group(Icon.contentOf(""));
         StackPane.setAlignment(prompt, Pos.CENTER_LEFT);
         StackPane.setMargin(prompt, new Insets(0, 0, 0, 8));
@@ -78,6 +78,15 @@ public class PromptText extends StackPane {
      * @return the current position
      */
     public final int getCaretPosition() { return text.getCaretPosition(); }
+
+
+    /**
+     * Moves the caret to after the last char of the text. This function
+     * also has the effect of clearing the selection.
+     */
+    public void end() {
+        text.end();
+    }
 
 
     /**
