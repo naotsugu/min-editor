@@ -44,7 +44,7 @@ public class PromptText extends StackPane {
      */
     public PromptText() {
         text = new InputText();
-        prompt = new Group(Icon.contentOf(""));
+        prompt = new Group();
         StackPane.setAlignment(prompt, Pos.CENTER_LEFT);
         StackPane.setMargin(prompt, new Insets(0, 0, 0, 8));
         getChildren().addAll(text, prompt);
@@ -95,6 +95,16 @@ public class PromptText extends StackPane {
      */
     public final StringProperty textProperty() {
         return text.textProperty();
+    }
+
+
+    /**
+     * Get the text.
+     * @return the text
+     */
+    public String getText() {
+        var ret = text.getText();
+        return (ret == null) ? "" : ret;
     }
 
 

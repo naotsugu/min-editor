@@ -23,17 +23,19 @@ import javafx.scene.control.TextField;
  */
 public class InputText extends TextField {
 
+    /** caret locked. */
     private volatile boolean caretLocked = false;
 
 
     public InputText() {
-        focusedProperty().addListener((_, _, _) -> caretLocked = true);
+        focusedProperty().addListener((ob, o, n) -> caretLocked = true);
     }
 
 
     @Override
     public void selectRange(int anchor, int caretPosition) {
         if (caretLocked) {
+            // prevents caret from moving to the beginning of the line when focus out
             caretLocked = false;
         } else {
             super.selectRange(anchor, caretPosition);

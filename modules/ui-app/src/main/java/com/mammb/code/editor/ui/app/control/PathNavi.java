@@ -1,0 +1,88 @@
+/*
+ * Copyright 2019-2023 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mammb.code.editor.ui.app.control;
+
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.function.Consumer;
+
+/**
+ * The PathNavi.
+ * @author Naotsugu Kobayashi
+ */
+public class PathNavi extends ContextMenu {
+
+    private Path parent;
+
+
+    /**
+     * Constructor.
+     */
+    public PathNavi() {
+    }
+
+
+    /**
+     * Put the paths
+     * @param parent the parent path
+     * @param paths the paths
+     * @param consumer the consumer
+     */
+    public void put(Path parent, List<Path> paths, Consumer<Path> consumer) {
+        this.parent = parent;
+        getItems().clear();
+        getItems().addAll(createItems(paths, consumer));
+    }
+
+
+    /**
+     * Create the menu item list.
+     * @param paths the paths
+     * @param consumer the consumer
+     * @return the menu item list
+     */
+    private List<MenuItem> createItems(List<Path> paths, Consumer<Path> consumer) {
+        return paths.stream().map(p -> {
+            var item = new MenuItem(p.getFileName().toString(), Icon.contentOf(p));
+            item.setOnAction(e -> {
+                consumer.accept(p);
+                e.consume();
+            });
+            return item;
+        }).toList();
+    }
+
+
+    /**
+     * Clear.
+     */
+    public void clear() {
+        parent = null;
+        getItems().clear();
+    }
+
+
+    /**
+     * Get the parent path.
+     * @return
+     */
+    public Path getParent() {
+        return parent;
+    }
+
+}

@@ -105,8 +105,12 @@ public class Icon extends SVGPath {
     }
 
 
-
-    private static String extension(String string) {
+    /**
+     * Get the extension.
+     * @param string the string to be examined
+     * @return the extension
+     */
+    public static String extension(String string) {
         int index = string.lastIndexOf(".") + 1;
         return (index > 0 && index < string.length()) ? string.substring(index) : "";
     }
