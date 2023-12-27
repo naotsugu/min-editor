@@ -20,6 +20,7 @@ import com.mammb.code.editor.ui.pane.EditorPane;
 import com.mammb.code.editor.ui.pane.Session;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -47,6 +48,7 @@ public class App extends Application {
         var session = new EditorSession();
 
         var borderPane = new BorderPane(editorPane, bar, null, null, null);
+        BorderPane.setMargin(bar, new Insets(4, 2, 4, 2));
         borderPane.setFocusTraversable(false);
         borderPane.setOnKeyPressed(e -> {
             if (AppKeys.SC_N.match(e)) {
