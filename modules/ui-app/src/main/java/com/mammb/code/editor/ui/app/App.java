@@ -23,9 +23,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.Base64;
 
 /**
  * The Application.
@@ -42,7 +40,6 @@ public class App extends Application {
 
     private Stage buildScene(Stage stage, Context context) {
 
-        var uiColor = themeColor(context);
         var upCall = new AppEditorUpCall();
         var editorPane = new EditorPane(context, upCall);
         var downCall = editorPane.downCall();
@@ -68,8 +65,6 @@ public class App extends Application {
         });
 
         var scene = new Scene(borderPane);
-        //scene.getStylesheets().add(getClass().getResource("/app.css").toExternalForm());
-        scene.getStylesheets().add(css(uiColor));
         StCss.setScheme(context.preference().colorScheme());
         StCss.of().into(scene);
         stage.setScene(scene);
@@ -92,28 +87,6 @@ public class App extends Application {
         session.setBackwardDisableProperty(bar.backwardDisableProperty());
 
         return stage;
-    }
-
-    /**
-     * Get the app theme color.
-     * @param context the context
-     * @return the app theme color
-     */
-    private static UiColor themeColor(Context context) {
-        return switch (context.preference().colorScheme()) {
-            case DARK  -> UiColor.darkDefault();
-            case LIGHT -> UiColor.lightDefault();
-        };
-    }
-
-
-    private String css(UiColor tc) {
-        var css = """
-            .root {
-              -fx-accent:#7986CB80; /* Hue.INDIGO */
-            }
-            """;
-        return "data:text/css;base64," + Base64.getEncoder().encodeToString(css.getBytes(StandardCharsets.UTF_8));
     }
 
 }
