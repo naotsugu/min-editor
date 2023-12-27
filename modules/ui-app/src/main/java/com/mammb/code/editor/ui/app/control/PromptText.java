@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
-import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -90,11 +89,11 @@ public class PromptText extends StackPane {
 
 
     /**
-     * Get the text property.
-     * @return the text property
+     * Get the text field.
+     * @return the text field
      */
-    public final StringProperty textProperty() {
-        return text.textProperty();
+    public TextField textField() {
+        return text;
     }
 
 

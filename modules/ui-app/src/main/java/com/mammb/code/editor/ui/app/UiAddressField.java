@@ -86,7 +86,7 @@ public class UiAddressField extends UiPromptField {
             var index = text().getCaretPosition();
             var addressPath = AddressPath.of(Path.of(text().getText()));
             var bounds = text().localToScreen(text().getBoundsInLocal());
-            popup = UiPopupMenu.of(uiColor(), addressPath.listSibling(index), handlePathSelect());
+            popup = UiPopupMenu.of(uiColor(), addressPath.dirOn(index).listSibling(), handlePathSelect());
             popup.setOnHidden(we -> {
                 text().requestFocus();
                 text().positionCaret(index);
@@ -140,7 +140,7 @@ public class UiAddressField extends UiPromptField {
                 popup.hide();
             }
             var addressPath = AddressPath.of(Path.of(pathText));
-            popup = UiPopupMenu.of(uiColor(), addressPath.listSibling(index), handlePathSelect());
+            popup = UiPopupMenu.of(uiColor(), addressPath.dirOn(index).listSibling(), handlePathSelect());
             popup.setOnHidden(we -> {
                 text().requestFocus();
                 text().positionCaret(index);

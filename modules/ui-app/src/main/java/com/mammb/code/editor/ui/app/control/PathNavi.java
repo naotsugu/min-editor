@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import java.nio.file.Path;
@@ -27,26 +28,22 @@ import java.util.function.Consumer;
  */
 public class PathNavi extends ContextMenu {
 
-    private Path parent;
-
-
     /**
      * Constructor.
      */
-    public PathNavi() {
+    public PathNavi(List<Path> paths, Consumer<Path> consumer) {
+        super(createItems(paths, consumer));
+        setAutoHide(true);
+        setAutoFix(false);
     }
 
 
     /**
-     * Put the paths
-     * @param parent the parent path
-     * @param paths the paths
-     * @param consumer the consumer
+     * Get the specifies coordinate of the popup anchor point on the screen.
+     * @return the specifies coordinate of the popup anchor point on the screen
      */
-    public void put(Path parent, List<Path> paths, Consumer<Path> consumer) {
-        this.parent = parent;
-        getItems().clear();
-        getItems().addAll(createItems(paths, consumer));
+    public Point2D getAnchor() {
+        return new Point2D(getAnchorX(), getAnchorX());
     }
 
 
@@ -56,33 +53,16 @@ public class PathNavi extends ContextMenu {
      * @param consumer the consumer
      * @return the menu item list
      */
-    private List<MenuItem> createItems(List<Path> paths, Consumer<Path> consumer) {
+    private static MenuItem[] createItems(List<Path> paths, Consumer<Path> consumer) {
         return paths.stream().map(p -> {
             var item = new MenuItem(p.getFileName().toString(), Icon.contentOf(p));
             item.setOnAction(e -> {
-                consumer.accept(p);
                 e.consume();
+                consumer.accept(p);
+
             });
             return item;
-        }).toList();
-    }
-
-
-    /**
-     * Clear.
-     */
-    public void clear() {
-        parent = null;
-        getItems().clear();
-    }
-
-
-    /**
-     * Get the parent path.
-     * @return
-     */
-    public Path getParent() {
-        return parent;
+        }).toArray(MenuItem[]::new);
     }
 
 }

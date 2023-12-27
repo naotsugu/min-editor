@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -42,8 +43,12 @@ public class AddressPath {
         return new AddressPath(path, Files.isDirectory(path));
     }
 
+    public static AddressPath of(String path) {
+        return of(Path.of(path));
+    }
 
-    public Path dirOn(int index) {
+
+    public AddressPath dirOn(int index) {
         var ret = directory ? path : path.getParent();
         for (var p = ret; p != null; p = p.getParent()) {
             ret = p;
@@ -51,17 +56,12 @@ public class AddressPath {
                 break;
             }
         }
-        return ret;
+        return AddressPath.of(ret);
     }
 
 
     public List<Path> listSibling() {
         return list(directory ? path : path.getParent());
-    }
-
-
-    public List<Path> listSibling(int index) {
-        return list(dirOn(index));
     }
 
 
@@ -71,6 +71,24 @@ public class AddressPath {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return path.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AddressPath that = (AddressPath) o;
+        return Objects.equals(path, that.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path);
     }
 
 }

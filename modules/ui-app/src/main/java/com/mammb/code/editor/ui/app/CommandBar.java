@@ -68,7 +68,7 @@ public class CommandBar extends HBox {
 
 
     void setPathText(Path path) {
-        //field.textProperty().set((path == null) ? "" : path.toString());
+        pathField.textProperty().set((path == null) ? "" : path.toString());
     }
 
 
@@ -93,7 +93,7 @@ public class CommandBar extends HBox {
 
 
     void onPathSelected(Consumer<Path> consumer) {
-        //field.onPathSelected(consumer);
+        pathField.setOnPathSelect(consumer);
     }
 
 

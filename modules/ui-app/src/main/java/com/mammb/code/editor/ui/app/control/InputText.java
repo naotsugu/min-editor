@@ -28,7 +28,7 @@ public class InputText extends TextField {
 
 
     public InputText() {
-        focusedProperty().addListener((ob, o, n) -> caretLocked = true);
+        focusedProperty().addListener((ob, o, n) -> caretLocked = !n);
     }
 
 

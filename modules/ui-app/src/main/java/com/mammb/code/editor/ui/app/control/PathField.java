@@ -28,6 +28,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -38,14 +39,20 @@ import java.util.function.Consumer;
  */
 public class PathField extends StackPane {
 
-    /** The timeline. */
-    private Timeline timeline;
-
     /** The prompt text. */
     private final PromptText text;
 
+    /** The timeline. */
+    private Timeline timeline;
+
     /** The path navi. */
-    private final PathNavi pathNavi;
+    private PathNavi pathNavi;
+
+    /** The address path on timeline frame. */
+    private AddressPath addressPath;
+
+    /** The path select consumer. */
+    private Consumer<Path> pathSelectConsumer;
 
 
     /**
@@ -53,7 +60,6 @@ public class PathField extends StackPane {
      */
     public PathField() {
         text = new PromptText();
-        pathNavi = new PathNavi();
         getChildren().add(text);
         initHandler();
     }
@@ -63,13 +69,11 @@ public class PathField extends StackPane {
      * Initialize handler.
      */
     private void initHandler() {
-
-        text.disabledProperty().addListener(this::handleTextDisabled);
-        text.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTextKeyPressed);
-        text.setOnMouseMoved(this::handleTextMouseMoved);
-        text.setOnMouseExited(this::handleTextMouseExited);
-        text.textProperty().addListener(this::handleTextChanged);
-
+        text.textField().disabledProperty().addListener(this::handleTextDisabled);
+        text.textField().addEventFilter(KeyEvent.KEY_PRESSED, this::handleTextKeyPressed);
+        text.textField().setOnMouseMoved(this::handleTextMouseMoved);
+        text.textField().setOnMouseExited(this::handleTextMouseExited);
+        text.textField().textProperty().addListener(this::handleTextChanged);
     }
 
 
@@ -96,20 +100,9 @@ public class PathField extends StackPane {
             var index = text.getCaretPosition();
             var bounds = text.localToScreen(text.getBoundsInLocal());
             var point = new Point2D(bounds.getMinX() + (index * 8), bounds.getMaxY());
-            showPathNavi(index, point);
+            addressPath = AddressPath.of(text.getText()).dirOn(index);
+            showPathNavi(addressPath, point);
         }
-    }
-
-
-    private void showPathNavi(int index, Point2D point) {
-        var path = AddressPath.of(Path.of(text.getText()));
-        pathNavi.put(path.dirOn(index), path.listSibling(index), handlePathSelect());
-        pathNavi.show(getScene().getWindow(), point.getX(), point.getY());
-    }
-
-
-    private Consumer<Path> handlePathSelect() {
-        return path -> {};
     }
 
 
@@ -126,9 +119,52 @@ public class PathField extends StackPane {
 
         var point = new Point2D(e.getScreenX(), e.getScreenY());
         var index = text.getOffsetAtPoint(point);
-        runOnTimeline(_ -> showPathNavi(index, new Point2D(
-                point.getX(), text.localToScreen(text.getBoundsInLocal()).getMaxY()))
+        if (index == 0 || index >= text.getText().length()) {
+            stopTimeline();
+            return;
+        }
+
+        var path = AddressPath.of(text.getText()).dirOn(index);
+        if (path.equals(addressPath)) {
+            return;
+        }
+        addressPath = path;
+        runOnTimeline(ae -> showPathNavi(addressPath, new Point2D(
+            point.getX(), text.localToScreen(text.getBoundsInLocal()).getMaxY()))
         );
+    }
+
+
+
+    private void showPathNavi(AddressPath path, Point2D point) {
+        if (path == null) return;
+        if (pathNavi != null) {
+            pathNavi.hide();
+        }
+        pathNavi = new PathNavi(path.listSibling(), handlePathSelect());
+        pathNavi.setOnHidden(e -> {
+            stopPathSelecting();
+        });
+        pathNavi.show(getScene().getWindow(), point.getX(), point.getY());
+    }
+
+
+    /**
+     * Handle path select.
+     * @return the path select handler
+     */
+    private Consumer<Path> handlePathSelect() {
+        return path -> {
+            stopPathSelecting();
+            if (Files.isDirectory(path)) {
+                var point = pathNavi.getAnchor();
+                pathNavi = new PathNavi(AddressPath.of(path).listSibling(), handlePathSelect());
+                pathNavi.show(getScene().getWindow(), point.getX(),
+                    text.localToScreen(text.getBoundsInLocal()).getMaxY());
+            } else if (Files.isRegularFile(path) && pathSelectConsumer != null) {
+                pathSelectConsumer.accept(path);
+            }
+        };
     }
 
 
@@ -158,7 +194,7 @@ public class PathField extends StackPane {
      */
     private void handleTextChanged(ObservableValue<? extends String> ob, String o, String n) {
         var extension = Icon.extension(n);
-        if (!Objects.equals(Icon.extension(o), extension)) {
+        if (o.isBlank() || !Objects.equals(Icon.extension(o), extension)) {
             text.setPrompt(Icon.contentOf(extension));
         }
     }
@@ -169,9 +205,23 @@ public class PathField extends StackPane {
      * @return the text property
      */
     public final StringProperty textProperty() {
-        return text.textProperty();
+        return text.textField().textProperty();
     }
 
+
+    /**
+     * Set the path select consumer.
+     * @param consumer the path select consumer
+     */
+    public void setOnPathSelect(Consumer<Path> consumer) {
+        pathSelectConsumer = consumer;
+    }
+
+
+    private void stopPathSelecting() {
+        stopTimeline();
+        clearAddressPath();
+    }
 
     /**
      * Stop timeline.
@@ -181,6 +231,10 @@ public class PathField extends StackPane {
             timeline.stop();
             timeline = null;
         }
+    }
+
+    private void clearAddressPath() {
+        addressPath = null;
     }
 
 }
