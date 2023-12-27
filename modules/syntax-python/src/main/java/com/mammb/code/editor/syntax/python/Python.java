@@ -31,7 +31,7 @@ public class Python {
     public interface PythonToken extends com.mammb.code.editor.syntax.base.TokenType {
 
         TokenType KEYWORD = TokenType.build(Hue.DEEP_ORANGE);
-        TokenType LINE_COMMENT = TokenType.build(Hue.BLUE_GREY);
+        TokenType LINE_COMMENT = TokenType.build(Hue.DARK_GREY);
 
     }
 

@@ -35,7 +35,7 @@ public class Kotlin {
         TokenType TEXT = TokenType.build(Hue.GREEN);
         TokenType NUMBER = TokenType.build(Hue.CYAN);
         TokenType CHAR_LITERAL = TokenType.build(Hue.TEAL);
-        TokenType LINE_COMMENT = TokenType.build(Hue.BLUE_GREY);
+        TokenType LINE_COMMENT = TokenType.build(Hue.DARK_GREY);
         TokenType COMMENT = TokenType.build(Hue.GREEN);
         TokenType DOC_COMMENT = TokenType.build(Hue.GREEN);
 

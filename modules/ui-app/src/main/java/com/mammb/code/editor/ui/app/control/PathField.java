@@ -60,6 +60,7 @@ public class PathField extends StackPane {
      */
     public PathField() {
         text = new PromptText();
+        text.textField().setFocusTraversable(false);
         getChildren().add(text);
         initHandler();
     }

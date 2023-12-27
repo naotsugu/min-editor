@@ -31,7 +31,7 @@ public class Json {
         TokenType TEXT = TokenType.build(Hue.GREEN);
         TokenType NUMBER = TokenType.build(Hue.CYAN);
         TokenType LITERAL  = TokenType.build(Hue.CYAN);
-        TokenType LINE_COMMENT = TokenType.build(Hue.GREY);
+        TokenType LINE_COMMENT = TokenType.build(Hue.DARK_GREY);
         TokenType COMMENT = TokenType.build(Hue.GREEN);
 
     }
