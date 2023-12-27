@@ -73,6 +73,10 @@ public class AddressPath {
         }
     }
 
+    public int stringLength() {
+        return toString().length();
+    }
+
     @Override
     public String toString() {
         return path.toString();

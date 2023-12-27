@@ -21,6 +21,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
@@ -104,6 +105,21 @@ public class PromptText extends StackPane {
     public String getText() {
         var ret = text.getText();
         return (ret == null) ? "" : ret;
+    }
+
+
+    /**
+     * Get the screen point at index.
+     * @param index the index
+     * @return the screen point
+     */
+    public Point2D getScreenPointAtIndex(int index) {
+        var example = new Text(text.getText(0, index));
+        example.setFont(text.getFont());
+        var bounds = text.localToScreen(text.getBoundsInLocal());
+        double x = example.getBoundsInLocal().getWidth() + bounds.getMinX() +
+            text.getTranslateX() + text.getPadding().getLeft();
+        return new Point2D(x, bounds.getMaxY());
     }
 
 

@@ -98,10 +98,8 @@ public class PathField extends StackPane {
             if (text.getText().isBlank()) return;
 
             var index = text.getCaretPosition();
-            var bounds = text.localToScreen(text.getBoundsInLocal());
-            var point = new Point2D(bounds.getMinX() + (index * 8), bounds.getMaxY());
             addressPath = AddressPath.of(text.getText()).dirOn(index);
-            showPathNavi(addressPath, point);
+            showPathNavi(addressPath);
         }
     }
 
@@ -129,14 +127,12 @@ public class PathField extends StackPane {
             return;
         }
         addressPath = path;
-        runOnTimeline(ae -> showPathNavi(addressPath, new Point2D(
-            point.getX(), text.localToScreen(text.getBoundsInLocal()).getMaxY()))
-        );
+        runOnTimeline(ae -> showPathNavi(addressPath));
     }
 
 
 
-    private void showPathNavi(AddressPath path, Point2D point) {
+    private void showPathNavi(AddressPath path) {
         if (path == null) return;
         if (pathNavi != null) {
             pathNavi.hide();
@@ -145,6 +141,7 @@ public class PathField extends StackPane {
         pathNavi.setOnHidden(e -> {
             stopPathSelecting();
         });
+        Point2D point = text.getScreenPointAtIndex(path.stringLength());
         pathNavi.show(getScene().getWindow(), point.getX(), point.getY());
     }
 
