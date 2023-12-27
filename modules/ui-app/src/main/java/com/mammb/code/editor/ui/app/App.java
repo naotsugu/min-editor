@@ -34,11 +34,19 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
-        buildScene(stage, AppContext.of(getParameters())).show();
+        Context context = AppContext.of(getParameters());
+        StCss.install(context.preference().colorScheme());
+        buildScene(stage, context).show();
         stage.requestFocus();
     }
 
 
+    /**
+     * Build the scene.
+     * @param stage the stage
+     * @param context the context
+     * @return the stage
+     */
     private Stage buildScene(Stage stage, Context context) {
 
         var upCall = new AppEditorUpCall();
@@ -67,7 +75,7 @@ public class App extends Application {
         });
 
         var scene = new Scene(borderPane);
-        StCss.setScheme(context.preference().colorScheme());
+        StCss.install(context.preference().colorScheme());
         StCss.of().into(scene);
         stage.setScene(scene);
         stage.setTitle(Version.appName);
@@ -80,10 +88,10 @@ public class App extends Application {
         });
         upCall.onContentModified(c -> bar.setPathModified(c.modified()));
 
-        bar.onTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));
-        bar.onPathSelected(p -> downCall.requestPathChange(Session.of(p)));
-        bar.onForwardClicked(() -> downCall.requestPathChange(session.forward()));
-        bar.onBackwardClicked(() -> downCall.requestPathChange(session.backward()));
+        bar.setOnTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));
+        bar.setOnPathSelected(p -> downCall.requestPathChange(Session.of(p)));
+        bar.setOnForwardClicked(() -> downCall.requestPathChange(session.forward()));
+        bar.setOnBackwardClicked(() -> downCall.requestPathChange(session.backward()));
 
         session.setForwardDisableProperty(bar.forwardDisableProperty());
         session.setBackwardDisableProperty(bar.backwardDisableProperty());

@@ -60,7 +60,7 @@ public class AddressPath {
     }
 
 
-    public List<Path> listSibling() {
+    public List<Path> list() {
         return list(directory ? path : path.getParent());
     }
 

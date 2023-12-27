@@ -138,7 +138,7 @@ public class PathField extends StackPane {
         if (pathNavi != null) {
             pathNavi.hide();
         }
-        pathNavi = new PathNavi(path.listSibling(), handlePathSelect());
+        pathNavi = new PathNavi(path.list(), handlePathSelect());
         pathNavi.setOnHidden(e -> {
             stopPathSelecting();
         });
@@ -156,7 +156,7 @@ public class PathField extends StackPane {
             stopPathSelecting();
             if (Files.isDirectory(path)) {
                 var point = pathNavi.getAnchor();
-                pathNavi = new PathNavi(AddressPath.of(path).listSibling(), handlePathSelect());
+                pathNavi = new PathNavi(AddressPath.of(path).list(), handlePathSelect());
                 pathNavi.show(getScene().getWindow(), point.getX(),
                     text.localToScreen(text.getBoundsInLocal()).getMaxY());
             } else if (Files.isRegularFile(path) && pathSelectConsumer != null) {
@@ -216,6 +216,18 @@ public class PathField extends StackPane {
     }
 
 
+    /**
+     * Set the text committed handler.
+     * @param consumer the consumer
+     */
+    public void setOnTextCommitted(Consumer<String> consumer) {
+        text.setOnTextCommitted(consumer);
+    }
+
+
+    /**
+     * Stop path selecting.
+     */
     private void stopPathSelecting() {
         stopTimeline();
         clearAddressPath();
@@ -231,6 +243,9 @@ public class PathField extends StackPane {
         }
     }
 
+    /**
+     * Clear address path.
+     */
     private void clearAddressPath() {
         addressPath = null;
     }

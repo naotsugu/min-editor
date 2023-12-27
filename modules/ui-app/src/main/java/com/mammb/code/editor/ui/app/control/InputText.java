@@ -27,6 +27,9 @@ public class InputText extends TextField {
     private volatile boolean caretLocked = false;
 
 
+    /**
+     * Constructor.
+     */
     public InputText() {
         focusedProperty().addListener((ob, o, n) -> caretLocked = !n);
     }

@@ -87,22 +87,38 @@ public class CommandBar extends HBox {
     }
 
 
-    void onTextCommitted(Consumer<String> consumer) {
-        //field.textCommitted(consumer);
+    /**
+     * Set the text committed handler.
+     * @param consumer the consumer
+     */
+    void setOnTextCommitted(Consumer<String> consumer) {
+        pathField.setOnTextCommitted(consumer);
     }
 
 
-    void onPathSelected(Consumer<Path> consumer) {
+    /**
+     * Set the path select consumer.
+     * @param consumer the path select consumer
+     */
+    void setOnPathSelected(Consumer<Path> consumer) {
         pathField.setOnPathSelect(consumer);
     }
 
 
-    void onBackwardClicked(Runnable runnable) {
+    /**
+     * Set the backward clicked handler.
+     * @param runnable the backward clicked handler
+     */
+    void setOnBackwardClicked(Runnable runnable) {
         backward.setOnMouseClicked(e -> runnable.run());
     }
 
 
-    void onForwardClicked(Runnable runnable) {
+    /**
+     * Set the forward clicked handler.
+     * @param runnable the forward clicked handler
+     */
+    void setOnForwardClicked(Runnable runnable) {
         forward.setOnMouseClicked(e -> runnable.run());
     }
 

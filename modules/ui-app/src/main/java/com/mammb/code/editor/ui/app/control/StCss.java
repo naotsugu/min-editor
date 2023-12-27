@@ -47,7 +47,7 @@ public class StCss {
      * Set the scheme.
      * @param cs the color scheme
      */
-    public static void setScheme(ColorScheme cs) {
+    public static void install(ColorScheme cs) {
         styleTheme = switch (cs) {
             case DARK -> StyleTheme.dark();
             case LIGHT -> StyleTheme.light();

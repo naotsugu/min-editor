@@ -22,6 +22,7 @@ import javafx.scene.Group;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import java.util.function.Consumer;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
@@ -49,6 +50,21 @@ public class PromptText extends StackPane {
         StackPane.setMargin(prompt, new Insets(0, 0, 0, 8));
         getChildren().addAll(text, prompt);
         getStyleClass().add(styleClass);
+    }
+
+
+    /**
+     * Set the text committed handler.
+     * @param consumer the consumer
+     */
+    public void setOnTextCommitted(Consumer<String> consumer) {
+        text.setOnKeyTyped(e -> {
+            var bytes = e.getCharacter().getBytes();
+            if (bytes.length > 0 && bytes[0] == 13) { // enter
+                consumer.accept(text.getText());
+                e.consume();
+            }
+        });
     }
 
 

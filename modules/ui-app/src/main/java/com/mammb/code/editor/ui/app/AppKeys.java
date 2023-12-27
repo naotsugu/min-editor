@@ -26,8 +26,13 @@ import javafx.scene.input.KeyCombination;
  */
 public class AppKeys {
 
+    /** Shortcut n. */
     public static final KeyCombination SC_N = new KeyCharacterCombination("n", KeyCombination.SHORTCUT_DOWN);
+    /** Shortcut f. */
+    public static final KeyCombination SC_F = new KeyCharacterCombination("f", KeyCombination.SHORTCUT_DOWN);
+    /** Shortcut right. */
     public static final KeyCombination SC_FORWARD  = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN);
+    /** Shortcut left. */
     public static final KeyCombination SC_BACKWARD = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN);
 
 }

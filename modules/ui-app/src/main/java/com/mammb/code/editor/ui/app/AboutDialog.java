@@ -25,9 +25,9 @@ import javafx.scene.control.ButtonType;
 public class AboutDialog extends BasicDialog {
 
     public AboutDialog() {
-        var dialogPane = getDialogPane();
-        dialogPane.setContentText(String.join(" ", Version.appName, Version.value));
-        dialogPane.getButtonTypes().addAll(ButtonType.CLOSE);
+        var pane = getDialogPane();
+        pane.setContentText(String.join(" ", Version.appName, Version.value));
+        pane.getButtonTypes().addAll(ButtonType.CLOSE);
         setTitle("About");
     }
 

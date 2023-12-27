@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.app.control;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
@@ -56,11 +57,15 @@ public class PathNavi extends ContextMenu {
     private static MenuItem[] createItems(List<Path> paths, Consumer<Path> consumer) {
         return paths.stream().map(p -> {
             var item = new MenuItem(p.getFileName().toString(), Icon.contentOf(p));
-            item.setOnAction(e -> {
-                e.consume();
-                consumer.accept(p);
+            if (Files.isReadable(p)) {
+                item.setOnAction(e -> {
+                    e.consume();
+                    consumer.accept(p);
 
-            });
+                });
+            } else {
+                item.setDisable(true);
+            }
             return item;
         }).toArray(MenuItem[]::new);
     }
