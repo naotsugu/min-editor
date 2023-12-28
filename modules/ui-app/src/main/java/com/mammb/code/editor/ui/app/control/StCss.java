@@ -60,7 +60,7 @@ public class StCss {
      * @return the StCss
      */
     public static StCss of() {
-        var css = Css.join(root, Icon.css, FlatButton.css, PromptText.css);
+        var css = Css.join(root, Icon.css, FlatButton.css, PromptText.css, PathNavi.css);
         return new StCss(css.on(styleTheme));
     }
 
@@ -116,7 +116,7 @@ public class StCss {
           -fx-mark-color: -fx-light-text-color;
           -fx-mark-highlight-color: derive(-fx-mark-color,20%);
         }
-        .text-input {
+        .text-input, .label {
           -fx-font: 14px "Consolas";
         }
         """;

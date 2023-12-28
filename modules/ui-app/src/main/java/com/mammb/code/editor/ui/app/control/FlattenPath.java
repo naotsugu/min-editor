@@ -16,26 +16,31 @@
 package com.mammb.code.editor.ui.app.control;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.stream.Stream;
 
 /**
  * The flatten path.
  * @author Naotsugu Kobayashi
  */
-public class FlattenPath implements Path {
+public class FlattenPath extends BasicPath {
 
-    private final Path raw;
+    /** logger. */
+    private static final System.Logger log = System.getLogger(FlattenPath.class.getName());
+
+    private static final int limitOfCharLength = 50;
 
     private final Path flatten;
 
-    private static final int limitOfCharLength = 64;
-
 
     public FlattenPath(Path raw) {
-        this.raw = raw;
+        super(raw);
         this.flatten = delve(raw);
+    }
+
+    public static PathItem of(Path raw) {
+        return new FlattenPath(raw);
     }
 
 
@@ -51,6 +56,7 @@ public class FlattenPath implements Path {
                         }
                     }
                 } catch (IOException e) {
+                    log.log(System.Logger.Level.WARNING, e);
                     return p;
                 }
             }
@@ -59,114 +65,15 @@ public class FlattenPath implements Path {
     }
 
 
-    public String getFlattenName() {
-        return raw.relativize(flatten).toString();
+    @Override
+    public String name() {
+        return super.raw().equals(flatten) ? super.name() : relativize(flatten).toString();
     }
 
 
     @Override
-    public FileSystem getFileSystem() {
-        return flatten.getFileSystem();
-    }
-
-    @Override
-    public boolean isAbsolute() {
-        return flatten.isAbsolute();
-    }
-
-    @Override
-    public Path getRoot() {
-        return flatten.getRoot();
-    }
-
-    @Override
-    public Path getFileName() {
-        return flatten.getFileName();
-    }
-
-    @Override
-    public Path getParent() {
-        return flatten.getParent();
-    }
-
-    @Override
-    public int getNameCount() {
-        return flatten.getNameCount();
-    }
-
-    @Override
-    public Path getName(int index) {
-        return flatten.getName(index);
-    }
-
-    @Override
-    public Path subpath(int beginIndex, int endIndex) {
-        return flatten.subpath(beginIndex, endIndex);
-    }
-
-    @Override
-    public boolean startsWith(Path other) {
-        return flatten.startsWith(other);
-    }
-
-    @Override
-    public boolean endsWith(Path other) {
-        return flatten.endsWith(other);
-    }
-
-    @Override
-    public Path normalize() {
-        return flatten.normalize();
-    }
-
-    @Override
-    public Path resolve(Path other) {
-        return flatten.resolve(other);
-    }
-
-    @Override
-    public Path relativize(Path other) {
-        return flatten.relativize(other);
-    }
-
-    @Override
-    public URI toUri() {
-        return flatten.toUri();
-    }
-
-    @Override
-    public Path toAbsolutePath() {
-        return flatten.toAbsolutePath();
-    }
-
-    @Override
-    public Path toRealPath(LinkOption... options) throws IOException {
-        return flatten.toRealPath(options);
-    }
-
-    @Override
-    public WatchKey register(WatchService watcher, WatchEvent.Kind<?>[] events, WatchEvent.Modifier... modifiers) throws IOException {
-        return flatten.register(watcher, events, modifiers);
-    }
-
-    @Override
-    public int compareTo(Path other) {
-        return flatten.compareTo(other);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return flatten.equals(other);
-    }
-
-    @Override
-    public int hashCode() {
-        return flatten.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return flatten.toString();
+    public Path raw() {
+        return flatten;
     }
 
 }

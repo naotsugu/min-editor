@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
-import com.mammb.code.editor.ui.app.AddressPath;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.StringProperty;
@@ -140,7 +139,7 @@ public class PathField extends StackPane {
         if (pathNavi != null) {
             pathNavi.hide();
         }
-        pathNavi = new PathNavi(path.path(), path.list(), handlePathSelect());
+        pathNavi = new PathNavi(path.path(), path.listItem(), handlePathSelect());
         addressPath = null;
         pathNavi.setOnHidden(e -> {
         });
@@ -156,15 +155,16 @@ public class PathField extends StackPane {
      */
     private Consumer<Path> handlePathSelect() {
         return path -> {
+            var point = pathNavi.getAnchor();
             clearPathNavi();
-            if (Files.isDirectory(path)) {
-                var point = pathNavi.getAnchor();
-                var p = AddressPath.of(path);
-                pathNavi = new PathNavi(p.path(), p.list(), handlePathSelect());
+            Path raw = (path instanceof PathItem item) ? item.raw() : path;
+            if (Files.isDirectory(raw)) {
+                var p = AddressPath.of(raw);
+                pathNavi = new PathNavi(p.path(), p.listItem(), handlePathSelect());
                 pathNavi.show(getScene().getWindow(), point.getX(),
                     text.localToScreen(text.getBoundsInLocal()).getMaxY());
-            } else if (Files.isRegularFile(path) && pathSelectConsumer != null) {
-                pathSelectConsumer.accept(path);
+            } else if (Files.isRegularFile(raw) && pathSelectConsumer != null) {
+                pathSelectConsumer.accept(raw);
             }
         };
     }

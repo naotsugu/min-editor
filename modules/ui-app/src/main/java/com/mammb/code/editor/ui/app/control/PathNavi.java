@@ -32,6 +32,9 @@ import java.util.function.Consumer;
  */
 public class PathNavi extends ContextMenu {
 
+    /** logger. */
+    private static final System.Logger log = System.getLogger(PathNavi.class.getName());
+
     /** The parent path. */
     private Path parent;
 
@@ -39,7 +42,7 @@ public class PathNavi extends ContextMenu {
     /**
      * Constructor.
      */
-    public PathNavi(Path parent, List<Path> paths, Consumer<Path> consumer) {
+    public PathNavi(Path parent, List<PathItem> paths, Consumer<Path> consumer) {
         super(createItems(paths, consumer));
         this.parent = Objects.requireNonNull(parent);
         setAutoHide(true);
@@ -56,6 +59,10 @@ public class PathNavi extends ContextMenu {
     }
 
 
+    /**
+     * The key pressed handler
+     * @param e the key event
+     */
     private void handleKeyPressed(KeyEvent e) {
         if (e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.RIGHT) {
             hide();
@@ -78,14 +85,13 @@ public class PathNavi extends ContextMenu {
      * @param consumer the consumer
      * @return the menu item list
      */
-    private static MenuItem[] createItems(List<Path> paths, Consumer<Path> consumer) {
+    private static MenuItem[] createItems(List<PathItem> paths, Consumer<Path> consumer) {
         return paths.stream().map(p -> {
-            var item = new MenuItem(p.getFileName().toString(), Icon.contentOf(p));
-            if (Files.isReadable(p)) {
+            var item = new MenuItem(p.name(), Icon.contentOf(p.raw()));
+            if (Files.isReadable(p.raw())) {
                 item.setOnAction(e -> {
                     e.consume();
                     consumer.accept(p);
-
                 });
             } else {
                 item.setDisable(true);
@@ -102,5 +108,6 @@ public class PathNavi extends ContextMenu {
     public Path getParent() {
         return parent;
     }
+
 
 }

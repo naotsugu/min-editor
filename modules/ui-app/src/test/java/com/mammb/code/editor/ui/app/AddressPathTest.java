@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import com.mammb.code.editor.ui.app.control.AddressPath;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;

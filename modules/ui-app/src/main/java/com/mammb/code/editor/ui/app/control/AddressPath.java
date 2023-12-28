@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.app;
+package com.mammb.code.editor.ui.app.control;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -69,10 +69,22 @@ public class AddressPath {
         return list(directory ? path : path.getParent());
     }
 
+    public List<PathItem> listItem() {
+        return listItem(directory ? path : path.getParent());
+    }
+
 
     private List<Path> list(Path path) {
         try (Stream<Path> s = Files.list(path)) {
             return s.sorted(Comparator.comparing(p -> Files.isDirectory(p) ? -1 : 1)).toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<PathItem> listItem(Path path) {
+        try (Stream<Path> s = Files.list(path)) {
+            return s.map(FlattenPath::of).sorted(Comparator.comparing(p -> Files.isDirectory(p.raw()) ? -1 : 1)).toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
