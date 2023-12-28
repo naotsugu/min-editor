@@ -27,24 +27,27 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * The PathNavi.
+ * The path menu.
  * @author Naotsugu Kobayashi
  */
-public class UiPathNavi extends ContextMenu {
+public class UiPathMenu extends ContextMenu {
 
     /** logger. */
-    private static final System.Logger log = System.getLogger(UiPathNavi.class.getName());
+    private static final System.Logger log = System.getLogger(UiPathMenu.class.getName());
 
     /** The parent path. */
     private Path parent;
+
+    private final Consumer<Path> consumer;
 
 
     /**
      * Constructor.
      */
-    public UiPathNavi(Path parent, List<PathItem> paths, Consumer<Path> consumer) {
+    public UiPathMenu(Path parent, List<PathItem> paths, Consumer<Path> consumer) {
         super(createItems(paths, consumer));
         this.parent = Objects.requireNonNull(parent);
+        this.consumer = Objects.requireNonNull(consumer);
         setAutoHide(true);
         setAutoFix(false);
         initHandler();
@@ -65,7 +68,16 @@ public class UiPathNavi extends ContextMenu {
      */
     private void handleKeyPressed(KeyEvent e) {
         if (e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.RIGHT) {
+            e.consume();
             hide();
+        }
+        if (e.getCode() == KeyCode.BACK_SPACE) {
+            e.consume();
+            var p = parent.getParent();
+            if (p != null) {
+                getItems().clear();
+                getItems().addAll(createItems(AddressPath.of(p).listItem(), consumer));
+            }
         }
     }
 

@@ -45,7 +45,7 @@ public class PathField extends StackPane {
     private Timeline timeline;
 
     /** The path navi. */
-    private UiPathNavi pathNavi;
+    private UiPathMenu pathNavi;
 
     /** The address path on timeline frame. */
     private AddressPath addressPath;
@@ -139,7 +139,7 @@ public class PathField extends StackPane {
         if (pathNavi != null) {
             pathNavi.hide();
         }
-        pathNavi = new UiPathNavi(path.path(), path.listItem(), handlePathSelect());
+        pathNavi = new UiPathMenu(path.path(), path.listItem(), handlePathSelect());
         addressPath = null;
         pathNavi.setOnHidden(e -> {
         });
@@ -160,7 +160,7 @@ public class PathField extends StackPane {
             Path raw = (path instanceof PathItem item) ? item.raw() : path;
             if (Files.isDirectory(raw)) {
                 var p = AddressPath.of(raw);
-                pathNavi = new UiPathNavi(p.path(), p.listItem(), handlePathSelect());
+                pathNavi = new UiPathMenu(p.path(), p.listItem(), handlePathSelect());
                 pathNavi.show(getScene().getWindow(), point.getX(),
                     text.localToScreen(text.getBoundsInLocal()).getMaxY());
             } else if (Files.isRegularFile(raw) && pathSelectConsumer != null) {
