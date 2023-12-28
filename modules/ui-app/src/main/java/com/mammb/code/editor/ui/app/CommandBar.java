@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.ui.app;
 
-import com.mammb.code.editor.ui.app.control.FlatButton;
-import com.mammb.code.editor.ui.app.control.Icon;
+import com.mammb.code.editor.ui.app.control.UiFlatButton;
+import com.mammb.code.editor.ui.app.control.UiIcon;
 import com.mammb.code.editor.ui.app.control.PathField;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Pos;
@@ -50,10 +50,10 @@ public class CommandBar extends HBox {
         super(4);
         setAlignment(Pos.CENTER_LEFT);
 
-        forward = new FlatButton(Icon.arrowRightShort().larger());
-        backward = new FlatButton(Icon.arrowLeftShort().larger());
+        forward = new UiFlatButton(UiIcon.arrowRightShort().larger());
+        backward = new UiFlatButton(UiIcon.arrowLeftShort().larger());
         pathField = new PathField();
-        menu = new FlatButton(Icon.list().larger());
+        menu = new UiFlatButton(UiIcon.list().larger());
 
         forward.setDisable(true);
         backward.setDisable(true);

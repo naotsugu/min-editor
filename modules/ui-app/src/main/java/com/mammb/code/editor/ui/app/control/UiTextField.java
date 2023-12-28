@@ -21,7 +21,7 @@ import javafx.scene.control.TextField;
  * The InputText.
  * @author Naotsugu Kobayashi
  */
-public class InputText extends TextField {
+public class UiTextField extends TextField {
 
     /** caret locked. */
     private volatile boolean caretLocked = false;
@@ -30,7 +30,7 @@ public class InputText extends TextField {
     /**
      * Constructor.
      */
-    public InputText() {
+    public UiTextField() {
         focusedProperty().addListener((ob, o, n) -> caretLocked = !n);
     }
 

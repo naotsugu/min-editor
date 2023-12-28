@@ -23,8 +23,16 @@ import java.nio.file.Path;
  */
 public interface PathItem extends Path {
 
+    /**
+     * Get the name.
+     * @return the name
+     */
     String name();
 
+    /**
+     * Get the raw path.
+     * @return the raw path
+     */
     Path raw();
 
 }

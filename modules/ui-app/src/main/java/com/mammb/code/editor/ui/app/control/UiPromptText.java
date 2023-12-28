@@ -31,10 +31,10 @@ import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
  * The PromptText.
  * @author Naotsugu Kobayashi
  */
-public class PromptText extends StackPane {
+public class UiPromptText extends StackPane {
 
     /** The text field. */
-    private final InputText text;
+    private final UiTextField text;
 
     /** The prompt icon. */
     private final Group prompt;
@@ -43,8 +43,8 @@ public class PromptText extends StackPane {
     /**
      * Constructor.
      */
-    public PromptText() {
-        text = new InputText();
+    public UiPromptText() {
+        text = new UiTextField();
         prompt = new Group();
         StackPane.setAlignment(prompt, Pos.CENTER_LEFT);
         StackPane.setMargin(prompt, new Insets(0, 0, 0, 8));
@@ -72,7 +72,7 @@ public class PromptText extends StackPane {
      * Set the prompt icon.
      * @param icon the prompt icon
      */
-    public void setPrompt(Icon icon) {
+    public void setPrompt(UiIcon icon) {
         prompt.getChildren().clear();
         prompt.getChildren().add(icon);
     }

@@ -39,13 +39,13 @@ import java.util.function.Consumer;
 public class PathField extends StackPane {
 
     /** The prompt text. */
-    private final PromptText text;
+    private final UiPromptText text;
 
     /** The timeline. */
     private Timeline timeline;
 
     /** The path navi. */
-    private PathNavi pathNavi;
+    private UiPathNavi pathNavi;
 
     /** The address path on timeline frame. */
     private AddressPath addressPath;
@@ -58,7 +58,7 @@ public class PathField extends StackPane {
      * Constructor.
      */
     public PathField() {
-        text = new PromptText();
+        text = new UiPromptText();
         text.textField().setFocusTraversable(false);
         getChildren().add(text);
         initHandler();
@@ -139,7 +139,7 @@ public class PathField extends StackPane {
         if (pathNavi != null) {
             pathNavi.hide();
         }
-        pathNavi = new PathNavi(path.path(), path.listItem(), handlePathSelect());
+        pathNavi = new UiPathNavi(path.path(), path.listItem(), handlePathSelect());
         addressPath = null;
         pathNavi.setOnHidden(e -> {
         });
@@ -160,7 +160,7 @@ public class PathField extends StackPane {
             Path raw = (path instanceof PathItem item) ? item.raw() : path;
             if (Files.isDirectory(raw)) {
                 var p = AddressPath.of(raw);
-                pathNavi = new PathNavi(p.path(), p.listItem(), handlePathSelect());
+                pathNavi = new UiPathNavi(p.path(), p.listItem(), handlePathSelect());
                 pathNavi.show(getScene().getWindow(), point.getX(),
                     text.localToScreen(text.getBoundsInLocal()).getMaxY());
             } else if (Files.isRegularFile(raw) && pathSelectConsumer != null) {
@@ -199,9 +199,9 @@ public class PathField extends StackPane {
      * @param n the new value
      */
     private void handleTextChanged(ObservableValue<? extends String> ob, String o, String n) {
-        var extension = Icon.extension(n);
-        if (o.isBlank() || !Objects.equals(Icon.extension(o), extension)) {
-            text.setPrompt(Icon.contentOf(extension));
+        var extension = UiIcon.extension(n);
+        if (o.isBlank() || !Objects.equals(UiIcon.extension(o), extension)) {
+            text.setPrompt(UiIcon.contentOf(extension));
         }
     }
 

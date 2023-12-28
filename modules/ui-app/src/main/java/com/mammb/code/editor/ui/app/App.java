@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.app;
 
-import com.mammb.code.editor.ui.app.control.StCss;
+import com.mammb.code.editor.ui.app.control.ThemeCss;
 import com.mammb.code.editor.ui.pane.EditorPane;
 import com.mammb.code.editor.ui.pane.Session;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -35,7 +35,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         Context context = AppContext.of(getParameters());
-        StCss.install(context.preference().colorScheme());
+        ThemeCss.install(context.preference().colorScheme());
         buildScene(stage, context).show();
         stage.requestFocus();
     }
@@ -75,8 +75,8 @@ public class App extends Application {
         });
 
         var scene = new Scene(borderPane);
-        StCss.install(context.preference().colorScheme());
-        StCss.of().into(scene);
+        ThemeCss.install(context.preference().colorScheme());
+        ThemeCss.of().into(scene);
         stage.setScene(scene);
         stage.setTitle(Version.appName);
         stage.setOnCloseRequest(editorPane::handleCloseRequest);

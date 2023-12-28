@@ -29,16 +29,27 @@ public class FlattenPath extends BasicPath {
     /** logger. */
     private static final System.Logger log = System.getLogger(FlattenPath.class.getName());
 
+    /** The limit of path char length. */
     private static final int limitOfCharLength = 50;
 
+    /** The flatten path. */
     private final Path flatten;
 
 
+    /**
+     * Constructor.
+     * @param raw the raw path
+     */
     public FlattenPath(Path raw) {
         super(raw);
         this.flatten = delve(raw);
     }
 
+    /**
+     * Create the path item.
+     * @param raw the raw path
+     * @return the path item
+     */
     public static PathItem of(Path raw) {
         return new FlattenPath(raw);
     }

@@ -15,14 +15,14 @@
  */
 package com.mammb.code.editor.ui.app;
 
-import com.mammb.code.editor.ui.app.control.BasicDialog;
+import com.mammb.code.editor.ui.app.control.UiBasicDialog;
 import javafx.scene.control.ButtonType;
 
 /**
  * The AboutDialog.
  * @author Naotsugu Kobayashi
  */
-public class AboutDialog extends BasicDialog {
+public class AboutDialog extends UiBasicDialog {
 
     public AboutDialog() {
         var pane = getDialogPane();

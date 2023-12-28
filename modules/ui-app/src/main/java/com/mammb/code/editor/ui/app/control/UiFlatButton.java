@@ -23,14 +23,14 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
  * The FlatButton.
  * @author Naotsugu Kobayashi
  */
-public class FlatButton extends Button {
+public class UiFlatButton extends Button {
 
     /**
      * Constructor.
      * @param text the button text
      * @param icon the icon
      */
-    public FlatButton(String text, Icon icon) {
+    public UiFlatButton(String text, UiIcon icon) {
         super(text);
         getStyleClass().add(styleClass);
         setFocusTraversable(false);
@@ -42,7 +42,7 @@ public class FlatButton extends Button {
      * Constructor.
      * @param icon the icon
      */
-    public FlatButton(Icon icon) {
+    public UiFlatButton(UiIcon icon) {
         this("", icon);
     }
 

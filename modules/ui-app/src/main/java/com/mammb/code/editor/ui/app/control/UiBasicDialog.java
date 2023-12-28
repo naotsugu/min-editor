@@ -22,13 +22,13 @@ import javafx.scene.control.Dialog;
  * The BasicDialog.
  * @author Naotsugu Kobayashi
  */
-public class BasicDialog extends Dialog<ButtonType> {
+public class UiBasicDialog extends Dialog<ButtonType> {
 
     /**
      * Constructor.
      */
-    public BasicDialog() {
-        StCss.rootOf().into(getDialogPane());
+    public UiBasicDialog() {
+        ThemeCss.rootOf().into(getDialogPane());
     }
 
 }

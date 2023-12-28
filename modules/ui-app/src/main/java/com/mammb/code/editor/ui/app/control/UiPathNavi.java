@@ -30,10 +30,10 @@ import java.util.function.Consumer;
  * The PathNavi.
  * @author Naotsugu Kobayashi
  */
-public class PathNavi extends ContextMenu {
+public class UiPathNavi extends ContextMenu {
 
     /** logger. */
-    private static final System.Logger log = System.getLogger(PathNavi.class.getName());
+    private static final System.Logger log = System.getLogger(UiPathNavi.class.getName());
 
     /** The parent path. */
     private Path parent;
@@ -42,7 +42,7 @@ public class PathNavi extends ContextMenu {
     /**
      * Constructor.
      */
-    public PathNavi(Path parent, List<PathItem> paths, Consumer<Path> consumer) {
+    public UiPathNavi(Path parent, List<PathItem> paths, Consumer<Path> consumer) {
         super(createItems(paths, consumer));
         this.parent = Objects.requireNonNull(parent);
         setAutoHide(true);
@@ -87,7 +87,7 @@ public class PathNavi extends ContextMenu {
      */
     private static MenuItem[] createItems(List<PathItem> paths, Consumer<Path> consumer) {
         return paths.stream().map(p -> {
-            var item = new MenuItem(p.name(), Icon.contentOf(p.raw()));
+            var item = new MenuItem(p.name(), UiIcon.contentOf(p.raw()));
             if (Files.isReadable(p.raw())) {
                 item.setOnAction(e -> {
                     e.consume();

@@ -25,7 +25,7 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
  * The theme css.
  * @author Naotsugu Kobayashi
  */
-public class StCss {
+public class ThemeCss {
 
     /** The style theme. */
     private static volatile StyleTheme styleTheme = StyleTheme.dark();
@@ -38,7 +38,7 @@ public class StCss {
      * Constructor.
      * @param cssRun the css run
      */
-    private StCss(CssRun cssRun) {
+    private ThemeCss(CssRun cssRun) {
         this.cssRun = cssRun;
     }
 
@@ -59,9 +59,9 @@ public class StCss {
      * Create the theme css.
      * @return the StCss
      */
-    public static StCss of() {
-        var css = Css.join(root, Icon.css, FlatButton.css, PromptText.css);
-        return new StCss(css.on(styleTheme));
+    public static ThemeCss of() {
+        var css = Css.join(root, UiIcon.css, UiFlatButton.css, UiPromptText.css);
+        return new ThemeCss(css.on(styleTheme));
     }
 
 
@@ -70,8 +70,8 @@ public class StCss {
      * @param css the css
      * @return the StCss
      */
-    public static StCss of(Css css) {
-        return new StCss(css.on(styleTheme));
+    public static ThemeCss of(Css css) {
+        return new ThemeCss(css.on(styleTheme));
     }
 
 
@@ -79,7 +79,7 @@ public class StCss {
      * Create the root theme css.
      * @return the StCss
      */
-    public static StCss rootOf() {
+    public static ThemeCss rootOf() {
         return of(root);
     }
 
