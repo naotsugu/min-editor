@@ -60,7 +60,7 @@ public class StCss {
      * @return the StCss
      */
     public static StCss of() {
-        var css = Css.join(root, Icon.css, FlatButton.css, PromptText.css, PathNavi.css);
+        var css = Css.join(root, Icon.css, FlatButton.css, PromptText.css);
         return new StCss(css.on(styleTheme));
     }
 
