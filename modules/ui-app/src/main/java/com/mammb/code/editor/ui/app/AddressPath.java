@@ -29,9 +29,9 @@ import java.util.stream.Stream;
  */
 public class AddressPath {
 
-    private Path path;
+    private final Path path;
 
-    private boolean directory;
+    private final boolean directory;
 
 
     AddressPath(Path path, boolean directory) {
@@ -60,6 +60,11 @@ public class AddressPath {
     }
 
 
+    public Path path() {
+        return path;
+    }
+
+
     public List<Path> list() {
         return list(directory ? path : path.getParent());
     }
@@ -73,9 +78,11 @@ public class AddressPath {
         }
     }
 
+
     public int stringLength() {
         return toString().length();
     }
+
 
     @Override
     public String toString() {

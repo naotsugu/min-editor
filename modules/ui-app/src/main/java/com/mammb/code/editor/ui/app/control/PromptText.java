@@ -34,7 +34,7 @@ import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
 public class PromptText extends StackPane {
 
     /** The text field. */
-    private final TextField text;
+    private final InputText text;
 
     /** The prompt icon. */
     private final Group prompt;
@@ -85,7 +85,7 @@ public class PromptText extends StackPane {
      */
     public int getOffsetAtPoint(Point2D point) {
         var offset = (Integer) text.queryAccessibleAttribute(OFFSET_AT_POINT, point);
-        return (offset == null || offset > text.getText().length()) ? -1 : offset;
+        return (offset == null || offset >= (text.getText().length() - 1)) ? -1 : offset;
     }
 
 

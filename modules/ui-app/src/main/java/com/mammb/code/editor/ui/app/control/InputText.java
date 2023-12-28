@@ -35,6 +35,11 @@ public class InputText extends TextField {
     }
 
 
+    public void caretFlashLock() {
+        caretLocked = true;
+    }
+
+
     @Override
     public void selectRange(int anchor, int caretPosition) {
         if (caretLocked) {

@@ -98,9 +98,11 @@ public class PathField extends StackPane {
         if (e.getCode() == KeyCode.DOWN) {
             if (text.getText().isBlank()) return;
 
+            e.consume();
             var index = text.getCaretPosition();
-            addressPath = AddressPath.of(text.getText()).dirOn(index);
-            showPathNavi(addressPath);
+            var path = AddressPath.of(text.getText()).dirOn(index);
+            addressPath = path;
+            showPathNavi(path);
         }
     }
 
@@ -118,32 +120,33 @@ public class PathField extends StackPane {
 
         var point = new Point2D(e.getScreenX(), e.getScreenY());
         var index = text.getOffsetAtPoint(point);
-        if (index == 0 || index >= text.getText().length()) {
+        if (index <= 0 || index >= text.getText().length()) {
             stopTimeline();
             return;
         }
 
         var path = AddressPath.of(text.getText()).dirOn(index);
-        if (path.equals(addressPath)) {
+        if (path.equals(addressPath) ||
+            pathNavi != null && pathNavi.getParent().equals(path.path())) {
             return;
         }
         addressPath = path;
-        runOnTimeline(ae -> showPathNavi(addressPath));
+        runOnTimeline(ae -> showPathNavi(path));
     }
 
 
 
     private void showPathNavi(AddressPath path) {
-        if (path == null) return;
         if (pathNavi != null) {
             pathNavi.hide();
         }
-        pathNavi = new PathNavi(path.list(), handlePathSelect());
+        pathNavi = new PathNavi(path.path(), path.list(), handlePathSelect());
+        addressPath = null;
         pathNavi.setOnHidden(e -> {
-            stopPathSelecting();
         });
         Point2D point = text.getScreenPointAtIndex(path.stringLength());
         pathNavi.show(getScene().getWindow(), point.getX(), point.getY());
+        pathNavi.requestFocus();
     }
 
 
@@ -153,10 +156,11 @@ public class PathField extends StackPane {
      */
     private Consumer<Path> handlePathSelect() {
         return path -> {
-            stopPathSelecting();
+            clearPathNavi();
             if (Files.isDirectory(path)) {
                 var point = pathNavi.getAnchor();
-                pathNavi = new PathNavi(AddressPath.of(path).list(), handlePathSelect());
+                var p = AddressPath.of(path);
+                pathNavi = new PathNavi(p.path(), p.list(), handlePathSelect());
                 pathNavi.show(getScene().getWindow(), point.getX(),
                     text.localToScreen(text.getBoundsInLocal()).getMaxY());
             } else if (Files.isRegularFile(path) && pathSelectConsumer != null) {
@@ -166,6 +170,10 @@ public class PathField extends StackPane {
     }
 
 
+    /**
+     * Run on timeline.
+     * @param eventEventHandler the action handler event
+     */
     private void runOnTimeline(EventHandler<ActionEvent> eventEventHandler) {
         timeline = new Timeline();
         timeline.setCycleCount(1);
@@ -228,9 +236,13 @@ public class PathField extends StackPane {
     /**
      * Stop path selecting.
      */
-    private void stopPathSelecting() {
+    private void clearPathNavi() {
         stopTimeline();
-        clearAddressPath();
+        addressPath = null;
+        if (pathNavi != null) {
+            pathNavi.hide();
+            pathNavi = null;
+        }
     }
 
     /**
@@ -241,13 +253,6 @@ public class PathField extends StackPane {
             timeline.stop();
             timeline = null;
         }
-    }
-
-    /**
-     * Clear address path.
-     */
-    private void clearAddressPath() {
-        addressPath = null;
     }
 
 }

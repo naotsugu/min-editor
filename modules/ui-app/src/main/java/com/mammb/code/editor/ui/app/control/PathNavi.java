@@ -18,9 +18,12 @@ package com.mammb.code.editor.ui.app.control;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -29,13 +32,34 @@ import java.util.function.Consumer;
  */
 public class PathNavi extends ContextMenu {
 
+    /** The parent path. */
+    private Path parent;
+
+
     /**
      * Constructor.
      */
-    public PathNavi(List<Path> paths, Consumer<Path> consumer) {
+    public PathNavi(Path parent, List<Path> paths, Consumer<Path> consumer) {
         super(createItems(paths, consumer));
+        this.parent = Objects.requireNonNull(parent);
         setAutoHide(true);
         setAutoFix(false);
+        initHandler();
+    }
+
+
+    /**
+     * Initialize handler.
+     */
+    private void initHandler() {
+        addEventHandler(KeyEvent.KEY_PRESSED, this::handleKeyPressed);
+    }
+
+
+    private void handleKeyPressed(KeyEvent e) {
+        if (e.getCode() == KeyCode.LEFT || e.getCode() == KeyCode.RIGHT) {
+            hide();
+        }
     }
 
 
@@ -68,6 +92,15 @@ public class PathNavi extends ContextMenu {
             }
             return item;
         }).toArray(MenuItem[]::new);
+    }
+
+
+    /**
+     * Get the parent path.
+     * @return the parent path
+     */
+    public Path getParent() {
+        return parent;
     }
 
 }
