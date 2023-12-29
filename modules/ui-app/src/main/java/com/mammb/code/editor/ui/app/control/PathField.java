@@ -101,7 +101,7 @@ public class PathField extends StackPane {
             var index = text.getCaretPosition();
             var path = AddressPath.of(text.getText()).dirOn(index);
             addressPath = path;
-            showPathNavi(path);
+            showPathMenu(path);
         }
     }
 
@@ -130,12 +130,15 @@ public class PathField extends StackPane {
             return;
         }
         addressPath = path;
-        runOnTimeline(ae -> showPathNavi(path));
+        runOnTimeline(ae -> showPathMenu(path));
     }
 
 
-
-    private void showPathNavi(AddressPath path) {
+    /**
+     * Show path menu.
+     * @param path the address path
+     */
+    private void showPathMenu(AddressPath path) {
         if (pathNavi != null) {
             pathNavi.hide();
         }
@@ -177,7 +180,7 @@ public class PathField extends StackPane {
     private void runOnTimeline(EventHandler<ActionEvent> eventEventHandler) {
         timeline = new Timeline();
         timeline.setCycleCount(1);
-        var keyFrame = new KeyFrame(Duration.millis(1000), eventEventHandler);
+        var keyFrame = new KeyFrame(Duration.millis(1200), eventEventHandler);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
     }
@@ -244,6 +247,7 @@ public class PathField extends StackPane {
             pathNavi = null;
         }
     }
+
 
     /**
      * Stop timeline.

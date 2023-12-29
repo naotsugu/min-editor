@@ -29,11 +29,17 @@ import java.util.stream.Stream;
  */
 public class AddressPath {
 
+    /** The target path. */
     private final Path path;
-
+    /** Whether the target path is a directory or not. */
     private final boolean directory;
 
 
+    /**
+     * Constructor.
+     * @param path the target path
+     * @param directory whether the target path is a directory or not
+     */
     AddressPath(Path path, boolean directory) {
         this.path = path.normalize();
         this.directory = directory;
@@ -69,6 +75,7 @@ public class AddressPath {
         return list(directory ? path : path.getParent());
     }
 
+
     public List<PathItem> listItem() {
         return listItem(directory ? path : path.getParent());
     }
@@ -81,6 +88,7 @@ public class AddressPath {
             throw new RuntimeException(e);
         }
     }
+
 
     private List<PathItem> listItem(Path path) {
         try (Stream<Path> s = Files.list(path)) {

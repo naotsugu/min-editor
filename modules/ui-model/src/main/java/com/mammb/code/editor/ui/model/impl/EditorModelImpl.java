@@ -461,6 +461,7 @@ public class EditorModelImpl implements EditorModel {
         vScrollToCaret();
         LayoutLine line = texts.layoutLine(caret.offset());
         if (line.offset() == caret.offset()) {
+            // at the beginning of line, skip whitespace
             if (Character.isWhitespace(line.charAt(caret.offset()))) {
                 while (caret.offset() < line.tailOffset() &&
                     Character.isWhitespace(line.charAt(caret.offset()))) {
@@ -468,7 +469,18 @@ public class EditorModelImpl implements EditorModel {
                 }
             }
         } else {
-            caret.at(line.offset(), true);
+            if (caret.offset() - line.offset() < 36 &&
+                line.text().substring(0, (int) (caret.offset() - line.offset())).trim().isEmpty()) {
+                caret.at(line.offset(), true);
+            } else {
+                caret.at(line.offset(), true);
+                if (Character.isWhitespace(line.charAt(caret.offset()))) {
+                    while (caret.offset() < line.tailOffset() &&
+                        Character.isWhitespace(line.charAt(caret.offset()))) {
+                        caret.right();
+                    }
+                }
+            }
         }
         screen.hScrollTo(caret.x());
     }

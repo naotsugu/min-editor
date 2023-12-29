@@ -38,11 +38,15 @@ public class UiPathMenu extends ContextMenu {
     /** The parent path. */
     private Path parent;
 
+    /** The path selected handler. */
     private final Consumer<Path> consumer;
 
 
     /**
      * Constructor.
+     * @param parent the parent path
+     * @param paths the path item
+     * @param consumer the path selected handler
      */
     public UiPathMenu(Path parent, List<PathItem> paths, Consumer<Path> consumer) {
         super(createItems(paths, consumer));
@@ -120,6 +124,5 @@ public class UiPathMenu extends ContextMenu {
     public Path getParent() {
         return parent;
     }
-
 
 }
