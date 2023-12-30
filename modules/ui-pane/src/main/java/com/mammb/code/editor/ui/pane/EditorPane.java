@@ -162,6 +162,10 @@ public class EditorPane extends StackPane {
     }
 
 
+    /**
+     * Get the editor down call.
+     * @return the editor down call
+     */
     public EditorDownCall downCall() {
         return this::open;
     }
@@ -176,24 +180,35 @@ public class EditorPane extends StackPane {
     }
 
 
+    /**
+     * Open the session.
+     * @param session the session
+     */
     private void open(Session session) {
 
+        // save the session before changes
         var prev = session();
 
         FileAction.of(this, model).open(session.path(), e -> {
             this.handleModelCreated(e);
             if (!session.isOriginPoint()) {
-                aroundEdit(() -> model.apply(new ScreenPoint(session.row(), session.caretIndex())));
+                var sp = new ScreenPoint(session.row(), session.caretIndex());
+                aroundEdit(() -> model.apply(sp));
             }
             upCall.pathChanged(session(), prev);
         });
     }
 
 
+    /**
+     * Get the current session.
+     * @return the current session
+     */
     private Session session() {
         var screenPoint = model.screenPoint();
         return Session.of(model.path(), screenPoint.row(), screenPoint.caretIndex());
     }
+
 
     /**
      * Scroll event handler.

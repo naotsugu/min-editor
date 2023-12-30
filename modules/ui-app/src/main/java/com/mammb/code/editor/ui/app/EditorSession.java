@@ -32,44 +32,44 @@ public class EditorSession {
     private Session current;
 
     private BooleanProperty forwardDisableProperty;
+
     private BooleanProperty backwardDisableProperty;
 
-    private void push(Session session) {
+    public void push(Session session, Session prev) {
+
         if (session == null || session.isEmptyPath()) return;
-        if (current != null && session.path().equals(current.path())) return;
+        if (current != null && session.path().equals(current.path())) {
+            applyPointInHistories(prev);
+            return;
+        }
 
         var currentIndex = histories.indexOf(current);
         if (currentIndex != histories.size() - 1) {
             histories.subList(currentIndex + 1, histories.size()).clear();
         }
+        applyPointInHistories(prev);
         histories.add(session);
+
         current = session;
         ensureProperty();
+
     }
 
-    public void push(Session session, Session prev) {
-        if (session == null || session.isEmptyPath()) return;
-        if (current != null && session.path().equals(current.path())) return;
 
-        var currentIndex = histories.indexOf(current);
-        if (currentIndex != histories.size() - 1) {
-            histories.subList(currentIndex + 1, histories.size()).clear();
+    private void applyPointInHistories(Session session) {
+        if (session == null || session.isEmptyPath()) {
+            return;
         }
-        histories.add(session);
-
         for (var i = histories.size() - 1; i >= 0; i--) {
             var s = histories.get(i);
-            if (Objects.equals(s.path(), prev.path())) {
+            if (Objects.equals(s.path(), session.path())) {
                 histories.remove(i);
-                histories.add(i, Session.of(s.path(), prev.row(), prev.caretIndex()));
+                histories.add(i, Session.of(s.path(), session.row(), session.caretIndex()));
                 break;
             }
         }
-
-        current = session;
-        ensureProperty();
-
     }
+
 
     public Session forward() {
         var currentIndex = histories.indexOf(current);
