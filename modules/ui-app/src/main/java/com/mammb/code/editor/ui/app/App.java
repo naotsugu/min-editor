@@ -84,7 +84,7 @@ public class App extends Application {
         // initEditorHandle
         upCall.onPathChanged(c -> {
             bar.setPathText(c.session().path());
-            session.push(c.session());
+            session.push(c.session(), c.prevSession());
         });
         upCall.onContentModified(c -> bar.setPathModified(c.modified()));
 

@@ -22,8 +22,9 @@ package com.mammb.code.editor.ui.pane;
 public interface EditorDownCall {
 
     /**
-     *
+     * Requests a path change to the model.
      * @param session the new session
      */
     void requestPathChange(Session session);
+
 }

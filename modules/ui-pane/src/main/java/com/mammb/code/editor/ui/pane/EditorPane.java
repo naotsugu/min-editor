@@ -46,7 +46,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import java.nio.file.Path;
-import java.util.Objects;
 
 /**
  * EditorPane.
@@ -183,11 +182,10 @@ public class EditorPane extends StackPane {
 
         FileAction.of(this, model).open(session.path(), e -> {
             this.handleModelCreated(e);
-            model.apply(new ScreenPoint(session.row(), session.caretIndex()));
-            var curr = session();
-            if (!Objects.equals(curr.path(), prev.path())) {
-                upCall.pathChanged(curr, prev);
+            if (!session.isOriginPoint()) {
+                aroundEdit(() -> model.apply(new ScreenPoint(session.row(), session.caretIndex())));
             }
+            upCall.pathChanged(session(), prev);
         });
     }
 

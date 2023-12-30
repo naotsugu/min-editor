@@ -19,6 +19,7 @@ import com.mammb.code.editor.ui.pane.Session;
 import javafx.beans.property.BooleanProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The EditorSession.
@@ -33,7 +34,7 @@ public class EditorSession {
     private BooleanProperty forwardDisableProperty;
     private BooleanProperty backwardDisableProperty;
 
-    public void push(Session session) {
+    private void push(Session session) {
         if (session == null || session.isEmptyPath()) return;
         if (current != null && session.path().equals(current.path())) return;
 
@@ -41,8 +42,33 @@ public class EditorSession {
         if (currentIndex != histories.size() - 1) {
             histories.subList(currentIndex + 1, histories.size()).clear();
         }
-        histories.add(current = session);
+        histories.add(session);
+        current = session;
         ensureProperty();
+    }
+
+    public void push(Session session, Session prev) {
+        if (session == null || session.isEmptyPath()) return;
+        if (current != null && session.path().equals(current.path())) return;
+
+        var currentIndex = histories.indexOf(current);
+        if (currentIndex != histories.size() - 1) {
+            histories.subList(currentIndex + 1, histories.size()).clear();
+        }
+        histories.add(session);
+
+        for (var i = histories.size() - 1; i >= 0; i--) {
+            var s = histories.get(i);
+            if (Objects.equals(s.path(), prev.path())) {
+                histories.remove(i);
+                histories.add(i, Session.of(s.path(), prev.row(), prev.caretIndex()));
+                break;
+            }
+        }
+
+        current = session;
+        ensureProperty();
+
     }
 
     public Session forward() {

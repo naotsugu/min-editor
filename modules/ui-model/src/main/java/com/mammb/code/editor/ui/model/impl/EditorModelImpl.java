@@ -290,6 +290,7 @@ public class EditorModelImpl implements EditorModel {
     public void apply(ScreenPoint screenPoint) {
         vScrolled(texts.head().point().row(), screenPoint.row());
         caret.at(screenPoint.caretIndex(), true);
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
     }
 
     @Override

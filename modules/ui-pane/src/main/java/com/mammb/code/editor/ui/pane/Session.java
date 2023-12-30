@@ -33,6 +33,10 @@ public interface Session {
         return path() == null;
     }
 
+    default boolean isOriginPoint() {
+        return row() == 0 && caretIndex() == 0;
+    }
+
     record SessionRecord(Path path, int row, long caretIndex) implements Session {}
 
     static Session of(Path path) {
