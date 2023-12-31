@@ -63,24 +63,36 @@ public class CommandBar extends HBox {
         backward.setDisable(true);
         pathField.textProperty().set(Path.of(
             System.getProperty("user.home")).resolve("Untitled").toString());
-        menu.setOnMouseClicked(e -> new AboutDialog().showAndWait());
-
         HBox.setHgrow(pathField, Priority.ALWAYS);
         pathField.setVisible(true);
-        pathField.managedProperty().bind(pathField.visibleProperty());
-
         HBox.setHgrow(searchField, Priority.ALWAYS);
         searchField.setVisible(false);
-        searchField.managedProperty().bind(searchField.visibleProperty());
 
         getChildren().addAll(backward, forward, pathField, searchField, menu);
-
+        initHandler();
     }
 
 
+    /**
+     * Initialize handler.
+     */
+    private void initHandler() {
+        menu.setOnMouseClicked(e -> new AboutDialog().showAndWait());
+        pathField.managedProperty().bind(pathField.visibleProperty());
+        searchField.managedProperty().bind(searchField.visibleProperty());
+        pathField.visibleProperty().bind(searchField.visibleProperty().not());
+    }
+
+
+
     void setVisibleSearchField(boolean visible) {
-        pathField.setVisible(!visible);
-        searchField.setVisible(visible);
+        boolean old = searchField.isVisible();
+        if (old != visible) {
+            searchField.setVisible(visible);
+            if (visible) {
+                searchField.requestTextFieldFocus();
+            }
+        }
     }
 
 

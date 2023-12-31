@@ -71,6 +71,8 @@ public class App extends Application {
                 downCall.requestPathChange(session.forward());
             } else if (AppKeys.SC_BACKWARD.match(e)) {
                 downCall.requestPathChange(session.backward());
+            } else if (AppKeys.SC_F.match(e)) {
+                bar.setVisibleSearchField(true);
             }
         });
 

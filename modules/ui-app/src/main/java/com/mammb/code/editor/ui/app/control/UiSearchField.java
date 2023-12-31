@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import java.util.function.Consumer;
 
@@ -44,7 +46,23 @@ public class UiSearchField extends StackPane {
      * Initialize handler.
      */
     private void initHandler() {
+        text.textField().addEventFilter(KeyEvent.KEY_PRESSED, this::handleTextKeyPressed);
+    }
 
+
+    /**
+     * Handle key pressed.
+     * @param e the key event
+     */
+    private void handleTextKeyPressed(KeyEvent e) {
+        if (e.getCode() == KeyCode.ESCAPE) {
+            e.consume();
+            setVisible(false);
+        }
+    }
+
+    public void requestTextFieldFocus() {
+        text.textField().requestFocus();
     }
 
 
