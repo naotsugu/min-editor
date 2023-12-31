@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * The PathField.
  * @author Naotsugu Kobayashi
  */
-public class PathField extends StackPane {
+public class UiPathField extends StackPane {
 
     /** The prompt text. */
     private final UiPromptText text;
@@ -57,7 +57,7 @@ public class PathField extends StackPane {
     /**
      * Constructor.
      */
-    public PathField() {
+    public UiPathField() {
         text = new UiPromptText();
         text.textField().setFocusTraversable(false);
         getChildren().add(text);

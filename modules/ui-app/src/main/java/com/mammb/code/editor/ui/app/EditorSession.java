@@ -27,13 +27,18 @@ import java.util.Objects;
  */
 public class EditorSession {
 
+    /** The session list. */
     private final List<Session> histories = new ArrayList<>();
 
+    /** The current session. */
     private Session current;
 
+    /** The forward disable property. */
     private BooleanProperty forwardDisableProperty;
 
+    /** The backward disable property. */
     private BooleanProperty backwardDisableProperty;
+
 
     public void push(Session session, Session prev) {
 

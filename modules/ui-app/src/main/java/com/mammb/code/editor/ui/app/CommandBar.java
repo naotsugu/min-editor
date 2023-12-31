@@ -17,7 +17,8 @@ package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.app.control.UiFlatButton;
 import com.mammb.code.editor.ui.app.control.UiIcon;
-import com.mammb.code.editor.ui.app.control.PathField;
+import com.mammb.code.editor.ui.app.control.UiPathField;
+import com.mammb.code.editor.ui.app.control.UiSearchField;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -37,7 +38,9 @@ public class CommandBar extends HBox {
     /** The back button. */
     private final Button backward;
     /** The path field. */
-    private final PathField pathField;
+    private final UiPathField pathField;
+    /** The search field. */
+    private final UiSearchField searchField;
     /** The menu button. */
     private final Button menu;
 
@@ -52,7 +55,8 @@ public class CommandBar extends HBox {
 
         forward = new UiFlatButton(UiIcon.arrowRightShort().larger());
         backward = new UiFlatButton(UiIcon.arrowLeftShort().larger());
-        pathField = new PathField();
+        pathField = new UiPathField();
+        searchField = new UiSearchField();
         menu = new UiFlatButton(UiIcon.list().larger());
 
         forward.setDisable(true);
@@ -62,8 +66,21 @@ public class CommandBar extends HBox {
         menu.setOnMouseClicked(e -> new AboutDialog().showAndWait());
 
         HBox.setHgrow(pathField, Priority.ALWAYS);
-        getChildren().addAll(backward, forward, pathField, menu);
+        pathField.setVisible(true);
+        pathField.managedProperty().bind(pathField.visibleProperty());
 
+        HBox.setHgrow(searchField, Priority.ALWAYS);
+        searchField.setVisible(false);
+        searchField.managedProperty().bind(searchField.visibleProperty());
+
+        getChildren().addAll(backward, forward, pathField, searchField, menu);
+
+    }
+
+
+    void setVisibleSearchField(boolean visible) {
+        pathField.setVisible(!visible);
+        searchField.setVisible(visible);
     }
 
 
