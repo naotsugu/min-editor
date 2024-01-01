@@ -167,7 +167,14 @@ public class EditorPane extends StackPane {
      * @return the editor down call
      */
     public EditorDownCall downCall() {
-        return this::open;
+        return new EditorDownCall() {
+            @Override public void requestPathChange(Session session) {
+                open(session);
+            }
+            @Override public void requestFind(String regexp) {
+                find(regexp);
+            }
+        };
     }
 
 
@@ -291,8 +298,8 @@ public class EditorPane extends StackPane {
                 case WRAP       -> aroundEdit(model::toggleWrap);
                 case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
                 case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
-                //case NEW        -> newPane();
                 case DEBUG      -> debug();
+                //case NEW        -> newPane();
             }
             return;
         }
@@ -464,8 +471,13 @@ public class EditorPane extends StackPane {
     }
 
 
+    private void find(String regexp) {
+        model.findHandle().findAll(regexp, false);
+    }
+
+
     private void debug() {
-        model.findHandle().findAll("public", false);
+
     }
 
 

@@ -76,9 +76,8 @@ public class EditorModelImpl implements EditorModel {
     private final ScreenScroll screen;
     /** The text list. */
     private ScreenText texts;
-
+    /** The find. */
     private Find find;
-
 
 
     /**
@@ -107,6 +106,7 @@ public class EditorModelImpl implements EditorModel {
         this.screen = screen;
         screen.updateMaxWith(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
         screen.initScroll(texts.headlinesIndex(), totalLines());
+
     }
 
 
@@ -120,6 +120,7 @@ public class EditorModelImpl implements EditorModel {
             TextEdit.editBuffer(null),
             StylingTranslate.passThrough(), screen);
     }
+
 
     /**
      * Create a new EditorModel.

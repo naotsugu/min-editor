@@ -27,4 +27,6 @@ public interface EditorDownCall {
      */
     void requestPathChange(Session session);
 
+    void requestFind(String regexp);
+
 }

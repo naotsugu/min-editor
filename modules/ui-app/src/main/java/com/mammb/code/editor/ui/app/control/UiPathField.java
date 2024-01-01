@@ -228,7 +228,7 @@ public class UiPathField extends StackPane {
 
 
     /**
-     * Set the text committed handler.
+     * Set the path text committed handler.
      * @param consumer the consumer
      */
     public void setOnTextCommitted(Consumer<String> consumer) {

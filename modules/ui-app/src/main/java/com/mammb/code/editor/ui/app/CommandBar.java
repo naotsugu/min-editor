@@ -120,8 +120,17 @@ public class CommandBar extends HBox {
      * Set the text committed handler.
      * @param consumer the consumer
      */
-    void setOnTextCommitted(Consumer<String> consumer) {
+    void setOnPathTextCommitted(Consumer<String> consumer) {
         pathField.setOnTextCommitted(consumer);
+    }
+
+
+    /**
+     * Set the search text committed handler.
+     * @param consumer the consumer
+     */
+    void setOnSearchTextCommitted(Consumer<String> consumer) {
+        searchField.setOnTextCommitted(consumer);
     }
 
 

@@ -90,10 +90,11 @@ public class App extends Application {
         });
         upCall.onContentModified(c -> bar.setPathModified(c.modified()));
 
-        bar.setOnTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));
+        bar.setOnPathTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));
         bar.setOnPathSelected(p -> downCall.requestPathChange(Session.of(p)));
         bar.setOnForwardClicked(() -> downCall.requestPathChange(session.forward()));
         bar.setOnBackwardClicked(() -> downCall.requestPathChange(session.backward()));
+        bar.setOnSearchTextCommitted(s -> downCall.requestFind(s));
 
         session.setForwardDisableProperty(bar.forwardDisableProperty());
         session.setBackwardDisableProperty(bar.backwardDisableProperty());
