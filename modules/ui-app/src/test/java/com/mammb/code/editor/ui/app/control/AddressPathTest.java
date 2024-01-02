@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.app;
+package com.mammb.code.editor.ui.app.control;
 
-import com.mammb.code.editor.ui.app.control.AddressPath;
 import org.junit.jupiter.api.Test;
-
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test of {@link AddressPath}.

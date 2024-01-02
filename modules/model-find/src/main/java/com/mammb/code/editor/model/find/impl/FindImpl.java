@@ -18,6 +18,7 @@ package com.mammb.code.editor.model.find.impl;
 import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FindSpec;
 import com.mammb.code.editor.model.find.Found;
+import com.mammb.code.editor.model.find.FoundReset;
 import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.find.Match;
 import com.mammb.code.editor.model.slice.RowSupplier;
@@ -99,6 +100,11 @@ public class FindImpl implements Find {
     @Override
     public void cancel() {
         this.interrupt = true;
+    }
+
+    @Override
+    public void reset() {
+        listeners.forEach(listener -> listener.accept(new FoundReset()));
     }
 
 

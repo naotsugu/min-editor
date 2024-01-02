@@ -472,7 +472,8 @@ public class EditorPane extends StackPane {
 
 
     private void find(String regexp) {
-        model.findHandle().findAll(regexp, false);
+        requestFocus();
+        aroundEdit(() -> model.findHandle().findAll(regexp, false));
     }
 
 

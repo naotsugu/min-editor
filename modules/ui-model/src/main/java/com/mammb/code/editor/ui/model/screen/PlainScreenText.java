@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.model.screen;
 
 import com.mammb.code.editor.javafx.layout.FxLineLayout;
 import com.mammb.code.editor.javafx.layout.FxSpanTranslate;
+import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.layout.LayoutTranslate;
 import com.mammb.code.editor.model.layout.LineLayout;
 import com.mammb.code.editor.model.layout.TextLine;
@@ -27,9 +28,7 @@ import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
 import com.mammb.code.editor.syntax.base.SyntaxTranslate;
 import com.mammb.code.editor.ui.model.ScreenText;
-import com.mammb.code.editor.ui.model.impl.Highlighter;
 import com.mammb.code.editor.ui.prefs.Context;
-import com.mammb.code.editor.model.buffer.Metrics;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;

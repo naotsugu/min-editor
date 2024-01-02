@@ -32,15 +32,34 @@ public class FindHandleImpl implements FindHandle {
     private final Find find;
 
     /** The base point. */
-    private OffsetPoint basePoint;
+    private final OffsetPoint basePoint;
 
     /** The found first action. */
-    private Consumer<Found> foundFirstAction = found -> { };
+    private final Consumer<Found> foundFirstAction;
 
 
-    public FindHandleImpl(Find find, OffsetPoint basePoint) {
+    /**
+     * Constructor.
+     * @param find the find
+     * @param basePoint the base point
+     * @param foundFirstAction the found first action
+     */
+    private FindHandleImpl(Find find, OffsetPoint basePoint, Consumer<Found> foundFirstAction) {
         this.find = find;
         this.basePoint = basePoint;
+        this.foundFirstAction = foundFirstAction;
+    }
+
+
+    /**
+     * Create the FindHandle.
+     * @param find the find
+     * @param basePoint the base point
+     * @param foundFirstAction the found first action
+     * @return the FindHandle
+     */
+    public static FindHandle of(Find find, OffsetPoint basePoint, Consumer<Found> foundFirstAction) {
+        return new FindHandleImpl(find, basePoint, foundFirstAction);
     }
 
 
@@ -57,31 +76,22 @@ public class FindHandleImpl implements FindHandle {
 
 
     private void runWithFirstAction(Runnable runnable) {
-        final var flashConsumer = new FlashConsumer(foundFirstAction);
+        final var consumer = new FoundFirstConsumer();
         try {
-            find.addListener(flashConsumer);
+            find.addListener(consumer);
             runnable.run();
         } finally {
-            find.removeListener(flashConsumer);
+            find.removeListener(consumer);
         }
+        foundFirstAction.accept(consumer.foundFirst);
     }
 
 
-    static class FlashConsumer implements Consumer<Found> {
-
-        private final Consumer<Found> actualAction;
-        private boolean already = false;
-
-        public FlashConsumer(Consumer<Found> actualAction) {
-            this.actualAction = actualAction;
-        }
-
+    private static class FoundFirstConsumer implements Consumer<Found> {
+        Found foundFirst;
         @Override
         public void accept(Found found) {
-            if (!already) {
-                actualAction.accept(found);
-                already = true;
-            }
+            if (foundFirst == null) foundFirst = found;
         }
     }
 

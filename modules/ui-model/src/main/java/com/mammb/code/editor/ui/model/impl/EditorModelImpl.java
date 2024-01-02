@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.find.Find;
+import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
@@ -699,7 +700,12 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public FindHandle findHandle() {
-        return new FindHandleImpl(find, caret.caretPoint());
+        find.reset();
+        return FindHandleImpl.of(find, caret.caretPoint(), found -> {
+            if (found instanceof FoundRun run) {
+                apply(new ScreenPoint(Math.max(0, run.row() - 2), run.chOffset()));
+            }
+        });
     }
 
     // </editor-fold>

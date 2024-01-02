@@ -39,6 +39,11 @@ public interface Find {
     void cancel();
 
     /**
+     * Reset found.
+     */
+    void reset();
+
+    /**
      * Add a listener of find result.
      * @param listener a listener of find result
      */

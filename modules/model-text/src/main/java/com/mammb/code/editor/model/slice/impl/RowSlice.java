@@ -111,7 +111,7 @@ public class RowSlice implements TextualSlice<Textual> {
             if (rowDelta > 0) {
                 // forward
                 traverse = Traverse.forwardOf(base);
-                var until = Until.lfInclusive(rowDelta).with(traverse);
+                var until = Until.lfInclusive(rowDelta).withLess(traverse);
                 rowSupplier.offset(base.cpOffset(), until);
             } else {
                 // backward
