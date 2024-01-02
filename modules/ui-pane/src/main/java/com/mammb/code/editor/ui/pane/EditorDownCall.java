@@ -27,6 +27,10 @@ public interface EditorDownCall {
      */
     void requestPathChange(Session session);
 
+    /**
+     * Requests find to the model.
+     * @param regexp the string of regexp
+     */
     void requestFind(String regexp);
 
 }

@@ -17,8 +17,10 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FindSpec;
+import com.mammb.code.editor.model.find.Found;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.FindHandle;
+import java.util.function.Consumer;
 
 /**
  * FindHandle.
@@ -29,7 +31,11 @@ public class FindHandleImpl implements FindHandle {
     /** The find. */
     private final Find find;
 
+    /** The base point. */
     private OffsetPoint basePoint;
+
+    /** The found first action. */
+    private Consumer<Found> foundFirstAction = found -> { };
 
 
     public FindHandleImpl(Find find, OffsetPoint basePoint) {
@@ -37,14 +43,46 @@ public class FindHandleImpl implements FindHandle {
         this.basePoint = basePoint;
     }
 
+
     @Override
     public void findNext(String string, boolean regexp) {
-        find.run(basePoint, FindSpec.of(string));
+        runWithFirstAction(() -> find.run(basePoint, FindSpec.of(string)));
     }
+
 
     @Override
     public void findAll(String string, boolean regexp) {
-        find.run(basePoint, FindSpec.allOf(string));
+        runWithFirstAction(() -> find.run(basePoint, FindSpec.allOf(string)));
+    }
+
+
+    private void runWithFirstAction(Runnable runnable) {
+        final var flashConsumer = new FlashConsumer(foundFirstAction);
+        try {
+            find.addListener(flashConsumer);
+            runnable.run();
+        } finally {
+            find.removeListener(flashConsumer);
+        }
+    }
+
+
+    static class FlashConsumer implements Consumer<Found> {
+
+        private final Consumer<Found> actualAction;
+        private boolean already = false;
+
+        public FlashConsumer(Consumer<Found> actualAction) {
+            this.actualAction = actualAction;
+        }
+
+        @Override
+        public void accept(Found found) {
+            if (!already) {
+                actualAction.accept(found);
+                already = true;
+            }
+        }
     }
 
 }
