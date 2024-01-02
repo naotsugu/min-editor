@@ -45,6 +45,12 @@ public interface Find {
     void addListener(Consumer<Found> listener);
 
     /**
+     * Remove a listener of find result.
+     * @param listener a listener of find result
+     */
+    void removeListener(Consumer<Found> listener);
+
+    /**
      * Create a new find.
      * @param rowSupplier the row supplier
      * @return a new find

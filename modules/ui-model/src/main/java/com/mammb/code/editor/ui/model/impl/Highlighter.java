@@ -32,20 +32,35 @@ import java.util.function.Consumer;
  */
 public class Highlighter implements HighlightTranslate, Consumer<Found> {
 
+    /** The founds. */
     private TreeMap<Long, FoundRun> founds = new TreeMap<>();
 
+    /** The highlighter style. */
     private Style style = new Style.BgColor("FFCDD2", 0.2);
 
+    /** The find. */
     private final Find find;
 
-    public Highlighter(Find find) {
+
+    /**
+     * Constructor.
+     * @param find the find
+     */
+    private Highlighter(Find find) {
         this.find = find;
         find.addListener(this);
     }
 
+
+    /**
+     * Create a new Highlighter.
+     * @param find the find
+     * @return a new Highlighter
+     */
     public static Highlighter of(Find find) {
         return new Highlighter(find);
     }
+
 
     @Override
     public StyledText applyTo(StyledText styledText) {
@@ -59,6 +74,7 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
         return styledText;
     }
 
+
     @Override
     public void accept(Found found) {
         switch (found) {
@@ -67,7 +83,12 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
         }
     }
 
+
+    /**
+     * Clear.
+     */
     public void clear() {
         founds.clear();
     }
+
 }

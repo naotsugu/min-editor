@@ -38,17 +38,29 @@ public class FindImpl implements Find {
     /** The listeners of find. */
     private List<Consumer<Found>> listeners;
 
+    /** The interrupt marker. */
     private volatile boolean interrupt = false;
 
 
-    public FindImpl(RowSupplier rowSupplier, List<Consumer<Found>> listeners) {
+    /**
+     * Constructor.
+     * @param rowSupplier the row supplier
+     * @param listeners the listeners of find
+     */
+    private FindImpl(RowSupplier rowSupplier, List<Consumer<Found>> listeners) {
         this.rowSupplier = rowSupplier;
         this.listeners = listeners;
     }
 
+
+    /**
+     * Create a new Find.
+     * @param rowSupplier the row supplier
+     */
     public FindImpl(RowSupplier rowSupplier) {
         this(rowSupplier, new ArrayList<>());
     }
+
 
     @Override
     public void run(OffsetPoint base, FindSpec spec) {
@@ -83,14 +95,22 @@ public class FindImpl implements Find {
         }
     }
 
+
     @Override
     public void cancel() {
         this.interrupt = true;
     }
 
+
     @Override
     public void addListener(Consumer<Found> listener) {
         listeners.add(listener);
+    }
+
+
+    @Override
+    public void removeListener(Consumer<Found> listener) {
+        listeners.remove(listener);
     }
 
 }
