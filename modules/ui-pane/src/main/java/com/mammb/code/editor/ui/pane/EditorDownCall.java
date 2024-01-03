@@ -17,6 +17,8 @@ package com.mammb.code.editor.ui.pane;
 
 /**
  * The EditorDownCall.
+ * EditorDownCall is the interface for operation requests from
+ * the application's parent UI to the editor.
  * @author Naotsugu Kobayashi
  */
 public interface EditorDownCall {

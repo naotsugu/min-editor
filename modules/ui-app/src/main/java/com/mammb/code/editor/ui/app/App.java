@@ -32,6 +32,7 @@ import java.nio.file.Path;
  */
 public class App extends Application {
 
+
     @Override
     public void start(Stage stage) {
         Context context = AppContext.of(getParameters());

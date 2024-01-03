@@ -471,9 +471,13 @@ public class EditorPane extends StackPane {
     }
 
 
+    /**
+     * Find action from the down call.
+     * @param regexp the regexp string
+     */
     private void find(String regexp) {
         requestFocus();
-        aroundEdit(() -> model.findHandle().findAll(regexp, false));
+        aroundEdit(() -> model.findHandle().findAll(regexp, true));
     }
 
 
