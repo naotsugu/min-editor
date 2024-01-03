@@ -17,6 +17,8 @@ package com.mammb.code.editor.model.text;
 
 /**
  * Translate.
+ * @param <I> the type of input
+ * @param <O> the type of output
  * @author Naotsugu Kobayashi
  */
 public interface Translate<I, O> {
@@ -30,13 +32,33 @@ public interface Translate<I, O> {
 
 
     /**
+     * Get the contextual or not.
+     * @return the contextual or not
+     */
+    default boolean contextual() {
+        return false;
+    }
+
+
+    /**
      * This Translate is combined with the other Translate specified in the argument.
      * @param that the other Translate
      * @return the combined Translate
      * @param <X> the translated type
      */
     default <X> Translate<I, X> compound(Translate<O, X> that) {
-        return in -> that.applyTo(applyTo(in));
+        if (contextual() || that.contextual()) {
+            return new Translate<I, X>() {
+                @Override public X applyTo(I in) {
+                    return that.applyTo(Translate.this.applyTo(in));
+                }
+                @Override public boolean contextual() {
+                    return true;
+                }
+            };
+        } else {
+            return in -> that.applyTo(applyTo(in));
+        }
     }
 
 }

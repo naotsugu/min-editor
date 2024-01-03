@@ -68,6 +68,12 @@ public class SyntaxTranslate implements StylingTranslate {
     }
 
 
+    @Override
+    public boolean contextual() {
+        return true;
+    }
+
+
     private StyledText applyToInternal(Textual textual) {
 
         final StyledText styledText = StyledText.of(textual);

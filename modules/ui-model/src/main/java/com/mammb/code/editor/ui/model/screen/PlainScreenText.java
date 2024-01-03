@@ -26,7 +26,6 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.TextualScroll;
 import com.mammb.code.editor.model.text.Translate;
-import com.mammb.code.editor.syntax.base.SyntaxTranslate;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
 import java.util.LinkedList;
@@ -182,7 +181,7 @@ public class PlainScreenText implements ScreenText {
             return false;
         }
 
-        if (styling instanceof SyntaxTranslate || Math.abs(delta) < pageSize()) {
+        if (styling.contextual() || Math.abs(delta) < pageSize()) {
             // syntax support or scroll to the display area, scroll one line at a time
             return (delta > 0)
                 ? next(delta) > 0
