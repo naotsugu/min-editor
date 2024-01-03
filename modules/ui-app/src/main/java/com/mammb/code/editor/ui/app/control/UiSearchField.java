@@ -15,8 +15,11 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import java.util.function.Consumer;
 
@@ -29,15 +32,26 @@ public class UiSearchField extends StackPane {
     /** The prompt text. */
     private final UiPromptText text;
 
+    /** The close button. */
+    private final Button close = new UiFlatButton(UiIcon.xSign());
+
+    /** The right box. */
+    private final HBox hbox = new HBox(close);
+
 
     /**
      * Constructor.
      */
     public UiSearchField() {
+
         text = new UiPromptText();
         text.setPrompt(UiIcon.search());
         text.textField().setFocusTraversable(false);
-        getChildren().add(text);
+
+        hbox.setMaxSize(close.getWidth(), close.getHeight());
+        StackPane.setAlignment(hbox, Pos.CENTER_RIGHT);
+        getChildren().addAll(text, hbox);
+
         initHandler();
     }
 
@@ -47,6 +61,7 @@ public class UiSearchField extends StackPane {
      */
     private void initHandler() {
         text.textField().addEventFilter(KeyEvent.KEY_PRESSED, this::handleTextKeyPressed);
+        close.setOnMouseClicked(e -> setVisible(false));
     }
 
 
@@ -61,6 +76,10 @@ public class UiSearchField extends StackPane {
         }
     }
 
+
+    /**
+     * Request text field focus.
+     */
     public void requestTextFieldFocus() {
         text.textField().requestFocus();
     }
