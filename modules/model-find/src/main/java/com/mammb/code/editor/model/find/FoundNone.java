@@ -16,8 +16,7 @@
 package com.mammb.code.editor.model.find;
 
 /**
- * FoundReset.
+ * FoundNone.
  * @author Naotsugu Kobayashi
  */
-public record FoundReset() implements Found {
-}
+public record FoundNone() implements Found { }

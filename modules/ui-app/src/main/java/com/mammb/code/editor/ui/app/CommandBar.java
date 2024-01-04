@@ -22,6 +22,8 @@ import com.mammb.code.editor.ui.app.control.UiSearchField;
 import javafx.beans.property.BooleanProperty;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import java.nio.file.Path;
@@ -89,9 +91,9 @@ public class CommandBar extends HBox {
         boolean old = searchField.isVisible();
         if (old != visible) {
             searchField.setVisible(visible);
-            if (visible) {
-                searchField.requestTextFieldFocus();
-            }
+        }
+        if (visible) {
+            searchField.requestTextFieldFocus();
         }
     }
 
@@ -158,6 +160,20 @@ public class CommandBar extends HBox {
      */
     void setOnForwardClicked(Runnable runnable) {
         forward.setOnMouseClicked(e -> runnable.run());
+    }
+
+
+    /**
+     * Set the exit action.
+     * @param runnable the exit action handler
+     */
+    void setOnExit(Runnable runnable) {
+        addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.TAB || e.getCode() == KeyCode.ESCAPE) {
+                e.consume();
+                runnable.run();
+            }
+        });
     }
 
 }

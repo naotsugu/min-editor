@@ -20,6 +20,7 @@ import com.mammb.code.editor.ui.pane.EditorPane;
 import com.mammb.code.editor.ui.pane.Session;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -95,7 +96,11 @@ public class App extends Application {
         bar.setOnPathSelected(p -> downCall.requestPathChange(Session.of(p)));
         bar.setOnForwardClicked(() -> downCall.requestPathChange(session.forward()));
         bar.setOnBackwardClicked(() -> downCall.requestPathChange(session.backward()));
-        bar.setOnSearchTextCommitted(s -> downCall.requestFind(s));
+        bar.setOnSearchTextCommitted(s -> {
+            downCall.requestFind(s);
+            bar.setVisibleSearchField(true);
+        });
+        bar.setOnExit(() -> Platform.runLater(downCall::requestFocus));
 
         session.setForwardDisableProperty(bar.forwardDisableProperty());
         session.setBackwardDisableProperty(bar.backwardDisableProperty());

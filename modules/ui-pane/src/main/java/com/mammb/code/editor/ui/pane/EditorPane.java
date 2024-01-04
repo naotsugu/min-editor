@@ -174,6 +174,9 @@ public class EditorPane extends StackPane {
             @Override public void requestFind(String regexp) {
                 find(regexp);
             }
+            @Override public void requestFocus() {
+                canvas.requestFocus();
+            }
         };
     }
 
@@ -476,8 +479,8 @@ public class EditorPane extends StackPane {
      * @param regexp the regexp string
      */
     private void find(String regexp) {
-        requestFocus();
-        aroundEdit(() -> model.findHandle().findAll(regexp, true));
+        canvas.requestFocus();
+        aroundEdit(() -> model.findHandle().findNext(regexp, true));
     }
 
 

@@ -31,7 +31,9 @@ public class UiTextField extends TextField {
      * Constructor.
      */
     public UiTextField() {
-        focusedProperty().addListener((ob, o, n) -> caretLocked = !n);
+        focusedProperty().addListener((ob, o, n) -> {
+            caretLocked = true;
+        });
     }
 
 

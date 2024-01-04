@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.Found;
+import com.mammb.code.editor.model.find.FoundNone;
 import com.mammb.code.editor.model.find.FoundReset;
 import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.style.HighlightTranslate;
@@ -78,7 +79,8 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
     @Override
     public void accept(Found found) {
         switch (found) {
-            case FoundRun foundRun -> founds.put(foundRun.chOffset(), foundRun);
+            case FoundRun run -> founds.put(run.chOffset(), run);
+            case FoundNone none  -> { }
             case FoundReset reset  -> founds.clear();
         }
     }

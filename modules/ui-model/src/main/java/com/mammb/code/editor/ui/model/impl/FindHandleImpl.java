@@ -18,6 +18,8 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FindSpec;
 import com.mammb.code.editor.model.find.Found;
+import com.mammb.code.editor.model.find.FoundNone;
+import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.FindHandle;
 import java.util.function.Consumer;
@@ -65,33 +67,38 @@ public class FindHandleImpl implements FindHandle {
 
     @Override
     public void findNext(String string, boolean regexp) {
-        runWithFirstAction(() -> find.run(basePoint, FindSpec.of(string)));
+        Found found = findFirst(FindSpec.of(string));
+        foundFirstAction.accept(found);
     }
 
 
     @Override
     public void findAll(String string, boolean regexp) {
-        runWithFirstAction(() -> find.run(basePoint, FindSpec.allOf(string)));
+        Found found = findFirst(FindSpec.of(string));
+        foundFirstAction.accept(found);
+        if (found instanceof FoundRun) {
+            find.run(OffsetPoint.zero, FindSpec.allOf(string));
+        }
     }
 
 
-    private void runWithFirstAction(Runnable runnable) {
+    private Found findFirst(FindSpec findSpec) {
         final var consumer = new FoundFirstConsumer();
         try {
             find.addListener(consumer);
-            runnable.run();
+            find.run(basePoint, findSpec);
         } finally {
             find.removeListener(consumer);
         }
-        foundFirstAction.accept(consumer.foundFirst);
+        return consumer.foundFirst;
     }
 
 
     private static class FoundFirstConsumer implements Consumer<Found> {
-        Found foundFirst;
+        Found foundFirst = new FoundNone();
         @Override
         public void accept(Found found) {
-            if (foundFirst == null) foundFirst = found;
+            if (foundFirst instanceof FoundNone) foundFirst = found;
         }
     }
 

@@ -35,4 +35,9 @@ public interface EditorDownCall {
      */
     void requestFind(String regexp);
 
+    /**
+     * Request focus.
+     */
+    void requestFocus();
+
 }

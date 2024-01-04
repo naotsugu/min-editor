@@ -29,7 +29,7 @@ public interface FindSpec {
      * Get whether it is a one-shot find.
      * @return {@code true} if it is a one-shot find
      */
-    boolean oneshot();
+    boolean once();
 
     static FindSpec of(String string) {
         return new FindSpecImpl(string, true);

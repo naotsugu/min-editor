@@ -19,5 +19,5 @@ package com.mammb.code.editor.model.find;
  * Found.
  * @author Naotsugu Kobayashi
  */
-public sealed interface Found permits FoundRun, FoundReset {
+public sealed interface Found permits FoundRun, FoundNone, FoundReset {
 }

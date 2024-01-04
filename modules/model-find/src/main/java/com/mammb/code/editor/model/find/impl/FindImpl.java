@@ -18,6 +18,7 @@ package com.mammb.code.editor.model.find.impl;
 import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FindSpec;
 import com.mammb.code.editor.model.find.Found;
+import com.mammb.code.editor.model.find.FoundNone;
 import com.mammb.code.editor.model.find.FoundReset;
 import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.find.Match;
@@ -34,10 +35,10 @@ import java.util.function.Consumer;
 public class FindImpl implements Find {
 
     /** The row supplier. */
-    private RowSupplier rowSupplier;
+    private final RowSupplier rowSupplier;
 
     /** The listeners of find. */
-    private List<Consumer<Found>> listeners;
+    private final List<Consumer<Found>> listeners;
 
     /** The interrupt marker. */
     private volatile boolean interrupt = false;
@@ -65,6 +66,7 @@ public class FindImpl implements Find {
 
     @Override
     public void run(OffsetPoint base, FindSpec spec) {
+        int count = 0;
         OffsetPoint point = base;
         for (;;) {
             if (interrupt) {
@@ -88,11 +90,15 @@ public class FindImpl implements Find {
                     Math.toIntExact(point.offset() - peripheralStart),
                     point.row());
                 listeners.forEach(listener -> listener.accept(found));
-                if (spec.oneshot()) {
+                count++;
+                if (spec.once()) {
                     return;
                 }
             }
             point = point.plus(row);
+        }
+        if (count == 0) {
+            listeners.forEach(listener -> listener.accept(new FoundNone()));
         }
     }
 
@@ -101,6 +107,7 @@ public class FindImpl implements Find {
     public void cancel() {
         this.interrupt = true;
     }
+
 
     @Override
     public void reset() {

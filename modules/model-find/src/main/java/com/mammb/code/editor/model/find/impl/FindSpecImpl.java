@@ -86,7 +86,7 @@ public class FindSpecImpl implements FindSpec {
      * @return {@code true} if it is a one-shot find
      */
     @Override
-    public boolean oneshot() {
+    public boolean once() {
         return oneshot;
     }
 
