@@ -27,12 +27,26 @@ public interface Match {
      */
     int start();
 
+    /**
+     * Get the match result string length
+     * @return the match result string length
+     */
     int length();
 
+    /**
+     * Get the matched end offset.
+     * @return the matched end offset
+     */
     default int end() {
         return start() + length();
     }
 
+    /**
+     * Create a new match.
+     * @param start the matched offset
+     * @param length the match result string length
+     * @return a new match
+     */
     static Match of(int start, int length) {
         if (start < 0 || length <= 0) {
             throw new IllegalArgumentException();

@@ -17,11 +17,11 @@ package com.mammb.code.editor.model.find;
 
 /**
  * The FoundRun.
- * @param chOffset
- * @param length
+ * @param chOffset the offset
+ * @param length the search result string length
  * @param peripheral
  * @param offsetOnPeripheral
- * @param row
+ * @param row the number of row
  * @author Naotsugu Kobayashi
  */
 public record FoundRun(long chOffset, int length, String peripheral, int offsetOnPeripheral, int row) implements Found {

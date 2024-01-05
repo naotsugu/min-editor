@@ -31,7 +31,7 @@ public class FindSpecImpl implements FindSpec {
     /** The string to be searched. */
     private final String cs;
     /** Whether it is a one-shot find. */
-    private final boolean oneshot;
+    private final boolean once;
     /** The result buffer. */
     private Match[] buffer = new Match[3];
 
@@ -39,11 +39,11 @@ public class FindSpecImpl implements FindSpec {
     /**
      * Constructor.
      * @param cs the string to be searched
-     * @param oneshot whether it is a one-shot find
+     * @param once whether it is a one-shot find
      */
-    public FindSpecImpl(String cs, boolean oneshot) {
+    public FindSpecImpl(String cs, boolean once) {
         this.cs = Objects.requireNonNull(cs);
-        this.oneshot = oneshot;
+        this.once = once;
     }
 
 
@@ -87,7 +87,7 @@ public class FindSpecImpl implements FindSpec {
      */
     @Override
     public boolean once() {
-        return oneshot;
+        return once;
     }
 
 }

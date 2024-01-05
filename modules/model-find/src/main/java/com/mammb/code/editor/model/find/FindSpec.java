@@ -23,6 +23,11 @@ import com.mammb.code.editor.model.find.impl.FindSpecImpl;
  */
 public interface FindSpec {
 
+    /**
+     *
+     * @param text
+     * @return
+     */
     Match[] match(String text);
 
     /**
@@ -31,10 +36,20 @@ public interface FindSpec {
      */
     boolean once();
 
+    /**
+     * Create a new find spec.
+     * @param string the string for find
+     * @return find spec
+     */
     static FindSpec of(String string) {
         return new FindSpecImpl(string, true);
     }
 
+    /**
+     * Create a new all search spec.
+     * @param string the string for find
+     * @return all search spec
+     */
     static FindSpec allOf(String string) {
         return new FindSpecImpl(string, false);
     }
