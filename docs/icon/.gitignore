@@ -1,0 +1,6 @@
+# Ignore dot
+.*
+!.gitignore
+
+# Ignore Gradle GUI config
+png2icons

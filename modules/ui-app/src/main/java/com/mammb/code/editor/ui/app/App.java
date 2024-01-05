@@ -23,6 +23,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.nio.file.Path;
@@ -50,6 +51,8 @@ public class App extends Application {
      * @return the stage
      */
     private Stage buildScene(Stage stage, Context context) {
+
+        stage.getIcons().add(new Image(App.class.getResourceAsStream("/icon.png")));
 
         var upCall = new AppEditorUpCall();
         var editorPane = new EditorPane(context, upCall);
