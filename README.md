@@ -29,3 +29,16 @@ $ ./gradlew run -Ddebug
 
 ![screenshot1](docs/images/screenshot-01.png)
 
+
+
+
+## Create jpackage archive
+
+To create an archive for jpackage distribution, run the following command.
+
+```
+./gradlew clean pkg
+```
+
+The distribution archive will be created in the `/modules/bootstrap/build/distributions/`
+

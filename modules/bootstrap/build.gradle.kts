@@ -1,7 +1,21 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
+
 plugins {
     id("code.editor.base")
     application
     id("org.beryx.jlink") version "3.0.1"
+}
+
+
+val os   = DefaultNativePlatform.getCurrentOperatingSystem()
+val arch = DefaultNativePlatform.getCurrentArchitecture()
+val platform = when {
+    os.isMacOsX  && arch.isArm64 -> "mac-aarch64"
+    os.isMacOsX  && arch.isAmd64 -> "mac"
+    os.isLinux   && arch.isArm64 -> "linux-aarch64"
+    os.isLinux   && arch.isAmd64 -> "linux"
+    os.isWindows && arch.isAmd64 -> "win"
+    else -> throw Error("Unsupported OS: $os, ARCH: $arch")
 }
 
 dependencies {
@@ -36,9 +50,20 @@ tasks.register<Jar>("uberJar") {
 }
 
 jlink {
+    options = listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
     launcher {
         name = "min-editor"
         noConsole = true
     }
-    enableCds()
+    jpackage {
+        imageName = "min-editor"
+        val iconType = if (os.isWindows) "icon.ico" else if (os.isMacOsX) "icon.icns" else "icon.png"
+        icon = "${project.rootDir}/docs/icon/${iconType}"
+    }
+}
+
+tasks.register<Zip>("pkg") {
+    dependsOn("jpackageImage")
+    archiveFileName = "min-editor-${platform}.zip"
+    from(layout.buildDirectory.dir("jpackage"))
 }
