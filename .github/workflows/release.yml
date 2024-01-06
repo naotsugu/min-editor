@@ -1,0 +1,29 @@
+name: Create release
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        java: [ '21' ]
+      fail-fast: false
+    name: ${{ matrix.os }} JDK ${{ matrix.java }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+      - uses: gradle/wrapper-validation-action@v1
+      - uses: gradle/gradle-build-action@v2
+        with:
+          arguments: pkg
+      - uses: actions/upload-artifact@v4
+        with:
+          name: min-editor-${{ matrix.os }}
+          path: modules/bootstrap/build/distributions/*.zip
