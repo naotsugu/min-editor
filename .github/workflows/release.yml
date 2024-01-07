@@ -33,10 +33,12 @@ jobs:
           arguments: pkg
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.asset_name }}.zip
+          name: ${{ matrix.asset_name }}
           path: modules/bootstrap/build/distributions/*.zip
 
   create-release:
+    permissions:
+      contents: write
     needs: [build]
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +49,4 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            ${{ github.workspace }}/min-editor-linux-amd64.zip
-            ${{ github.workspace }}/min-editor-macos-amd64.zip
-            ${{ github.workspace }}/min-editor-windows-amd64.zip
+          files: min-editor-*
