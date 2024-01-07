@@ -48,6 +48,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            min-editor-linux-amd64.zip
-            min-editor-macos-amd64.zip
-            min-editor-windows-amd64.zip
+            ${{ github.workspace }}/min-editor-linux-amd64.zip
+            ${{ github.workspace }}/min-editor-macos-amd64.zip
+            ${{ github.workspace }}/min-editor-windows-amd64.zip
