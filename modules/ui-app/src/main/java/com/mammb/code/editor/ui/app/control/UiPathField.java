@@ -148,8 +148,7 @@ public class UiPathField extends StackPane {
         }
         pathNavi = new UiPathMenu(path.path(), path.listItem(), handlePathSelect());
         addressPath = null;
-        pathNavi.setOnHidden(e -> {
-        });
+        pathNavi.setOnHidden(e -> {  });
         Point2D point = text.getScreenPointAtIndex(path.stringLength());
         pathNavi.show(getScene().getWindow(), point.getX(), point.getY());
         pathNavi.requestFocus();

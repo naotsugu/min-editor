@@ -15,7 +15,12 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import javafx.geometry.Point2D;
 import javafx.scene.control.TextField;
+import javafx.scene.control.skin.TextFieldSkin;
+import javafx.scene.text.HitInfo;
+
+import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
 
 /**
  * The InputText.
@@ -50,6 +55,28 @@ public class UiTextField extends TextField {
         } else {
             super.selectRange(anchor, caretPosition);
         }
+    }
+
+
+    /**
+     * Get the text offset at point.
+     * @param point the point 2D
+     * @return the text offset at point, {@code -1} if out of range
+     */
+    public int getOffsetAtPoint(Point2D point) {
+        var offset = (Integer) queryAccessibleAttribute(OFFSET_AT_POINT, point);
+        return (offset == null || offset >= (getText().length() - 1)) ? -1 : offset;
+    }
+
+
+    /**
+     * Get the visible text start index.
+     * @return the visible text start index
+     */
+    public int getVisibleTextStartIndex() {
+        TextFieldSkin textFieldSkin = (TextFieldSkin) getSkin();
+        HitInfo hit = textFieldSkin.getIndex(0, 0);
+        return hit.getCharIndex();
     }
 
 }

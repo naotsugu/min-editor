@@ -25,7 +25,6 @@ import javafx.scene.text.Text;
 import java.util.function.Consumer;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
-import static javafx.scene.AccessibleAttribute.OFFSET_AT_POINT;
 
 /**
  * The PromptText.
@@ -84,8 +83,7 @@ public class UiPromptText extends StackPane {
      * @return the text offset at point, {@code -1} if out of range
      */
     public int getOffsetAtPoint(Point2D point) {
-        var offset = (Integer) text.queryAccessibleAttribute(OFFSET_AT_POINT, point);
-        return (offset == null || offset >= (text.getText().length() - 1)) ? -1 : offset;
+        return text.getOffsetAtPoint(point);
     }
 
 
@@ -130,11 +128,11 @@ public class UiPromptText extends StackPane {
      * @return the screen point
      */
     public Point2D getScreenPointAtIndex(int index) {
-        var example = new Text(text.getText(0, index));
+        var example = new Text(text.getText(text.getVisibleTextStartIndex(), index));
         example.setFont(text.getFont());
         var bounds = text.localToScreen(text.getBoundsInLocal());
-        double x = example.getBoundsInLocal().getWidth() + bounds.getMinX() +
-            text.getTranslateX() + text.getPadding().getLeft();
+
+        double x = example.getBoundsInLocal().getWidth() + bounds.getMinX() + text.getPadding().getLeft();
         return new Point2D(x, bounds.getMaxY());
     }
 
