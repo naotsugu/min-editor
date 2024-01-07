@@ -1,23 +1,31 @@
 name: Create release
 
-on: workflow_dispatch
+on:
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macOS-latest, windows-latest]
-        java: [ '21' ]
+        include:
+          - os: ubuntu-latest
+            asset_name: min-editor-linux-amd64
+          - os: macOS-latest
+            asset_name: min-editor-macos-amd64
+          - os: windows-latest
+            asset_name: min-editor-windows-amd64
       fail-fast: false
-    name: ${{ matrix.os }} JDK ${{ matrix.java }}
+    name: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
       - uses: actions/setup-java@v4
         with:
-          java-version: ${{ matrix.java }}
+          java-version: '21'
           distribution: 'temurin'
       - uses: gradle/wrapper-validation-action@v1
       - uses: gradle/gradle-build-action@v2
@@ -25,5 +33,21 @@ jobs:
           arguments: pkg
       - uses: actions/upload-artifact@v4
         with:
-          name: min-editor-${{ matrix.os }}
+          name: ${{ matrix.asset_name }}.zip
           path: modules/bootstrap/build/distributions/*.zip
+
+  create-release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: min-editor-*
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            min-editor-linux-amd64.zip
+            min-editor-macos-amd64.zip
+            min-editor-windows-amd64.zip
