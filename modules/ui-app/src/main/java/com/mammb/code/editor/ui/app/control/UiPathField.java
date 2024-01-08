@@ -139,9 +139,6 @@ public class UiPathField extends StackPane {
      * @param path the address path
      */
     private void showPathMenu(AddressPath path) {
-        if (timeline == null) {
-            return;
-        }
         stopTimeline();
         if (pathNavi != null) {
             pathNavi.hide();
