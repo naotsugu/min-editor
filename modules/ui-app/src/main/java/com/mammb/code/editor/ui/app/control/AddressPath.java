@@ -91,8 +91,8 @@ public class AddressPath {
 
 
     private List<PathItem> listItem(Path path) {
-        try (Stream<Path> s = Files.list(path)) {
-            return s.map(FlattenPath::of).sorted(Comparator.comparing(p -> Files.isDirectory(p.raw()) ? -1 : 1)).toList();
+        try (Stream<Path> s = Files.list(path).filter(PathItem.exclude)) {
+            return s.map(FlattenPath::of).sorted().toList();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -29,8 +29,8 @@ public class FlattenPath extends BasicPath {
     /** logger. */
     private static final System.Logger log = System.getLogger(FlattenPath.class.getName());
 
-    /** The limit of path char length. */
-    private static final int limitOfCharLength = 50;
+    /** The limit of path depth. */
+    private static final int limitOfDepth = 10;
 
     /** The flatten path. */
     private final Path flatten;
@@ -45,6 +45,7 @@ public class FlattenPath extends BasicPath {
         this.flatten = delve(raw);
     }
 
+
     /**
      * Create the path item.
      * @param raw the raw path
@@ -56,23 +57,25 @@ public class FlattenPath extends BasicPath {
 
 
     private static Path delve(Path path) {
-        for (var p = path; ;) {
+        Path p = path;
+        for (int i = 0; i < limitOfDepth; i++) {
             if (Files.isDirectory(p) && Files.isReadable(p)) {
-                try (Stream<Path> stream = Files.list(p)) {
+                try (Stream<Path> stream = Files.list(p).filter(PathItem.exclude)) {
                     var list = stream.toList();
                     if (list.size() == 1) {
                         p = list.getFirst();
-                        if (p.toString().length() < limitOfCharLength) {
-                            continue;
-                        }
+                    } else {
+                        break;
                     }
                 } catch (IOException e) {
                     log.log(System.Logger.Level.WARNING, e);
-                    return p;
+                    break;
                 }
+            } else {
+                break;
             }
-            return p;
         }
+        return p;
     }
 
 

@@ -137,11 +137,6 @@ public class BasicPath implements PathItem {
     }
 
     @Override
-    public int compareTo(Path other) {
-        return raw.compareTo(other);
-    }
-
-    @Override
     public boolean equals(Object other) {
         return raw.equals(other);
     }

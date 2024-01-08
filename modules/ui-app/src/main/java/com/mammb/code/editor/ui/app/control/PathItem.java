@@ -15,13 +15,20 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Comparator;
+import java.util.function.Predicate;
 
 /**
  * The path item.
  * @author Naotsugu Kobayashi
  */
 public interface PathItem extends Path {
+
+    Predicate<Path> exclude = p ->
+        !".DS_Store".equals(p.getFileName().toString()) &&
+        !"Thums.db".equals(p.getFileName().toString());
 
     /**
      * Get the name.
@@ -34,5 +41,13 @@ public interface PathItem extends Path {
      * @return the raw path
      */
     Path raw();
+
+
+    @Override
+    default int compareTo(Path other) {
+        return Comparator.comparing((Path p) -> Files.isDirectory(p) ? -1 : 1)
+            .thenComparing(p -> p)
+            .compare(this.raw(), (other instanceof PathItem pi) ? pi.raw() : other);
+    }
 
 }
