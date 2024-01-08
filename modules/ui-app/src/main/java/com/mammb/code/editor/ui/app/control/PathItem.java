@@ -28,6 +28,7 @@ public interface PathItem extends Path {
 
     Predicate<Path> exclude = p ->
         !".DS_Store".equals(p.getFileName().toString()) &&
+        !".localized".equals(p.getFileName().toString()) &&
         !"Thums.db".equals(p.getFileName().toString());
 
     /**

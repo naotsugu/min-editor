@@ -101,7 +101,9 @@ public class UiPathField extends StackPane {
             var index = text.getCaretPosition();
             var path = AddressPath.of(text.getText()).dirOn(index);
             addressPath = path;
-            showPathMenu(path);
+            UiPathMenu menu = new UiPathMenu(path.path(), path.listItem(), handlePathSelect());
+            Point2D p = text.getScreenPointAtIndex(path.stringLength());
+            showPathMenu(menu, p);
         }
     }
 
@@ -125,28 +127,30 @@ public class UiPathField extends StackPane {
         }
 
         var path = AddressPath.of(text.getText()).dirOn(index);
+        UiPathMenu pathNaviRef = pathNavi;
         if (path.equals(addressPath) ||
-            pathNavi != null && pathNavi.getParent().equals(path.path())) {
+            pathNaviRef != null && pathNaviRef.getParent().equals(path.path())) {
             return;
         }
         addressPath = path;
-        runOnTimeline(ae -> showPathMenu(path));
+        UiPathMenu menu = new UiPathMenu(path.path(), path.listItem(), handlePathSelect());
+        Point2D p = text.getScreenPointAtIndex(path.stringLength());
+        runOnTimeline(ae -> showPathMenu(menu, p));
     }
 
 
     /**
      * Show path menu.
-     * @param path the address path
+     * @param menu the path menu
      */
-    private void showPathMenu(AddressPath path) {
+    private void showPathMenu(UiPathMenu menu, Point2D point) {
         stopTimeline();
         if (pathNavi != null) {
             pathNavi.hide();
         }
-        pathNavi = new UiPathMenu(path.path(), path.listItem(), handlePathSelect());
+        pathNavi = menu;
         addressPath = null;
         pathNavi.setOnHidden(e -> {  });
-        Point2D point = text.getScreenPointAtIndex(path.stringLength());
         pathNavi.show(getScene().getWindow(), point.getX(), point.getY());
         pathNavi.requestFocus();
     }
@@ -178,6 +182,7 @@ public class UiPathField extends StackPane {
      * @param eventEventHandler the action handler event
      */
     private void runOnTimeline(EventHandler<ActionEvent> eventEventHandler) {
+        stopTimeline();
         timeline = new Timeline();
         timeline.setCycleCount(1);
         var keyFrame = new KeyFrame(Duration.millis(1200), eventEventHandler);
