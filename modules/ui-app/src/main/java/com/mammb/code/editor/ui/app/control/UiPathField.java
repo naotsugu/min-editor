@@ -210,6 +210,16 @@ public class UiPathField extends StackPane {
 
 
     /**
+     * Set the path text.
+     * @param path the path
+     */
+    public void setPathText(Path path) {
+        text.textField().textProperty().set((path == null) ? "" : path.toString());
+        text.end();
+    }
+
+
+    /**
      * Get the text property.
      * @return the text property
      */

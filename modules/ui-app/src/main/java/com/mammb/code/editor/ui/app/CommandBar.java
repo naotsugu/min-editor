@@ -98,8 +98,12 @@ public class CommandBar extends HBox {
     }
 
 
+    /**
+     * Set the path text.
+     * @param path the path
+     */
     void setPathText(Path path) {
-        pathField.textProperty().set((path == null) ? "" : path.toString());
+        pathField.setPathText(path);
     }
 
 
