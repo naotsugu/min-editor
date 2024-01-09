@@ -129,7 +129,7 @@ public class UiPromptText extends StackPane {
      */
     public Point2D getScreenPointAtIndex(int index) {
 
-        var example = new Text(text.getText(text.getVisibleTextStartIndex(), index));
+        var example = new Text(text.getText(Math.min(text.getVisibleTextStartIndex(), index), index));
         example.setFont(text.getFont());
         var bounds = text.localToScreen(text.getBoundsInLocal());
 

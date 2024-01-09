@@ -71,11 +71,6 @@ public class AddressPath {
     }
 
 
-    public List<Path> list() {
-        return list(directory ? path : path.getParent());
-    }
-
-
     public List<PathItem> listItem() {
         return listItem(directory ? path : path.getParent());
     }

@@ -81,7 +81,15 @@ public class FlattenPath extends BasicPath {
 
     @Override
     public String name() {
-        return super.raw().equals(flatten) ? super.name() : relativize(flatten).toString();
+        if (super.raw().equals(flatten)) {
+            return super.name();
+        } else {
+            if (getParent() == null) {
+                return flatten.getFileName().toString();
+            } else {
+                return getParent().relativize(flatten).toString();
+            }
+        }
     }
 
 

@@ -102,6 +102,7 @@ public class UiPathMenu extends ContextMenu {
      * @return the menu item list
      */
     private static MenuItem[] createItems(List<PathItem> paths, Consumer<Path> consumer) {
+
         return paths.stream().map(p -> {
             var item = new MenuItem(p.name(), UiIcon.contentOf(p.raw()));
             if (Files.isReadable(p.raw())) {
