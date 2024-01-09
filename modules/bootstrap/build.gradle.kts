@@ -51,6 +51,7 @@ tasks.register<Jar>("uberJar") {
 
 jlink {
     options = listOf("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
+    enableCds()
     launcher {
         name = "min-editor"
         noConsole = true
