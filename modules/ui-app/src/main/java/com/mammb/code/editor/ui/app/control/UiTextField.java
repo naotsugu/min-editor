@@ -75,7 +75,7 @@ public class UiTextField extends TextField {
      */
     public int getVisibleTextStartIndex() {
         TextFieldSkin textFieldSkin = (TextFieldSkin) getSkin();
-        HitInfo hit = textFieldSkin.getIndex(0, 0);
+        HitInfo hit = textFieldSkin.getIndex(getPadding().getLeft(), 0);
         return hit.getCharIndex();
     }
 
