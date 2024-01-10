@@ -285,7 +285,11 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public ScreenPoint screenPoint() {
-        return new ScreenPoint(texts.head().point().row(), caret.caretPoint().offset());
+        OffsetPoint caretPoint = caret.caretPoint();
+        if (caretPoint == null) {
+            caretPoint = OffsetPoint.zero;
+        }
+        return new ScreenPoint(texts.head().point().row(), caretPoint.offset());
     }
 
     @Override

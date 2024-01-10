@@ -32,6 +32,9 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
  */
 public class UiPromptText extends StackPane {
 
+    /** logger. */
+    private static final System.Logger log = System.getLogger(UiPromptText.class.getName());
+
     /** The text field. */
     private final UiTextField text;
 
@@ -129,7 +132,11 @@ public class UiPromptText extends StackPane {
      */
     public Point2D getScreenPointAtIndex(int index) {
 
-        var example = new Text(text.getText(Math.min(text.getVisibleTextStartIndex(), index), index));
+        var from = text.getVisibleTextStartIndex();
+        if (from > index) {
+            throw new RuntimeException("from:" + from + ", to:" + index);
+        }
+        var example = new Text(text.getText(from, index));
         example.setFont(text.getFont());
         var bounds = text.localToScreen(text.getBoundsInLocal());
 
