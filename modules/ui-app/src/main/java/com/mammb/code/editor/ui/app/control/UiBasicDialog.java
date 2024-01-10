@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.app.control;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.stage.Window;
 
 /**
  * The BasicDialog.
@@ -27,8 +28,13 @@ public class UiBasicDialog extends Dialog<ButtonType> {
     /**
      * Constructor.
      */
-    public UiBasicDialog() {
+    public UiBasicDialog(Window owner) {
         ThemeCss.rootOf().into(getDialogPane());
+        if (owner != null) {
+            initOwner(owner);
+        } else {
+            ThemeCss.rootOf().into(getDialogPane());
+        }
     }
 
 }

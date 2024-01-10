@@ -37,7 +37,7 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
     private TreeMap<Long, FoundRun> founds = new TreeMap<>();
 
     /** The highlighter style. */
-    private Style style = new Style.BgColor("FFCDD2", 0.2);
+    private Style style = new Style.BgColor("FF4D5E", 0.5);
 
     /** The find. */
     private final Find find;

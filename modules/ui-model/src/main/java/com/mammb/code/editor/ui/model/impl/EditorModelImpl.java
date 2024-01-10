@@ -707,7 +707,9 @@ public class EditorModelImpl implements EditorModel {
         find.reset();
         return FindHandleImpl.of(find, caret.caretPoint(), found -> {
             if (found instanceof FoundRun run) {
-                apply(new ScreenPoint(Math.max(0, run.row() - 4), run.chOffset() + run.length()));
+                // TODO Need to consider if row wrapped.
+                var row = Math.max(0, run.row() - screen.pageLineSize() / 2);
+                apply(new ScreenPoint(row, run.chOffset() + run.length()));
             }
         });
     }

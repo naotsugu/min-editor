@@ -16,9 +16,8 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.app.control.UiBasicDialog;
-import javafx.geometry.Bounds;
-import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Window;
 
 /**
  * The AboutDialog.
@@ -28,22 +27,14 @@ public class AboutDialog extends UiBasicDialog {
 
     /**
      * Constructor.
-     * @param scene the parent
+     * @param owner the parent
      */
-    public AboutDialog(Scene scene) {
-
+    public AboutDialog(Window owner) {
+        super(owner);
         var pane = getDialogPane();
         pane.setContentText(String.join(" ", Version.appName, Version.value));
         pane.getButtonTypes().addAll(ButtonType.CLOSE);
         setTitle("About");
-
-        if (scene != null) {
-            Bounds bounds = scene.getRoot().localToScreen(scene.getRoot().getBoundsInLocal());;
-            var window = getDialogPane().getScene().getWindow();
-            window.setX(bounds.getCenterX() - pane.getWidth() / 2);
-            window.setY(bounds.getCenterY() - 100);
-        }
-
     }
 
 }

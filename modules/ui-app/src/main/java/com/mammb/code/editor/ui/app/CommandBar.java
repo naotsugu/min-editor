@@ -79,7 +79,7 @@ public class CommandBar extends HBox {
      * Initialize handler.
      */
     private void initHandler() {
-        menu.setOnMouseClicked(e -> new AboutDialog(getScene()).showAndWait());
+        menu.setOnMouseClicked(e -> new AboutDialog(getScene().getWindow()).showAndWait());
         pathField.managedProperty().bind(pathField.visibleProperty());
         searchField.managedProperty().bind(searchField.visibleProperty());
         pathField.visibleProperty().bind(searchField.visibleProperty().not());
