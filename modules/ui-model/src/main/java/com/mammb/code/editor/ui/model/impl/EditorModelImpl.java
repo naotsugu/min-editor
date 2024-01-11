@@ -710,6 +710,8 @@ public class EditorModelImpl implements EditorModel {
                 // TODO Need to consider if row wrapped.
                 var row = Math.max(0, run.row() - screen.pageLineSize() / 2);
                 apply(new ScreenPoint(row, run.chOffset() + run.length()));
+                texts.markDirty();
+                caret.markDirty();
             }
         });
     }

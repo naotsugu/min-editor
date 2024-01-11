@@ -65,13 +65,16 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
 
     @Override
     public StyledText applyTo(StyledText styledText) {
+
         for (FoundRun foundRun : founds.subMap(
             styledText.offset(),
             styledText.tailOffset()).values()) {
+
             styledText.putStyle(StyleSpan.of(style,
                 Math.toIntExact(foundRun.chOffset() - styledText.offset()),
                 foundRun.length()));
         }
+
         return styledText;
     }
 
@@ -81,7 +84,7 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
         switch (found) {
             case FoundRun run -> founds.put(run.chOffset(), run);
             case FoundNone none  -> { }
-            case FoundReset reset  -> founds.clear();
+            case FoundReset reset  -> {}//founds.clear();
         }
     }
 
