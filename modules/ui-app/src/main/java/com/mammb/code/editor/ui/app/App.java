@@ -92,6 +92,7 @@ public class App extends Application {
         upCall.onPathChanged(c -> {
             bar.setPathText(c.session().path());
             session.push(c.session(), c.prevSession());
+            stage.setTitle(Version.appName + " - " + c.session().path().getFileName());
         });
         upCall.onContentModified(c -> bar.setPathModified(c.modified()));
 
