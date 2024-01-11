@@ -66,40 +66,71 @@ public class FindImpl implements Find {
 
     @Override
     public void run(OffsetPoint base, FindSpec spec) {
+        int count = spec.forward() ? findNext(base, spec) : findPrev(base, spec);
+        if (count == 0) listeners.forEach(listener -> listener.accept(new FoundNone()));
+    }
+
+
+    private int findNext(OffsetPoint base, FindSpec spec) {
         int count = 0;
-        OffsetPoint point = base;
-        for (;;) {
+        for (OffsetPoint point = base;;) {
             if (interrupt) {
                 interrupt = false;
-                return;
+                return count;
             }
-            String row = rowSupplier.at(point.cpOffset());
-            if (row.isEmpty()) {
+            String text = rowSupplier.at(point.cpOffset());
+            if (text.isEmpty()) break;
+
+            for (Match match : spec.match(text)) {
+                fire(text, point, match);
+                count++;
+                if (spec.once()) {
+                    return count;
+                }
+            }
+            point = point.plus(text);
+        }
+        return count;
+    }
+
+
+    public int findPrev(OffsetPoint base, FindSpec spec) {
+        int count = 0;
+        for (OffsetPoint point = base;;) {
+            if (interrupt) {
+                interrupt = false;
+                return count;
+            }
+            String text = rowSupplier.before(point.cpOffset());
+            if (text.isEmpty()) {
                 break;
             }
 
-            var result = spec.match(row);
-            for (Match match : result) {
-                int margin = 60;
-                int peripheralStart = Math.max(0, match.start() - margin);
-                int peripheralEnd = Math.clamp(match.end() + margin, match.end(), row.length());
-                var found = new FoundRun(
-                    point.offset() + match.start(),
-                    match.length(),
-                    row.substring(peripheralStart, peripheralEnd),
-                    Math.toIntExact(point.offset() - peripheralStart),
-                    point.row());
-                listeners.forEach(listener -> listener.accept(found));
+            var results = spec.match(text);
+            for (int i = results.length - 1; i >= 0; i--) {
+                fire(text, point, results[i]);
                 count++;
                 if (spec.once()) {
-                    return;
+                    return count;
                 }
             }
-            point = point.plus(row);
+            point = point.minus(text);
         }
-        if (count == 0) {
-            listeners.forEach(listener -> listener.accept(new FoundNone()));
-        }
+        return count;
+    }
+
+
+    private void fire(String text, OffsetPoint point, Match match) {
+        int margin = 60;
+        int peripheralStart = Math.max(0, match.start() - margin);
+        int peripheralEnd = Math.clamp(match.end() + margin, match.end(), text.length());
+        var found = new FoundRun(
+            point.offset() + match.start(),
+            match.length(),
+            text.substring(peripheralStart, peripheralEnd),
+            Math.toIntExact(point.offset() - peripheralStart),
+            point.row());
+        listeners.forEach(listener -> listener.accept(found));
     }
 
 

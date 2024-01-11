@@ -37,12 +37,18 @@ public interface FindSpec {
     boolean once();
 
     /**
+     * Get whether it is a forward find.
+     * @return {@code true} if it is a forward find
+     */
+    boolean forward();
+
+    /**
      * Create a new find spec.
      * @param string the string for find
      * @return find spec
      */
     static FindSpec of(String string) {
-        return new FindSpecImpl(string, true);
+        return new FindSpecImpl(string, true, true);
     }
 
     /**
@@ -51,7 +57,7 @@ public interface FindSpec {
      * @return all search spec
      */
     static FindSpec allOf(String string) {
-        return new FindSpecImpl(string, false);
+        return new FindSpecImpl(string, false, true);
     }
 
 }

@@ -32,6 +32,8 @@ public class FindSpecImpl implements FindSpec {
     private final String cs;
     /** Whether it is a one-shot find. */
     private final boolean once;
+    /** Whether it is a forward find. */
+    private final boolean forward;
     /** The result buffer. */
     private Match[] buffer = new Match[3];
 
@@ -40,10 +42,12 @@ public class FindSpecImpl implements FindSpec {
      * Constructor.
      * @param cs the string to be searched
      * @param once whether it is a one-shot find
+     * @param forward whether it is a forward find
      */
-    public FindSpecImpl(String cs, boolean once) {
+    public FindSpecImpl(String cs, boolean once, boolean forward) {
         this.cs = Objects.requireNonNull(cs);
         this.once = once;
+        this.forward = forward;
     }
 
 
@@ -81,13 +85,14 @@ public class FindSpecImpl implements FindSpec {
         return buffer = Arrays.copyOf(buffer, newCapacity);
     }
 
-    /**
-     * Get whether it is a one-shot find.
-     * @return {@code true} if it is a one-shot find
-     */
     @Override
     public boolean once() {
         return once;
+    }
+
+    @Override
+    public boolean forward() {
+        return forward;
     }
 
 }
