@@ -29,7 +29,6 @@ public class UiBasicDialog extends Dialog<ButtonType> {
      * Constructor.
      */
     public UiBasicDialog(Window owner) {
-        ThemeCss.rootOf().into(getDialogPane());
         if (owner != null) {
             initOwner(owner);
         } else {

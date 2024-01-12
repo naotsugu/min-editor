@@ -59,7 +59,10 @@ public class UiIcon extends SVGPath {
         return this;
     }
 
-
+    /**
+     * Accentuate.
+     * @param accentuate accentuate
+     */
     public void accentuate(boolean accentuate) {
         pseudoClassStateChanged(PseudoClass.getPseudoClass("accentuate"), accentuate);
     }

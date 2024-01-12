@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.app.control.UiBasicDialog;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.stage.Window;
 
 /**
@@ -31,10 +32,10 @@ public class AboutDialog extends UiBasicDialog {
      */
     public AboutDialog(Window owner) {
         super(owner);
-        var pane = getDialogPane();
+        setTitle("About");
+        DialogPane pane = getDialogPane();
         pane.setContentText(String.join(" ", Version.appName, Version.value));
         pane.getButtonTypes().addAll(ButtonType.CLOSE);
-        setTitle("About");
     }
 
 }

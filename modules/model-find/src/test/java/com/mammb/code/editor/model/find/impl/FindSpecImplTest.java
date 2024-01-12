@@ -27,7 +27,7 @@ class FindSpecImplTest {
 
     @Test void match() {
 
-        var target = new FindSpecImpl("abc", true);
+        var target = new FindSpecImpl("abc", true, true);
 
         assertEquals(0, target.match("abx").length);
 
