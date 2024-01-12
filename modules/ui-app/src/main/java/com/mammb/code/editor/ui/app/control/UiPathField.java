@@ -213,6 +213,9 @@ public class UiPathField extends StackPane {
         }
     }
 
+    public void setPromptAccentuate(boolean accentuate) {
+        text.setPromptAccentuate(accentuate);
+    }
 
     /**
      * Set the path text.

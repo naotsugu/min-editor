@@ -28,7 +28,7 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 public class ThemeCss {
 
     /** The style theme. */
-    private static volatile StyleTheme styleTheme = StyleTheme.dark();
+    static volatile StyleTheme styleTheme = StyleTheme.dark();
 
     /** The css run. */
     private CssRun cssRun;

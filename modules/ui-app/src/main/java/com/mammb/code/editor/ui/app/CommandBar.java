@@ -108,7 +108,7 @@ public class CommandBar extends HBox {
 
 
     void setPathModified(boolean modified) {
-        //field.accentuatePrompt(modified);
+        pathField.setPromptAccentuate(modified);
     }
 
 

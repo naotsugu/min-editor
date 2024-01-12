@@ -81,6 +81,17 @@ public class UiPromptText extends StackPane {
 
 
     /**
+     * Set accentuate the prompt.
+     * @param accentuate accentuate
+     */
+    public void setPromptAccentuate(boolean accentuate) {
+        prompt.getChildren().stream()
+            .filter(UiIcon.class::isInstance)
+            .map(UiIcon.class::cast).forEach(n -> n.accentuate(accentuate));
+    }
+
+
+    /**
      * Get the text offset at point.
      * @param point the point 2D
      * @return the text offset at point, {@code -1} if out of range

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import javafx.css.PseudoClass;
 import javafx.scene.shape.SVGPath;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,6 +38,10 @@ public class UiIcon extends SVGPath {
     }
 
 
+    /**
+     * Enlarge size.
+     * @return the icon
+     */
     public UiIcon larger() {
         setScaleX(getScaleX() * 1.25);
         setScaleY(getScaleY() * 1.25);
@@ -44,10 +49,19 @@ public class UiIcon extends SVGPath {
     }
 
 
+    /**
+     * Reduce size.
+     * @return the icon
+     */
     public UiIcon smaller() {
         setScaleX(getScaleX() * 0.75);
         setScaleY(getScaleY() * 0.75);
         return this;
+    }
+
+
+    public void accentuate(boolean accentuate) {
+        pseudoClassStateChanged(PseudoClass.getPseudoClass("accentuate"), accentuate);
     }
 
 
@@ -127,6 +141,9 @@ public class UiIcon extends SVGPath {
     static final Css css = st -> CSS."""
         .\{styleClass} {
           -fx-fill:\{st.text};
+        }
+        .\{styleClass}:accentuate {
+          -fx-fill:Aquamarine;
         }
         """;
 

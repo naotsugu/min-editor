@@ -27,6 +27,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * The Application.
@@ -52,7 +53,8 @@ public class App extends Application {
      */
     private Stage buildScene(Stage stage, Context context) {
 
-        stage.getIcons().add(new Image(App.class.getResourceAsStream("/icon.png")));
+        stage.getIcons().add(new Image(
+            Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
 
         var upCall = new AppEditorUpCall();
         var editorPane = new EditorPane(context, upCall);
