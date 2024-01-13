@@ -25,6 +25,6 @@ public class Version {
     public static final String appName = "min-editor";
 
     /** The number of version. */
-    public static final String value = "0.0.1";
+    public static final String value = "0.0.2";
 
 }
