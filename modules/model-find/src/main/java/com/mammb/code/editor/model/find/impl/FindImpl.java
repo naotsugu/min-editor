@@ -66,20 +66,34 @@ public class FindImpl implements Find {
 
     @Override
     public void run(OffsetPoint base, FindSpec spec) {
-        int count = spec.forward() ? findNext(base, spec) : findPrev(base, spec);
+        int count = spec.forward()
+            ? findNext(base, spec)
+            : findPrev(base, spec);
         if (count == 0) listeners.forEach(listener -> listener.accept(new FoundNone()));
     }
 
 
     private int findNext(OffsetPoint base, FindSpec spec) {
         int count = 0;
-        for (OffsetPoint point = base;;) {
+        boolean searchedToEnd = false;
+        OffsetPoint point = base;
+        for (;;) {
             if (interrupt) {
                 interrupt = false;
                 return count;
             }
+
             String text = rowSupplier.at(point.cpOffset());
-            if (text.isEmpty()) break;
+            if (text.isEmpty()) {
+                searchedToEnd = true;
+                if (base.cpOffset() != 0) {
+                    point = OffsetPoint.zero; // continues from the head
+                }
+            }
+
+            if (searchedToEnd && point.cpOffset() >= base.cpOffset()) {
+                break;
+            }
 
             for (Match match : spec.match(text)) {
                 fire(text, point, match);
