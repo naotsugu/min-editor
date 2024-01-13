@@ -77,6 +77,12 @@ public interface RowSupplier {
     long offsetBefore(long startCpOffset, Until<byte[]> until);
 
     /**
+     * Get the length of characters(code points).
+     * @return the length of characters(code points)
+     */
+    long cpLength();
+
+    /**
      * Create a new RowSupplier from the specified text.
      * @param text the string.
      * @return the created RowSupplier

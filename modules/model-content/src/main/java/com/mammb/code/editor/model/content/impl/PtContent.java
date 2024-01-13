@@ -99,4 +99,9 @@ public class PtContent implements Content {
         return path;
     }
 
+    @Override
+    public long length() {
+        return pt.length();
+    }
+
 }

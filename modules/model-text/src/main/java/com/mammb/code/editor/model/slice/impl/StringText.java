@@ -95,4 +95,9 @@ public class StringText implements RowSupplier {
         return 0;
     }
 
+    @Override
+    public long cpLength() {
+        return codePointCount;
+    }
+
 }

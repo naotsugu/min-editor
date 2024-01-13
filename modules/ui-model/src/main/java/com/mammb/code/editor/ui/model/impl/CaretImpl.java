@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -30,7 +31,7 @@ import static java.lang.System.Logger.Level.DEBUG;
  * Caret implementation.
  * @author Naotsugu Kobayashi
  */
-public class CaretImpl implements Caret {
+public class CaretImpl implements Caret, CaretMulti {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(Caret.class.getName());

@@ -177,6 +177,7 @@ public class EditorPane extends StackPane {
             @Override public void requestFocus() {
                 canvas.requestFocus();
             }
+            @Override public void requestQuery() { }
         };
     }
 

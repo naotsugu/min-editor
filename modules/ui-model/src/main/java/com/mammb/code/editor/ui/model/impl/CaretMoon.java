@@ -13,36 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.pane;
+package com.mammb.code.editor.ui.model.impl;
 
 /**
- * The EditorDownCall.
- * EditorDownCall is the interface for operation requests from
- * the application's parent UI to the editor.
+ * CaretMoon.
  * @author Naotsugu Kobayashi
  */
-public interface EditorDownCall {
-
-    /**
-     * Requests a path change to the model.
-     * @param session the new session
-     */
-    void requestPathChange(Session session);
-
-    /**
-     * Requests find to the model.
-     * @param regexp the string of regexp
-     */
-    void requestFind(String regexp);
-
-    /**
-     * Request focus.
-     */
-    void requestFocus();
-
-    /**
-     * Request query.
-     */
-    void requestQuery();
-
+public class CaretMoon {
 }

@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import java.nio.file.Path;
-
 /**
  * The EditorUpCall.
  * @author Naotsugu Kobayashi

@@ -171,6 +171,9 @@ public class EditBuffer implements TextEdit {
                 editQueue.flush();
                 return peer.offsetBefore(startCpOffset, until);
             }
+            @Override public long cpLength() {
+                return peer.cpLength();
+            }
         };
     }
 

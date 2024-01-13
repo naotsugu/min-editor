@@ -109,6 +109,11 @@ public class PtContentMirror implements Content {
     }
 
     @Override
+    public long length() {
+        return peer.length();
+    }
+
+    @Override
     public Charset charset() {
         return originalCs;
     }

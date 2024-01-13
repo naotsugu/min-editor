@@ -54,4 +54,9 @@ public record RowAdapter(Content content) implements RowSupplier {
         return content.offsetBefore(startCpOffset, until);
     }
 
+    @Override
+    public long cpLength() {
+        return content().length();
+    }
+
 }
