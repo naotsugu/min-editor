@@ -75,7 +75,7 @@ public class FindImpl implements Find {
 
     private int findNext(OffsetPoint base, FindSpec spec) {
         int count = 0;
-        boolean searchedToEnd = false;
+        boolean searchedToTail = false;
         OffsetPoint point = base;
         for (;;) {
             if (interrupt) {
@@ -85,13 +85,13 @@ public class FindImpl implements Find {
 
             String text = rowSupplier.at(point.cpOffset());
             if (text.isEmpty()) {
-                searchedToEnd = true;
+                searchedToTail = true;
                 if (base.cpOffset() != 0) {
                     point = OffsetPoint.zero; // continues from the head
                 }
             }
 
-            if (searchedToEnd && point.cpOffset() >= base.cpOffset()) {
+            if (searchedToTail && point.cpOffset() >= base.cpOffset()) {
                 break;
             }
 
@@ -108,9 +108,10 @@ public class FindImpl implements Find {
     }
 
 
-    public int findPrev(OffsetPoint base, FindSpec spec) {
+    private int findPrev(OffsetPoint base, FindSpec spec) {
         int count = 0;
-        for (OffsetPoint point = base;;) {
+        OffsetPoint point = base;
+        for (;;) {
             if (interrupt) {
                 interrupt = false;
                 return count;
