@@ -708,8 +708,9 @@ public class EditorModelImpl implements EditorModel {
         return FindHandleImpl.of(find, caret.caretPoint(), found -> {
             if (found instanceof FoundRun run) {
                 // TODO Need to consider if row wrapped.
-                var row = Math.max(0, run.row() - screen.pageLineSize() / 2);
-                apply(new ScreenPoint(row, run.chOffset() + run.length()));
+                var row = Math.max(0, run.row() - screen.pageLineSize() * 2 / 3);
+                var point = new ScreenPoint(row, run.chOffset() + (run.right() ? run.length() : 0));
+                apply(point);
                 texts.markDirty();
                 caret.markDirty();
             }

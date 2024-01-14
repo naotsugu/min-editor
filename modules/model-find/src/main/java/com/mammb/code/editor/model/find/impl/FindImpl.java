@@ -96,7 +96,7 @@ public class FindImpl implements Find {
             }
 
             for (Match match : spec.match(text)) {
-                fire(text, point, match);
+                fire(text, point, true, match);
                 count++;
                 if (spec.once()) {
                     return count;
@@ -116,6 +116,9 @@ public class FindImpl implements Find {
                 interrupt = false;
                 return count;
             }
+            if (point.cpOffset() <= 0) {
+                break;
+            }
             String text = rowSupplier.before(point.cpOffset());
             if (text.isEmpty()) {
                 break;
@@ -123,7 +126,7 @@ public class FindImpl implements Find {
             point = point.minus(text);
             var results = spec.match(text);
             for (int i = results.length - 1; i >= 0; i--) {
-                fire(text, point, results[i]);
+                fire(text, point, false, results[i]);
                 count++;
                 if (spec.once()) {
                     return count;
@@ -134,13 +137,14 @@ public class FindImpl implements Find {
     }
 
 
-    private void fire(String text, OffsetPoint point, Match match) {
+    private void fire(String text, OffsetPoint point, boolean right, Match match) {
         int margin = 60;
         int peripheralStart = Math.max(0, match.start() - margin);
         int peripheralEnd = Math.clamp(match.end() + margin, match.end(), text.length());
         var found = new FoundRun(
             point.offset() + match.start(),
             match.length(),
+            right,
             text.substring(peripheralStart, peripheralEnd),
             Math.toIntExact(point.offset() - peripheralStart),
             point.row());
