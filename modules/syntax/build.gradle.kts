@@ -11,5 +11,6 @@ dependencies {
     implementation(project(":syntax-rust"))
     implementation(project(":syntax-kotlin"))
     implementation(project(":syntax-python"))
+    implementation(project(":syntax-html"))
     implementation(project(":model-text"))
 }

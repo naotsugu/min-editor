@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2023 the original author or authors.
+ * Copyright 2019-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,11 @@
  */
 
 /**
- * The syntax module.
+ * The html syntax module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax {
-
-    requires transitive code.editor.syntax.base;
-    requires code.editor.syntax.basic;
-    requires code.editor.syntax.java;
-    requires code.editor.syntax.javascript;
-    requires code.editor.syntax.markdown;
-    requires code.editor.syntax.rust;
-    requires code.editor.syntax.kotlin;
-    requires code.editor.syntax.python;
-    requires code.editor.syntax.html;
+module code.editor.syntax.html {
     requires code.editor.model.text;
-
-    exports com.mammb.code.editor.syntax;
-
+    requires code.editor.syntax.base;
+    exports com.mammb.code.editor.syntax.html;
 }

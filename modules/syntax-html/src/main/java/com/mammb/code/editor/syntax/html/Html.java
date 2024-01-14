@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.html;
+
+import com.mammb.code.editor.syntax.base.Hue;
+import com.mammb.code.editor.syntax.base.TokenType;
 
 /**
- * The syntax module.
+ * Html.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax {
+public class Html {
 
-    requires transitive code.editor.syntax.base;
-    requires code.editor.syntax.basic;
-    requires code.editor.syntax.java;
-    requires code.editor.syntax.javascript;
-    requires code.editor.syntax.markdown;
-    requires code.editor.syntax.rust;
-    requires code.editor.syntax.kotlin;
-    requires code.editor.syntax.python;
-    requires code.editor.syntax.html;
-    requires code.editor.model.text;
+    /** Html Token type. */
+    public interface HtmlToken extends com.mammb.code.editor.syntax.base.TokenType {
 
-    exports com.mammb.code.editor.syntax;
+        TokenType COMMENT = TokenType.build(Hue.GREEN);
+
+    }
 
 }
