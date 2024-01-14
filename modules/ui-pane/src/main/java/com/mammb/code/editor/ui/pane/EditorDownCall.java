@@ -33,7 +33,7 @@ public interface EditorDownCall {
      * Requests find to the model.
      * @param regexp the string of regexp
      */
-    void requestFind(String regexp);
+    void requestFind(String regexp, boolean forward);
 
     /**
      * Request focus.

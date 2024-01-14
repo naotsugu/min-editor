@@ -21,8 +21,19 @@ package com.mammb.code.editor.ui.model;
  */
 public interface FindHandle {
 
-    void findNext(String string, boolean regexp);
+    /**
+     *
+     * @param string
+     * @param regexp
+     * @param forward
+     */
+    void findNext(String string, boolean regexp, boolean forward);
 
+    /**
+     *
+     * @param string
+     * @param regexp
+     */
     void findAll(String string, boolean regexp);
 
 }

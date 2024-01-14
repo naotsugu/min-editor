@@ -27,7 +27,10 @@ import java.util.function.Consumer;
  */
 public class AppEditorUpCall implements EditorUpCall {
 
+    /** The path change handlers. */
     private final List<Consumer<PathChang>> pathChangedHandlers = new ArrayList<>();
+
+    /** The content modified handlers. */
     private final List<Consumer<ContentModifyChang>> contentModifyHandlers = new ArrayList<>();
 
     record PathChang(Session session, Session prevSession) { }
@@ -39,7 +42,7 @@ public class AppEditorUpCall implements EditorUpCall {
     }
 
     @Override
-    public void contentModifyChanged(Session session, boolean modified) {
+    public void contentModified(Session session, boolean modified) {
         contentModifyHandlers.forEach(c -> c.accept(new ContentModifyChang(session, modified)));
     }
 

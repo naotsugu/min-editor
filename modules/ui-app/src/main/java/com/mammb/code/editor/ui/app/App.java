@@ -98,12 +98,12 @@ public class App extends Application {
         });
         upCall.onContentModified(c -> bar.setPathModified(c.modified()));
 
-        bar.setOnPathTextCommitted(s -> downCall.requestPathChange(Session.of(Path.of(s))));
+        bar.setOnPathTextCommitted((text, ke) -> downCall.requestPathChange(Session.of(Path.of(text))));
         bar.setOnPathSelected(p -> downCall.requestPathChange(Session.of(p)));
         bar.setOnForwardClicked(() -> downCall.requestPathChange(session.forward()));
         bar.setOnBackwardClicked(() -> downCall.requestPathChange(session.backward()));
-        bar.setOnSearchTextCommitted(s -> {
-            downCall.requestFind(s);
+        bar.setOnSearchTextCommitted((text, ke) -> {
+            downCall.requestFind(text, !ke.isShortcutDown());
             bar.setVisibleSearchField(true);
         });
         bar.setOnExit(() -> Platform.runLater(downCall::requestFocus));

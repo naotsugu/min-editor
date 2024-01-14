@@ -158,7 +158,7 @@ public class EditorPane extends StackPane {
     private void initModelHandler() {
         var stateHandler = model.stateChange();
         statusBar.bind(stateHandler);
-        stateHandler.addContentModifyChanged(c -> upCall.contentModifyChanged(session(), c));
+        stateHandler.addContentModifyChanged(c -> upCall.contentModified(session(), c));
     }
 
 
@@ -171,8 +171,8 @@ public class EditorPane extends StackPane {
             @Override public void requestPathChange(Session session) {
                 open(session);
             }
-            @Override public void requestFind(String regexp) {
-                find(regexp);
+            @Override public void requestFind(String regexp, boolean forward) {
+                find(regexp, forward);
             }
             @Override public void requestFocus() {
                 canvas.requestFocus();
@@ -478,10 +478,11 @@ public class EditorPane extends StackPane {
     /**
      * Find action from the down call.
      * @param regexp the regexp string
+     * @param forward forward
      */
-    private void find(String regexp) {
+    private void find(String regexp, boolean forward) {
         canvas.requestFocus();
-        aroundEdit(() -> model.findHandle().findNext(regexp, true));
+        aroundEdit(() -> model.findHandle().findNext(regexp, true, forward));
     }
 
 

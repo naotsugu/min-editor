@@ -27,6 +27,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import java.nio.file.Path;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -126,7 +127,7 @@ public class CommandBar extends HBox {
      * Set the text committed handler.
      * @param consumer the consumer
      */
-    void setOnPathTextCommitted(Consumer<String> consumer) {
+    void setOnPathTextCommitted(BiConsumer<String, KeyEvent> consumer) {
         pathField.setOnTextCommitted(consumer);
     }
 
@@ -135,7 +136,7 @@ public class CommandBar extends HBox {
      * Set the search text committed handler.
      * @param consumer the consumer
      */
-    void setOnSearchTextCommitted(Consumer<String> consumer) {
+    void setOnSearchTextCommitted(BiConsumer<String, KeyEvent> consumer) {
         searchField.setOnTextCommitted(consumer);
     }
 

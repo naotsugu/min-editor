@@ -21,14 +21,28 @@ package com.mammb.code.editor.ui.pane;
  */
 public interface EditorUpCall {
 
+    /**
+     * Notify of content path change.
+     * @param session the session
+     * @param prevSession the previous session
+     */
     void pathChanged(Session session, Session prevSession);
 
-    void contentModifyChanged(Session session, boolean modified);
+    /**
+     * Notify of content changes.
+     * @param session the session
+     * @param modified edited or not
+     */
+    void contentModified(Session session, boolean modified);
 
+    /**
+     * The empty editor up call.
+     * @return the empty editor up call
+     */
     static EditorUpCall empty() {
         return new EditorUpCall() {
             @Override public void pathChanged(Session session, Session prevSession) { }
-            @Override public void contentModifyChanged(Session session, boolean modified) { }
+            @Override public void contentModified(Session session, boolean modified) { }
         };
     }
 

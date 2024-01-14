@@ -21,7 +21,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * The search field.
@@ -89,7 +89,7 @@ public class UiSearchField extends StackPane {
      * Set the text committed handler.
      * @param consumer the consumer
      */
-    public void setOnTextCommitted(Consumer<String> consumer) {
+    public void setOnTextCommitted(BiConsumer<String, KeyEvent> consumer) {
         text.setOnTextCommitted(consumer);
     }
 

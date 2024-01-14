@@ -20,9 +20,10 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 
@@ -59,11 +60,11 @@ public class UiPromptText extends StackPane {
      * Set the text committed handler.
      * @param consumer the consumer
      */
-    public void setOnTextCommitted(Consumer<String> consumer) {
+    public void setOnTextCommitted(BiConsumer<String, KeyEvent> consumer) {
         text.setOnKeyTyped(e -> {
             var bytes = e.getCharacter().getBytes();
             if (bytes.length > 0 && bytes[0] == 13) { // enter
-                consumer.accept(text.getText());
+                consumer.accept(text.getText(), e);
                 e.consume();
             }
         });

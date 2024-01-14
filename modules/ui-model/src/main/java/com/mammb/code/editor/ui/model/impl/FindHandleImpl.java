@@ -66,15 +66,15 @@ public class FindHandleImpl implements FindHandle {
 
 
     @Override
-    public void findNext(String string, boolean regexp) {
-        Found found = findFirst(FindSpec.of(string));
+    public void findNext(String string, boolean regexp, boolean forward) {
+        Found found = findFirst(FindSpec.of(string, forward));
         foundFirstAction.accept(found);
     }
 
 
     @Override
     public void findAll(String string, boolean regexp) {
-        Found found = findFirst(FindSpec.of(string));
+        Found found = findFirst(FindSpec.of(string, true));
         foundFirstAction.accept(found);
         if (found instanceof FoundRun) {
             find.run(OffsetPoint.zero, FindSpec.allOf(string));

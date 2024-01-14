@@ -30,6 +30,7 @@ import javafx.util.Duration;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -253,7 +254,7 @@ public class UiPathField extends StackPane {
      * Set the path text committed handler.
      * @param consumer the consumer
      */
-    public void setOnTextCommitted(Consumer<String> consumer) {
+    public void setOnTextCommitted(BiConsumer<String, KeyEvent> consumer) {
         text.setOnTextCommitted(consumer);
     }
 

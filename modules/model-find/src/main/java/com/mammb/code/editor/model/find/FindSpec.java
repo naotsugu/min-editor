@@ -45,10 +45,11 @@ public interface FindSpec {
     /**
      * Create a new find spec.
      * @param string the string for find
+     * @param forward whether it is a forward find
      * @return find spec
      */
-    static FindSpec of(String string) {
-        return new FindSpecImpl(string, true, true);
+    static FindSpec of(String string, boolean forward) {
+        return new FindSpecImpl(string, true, forward);
     }
 
     /**
