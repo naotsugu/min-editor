@@ -67,13 +67,13 @@ public class FindImpl implements Find {
     @Override
     public void run(OffsetPoint base, FindSpec spec) {
         int count = spec.forward()
-            ? findNext(base, spec)
-            : findPrev(base, spec);
+            ? findForward(base, spec)
+            : findBackward(base, spec);
         if (count == 0) listeners.forEach(listener -> listener.accept(new FoundNone()));
     }
 
 
-    private int findNext(OffsetPoint base, FindSpec spec) {
+    private int findForward(OffsetPoint base, FindSpec spec) {
         int count = 0;
         boolean searchedToTail = false;
         OffsetPoint point = base;
@@ -108,7 +108,7 @@ public class FindImpl implements Find {
     }
 
 
-    private int findPrev(OffsetPoint base, FindSpec spec) {
+    private int findBackward(OffsetPoint base, FindSpec spec) {
         int count = 0;
         OffsetPoint point = base;
         for (;;) {
@@ -120,7 +120,7 @@ public class FindImpl implements Find {
             if (text.isEmpty()) {
                 break;
             }
-
+            point = point.minus(text);
             var results = spec.match(text);
             for (int i = results.length - 1; i >= 0; i--) {
                 fire(text, point, results[i]);
@@ -129,7 +129,6 @@ public class FindImpl implements Find {
                     return count;
                 }
             }
-            point = point.minus(text);
         }
         return count;
     }
