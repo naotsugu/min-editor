@@ -23,6 +23,7 @@ import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -290,9 +291,9 @@ public class EditorPane extends StackPane {
 
         if (action != Keys.Action.EMPTY) {
             switch (action) {
-                case OPEN       -> FileAction.of(this, model).open(this::handleModelCreated);
-                case SAVE       -> FileAction.of(this, model).save(this::handleModelCreated);
-                case SAVE_AS    -> FileAction.of(this, model).saveAs(this::handleModelCreated);
+                case OPEN       -> FileAction.of(this, model).open(createOpenHandler());
+                case SAVE       -> FileAction.of(this, model).save(createSaveHandler());
+                case SAVE_AS    -> FileAction.of(this, model).saveAs(createSaveHandler());
                 case COPY       -> model.copyToClipboard();
                 case PASTE      -> aroundEdit(model::pasteFromClipboard);
                 case CUT        -> aroundEdit(model::cutToClipboard);
@@ -448,6 +449,26 @@ public class EditorPane extends StackPane {
         return ImeAction.of(gc, model).createRequest(this);
     }
 
+
+    private EventHandler<WorkerStateEvent> createOpenHandler() {
+        var prev = session();
+        return (WorkerStateEvent e) -> {
+            this.handleModelCreated(e);
+            upCall.pathChanged(session(), prev);
+        };
+    }
+
+
+    private EventHandler<WorkerStateEvent> createSaveHandler() {
+        var session = session();
+        return (WorkerStateEvent e) -> {
+            this.handleModelCreated(e);
+            if (!session.isOriginPoint()) {
+                var sp = new ScreenPoint(session.row(), session.caretIndex());
+                aroundEdit(() -> model.apply(sp));
+            }
+        };
+    }
 
     /**
      * Model update task handler.
