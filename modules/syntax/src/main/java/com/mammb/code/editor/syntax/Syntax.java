@@ -21,6 +21,7 @@ import com.mammb.code.editor.syntax.base.LexerProvider;
 import com.mammb.code.editor.syntax.base.PassThroughLexer;
 import com.mammb.code.editor.syntax.base.SyntaxTranslate;
 import com.mammb.code.editor.syntax.basic.DiffLexer;
+import com.mammb.code.editor.syntax.html.HtmlLexer;
 import com.mammb.code.editor.syntax.java.JavaLexer;
 import com.mammb.code.editor.syntax.javascript.JsonLexer;
 import com.mammb.code.editor.syntax.kotlin.KotlinLexer;
@@ -48,6 +49,7 @@ public class Syntax {
                 case "rust", "rs" -> new RustLexer();
                 case "python", "py" -> new PythonLexer();
                 case "kotlin", "kt", "kts" -> new KotlinLexer();
+                case "html", "xhtml" -> new HtmlLexer();
                 default         -> new PassThroughLexer(name);
             };
         }

@@ -27,7 +27,9 @@ public class Html {
     /** Html Token type. */
     public interface HtmlToken extends com.mammb.code.editor.syntax.base.TokenType {
 
-        TokenType COMMENT = TokenType.build(Hue.GREEN);
+        TokenType ELEMENT = TokenType.build(Hue.YELLOW);
+        TokenType TEXT = TokenType.build(Hue.LIGHT_GREEN);
+        TokenType COMMENT = TokenType.build(Hue.DARK_GREY);
 
     }
 
