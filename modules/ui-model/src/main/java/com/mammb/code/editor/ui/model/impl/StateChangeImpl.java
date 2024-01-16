@@ -82,7 +82,7 @@ public class StateChangeImpl implements StateChange {
         if (prevMetrics == null || !prevMetrics.charset().equals(metrics.charset())) {
             charsetHandlers.forEach(h -> h.accept(metrics.charset()));
         }
-        if (prevMetrics == null && metrics.modified() || prevMetrics != null && !prevMetrics.modified() && metrics.modified()) {
+        if (prevMetrics == null || prevMetrics.modified() != metrics.modified()) {
             contentModifyHandlers.forEach(h -> h.accept(metrics.modified()));
         }
         prevMetrics = new MetricsRecord(metrics);

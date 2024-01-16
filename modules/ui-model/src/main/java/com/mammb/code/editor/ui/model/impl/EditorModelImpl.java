@@ -627,6 +627,8 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void save() {
         buffer.save();
+        // for clean modified
+        stateChange.push(buffer.metrics(), caret, selection);
     }
     @Override
     public void saveAs(Path path) {
