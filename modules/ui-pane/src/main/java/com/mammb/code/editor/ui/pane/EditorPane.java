@@ -460,12 +460,16 @@ public class EditorPane extends StackPane {
 
 
     private EventHandler<WorkerStateEvent> createSaveHandler() {
-        var session = session();
+        var prev = session();
         return (WorkerStateEvent e) -> {
             this.handleModelCreated(e);
-            if (!session.isOriginPoint()) {
-                var sp = new ScreenPoint(session.row(), session.caretIndex());
+            if (!prev.isOriginPoint()) {
+                var sp = new ScreenPoint(prev.row(), prev.caretIndex());
                 aroundEdit(() -> model.apply(sp));
+            }
+            var curr = session();
+            if (prev.isEmptyPath() || !prev.path().equals(curr.path())) {
+                upCall.pathChanged(curr, prev);
             }
         };
     }
