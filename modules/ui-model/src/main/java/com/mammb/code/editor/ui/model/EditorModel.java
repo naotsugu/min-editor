@@ -53,6 +53,11 @@ public interface EditorModel extends EditorDraw {
 
     // -- special edit behavior -----------------------------------------------
     /**
+     * Apply editing.
+     * @param editing the editing
+     */
+    void applyEditing(Editing editing);
+    /**
      * Indent.
      */
     void indent();

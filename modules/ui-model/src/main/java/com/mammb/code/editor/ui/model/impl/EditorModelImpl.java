@@ -25,7 +25,9 @@ import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.EditorQuery;
 import com.mammb.code.editor.ui.model.FindHandle;
 import com.mammb.code.editor.ui.model.ImePallet;
 import com.mammb.code.editor.ui.model.ImeRun;
@@ -398,6 +400,11 @@ public class EditorModelImpl implements EditorModel {
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+    }
+
+    @Override
+    public void applyEditing(Editing editing) {
+        editing.apply(this, editorQuery());
     }
     // </editor-fold>
 
@@ -791,6 +798,20 @@ public class EditorModelImpl implements EditorModel {
                 caret.markDirty();
             }
         }
+    }
+
+    /**
+     * Create the editor query.
+     * @return the editor query
+     */
+    private EditorQuery editorQuery() {
+        return new EditorQuery() {
+            @Override
+            public String selectedText() {
+                return (selection.length() <= 0) ? ""
+                    : buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE));
+            }
+        };
     }
 
 }
