@@ -24,7 +24,14 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public interface Gutter {
 
-    void draw(GraphicsContext gc, TextRun run, double top, double lineHeight);
+    /**
+     * Draw the gutter.
+     * @param gc the graphicsContext
+     * @param run the textRun
+     * @param top the position top
+     * @param accent the accent
+     */
+    void draw(GraphicsContext gc, TextRun run, double top, boolean accent);
 
     /**
      * Get the width of gutter.

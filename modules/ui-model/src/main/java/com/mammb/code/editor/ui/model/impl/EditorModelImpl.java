@@ -239,14 +239,15 @@ public class EditorModelImpl implements EditorModel {
         final String text = run.text();
         gc.fillText(text, left, top + run.layoutHeight());
 
-        if (!text.isEmpty() && (
-                run.textLine().point().row() == caret.row()) ||
-                selection.contains(run.textLine().point().row())) {
+        boolean onCaret = !text.isEmpty() && (
+            run.textLine().point().row() == caret.row()) ||
+            selection.contains(run.textLine().point().row());
+        if (onCaret) {
             Draws.specialCharacter(gc, run, top, lineHeight, screen.textLeft());
         }
 
         if (run.layout().x() - screen.hScrollValue() <= 0) {
-            screen.gutter().draw(gc, run, top, lineHeight);
+            screen.gutter().draw(gc, run, top, onCaret);
         }
         if (ime.enabled()) {
             ime.drawCompose(gc, run, top, lineHeight, screen.textLeft());

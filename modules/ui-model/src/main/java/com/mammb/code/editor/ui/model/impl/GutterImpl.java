@@ -32,7 +32,11 @@ public class GutterImpl implements Gutter {
     /** The font. */
     private Font font;
     /** The text color. */
-    private Color color;
+    private final Color color;
+    /** The background color. */
+    private final Color background;
+    /** The background accent color. */
+    private final Color backgroundAccent;
     /** The width of a character. */
     private double chWidth;
     /** The width of the gutter. */
@@ -53,20 +57,22 @@ public class GutterImpl implements Gutter {
         this.color = ctx.preference().colorScheme().isDark()
             ? Color.web(ctx.preference().fgColor()).darker().darker()
             : Color.web(ctx.preference().fgColor()).brighter().brighter();
+        this.background = Color.web(ctx.preference().bgColor());
+        this.backgroundAccent = Color.web("#C0C0C020");
     }
 
     @Override
-    public void draw(GraphicsContext gc, TextRun run, double top, double lineHeight) {
+    public void draw(GraphicsContext gc, TextRun run, double top, boolean accent) {
 
         if (run.textLine().lineIndex() > 0) {
-            gc.clearRect(0, top, width - 0.5, lineHeight);
+            fillBackground(gc, top, run.textLine().leadingHeight(), accent);
             return;
         }
 
         String num = String.valueOf(run.source().point().row() + 1);
         growWidthIf(num);
 
-        gc.clearRect(0, top, width - 0.5, lineHeight);
+        fillBackground(gc, top, run.textLine().leadingHeight(), accent);
 
         gc.setTextAlign(TextAlignment.RIGHT);
         gc.setFont(font);
@@ -97,6 +103,16 @@ public class GutterImpl implements Gutter {
         this.font = font;
         this.chWidth = FxFonts.numberCharacterWidth(font);
         this.widthChanged = true;
+    }
+
+
+    private void fillBackground(GraphicsContext gc, double top, double lineHeight, boolean accent) {
+        gc.setFill(background);
+        gc.fillRect(0, top, width - 0.5, lineHeight);
+        if (accent) {
+            gc.setFill(backgroundAccent);
+            gc.fillRect(0, top, width - 0.5, lineHeight);
+        }
     }
 
 
