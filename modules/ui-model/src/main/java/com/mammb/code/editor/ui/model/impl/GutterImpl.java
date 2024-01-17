@@ -36,7 +36,7 @@ public class GutterImpl implements Gutter {
     /** The background color. */
     private final Color background;
     /** The background accent color. */
-    private final Color backgroundAccent;
+    private final Color backgroundAccent = Color.web("#C0C0C020");;
     /** The width of a character. */
     private double chWidth;
     /** The width of the gutter. */
@@ -58,13 +58,16 @@ public class GutterImpl implements Gutter {
             ? Color.web(ctx.preference().fgColor()).darker().darker()
             : Color.web(ctx.preference().fgColor()).brighter().brighter();
         this.background = Color.web(ctx.preference().bgColor());
-        this.backgroundAccent = Color.web("#C0C0C020");
     }
+
 
     @Override
     public void draw(GraphicsContext gc, TextRun run, double top, boolean accent) {
 
         if (run.textLine().lineIndex() > 0) {
+            // 1 | aaa
+            // 2 | bbb_bbb_bbb_bbb_
+            //   | bbb               <- run.textLine().lineIndex() > 0
             fillBackground(gc, top, run.textLine().leadingHeight(), accent);
             return;
         }
@@ -83,10 +86,12 @@ public class GutterImpl implements Gutter {
 
     }
 
+
     @Override
     public double width() {
         return width;
     }
+
 
     @Override
     public boolean checkWidthChanged() {
@@ -98,7 +103,10 @@ public class GutterImpl implements Gutter {
         }
     }
 
-
+    /**
+     * Set the font
+     * @param font the font
+     */
     public void setFont(Font font) {
         this.font = font;
         this.chWidth = FxFonts.numberCharacterWidth(font);
