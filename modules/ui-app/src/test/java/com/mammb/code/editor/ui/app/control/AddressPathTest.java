@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app.control;
 
 import org.junit.jupiter.api.Test;
+import java.io.File;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,22 +29,22 @@ class AddressPathTest {
 
     @Test void testDirOn() {
         var target = new AddressPath(Path.of("/aa/bb/cc/dd.java"), false);
-        assertEquals("/", target.dirOn(0).toString());          // |/ a a / b b / c c / d d . java
-        assertEquals("/", target.dirOn(1).toString());          //  /|a a / b b / c c / d d . java
-        assertEquals("/", target.dirOn(2).toString());          //  / a|a / b b / c c / d d . java
-        assertEquals("/", target.dirOn(3).toString());          //  / a a|/ b b / c c / d d . java
+        assertEquals(File.separator, target.dirOn(0).toString());          // |/ a a / b b / c c / d d . java
+        assertEquals(File.separator, target.dirOn(1).toString());          //  /|a a / b b / c c / d d . java
+        assertEquals(File.separator, target.dirOn(2).toString());          //  / a|a / b b / c c / d d . java
+        assertEquals(File.separator, target.dirOn(3).toString());          //  / a a|/ b b / c c / d d . java
 
-        assertEquals("/aa", target.dirOn(4).toString());        //  / a a /|b b / c c / d d . java
-        assertEquals("/aa", target.dirOn(5).toString());        //  / a a / b|b / c c / d d . java
-        assertEquals("/aa", target.dirOn(6).toString());        //  / a a / b b|/ c c / d d . java
+        assertEquals(String.join(File.separator, "", "aa"), target.dirOn(4).toString());        //  / a a /|b b / c c / d d . java
+        assertEquals(String.join(File.separator, "", "aa"), target.dirOn(5).toString());        //  / a a / b|b / c c / d d . java
+        assertEquals(String.join(File.separator, "", "aa"), target.dirOn(6).toString());        //  / a a / b b|/ c c / d d . java
 
-        assertEquals("/aa/bb", target.dirOn(7).toString());     //  / a a / b b /|c c / d d . java
-        assertEquals("/aa/bb", target.dirOn(8).toString());     //  / a a / b b / c|c / d d . java
-        assertEquals("/aa/bb", target.dirOn(9).toString());     //  / a a / b b / c c|/ d d . java
+        assertEquals(String.join(File.separator, "", "aa", "bb"), target.dirOn(7).toString());     //  / a a / b b /|c c / d d . java
+        assertEquals(String.join(File.separator, "", "aa", "bb"), target.dirOn(8).toString());     //  / a a / b b / c|c / d d . java
+        assertEquals(String.join(File.separator, "", "aa", "bb"), target.dirOn(9).toString());     //  / a a / b b / c c|/ d d . java
 
-        assertEquals("/aa/bb/cc", target.dirOn(10).toString()); //  / a a / b b / c c /|d d . java
-        assertEquals("/aa/bb/cc", target.dirOn(11).toString()); //  / a a / b b / c c / d|d . java
-        assertEquals("/aa/bb/cc", target.dirOn(12).toString()); //  / a a / b b / c c / d d|. java
+        assertEquals(String.join(File.separator, "", "aa", "bb", "cc"), target.dirOn(10).toString()); //  / a a / b b / c c /|d d . java
+        assertEquals(String.join(File.separator, "", "aa", "bb", "cc"), target.dirOn(11).toString()); //  / a a / b b / c c / d|d . java
+        assertEquals(String.join(File.separator, "", "aa", "bb", "cc"), target.dirOn(12).toString()); //  / a a / b b / c c / d d|. java
     }
 
 }
