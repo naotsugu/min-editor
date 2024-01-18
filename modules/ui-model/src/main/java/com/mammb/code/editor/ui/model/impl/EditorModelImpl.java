@@ -809,10 +809,15 @@ public class EditorModelImpl implements EditorModel {
      */
     private EditorQuery editorQuery() {
         return new EditorQuery() {
-            @Override
-            public String selectedText() {
+            @Override public String selectedText() {
                 return (selection.length() <= 0) ? ""
                     : buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE));
+            }
+            @Override public String currentLine() {
+                return texts.lineAt(caret.offset()).text();
+            }
+            @Override public String currentRow() {
+                return texts.rowAt(caret.offset()).stream().map(TextLine::text).collect(Collectors.joining());
             }
         };
     }

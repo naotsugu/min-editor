@@ -27,4 +27,8 @@ public interface EditorQuery {
      */
     String selectedText();
 
+    String currentLine();
+
+    String currentRow();
+
 }
