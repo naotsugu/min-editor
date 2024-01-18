@@ -58,6 +58,11 @@ public interface EditorModel extends EditorDraw {
      */
     void applyEditing(Editing editing);
     /**
+     * Selection replace
+     * @param string the replace text
+     */
+    void selectionReplace(String string);
+    /**
      * Indent.
      */
     void indent();

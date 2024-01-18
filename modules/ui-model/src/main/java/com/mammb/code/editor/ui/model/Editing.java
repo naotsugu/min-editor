@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import com.mammb.code.editor.ui.model.editing.UpperCaseEditing;
+
 /**
  * Editing.
  * @author Naotsugu Kobayashi
@@ -27,4 +29,13 @@ public interface Editing {
      * @param query
      */
     void apply(EditorModel model, EditorQuery query);
+
+    /**
+     * Create to upper case editing.
+     * @return the Editing
+     */
+    static Editing upperCaseOf() {
+        return new UpperCaseEditing();
+    }
+
 }

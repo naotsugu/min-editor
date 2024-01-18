@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.ScreenPoint;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -303,6 +304,7 @@ public class EditorPane extends StackPane {
                 case WRAP       -> aroundEdit(model::toggleWrap);
                 case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
                 case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
+                case UPPER,LOWER -> aroundEdit(() -> model.applyEditing(Editing.upperCaseOf()));
                 case DEBUG      -> debug();
                 //case NEW        -> newPane();
             }

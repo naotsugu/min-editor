@@ -402,13 +402,38 @@ public class EditorModelImpl implements EditorModel {
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
     }
 
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="special edit behavior">
+
     @Override
     public void applyEditing(Editing editing) {
         editing.apply(this, editorQuery());
     }
-    // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="special edit behavior">
+    @Override
+    public void selectionReplace(String string) {
+        vScrollToCaret();
+        if (buffer.readOnly()) {
+            return;
+        }
+        if (string == null || string.isEmpty()) {
+            selectionDelete();
+            return;
+        }
+        if (selection.length() <= 0) {
+            input(string);
+            return;
+        }
+        OffsetPoint point = selection.min();
+        String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
+        buffer.push(Edit.replace(point, text, string));
+        Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
+        texts.markDirty();
+        caret.markDirty();
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+    }
+
     @Override
     public void indent() {
         if (buffer.readOnly()) {
@@ -730,28 +755,6 @@ public class EditorModelImpl implements EditorModel {
     // </editor-fold>
 
     // -- private -------------------------------------------------------------
-
-    private void selectionReplace(String string) {
-        vScrollToCaret();
-        if (buffer.readOnly()) {
-            return;
-        }
-        if (string == null || string.isEmpty()) {
-            selectionDelete();
-            return;
-        }
-        if (selection.length() <= 0) {
-            input(string);
-            return;
-        }
-        OffsetPoint point = selection.min();
-        String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
-        buffer.push(Edit.replace(point, text, string));
-        Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
-        texts.markDirty();
-        caret.markDirty();
-        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
-    }
 
     private void selectionDelete() {
         if (selection.length() == 0) {
