@@ -20,28 +20,26 @@ import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.EditorQuery;
 
 /**
- * Upper case editing.
+ * Tab editing.
  * @author Naotsugu Kobayashi
  */
-public class UpperCaseEditing implements Editing {
+public class TabEditing implements Editing {
+
+    private final Input input;
+
+    private TabEditing(Input input) {
+        this.input = input;
+    }
+
+    public static Editing of(String string) {
+        if ("\t".equals(string)) {
+            return new TabEditing(new Input(string));
+        }
+        return Editing.empty;
+    }
 
     @Override
     public boolean apply(EditorModel model, EditorQuery query) {
-        String text = query.selectedText();
-        if (text.isBlank()) {
-            return false;
-        }
-        String upper = text.toUpperCase();
-        if (!text.equals(upper)) {
-            model.selectionReplace(upper);
-            return true;
-        } else {
-            String lower = text.toLowerCase();
-            if (!text.equals(lower)) {
-                model.selectionReplace(lower);
-                return true;
-            }
-        }
         return false;
     }
 

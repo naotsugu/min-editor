@@ -304,7 +304,7 @@ public class EditorPane extends StackPane {
                 case WRAP       -> aroundEdit(model::toggleWrap);
                 case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
                 case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
-                case UPPER,LOWER -> aroundEdit(() -> model.applyEditing(Editing.upperCaseOf()));
+                case UPPER,LOWER -> aroundEdit(() -> model.applyEditing(Editing.upperCase()));
                 case DEBUG      -> debug();
                 //case NEW        -> newPane();
             }
@@ -361,7 +361,7 @@ public class EditorPane extends StackPane {
         String ch = (ascii == 13) // 13:CR
             ? "\n"
             : e.getCharacter();
-        aroundEdit(() -> model.input(ch));
+        aroundEdit(() -> model.applyEditing(Editing.keyTypedSteal(ch)));
     }
 
 

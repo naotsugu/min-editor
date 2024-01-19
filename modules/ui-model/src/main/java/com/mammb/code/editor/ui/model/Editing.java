@@ -15,6 +15,9 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import com.mammb.code.editor.ui.model.editing.LineBreakEditing;
+import com.mammb.code.editor.ui.model.editing.PassThroughInput;
+import com.mammb.code.editor.ui.model.editing.TabEditing;
 import com.mammb.code.editor.ui.model.editing.UpperCaseEditing;
 
 /**
@@ -23,19 +26,38 @@ import com.mammb.code.editor.ui.model.editing.UpperCaseEditing;
  */
 public interface Editing {
 
+    /** The empty editing. */
+    Editing empty = (model, query) -> false;
+
+    /** Editing input. */
+    record Input(String string) {};
+
     /**
      * Apply editing.
-     * @param model
-     * @param query
+     * @param model the editor model
+     * @param query the editor query
      */
-    void apply(EditorModel model, EditorQuery query);
+    boolean apply(EditorModel model, EditorQuery query);
 
     /**
      * Create to upper case editing.
      * @return the Editing
      */
-    static Editing upperCaseOf() {
+    static Editing upperCase() {
         return new UpperCaseEditing();
+    }
+
+    /**
+     * Create a key typed steal editing.
+     * @param ch the typed text
+     * @return a key typed steal editing
+     */
+    static Editing keyTypedSteal(String ch) {
+        return (m, q) ->
+                LineBreakEditing.of(ch).apply(m, q) ||
+                TabEditing.of(ch).apply(m, q) ||
+                PassThroughInput.of(ch).apply(m, q)
+            ;
     }
 
 }

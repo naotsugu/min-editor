@@ -407,8 +407,8 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="special edit behavior">
 
     @Override
-    public void applyEditing(Editing editing) {
-        editing.apply(this, editorQuery());
+    public boolean applyEditing(Editing editing) {
+        return editing.apply(this, editorQuery());
     }
 
     @Override

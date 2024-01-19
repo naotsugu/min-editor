@@ -20,27 +20,46 @@ import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.EditorQuery;
 
 /**
- * Upper case editing.
+ * The LineBreakEditing.
  * @author Naotsugu Kobayashi
  */
-public class UpperCaseEditing implements Editing {
+public class LineBreakEditing implements Editing {
+
+    private final Input input;
+
+    private LineBreakEditing(Input input) {
+        this.input = input;
+    }
+
+    public static Editing of(String string) {
+        if ("\n".equals(string) || "\r\n".equals(string)) {
+            return new LineBreakEditing(new Input(string));
+        }
+        return Editing.empty;
+    }
 
     @Override
     public boolean apply(EditorModel model, EditorQuery query) {
-        String text = query.selectedText();
-        if (text.isBlank()) {
-            return false;
-        }
-        String upper = text.toUpperCase();
-        if (!text.equals(upper)) {
-            model.selectionReplace(upper);
-            return true;
-        } else {
-            String lower = text.toLowerCase();
-            if (!text.equals(lower)) {
-                model.selectionReplace(lower);
-                return true;
+        String row = query.currentRow();
+        int spCount = 0;
+        int tabCount = 0;
+        for (int i = 0; i < row.length(); i++) {
+            char ch = row.charAt(i);
+            if (ch == ' ') {
+                spCount++;
+            } else if (ch == '\t') {
+                tabCount++;
+            } else {
+                break;
             }
+        }
+
+        if (spCount == 0 && tabCount > 0) {
+            model.input(input.string() + "\t".repeat(tabCount));
+            return true;
+        } else if (spCount > 0) {
+            model.input(input.string() + " ".repeat(spCount + tabCount * 4));
+            return true;
         }
         return false;
     }

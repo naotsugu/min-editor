@@ -20,29 +20,24 @@ import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.EditorQuery;
 
 /**
- * Upper case editing.
+ * The PassThroughInput.
  * @author Naotsugu Kobayashi
  */
-public class UpperCaseEditing implements Editing {
+public class PassThroughInput implements Editing {
+
+    private final String input;
+
+    private PassThroughInput(String input) {
+        this.input = input;
+    }
+    public static Editing of(String input) {
+        return new PassThroughInput(input);
+    }
 
     @Override
     public boolean apply(EditorModel model, EditorQuery query) {
-        String text = query.selectedText();
-        if (text.isBlank()) {
-            return false;
-        }
-        String upper = text.toUpperCase();
-        if (!text.equals(upper)) {
-            model.selectionReplace(upper);
-            return true;
-        } else {
-            String lower = text.toLowerCase();
-            if (!text.equals(lower)) {
-                model.selectionReplace(lower);
-                return true;
-            }
-        }
-        return false;
+        model.input(input);
+        return true;
     }
 
 }

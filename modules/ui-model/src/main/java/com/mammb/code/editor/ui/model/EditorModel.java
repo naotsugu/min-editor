@@ -55,10 +55,11 @@ public interface EditorModel extends EditorDraw {
     /**
      * Apply editing.
      * @param editing the editing
+     * @return {@code true} if edited
      */
-    void applyEditing(Editing editing);
+    boolean applyEditing(Editing editing);
     /**
-     * Selection replace
+     * Selection replace.
      * @param string the replace text
      */
     void selectionReplace(String string);
