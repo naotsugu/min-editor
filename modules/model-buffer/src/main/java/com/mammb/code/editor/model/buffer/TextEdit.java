@@ -78,6 +78,10 @@ public interface TextEdit {
      */
     TextualScroll<? extends Textual> createView(int maxRowSize);
 
+    /**
+     * Get the row supplier.
+     * @return the row supplier
+     */
     RowSupplier rowSupplier();
 
     /**

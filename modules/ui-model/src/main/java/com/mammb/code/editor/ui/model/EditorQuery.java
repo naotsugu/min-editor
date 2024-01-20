@@ -31,4 +31,6 @@ public interface EditorQuery {
 
     String currentRow();
 
+    String caretBefore();
+
 }

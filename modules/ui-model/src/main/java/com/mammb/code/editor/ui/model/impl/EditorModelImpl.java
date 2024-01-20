@@ -817,7 +817,10 @@ public class EditorModelImpl implements EditorModel {
                 return texts.lineAt(caret.offset()).text();
             }
             @Override public String currentRow() {
-                return texts.rowAt(caret.offset()).stream().map(TextLine::text).collect(Collectors.joining());
+                return buffer.rowSupplier().at(caret.offset());
+            }
+            @Override public String caretBefore() {
+                return buffer.rowSupplier().before(caret.caretPoint().cpOffset());
             }
         };
     }

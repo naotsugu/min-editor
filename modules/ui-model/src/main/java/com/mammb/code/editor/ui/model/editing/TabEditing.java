@@ -27,19 +27,42 @@ public class TabEditing implements Editing {
 
     private final Input input;
 
+
+    /**
+     * Constructor.
+     * @param input
+     */
     private TabEditing(Input input) {
         this.input = input;
     }
 
+
+    /**
+     * Create a new editing.
+     * @param text the input text
+     * @return a new editing
+     */
     public static Editing of(String text) {
         return "\t".equals(text)
             ? new TabEditing(new Input(text))
             : Editing.empty;
     }
 
+
     @Override
     public boolean apply(EditorModel model, EditorQuery query) {
-        return false;
+        var text = query.caretBefore();
+        for (int i = text.length() - 1; i >= 0; i--) {
+            char ch = text.charAt(i);
+            if (ch == '\n') {
+                break;
+            }
+            if (!Character.isSpaceChar(ch)) {
+                return false;
+            }
+        }
+        model.input("    ");
+        return true;
     }
 
 }

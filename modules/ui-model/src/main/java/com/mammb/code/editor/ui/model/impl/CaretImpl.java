@@ -22,7 +22,8 @@ import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 import static java.lang.System.Logger.Level.DEBUG;
@@ -58,6 +59,9 @@ public class CaretImpl implements Caret, CaretMulti {
     private boolean dirty = true;
     /** drawn. */
     private boolean drawn;
+
+    /** The caret moons. */
+    private final List<CaretMoon> moons = new ArrayList<>();
 
 
     /**

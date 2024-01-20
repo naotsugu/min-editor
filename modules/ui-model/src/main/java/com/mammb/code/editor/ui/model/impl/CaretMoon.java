@@ -20,4 +20,16 @@ package com.mammb.code.editor.ui.model.impl;
  * @author Naotsugu Kobayashi
  */
 public class CaretMoon {
+
+    /** The caret (char) offset. */
+    private long offset = 0;
+
+    /**
+     * Moves the caret to the specified offset.
+     * @param charOffset the char offset
+     */
+    void at(long charOffset) {
+
+    }
+
 }
