@@ -30,7 +30,7 @@ public interface Editing {
     Editing empty = (model, query) -> false;
 
     /** Editing input. */
-    record Input(String string) {};
+    record Input(String text) { }
 
     /**
      * Apply editing.

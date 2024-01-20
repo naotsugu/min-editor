@@ -55,10 +55,10 @@ public class LineBreakEditing implements Editing {
         }
 
         if (spCount == 0 && tabCount > 0) {
-            model.input(input.string() + "\t".repeat(tabCount));
+            model.input(input.text() + "\t".repeat(tabCount));
             return true;
         } else if (spCount > 0) {
-            model.input(input.string() + " ".repeat(spCount + tabCount * 4));
+            model.input(input.text() + " ".repeat(spCount + tabCount * 4));
             return true;
         }
         return false;

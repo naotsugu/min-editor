@@ -31,11 +31,10 @@ public class TabEditing implements Editing {
         this.input = input;
     }
 
-    public static Editing of(String string) {
-        if ("\t".equals(string)) {
-            return new TabEditing(new Input(string));
-        }
-        return Editing.empty;
+    public static Editing of(String text) {
+        return "\t".equals(text)
+            ? new TabEditing(new Input(text))
+            : Editing.empty;
     }
 
     @Override
