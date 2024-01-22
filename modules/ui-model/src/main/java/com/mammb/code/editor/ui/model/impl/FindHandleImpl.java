@@ -39,6 +39,8 @@ public class FindHandleImpl implements FindHandle {
     /** The found first action. */
     private final Consumer<Found> foundFirstAction;
 
+    private boolean findAll = true;
+
 
     /**
      * Constructor.
@@ -60,7 +62,7 @@ public class FindHandleImpl implements FindHandle {
      * @param foundFirstAction the found first action
      * @return the FindHandle
      */
-    public static FindHandle of(Find find, OffsetPoint basePoint, Consumer<Found> foundFirstAction) {
+    public static FindHandleImpl of(Find find, OffsetPoint basePoint, Consumer<Found> foundFirstAction) {
         return new FindHandleImpl(find, basePoint, foundFirstAction);
     }
 
@@ -69,6 +71,10 @@ public class FindHandleImpl implements FindHandle {
     public void findNext(String string, boolean regexp, boolean forward) {
         Found found = findFirst(FindSpec.of(string, forward));
         foundFirstAction.accept(found);
+        if (findAll && found instanceof FoundRun) {
+            find.run(OffsetPoint.zero, FindSpec.allOf(string));
+            findAll = false;
+        }
     }
 
 
@@ -79,6 +85,11 @@ public class FindHandleImpl implements FindHandle {
         if (found instanceof FoundRun) {
             find.run(OffsetPoint.zero, FindSpec.allOf(string));
         }
+    }
+
+
+    public void setFindAll(boolean findAll) {
+        this.findAll = findAll;
     }
 
 
