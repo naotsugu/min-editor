@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.buffer.TextEdit;
 import com.mammb.code.editor.model.edit.Edit;
 import com.mammb.code.editor.model.find.Find;
+import com.mammb.code.editor.model.find.FoundReset;
 import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
@@ -744,13 +745,20 @@ public class EditorModelImpl implements EditorModel {
             caret.caretPoint(),
             buffer.metrics().byteLen() < 32_000_000,
             found -> {
-                if (found instanceof FoundRun run) {
-                    // TODO Need to consider if row wrapped.
-                    var row = Math.max(0, run.row() - screen.pageLineSize() / 2);
-                    var point = new ScreenPoint(row, run.chOffset() + (run.right() ? run.length() : 0));
-                    apply(point);
-                    texts.markDirty();
-                    caret.markDirty();
+                switch (found) {
+                    case FoundRun run -> {
+                        // TODO Need to consider if row wrapped.
+                        var row = Math.max(0, run.row() - screen.pageLineSize() / 2);
+                        var point = new ScreenPoint(row, run.chOffset() + (run.right() ? run.length() : 0));
+                        apply(point);
+                        texts.markDirty();
+                        caret.markDirty();
+                    }
+                    case FoundReset reset -> {
+                        texts.markDirty();
+                        caret.markDirty();
+                    }
+                    default -> {}
                 }
         });
     }

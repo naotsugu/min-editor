@@ -66,10 +66,15 @@ public class FindImpl implements Find {
 
     @Override
     public void run(OffsetPoint base, FindSpec spec) {
+        if (spec.isEmpty()) {
+            listeners.forEach(listener -> listener.accept(new FoundReset()));
+        }
         int count = spec.forward()
             ? findForward(base, spec)
             : findBackward(base, spec);
-        if (count == 0) listeners.forEach(listener -> listener.accept(new FoundNone()));
+        if (count == 0) {
+            listeners.forEach(listener -> listener.accept(new FoundNone()));
+        }
     }
 
 

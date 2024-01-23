@@ -74,6 +74,11 @@ public class FindSpecImpl implements FindSpec {
     }
 
 
+    @Override
+    public boolean isEmpty() {
+        return cs.isEmpty();
+    }
+
     /**
      * Grow this array.
      * @param minCapacity the growth capacity

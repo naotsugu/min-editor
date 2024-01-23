@@ -31,6 +31,12 @@ public interface FindSpec {
     Match[] match(String text);
 
     /**
+     * Gets whether it is empty or not.
+     * @return {@code true} if spec is empty
+     */
+    boolean isEmpty();
+
+    /**
      * Get whether it is a one-shot find.
      * @return {@code true} if it is a one-shot find
      */
