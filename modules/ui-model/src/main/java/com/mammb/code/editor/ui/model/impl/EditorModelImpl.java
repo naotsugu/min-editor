@@ -739,21 +739,20 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public FindHandle findHandle() {
-        find.reset();
-        var handle = FindHandleImpl.of(find, caret.caretPoint(), found -> {
-            if (found instanceof FoundRun run) {
-                // TODO Need to consider if row wrapped.
-                var row = Math.max(0, run.row() - screen.pageLineSize() / 2);
-                var point = new ScreenPoint(row, run.chOffset() + (run.right() ? run.length() : 0));
-                apply(point);
-                texts.markDirty();
-                caret.markDirty();
-            }
+        return FindHandleImpl.of(
+            find,
+            caret.caretPoint(),
+            buffer.metrics().byteLen() < 32_000_000,
+            found -> {
+                if (found instanceof FoundRun run) {
+                    // TODO Need to consider if row wrapped.
+                    var row = Math.max(0, run.row() - screen.pageLineSize() / 2);
+                    var point = new ScreenPoint(row, run.chOffset() + (run.right() ? run.length() : 0));
+                    apply(point);
+                    texts.markDirty();
+                    caret.markDirty();
+                }
         });
-        if (buffer.metrics().byteLen() > 32_000_000) {
-            handle.setFindAll(false);
-        }
-        return handle;
     }
 
     // </editor-fold>

@@ -39,18 +39,21 @@ public class FindHandleImpl implements FindHandle {
     /** The found first action. */
     private final Consumer<Found> foundFirstAction;
 
-    private boolean findAll = true;
+    /** The find all. */
+    private boolean findAll;
 
 
     /**
      * Constructor.
      * @param find the find
      * @param basePoint the base point
+     * @param findAll the find all
      * @param foundFirstAction the found first action
      */
-    private FindHandleImpl(Find find, OffsetPoint basePoint, Consumer<Found> foundFirstAction) {
+    private FindHandleImpl(Find find, OffsetPoint basePoint, boolean findAll, Consumer<Found> foundFirstAction) {
         this.find = find;
         this.basePoint = basePoint;
+        this.findAll = findAll;
         this.foundFirstAction = foundFirstAction;
     }
 
@@ -59,11 +62,12 @@ public class FindHandleImpl implements FindHandle {
      * Create the FindHandle.
      * @param find the find
      * @param basePoint the base point
+     * @param findAll the find all
      * @param foundFirstAction the found first action
      * @return the FindHandle
      */
-    public static FindHandleImpl of(Find find, OffsetPoint basePoint, Consumer<Found> foundFirstAction) {
-        return new FindHandleImpl(find, basePoint, foundFirstAction);
+    public static FindHandle of(Find find, OffsetPoint basePoint, boolean findAll, Consumer<Found> foundFirstAction) {
+        return new FindHandleImpl(find, basePoint, findAll, foundFirstAction);
     }
 
 

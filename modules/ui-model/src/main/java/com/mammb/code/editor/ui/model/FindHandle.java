@@ -22,7 +22,7 @@ package com.mammb.code.editor.ui.model;
 public interface FindHandle {
 
     /**
-     *
+     * Find next.
      * @param string
      * @param regexp
      * @param forward
@@ -30,7 +30,7 @@ public interface FindHandle {
     void findNext(String string, boolean regexp, boolean forward);
 
     /**
-     *
+     * Find all.
      * @param string
      * @param regexp
      */

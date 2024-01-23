@@ -84,7 +84,7 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
         switch (found) {
             case FoundRun run -> founds.put(run.chOffset(), run);
             case FoundNone none  -> { }
-            case FoundReset reset  -> {}//founds.clear();
+            case FoundReset reset  -> founds.clear();
         }
     }
 
