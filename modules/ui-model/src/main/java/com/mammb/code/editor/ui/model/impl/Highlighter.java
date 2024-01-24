@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  */
 public class Highlighter implements HighlightTranslate, Consumer<Found> {
 
-    /** The founds. */
+    /** The founds(key:character offset). */
     private TreeMap<Long, FoundRun> founds = new TreeMap<>();
 
     /** The highlighter style. */
@@ -84,7 +84,7 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
         switch (found) {
             case FoundRun run -> founds.put(run.chOffset(), run);
             case FoundNone none  -> { }
-            case FoundReset reset  -> founds.clear();
+            case FoundReset reset  -> clear();
         }
     }
 

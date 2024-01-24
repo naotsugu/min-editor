@@ -331,6 +331,7 @@ public class EditorModelImpl implements EditorModel {
         vScrollToCaret();
         OffsetPoint caretPoint = caret.caretPoint();
         buffer.push(Edit.insert(caretPoint, value));
+        find.reset();
         texts.markDirty();
         caret.markDirty();
         screen.adjustVScroll(totalLines());
@@ -358,6 +359,7 @@ public class EditorModelImpl implements EditorModel {
         LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
         if (layoutLine == null || layoutLine.containsTailOn(caretPoint.offset())) return;
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
+        find.reset();
         texts.markDirty();
         caret.markDirty();
         screen.adjustVScroll(totalLines());
@@ -379,6 +381,7 @@ public class EditorModelImpl implements EditorModel {
         LayoutLine layoutLine = texts.layoutLine(caret.offset());
         if (layoutLine == null) return;
         buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
+        find.reset();
         texts.markDirty();
         caret.markDirty();
         screen.adjustVScroll(totalLines());
@@ -389,6 +392,7 @@ public class EditorModelImpl implements EditorModel {
         selection.clear();
         Edit edit = buffer.undo();
         if (edit.isEmpty()) return;
+        find.reset();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
@@ -398,6 +402,7 @@ public class EditorModelImpl implements EditorModel {
         selection.clear();
         Edit edit = buffer.redo();
         if (edit.isEmpty()) return;
+        find.reset();
         texts.markDirty();
         caret.at(edit.point().offset(), true);
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
@@ -430,6 +435,7 @@ public class EditorModelImpl implements EditorModel {
         String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
         buffer.push(Edit.replace(point, text, string));
         Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
+        find.reset();
         texts.markDirty();
         caret.markDirty();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
@@ -701,6 +707,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void imeComposed(List<ImeRun> runs) {
         ime.composed(buffer, runs);
+        find.reset();
         texts.markDirty();
         caret.markDirty();
     }
@@ -776,6 +783,7 @@ public class EditorModelImpl implements EditorModel {
         buffer.push(Edit.delete(point, text));
         selection.clear();
         caret.at(point.offset(), true);
+        find.reset();
         texts.markDirty();
         caret.markDirty();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
