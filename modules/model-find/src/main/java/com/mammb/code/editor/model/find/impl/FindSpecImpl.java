@@ -58,19 +58,20 @@ public class FindSpecImpl implements FindSpec {
             return empty;
         }
 
-        int findCount = 0;
+        int foundCount = 0;
         for (int i = 0; i < text.length();) {
             int ret = text.indexOf(cs, i);
             if (ret < 0) {
                 break;
             }
-            if (buffer.length <= findCount) {
-                buffer = grow(findCount + 1);
+            if (buffer.length <= foundCount) {
+                buffer = grow(foundCount + 1);
             }
-            buffer[findCount++] = Match.of(ret, cs.length());
+            buffer[foundCount++] = Match.of(ret, cs.length(),
+                    text.codePointCount(ret, ret + cs.length()));
             i = ret + cs.length();
         }
-        return (findCount == 0) ? empty : Arrays.copyOf(buffer, findCount);
+        return (foundCount == 0) ? empty : Arrays.copyOf(buffer, foundCount);
     }
 
 

@@ -148,6 +148,7 @@ public class FindImpl implements Find {
         int peripheralEnd = Math.clamp(match.end() + margin, match.end(), text.length());
         var found = new FoundRun(
             point.offset() + match.start(),
+            point.cpOffset() + match.startCp(),
             match.length(),
             right,
             text.substring(peripheralStart, peripheralEnd),

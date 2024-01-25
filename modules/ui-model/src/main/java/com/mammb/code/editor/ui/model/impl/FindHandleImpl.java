@@ -19,6 +19,7 @@ import com.mammb.code.editor.model.find.Find;
 import com.mammb.code.editor.model.find.FindSpec;
 import com.mammb.code.editor.model.find.Found;
 import com.mammb.code.editor.model.find.FoundNone;
+import com.mammb.code.editor.model.find.FoundReset;
 import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.FindHandle;
@@ -35,6 +36,9 @@ public class FindHandleImpl implements FindHandle {
 
     /** The base point. */
     private final OffsetPoint basePoint;
+
+    /** The next point. */
+    private OffsetPoint nextPoint;
 
     /** The found first action. */
     private final Consumer<Found> foundFirstAction;
@@ -53,6 +57,7 @@ public class FindHandleImpl implements FindHandle {
     private FindHandleImpl(Find find, OffsetPoint basePoint, boolean findAll, Consumer<Found> foundFirstAction) {
         this.find = find;
         this.basePoint = basePoint;
+        this.nextPoint = basePoint;
         this.findAll = findAll;
         this.foundFirstAction = foundFirstAction;
     }
@@ -73,7 +78,8 @@ public class FindHandleImpl implements FindHandle {
 
     @Override
     public void findNext(String string, boolean regexp, boolean forward) {
-        Found found = findFirst(FindSpec.of(string, forward));
+        var findSpec = FindSpec.of(string, forward);
+        Found found = findFirst(findSpec);
         foundFirstAction.accept(found);
         if (findAll && found instanceof FoundRun) {
             find.run(OffsetPoint.zero, FindSpec.allOf(string));
@@ -84,7 +90,8 @@ public class FindHandleImpl implements FindHandle {
 
     @Override
     public void findAll(String string, boolean regexp) {
-        Found found = findFirst(FindSpec.of(string, true));
+        var findSpec = FindSpec.of(string, true);
+        Found found = findFirst(findSpec);
         foundFirstAction.accept(found);
         if (found instanceof FoundRun) {
             find.run(OffsetPoint.zero, FindSpec.allOf(string));
@@ -97,15 +104,24 @@ public class FindHandleImpl implements FindHandle {
     }
 
 
-    private Found findFirst(FindSpec findSpec) {
+    private Found findFirst(FindSpec spec) {
         final var consumer = new FoundFirstConsumer();
         try {
             find.addListener(consumer);
-            find.run(basePoint, findSpec);
+            find.run(nextPoint, spec);
         } finally {
             find.removeListener(consumer);
         }
-        return consumer.foundFirst;
+        Found found = consumer.foundFirst;
+        nextPoint = switch (found) {
+            case FoundRun run -> spec.forward()
+                ? OffsetPoint.of(run.row(), run.chOffset(), run.cpOffset()).plus(run.text())
+                : OffsetPoint.of(run.row(), run.chOffset(), run.cpOffset());
+            case FoundReset reset -> basePoint;
+            case FoundNone none -> nextPoint;
+        };
+
+        return found;
     }
 
 

@@ -28,6 +28,12 @@ public interface Match {
     int start();
 
     /**
+     * Get the matched code point offset.
+     * @return the matched code point offset
+     */
+    int startCp();
+
+    /**
      * Get the match result string length
      * @return the match result string length
      */
@@ -45,14 +51,15 @@ public interface Match {
      * Create a new match.
      * @param start the matched offset
      * @param length the match result string length
+     * @param startCp the matched code point offset
      * @return a new match
      */
-    static Match of(int start, int length) {
+    static Match of(int start, int length, int startCp) {
         if (start < 0 || length <= 0) {
             throw new IllegalArgumentException();
         }
-        record MatchRecord(int start, int length) implements Match { }
-        return new MatchRecord(start, length);
+        record MatchRecord(int start, int length, int startCp) implements Match { }
+        return new MatchRecord(start, length, startCp);
     }
 
 }

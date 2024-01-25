@@ -28,9 +28,17 @@ import java.util.List;
  */
 public interface ImePallet {
 
+    /**
+     * Turn on the Ime palette.
+     * @param point the offset point
+     */
     void on(OffsetPoint point);
 
+    /**
+     * Turn off the Ime palette.
+     */
     void off();
+
 
     boolean enabled();
 

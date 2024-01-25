@@ -84,7 +84,7 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
         switch (found) {
             case FoundRun run -> founds.put(run.chOffset(), run);
             case FoundNone none  -> { }
-            case FoundReset reset  -> clear();
+            case FoundReset reset -> clear(reset);
         }
     }
 
@@ -94,6 +94,18 @@ public class Highlighter implements HighlightTranslate, Consumer<Found> {
      */
     public void clear() {
         founds.clear();
+    }
+
+    /**
+     * Clear.
+     * @param reset the reset
+     */
+    void clear(FoundReset reset) {
+        if (reset.all()) {
+            clear();
+        } else {
+            founds.subMap(reset.from(), reset.to()).clear();
+        }
     }
 
 }

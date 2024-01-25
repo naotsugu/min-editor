@@ -18,6 +18,7 @@ package com.mammb.code.editor.model.find;
 /**
  * The FoundRun.
  * @param chOffset the offset
+ * @param cpOffset the code point offset
  * @param length the search result string length
  * @param right
  * @param peripheral
@@ -27,6 +28,7 @@ package com.mammb.code.editor.model.find;
  */
 public record FoundRun(
         long chOffset,
+        long cpOffset,
         int length,
         boolean right,
         String peripheral,

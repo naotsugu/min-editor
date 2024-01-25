@@ -19,5 +19,14 @@ package com.mammb.code.editor.model.find;
  * FoundReset.
  * @author Naotsugu Kobayashi
  */
-public record FoundReset() implements Found {
+public record FoundReset(long from, long to) implements Found {
+
+    public FoundReset() {
+        this(0, Long.MAX_VALUE);
+    }
+
+    public boolean all() {
+        return from == 0 && to == Long.MAX_VALUE;
+    }
+
 }
