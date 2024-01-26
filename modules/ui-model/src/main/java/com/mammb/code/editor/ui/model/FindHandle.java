@@ -30,6 +30,11 @@ public interface FindHandle {
     void findNext(String string, boolean regexp, boolean forward);
 
     /**
+     * Continue with previous find.
+     */
+    void findNext();
+
+    /**
      * Find all.
      * @param string
      * @param regexp

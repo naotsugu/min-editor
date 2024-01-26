@@ -46,6 +46,9 @@ public class FindHandleImpl implements FindHandle {
     /** The find all. */
     private boolean findAll;
 
+    /** The find specification. */
+    private FindSpec findSpec;
+
 
     /**
      * Constructor.
@@ -78,7 +81,7 @@ public class FindHandleImpl implements FindHandle {
 
     @Override
     public void findNext(String string, boolean regexp, boolean forward) {
-        var findSpec = FindSpec.of(string, forward);
+        findSpec = FindSpec.of(string, forward);
         Found found = findFirst(findSpec);
         foundFirstAction.accept(found);
         if (findAll && found instanceof FoundRun) {
@@ -89,8 +92,14 @@ public class FindHandleImpl implements FindHandle {
 
 
     @Override
+    public void findNext() {
+        foundFirstAction.accept(findFirst(findSpec));
+    }
+
+
+    @Override
     public void findAll(String string, boolean regexp) {
-        var findSpec = FindSpec.of(string, true);
+        findSpec = FindSpec.of(string, true);
         Found found = findFirst(findSpec);
         foundFirstAction.accept(found);
         if (found instanceof FoundRun) {
@@ -105,6 +114,7 @@ public class FindHandleImpl implements FindHandle {
 
 
     private Found findFirst(FindSpec spec) {
+
         final var consumer = new FoundFirstConsumer();
         try {
             find.addListener(consumer);
@@ -112,6 +122,7 @@ public class FindHandleImpl implements FindHandle {
         } finally {
             find.removeListener(consumer);
         }
+
         Found found = consumer.foundFirst;
         nextPoint = switch (found) {
             case FoundRun run -> spec.forward()
