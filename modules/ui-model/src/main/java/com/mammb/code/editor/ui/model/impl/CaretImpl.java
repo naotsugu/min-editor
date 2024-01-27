@@ -18,12 +18,9 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
-import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 import static java.lang.System.Logger.Level.DEBUG;
@@ -32,7 +29,7 @@ import static java.lang.System.Logger.Level.DEBUG;
  * Caret implementation.
  * @author Naotsugu Kobayashi
  */
-public class CaretImpl implements Caret, CaretMulti {
+public class CaretImpl implements Caret {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(Caret.class.getName());
@@ -59,9 +56,6 @@ public class CaretImpl implements Caret, CaretMulti {
     private boolean dirty = true;
     /** drawn. */
     private boolean drawn;
-
-    /** The caret moons. */
-    private final List<CaretMoon> moons = new ArrayList<>();
 
 
     /**

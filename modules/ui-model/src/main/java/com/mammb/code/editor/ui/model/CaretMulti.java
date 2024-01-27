@@ -19,5 +19,5 @@ package com.mammb.code.editor.ui.model;
  * The CaretMulti.
  * @author Naotsugu Kobayashi
  */
-public interface CaretMulti {
+public interface CaretMulti extends Caret {
 }
