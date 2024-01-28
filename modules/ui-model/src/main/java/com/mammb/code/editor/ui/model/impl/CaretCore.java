@@ -36,15 +36,20 @@ public class CaretCore implements CaretMulti {
     /** The planets. */
     private final List<Caret> planets;
 
+    /** The offset to layout line function. */
+    private final Function<Long, LayoutLine> offsetToLine;
+
 
     /**
      * Constructor.
      * @param core the core caret
      * @param planets the planets
+     * @param offsetToLine the offset to layout line function
      */
-    private CaretCore(Caret core, List<Caret> planets) {
+    private CaretCore(Caret core, List<Caret> planets, Function<Long, LayoutLine> offsetToLine) {
         this.core = core;
         this.planets = planets;
+        this.offsetToLine = offsetToLine;
     }
 
 
@@ -56,9 +61,24 @@ public class CaretCore implements CaretMulti {
     public static CaretMulti of(Function<Long, LayoutLine> offsetToLine) {
         return new CaretCore(
             new CaretImpl(offsetToLine),
-            new ArrayList<>()
+            new ArrayList<>(),
+            offsetToLine
         );
     }
+
+
+    @Override
+    public void add(long charOffset) {
+        Caret planet = new CaretImpl(offsetToLine);
+        planet.at(charOffset, true);
+        planets.add(planet);
+    }
+
+    @Override
+    public void clear() {
+        planets.clear();
+    }
+
 
 
     @Override

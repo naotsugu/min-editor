@@ -20,4 +20,9 @@ package com.mammb.code.editor.ui.model;
  * @author Naotsugu Kobayashi
  */
 public interface CaretMulti extends Caret {
+
+    void add(long charOffset);
+
+    void clear();
+
 }

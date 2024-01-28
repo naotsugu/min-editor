@@ -128,7 +128,7 @@ public interface EditorModel extends EditorDraw {
 
     // -- mouse behavior ------------------------------------------------------
 
-    void click(double x, double y);
+    void click(double x, double y, boolean isShortcutDown);
     void clickDouble(double x, double y);
     void clickTriple(double x, double y);
     void dragged(double x, double y);

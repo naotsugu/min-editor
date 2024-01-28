@@ -590,7 +590,7 @@ public class EditorModelImpl implements EditorModel {
 
     // <editor-fold defaultstate="collapsed" desc="mouse behavior">
     @Override
-    public void click(double x, double y) {
+    public void click(double x, double y, boolean isShortcutDown) {
         if (selection.isDragging()) {
             selection.to(caret.caretPoint());
             selection.endDragging();
@@ -598,7 +598,11 @@ public class EditorModelImpl implements EditorModel {
         }
         selection.clear();
         long offset = texts.at(x - screen.textLeft(), y);
-        caret.at(offset, true);
+        if (isShortcutDown) {
+            caret.add(offset);
+        } else {
+            caret.at(offset, true);
+        }
     }
     @Override
     public void clickDouble(double x, double y) {
