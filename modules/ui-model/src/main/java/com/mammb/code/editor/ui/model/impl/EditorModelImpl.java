@@ -25,7 +25,7 @@ import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.syntax.Syntax;
-import com.mammb.code.editor.ui.model.CaretMulti;
+import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.EditorQuery;
@@ -69,7 +69,7 @@ public class EditorModelImpl implements EditorModel {
     /** The text buffer. */
     private final TextEdit buffer;
     /** The caret. */
-    private final CaretMulti caret;
+    private final Caret caret;
     /** The selection. */
     private final Selection selection;
     /** The ime. */
@@ -103,7 +103,7 @@ public class EditorModelImpl implements EditorModel {
         this.texts = new PlainScreenText(context,
             buffer.createView(screen.pageLineSize()),
             styling.compound(Highlighter.of(find)));
-        this.caret = CaretCore.of(offset -> texts.layoutLine(offset));
+        this.caret = new CaretImpl(offset -> texts.layoutLine(offset));
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.stateChange = new StateChangeImpl();
@@ -599,7 +599,7 @@ public class EditorModelImpl implements EditorModel {
         selection.clear();
         long offset = texts.at(x - screen.textLeft(), y);
         if (isShortcutDown) {
-            caret.add(offset);
+            //caret.add(offset);
         } else {
             caret.at(offset, true);
         }
