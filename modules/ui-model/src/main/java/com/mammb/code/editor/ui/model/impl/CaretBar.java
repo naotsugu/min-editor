@@ -109,10 +109,14 @@ public class CaretBar {
      * @param line the specified line
      */
     public void slipOn(LayoutLine line) {
-        offset = line.xToOffset(virtualX);
-        x = line.offsetToX(offset);
-        y = line.offsetY();
-        h = line.leadingHeight();
+        if (line == null) {
+            x = y = h = 0;
+        } else {
+            offset = line.xToOffset(virtualX);
+            x = line.offsetToX(offset);
+            y = line.offsetY();
+            h = line.leadingHeight();
+        }
     }
 
 
