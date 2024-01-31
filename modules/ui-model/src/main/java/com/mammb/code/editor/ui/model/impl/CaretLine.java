@@ -26,26 +26,19 @@ import java.util.function.Function;
  */
 public class CaretLine {
 
-    /**
-     * The offset to layout line function.
-     */
+    /** The offset to layout line function. */
     private final Function<Long, LayoutLine> offsetToLine;
 
-    /**
-     * The caret bar.
-     */
+    /** The caret bar. */
     private CaretBar bar;
 
-    /**
-     * The text line.
-     */
+    /** The text line. */
     private LayoutLine line;
 
 
     /**
      * Constructor.
-     *
-     * @param bar          the caret bar
+     * @param bar the caret bar
      * @param offsetToLine the offset to layout line function
      */
     public CaretLine(CaretBar bar, Function<Long, LayoutLine> offsetToLine) {
@@ -56,7 +49,6 @@ public class CaretLine {
 
     /**
      * Create a new CaretLine.
-     *
      * @param offsetToLine the offset to layout line function
      * @return a new CaretLine
      */
@@ -67,7 +59,6 @@ public class CaretLine {
 
     /**
      * Create a new CaretLine.
-     *
      * @param offsetToLine the offset to layout line function
      * @return a new CaretLine
      */
@@ -80,6 +71,11 @@ public class CaretLine {
         bar.draw(gc, margin, hScrolled);
     }
 
+
+    public void at(long charOffset) {
+        line = offsetToLine.apply(charOffset);
+        bar.offsetAt(line, charOffset);
+    }
 
     public void right() {
 
@@ -166,4 +162,15 @@ public class CaretLine {
         bar.offsetAt(line, offset);
     }
 
+    Function<Long, LayoutLine> getOffsetToLine() {
+        return offsetToLine;
+    }
+
+    LayoutLine getLine() {
+        return line;
+    }
+
+    CaretBar getBar() {
+        return bar;
+    }
 }

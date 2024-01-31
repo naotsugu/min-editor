@@ -29,7 +29,7 @@ import static java.lang.System.Logger.Level.DEBUG;
  * Caret implementation.
  * @author Naotsugu Kobayashi
  */
-public class CaretImpl implements Caret {
+public class Caret1 implements Caret {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(Caret.class.getName());
@@ -54,15 +54,13 @@ public class CaretImpl implements Caret {
     private double y = 0;
     /** dirty?. */
     private boolean dirty = true;
-    /** drawn. */
-    private boolean drawn;
 
 
     /**
      * Constructor.
      * @param offsetToLine the offset to layout line function
      */
-    public CaretImpl(Function<Long, LayoutLine> offsetToLine) {
+    public Caret1(Function<Long, LayoutLine> offsetToLine) {
         this.offsetToLine = offsetToLine;
     }
 
@@ -71,10 +69,8 @@ public class CaretImpl implements Caret {
     public void draw(GraphicsContext gc, double margin, double hScrolled) {
         if (ensureLayout() == null) return;
         if ((x - hScrolled) < 0) {
-            drawn = false;
         } else {
             drawCaretAt(gc, x - hScrolled + margin, y, line.leadingHeight());
-            drawn = true;
         }
     }
 
@@ -266,33 +262,10 @@ public class CaretImpl implements Caret {
 
 
     @Override
-    public boolean drawn() {
-        return drawn;
-    }
-
-
-    @Override
-    public boolean flipIfDrawn() {
-        if (drawn) {
-            drawn = false;
-            return true;
-        }
-        return false;
-    }
-
-
-    @Override
     public LayoutLine layoutLine() {
         ensureLayout();
         return line;
     }
-
-
-    @Override
-    public boolean isOutOfLines() {
-        return ensureLayout() == null;
-    }
-
 
     private TextLine ensureLayout() {
         if (!dirty) return line;

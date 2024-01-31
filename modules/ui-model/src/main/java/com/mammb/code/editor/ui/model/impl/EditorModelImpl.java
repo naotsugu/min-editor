@@ -103,14 +103,14 @@ public class EditorModelImpl implements EditorModel {
         this.texts = new PlainScreenText(context,
             buffer.createView(screen.pageLineSize()),
             styling.compound(Highlighter.of(find)));
-        this.caret = new CaretImpl(offset -> texts.layoutLine(offset));
+        this.caret = new Caret2(offset -> texts.layoutLine(offset));
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.stateChange = new StateChangeImpl();
         this.screen = screen;
         screen.updateMaxWith(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
         screen.initScroll(texts.headlinesIndex(), totalLines());
-
+        caret.markDirty();
     }
 
 
@@ -260,12 +260,6 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void tick(GraphicsContext gc) {
-        if (ime.enabled()) return;
-        if (caret.drawn()) {
-            hideCaret(gc);
-        } else {
-            showCaret(gc);
-        }
     }
 
     @Override
@@ -277,9 +271,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void hideCaret(GraphicsContext gc) {
-        if (caret.flipIfDrawn()) {
-            draw(gc, caret.layoutLine());
-        }
+        draw(gc, caret.layoutLine());
     }
 
     @Override
@@ -474,7 +466,7 @@ public class EditorModelImpl implements EditorModel {
         vScrollToCaret();
         if (caret.y2() + 4 >= screen.height()) scrollNext(1);
         caret.right();
-        if (caret.isOutOfLines() || caret.y2() > screen.height()) scrollNext(1);
+        if (caret.layoutLine() == null || caret.y2() > screen.height()) scrollNext(1);
         screen.hScrollTo(caret.x());
     }
     @Override
