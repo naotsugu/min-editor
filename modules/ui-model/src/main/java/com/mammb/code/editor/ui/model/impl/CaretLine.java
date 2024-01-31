@@ -26,36 +26,37 @@ import java.util.function.Function;
  */
 public class CaretLine {
 
-    /** The state type. */
-    private enum State { READY, DIRTY, OUT; }
-
-    /** The offset to layout line function. */
+    /**
+     * The offset to layout line function.
+     */
     private final Function<Long, LayoutLine> offsetToLine;
 
-    /** The state. */
-    private State state;
-
-    /** The caret bar. */
+    /**
+     * The caret bar.
+     */
     private CaretBar bar;
 
-    /** The text line. */
+    /**
+     * The text line.
+     */
     private LayoutLine line;
 
 
     /**
      * Constructor.
-     * @param bar the caret bar
+     *
+     * @param bar          the caret bar
      * @param offsetToLine the offset to layout line function
      */
     public CaretLine(CaretBar bar, Function<Long, LayoutLine> offsetToLine) {
         this.bar = Objects.requireNonNull(bar);
         this.offsetToLine = offsetToLine;
-        this.state = State.DIRTY;
     }
 
 
     /**
      * Create a new CaretLine.
+     *
      * @param offsetToLine the offset to layout line function
      * @return a new CaretLine
      */
@@ -66,6 +67,7 @@ public class CaretLine {
 
     /**
      * Create a new CaretLine.
+     *
      * @param offsetToLine the offset to layout line function
      * @return a new CaretLine
      */
@@ -80,6 +82,10 @@ public class CaretLine {
 
 
     public void right() {
+
+        if (line == null) {
+            return;
+        }
 
         if (bar.offset() == line.tailOffset() && line.endMarkCount() == 0) {
             // | a | b | $ |
@@ -109,11 +115,13 @@ public class CaretLine {
 
     public void left() {
 
+        if (line == null) {
+            return;
+        }
         if (bar.offset() == 0) {
             bar.syncX();
             return;
         }
-
         if (bar.offset() == line.offset()) {
             line = offsetToLine.apply(bar.offset() - 1);
             bar.offsetAt(line, bar.offset() - line.endMarkCount());
@@ -129,6 +137,9 @@ public class CaretLine {
 
 
     public void up() {
+        if (line == null) {
+            return;
+        }
         if (line.point().row() == 0 && line.lineIndex() == 0) {
             return;
         }
@@ -138,11 +149,21 @@ public class CaretLine {
 
 
     public void down() {
+        if (line == null) {
+            return;
+        }
         if (line.isBottomLine()) {
             return;
         }
         line = offsetToLine.apply(line.tailOffset());
         bar.slipOn(line);
+    }
+
+
+    public void refresh() {
+        long offset = bar.offset();
+        line = offsetToLine.apply(offset);
+        bar.offsetAt(line, offset);
     }
 
 }
