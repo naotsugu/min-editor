@@ -322,7 +322,7 @@ public class EditorPane extends StackPane {
             case PAGE_DOWN  -> aroundEdit(model::pageDown, withSelect);
             case DELETE     -> aroundEdit(model::delete);
             case BACK_SPACE -> aroundEdit(model::backspace);
-            case ESCAPE     -> aroundEdit(model::selectOff);
+            case ESCAPE     -> aroundEdit(model::clear);
         }
     }
 

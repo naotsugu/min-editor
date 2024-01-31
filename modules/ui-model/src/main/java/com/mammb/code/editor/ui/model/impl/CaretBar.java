@@ -67,7 +67,7 @@ public class CaretBar {
      * @return a new CaretBar
      */
     public static CaretBar lightOf() {
-        return new CaretBar(Color.color(Color.ORANGE.getRed(), Color.ORANGE.getGreen(), Color.ORANGE.getBlue(), 0.5));
+        return new CaretBar(Color.color(Color.ORANGE.getRed(), Color.ORANGE.getGreen(), Color.ORANGE.getBlue(), 0.7));
     }
 
 

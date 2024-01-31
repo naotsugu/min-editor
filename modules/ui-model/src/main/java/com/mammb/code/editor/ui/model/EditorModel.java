@@ -186,6 +186,7 @@ public interface EditorModel extends EditorDraw {
 
     // -- utilities -----------------------------------------------------------
 
+    void clear();
     FindHandle findHandle();
     Rect textAreaRect();
     StateHandler stateChange();

@@ -162,9 +162,13 @@ public class CaretLine {
         bar.offsetAt(line, offset);
     }
 
-    Function<Long, LayoutLine> getOffsetToLine() {
-        return offsetToLine;
+
+    public CaretLine cloneAt(long offset) {
+        CaretLine clone = moonOf(offsetToLine);
+        clone.at(offset);
+        return clone;
     }
+
 
     LayoutLine getLine() {
         return line;

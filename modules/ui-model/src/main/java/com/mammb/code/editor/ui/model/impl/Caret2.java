@@ -122,7 +122,11 @@ public class Caret2 implements CaretMulti {
 
     @Override
     public void add(long charOffset) {
-
+        if (main.getBar().offset() == charOffset ||
+            moons.stream().anyMatch(m -> m.getBar().offset() == charOffset)) {
+            return;
+        }
+        moons.add(main.cloneAt(charOffset));
     }
 
     @Override

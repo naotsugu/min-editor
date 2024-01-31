@@ -25,7 +25,7 @@ import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.syntax.Syntax;
-import com.mammb.code.editor.ui.model.Caret;
+import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.EditorQuery;
@@ -69,7 +69,7 @@ public class EditorModelImpl implements EditorModel {
     /** The text buffer. */
     private final TextEdit buffer;
     /** The caret. */
-    private final Caret caret;
+    private final CaretMulti caret;
     /** The selection. */
     private final Selection selection;
     /** The ime. */
@@ -260,6 +260,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void tick(GraphicsContext gc) {
+        // carrett's blinking is useless.
     }
 
     @Override
@@ -591,7 +592,7 @@ public class EditorModelImpl implements EditorModel {
         selection.clear();
         long offset = texts.at(x - screen.textLeft(), y);
         if (isShortcutDown) {
-            //caret.add(offset);
+            caret.add(offset);
         } else {
             caret.at(offset, true);
         }
@@ -739,6 +740,12 @@ public class EditorModelImpl implements EditorModel {
             caret.markDirty();
         }
         screen.initScroll(texts.headlinesIndex(), totalLines());
+    }
+
+    @Override
+    public void clear() {
+        selection.clear();
+        caret.clear();
     }
 
     @Override
