@@ -37,6 +37,7 @@ public class SelectionImpl implements Selection {
     /** The selection dragging. */
     private boolean dragging = false;
 
+    /** The color. */
     private Color color = new Color(0.6784314F, 0.84705883F, 0.9019608F, 0.3);
 
 
@@ -92,7 +93,7 @@ public class SelectionImpl implements Selection {
     public void draw(GraphicsContext gc, TextRun run, double top, double left) {
 
         if (!started()) {
-            throw new IllegalStateException();
+            return;
         }
 
         long runStart = run.offset();
@@ -104,7 +105,7 @@ public class SelectionImpl implements Selection {
 
             if (runEnd <= max().offset() &&
                 ((text.length() == 1 && text.charAt(0) == '\n') ||
-                 (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
+                    (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
 
                 gc.setFill(color);
                 gc.fillRect(run.layout().x() + left, top, FxFonts.uppercaseLetterWidth(gc.getFont()), run.textLine().leadingHeight());

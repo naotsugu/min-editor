@@ -110,7 +110,15 @@ public interface Selection {
      * @return the min select offset
      */
     default OffsetPoint min() {
-        return (startOffset().offset() <= endOffset().offset()) ? startOffset() : endOffset();
+        if (startOffset() == null && endOffset() == null) {
+            return null;
+        } else if (startOffset() == null) {
+            return endOffset();
+        } else if (endOffset() == null) {
+            return startOffset();
+        } else {
+            return (startOffset().offset() <= endOffset().offset()) ? startOffset() : endOffset();
+        }
     }
 
     /**
@@ -118,7 +126,15 @@ public interface Selection {
      * @return the max select offset
      */
     default OffsetPoint max() {
-        return (startOffset().offset() <= endOffset().offset()) ? endOffset() : startOffset();
+        if (startOffset() == null && endOffset() == null) {
+            return null;
+        } else if (startOffset() == null) {
+            return endOffset();
+        } else if (endOffset() == null) {
+            return startOffset();
+        } else {
+            return (startOffset().offset() <= endOffset().offset()) ? endOffset() : startOffset();
+        }
     }
 
     /**
