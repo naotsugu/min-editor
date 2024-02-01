@@ -206,6 +206,16 @@ public class Caret1 implements Caret {
         y = next.offsetY();
     }
 
+    @Override
+    public void home() {
+
+    }
+
+    @Override
+    public void end() {
+
+    }
+
 
     @Override
     public OffsetPoint caretPoint() {

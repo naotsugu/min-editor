@@ -499,31 +499,13 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void moveCaretLineHome() {
         vScrollToCaret();
-        LayoutLine line = texts.layoutLine(caret.offset());
-        boolean skipWhitespace = true;
-        if (line.offset() != caret.offset()) {
-            if (caret.offset() - line.offset() < 36 &&
-                line.text().substring(0, (int) (caret.offset() - line.offset())).trim().isEmpty()) {
-                skipWhitespace = false;
-            }
-            caret.at(line.offset(), true);
-        }
-        if (skipWhitespace) {
-            if (Character.isWhitespace(line.charAt(caret.offset()))) {
-                while (caret.offset() < line.tailOffset() &&
-                    Character.isWhitespace(line.charAt(caret.offset()))) {
-                    caret.right();
-                }
-            }
-        }
+        caret.home();
         screen.hScrollTo(caret.x());
     }
     @Override
     public void moveCaretLineEnd() {
         vScrollToCaret();
-        LayoutLine line = texts.layoutLine(caret.offset());
-        long offset = line.tailOffset() - line.endMarkCount();
-        caret.at(offset, true);
+        caret.end();
         screen.hScrollTo(caret.x());
     }
     // </editor-fold>

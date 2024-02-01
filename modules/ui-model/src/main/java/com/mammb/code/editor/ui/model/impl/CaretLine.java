@@ -156,6 +156,31 @@ public class CaretLine {
     }
 
 
+    public void home() {
+        boolean skipWhitespace = true;
+        if (line.offset() != bar.offset()) {
+            if (bar.offset() - line.offset() < 36 &&
+                line.text().substring(0, (int) (bar.offset() - line.offset())).trim().isEmpty()) {
+                skipWhitespace = false;
+            }
+            at(line.offset());
+        }
+        if (skipWhitespace) {
+            if (Character.isWhitespace(line.charAt(bar.offset()))) {
+                while (bar.offset() < line.tailOffset() &&
+                    Character.isWhitespace(line.charAt(bar.offset()))) {
+                    right();
+                }
+            }
+        }
+    }
+
+
+    public void end() {
+        at(line.tailOffset() - line.endMarkCount());
+    }
+
+
     public void refresh() {
         long offset = bar.offset();
         line = offsetToLine.apply(offset);

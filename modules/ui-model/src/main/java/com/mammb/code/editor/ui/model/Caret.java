@@ -65,6 +65,16 @@ public interface Caret {
     void down();
 
     /**
+     * Move the caret to the home.
+     */
+    void home();
+
+    /**
+     * Move the caret to the end.
+     */
+    void end();
+
+    /**
      * Get the point at caret.
      * Return {@code null} if caret is off-screen.
      * @return the point at caret

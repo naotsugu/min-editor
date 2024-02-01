@@ -71,6 +71,18 @@ public class Caret2 implements CaretMulti {
     }
 
     @Override
+    public void home() {
+        main.home();
+        moons.forEach(CaretLine::home);
+    }
+
+    @Override
+    public void end() {
+        main.end();
+        moons.forEach(CaretLine::end);
+    }
+
+    @Override
     public OffsetPoint caretPoint() {
         if (offset() == 0) {
             return OffsetPoint.zero;
