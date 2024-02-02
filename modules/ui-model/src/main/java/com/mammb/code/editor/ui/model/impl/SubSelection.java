@@ -15,7 +15,10 @@
  */
 package com.mammb.code.editor.ui.model.impl;
 
+import com.mammb.code.editor.model.text.OffsetPoint;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * SubSelection.
@@ -23,10 +26,35 @@ import java.util.List;
  */
 public class SubSelection {
 
-    private List<CaretLine> moonRefs;
+    record Pair(OffsetPoint point, CaretLine caretLine) { }
+
+    private final List<Pair> pairs;
+
 
     public SubSelection(List<CaretLine> moonRefs) {
-        this.moonRefs = moonRefs;
+        this.pairs = moonRefs.stream()
+            .map(SubSelection::pairOf)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    }
+
+
+    public void clear() {
+        pairs.clear();
+    }
+
+
+    private void ensureScope() {
+        pairs.removeIf(p -> p.caretLine().getLine() == null);
+    }
+
+
+    private static Pair pairOf(CaretLine caretLine) {
+        if (caretLine == null) {
+            return null;
+        }
+        OffsetPoint p = caretLine.point();
+        return (p == null) ? null : new Pair(p, caretLine);
     }
 
 }

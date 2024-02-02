@@ -16,15 +16,13 @@
 package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.buffer.Metrics;
-import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import javafx.scene.canvas.GraphicsContext;
 
 /**
  * Selection.
  * @author Naotsugu Kobayashi
  */
-public interface Selection {
+public interface Selection extends SelectionDraw {
 
     /**
      * Start select.
@@ -80,15 +78,6 @@ public interface Selection {
     boolean isDragging();
 
     /**
-     * Draw the selection.
-     * @param gc the graphics context
-     * @param run the text run
-     * @param offsetY the position y
-     * @param left the left position of run(margin included)
-     */
-    void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
-
-    /**
      * Select all.
      * @param metrics the metrics
      */
@@ -105,10 +94,7 @@ public interface Selection {
         return started() ? max().offset() - min().offset() : 0;
     }
 
-    /**
-     * Get the min select offset.
-     * @return the min select offset
-     */
+    @Override
     default OffsetPoint min() {
         if (startOffset() == null && endOffset() == null) {
             return null;
@@ -121,10 +107,7 @@ public interface Selection {
         }
     }
 
-    /**
-     * Get the max select offset.
-     * @return the max select offset
-     */
+    @Override
     default OffsetPoint max() {
         if (startOffset() == null && endOffset() == null) {
             return null;

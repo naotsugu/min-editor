@@ -15,12 +15,8 @@
  */
 package com.mammb.code.editor.ui.model.impl;
 
-import com.mammb.code.editor.javafx.layout.FxFonts;
-import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Selection;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 /**
  * SelectionImpl.
@@ -36,10 +32,6 @@ public class SelectionImpl implements Selection {
 
     /** The selection dragging. */
     private boolean dragging = false;
-
-    /** The color. */
-    private Color color = new Color(0.6784314F, 0.84705883F, 0.9019608F, 0.3);
-
 
     @Override
     public void start(OffsetPoint offset) {
@@ -87,40 +79,6 @@ public class SelectionImpl implements Selection {
     @Override
     public boolean started() {
         return start != null;
-    }
-
-    @Override
-    public void draw(GraphicsContext gc, TextRun run, double top, double left) {
-
-        if (!started()) {
-            return;
-        }
-
-        long runStart = run.offset();
-        long runEnd = runStart + run.length();
-
-        if (max().offset() >= runStart && min().offset() < runEnd) {
-
-            final String text = run.text();
-
-            if (runEnd <= max().offset() &&
-                ((text.length() == 1 && text.charAt(0) == '\n') ||
-                    (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
-
-                gc.setFill(color);
-                gc.fillRect(run.layout().x() + left, top, FxFonts.uppercaseLetterWidth(gc.getFont()), run.textLine().leadingHeight());
-
-            } else {
-
-                double x1 = run.offsetToX().apply(Math.toIntExact(Math.max(min().offset(), runStart) - runStart));
-                double x2 = run.offsetToX().apply(Math.toIntExact(Math.min(max().offset(), runEnd) - runStart));
-
-                gc.setFill(color);
-                gc.fillRect(x1 + left, top, x2 - x1, run.textLine().leadingHeight());
-
-            }
-        }
-
     }
 
 }

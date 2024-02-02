@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.model.impl;
 
+import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.Objects;
@@ -192,6 +193,11 @@ public class CaretLine {
         CaretLine clone = moonOf(offsetToLine);
         clone.at(offset);
         return clone;
+    }
+
+
+    OffsetPoint point() {
+        return (line == null) ? null : line.offsetPoint(bar.offset());
     }
 
 
