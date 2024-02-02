@@ -62,14 +62,14 @@ public record ReplaceEdit(
                     afterText.length() - beforeText.length(),
                     Character.codePointCount(afterText, 0, afterText.length())
                         - Character.codePointCount(beforeText, 0, beforeText.length()));
-                yield Textual.of(textual.point().plus(delta), textual.text());
+                yield Textual.of(textual.offsetPoint().plus(delta), textual.text());
             }
             case  0 -> {
                 StringBuilder sb = new StringBuilder(textual.text());
-                int start = Math.toIntExact(point.offset() - textual.point().offset());
+                int start = Math.toIntExact(point.offset() - textual.offsetPoint().offset());
                 int end = start + beforeText.length();
                 sb.replace(start, end, afterText);
-                yield Textual.of(textual.point(), sb.toString());
+                yield Textual.of(textual.offsetPoint(), sb.toString());
             }
             default -> textual;
         };

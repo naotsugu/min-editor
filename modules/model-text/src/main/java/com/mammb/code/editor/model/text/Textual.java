@@ -21,7 +21,7 @@ import com.mammb.code.editor.model.text.impl.TextualRecord;
  * Textual.
  * @author Naotsugu Kobayashi
  */
-public interface Textual {
+public interface Textual extends OffsetPointer {
 
     /**
      * Get the text string.
@@ -33,14 +33,14 @@ public interface Textual {
      * Get the offset point.
      * @return the offset point.
      */
-    OffsetPoint point();
+    OffsetPoint offsetPoint();
 
     /**
      * Get the start char (total) offset.
      * @return the start char (total) offset.
      */
     default long offset() {
-        return point().offset();
+        return offsetPoint().offset();
     }
 
     /**
@@ -56,7 +56,7 @@ public interface Textual {
      * @return the point of tail(exclusive)
      */
     default OffsetPoint tailPoint() {
-        return OffsetPoint.of(point().row(), tailOffset(), tailCpOffset());
+        return OffsetPoint.of(offsetPoint().row(), tailOffset(), tailCpOffset());
     }
 
     /**
@@ -95,7 +95,7 @@ public interface Textual {
      * @return the coed point offset of tail.
      */
     default long tailCpOffset() {
-        return point().cpOffset() + Character.codePointCount(text(), 0, length());
+        return offsetPoint().cpOffset() + Character.codePointCount(text(), 0, length());
     }
 
     /**
@@ -114,7 +114,7 @@ public interface Textual {
      *         a value greater than {@code 0} if {@code tailOffset() <= offset}
      */
     default int compareOffsetRangeTo(long offset) {
-        if (offset < point().offset()) {
+        if (offset < offsetPoint().offset()) {
             return -1;
         } else if (tailOffset() <= offset) {
             return 1;

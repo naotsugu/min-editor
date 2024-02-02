@@ -83,7 +83,7 @@ class StyledTextTest {
         List<StyledText> styledTexts = target.spans();
         assertEquals(1, styledTexts.size());
         assertEquals("abc", styledTexts.get(0).text());
-        assertEquals(OffsetPoint.zero, styledTexts.get(0).point());
+        assertEquals(OffsetPoint.zero, styledTexts.get(0).offsetPoint());
 
     }
 
@@ -97,7 +97,7 @@ class StyledTextTest {
         List<StyledText> styledTexts = target.spans();
         assertEquals(1, styledTexts.size());
         assertEquals("", styledTexts.get(0).text());
-        assertEquals(textual.point(), styledTexts.get(0).point());
+        assertEquals(textual.offsetPoint(), styledTexts.get(0).offsetPoint());
 
     }
 

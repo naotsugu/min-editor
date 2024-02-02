@@ -34,7 +34,7 @@ public interface StyledText extends Textual, Styled {
     String text();
 
     @Override
-    OffsetPoint point();
+    OffsetPoint offsetPoint();
 
     @Override
     List<StyleSpan> styles();

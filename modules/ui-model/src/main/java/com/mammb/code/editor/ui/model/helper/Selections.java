@@ -61,9 +61,9 @@ public class Selections {
      */
     public static void select(long offset1, long offset2, Caret caret, Selection selection) {
         caret.at(offset1, true);
-        selection.start(caret.caretPoint());
+        selection.start(caret.offsetPoint());
         caret.at(offset2, true);
-        selection.to(caret.caretPoint());
+        selection.to(caret.offsetPoint());
     }
 
     /**
@@ -108,7 +108,7 @@ public class Selections {
     private static OffsetPoint[] rowPointRange(long charOffset, ScreenText texts) {
         List<TextLine> lines = texts.rowAt(charOffset);
         return new OffsetPoint[] {
-            lines.get(0).point(),
+            lines.get(0).offsetPoint(),
             lines.get(lines.size() - 1).tailPoint()
         };
     }
@@ -122,7 +122,7 @@ public class Selections {
     private static OffsetPoint[] linePointRange(long charOffset, ScreenText texts) {
         var line = texts.lineAt(charOffset);
         return new OffsetPoint[] {
-            line.point(),
+            line.offsetPoint(),
             line.tailPoint()
         };
     }

@@ -55,18 +55,18 @@ public record DeleteEdit(
         return switch (textual.compareOffsetRangeTo(point.offset())) {
             case -1 -> {
                 OffsetPoint newPoint = OffsetPoint.of(
-                    textual.point().row(),
-                    textual.point().offset() - text.length(),
-                    textual.point().offset() - Character.codePointCount(text, 0, text.length())
+                    textual.offsetPoint().row(),
+                    textual.offsetPoint().offset() - text.length(),
+                    textual.offsetPoint().offset() - Character.codePointCount(text, 0, text.length())
                 );
                 yield Textual.of(newPoint, textual.text());
             }
             case  0 -> {
                 StringBuilder sb = new StringBuilder(textual.text());
-                int start = Math.toIntExact(point.offset() - textual.point().offset());
+                int start = Math.toIntExact(point.offset() - textual.offsetPoint().offset());
                 int end = start + text.length();
                 sb.replace(start, end, "");
-                yield Textual.of(textual.point(), sb.toString());
+                yield Textual.of(textual.offsetPoint(), sb.toString());
             }
             default -> textual;
         };

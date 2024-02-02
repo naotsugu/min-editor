@@ -40,7 +40,7 @@ public class CaretSelection implements SelectionDraw {
             this.start = null;
             this.caretLine = null;
         } else {
-            this.start = caretLine.point();
+            this.start = caretLine.offsetPoint();
             this.caretLine = caretLine;
         }
     }
@@ -58,7 +58,7 @@ public class CaretSelection implements SelectionDraw {
         }
         return (start.offset() <= caretLine.getBar().offset())
             ? start
-            : caretLine.point();
+            : caretLine.offsetPoint();
     }
 
 
@@ -68,7 +68,7 @@ public class CaretSelection implements SelectionDraw {
             return null;
         }
         return (start.offset() <= caretLine.getBar().offset())
-            ? caretLine.point()
+            ? caretLine.offsetPoint()
             : start;
     }
 

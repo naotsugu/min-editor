@@ -90,13 +90,13 @@ public class StateChangeImpl implements StateChange {
 
 
     private void push(Caret caret) {
-        OffsetPoint caretPoint = caret.caretPoint();
+        OffsetPoint caretPoint = caret.offsetPoint();
         if (caretPoint == null || caretPoint.equals(prevCaretPoint)) {
             return;
         }
         caretPointHandlers.forEach(h -> h.accept(new CaretPoint(
             caretPoint.row() + 1,
-            Math.toIntExact(caretPoint.cpOffset() - caret.layoutLine().point().cpOffset()),
+            Math.toIntExact(caretPoint.cpOffset() - caret.layoutLine().offsetPoint().cpOffset()),
             caretPoint.cpOffset())));
         prevCaretPoint = caretPoint;
     }

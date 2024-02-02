@@ -149,7 +149,7 @@ public interface ScreenText {
 
 
     default int headlinesIndex() {
-        return head().point().row() + head().lineIndex();
+        return head().offsetPoint().row() + head().lineIndex();
     }
 
 
@@ -213,7 +213,7 @@ public interface ScreenText {
         final List<TextLine> lines = lines();
 
         if (lines.isEmpty() ||
-            offset < lines.get(0).point().offset() ||
+            offset < lines.get(0).offsetPoint().offset() ||
             offset > lines.get(lines.size() - 1).tailOffset()) {
             return null;
         }

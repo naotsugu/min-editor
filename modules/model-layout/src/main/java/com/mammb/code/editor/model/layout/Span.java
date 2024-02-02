@@ -30,7 +30,7 @@ public interface Span extends Textual {
     String text();
 
     @Override
-    OffsetPoint point();
+    OffsetPoint offsetPoint();
 
     /**
      * Get the style of span.
@@ -51,7 +51,7 @@ public interface Span extends Textual {
      * @return a created Span
      */
     static Span of(StyledText textual, String context, FontStyle<?, ?> fontStyle) {
-        return new SpanRecord(textual.text(), textual.point(), textual.hol(), context, fontStyle);
+        return new SpanRecord(textual.text(), textual.offsetPoint(), textual.hol(), context, fontStyle);
     }
 
 }

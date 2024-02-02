@@ -16,13 +16,14 @@
 package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.OffsetPointer;
 import javafx.scene.canvas.GraphicsContext;
 
 /**
  * Caret.
  * @author Naotsugu Kobayashi
  */
-public interface Caret {
+public interface Caret extends OffsetPointer {
 
     /**
      * Draw caret.
@@ -74,12 +75,8 @@ public interface Caret {
      */
     void end();
 
-    /**
-     * Get the point at caret.
-     * Return {@code null} if caret is off-screen.
-     * @return the point at caret
-     */
-    OffsetPoint caretPoint();
+    @Override
+    OffsetPoint offsetPoint();
 
     /**
      * Get the char offset.

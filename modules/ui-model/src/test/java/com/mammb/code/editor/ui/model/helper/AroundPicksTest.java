@@ -54,7 +54,7 @@ class AroundPicksTest {
 
     private TextLine textLine(String text) {
         return new TextLine() {
-            @Override public OffsetPoint point() {
+            @Override public OffsetPoint offsetPoint() {
                 return OffsetPoint.zero;
             }
             @Override public int lineIndex() {

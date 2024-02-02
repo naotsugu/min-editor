@@ -29,7 +29,7 @@ import com.mammb.code.editor.model.text.impl.OffsetPointRecord;
  *
  * @author Naotsugu Kobayashi
  */
-public interface OffsetPoint {
+public interface OffsetPoint extends Comparable<OffsetPoint> {
 
     /** zero. */
     OffsetPoint zero = of(0, 0, 0);
@@ -86,6 +86,12 @@ public interface OffsetPoint {
      * @return the new offset point
      */
     OffsetPoint minus(String str);
+
+
+    @Override
+    default int compareTo(OffsetPoint o) {
+        return Long.compare(offset(), o.offset());
+    }
 
 
     /**

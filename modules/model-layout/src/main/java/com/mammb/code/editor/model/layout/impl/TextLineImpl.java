@@ -64,7 +64,7 @@ public class TextLineImpl implements TextLine {
     }
 
     @Override
-    public OffsetPoint point() {
+    public OffsetPoint offsetPoint() {
         return point;
     }
 

@@ -23,6 +23,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ * Caret implementation.
+ * @author Naotsugu Kobayashi
+ */
 public class Caret2 implements CaretMulti {
 
     /** The main caret. */
@@ -98,7 +102,7 @@ public class Caret2 implements CaretMulti {
     }
 
     @Override
-    public OffsetPoint caretPoint() {
+    public OffsetPoint offsetPoint() {
         if (offset() == 0) {
             return OffsetPoint.zero;
         }
@@ -113,7 +117,7 @@ public class Caret2 implements CaretMulti {
 
     @Override
     public int row() {
-        OffsetPoint caretPoint = caretPoint();
+        OffsetPoint caretPoint = offsetPoint();
         return caretPoint == null ? 0 : caretPoint.row();
     }
 
@@ -161,8 +165,8 @@ public class Caret2 implements CaretMulti {
         moons.clear();
     }
 
-    SubSelection subSelection() {
-        return new SubSelection(moons);
+    CaretSelections caretSelections() {
+        return CaretSelections.of(moons);
     }
 
 }

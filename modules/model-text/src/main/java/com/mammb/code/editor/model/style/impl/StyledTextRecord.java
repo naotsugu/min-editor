@@ -43,8 +43,8 @@ public record StyledTextRecord(
 
 
     @Override
-    public OffsetPoint point() {
-        return textual.point();
+    public OffsetPoint offsetPoint() {
+        return textual.offsetPoint();
     }
 
 

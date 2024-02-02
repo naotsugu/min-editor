@@ -51,8 +51,4 @@ public class CaretSelections {
     }
 
 
-    private void ensureValid() {
-        carets.removeIf(CaretSelection::isInvalid);
-    }
-
 }

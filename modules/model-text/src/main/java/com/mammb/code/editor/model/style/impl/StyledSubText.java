@@ -70,12 +70,12 @@ public class StyledSubText implements StyledText {
 
 
     @Override
-    public OffsetPoint point() {
+    public OffsetPoint offsetPoint() {
         if (subPoint == null) {
             subPoint = OffsetPoint.of(
-                styledText.point().row(),
-                styledText.point().offset() + start,
-                styledText.point().cpOffset() + Character.codePointCount(styledText.text(), 0, start));
+                styledText.offsetPoint().row(),
+                styledText.offsetPoint().offset() + start,
+                styledText.offsetPoint().cpOffset() + Character.codePointCount(styledText.text(), 0, start));
         }
         return subPoint;
     }

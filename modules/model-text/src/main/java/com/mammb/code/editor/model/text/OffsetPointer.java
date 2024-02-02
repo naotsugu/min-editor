@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.model.layout.impl;
-
-import com.mammb.code.editor.model.layout.FontStyle;
-import com.mammb.code.editor.model.layout.Span;
-import com.mammb.code.editor.model.text.OffsetPoint;
+package com.mammb.code.editor.model.text;
 
 /**
- * SpanRecord.
- * @param text the text string
- * @param offsetPoint the offset point
- * @param hol head of line?
- * @param context the context
- * @param style the style of span
+ * OffsetPointer.
  * @author Naotsugu Kobayashi
  */
-public record SpanRecord(
-    String text,
-    OffsetPoint offsetPoint,
-    boolean hol,
-    String context,
-    FontStyle<?, ?> style) implements Span {
+public interface OffsetPointer {
+
+    /**
+     * Get the offset point.
+     * Return {@code null} if current point is off-screen.
+     * @return the offset point of content
+     */
+    OffsetPoint offsetPoint();
+
 }

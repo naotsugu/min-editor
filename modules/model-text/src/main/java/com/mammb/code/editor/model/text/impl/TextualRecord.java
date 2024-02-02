@@ -20,11 +20,11 @@ import com.mammb.code.editor.model.text.Textual;
 
 /**
  * PointTextRecord.
- * @param point the offset point.
+ * @param offsetPoint the offset point.
  * @param text the text string.
  * @author Naotsugu Kobayashi
  */
 public record TextualRecord(
-        OffsetPoint point,
+        OffsetPoint offsetPoint,
         String text) implements Textual {
 }

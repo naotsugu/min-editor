@@ -91,7 +91,7 @@ public class RowSlice implements TextualSlice<Textual> {
     @Override
     public void refresh(int rowNumber) {
         for (int i = 0; i < rows.size(); i++) {
-            if (rows.get(i).point().row() >= rowNumber) {
+            if (rows.get(i).offsetPoint().row() >= rowNumber) {
                 rows.subList(i, rows.size()).clear();
                 fulfillRows();
                 return;
@@ -121,7 +121,7 @@ public class RowSlice implements TextualSlice<Textual> {
             }
             point = traverse.asOffsetPoint();
         }
-        if (!rows.isEmpty() && rows.getFirst().point().equals(point)) {
+        if (!rows.isEmpty() && rows.getFirst().offsetPoint().equals(point)) {
             return false;
         }
 
@@ -146,11 +146,11 @@ public class RowSlice implements TextualSlice<Textual> {
         for (int i = 0; i < n; i++) {
 
             Textual head = rows.get(0);
-            long cpOffset = head.point().cpOffset();
+            long cpOffset = head.offsetPoint().cpOffset();
             if (cpOffset == 0) break;
 
             String str = rowSupplier.before(cpOffset);
-            Textual textual = Textual.of(head.point().minus(str), str);
+            Textual textual = Textual.of(head.offsetPoint().minus(str), str);
             added.add(0, textual);
             pushFirst(textual);
         }
@@ -171,7 +171,7 @@ public class RowSlice implements TextualSlice<Textual> {
                 break;
             }
 
-            OffsetPoint next = tail.point().plus(tail.text());
+            OffsetPoint next = tail.offsetPoint().plus(tail.text());
             String str = rowSupplier.at(next.cpOffset());
             Textual textual = Textual.of(next, str);
             added.add(textual);
@@ -210,7 +210,7 @@ public class RowSlice implements TextualSlice<Textual> {
             OffsetPoint next = OffsetPoint.zero;
             if (!rows.isEmpty()) {
                 Textual tail = rows.get(rows.size() - 1);
-                next = tail.point().plus(tail.text());
+                next = tail.offsetPoint().plus(tail.text());
             }
 
             String str = rowSupplier.at(next.cpOffset());

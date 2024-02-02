@@ -38,7 +38,7 @@ public interface TextLine extends Textual {
     }
 
     @Override
-    OffsetPoint point();
+    OffsetPoint offsetPoint();
 
     /**
      * Get the line index.
@@ -119,7 +119,7 @@ public interface TextLine extends Textual {
      */
     default OffsetPoint offsetPoint(long offset) {
         TextRun run = textRunAt(offset);
-        return OffsetPoint.of(point().row(), offset, run.cpOffset(offset));
+        return OffsetPoint.of(offsetPoint().row(), offset, run.cpOffset(offset));
     }
 
     /**
@@ -145,7 +145,7 @@ public interface TextLine extends Textual {
      */
     default char charAt(long offset) {
         TextRun run = textRunAt(offset);
-        int index = Math.toIntExact(offset - run.source().point().offset());
+        int index = Math.toIntExact(offset - run.source().offsetPoint().offset());
         return run.source().text().charAt(index);
     }
 
@@ -158,7 +158,7 @@ public interface TextLine extends Textual {
         char ch = charAt(offset);
         if (ch == '\r' && offset < tailOffset() - 1 && charAt(offset + 1) == '\n') {
             return "\r\n";
-        } else if (ch == '\n' && offset > point().offset() && charAt(offset - 1) == '\r') {
+        } else if (ch == '\n' && offset > offsetPoint().offset() && charAt(offset - 1) == '\r') {
             return "\r\n";
         }
         return Character.isHighSurrogate(ch)
@@ -184,7 +184,7 @@ public interface TextLine extends Textual {
         }
         for (TextRun run : runs) {
             if (run.length() == 0) continue;
-            long runStart = run.source().point().offset() + run.start();
+            long runStart = run.source().offsetPoint().offset() + run.start();
             long runEnd = runStart + run.length();
             if (runStart <= offset && offset < runEnd) {
                 return run;

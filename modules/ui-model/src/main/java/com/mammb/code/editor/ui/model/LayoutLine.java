@@ -30,8 +30,8 @@ import java.util.List;
 public record LayoutLine(TextLine line, double offsetY) implements TextLine {
 
     @Override
-    public OffsetPoint point() {
-        return line.point();
+    public OffsetPoint offsetPoint() {
+        return line.offsetPoint();
     }
 
     @Override

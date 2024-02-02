@@ -175,7 +175,7 @@ public class PlainScreenText implements ScreenText {
 
     @Override
     public boolean move(int row, Metrics metrics) {
-        final OffsetPoint head = head().point();
+        final OffsetPoint head = head().offsetPoint();
         final int delta = row - head.row();
         if (delta == 0) {
             return false;
@@ -201,8 +201,8 @@ public class PlainScreenText implements ScreenText {
 
     @Override
     public boolean scrollAtScreen(int row, long offset) {
-        final int head = head().point().row();
-        final int tail = tail().point().row();
+        final int head = head().offsetPoint().row();
+        final int tail = tail().offsetPoint().row();
         if (head <= row && row <= tail) {
             return false;
         }

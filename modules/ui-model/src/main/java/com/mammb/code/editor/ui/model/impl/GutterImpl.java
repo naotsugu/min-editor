@@ -72,7 +72,7 @@ public class GutterImpl implements Gutter {
             return;
         }
 
-        String num = String.valueOf(run.source().point().row() + 1);
+        String num = String.valueOf(run.source().offsetPoint().row() + 1);
         growWidthIf(num);
 
         fillBackground(gc, top, run.textLine().leadingHeight(), accent);

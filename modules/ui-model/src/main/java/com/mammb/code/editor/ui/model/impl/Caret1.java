@@ -103,7 +103,7 @@ public class Caret1 implements Caret {
             x = (layoutLine.isEmpty()) ? 0 : layoutLine.offsetToX(offset);
             y = layoutLine.offsetY();
             line = layoutLine;
-            row = layoutLine.point().row();
+            row = layoutLine.offsetPoint().row();
             dirty = false;
             if (syncLogicalX) {
                 logicalX = x;
@@ -153,7 +153,7 @@ public class Caret1 implements Caret {
         }
 
         offset--;
-        if (offset < line.point().offset()) {
+        if (offset < line.offsetPoint().offset()) {
             row--;
             if (offsetToLine.apply(offset).endMarkCount() > 1) {
                 offset--;
@@ -174,7 +174,7 @@ public class Caret1 implements Caret {
     @Override
     public void up() {
         if (ensureLayout() == null) return;
-        if (line.point().offset() == 0) {
+        if (line.offsetPoint().offset() == 0) {
             return;
         }
         LayoutLine prev = offsetToLine.apply(line.offset() - 1);
@@ -182,7 +182,7 @@ public class Caret1 implements Caret {
 
         line = prev;
         offset = line.xToOffset(logicalX);
-        row = line.point().row();
+        row = line.offsetPoint().row();
         x = line.offsetToX(offset);
         y = prev.offsetY();
     }
@@ -201,7 +201,7 @@ public class Caret1 implements Caret {
         }
         line = next;
         offset = line.xToOffset(logicalX);
-        row = line.point().row();
+        row = line.offsetPoint().row();
         x = line.offsetToX(offset);
         y = next.offsetY();
     }
@@ -218,7 +218,7 @@ public class Caret1 implements Caret {
 
 
     @Override
-    public OffsetPoint caretPoint() {
+    public OffsetPoint offsetPoint() {
         if (offset == 0) {
             return OffsetPoint.zero;
         }

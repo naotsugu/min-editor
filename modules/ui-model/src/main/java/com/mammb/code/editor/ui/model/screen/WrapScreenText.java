@@ -171,7 +171,7 @@ public class WrapScreenText implements ScreenText {
 
     @Override
     public boolean move(int row, Metrics metrics) {
-        return scrollAtScreen(row - head().point().row(), 0);
+        return scrollAtScreen(row - head().offsetPoint().row(), 0);
     }
 
 
@@ -201,8 +201,8 @@ public class WrapScreenText implements ScreenText {
             return false;
         }
 
-        final int first = lines.get(0).point().row();
-        final int last = lines.get(lines.size() - 1).point().row();
+        final int first = lines.get(0).offsetPoint().row();
+        final int last = lines.get(lines.size() - 1).offsetPoint().row();
         if (first > row || row > last) {
             if (row < first) {
                 int nRow = first - row;
@@ -300,11 +300,11 @@ public class WrapScreenText implements ScreenText {
         while (true) {
             int index = asc ? 0 : lines.size() - 1;
             TextLine line = lines.get(index);
-            if (prev != -1 && prev != line.point().row()) {
+            if (prev != -1 && prev != line.offsetPoint().row()) {
                 n--;
             }
             if (n == 0) break;
-            prev = line.point().row();
+            prev = line.offsetPoint().row();
             lines.remove(index);
             count++;
         }
@@ -324,11 +324,11 @@ public class WrapScreenText implements ScreenText {
         int count = 0;
         int prev = -1;
         for (TextLine line : lines) {
-            if (prev != -1 && prev != line.point().row()) {
+            if (prev != -1 && prev != line.offsetPoint().row()) {
                 n--;
             }
             if (n == 0) break;
-            prev = line.point().row();
+            prev = line.offsetPoint().row();
             count++;
         }
         lines.subList(count, lines.size()).clear();

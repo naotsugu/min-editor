@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.LayoutLine;
+import com.mammb.code.editor.model.text.OffsetPointer;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.Objects;
 import java.util.function.Function;
@@ -25,7 +26,7 @@ import java.util.function.Function;
  * CaretLine.
  * @author Naotsugu Kobayashi
  */
-public class CaretLine {
+public class CaretLine implements OffsetPointer {
 
     /** The offset to layout line function. */
     private final Function<Long, LayoutLine> offsetToLine;
@@ -137,7 +138,7 @@ public class CaretLine {
         if (line == null) {
             return;
         }
-        if (line.point().row() == 0 && line.lineIndex() == 0) {
+        if (line.offsetPoint().row() == 0 && line.lineIndex() == 0) {
             return;
         }
         line = offsetToLine.apply(line.offset() - 1);
@@ -195,8 +196,8 @@ public class CaretLine {
         return clone;
     }
 
-
-    OffsetPoint point() {
+    @Override
+    public OffsetPoint offsetPoint() {
         return (line == null) ? null : line.offsetPoint(bar.offset());
     }
 

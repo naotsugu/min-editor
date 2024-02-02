@@ -85,7 +85,7 @@ public class FxLineLayout implements LineLayout {
 
         TextSpan[] textSpans = textSpans();
         OffsetPoint point = textSpans.length > 0
-            ? textSpans[0].peer().point()
+            ? textSpans[0].peer().offsetPoint()
             : OffsetPoint.zero;
 
         textLayout.setContent(textSpans);
@@ -128,7 +128,7 @@ public class FxLineLayout implements LineLayout {
             }
 
             OffsetPoint offsetPoint = OffsetPoint.of(
-                textRuns.get(0).source().point().row(),
+                textRuns.get(0).source().offsetPoint().row(),
                 point.offset(),
                 point.cpOffset());
             TextLine line = TextLine.of(

@@ -114,7 +114,7 @@ public interface TextRun {
      * @return the offset char index
      */
     default long offset() {
-        return source().point().offset() + start();
+        return source().offsetPoint().offset() + start();
     }
 
     /**
@@ -131,7 +131,7 @@ public interface TextRun {
      * @return the code point offset corresponding to the specified offset
      */
     default long cpOffset(long offset) {
-        return source().point().cpOffset() +
+        return source().offsetPoint().cpOffset() +
             Character.codePointCount(source().text(), 0, Math.toIntExact(offset - source().offset()));
     }
 

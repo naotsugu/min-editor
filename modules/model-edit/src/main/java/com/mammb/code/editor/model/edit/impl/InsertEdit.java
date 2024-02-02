@@ -57,19 +57,19 @@ public record InsertEdit(
         return switch (textual.compareOffsetRangeTo(point.offset())) {
             case -1 -> {
                 OffsetPoint newPoint = OffsetPoint.of(
-                    textual.point().row(),
-                    textual.point().offset() + text.length(),
-                    textual.point().cpOffset() + Character.codePointCount(text, 0, text.length()));
+                    textual.offsetPoint().row(),
+                    textual.offsetPoint().offset() + text.length(),
+                    textual.offsetPoint().cpOffset() + Character.codePointCount(text, 0, text.length()));
                 yield Textual.of(newPoint, textual.text());
             }
             case 0 -> {
                 StringBuilder sb = new StringBuilder(textual.text());
-                sb.insert(Math.toIntExact(point.offset() - textual.point().offset()), text);
-                yield Textual.of(textual.point(), sb.toString());
+                sb.insert(Math.toIntExact(point.offset() - textual.offsetPoint().offset()), text);
+                yield Textual.of(textual.offsetPoint(), sb.toString());
             }
             case 1 -> {
                 if (textual.tailOffset() == point.offset() && textual.endMarkCount() == 0)
-                    yield Textual.of(textual.point(), textual.text() + text);
+                    yield Textual.of(textual.offsetPoint(), textual.text() + text);
                 else
                     yield textual;
             }
