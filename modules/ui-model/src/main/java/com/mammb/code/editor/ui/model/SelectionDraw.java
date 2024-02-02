@@ -15,12 +15,8 @@
  */
 package com.mammb.code.editor.ui.model;
 
-import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextRun;
-import com.mammb.code.editor.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import java.util.Objects;
 
 /**
  * SelectionDraw.
@@ -28,21 +24,8 @@ import java.util.Objects;
  */
 public interface SelectionDraw {
 
-    /** The color. */
-    Color color = new Color(0.6784314F, 0.84705883F, 0.9019608F, 0.3);
-
-    /**
-     * Get the min select offset.
-     * @return the min select offset
-     */
-    OffsetPoint min();
-
-    /**
-     * Get the max select offset.
-     * @return the max select offset
-     */
-    OffsetPoint max();
-
+    /** The empty draw. */
+    SelectionDraw EMPTY = (gc, run, offsetY, left) -> { };
 
     /**
      * Draw the selection.
@@ -51,40 +34,6 @@ public interface SelectionDraw {
      * @param offsetY the position y
      * @param left the left position of run(margin included)
      */
-    default void draw(GraphicsContext gc, TextRun run, double offsetY, double left) {
-
-        final OffsetPoint min = min();
-        final OffsetPoint max = max();
-
-        if (min == null || Objects.equals(min, max)) {
-            return;
-        }
-
-        long runStart = run.offset();
-        long runEnd = runStart + run.length();
-
-        if (max().offset() >= runStart && min().offset() < runEnd) {
-
-            final String text = run.text();
-
-            if (runEnd <= max().offset() &&
-                ((text.length() == 1 && text.charAt(0) == '\n') ||
-                    (text.length() == 2 && text.charAt(0) == '\r' && text.charAt(1) == '\n'))) {
-
-                gc.setFill(color);
-                gc.fillRect(run.layout().x() + left, offsetY, FxFonts.uppercaseLetterWidth(gc.getFont()), run.textLine().leadingHeight());
-
-            } else {
-
-                double x1 = run.offsetToX().apply(Math.toIntExact(Math.max(min().offset(), runStart) - runStart));
-                double x2 = run.offsetToX().apply(Math.toIntExact(Math.min(max().offset(), runEnd) - runStart));
-
-                gc.setFill(color);
-                gc.fillRect(x1 + left, offsetY, x2 - x1, run.textLine().leadingHeight());
-
-            }
-        }
-
-    }
+    void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
 
 }

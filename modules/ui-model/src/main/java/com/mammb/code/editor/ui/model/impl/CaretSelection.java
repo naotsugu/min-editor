@@ -16,13 +16,12 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.ui.model.SelectionDraw;
 
 /**
  * CaretSelection.
  * @author Naotsugu Kobayashi
  */
-public class CaretSelection implements SelectionDraw {
+public class CaretSelection implements SelectionDrawTrait {
 
     /** The selection open offset. */
     private final OffsetPoint start;

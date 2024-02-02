@@ -17,12 +17,13 @@ package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.ui.model.impl.SelectionDrawTrait;
 
 /**
  * Selection.
  * @author Naotsugu Kobayashi
  */
-public interface Selection extends SelectionDraw {
+public interface Selection extends SelectionDrawTrait {
 
     /**
      * Start select.

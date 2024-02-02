@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.ui.model.LayoutLine;
+import com.mammb.code.editor.ui.model.Rect;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
@@ -23,7 +24,7 @@ import javafx.scene.paint.Color;
  * CaretBar.
  * @author Naotsugu Kobayashi
  */
-public class CaretBar {
+public class CaretBar implements Rect {
 
     /** The stroke color of caret. */
     private Color strokeColor;
@@ -137,22 +138,6 @@ public class CaretBar {
     }
 
     /**
-     * Get the top position.
-     * @return the top position
-     */
-    public double top() {
-        return y;
-    }
-
-    /**
-     * Get the bottom position.
-     * @return the bottom position
-     */
-    public double bottom() {
-        return y + h;
-    }
-
-    /**
      * Get the character offset.
      * @return the character offset
      */
@@ -168,35 +153,23 @@ public class CaretBar {
         return virtualX;
     }
 
-    /**
-     * Get the caret rect x.
-     * @return the caret rect x
-     */
+    @Override
     public double x() {
         return x;
     }
 
-    /**
-     * Get the caret rect y.
-     * @return the caret rect y
-     */
+    @Override
     public double y() {
         return y;
     }
 
-    /**
-     * Get the caret rect width.
-     * @return the caret rect width
-     */
-    public double w() {
+    @Override
+    public double width() {
         return w;
     }
 
-    /**
-     * Get the caret rect height.
-     * @return the caret rect height
-     */
-    public double h() {
+    @Override
+    public double height() {
         return h;
     }
 

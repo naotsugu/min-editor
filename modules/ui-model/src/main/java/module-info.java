@@ -31,5 +31,6 @@ module code.editor.ui.model {
     requires code.editor.ui.prefs;
 
     exports com.mammb.code.editor.ui.model;
+    exports com.mammb.code.editor.ui.model.impl;
 
 }

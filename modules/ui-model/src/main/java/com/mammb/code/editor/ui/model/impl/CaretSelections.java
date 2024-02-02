@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.layout.TextRun;
+import com.mammb.code.editor.ui.model.SelectionDraw;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
  * CaretSelections.
  * @author Naotsugu Kobayashi
  */
-public class CaretSelections {
+public class CaretSelections implements SelectionDraw {
 
     private final List<CaretSelection> carets;
 
@@ -40,6 +41,7 @@ public class CaretSelections {
             .collect(Collectors.toList()));
     }
 
+    @Override
     public void draw(GraphicsContext gc, TextRun run, double offsetY, double left) {
         carets.removeIf(CaretSelection::isInvalid);
         carets.forEach(c -> c.draw(gc, run, offsetY, left));

@@ -23,7 +23,7 @@ import javafx.scene.canvas.GraphicsContext;
  * Caret.
  * @author Naotsugu Kobayashi
  */
-public interface Caret extends OffsetPointer {
+public interface Caret extends OffsetPointer, Rect {
 
     /**
      * Draw caret.
@@ -34,9 +34,9 @@ public interface Caret extends OffsetPointer {
     void draw(GraphicsContext gc, double margin, double hScrolled);
 
     /**
-     * Mark the caret to dirty.
+     * Refresh the caret.
      */
-    void markDirty();
+    void refresh();
 
     /**
      * Moves the caret to the specified offset.
@@ -89,36 +89,6 @@ public interface Caret extends OffsetPointer {
      * @return the row number
      */
     int row();
-
-    /**
-     * Get the x position of the row where the caret exists.
-     * @return the x position
-     */
-    double x();
-
-    /**
-     * Get the y position of the row where the caret exists.
-     * @return the y position
-     */
-    double y();
-
-    /**
-     * Get the bottom position of the row where the caret exists.
-     * @return the bottom position
-     */
-    double y2();
-
-    /**
-     * Get the caret height.
-     * @return the caret height
-     */
-    double height();
-
-    /**
-     * Get the caret width.
-     * @return the caret width
-     */
-    double width();
 
     /**
      * Get the layoutLine at caret.

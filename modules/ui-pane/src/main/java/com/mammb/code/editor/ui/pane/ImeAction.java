@@ -112,7 +112,7 @@ public class ImeAction {
             @Override
             public Point2D getTextLocation(int offset) {
                 var rect = model.imeOn(gc);
-                return pane.localToScreen(rect.x(), rect.y() + rect.h() + 5);
+                return pane.localToScreen(rect.x(), rect.y() + rect.height() + 5);
             }
 
             @Override

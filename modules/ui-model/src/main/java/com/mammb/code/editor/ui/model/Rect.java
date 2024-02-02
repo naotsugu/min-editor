@@ -17,45 +17,48 @@ package com.mammb.code.editor.ui.model;
 
 /**
  * Rect.
- * @param x the position x
- * @param y the position y
- * @param w the width
- * @param h the height
  * @author Naotsugu Kobayashi
  */
-public record Rect(double x, double y, double w, double h) {
+public interface Rect {
 
-    public double x2() {
-        return x + w;
-    }
+    /**
+     * Get the caret rect x.
+     * @return the caret rect x
+     */
+    double x();
 
-    public double y2() {
-        return y + h;
+    /**
+     * Get the caret rect y.
+     * @return the caret rect y
+     */
+    double y();
+
+    /**
+     * Get the caret rect width.
+     * @return the caret rect width
+     */
+    double width();
+
+    /**
+     * Get the caret rect height.
+     * @return the caret rect height
+     */
+    double height();
+
+    /**
+     * Get the top position.
+     * @return the top position
+     */
+    default double top() {
+        return y();
     }
 
     /**
-     * Create a new smaller rect.
-     * @return a new smaller rect
+     * Get the bottom position.
+     * @return the bottom position
      */
-    public Rect smaller() {
-        return smaller(0.7);
-    }
-
-    /**
-     * Create a new smaller rect.
-     * @param scale the scale(0 < scale <= 1)
-     * @return a new smaller rect
-     */
-    public Rect smaller(double scale) {
-        if (scale > 1 || scale <= 0) {
-            throw new IllegalArgumentException("illegal scale.[" + scale + "]");
-        }
-        return new Rect(
-            x + (w * (1 - scale)) / 2,
-            y + (h * (1 - scale)) / 2,
-            w * scale,
-            h * scale);
+    default double bottom() {
+        return y() + height();
     }
 
 }
-

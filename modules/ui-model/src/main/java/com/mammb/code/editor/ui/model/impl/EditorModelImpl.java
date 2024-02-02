@@ -34,10 +34,12 @@ import com.mammb.code.editor.ui.model.ImePallet;
 import com.mammb.code.editor.ui.model.ImeRun;
 import com.mammb.code.editor.ui.model.LayoutLine;
 import com.mammb.code.editor.ui.model.Rect;
+import com.mammb.code.editor.ui.model.RectBox;
 import com.mammb.code.editor.ui.model.ScreenPoint;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.ScrollBar;
 import com.mammb.code.editor.ui.model.Selection;
+import com.mammb.code.editor.ui.model.SelectionDraw;
 import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.helper.Clipboards;
@@ -83,7 +85,7 @@ public class EditorModelImpl implements EditorModel {
     /** The find. */
     private Find find;
 
-    private CaretSelections caretSelections;
+    private SelectionDraw selectionDraw = SelectionDraw.EMPTY;
 
 
     /**
@@ -112,7 +114,7 @@ public class EditorModelImpl implements EditorModel {
         this.screen = screen;
         screen.updateMaxWith(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
         screen.initScroll(texts.headlinesIndex(), totalLines());
-        caret.markDirty();
+        caret.refresh();
     }
 
 
@@ -194,7 +196,7 @@ public class EditorModelImpl implements EditorModel {
         gc.restore();
         if (screen.gutter().checkWidthChanged()) {
             texts.markDirty();
-            caret.markDirty();
+            caret.refresh();
             draw(gc);
         }
         stateChange.push(buffer.metrics(), caret, selection);
@@ -207,7 +209,7 @@ public class EditorModelImpl implements EditorModel {
         }
         screen.updateMaxWith(layoutLine.width());
         double gap = 0.01;
-        gc.clearRect(screen.textArea().x(), layoutLine.offsetY() + gap, screen.textArea().w(), layoutLine.leadingHeight() - gap);
+        gc.clearRect(screen.textArea().x(), layoutLine.offsetY() + gap, screen.textArea().width(), layoutLine.leadingHeight() - gap);
         List<TextRun> runs = layoutLine.runs();
         fillContextBand(gc, runs, layoutLine.offsetY(), layoutLine.leadingHeight());
         for (TextRun run : runs) {
@@ -237,9 +239,7 @@ public class EditorModelImpl implements EditorModel {
 
         if (selection.started()) {
             selection.draw(gc, run, top, screen.textLeft());
-            if (caretSelections != null) {
-                caretSelections.draw(gc, run, top, screen.textLeft());
-            }
+            selectionDraw.draw(gc, run, top, screen.textLeft());
         }
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
@@ -331,7 +331,7 @@ public class EditorModelImpl implements EditorModel {
         buffer.push(Edit.insert(caretPoint, value));
         find.reset();
         texts.markDirty();
-        caret.markDirty();
+        caret.refresh();
         screen.adjustVScroll(totalLines());
 
         int count = Character.codePointCount(value, 0, value.length());
@@ -359,7 +359,7 @@ public class EditorModelImpl implements EditorModel {
         buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
         find.reset();
         texts.markDirty();
-        caret.markDirty();
+        caret.refresh();
         screen.adjustVScroll(totalLines());
     }
 
@@ -381,7 +381,7 @@ public class EditorModelImpl implements EditorModel {
         buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
         find.reset();
         texts.markDirty();
-        caret.markDirty();
+        caret.refresh();
         screen.adjustVScroll(totalLines());
     }
 
@@ -435,7 +435,7 @@ public class EditorModelImpl implements EditorModel {
         Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
         find.reset();
         texts.markDirty();
-        caret.markDirty();
+        caret.refresh();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
     }
 
@@ -470,9 +470,9 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void moveCaretRight() {
         vScrollToCaret();
-        if (caret.y2() + 4 >= screen.height()) scrollNext(1);
+        if (caret.bottom() + 4 >= screen.height()) scrollNext(1);
         caret.right();
-        if (caret.layoutLine() == null || caret.y2() > screen.height()) scrollNext(1);
+        if (caret.layoutLine() == null || caret.bottom() > screen.height()) scrollNext(1);
         screen.hScrollTo(caret.x());
     }
     @Override
@@ -496,9 +496,9 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void moveCaretDown() {
         vScrollToCaret();
-        if (caret.y2() + 4 >= screen.height()) scrollNext(1);
+        if (caret.bottom() + 4 >= screen.height()) scrollNext(1);
         caret.down();
-        if (caret.y2() > screen.height()) scrollNext(1);
+        if (caret.bottom() > screen.height()) scrollNext(1);
         screen.hScrollTo(caret.x());
     }
     @Override
@@ -519,7 +519,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void scrollPrev(int n) {
         int size = texts.prev(n);
-        caret.markDirty();
+        caret.refresh();
         if (size == 0) {
             return;
         }
@@ -530,7 +530,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void scrollNext(int n) {
         int size = texts.next(n);
-        caret.markDirty();
+        caret.refresh();
         if (size == 0) {
             return;
         }
@@ -563,7 +563,7 @@ public class EditorModelImpl implements EditorModel {
         boolean scrolled = texts.move(newValue, buffer.metrics());
         if (scrolled) {
             texts.markDirty();
-            caret.markDirty();
+            caret.refresh();
         }
     }
     // </editor-fold>
@@ -619,17 +619,14 @@ public class EditorModelImpl implements EditorModel {
         if (!selection.started()) {
             selection.start(caret.offsetPoint());
             if (caret instanceof Caret2 c) {
-                caretSelections = c.caretSelections();
+                selectionDraw = c.caretSelections();
             }
         }
     }
     @Override
     public void selectOff() {
         selection.clear();
-        if (caretSelections != null) {
-            caretSelections.clear();
-            caretSelections = null;
-        }
+        selectionDraw = SelectionDraw.EMPTY;
     }
     @Override
     public void selectTo() {
@@ -639,7 +636,7 @@ public class EditorModelImpl implements EditorModel {
     }
     @Override
     public void selectAll() {
-        caretSelections = null;
+        selectionDraw = SelectionDraw.EMPTY;
         selection.selectAll(buffer.metrics());
     }
     // </editor-fold>
@@ -688,7 +685,7 @@ public class EditorModelImpl implements EditorModel {
             ime.on(caret.offsetPoint());
             draw(gc, caret.layoutLine());
         }
-        return new Rect(caret.x() + screen.textLeft(), caret.y(), caret.width(), caret.height());
+        return new RectBox(caret.x() + screen.textLeft(), caret.y(), caret.width(), caret.height());
     }
     @Override
     public void imeOff() {
@@ -705,7 +702,7 @@ public class EditorModelImpl implements EditorModel {
         ime.composed(buffer, runs);
         find.reset();
         texts.markDirty();
-        caret.markDirty();
+        caret.refresh();
     }
     @Override
     public boolean isImeOn() {
@@ -719,9 +716,9 @@ public class EditorModelImpl implements EditorModel {
         screen.setSize(width, height);
         texts.setPageSize(screen.pageLineSize());
         texts.markDirty();
-        caret.markDirty();
+        caret.refresh();
         if (texts instanceof WrapScreenText wrap) {
-            wrap.setWrapWidth(screen.textArea().w());
+            wrap.setWrapWidth(screen.textArea().width());
         }
         screen.initScroll(texts.headlinesIndex(), totalLines());
     }
@@ -729,14 +726,14 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void toggleWrap() {
         if (texts instanceof PlainScreenText linear)  {
-            texts = linear.asWrapped(screen.textArea().w());
+            texts = linear.asWrapped(screen.textArea().width());
             screen.sethScrollEnabled(false);
-            caret.markDirty();
+            caret.refresh();
         } else if (texts instanceof WrapScreenText wrap) {
             texts = wrap.asPlain();
             screen.sethScrollEnabled(true);
             screen.setMaxWidth(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
-            caret.markDirty();
+            caret.refresh();
         }
         screen.initScroll(texts.headlinesIndex(), totalLines());
     }
@@ -761,11 +758,11 @@ public class EditorModelImpl implements EditorModel {
                         var point = new ScreenPoint(row, run.chOffset() + (run.right() ? run.length() : 0));
                         apply(point);
                         texts.markDirty();
-                        caret.markDirty();
+                        caret.refresh();
                     }
                     case FoundReset reset -> {
                         texts.markDirty();
-                        caret.markDirty();
+                        caret.refresh();
                     }
                     default -> {}
                 }
@@ -787,7 +784,7 @@ public class EditorModelImpl implements EditorModel {
         caret.at(point.offset(), true);
         find.reset();
         texts.markDirty();
-        caret.markDirty();
+        caret.refresh();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
     }
 
@@ -795,7 +792,7 @@ public class EditorModelImpl implements EditorModel {
         boolean scrolled = texts.scrollAtScreen(caret.row(), caret.offset());
         if (!scrolled) return;
         texts.markDirty();
-        caret.markDirty();
+        caret.refresh();
         screen.vScrolled(texts.headlinesIndex());
     }
 
@@ -819,7 +816,7 @@ public class EditorModelImpl implements EditorModel {
                 selection.clear();
                 caret.at(point.offset(), true);
                 texts.markDirty();
-                caret.markDirty();
+                caret.refresh();
             }
         }
     }

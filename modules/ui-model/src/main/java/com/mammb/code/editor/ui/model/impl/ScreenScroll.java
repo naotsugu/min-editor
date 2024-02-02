@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.javafx.layout.FxFonts;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.ui.model.Rect;
+import com.mammb.code.editor.ui.model.RectBox;
 import com.mammb.code.editor.ui.model.ScrollBar;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.text.Font;
@@ -177,7 +178,7 @@ public class ScreenScroll {
     }
 
     public Rect textArea() {
-        return new Rect(gutter.width(), 0, width - gutter.width(), height);
+        return new RectBox(gutter.width(), 0, width - gutter.width(), height);
     }
 
     static int screenRowSize(double height, Context context) {

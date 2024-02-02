@@ -55,7 +55,7 @@ public class Caret2 implements CaretMulti {
     }
 
     @Override
-    public void markDirty() {
+    public void refresh() {
         main.refresh();
         moons.forEach(CaretLine::refresh);
     }
@@ -132,18 +132,18 @@ public class Caret2 implements CaretMulti {
     }
 
     @Override
-    public double y2() {
+    public double bottom() {
         return main.getBar().bottom();
     }
 
     @Override
     public double height() {
-        return main.getBar().h();
+        return main.getBar().height();
     }
 
     @Override
     public double width() {
-        return main.getBar().w();
+        return main.getBar().width();
     }
 
     @Override
