@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.LayoutLine;
+import com.mammb.code.editor.ui.model.SelectionDraw;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 import java.util.List;
@@ -165,7 +166,8 @@ public class Caret2 implements CaretMulti {
         moons.clear();
     }
 
-    CaretSelections caretSelections() {
+    @Override
+    public SelectionDraw selectionDraw() {
         return CaretSelections.of(moons);
     }
 

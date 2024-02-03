@@ -29,10 +29,7 @@ public interface Textual extends OffsetPointer {
      */
     String text();
 
-    /**
-     * Get the offset point.
-     * @return the offset point.
-     */
+    @Override
     OffsetPoint offsetPoint();
 
     /**

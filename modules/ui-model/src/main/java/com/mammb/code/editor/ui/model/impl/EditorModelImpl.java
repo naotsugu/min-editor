@@ -618,9 +618,7 @@ public class EditorModelImpl implements EditorModel {
     public void selectOn() {
         if (!selection.started()) {
             selection.start(caret.offsetPoint());
-            if (caret instanceof Caret2 c) {
-                selectionDraw = c.caretSelections();
-            }
+            selectionDraw = caret.selectionDraw();
         }
     }
     @Override
