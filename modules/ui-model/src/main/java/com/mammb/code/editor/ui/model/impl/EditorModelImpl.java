@@ -84,8 +84,8 @@ public class EditorModelImpl implements EditorModel {
     private ScreenText texts;
     /** The find. */
     private Find find;
-
-    private SelectionDraw selectionDraw = SelectionDraw.EMPTY;
+    /** The caret selection. */
+    private SelectionDraw caretSelection = SelectionDraw.EMPTY;
 
 
     /**
@@ -239,7 +239,9 @@ public class EditorModelImpl implements EditorModel {
 
         if (selection.started()) {
             selection.draw(gc, run, top, screen.textLeft());
-            selectionDraw.draw(gc, run, top, screen.textLeft());
+        }
+        if (caretSelection != SelectionDraw.EMPTY) {
+            caretSelection.draw(gc, run, top, screen.textLeft());
         }
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
@@ -616,25 +618,18 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="select behavior">
     @Override
     public void selectOn() {
-        if (!selection.started()) {
-            selection.start(caret.offsetPoint());
-            selectionDraw = caret.selectionDraw();
+        if (caretSelection == SelectionDraw.EMPTY) {
+            caretSelection = caret.selectionDraw();
         }
     }
     @Override
     public void selectOff() {
         selection.clear();
-        selectionDraw = SelectionDraw.EMPTY;
-    }
-    @Override
-    public void selectTo() {
-        if (selection.started()) {
-            selection.to(caret.offsetPoint());
-        }
+        caretSelection = SelectionDraw.EMPTY;
     }
     @Override
     public void selectAll() {
-        selectionDraw = SelectionDraw.EMPTY;
+        selectOff();
         selection.selectAll(buffer.metrics());
     }
     // </editor-fold>

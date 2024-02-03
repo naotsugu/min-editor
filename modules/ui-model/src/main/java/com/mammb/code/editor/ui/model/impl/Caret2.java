@@ -168,7 +168,10 @@ public class Caret2 implements CaretMulti {
 
     @Override
     public SelectionDraw selectionDraw() {
-        return CaretSelections.of(moons);
+        List<CaretLine> list = new ArrayList<>();
+        list.add(main);
+        list.addAll(moons);
+        return CaretSelections.of(list);
     }
 
 }

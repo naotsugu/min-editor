@@ -137,7 +137,6 @@ public interface EditorModel extends EditorDraw {
 
     void selectOn();
     void selectOff();
-    void selectTo();
     void selectAll();
 
     // -- clipboard behavior ---------------------------------------------------

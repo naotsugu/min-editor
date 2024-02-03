@@ -535,7 +535,6 @@ public class EditorPane extends StackPane {
                 model.selectOff();
             }
             edit.run();
-            model.selectTo();
         });
     }
 
