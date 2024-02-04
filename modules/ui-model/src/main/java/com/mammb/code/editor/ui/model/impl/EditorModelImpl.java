@@ -240,9 +240,7 @@ public class EditorModelImpl implements EditorModel {
         if (selection.started()) {
             selection.draw(gc, run, top, screen.textLeft());
         }
-        if (caretSelection != SelectionDraw.EMPTY) {
-            caretSelection.draw(gc, run, top, screen.textLeft());
-        }
+        caretSelection.draw(gc, run, top, screen.textLeft());
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
         if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
