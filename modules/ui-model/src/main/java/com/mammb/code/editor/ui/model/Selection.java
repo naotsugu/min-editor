@@ -17,13 +17,12 @@ package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.buffer.Metrics;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.ui.model.impl.SelectionDrawTrait;
 
 /**
  * Selection.
  * @author Naotsugu Kobayashi
  */
-public interface Selection extends SelectionDrawTrait {
+public interface Selection extends SelectionDraw {
 
     /**
      * Start select.
@@ -95,7 +94,10 @@ public interface Selection extends SelectionDrawTrait {
         return started() ? max().offset() - min().offset() : 0;
     }
 
-    @Override
+    /**
+     * Get the min select offset.
+     * @return the min select offset
+     */
     default OffsetPoint min() {
         if (startOffset() == null && endOffset() == null) {
             return null;
@@ -108,7 +110,10 @@ public interface Selection extends SelectionDrawTrait {
         }
     }
 
-    @Override
+    /**
+     * Get the max select offset.
+     * @return the max select offset
+     */
     default OffsetPoint max() {
         if (startOffset() == null && endOffset() == null) {
             return null;

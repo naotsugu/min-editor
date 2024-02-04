@@ -22,7 +22,7 @@ import com.mammb.code.editor.ui.model.Selection;
  * SelectionImpl.
  * @author Naotsugu Kobayashi
  */
-public class SelectionImpl implements Selection {
+public class SelectionImpl implements Selection, SelectionDrawTrait {
 
     /** The selection open offset. */
     private OffsetPoint start;
@@ -58,6 +58,16 @@ public class SelectionImpl implements Selection {
     @Override
     public boolean isDragging() {
         return dragging;
+    }
+
+    @Override
+    public OffsetPoint min() {
+        return Selection.super.min();
+    }
+
+    @Override
+    public OffsetPoint max() {
+        return Selection.super.max();
     }
 
     @Override
