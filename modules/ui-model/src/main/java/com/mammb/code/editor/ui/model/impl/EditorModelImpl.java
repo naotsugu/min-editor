@@ -107,7 +107,7 @@ public class EditorModelImpl implements EditorModel {
         this.texts = new PlainScreenText(context,
             buffer.createView(screen.pageLineSize()),
             styling.compound(Highlighter.of(find)));
-        this.caret = new Caret2(offset -> texts.layoutLine(offset));
+        this.caret = new CaretMultiImpl(offset -> texts.layoutLine(offset));
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.stateChange = new StateChangeImpl();

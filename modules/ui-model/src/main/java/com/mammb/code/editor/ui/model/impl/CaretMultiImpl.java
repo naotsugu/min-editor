@@ -28,7 +28,7 @@ import java.util.function.Function;
  * Caret implementation.
  * @author Naotsugu Kobayashi
  */
-public class Caret2 implements CaretMulti {
+public class CaretMultiImpl implements CaretMulti {
 
     /** The main caret. */
     private final CaretLine main;
@@ -36,7 +36,7 @@ public class Caret2 implements CaretMulti {
     /** The planets. */
     private final List<CaretLine> moons = new ArrayList<>();
 
-    public Caret2(CaretLine main) {
+    public CaretMultiImpl(CaretLine main) {
         this.main = main;
     }
 
@@ -44,7 +44,7 @@ public class Caret2 implements CaretMulti {
      * Constructor.
      * @param offsetToLine the offset to layout line function
      */
-    public Caret2(Function<Long, LayoutLine> offsetToLine) {
+    public CaretMultiImpl(Function<Long, LayoutLine> offsetToLine) {
         this(CaretLine.of(offsetToLine));
     }
 
