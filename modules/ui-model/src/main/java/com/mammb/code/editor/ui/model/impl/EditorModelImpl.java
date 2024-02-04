@@ -358,7 +358,7 @@ public class EditorModelImpl implements EditorModel {
         OffsetPoint caretPoint = caret.offsetPoint();
         LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
         if (layoutLine == null || layoutLine.containsTailOn(caretPoint.offset())) return;
-        buffer.push(Edit.delete(caretPoint, layoutLine.charStringAt(caretPoint.offset())));
+        buffer.push(Edit.delete(layoutLine.charStringAt(caretPoint.offset()), caretPoint));
         find.reset();
         texts.markDirty();
         caret.refresh();
