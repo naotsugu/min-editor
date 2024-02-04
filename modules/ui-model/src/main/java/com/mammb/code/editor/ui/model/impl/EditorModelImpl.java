@@ -330,7 +330,7 @@ public class EditorModelImpl implements EditorModel {
         }
         vScrollToCaret();
         OffsetPoint caretPoint = caret.offsetPoint();
-        buffer.push(Edit.insert(caretPoint, value));
+        buffer.push(Edit.insert(value, caretPoint));
         find.reset();
         texts.markDirty();
         caret.refresh();
@@ -380,7 +380,7 @@ public class EditorModelImpl implements EditorModel {
         moveCaretLeft();
         LayoutLine layoutLine = texts.layoutLine(caret.offset());
         if (layoutLine == null) return;
-        buffer.push(Edit.backspace(caretPoint, layoutLine.charStringAt(caret.offset())));
+        buffer.push(Edit.backspace(layoutLine.charStringAt(caret.offset()), caretPoint));
         find.reset();
         texts.markDirty();
         caret.refresh();
@@ -433,7 +433,7 @@ public class EditorModelImpl implements EditorModel {
         }
         OffsetPoint point = selection.min();
         String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
-        buffer.push(Edit.replace(point, text, string));
+        buffer.push(Edit.replace(text, string, point));
         Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
         find.reset();
         texts.markDirty();
@@ -772,7 +772,7 @@ public class EditorModelImpl implements EditorModel {
         }
         OffsetPoint point = selection.min();
         String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
-        buffer.push(Edit.delete(point, text));
+        buffer.push(Edit.delete(text, point));
         selection.clear();
         caret.at(point.offset(), true);
         find.reset();
@@ -805,7 +805,7 @@ public class EditorModelImpl implements EditorModel {
             String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
             Clipboards.put(text);
             if (cut && !buffer.readOnly()) {
-                buffer.push(Edit.delete(point, text));
+                buffer.push(Edit.delete(text, point));
                 selection.clear();
                 caret.at(point.offset(), true);
                 texts.markDirty();

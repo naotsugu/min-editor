@@ -106,52 +106,52 @@ public sealed interface Edit extends TextTranslate
 
     /**
      * Create the insertion edit.
-     * @param point the offset point text
      * @param text the insertion text
+     * @param point the offset point text
      * @return the insertion edit
      */
-    static Edit insert(OffsetPoint point, String text) {
+    static Edit insert(String text, OffsetPoint point) {
         return new InsertEdit(point, text, System.currentTimeMillis());
     }
 
     /**
      * Create the flush insertion edit.
-     * @param point the offset point text
      * @param text the insertion text
+     * @param point the offset point text
      * @return the flush insertion edit
      */
-    static Edit insertFlush(OffsetPoint point, String text) {
+    static Edit insertFlush(String text, OffsetPoint point) {
         return new FlushInsertEdit(point, text, System.currentTimeMillis());
     }
 
     /**
      * Create the deletion edit.
-     * @param point the offset point text
      * @param text the deletion text
+     * @param point the offset point text
      * @return the deletion edit
      */
-    static Edit delete(OffsetPoint point, String text) {
+    static Edit delete(String text, OffsetPoint point) {
         return new DeleteEdit(point, text, System.currentTimeMillis());
     }
 
     /**
      * Create the backspace edit.
-     * @param point the offset point text
      * @param text the deletion text
+     * @param point the offset point text
      * @return the backspace edit
      */
-    static Edit backspace(OffsetPoint point, String text) {
+    static Edit backspace(String text, OffsetPoint point) {
         return new BsDeleteEdit(point, text, System.currentTimeMillis());
     }
 
     /**
      * Create the replacement edit.
-     * @param point the offset point text
      * @param beforeText the before text string
      * @param afterTText the after text string
+     * @param point the offset point text
      * @return the replacement edit
      */
-    static Edit replace(OffsetPoint point, String beforeText, String afterTText) {
+    static Edit replace(String beforeText, String afterTText, OffsetPoint point) {
         return new ReplaceEdit(point, beforeText, afterTText, System.currentTimeMillis());
     }
 

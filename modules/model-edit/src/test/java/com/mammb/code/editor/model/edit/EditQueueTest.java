@@ -28,7 +28,7 @@ class EditQueueTest {
 
     @Test void peekAll() {
         var queue = EditQueue.of();
-        queue.push(Edit.insert(OffsetPoint.zero, "abc"));
+        queue.push(Edit.insert("abc", OffsetPoint.zero));
 
         var sb = new StringBuilder();
         queue.peekEach(e -> sb.append(((InsertEdit)e).text()));

@@ -62,7 +62,7 @@ public class ImePalletImpl implements ImePallet {
     @Override
     public void composed(TextEdit buffer, List<ImeRun> runs) {
         this.runs = runs;
-        buffer.push(Edit.insertFlush(offsetPoint, composedText()));
+        buffer.push(Edit.insertFlush(composedText(), offsetPoint));
     }
 
     @Override
