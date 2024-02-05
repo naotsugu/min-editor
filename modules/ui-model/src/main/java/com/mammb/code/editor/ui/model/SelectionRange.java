@@ -66,6 +66,10 @@ public interface SelectionRange {
             ranges = List.of(OffsetPointRange.of(start, end));
         }
 
+        public SelectionRange closeOn(OffsetPoint end) {
+            return () -> List.of(OffsetPointRange.of(start, end));
+        }
+
         @Override
         public List<OffsetPointRange> getRanges() {
             return ranges;

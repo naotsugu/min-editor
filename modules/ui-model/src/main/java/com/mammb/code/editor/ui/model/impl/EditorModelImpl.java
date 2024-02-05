@@ -39,7 +39,6 @@ import com.mammb.code.editor.ui.model.ScreenPoint;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.ScrollBar;
 import com.mammb.code.editor.ui.model.Selection;
-import com.mammb.code.editor.ui.model.SelectionDraw;
 import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.helper.Clipboards;
@@ -84,8 +83,6 @@ public class EditorModelImpl implements EditorModel {
     private ScreenText texts;
     /** The find. */
     private Find find;
-    /** The caret selection. */
-    private SelectionDraw caretSelection = SelectionDraw.EMPTY;
 
 
     /**
@@ -237,10 +234,7 @@ public class EditorModelImpl implements EditorModel {
             gc.fillRect(left, top, run.layout().width(), lineHeight);
         }
 
-        if (selection.started()) {
-            selection.draw(gc, run, top, screen.textLeft());
-        }
-        caretSelection.draw(gc, run, top, screen.textLeft());
+        selection.draw(gc, run, top, screen.textLeft());
 
         if (run.style().font() instanceof Font font) gc.setFont(font);
         if (run.style().color() instanceof Color color) { gc.setFill(color); gc.setStroke(color); }
@@ -387,7 +381,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void undo() {
-        selection.clear();
+        selection.selectOff();
         Edit edit = buffer.undo();
         if (edit.isEmpty()) return;
         find.reset();
@@ -397,7 +391,7 @@ public class EditorModelImpl implements EditorModel {
     }
     @Override
     public void redo() {
-        selection.clear();
+        selection.selectOff();
         Edit edit = buffer.redo();
         if (edit.isEmpty()) return;
         find.reset();
@@ -571,12 +565,11 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="mouse behavior">
     @Override
     public void click(double x, double y, boolean isShortcutDown) {
-        if (selection.isDragging()) {
-            selection.to(caret.offsetPoint());
-            selection.endDragging();
+        if (selection.isOpened()) {
+            selection.closeOn(caret.offsetPoint());
             return;
         }
-        selection.clear();
+        selection.selectOff();
         long offset = texts.at(x - screen.textLeft(), y);
         if (isShortcutDown) {
             caret.add(offset);
@@ -605,30 +598,24 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void dragged(double x, double y) {
         caret.at(texts.at(Math.max(x - screen.textLeft(), 0), y), true);
-        if (selection.isDragging()) {
-            selection.to(caret.offsetPoint());
-        } else {
-            selection.startDragging(caret.offsetPoint());
-        }
+        selection.selectOn(caret.offsetPoint());
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="select behavior">
     @Override
     public void selectOn() {
-        if (caretSelection == SelectionDraw.EMPTY) {
-            caretSelection = caret.selectionDraw();
-        }
+        selection.selectOn(caret);
     }
     @Override
     public void selectOff() {
-        selection.clear();
-        caretSelection = SelectionDraw.EMPTY;
+        selection.selectOff();
     }
     @Override
     public void selectAll() {
-        selectOff();
-        selection.selectAll(buffer.metrics());
+        var metrics = buffer.metrics();
+        selection.selectOn(OffsetPoint.zero,
+            OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
     }
     // </editor-fold>
 
@@ -731,7 +718,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void clear() {
-        selection.clear();
+        selection.selectOff();
         caret.clear();
     }
 
@@ -771,7 +758,7 @@ public class EditorModelImpl implements EditorModel {
         OffsetPoint point = selection.min();
         String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
         buffer.push(Edit.delete(text, point));
-        selection.clear();
+        selection.selectOff();
         caret.at(point.offset(), true);
         find.reset();
         texts.markDirty();
@@ -804,7 +791,7 @@ public class EditorModelImpl implements EditorModel {
             Clipboards.put(text);
             if (cut && !buffer.readOnly()) {
                 buffer.push(Edit.delete(text, point));
-                selection.clear();
+                selection.selectOff();
                 caret.at(point.offset(), true);
                 texts.markDirty();
                 caret.refresh();

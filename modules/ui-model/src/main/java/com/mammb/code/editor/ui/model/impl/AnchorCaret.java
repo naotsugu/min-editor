@@ -13,27 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.model;
+package com.mammb.code.editor.ui.model.impl;
 
-import com.mammb.code.editor.model.layout.TextRun;
-import javafx.scene.canvas.GraphicsContext;
+import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.OffsetPointRange;
 
 /**
- * SelectionDraw.
- * @author Naotsugu Kobayashi
+ * The AnchorCaret.
+ * @param start the selection open offset
+ * @param caretLine the selection close offset caret
  */
-public interface SelectionDraw {
+public record AnchorCaret(OffsetPoint start, CaretLine caretLine) {
 
-    /** The empty draw. */
-    SelectionDraw EMPTY = (gc, run, offsetY, left) -> { };
+    AnchorCaret(CaretLine caretLine) {
+        this((caretLine == null) ? null : caretLine.offsetPoint(), caretLine);
+    }
 
-    /**
-     * Draw the selection.
-     * @param gc the graphics context
-     * @param run the text run
-     * @param offsetY the position y
-     * @param left the left position of run(margin included)
-     */
-    void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
+    OffsetPointRange offsetPointRange() {
+        return OffsetPointRange.of(start, caretLine.offsetPoint());
+    }
 
 }
+

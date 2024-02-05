@@ -15,99 +15,60 @@
  */
 package com.mammb.code.editor.ui.model;
 
-import com.mammb.code.editor.model.buffer.Metrics;
+import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import javafx.scene.canvas.GraphicsContext;
 
 /**
  * Selection.
  * @author Naotsugu Kobayashi
  */
-public interface Selection extends SelectionDraw {
+public interface Selection {
+
+    /**
+     * Select as fixed.
+     * @param start the start point
+     * @param end the end point
+     */
+    void selectOn(OffsetPoint start, OffsetPoint end);
+
+
+    void selectOn(CaretMulti caret);
 
     /**
      * Start select.
-     * @param offset the point of select start
+     * @param point the point of select start
      */
-    void start(OffsetPoint offset);
+    void selectOn(OffsetPoint point);
 
     /**
-     * Move select to.
-     * @param toOffset the point of select to
+     * Close select.
+     * @param point the point of select close
      */
-    void to(OffsetPoint toOffset);
+    void closeOn(OffsetPoint point);
 
-    /**
-     * Start dragging.
-     * @param offset the point of dragging select start
-     */
-    void startDragging(OffsetPoint offset);
-
-    /**
-     * End dragging.
-     */
-    void endDragging();
+    boolean isOpened();
 
     /**
      * Clear selection.
      */
-    void clear();
-
-
-    /**
-     * Get the select start offset.
-     * @return the select start offset
-     */
-    OffsetPoint startOffset();
-
-    /**
-     * Get the select end offset.
-     * @return the select end offset
-     */
-    OffsetPoint endOffset();
-
-    /**
-     * Gets whether the select has been started or not.
-     * @return {@code true} if the select has been started
-     */
-    boolean started();
-
-    /**
-     * Gets whether the dragging select has been started or not.
-     * @return {@code true} if the dragging select has been started
-     */
-    boolean isDragging();
-
-    /**
-     * Select all.
-     * @param metrics the metrics
-     */
-    default void selectAll(Metrics metrics) {
-        start(OffsetPoint.zero);
-        to(OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
-    }
+    void selectOff();
 
     /**
      * Get the selected char length.
      * @return the selected char length
      */
-    default long length() {
-        return started() ? max().offset() - min().offset() : 0;
-    }
+    long length();
+
+    void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
 
     /**
      * Get the min select offset.
      * @return the min select offset
      */
     default OffsetPoint min() {
-        if (startOffset() == null && endOffset() == null) {
-            return null;
-        } else if (startOffset() == null) {
-            return endOffset();
-        } else if (endOffset() == null) {
-            return startOffset();
-        } else {
-            return (startOffset().offset() <= endOffset().offset()) ? startOffset() : endOffset();
-        }
+        // TODO
+        return OffsetPoint.zero;
     }
 
     /**
@@ -115,15 +76,17 @@ public interface Selection extends SelectionDraw {
      * @return the max select offset
      */
     default OffsetPoint max() {
-        if (startOffset() == null && endOffset() == null) {
-            return null;
-        } else if (startOffset() == null) {
-            return endOffset();
-        } else if (endOffset() == null) {
-            return startOffset();
-        } else {
-            return (startOffset().offset() <= endOffset().offset()) ? endOffset() : startOffset();
-        }
+        // TODO
+        return OffsetPoint.zero;
+    }
+
+    /**
+     * Get the select start offset.
+     * @return the select start offset
+     */
+    default OffsetPoint startOffset() {
+        // TODO
+        return OffsetPoint.zero;
     }
 
     /**
@@ -132,10 +95,8 @@ public interface Selection extends SelectionDraw {
      * @return {@code true} if this selection contains the specified rows
      */
     default boolean contains(int row) {
-        if (length() <= 0) {
-            return false;
-        }
-        return min().row() <= row && row <= max().row();
+        // TODO
+        return false;
     }
 
 }

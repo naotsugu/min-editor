@@ -96,6 +96,10 @@ public interface Caret extends OffsetPointer, Rect {
      */
     LayoutLine layoutLine();
 
-    SelectionDraw selectionDraw();
+    /**
+     * Get the selection range supplier.
+     * @return the selection range supplier
+     */
+    SelectionRange selectionRange();
 
 }

@@ -15,80 +15,90 @@
  */
 package com.mammb.code.editor.ui.model.impl;
 
+import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.OffsetPointRange;
+import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.Selection;
+import com.mammb.code.editor.ui.model.SelectionRange;
+import com.mammb.code.editor.ui.model.draw.Draws;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import java.util.Collections;
 
 /**
  * SelectionImpl.
  * @author Naotsugu Kobayashi
  */
-public class SelectionImpl implements Selection, SelectionDrawTrait {
+public class SelectionImpl implements Selection {
 
-    /** The selection open offset. */
-    private OffsetPoint start;
+    /** The selection mode. */
+    enum Mode { EMPTY, CARET, FIXED, OPENED }
 
-    /** The selection close offset. */
-    private OffsetPoint end;
+    /** The color. */
+    private static final Color color = new Color(0.6784314F, 0.84705883F, 0.9019608F, 0.3);
 
-    /** The selection dragging. */
-    private boolean dragging = false;
+    /** The selection range supplier. */
+    private SelectionRange selectionRange = Collections::emptyList;
+
+    /** The selection mode. */
+    private Mode mode = Mode.EMPTY;
+
 
     @Override
-    public void start(OffsetPoint offset) {
-        start = end = offset;
-        dragging = false;
+    public void selectOn(OffsetPoint start, OffsetPoint end) {
+        selectionRange = SelectionRange.of(start, end);
+        mode = Mode.FIXED;
     }
 
     @Override
-    public void to(OffsetPoint toOffset) {
-        end = toOffset;
+    public void selectOn(CaretMulti caret) {
+        if (mode != Mode.CARET) {
+            selectionRange = caret.selectionRange();
+            mode = Mode.CARET;
+        }
     }
 
     @Override
-    public void startDragging(OffsetPoint offset) {
-        start = end = offset;
-        dragging = true;
+    public void selectOn(OffsetPoint point) {
+        if (isOpened()) {
+            ((SelectionRange.OpenSelectionRange) selectionRange).to(point);
+        } else {
+            selectionRange = SelectionRange.openOf(point);
+            mode = Mode.OPENED;
+        }
     }
 
     @Override
-    public void endDragging() {
-        dragging = false;
+    public void closeOn(OffsetPoint point) {
+        if (isOpened()) {
+            selectionRange = ((SelectionRange.OpenSelectionRange) selectionRange).closeOn(point);
+            mode = Mode.FIXED;
+        }
     }
 
     @Override
-    public boolean isDragging() {
-        return dragging;
+    public void selectOff() {
+        selectionRange = Collections::emptyList;
+        mode = Mode.EMPTY;
     }
 
     @Override
-    public OffsetPoint min() {
-        return Selection.super.min();
+    public boolean isOpened() {
+        return mode == Mode.OPENED;
     }
 
     @Override
-    public OffsetPoint max() {
-        return Selection.super.max();
+    public long length() {
+        return selectionRange.getRanges().stream().mapToLong(OffsetPointRange::length).sum();
     }
 
     @Override
-    public void clear() {
-        start = end = null;
-        dragging = false;
-    }
-
-    @Override
-    public OffsetPoint startOffset() {
-        return start;
-    }
-
-    @Override
-    public OffsetPoint endOffset() {
-        return end;
-    }
-
-    @Override
-    public boolean started() {
-        return start != null;
+    public void draw(GraphicsContext gc, TextRun run, double offsetY, double left) {
+        if (mode == Mode.EMPTY) {
+            return;
+        }
+        selectionRange.getRanges().forEach(r -> Draws.selection(gc, run, offsetY, left, r, color));
     }
 
 }
