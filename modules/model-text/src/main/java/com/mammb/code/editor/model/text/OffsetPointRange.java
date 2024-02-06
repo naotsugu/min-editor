@@ -90,6 +90,20 @@ public interface OffsetPointRange {
     }
 
     /**
+     * Gets whether this selection contains the specified rows.
+     * @param row the specified rows
+     * @return {@code true} if this selection contains the specified rows
+     */
+    default boolean containsRow(int row) {
+        OffsetPoint min = minOffsetPoint();
+        OffsetPoint max = maxOffsetPoint();
+        if (min != null && max != null && min.compareTo(max) != 0) {
+            return min.row() <= row && row <= max.row();
+        }
+        return false;
+    }
+
+    /**
      * Create a new OffsetPointRange.
      * @param startOffsetPoint the start offset point
      * @param endOffsetPoint the end offset point
