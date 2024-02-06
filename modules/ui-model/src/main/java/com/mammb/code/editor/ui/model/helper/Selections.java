@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.model.helper;
 
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.OffsetPointRange;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.ScreenText;
 import com.mammb.code.editor.ui.model.Selection;
@@ -82,20 +83,21 @@ public class Selections {
      * Select the current row
      * @param caret the caret
      * @param selection the selection
+     * @param range the selection range
      * @param texts the texts
      */
-    public static void selectCurrentRow(Caret caret, Selection selection, ScreenText texts) {
-        if (selection.length() == 0 || selection.min().row() == selection.max().row()) {
+    public static void selectCurrentRow(Caret caret, Selection selection, OffsetPointRange range, ScreenText texts) {
+        if (range.length() == 0 || range.minOffsetPoint().row() == range.maxOffsetPoint().row()) {
             // if not selected or within a row selected, select current row
             Selections.select(rowPointRange(caret.offset(), texts), caret, selection);
         } else {
             // if selected, reselect all rows in the selection
-            OffsetPoint start = rowPointRange(selection.min().offset(), texts)[0];
-            OffsetPoint end   = rowPointRange(selection.max().offset() - 1, texts)[1];
-            OffsetPoint[] range = (selection.startOffset() == selection.min())
+            OffsetPoint start = rowPointRange(range.minOffsetPoint().offset(), texts)[0];
+            OffsetPoint end   = rowPointRange(range.maxOffsetPoint().offset() - 1, texts)[1];
+            OffsetPoint[] r = (range.startOffsetPoint() == range.minOffsetPoint())
                 ? new OffsetPoint[] { start, end }
                 : new OffsetPoint[] { end, start };
-            Selections.select(range, caret, selection);
+            Selections.select(r, caret, selection);
         }
     }
 

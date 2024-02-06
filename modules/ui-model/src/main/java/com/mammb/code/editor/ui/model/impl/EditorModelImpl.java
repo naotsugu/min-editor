@@ -24,6 +24,7 @@ import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.OffsetPointRange;
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.Editing;
@@ -243,7 +244,8 @@ public class EditorModelImpl implements EditorModel {
 
         boolean onCaret = !text.isEmpty() && (
             run.textLine().offsetPoint().row() == caret.row()) ||
-            selection.contains(run.textLine().offsetPoint().row());
+            (selection.hasSelection() && selection.getRanges().stream()
+                .anyMatch(r -> r.containsRow(run.textLine().offsetPoint().row())));
         if (onCaret) {
             Draws.specialCharacter(gc, run, top, lineHeight, screen.textLeft());
         }
@@ -302,8 +304,11 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public boolean peekSelection(Predicate<String> predicate) {
-        return (selection.length() > 0) &&
-            predicate.test(buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE)));
+        if (selection.hasSelection()) {
+            OffsetPointRange range = selection.getRanges().get(0);
+            return predicate.test(buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE)));
+        }
+        return false;
     }
 
     // <editor-fold defaultstate="collapsed" desc="edit behavior">
@@ -419,12 +424,13 @@ public class EditorModelImpl implements EditorModel {
             selectionDelete();
             return;
         }
-        if (selection.length() <= 0) {
+        if (!selection.hasSelection()) {
             input(string);
             return;
         }
-        OffsetPoint point = selection.min();
-        String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
+        OffsetPointRange range = selection.getRanges().get(0);
+        OffsetPoint point = range.minOffsetPoint();
+        String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
         buffer.push(Edit.replace(text, string, point));
         Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
         find.reset();
@@ -438,8 +444,9 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.readOnly()) {
             return;
         }
-        Selections.selectCurrentRow(caret, selection, texts);
-        String text = buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE));
+        OffsetPointRange range = selection.getRanges().get(0);
+        Selections.selectCurrentRow(caret, selection, range, texts);
+        String text = buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
             .collect(Collectors.joining());
@@ -451,8 +458,9 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.readOnly()) {
             return;
         }
-        Selections.selectCurrentRow(caret, selection, texts);
-        String text = buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE));
+        OffsetPointRange range = selection.getRanges().get(0);
+        Selections.selectCurrentRow(caret, selection, range, texts);
+        String text = buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
             .collect(Collectors.joining());
@@ -752,11 +760,12 @@ public class EditorModelImpl implements EditorModel {
     // -- private -------------------------------------------------------------
 
     private void selectionDelete() {
-        if (selection.length() == 0) {
+        if (!selection.hasSelection()) {
             return;
         }
-        OffsetPoint point = selection.min();
-        String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
+        OffsetPointRange range = selection.getRanges().get(0);
+        OffsetPoint point = range.minOffsetPoint();
+        String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
         buffer.push(Edit.delete(text, point));
         selection.selectOff();
         caret.at(point.offset(), true);
@@ -785,9 +794,10 @@ public class EditorModelImpl implements EditorModel {
      * @param cut need cut?
      */
     private void copyToClipboard(boolean cut) {
-        if (selection.length() > 0) {
-            OffsetPoint point = selection.min();
-            String text = buffer.subText(point, (int) Long.min(selection.length(), Integer.MAX_VALUE));
+        if (selection.hasSelection()) {
+            OffsetPointRange range = selection.getRanges().get(0);
+            OffsetPoint point = range.minOffsetPoint();
+            String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
             Clipboards.put(text);
             if (cut && !buffer.readOnly()) {
                 buffer.push(Edit.delete(text, point));
@@ -806,8 +816,11 @@ public class EditorModelImpl implements EditorModel {
     private EditorQuery editorQuery() {
         return new EditorQuery() {
             @Override public String selectedText() {
-                return (selection.length() <= 0) ? ""
-                    : buffer.subText(selection.min(), (int) Long.min(selection.length(), Integer.MAX_VALUE));
+                if (!selection.hasSelection()) {
+                    return "";
+                }
+                OffsetPointRange range = selection.getRanges().get(0);
+                return buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
             }
             @Override public String currentLine() {
                 return texts.lineAt(caret.offset()).text();

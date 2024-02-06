@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.OffsetPointRange;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -25,12 +26,13 @@ import java.util.List;
  */
 public interface SelectionRange {
 
+    SelectionRange empty = Collections::emptyList;
+
     /**
      * Get the OffsetPointRange list.
      * @return the OffsetPointRange list
      */
     List<OffsetPointRange> getRanges();
-
 
     /**
      * Create the fix point range.
@@ -39,7 +41,8 @@ public interface SelectionRange {
      * @return the fix point range
      */
     static SelectionRange of(OffsetPoint start, OffsetPoint end) {
-        return () -> List.of(OffsetPointRange.of(start, end));
+        var ranges = List.of(OffsetPointRange.of(start, end));
+        return () -> ranges;
     }
 
 
@@ -64,10 +67,6 @@ public interface SelectionRange {
 
         public void to(OffsetPoint end) {
             ranges = List.of(OffsetPointRange.of(start, end));
-        }
-
-        public SelectionRange closeOn(OffsetPoint end) {
-            return () -> List.of(OffsetPointRange.of(start, end));
         }
 
         @Override

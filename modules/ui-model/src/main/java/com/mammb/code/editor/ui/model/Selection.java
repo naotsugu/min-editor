@@ -18,12 +18,14 @@ package com.mammb.code.editor.ui.model;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import javafx.scene.canvas.GraphicsContext;
+import com.mammb.code.editor.model.text.OffsetPointRange;
+import java.util.List;
 
 /**
  * Selection.
  * @author Naotsugu Kobayashi
  */
-public interface Selection {
+public interface Selection extends SelectionRange {
 
     /**
      * Select as fixed.
@@ -54,49 +56,24 @@ public interface Selection {
      */
     void selectOff();
 
+    boolean hasSelection();
+
     /**
      * Get the selected char length.
      * @return the selected char length
      */
     long length();
 
+    /**
+     * Draw selection
+     * @param gc
+     * @param run
+     * @param offsetY
+     * @param left
+     */
     void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
 
-    /**
-     * Get the min select offset.
-     * @return the min select offset
-     */
-    default OffsetPoint min() {
-        // TODO
-        return OffsetPoint.zero;
-    }
-
-    /**
-     * Get the max select offset.
-     * @return the max select offset
-     */
-    default OffsetPoint max() {
-        // TODO
-        return OffsetPoint.zero;
-    }
-
-    /**
-     * Get the select start offset.
-     * @return the select start offset
-     */
-    default OffsetPoint startOffset() {
-        // TODO
-        return OffsetPoint.zero;
-    }
-
-    /**
-     * Gets whether this selection contains the specified rows.
-     * @param row the specified rows
-     * @return {@code true} if this selection contains the specified rows
-     */
-    default boolean contains(int row) {
-        // TODO
-        return false;
-    }
+    @Override
+    List<OffsetPointRange> getRanges();
 
 }

@@ -106,7 +106,7 @@ public class StateChangeImpl implements StateChange {
             prevSelectionRange = null;
             selectionHandlers.forEach(h -> h.accept(new Range(OffsetPoint.zero, OffsetPoint.zero)));
         } else {
-            var range = new Range(selection.min(), selection.max());
+            var range = selection.getRanges().stream().findFirst().map(r -> new Range(r.minOffsetPoint(), r.maxOffsetPoint())).orElse(null);
             if (!range.equals(prevSelectionRange)) {
                 selectionHandlers.forEach(h -> h.accept(range));
                 prevSelectionRange = range;

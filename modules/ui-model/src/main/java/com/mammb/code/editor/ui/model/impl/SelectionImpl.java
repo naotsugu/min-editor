@@ -24,7 +24,7 @@ import com.mammb.code.editor.ui.model.SelectionRange;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import java.util.Collections;
+import java.util.List;
 
 /**
  * SelectionImpl.
@@ -39,7 +39,7 @@ public class SelectionImpl implements Selection {
     private static final Color color = new Color(0.6784314F, 0.84705883F, 0.9019608F, 0.3);
 
     /** The selection range supplier. */
-    private SelectionRange selectionRange = Collections::emptyList;
+    private SelectionRange selectionRange = SelectionRange.empty;
 
     /** The selection mode. */
     private Mode mode = Mode.EMPTY;
@@ -72,15 +72,23 @@ public class SelectionImpl implements Selection {
     @Override
     public void closeOn(OffsetPoint point) {
         if (isOpened()) {
-            selectionRange = ((SelectionRange.OpenSelectionRange) selectionRange).closeOn(point);
+            ((SelectionRange.OpenSelectionRange) selectionRange).to(point);
             mode = Mode.FIXED;
         }
     }
 
     @Override
     public void selectOff() {
-        selectionRange = Collections::emptyList;
+        selectionRange = SelectionRange.empty;
         mode = Mode.EMPTY;
+    }
+
+    @Override
+    public boolean hasSelection() {
+        if (mode == Mode.EMPTY) {
+            return false;
+        }
+        return length() > 0;
     }
 
     @Override
@@ -90,15 +98,19 @@ public class SelectionImpl implements Selection {
 
     @Override
     public long length() {
-        return selectionRange.getRanges().stream().mapToLong(OffsetPointRange::length).sum();
+        return getRanges().stream().mapToLong(OffsetPointRange::length).sum();
     }
 
     @Override
     public void draw(GraphicsContext gc, TextRun run, double offsetY, double left) {
-        if (mode == Mode.EMPTY) {
-            return;
+        if (mode != Mode.EMPTY) {
+            getRanges().forEach(r -> Draws.selection(gc, run, offsetY, left, r, color));
         }
-        selectionRange.getRanges().forEach(r -> Draws.selection(gc, run, offsetY, left, r, color));
+    }
+
+    @Override
+    public List<OffsetPointRange> getRanges() {
+        return selectionRange.getRanges();
     }
 
 }
