@@ -15,15 +15,16 @@
  */
 package com.mammb.code.editor.model.edit;
 
-import com.mammb.code.editor.model.edit.impl.FlushInsertEdit;
-import com.mammb.code.editor.model.edit.impl.InsertEdit;
-import com.mammb.code.editor.model.edit.impl.ReplaceEdit;
 import com.mammb.code.editor.model.edit.impl.BsDeleteEdit;
 import com.mammb.code.editor.model.edit.impl.BsInsertEdit;
 import com.mammb.code.editor.model.edit.impl.CompoundEdit;
 import com.mammb.code.editor.model.edit.impl.DeleteEdit;
 import com.mammb.code.editor.model.edit.impl.EmptyEdit;
+import com.mammb.code.editor.model.edit.impl.FlushInsertEdit;
+import com.mammb.code.editor.model.edit.impl.InsertEdit;
+import com.mammb.code.editor.model.edit.impl.ReplaceEdit;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import java.util.List;
 
 /**
  * Edit.
@@ -112,6 +113,20 @@ public sealed interface Edit extends TextTranslate
      */
     static Edit insert(String text, OffsetPoint point) {
         return new InsertEdit(point, text, System.currentTimeMillis());
+    }
+
+    /**
+     * Create the insertion edit.
+     * @param text the insertion text
+     * @param points the offset point text
+     * @return the insertion edit
+     */
+    static Edit insert(String text, List<OffsetPoint> points) {
+        long currentTimeMillis = System.currentTimeMillis();
+        return new CompoundEdit(
+            points.stream().sorted().map(p -> new InsertEdit(p, text, currentTimeMillis)).toList(),
+            currentTimeMillis
+        );
     }
 
     /**

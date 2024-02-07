@@ -325,6 +325,7 @@ public class EditorModelImpl implements EditorModel {
             selectionReplace(value);
             return;
         }
+
         vScrollToCaret();
         OffsetPoint caretPoint = caret.offsetPoint();
         buffer.push(Edit.insert(value, caretPoint));

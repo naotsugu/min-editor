@@ -21,7 +21,9 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * CompoundEdit.
@@ -30,7 +32,7 @@ import java.util.List;
  * @author Naotsugu Kobayashi
  */
 public record CompoundEdit(
-        List<Edit> edits,
+        List<? extends Edit> edits,
         long occurredOn) implements Edit {
 
 
@@ -46,7 +48,9 @@ public record CompoundEdit(
 
     @Override
     public Edit flip() {
-        return new CompoundEdit(edits.stream().map(Edit::flip).toList(), occurredOn);
+        var list = edits.stream().map(Edit::flip).collect(Collectors.toList());
+        Collections.reverse(list);
+        return new CompoundEdit(list, occurredOn);
     }
 
     @Override
