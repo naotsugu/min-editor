@@ -321,7 +321,7 @@ public class EditorModelImpl implements EditorModel {
 
         String value = buffer.metrics().lineEnding().unify(input);
 
-        if (selection.length() > 0) {
+        if (selection.hasSelection()) {
             selectionReplace(value);
             return;
         }
@@ -348,7 +348,7 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.readOnly()) {
             return;
         }
-        if (selection.length() > 0) {
+        if (selection.hasSelection()) {
             selectionDelete();
             return;
         }
