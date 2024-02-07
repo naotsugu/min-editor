@@ -126,11 +126,11 @@ public sealed interface Edit extends TextTranslate
         if (points.size() == 1) {
             return insert(text, points.get(0));
         }
-        long currentTimeMillis = System.currentTimeMillis();
+        long time = System.currentTimeMillis();
         return new CompoundEdit(
             points.stream().sorted(Comparator.reverseOrder())
-                .map(p -> new InsertEdit(p, text, currentTimeMillis)).toList(),
-            currentTimeMillis
+                .map(p -> new InsertEdit(p, text, time)).toList(),
+            time
         );
     }
 
@@ -155,6 +155,24 @@ public sealed interface Edit extends TextTranslate
     }
 
     /**
+     * Create the deletion edit.
+     * @param text the deletion text
+     * @param points the offset point text
+     * @return the deletion edit
+     */
+    static Edit delete(String text, List<OffsetPoint> points) {
+        if (points.size() == 1) {
+            return delete(text, points.get(0));
+        }
+        long time = System.currentTimeMillis();
+        return new CompoundEdit(
+            points.stream().sorted(Comparator.reverseOrder())
+                .map(p -> new DeleteEdit(p, text, time)).toList(),
+            time
+        );
+    }
+
+    /**
      * Create the backspace edit.
      * @param text the deletion text
      * @param point the offset point text
@@ -162,6 +180,24 @@ public sealed interface Edit extends TextTranslate
      */
     static Edit backspace(String text, OffsetPoint point) {
         return new BsDeleteEdit(point, text, System.currentTimeMillis());
+    }
+
+    /**
+     * Create the backspace edit.
+     * @param text the deletion text
+     * @param points the offset point text
+     * @return the backspace edit
+     */
+    static Edit backspace(String text, List<OffsetPoint> points) {
+        if (points.size() == 1) {
+            return backspace(text, points.get(0));
+        }
+        long time = System.currentTimeMillis();
+        return new CompoundEdit(
+            points.stream().sorted(Comparator.reverseOrder())
+                .map(p -> new BsDeleteEdit(p, text, time)).toList(),
+            time
+        );
     }
 
     /**
@@ -173,6 +209,25 @@ public sealed interface Edit extends TextTranslate
      */
     static Edit replace(String beforeText, String afterTText, OffsetPoint point) {
         return new ReplaceEdit(point, beforeText, afterTText, System.currentTimeMillis());
+    }
+
+    /**
+     * Create the replacement edit.
+     * @param beforeText the before text string
+     * @param afterTText the after text string
+     * @param points the offset point text
+     * @return the replacement edit
+     */
+    static Edit replace(String beforeText, String afterTText, List<OffsetPoint> points) {
+        if (points.size() == 1) {
+            return replace(beforeText, afterTText, points.get(0));
+        }
+        long time = System.currentTimeMillis();
+        return new CompoundEdit(
+            points.stream().sorted(Comparator.reverseOrder())
+                .map(p -> new ReplaceEdit(p, beforeText, afterTText, time)).toList(),
+            time
+        );
     }
 
 }
