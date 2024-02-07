@@ -26,7 +26,7 @@ import java.util.function.Function;
  * CaretLine.
  * @author Naotsugu Kobayashi
  */
-public class CaretLine implements OffsetPointer {
+public class CaretLine implements OffsetPointer, Comparable<CaretLine> {
 
     /** The offset to layout line function. */
     private final Function<Long, LayoutLine> offsetToLine;
@@ -198,9 +198,16 @@ public class CaretLine implements OffsetPointer {
 
     @Override
     public OffsetPoint offsetPoint() {
+        if (bar.offset() == 0) {
+            return OffsetPoint.zero;
+        }
         return (line == null) ? null : line.offsetPoint(bar.offset());
     }
 
+    @Override
+    public int compareTo(CaretLine o) {
+        return Long.compare(bar.offset(), o.bar.offset());
+    }
 
     LayoutLine getLine() {
         return line;
@@ -209,4 +216,5 @@ public class CaretLine implements OffsetPointer {
     CaretBar getBar() {
         return bar;
     }
+
 }

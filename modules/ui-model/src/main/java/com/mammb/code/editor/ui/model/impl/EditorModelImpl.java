@@ -327,8 +327,8 @@ public class EditorModelImpl implements EditorModel {
         }
 
         vScrollToCaret();
-        OffsetPoint caretPoint = caret.offsetPoint();
-        buffer.push(Edit.insert(value, caretPoint));
+        List<OffsetPoint> points = caret.offsetPoints();
+        buffer.push(Edit.insert(value, points));
         find.reset();
         texts.markDirty();
         caret.refresh();
@@ -338,8 +338,12 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.metrics().lineEnding().isCrLf()) {
             count -= (int) value.chars().filter(c -> c == '\r').count();
         }
-        for (int i = 0; i < count; i++) {
-            moveCaretRight();
+        if (points.size() > 1) {
+            caret.stepwiseRight(count);
+        } else {
+            for (int i = 0; i < count; i++) {
+                moveCaretRight();
+            }
         }
     }
 

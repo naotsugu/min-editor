@@ -15,6 +15,9 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import com.mammb.code.editor.model.text.OffsetPoint;
+import java.util.List;
+
 /**
  * The CaretMulti.
  * @author Naotsugu Kobayashi
@@ -24,5 +27,9 @@ public interface CaretMulti extends Caret {
     void add(long charOffset);
 
     void clear();
+
+    List<OffsetPoint> offsetPoints();
+
+    void stepwiseRight(int n);
 
 }

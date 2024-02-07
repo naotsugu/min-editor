@@ -21,6 +21,7 @@ import com.mammb.code.editor.ui.model.LayoutLine;
 import com.mammb.code.editor.ui.model.SelectionRange;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
@@ -104,11 +105,7 @@ public class CaretMultiImpl implements CaretMulti {
 
     @Override
     public OffsetPoint offsetPoint() {
-        if (offset() == 0) {
-            return OffsetPoint.zero;
-        }
-        LayoutLine line = layoutLine();
-        return (line == null) ? null : line.offsetPoint(offset());
+        return main.offsetPoint();
     }
 
     @Override
@@ -166,6 +163,25 @@ public class CaretMultiImpl implements CaretMulti {
         moons.clear();
     }
 
+    @Override
+    public List<OffsetPoint> offsetPoints() {
+        List<OffsetPoint> list = new ArrayList<>();
+        list.add(offsetPoint());
+        list.addAll(moons.stream().map(CaretLine::offsetPoint).toList());
+        return list;
+    }
+
+    @Override
+    public void stepwiseRight(int n) {
+        List<CaretLine> list = sortedCaretLine();
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = i; j < list.size(); j++) {
+                for (int k = 0; k < n; k++) {
+                    list.get(j).right();
+                }
+            }
+        }
+    }
 
     @Override
     public SelectionRange selectionRange() {
@@ -173,6 +189,14 @@ public class CaretMultiImpl implements CaretMulti {
         list.add(new AnchorCaret(main));
         list.addAll(moons.stream().map(AnchorCaret::new).toList());
         return () -> list.stream().map(AnchorCaret::offsetPointRange).toList();
+    }
+
+
+    private List<CaretLine> sortedCaretLine() {
+        List<CaretLine> list = new ArrayList<>(moons);
+        list.add(main);
+        Collections.sort(list);
+        return list;
     }
 
 }
