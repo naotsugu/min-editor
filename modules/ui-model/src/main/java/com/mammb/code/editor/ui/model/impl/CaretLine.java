@@ -190,6 +190,11 @@ public class CaretLine implements OffsetPointer, Comparable<CaretLine> {
     }
 
 
+    public String charAt() {
+        return line.charStringAt(bar.offset());
+    }
+
+
     public CaretLine cloneAt(long offset) {
         CaretLine clone = moonOf(offsetToLine);
         clone.at(offset);

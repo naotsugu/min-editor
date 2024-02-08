@@ -30,6 +30,11 @@ public interface CaretMulti extends Caret {
 
     List<OffsetPoint> offsetPoints();
 
+    List<OffsetPointChar> offsetPointChars();
+
     void stepwiseRight(int n);
 
+    void stepwiseFlatRight(int n);
+
+    record OffsetPointChar(OffsetPoint offsetPoint, String ch) {}
 }

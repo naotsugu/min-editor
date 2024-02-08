@@ -172,9 +172,28 @@ public class CaretMultiImpl implements CaretMulti {
     }
 
     @Override
+    public List<OffsetPointChar> offsetPointChars() {
+        return sortedCaretLine().stream()
+            .map(l -> new OffsetPointChar(l.offsetPoint(), l.charAt()))
+            .toList();
+    }
+
+    @Override
     public void stepwiseRight(int n) {
         List<CaretLine> list = sortedCaretLine();
         for (int i = 0; i < list.size(); i++) {
+            for (int j = i; j < list.size(); j++) {
+                for (int k = 0; k < n; k++) {
+                    list.get(j).right();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void stepwiseFlatRight(int n) {
+        List<CaretLine> list = sortedCaretLine();
+        for (int i = 1; i < list.size(); i++) {
             for (int j = i; j < list.size(); j++) {
                 for (int k = 0; k < n; k++) {
                     list.get(j).right();
