@@ -24,6 +24,7 @@ import com.mammb.code.editor.model.edit.impl.FlushInsertEdit;
 import com.mammb.code.editor.model.edit.impl.InsertEdit;
 import com.mammb.code.editor.model.edit.impl.ReplaceEdit;
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.model.text.Textual;
 import java.util.Comparator;
 import java.util.List;
 
@@ -156,18 +157,26 @@ public sealed interface Edit extends TextTranslate
 
     /**
      * Create the deletion edit.
-     * @param text the deletion text
-     * @param points the offset point text
+     * @param textual the deletion textual
      * @return the deletion edit
      */
-    static Edit delete(String text, List<OffsetPoint> points) {
-        if (points.size() == 1) {
-            return delete(text, points.get(0));
+    static Edit delete(Textual textual) {
+        return new DeleteEdit(textual.offsetPoint(), textual.text(), System.currentTimeMillis());
+    }
+
+    /**
+     * Create the deletion edit.
+     * @param textuals the deletion textuals
+     * @return the deletion edit
+     */
+    static Edit delete(List<Textual> textuals) {
+        if (textuals.size() == 1) {
+            return delete(textuals.get(0));
         }
         long time = System.currentTimeMillis();
         return new CompoundEdit(
-            points.stream().sorted(Comparator.reverseOrder())
-                .map(p -> new DeleteEdit(p, text, time)).toList(),
+            textuals.stream().sorted(Comparator.reverseOrder())
+                .map(Edit::delete).toList(),
             time
         );
     }

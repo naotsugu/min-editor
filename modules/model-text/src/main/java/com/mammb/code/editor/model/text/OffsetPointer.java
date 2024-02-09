@@ -19,7 +19,7 @@ package com.mammb.code.editor.model.text;
  * OffsetPointer.
  * @author Naotsugu Kobayashi
  */
-public interface OffsetPointer {
+public interface OffsetPointer extends Comparable<OffsetPointer> {
 
     /**
      * Get the offset point.
@@ -27,5 +27,11 @@ public interface OffsetPointer {
      * @return the offset point of content
      */
     OffsetPoint offsetPoint();
+
+
+    @Override
+    default int compareTo(OffsetPointer o) {
+        return offsetPoint().compareTo(o.offsetPoint());
+    }
 
 }

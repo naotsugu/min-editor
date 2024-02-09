@@ -365,7 +365,7 @@ public class EditorModelImpl implements EditorModel {
         texts.markDirty();
         caret.refresh();
         screen.adjustVScroll(totalLines());
-        
+
     }
 
     @Override

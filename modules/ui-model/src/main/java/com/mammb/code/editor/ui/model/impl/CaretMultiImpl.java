@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
+import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.LayoutLine;
 import com.mammb.code.editor.ui.model.SelectionRange;
@@ -23,6 +24,7 @@ import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -203,11 +205,21 @@ public class CaretMultiImpl implements CaretMulti {
     }
 
     @Override
+    public void parCaret(Consumer<Caret> consumer) {
+        sortedCaretLine().stream().map(CaretImpl::new).forEach(consumer);
+    }
+
+    @Override
     public SelectionRange selectionRange() {
         List<AnchorCaret> list = new ArrayList<>();
         list.add(new AnchorCaret(main));
         list.addAll(moons.stream().map(AnchorCaret::new).toList());
         return () -> list.stream().map(AnchorCaret::offsetPointRange).toList();
+    }
+
+    @Override
+    public String charAt() {
+        return main.charAt();
     }
 
 

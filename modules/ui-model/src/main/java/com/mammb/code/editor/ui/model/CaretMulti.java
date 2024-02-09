@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.model;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * The CaretMulti.
@@ -37,4 +38,7 @@ public interface CaretMulti extends Caret {
     void stepwiseFlatRight(int n);
 
     record OffsetPointChar(OffsetPoint offsetPoint, String ch) {}
+
+    void parCaret(Consumer<Caret> consumer);
+
 }

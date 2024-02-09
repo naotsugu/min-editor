@@ -102,4 +102,6 @@ public interface Caret extends OffsetPointer, Rect {
      */
     SelectionRange selectionRange();
 
+    String charAt();
+
 }
