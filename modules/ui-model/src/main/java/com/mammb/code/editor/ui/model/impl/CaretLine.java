@@ -191,6 +191,9 @@ public class CaretLine implements OffsetPointer, Comparable<CaretLine> {
 
 
     public String charAt() {
+        if (line == null || line.containsTailOn(bar.offset())) {
+            return "";
+        }
         return line.charStringAt(bar.offset());
     }
 
