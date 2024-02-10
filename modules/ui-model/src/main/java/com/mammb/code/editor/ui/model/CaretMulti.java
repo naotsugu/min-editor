@@ -36,7 +36,7 @@ public interface CaretMulti extends Caret {
 
     void stepwiseBackward(int n, boolean self);
 
-    void parCaret(Consumer<Caret> consumer);
+    void hoisting(Consumer<Caret> consumer);
 
     void streamCaret(Consumer<Stream<Caret>> consumer);
 }

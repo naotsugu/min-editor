@@ -23,6 +23,7 @@ import com.mammb.code.editor.ui.model.SelectionRange;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -200,8 +201,11 @@ public class CaretMultiImpl implements CaretMulti {
     }
 
     @Override
-    public void parCaret(Consumer<Caret> consumer) {
-        sortedCaretLine().stream().map(CaretImpl::new).forEach(consumer);
+    public void hoisting(Consumer<Caret> consumer) {
+        sortedCaretLine().stream()
+            .sorted(Comparator.reverseOrder())
+            .map(CaretImpl::new)
+            .forEach(consumer);
     }
 
     @Override

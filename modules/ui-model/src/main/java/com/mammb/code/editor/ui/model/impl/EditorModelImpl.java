@@ -27,6 +27,7 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.OffsetPointRange;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.syntax.Syntax;
+import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
@@ -360,19 +361,21 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
 
+        List<Caret> belows = new ArrayList<>();
         List<Textual> textuals = new ArrayList<>();
-        carets.parCaret(c -> {
+        carets.hoisting(c -> {
             String ch = c.charAt();
             if (!ch.isEmpty()) {
                 textuals.add(Textual.of(c.offsetPoint(), ch));
+                ch.codePoints().forEach(cp -> belows.forEach(Caret::left));
             }
+            belows.add(c);
         });
 
         buffer.push(Edit.delete(textuals));
         find.reset();
         texts.markDirty();
         carets.refresh();
-        carets.stepwiseBackward(1, false);
         screen.adjustVScroll(totalLines());
     }
 
