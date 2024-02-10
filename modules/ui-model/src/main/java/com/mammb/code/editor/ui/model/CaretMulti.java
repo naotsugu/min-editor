@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.model;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 /**
  * The CaretMulti.
@@ -31,14 +32,11 @@ public interface CaretMulti extends Caret {
 
     List<OffsetPoint> offsetPoints();
 
-    List<OffsetPointChar> offsetPointChars();
+    void stepwiseForward(int n, boolean self);
 
-    void stepwiseRight(int n);
-
-    void stepwiseFlatRight(int n);
-
-    record OffsetPointChar(OffsetPoint offsetPoint, String ch) {}
+    void stepwiseBackward(int n, boolean self);
 
     void parCaret(Consumer<Caret> consumer);
 
+    void streamCaret(Consumer<Stream<Caret>> consumer);
 }

@@ -25,6 +25,7 @@ import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.OffsetPointRange;
+import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.Editing;
@@ -52,6 +53,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -71,7 +73,7 @@ public class EditorModelImpl implements EditorModel {
     /** The text buffer. */
     private final TextEdit buffer;
     /** The caret. */
-    private final CaretMulti caret;
+    private final CaretMulti carets;
     /** The selection. */
     private final Selection selection;
     /** The ime. */
@@ -105,14 +107,14 @@ public class EditorModelImpl implements EditorModel {
         this.texts = new PlainScreenText(context,
             buffer.createView(screen.pageLineSize()),
             styling.compound(Highlighter.of(find)));
-        this.caret = new CaretMultiImpl(offset -> texts.layoutLine(offset));
+        this.carets = new CaretMultiImpl(offset -> texts.layoutLine(offset));
         this.selection = new SelectionImpl();
         this.ime = new ImePalletImpl();
         this.stateChange = new StateChangeImpl();
         this.screen = screen;
         screen.updateMaxWith(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
         screen.initScroll(texts.headlinesIndex(), totalLines());
-        caret.refresh();
+        carets.refresh();
     }
 
 
@@ -194,10 +196,10 @@ public class EditorModelImpl implements EditorModel {
         gc.restore();
         if (screen.gutter().checkWidthChanged()) {
             texts.markDirty();
-            caret.refresh();
+            carets.refresh();
             draw(gc);
         }
-        stateChange.push(buffer.metrics(), caret, selection);
+        stateChange.push(buffer.metrics(), carets, selection);
     }
 
 
@@ -243,7 +245,7 @@ public class EditorModelImpl implements EditorModel {
         gc.fillText(text, left, top + run.layoutHeight());
 
         boolean onCaret = !text.isEmpty() && (
-            run.textLine().offsetPoint().row() == caret.row()) ||
+            run.textLine().offsetPoint().row() == carets.row()) ||
             (selection.hasSelection() && selection.getRanges().stream()
                 .anyMatch(r -> r.containsRow(run.textLine().offsetPoint().row())));
         if (onCaret) {
@@ -267,13 +269,13 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void showCaret(GraphicsContext gc) {
         if (!ime.enabled()) {
-            caret.draw(gc, screen.textArea().x(), screen.hScrollValue());
+            carets.draw(gc, screen.textArea().x(), screen.hScrollValue());
         }
     }
 
     @Override
     public void hideCaret(GraphicsContext gc) {
-        draw(gc, caret.layoutLine());
+        draw(gc, carets.layoutLine());
     }
 
     @Override
@@ -283,7 +285,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public ScreenPoint screenPoint() {
-        OffsetPoint caretPoint = caret.offsetPoint();
+        OffsetPoint caretPoint = carets.offsetPoint();
         if (caretPoint == null) {
             caretPoint = OffsetPoint.zero;
         }
@@ -293,8 +295,8 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void apply(ScreenPoint screenPoint) {
         vScrolled(texts.head().offsetPoint().row(), screenPoint.row());
-        caret.at(screenPoint.caretIndex(), true);
-        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+        carets.at(screenPoint.caretIndex(), true);
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
 
     @Override
@@ -327,11 +329,11 @@ public class EditorModelImpl implements EditorModel {
         }
 
         vScrollToCaret();
-        List<OffsetPoint> points = caret.offsetPoints();
+        List<OffsetPoint> points = carets.offsetPoints();
         buffer.push(Edit.insert(value, points));
         find.reset();
         texts.markDirty();
-        caret.refresh();
+        carets.refresh();
         screen.adjustVScroll(totalLines());
 
         int count = Character.codePointCount(value, 0, value.length());
@@ -339,7 +341,7 @@ public class EditorModelImpl implements EditorModel {
             count -= (int) value.chars().filter(c -> c == '\r').count();
         }
         if (points.size() > 1) {
-            caret.stepwiseRight(count);
+            carets.stepwiseForward(count, true);
         } else {
             for (int i = 0; i < count; i++) {
                 moveCaretRight();
@@ -357,15 +359,21 @@ public class EditorModelImpl implements EditorModel {
             selectionDelete();
             return;
         }
-        OffsetPoint caretPoint = caret.offsetPoint();
-        LayoutLine layoutLine = texts.layoutLine(caretPoint.offset());
-        if (layoutLine == null || layoutLine.containsTailOn(caretPoint.offset())) return;
-        buffer.push(Edit.delete(layoutLine.charStringAt(caretPoint.offset()), caretPoint));
+
+        List<Textual> textuals = new ArrayList<>();
+        carets.parCaret(c -> {
+            String ch = c.charAt();
+            if (!ch.isEmpty()) {
+                textuals.add(Textual.of(c.offsetPoint(), ch));
+            }
+        });
+
+        buffer.push(Edit.delete(textuals));
         find.reset();
         texts.markDirty();
-        caret.refresh();
+        carets.refresh();
+        carets.stepwiseBackward(1, false);
         screen.adjustVScroll(totalLines());
-
     }
 
     @Override
@@ -378,15 +386,15 @@ public class EditorModelImpl implements EditorModel {
             selectionDelete();
             return;
         }
-        if (caret.offset() == 0) return;
-        OffsetPoint caretPoint = caret.offsetPoint();
+        if (carets.offset() == 0) return;
+        OffsetPoint caretPoint = carets.offsetPoint();
         moveCaretLeft();
-        LayoutLine layoutLine = texts.layoutLine(caret.offset());
+        LayoutLine layoutLine = texts.layoutLine(carets.offset());
         if (layoutLine == null) return;
-        buffer.push(Edit.backspace(layoutLine.charStringAt(caret.offset()), caretPoint));
+        buffer.push(Edit.backspace(layoutLine.charStringAt(carets.offset()), caretPoint));
         find.reset();
         texts.markDirty();
-        caret.refresh();
+        carets.refresh();
         screen.adjustVScroll(totalLines());
     }
 
@@ -397,8 +405,8 @@ public class EditorModelImpl implements EditorModel {
         if (edit.isEmpty()) return;
         find.reset();
         texts.markDirty();
-        caret.at(edit.point().offset(), true);
-        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+        carets.at(edit.point().offset(), true);
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
     @Override
     public void redo() {
@@ -407,8 +415,8 @@ public class EditorModelImpl implements EditorModel {
         if (edit.isEmpty()) return;
         find.reset();
         texts.markDirty();
-        caret.at(edit.point().offset(), true);
-        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+        carets.at(edit.point().offset(), true);
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
 
     // </editor-fold>
@@ -438,11 +446,11 @@ public class EditorModelImpl implements EditorModel {
         OffsetPoint point = range.minOffsetPoint();
         String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
         buffer.push(Edit.replace(text, string, point));
-        Selections.select(point.offset(), point.offset() + string.length(), caret, selection);
+        Selections.select(point.offset(), point.offset() + string.length(), carets, selection);
         find.reset();
         texts.markDirty();
-        caret.refresh();
-        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+        carets.refresh();
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
 
     @Override
@@ -451,7 +459,7 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         OffsetPointRange range = selection.getRanges().get(0);
-        Selections.selectCurrentRow(caret, selection, range, texts);
+        Selections.selectCurrentRow(carets, selection, range, texts);
         String text = buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
@@ -465,7 +473,7 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         OffsetPointRange range = selection.getRanges().get(0);
-        Selections.selectCurrentRow(caret, selection, range, texts);
+        Selections.selectCurrentRow(carets, selection, range, texts);
         String text = buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
@@ -478,48 +486,48 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void moveCaretRight() {
         vScrollToCaret();
-        if (caret.bottom() + 4 >= screen.height()) scrollNext(1);
-        caret.right();
-        if (caret.layoutLine() == null || caret.bottom() > screen.height()) scrollNext(1);
-        screen.hScrollTo(caret.x());
+        if (carets.bottom() + 4 >= screen.height()) scrollNext(1);
+        carets.right();
+        if (carets.layoutLine() == null || carets.bottom() > screen.height()) scrollNext(1);
+        screen.hScrollTo(carets.x());
     }
     @Override
     public void moveCaretLeft() {
         vScrollToCaret();
-        if (texts.head().offset() > 0 && texts.head().offset() == caret.offset()) {
+        if (texts.head().offset() > 0 && texts.head().offset() == carets.offset()) {
             scrollPrev(1);
         }
-        caret.left();
-        screen.hScrollTo(caret.x());
+        carets.left();
+        screen.hScrollTo(carets.x());
     }
     @Override
     public void moveCaretUp() {
         vScrollToCaret();
-        if (texts.head().offset() > 0 && caret.offset() < texts.head().tailOffset()) {
+        if (texts.head().offset() > 0 && carets.offset() < texts.head().tailOffset()) {
             scrollPrev(1);
         }
-        caret.up();
-        screen.hScrollTo(caret.x());
+        carets.up();
+        screen.hScrollTo(carets.x());
     }
     @Override
     public void moveCaretDown() {
         vScrollToCaret();
-        if (caret.bottom() + 4 >= screen.height()) scrollNext(1);
-        caret.down();
-        if (caret.bottom() > screen.height()) scrollNext(1);
-        screen.hScrollTo(caret.x());
+        if (carets.bottom() + 4 >= screen.height()) scrollNext(1);
+        carets.down();
+        if (carets.bottom() > screen.height()) scrollNext(1);
+        screen.hScrollTo(carets.x());
     }
     @Override
     public void moveCaretLineHome() {
         vScrollToCaret();
-        caret.home();
-        screen.hScrollTo(caret.x());
+        carets.home();
+        screen.hScrollTo(carets.x());
     }
     @Override
     public void moveCaretLineEnd() {
         vScrollToCaret();
-        caret.end();
-        screen.hScrollTo(caret.x());
+        carets.end();
+        screen.hScrollTo(carets.x());
     }
     // </editor-fold>
 
@@ -527,7 +535,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void scrollPrev(int n) {
         int size = texts.prev(n);
-        caret.refresh();
+        carets.refresh();
         if (size == 0) {
             return;
         }
@@ -538,7 +546,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void scrollNext(int n) {
         int size = texts.next(n);
-        caret.refresh();
+        carets.refresh();
         if (size == 0) {
             return;
         }
@@ -548,19 +556,19 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void pageUp() {
         vScrollToCaret();
-        double x = caret.x();
-        double y = caret.y();
+        double x = carets.x();
+        double y = carets.y();
         scrollPrev(texts.pageSize() - 1);
-        caret.at(texts.at(x, y), false);
+        carets.at(texts.at(x, y), false);
     }
 
     @Override
     public void pageDown() {
         vScrollToCaret();
-        double x = caret.x();
-        double y = caret.y();
+        double x = carets.x();
+        double y = carets.y();
         scrollNext(texts.pageSize() - 1);
-        caret.at(texts.at(x, y), false);
+        carets.at(texts.at(x, y), false);
     }
 
     @Override
@@ -571,7 +579,7 @@ public class EditorModelImpl implements EditorModel {
         boolean scrolled = texts.move(newValue, buffer.metrics());
         if (scrolled) {
             texts.markDirty();
-            caret.refresh();
+            carets.refresh();
         }
     }
     // </editor-fold>
@@ -580,46 +588,46 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void click(double x, double y, boolean isShortcutDown) {
         if (selection.isOpened()) {
-            selection.closeOn(caret.offsetPoint());
+            selection.closeOn(carets.offsetPoint());
             return;
         }
         selection.selectOff();
         long offset = texts.at(x - screen.textLeft(), y);
         if (isShortcutDown) {
-            caret.add(offset);
+            carets.add(offset);
         } else {
-            caret.at(offset, true);
+            carets.at(offset, true);
         }
     }
     @Override
     public void clickDouble(double x, double y) {
         long[] offsets = texts.atAroundWord(x - screen.textLeft(), y);
         if (offsets.length == 2) {
-            Selections.select(offsets, caret, selection);
+            Selections.select(offsets, carets, selection);
         } else {
-            caret.at(offsets[0], true);
+            carets.at(offsets[0], true);
         }
     }
     @Override
     public void clickTriple(double x, double y) {
         long[] offsets = texts.atAroundDelimiter(x - screen.textLeft(), y);
         if (offsets.length == 2) {
-            Selections.select(offsets, caret, selection);
+            Selections.select(offsets, carets, selection);
         } else {
-            caret.at(offsets[0], true);
+            carets.at(offsets[0], true);
         }
     }
     @Override
     public void dragged(double x, double y) {
-        caret.at(texts.at(Math.max(x - screen.textLeft(), 0), y), true);
-        selection.selectOn(caret.offsetPoint());
+        carets.at(texts.at(Math.max(x - screen.textLeft(), 0), y), true);
+        selection.selectOn(carets.offsetPoint());
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="select behavior">
     @Override
     public void selectOn() {
-        selection.selectOn(caret);
+        selection.selectOn(carets);
     }
     @Override
     public void selectOff() {
@@ -653,7 +661,7 @@ public class EditorModelImpl implements EditorModel {
     public void save() {
         buffer.save();
         // for clean modified
-        stateChange.push(buffer.metrics(), caret, selection);
+        stateChange.push(buffer.metrics(), carets, selection);
     }
     @Override
     public void saveAs(Path path) {
@@ -674,10 +682,10 @@ public class EditorModelImpl implements EditorModel {
     public Rect imeOn(GraphicsContext gc) {
         if (!ime.enabled()) {
             vScrollToCaret();
-            ime.on(caret.offsetPoint());
-            draw(gc, caret.layoutLine());
+            ime.on(carets.offsetPoint());
+            draw(gc, carets.layoutLine());
         }
-        return new RectBox(caret.x() + screen.textLeft(), caret.y(), caret.width(), caret.height());
+        return new RectBox(carets.x() + screen.textLeft(), carets.y(), carets.width(), carets.height());
     }
     @Override
     public void imeOff() {
@@ -694,7 +702,7 @@ public class EditorModelImpl implements EditorModel {
         ime.composed(buffer, runs);
         find.reset();
         texts.markDirty();
-        caret.refresh();
+        carets.refresh();
     }
     @Override
     public boolean isImeOn() {
@@ -708,7 +716,7 @@ public class EditorModelImpl implements EditorModel {
         screen.setSize(width, height);
         texts.setPageSize(screen.pageLineSize());
         texts.markDirty();
-        caret.refresh();
+        carets.refresh();
         if (texts instanceof WrapScreenText wrap) {
             wrap.setWrapWidth(screen.textArea().width());
         }
@@ -720,12 +728,12 @@ public class EditorModelImpl implements EditorModel {
         if (texts instanceof PlainScreenText linear)  {
             texts = linear.asWrapped(screen.textArea().width());
             screen.sethScrollEnabled(false);
-            caret.refresh();
+            carets.refresh();
         } else if (texts instanceof WrapScreenText wrap) {
             texts = wrap.asPlain();
             screen.sethScrollEnabled(true);
             screen.setMaxWidth(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
-            caret.refresh();
+            carets.refresh();
         }
         screen.initScroll(texts.headlinesIndex(), totalLines());
     }
@@ -733,14 +741,14 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void clear() {
         selection.selectOff();
-        caret.clear();
+        carets.clear();
     }
 
     @Override
     public FindHandle findHandle() {
         return FindHandleImpl.of(
             find,
-            caret.offsetPoint(),
+            carets.offsetPoint(),
             buffer.metrics().byteLen() < 32_000_000,
             found -> {
                 switch (found) {
@@ -750,11 +758,11 @@ public class EditorModelImpl implements EditorModel {
                         var point = new ScreenPoint(row, run.chOffset() + (run.right() ? run.length() : 0));
                         apply(point);
                         texts.markDirty();
-                        caret.refresh();
+                        carets.refresh();
                     }
                     case FoundReset reset -> {
                         texts.markDirty();
-                        caret.refresh();
+                        carets.refresh();
                     }
                     default -> {}
                 }
@@ -774,18 +782,18 @@ public class EditorModelImpl implements EditorModel {
         String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
         buffer.push(Edit.delete(text, point));
         selection.selectOff();
-        caret.at(point.offset(), true);
+        carets.at(point.offset(), true);
         find.reset();
         texts.markDirty();
-        caret.refresh();
-        screen.syncScroll(texts.headlinesIndex(), totalLines(), caret.x());
+        carets.refresh();
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
 
     private void vScrollToCaret() {
-        boolean scrolled = texts.scrollAtScreen(caret.row(), caret.offset());
+        boolean scrolled = texts.scrollAtScreen(carets.row(), carets.offset());
         if (!scrolled) return;
         texts.markDirty();
-        caret.refresh();
+        carets.refresh();
         screen.vScrolled(texts.headlinesIndex());
     }
 
@@ -808,9 +816,9 @@ public class EditorModelImpl implements EditorModel {
             if (cut && !buffer.readOnly()) {
                 buffer.push(Edit.delete(text, point));
                 selection.selectOff();
-                caret.at(point.offset(), true);
+                carets.at(point.offset(), true);
                 texts.markDirty();
-                caret.refresh();
+                carets.refresh();
             }
         }
     }
@@ -829,13 +837,13 @@ public class EditorModelImpl implements EditorModel {
                 return buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
             }
             @Override public String currentLine() {
-                return texts.lineAt(caret.offset()).text();
+                return texts.lineAt(carets.offset()).text();
             }
             @Override public String currentRow() {
-                return buffer.rowSupplier().at(caret.offset());
+                return buffer.rowSupplier().at(carets.offset());
             }
             @Override public String caretBefore() {
-                return buffer.rowSupplier().before(caret.offsetPoint().cpOffset());
+                return buffer.rowSupplier().before(carets.offsetPoint().cpOffset());
             }
         };
     }

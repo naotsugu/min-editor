@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Caret implementation.
@@ -173,32 +174,26 @@ public class CaretMultiImpl implements CaretMulti {
         return list;
     }
 
-    @Override
-    public List<OffsetPointChar> offsetPointChars() {
-        return sortedCaretLine().stream()
-            .map(l -> new OffsetPointChar(l.offsetPoint(), l.charAt()))
-            .toList();
-    }
 
     @Override
-    public void stepwiseRight(int n) {
+    public void stepwiseForward(int n, boolean self) {
         List<CaretLine> list = sortedCaretLine();
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = (self ? 0 : 1); i < list.size(); i++) {
             for (int j = i; j < list.size(); j++) {
                 for (int k = 0; k < n; k++) {
-                    list.get(j).right();
+                        list.get(j).right();
                 }
             }
         }
     }
 
     @Override
-    public void stepwiseFlatRight(int n) {
+    public void stepwiseBackward(int n, boolean self) {
         List<CaretLine> list = sortedCaretLine();
-        for (int i = 1; i < list.size(); i++) {
+        for (int i = (self ? 0 : 1); i < list.size(); i++) {
             for (int j = i; j < list.size(); j++) {
                 for (int k = 0; k < n; k++) {
-                    list.get(j).right();
+                    list.get(j).left();
                 }
             }
         }
@@ -207,6 +202,11 @@ public class CaretMultiImpl implements CaretMulti {
     @Override
     public void parCaret(Consumer<Caret> consumer) {
         sortedCaretLine().stream().map(CaretImpl::new).forEach(consumer);
+    }
+
+    @Override
+    public void streamCaret(Consumer<Stream<Caret>> consumer) {
+        consumer.accept(sortedCaretLine().stream().map(CaretImpl::new));
     }
 
     @Override
