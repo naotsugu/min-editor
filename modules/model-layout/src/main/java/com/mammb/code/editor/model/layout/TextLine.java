@@ -176,7 +176,7 @@ public interface TextLine extends Textual {
     default TextRun textRunAt(long offset) {
         List<TextRun> runs = runs();
         if (containsTailOn(offset)) {
-            return runs.get(runs.size() - 1);
+            return runs.getLast();
         }
         if (!contains(offset)) {
             throw new IndexOutOfBoundsException(

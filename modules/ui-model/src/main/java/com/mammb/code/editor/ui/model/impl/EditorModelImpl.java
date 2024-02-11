@@ -58,6 +58,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * EditorModel.
@@ -329,24 +330,21 @@ public class EditorModelImpl implements EditorModel {
         }
 
         vScrollToCaret();
-        List<OffsetPoint> points = carets.offsetPoints();
-        buffer.push(Edit.insert(value, points));
+
+        int count = cpCount(value);
+        var unit = Edit.unit();
+        List<Caret> belows = new ArrayList<>();
+        carets.hoisting(caret -> {
+            unit.put(Edit.insert(value, caret.offsetPoint()));
+            belows.add(caret);
+            IntStream.of(count).forEach(cp -> belows.forEach(Caret::right));
+        });
+
+        buffer.push(unit.commit());
         find.reset();
         texts.markDirty();
         carets.refresh();
         screen.adjustVScroll(totalLines());
-
-        int count = Character.codePointCount(value, 0, value.length());
-        if (buffer.metrics().lineEnding().isCrLf()) {
-            count -= (int) value.chars().filter(c -> c == '\r').count();
-        }
-        if (points.size() > 1) {
-            carets.stepwiseForward(count, true);
-        } else {
-            for (int i = 0; i < count; i++) {
-                moveCaretRight();
-            }
-        }
     }
 
     @Override
@@ -386,12 +384,22 @@ public class EditorModelImpl implements EditorModel {
             selectionDelete();
             return;
         }
-        if (carets.offset() == 0) return;
-        OffsetPoint caretPoint = carets.offsetPoint();
-        moveCaretLeft();
-        LayoutLine layoutLine = texts.layoutLine(carets.offset());
-        if (layoutLine == null) return;
-        buffer.push(Edit.backspace(layoutLine.charStringAt(carets.offset()), caretPoint));
+        if (carets.offset() == 0) {
+            return;
+        }
+
+        var unit = Edit.unit();
+        List<Caret> belows = new ArrayList<>();
+        carets.hoisting(caret -> {
+            OffsetPoint pointRight = caret.offsetPoint();
+            caret.left();
+            String ch = caret.charAt();
+            unit.put(Edit.backspace(ch, pointRight));
+            ch.codePoints().forEach(cp -> belows.forEach(Caret::left));
+            belows.add(caret);
+        });
+
+        buffer.push(unit.commit());
         find.reset();
         texts.markDirty();
         carets.refresh();
@@ -408,6 +416,7 @@ public class EditorModelImpl implements EditorModel {
         carets.at(edit.point().offset(), true);
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
+
     @Override
     public void redo() {
         selection.selectOff();
@@ -442,7 +451,7 @@ public class EditorModelImpl implements EditorModel {
             input(string);
             return;
         }
-        OffsetPointRange range = selection.getRanges().get(0);
+        OffsetPointRange range = selection.getRanges().getFirst();
         OffsetPoint point = range.minOffsetPoint();
         String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
         buffer.push(Edit.replace(text, string, point));
@@ -458,7 +467,7 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.readOnly()) {
             return;
         }
-        OffsetPointRange range = selection.getRanges().get(0);
+        OffsetPointRange range = selection.getRanges().getFirst();
         Selections.selectCurrentRow(carets, selection, range, texts);
         String text = buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
@@ -472,7 +481,7 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.readOnly()) {
             return;
         }
-        OffsetPointRange range = selection.getRanges().get(0);
+        OffsetPointRange range = selection.getRanges().getFirst();
         Selections.selectCurrentRow(carets, selection, range, texts);
         String text = buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
@@ -774,13 +783,15 @@ public class EditorModelImpl implements EditorModel {
     // -- private -------------------------------------------------------------
 
     private void selectionDelete() {
+
         if (!selection.hasSelection()) {
             return;
         }
-        OffsetPointRange range = selection.getRanges().get(0);
+        OffsetPointRange range = selection.getRanges().getFirst();
         OffsetPoint point = range.minOffsetPoint();
         String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
         buffer.push(Edit.delete(text, point));
+
         selection.selectOff();
         carets.at(point.offset(), true);
         find.reset();
@@ -846,6 +857,18 @@ public class EditorModelImpl implements EditorModel {
                 return buffer.rowSupplier().before(carets.offsetPoint().cpOffset());
             }
         };
+    }
+
+
+    private int cpCount(String string) {
+        if (string.isEmpty()) {
+            return 0;
+        }
+        int count = string.codePoints().sum();
+        if (buffer.metrics().lineEnding().isCrLf()) {
+            count -= (int) string.chars().filter(c -> c == '\r').count();
+        }
+        return count;
     }
 
 }

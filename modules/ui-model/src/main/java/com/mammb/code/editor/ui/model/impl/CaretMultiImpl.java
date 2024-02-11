@@ -22,7 +22,6 @@ import com.mammb.code.editor.ui.model.LayoutLine;
 import com.mammb.code.editor.ui.model.SelectionRange;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -168,49 +167,15 @@ public class CaretMultiImpl implements CaretMulti {
     }
 
     @Override
-    public List<OffsetPoint> offsetPoints() {
-        List<OffsetPoint> list = new ArrayList<>();
-        list.add(offsetPoint());
-        list.addAll(moons.stream().map(CaretLine::offsetPoint).toList());
-        return list;
-    }
-
-
-    @Override
-    public void stepwiseForward(int n, boolean self) {
-        List<CaretLine> list = sortedCaretLine();
-        for (int i = (self ? 0 : 1); i < list.size(); i++) {
-            for (int j = i; j < list.size(); j++) {
-                for (int k = 0; k < n; k++) {
-                        list.get(j).right();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void stepwiseBackward(int n, boolean self) {
-        List<CaretLine> list = sortedCaretLine();
-        for (int i = (self ? 0 : 1); i < list.size(); i++) {
-            for (int j = i; j < list.size(); j++) {
-                for (int k = 0; k < n; k++) {
-                    list.get(j).left();
-                }
-            }
-        }
-    }
-
-    @Override
     public void hoisting(Consumer<Caret> consumer) {
-        sortedCaretLine().stream()
-            .sorted(Comparator.reverseOrder())
+        hoistingCaretLine().stream()
             .map(CaretImpl::new)
             .forEach(consumer);
     }
 
     @Override
-    public void streamCaret(Consumer<Stream<Caret>> consumer) {
-        consumer.accept(sortedCaretLine().stream().map(CaretImpl::new));
+    public void hoistingStream(Consumer<Stream<Caret>> consumer) {
+        consumer.accept(hoistingCaretLine().stream().map(CaretImpl::new));
     }
 
     @Override
@@ -227,10 +192,10 @@ public class CaretMultiImpl implements CaretMulti {
     }
 
 
-    private List<CaretLine> sortedCaretLine() {
+    private List<CaretLine> hoistingCaretLine() {
         List<CaretLine> list = new ArrayList<>(moons);
         list.add(main);
-        Collections.sort(list);
+        list.sort(Comparator.reverseOrder());
         return list;
     }
 

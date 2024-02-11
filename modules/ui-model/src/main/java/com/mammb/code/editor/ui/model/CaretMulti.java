@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor.ui.model;
 
-import com.mammb.code.editor.model.text.OffsetPoint;
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -30,13 +28,7 @@ public interface CaretMulti extends Caret {
 
     void clear();
 
-    List<OffsetPoint> offsetPoints();
-
-    void stepwiseForward(int n, boolean self);
-
-    void stepwiseBackward(int n, boolean self);
-
     void hoisting(Consumer<Caret> consumer);
 
-    void streamCaret(Consumer<Stream<Caret>> consumer);
+    void hoistingStream(Consumer<Stream<Caret>> consumer);
 }
