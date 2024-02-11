@@ -102,6 +102,11 @@ public interface Caret extends OffsetPointer, Rect {
      */
     SelectionRange selectionRange();
 
+    /**
+     * Get the char string at this caret.
+     * @see com.mammb.code.editor.model.layout.TextLine#charStringAt(long)
+     * @return the char string
+     */
     String charAt();
 
 }

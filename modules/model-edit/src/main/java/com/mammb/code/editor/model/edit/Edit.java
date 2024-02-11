@@ -19,12 +19,12 @@ import com.mammb.code.editor.model.edit.impl.BsDeleteEdit;
 import com.mammb.code.editor.model.edit.impl.BsInsertEdit;
 import com.mammb.code.editor.model.edit.impl.CompoundEdit;
 import com.mammb.code.editor.model.edit.impl.DeleteEdit;
+import com.mammb.code.editor.model.edit.impl.EditUnitImpl;
 import com.mammb.code.editor.model.edit.impl.EmptyEdit;
 import com.mammb.code.editor.model.edit.impl.FlushInsertEdit;
 import com.mammb.code.editor.model.edit.impl.InsertEdit;
 import com.mammb.code.editor.model.edit.impl.ReplaceEdit;
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.model.text.Textual;
 import java.util.Comparator;
 import java.util.List;
 
@@ -114,7 +114,9 @@ public sealed interface Edit extends TextTranslate
      * @return the insertion edit
      */
     static Edit insert(String text, OffsetPoint point) {
-        return new InsertEdit(point, text, System.currentTimeMillis());
+        return text.isEmpty()
+            ? Edit.empty
+            : new InsertEdit(point, text, System.currentTimeMillis());
     }
 
     /**
@@ -142,7 +144,9 @@ public sealed interface Edit extends TextTranslate
      * @return the flush insertion edit
      */
     static Edit insertFlush(String text, OffsetPoint point) {
-        return new FlushInsertEdit(point, text, System.currentTimeMillis());
+        return text.isEmpty()
+            ? Edit.empty
+            : new FlushInsertEdit(point, text, System.currentTimeMillis());
     }
 
     /**
@@ -152,33 +156,9 @@ public sealed interface Edit extends TextTranslate
      * @return the deletion edit
      */
     static Edit delete(String text, OffsetPoint point) {
-        return new DeleteEdit(point, text, System.currentTimeMillis());
-    }
-
-    /**
-     * Create the deletion edit.
-     * @param textual the deletion textual
-     * @return the deletion edit
-     */
-    static Edit delete(Textual textual) {
-        return new DeleteEdit(textual.offsetPoint(), textual.text(), System.currentTimeMillis());
-    }
-
-    /**
-     * Create the deletion edit.
-     * @param textuals the deletion textuals
-     * @return the deletion edit
-     */
-    static Edit delete(List<Textual> textuals) {
-        if (textuals.size() == 1) {
-            return delete(textuals.get(0));
-        }
-        long time = System.currentTimeMillis();
-        return new CompoundEdit(
-            textuals.stream().sorted(Comparator.reverseOrder())
-                .map(Edit::delete).toList(),
-            time
-        );
+        return text.isEmpty()
+            ? Edit.empty
+            : new DeleteEdit(point, text, System.currentTimeMillis());
     }
 
     /**
@@ -188,25 +168,9 @@ public sealed interface Edit extends TextTranslate
      * @return the backspace edit
      */
     static Edit backspace(String text, OffsetPoint point) {
-        return new BsDeleteEdit(point, text, System.currentTimeMillis());
-    }
-
-    /**
-     * Create the backspace edit.
-     * @param text the deletion text
-     * @param points the offset point text
-     * @return the backspace edit
-     */
-    static Edit backspace(String text, List<OffsetPoint> points) {
-        if (points.size() == 1) {
-            return backspace(text, points.get(0));
-        }
-        long time = System.currentTimeMillis();
-        return new CompoundEdit(
-            points.stream().sorted(Comparator.reverseOrder())
-                .map(p -> new BsDeleteEdit(p, text, time)).toList(),
-            time
-        );
+        return text.isEmpty()
+            ? Edit.empty
+            : new BsDeleteEdit(point, text, System.currentTimeMillis());
     }
 
     /**
@@ -217,26 +181,17 @@ public sealed interface Edit extends TextTranslate
      * @return the replacement edit
      */
     static Edit replace(String beforeText, String afterTText, OffsetPoint point) {
-        return new ReplaceEdit(point, beforeText, afterTText, System.currentTimeMillis());
+        return beforeText.isEmpty() && afterTText.isEmpty()
+            ? Edit.empty
+            : new ReplaceEdit(point, beforeText, afterTText, System.currentTimeMillis());
     }
 
     /**
-     * Create the replacement edit.
-     * @param beforeText the before text string
-     * @param afterTText the after text string
-     * @param points the offset point text
-     * @return the replacement edit
+     * Get the edit unit.
+     * @return the edit unit
      */
-    static Edit replace(String beforeText, String afterTText, List<OffsetPoint> points) {
-        if (points.size() == 1) {
-            return replace(beforeText, afterTText, points.get(0));
-        }
-        long time = System.currentTimeMillis();
-        return new CompoundEdit(
-            points.stream().sorted(Comparator.reverseOrder())
-                .map(p -> new ReplaceEdit(p, beforeText, afterTText, time)).toList(),
-            time
-        );
+    static EditUnit unit() {
+        return new EditUnitImpl();
     }
 
 }
