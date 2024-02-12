@@ -37,9 +37,9 @@ tasks.withType<Test>().configureEach {
     jvmArgs("--enable-preview")
 }
 
-tasks.withType<JavaExec>().configureEach {
-    jvmArgs("--enable-preview")
-}
+//tasks.withType<JavaExec>().configureEach {
+//    jvmArgs("--enable-preview")
+//}
 
 tasks.withType<Javadoc>().configureEach {
     options {
