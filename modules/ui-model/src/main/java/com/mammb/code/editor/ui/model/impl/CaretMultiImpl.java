@@ -68,6 +68,7 @@ public class CaretMultiImpl implements CaretMulti {
     @Override
     public void at(long charOffset, boolean syncLogicalX) {
         main.at(charOffset);
+        moons.clear();
     }
 
     @Override
@@ -176,6 +177,14 @@ public class CaretMultiImpl implements CaretMulti {
     @Override
     public void hoistingStream(Consumer<Stream<Caret>> consumer) {
         consumer.accept(hoistingCaretLine().stream().map(CaretImpl::new));
+    }
+
+    @Override
+    public List<Caret> list() {
+        List<Caret> list = new ArrayList<>();
+        list.add(new CaretImpl(main));
+        moons.forEach(l -> list.add(new CaretImpl(l)));
+        return list;
     }
 
     @Override

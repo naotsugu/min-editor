@@ -38,7 +38,7 @@ public record CompoundEdit(
 
     @Override
     public OffsetPoint point() {
-        return edits.get(0).point();
+        return edits.getFirst().point();
     }
 
     @Override
@@ -63,7 +63,7 @@ public record CompoundEdit(
         if (acrossRows()) {
             throw new IllegalStateException("Should be pre-flashed");
         }
-        return edits.get(0).applyTo(textual);
+        return edits.getFirst().applyTo(textual);
     }
 
 
@@ -76,7 +76,7 @@ public record CompoundEdit(
                 edits.size() == compound.edits.size()) {
             for (int i = 0; i < edits.size(); i++) {
                 // can all elements merge
-                if (!edits.get(i).canMerge(compound.edits.get(0))) {
+                if (!edits.get(i).canMerge(compound.edits.get(i))) {
                     return false;
                 }
             }
@@ -94,7 +94,7 @@ public record CompoundEdit(
         CompoundEdit compound = (CompoundEdit) other;
         List<Edit> merged = new ArrayList<>();
         for (int i = 0; i < edits.size(); i++) {
-            merged.add(edits.get(i).merge(compound.edits.get(0)));
+            merged.add(edits.get(i).merge(compound.edits.get(i)));
         }
         return new CompoundEdit(merged, other.occurredOn());
     }
@@ -102,7 +102,7 @@ public record CompoundEdit(
 
     @Override
     public boolean acrossRows() {
-        return edits.size() > 1 || edits.get(0).acrossRows();
+        return edits.size() > 1 || edits.stream().anyMatch(Edit::acrossRows);
     }
 
 }

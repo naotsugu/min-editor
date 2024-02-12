@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.text.OffsetPointRange;
+import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.CaretMulti;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Hoisting<E> {
     }
 
 
-    public static Hoisting<OffsetPointRange> of(List<OffsetPointRange> ranges) {
+    public static Hoisting<OffsetPointRange> rangeOf(List<OffsetPointRange> ranges) {
         List<Point<OffsetPointRange>> points = ranges.stream()
             .map(range -> new Point<>(range, range.minOffsetPoint().offset()))
             .collect(Collectors.toList());
@@ -48,9 +49,20 @@ public class Hoisting<E> {
     }
 
 
+    public static Hoisting<Caret> caretOf(List<Caret> carets) {
+        List<Point<Caret>> points = carets.stream()
+            .map(range -> new Point<>(range, range.offsetPoint().offset()))
+            .collect(Collectors.toList());
+        Point<Caret> main = points.getFirst();
+        points.sort(Collections.reverseOrder());
+        return new Hoisting<>(main, points);
+    }
+
+
     public List<E> points() {
         return points.stream().map(Point::value).toList();
     }
+
 
     public void shift(long offset, int delta) {
         for (Point<E> point : points) {
@@ -60,9 +72,17 @@ public class Hoisting<E> {
         }
     }
 
+    public void shiftOn(long offset, int delta) {
+        for (Point<E> point : points) {
+            if (point.offset >= offset) {
+                point.shift(delta);
+            }
+        }
+    }
+
     public void locateOn(CaretMulti carets) {
         carets.clear();
-        carets.at(main.offset, true);
+        carets.at(main.shifted(), true);
         points.stream().filter(p -> p != main).mapToLong(Point::shifted).forEach(carets::add);
     }
 

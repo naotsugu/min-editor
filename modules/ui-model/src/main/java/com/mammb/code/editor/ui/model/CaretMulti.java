@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -31,4 +32,6 @@ public interface CaretMulti extends Caret {
     void hoisting(Consumer<Caret> consumer);
 
     void hoistingStream(Consumer<Stream<Caret>> consumer);
+
+    List<Caret> list();
 }

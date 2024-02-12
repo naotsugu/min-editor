@@ -53,12 +53,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * EditorModel.
@@ -331,16 +329,15 @@ public class EditorModelImpl implements EditorModel {
 
         vScrollToCaret();
 
-        int count = cpCount(value);
         var unit = Edit.unit();
-        List<Caret> belows = new ArrayList<>();
-        carets.hoisting(caret -> {
+        var hoisting = Hoisting.caretOf(carets.list());
+        for (Caret caret : hoisting.points()) {
             unit.put(Edit.insert(value, caret.offsetPoint()));
-            belows.add(caret);
-            IntStream.of(count).forEach(cp -> belows.forEach(Caret::right));
-        });
-
+            hoisting.shiftOn(caret.offsetPoint().offset(), value.length());
+        }
         buffer.push(unit.commit());
+        hoisting.locateOn(carets);
+
         find.reset();
         texts.markDirty();
         carets.refresh();
@@ -359,15 +356,15 @@ public class EditorModelImpl implements EditorModel {
         }
 
         var unit = Edit.unit();
-        List<Caret> belows = new ArrayList<>();
-        carets.hoisting(caret -> {
+        var hoisting = Hoisting.caretOf(carets.list());
+        for (Caret caret : hoisting.points()) {
             String ch = caret.charAt();
             unit.put(Edit.delete(ch, caret.offsetPoint()));
-            ch.codePoints().forEach(cp -> belows.forEach(Caret::left));
-            belows.add(caret);
-        });
-
+            hoisting.shift(caret.offsetPoint().offset(), -ch.length());
+        }
         buffer.push(unit.commit());
+        hoisting.locateOn(carets);
+
         find.reset();
         texts.markDirty();
         carets.refresh();
@@ -389,17 +386,17 @@ public class EditorModelImpl implements EditorModel {
         }
 
         var unit = Edit.unit();
-        List<Caret> belows = new ArrayList<>();
-        carets.hoisting(caret -> {
-            OffsetPoint pointRight = caret.offsetPoint();
+        var hoisting = Hoisting.caretOf(carets.list());
+        for (Caret caret : hoisting.points()) {
+            OffsetPoint offset = caret.offsetPoint();
             caret.left();
             String ch = caret.charAt();
-            unit.put(Edit.backspace(ch, pointRight));
-            ch.codePoints().forEach(cp -> belows.forEach(Caret::left));
-            belows.add(caret);
-        });
-
+            unit.put(Edit.backspace(ch, offset));
+            hoisting.shiftOn(offset.offset(), -ch.length());
+        }
         buffer.push(unit.commit());
+        hoisting.locateOn(carets);
+
         find.reset();
         texts.markDirty();
         carets.refresh();
@@ -789,7 +786,7 @@ public class EditorModelImpl implements EditorModel {
         }
 
         var unit = Edit.unit();
-        var hoisting = Hoisting.of(selection.getRanges());
+        var hoisting = Hoisting.rangeOf(selection.getRanges());
         for (OffsetPointRange range : hoisting.points()) {
             OffsetPoint point = range.minOffsetPoint();
             String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
