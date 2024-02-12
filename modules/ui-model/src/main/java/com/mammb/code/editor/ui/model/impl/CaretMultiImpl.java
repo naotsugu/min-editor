@@ -19,7 +19,7 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.LayoutLine;
-import com.mammb.code.editor.ui.model.SelectionRange;
+import com.mammb.code.editor.ui.model.RangeSupplier;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -179,11 +179,8 @@ public class CaretMultiImpl implements CaretMulti {
     }
 
     @Override
-    public SelectionRange selectionRange() {
-        List<AnchorCaret> list = new ArrayList<>();
-        list.add(new AnchorCaret(main));
-        list.addAll(moons.stream().map(AnchorCaret::new).toList());
-        return () -> list.stream().map(AnchorCaret::offsetPointRange).toList();
+    public RangeSupplier selectionRange() {
+        return new AnchoredCaretMulti(main, moons);
     }
 
     @Override

@@ -17,20 +17,26 @@ package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.OffsetPointRange;
+import com.mammb.code.editor.ui.model.Caret;
 
 /**
  * The AnchorCaret.
  * @param start the selection open offset
  * @param caretLine the selection close offset caret
+ * @author Naotsugu Kobayashi
  */
-public record AnchorCaret(OffsetPoint start, CaretLine caretLine) {
+public record AnchoredCaret(OffsetPoint start, CaretLine caretLine) {
 
-    AnchorCaret(CaretLine caretLine) {
+    AnchoredCaret(CaretLine caretLine) {
         this((caretLine == null) ? null : caretLine.offsetPoint(), caretLine);
     }
 
     OffsetPointRange offsetPointRange() {
         return OffsetPointRange.of(start, caretLine.offsetPoint());
+    }
+
+    Caret caret() {
+        return new CaretImpl(caretLine);
     }
 
 }

@@ -100,7 +100,7 @@ public interface Caret extends OffsetPointer, Rect {
      * Get the selection range supplier.
      * @return the selection range supplier
      */
-    SelectionRange selectionRange();
+    RangeSupplier selectionRange();
 
     /**
      * Get the char string at this caret.

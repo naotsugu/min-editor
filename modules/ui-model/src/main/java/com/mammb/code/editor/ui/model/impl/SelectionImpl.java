@@ -20,7 +20,7 @@ import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.OffsetPointRange;
 import com.mammb.code.editor.ui.model.CaretMulti;
 import com.mammb.code.editor.ui.model.Selection;
-import com.mammb.code.editor.ui.model.SelectionRange;
+import com.mammb.code.editor.ui.model.RangeSupplier;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -39,7 +39,7 @@ public class SelectionImpl implements Selection {
     private static final Color color = new Color(0.6784314F, 0.84705883F, 0.9019608F, 0.3);
 
     /** The selection range supplier. */
-    private SelectionRange selectionRange = SelectionRange.empty;
+    private RangeSupplier rangeSupplier = RangeSupplier.empty;
 
     /** The selection mode. */
     private Mode mode = Mode.EMPTY;
@@ -47,14 +47,14 @@ public class SelectionImpl implements Selection {
 
     @Override
     public void selectOn(OffsetPoint start, OffsetPoint end) {
-        selectionRange = SelectionRange.of(start, end);
+        rangeSupplier = RangeSupplier.of(start, end);
         mode = Mode.FIXED;
     }
 
     @Override
     public void selectOn(CaretMulti caret) {
         if (mode != Mode.CARET) {
-            selectionRange = caret.selectionRange();
+            rangeSupplier = caret.selectionRange();
             mode = Mode.CARET;
         }
     }
@@ -62,9 +62,9 @@ public class SelectionImpl implements Selection {
     @Override
     public void selectOn(OffsetPoint point) {
         if (isOpened()) {
-            ((SelectionRange.OpenSelectionRange) selectionRange).to(point);
+            ((OpenRangeSupplier) rangeSupplier).to(point);
         } else {
-            selectionRange = SelectionRange.openOf(point);
+            rangeSupplier = RangeSupplier.openOf(point);
             mode = Mode.OPENED;
         }
     }
@@ -72,14 +72,14 @@ public class SelectionImpl implements Selection {
     @Override
     public void closeOn(OffsetPoint point) {
         if (isOpened()) {
-            ((SelectionRange.OpenSelectionRange) selectionRange).to(point);
+            ((OpenRangeSupplier) rangeSupplier).to(point);
             mode = Mode.FIXED;
         }
     }
 
     @Override
     public void selectOff() {
-        selectionRange = SelectionRange.empty;
+        rangeSupplier = RangeSupplier.empty;
         mode = Mode.EMPTY;
     }
 
@@ -110,7 +110,7 @@ public class SelectionImpl implements Selection {
 
     @Override
     public List<OffsetPointRange> getRanges() {
-        return selectionRange.getRanges();
+        return rangeSupplier.getRanges();
     }
 
 }

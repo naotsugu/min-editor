@@ -25,7 +25,7 @@ import java.util.List;
  * Selection.
  * @author Naotsugu Kobayashi
  */
-public interface Selection extends SelectionRange {
+public interface Selection extends RangeSupplier {
 
     /**
      * Select as fixed.
@@ -66,10 +66,10 @@ public interface Selection extends SelectionRange {
 
     /**
      * Draw selection
-     * @param gc
-     * @param run
-     * @param offsetY
-     * @param left
+     * @param gc the graphic context
+     * @param run the text run
+     * @param offsetY the offset y
+     * @param left the left position
      */
     void draw(GraphicsContext gc, TextRun run, double offsetY, double left);
 

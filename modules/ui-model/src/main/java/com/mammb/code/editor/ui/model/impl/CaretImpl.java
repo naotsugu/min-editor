@@ -18,7 +18,7 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.LayoutLine;
-import com.mammb.code.editor.ui.model.SelectionRange;
+import com.mammb.code.editor.ui.model.RangeSupplier;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.List;
 
@@ -102,8 +102,8 @@ public class CaretImpl implements Caret {
     }
 
     @Override
-    public SelectionRange selectionRange() {
-        final var anchorCaret = new AnchorCaret(caretLine);
+    public RangeSupplier selectionRange() {
+        final var anchorCaret = new AnchoredCaret(caretLine);
         return () -> List.of(anchorCaret.offsetPointRange());
     }
 
