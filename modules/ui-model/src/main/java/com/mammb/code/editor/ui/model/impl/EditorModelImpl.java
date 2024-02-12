@@ -308,7 +308,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public boolean peekSelection(Predicate<String> predicate) {
         if (selection.hasSelection()) {
-            OffsetPointRange range = selection.getRanges().get(0);
+            OffsetPointRange range = selection.getRanges().getFirst();
             return predicate.test(buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE)));
         }
         return false;
@@ -787,13 +787,18 @@ public class EditorModelImpl implements EditorModel {
         if (!selection.hasSelection()) {
             return;
         }
-        OffsetPointRange range = selection.getRanges().getFirst();
-        OffsetPoint point = range.minOffsetPoint();
-        String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
-        buffer.push(Edit.delete(text, point));
 
+        var unit = Edit.unit();
+        var hoisting = Hoisting.of(selection.getRanges());
+        for (OffsetPointRange range : hoisting.points()) {
+            OffsetPoint point = range.minOffsetPoint();
+            String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
+            unit.put(Edit.delete(text, point));
+            hoisting.shift(range.minOffsetPoint().offset(), -text.length());
+        }
+        buffer.push(unit.commit());
+        hoisting.locateOn(carets);
         selection.selectOff();
-        carets.at(point.offset(), true);
         find.reset();
         texts.markDirty();
         carets.refresh();
