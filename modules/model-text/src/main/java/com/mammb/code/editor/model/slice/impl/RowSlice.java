@@ -34,10 +34,10 @@ import java.util.Objects;
 public class RowSlice implements TextualSlice<Textual> {
 
     /** The row list. */
-    private List<Textual> rows = new LinkedList<>();
+    private final List<Textual> rows = new LinkedList<>();
 
     /** The row source. */
-    private RowSupplier rowSupplier;
+    private final RowSupplier rowSupplier;
 
     /** The row size of slice. */
     private int maxRowSize = 10;
@@ -145,13 +145,13 @@ public class RowSlice implements TextualSlice<Textual> {
 
         for (int i = 0; i < n; i++) {
 
-            Textual head = rows.get(0);
+            Textual head = rows.getFirst();
             long cpOffset = head.offsetPoint().cpOffset();
             if (cpOffset == 0) break;
 
             String str = rowSupplier.before(cpOffset);
             Textual textual = Textual.of(head.offsetPoint().minus(str), str);
-            added.add(0, textual);
+            added.addFirst(textual);
             pushFirst(textual);
         }
 
@@ -166,7 +166,7 @@ public class RowSlice implements TextualSlice<Textual> {
 
         for (int i = 0; i < n; i++) {
 
-            Textual tail = rows.get(rows.size() - 1);
+            Textual tail = rows.getLast();
             if (tail.isEmpty() || tail.text().charAt(tail.text().length() - 1) != '\n') {
                 break;
             }
@@ -183,9 +183,9 @@ public class RowSlice implements TextualSlice<Textual> {
 
 
     private void pushFirst(Textual row) {
-        rows.add(0, row);
+        rows.addFirst(row);
         while (rows.size() > maxRowSize) {
-            rows.remove(rows.size() - 1);
+            rows.removeLast();
         }
     }
 
@@ -193,7 +193,7 @@ public class RowSlice implements TextualSlice<Textual> {
     private void pushLast(Textual row) {
         rows.add(row);
         while (rows.size() > maxRowSize) {
-            rows.remove(0);
+            rows.removeFirst();
         }
     }
 
@@ -209,7 +209,7 @@ public class RowSlice implements TextualSlice<Textual> {
 
             OffsetPoint next = OffsetPoint.zero;
             if (!rows.isEmpty()) {
-                Textual tail = rows.get(rows.size() - 1);
+                Textual tail = rows.getLast();
                 next = tail.offsetPoint().plus(tail.text());
             }
 
