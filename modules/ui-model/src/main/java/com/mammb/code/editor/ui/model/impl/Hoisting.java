@@ -81,11 +81,14 @@ public class Hoisting<E> {
     }
 
     public void locateOn(CaretMulti carets) {
-        carets.clear();
-        carets.at(main.shifted(), true);
-        points.stream().filter(p -> p != main).mapToLong(Point::shifted).forEach(carets::add);
+        locateOn(carets, 0);
     }
 
+    public void locateOn(CaretMulti carets, int delta) {
+        carets.clear();
+        carets.at(main.shifted() + delta, true);
+        points.stream().filter(p -> p != main).mapToLong(Point::shifted).forEach(n -> carets.add(n + delta));
+    }
 
     static class Point<E> implements Comparable<Point<E>> {
 

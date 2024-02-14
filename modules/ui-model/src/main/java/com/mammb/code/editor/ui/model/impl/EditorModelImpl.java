@@ -448,11 +448,23 @@ public class EditorModelImpl implements EditorModel {
             input(string);
             return;
         }
-        OffsetPointRange range = selection.getRanges().getFirst();
-        OffsetPoint point = range.minOffsetPoint();
-        String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
-        buffer.push(Edit.replace(text, string, point));
-        Selections.select(point.offset(), point.offset() + string.length(), carets, selection);
+
+        var unit = Edit.unit();
+        var hoisting = Hoisting.rangeOf(selection.getRanges());
+        int d = 0;
+        for (OffsetPointRange range : hoisting.points()) {
+            OffsetPoint point = range.minOffsetPoint();
+            String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
+            unit.put(Edit.replace(text, string, point));
+            hoisting.shift(range.minOffsetPoint().offset(), string.length() - text.length());
+            if (range.startOffsetPoint().offset() == range.minOffsetPoint().offset()) {
+                d = string.length();
+            }
+        }
+        buffer.push(unit.commit());
+        hoisting.locateOn(carets, d);
+
+        selection.selectOff();
         find.reset();
         texts.markDirty();
         carets.refresh();
