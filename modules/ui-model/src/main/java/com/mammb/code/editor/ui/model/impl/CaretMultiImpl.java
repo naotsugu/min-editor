@@ -22,11 +22,8 @@ import com.mammb.code.editor.ui.model.LayoutLine;
 import com.mammb.code.editor.ui.model.RangeSupplier;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 /**
  * Caret implementation.
@@ -167,17 +164,6 @@ public class CaretMultiImpl implements CaretMulti {
         moons.clear();
     }
 
-    @Override
-    public void hoisting(Consumer<Caret> consumer) {
-        hoistingCaretLine().stream()
-            .map(CaretImpl::new)
-            .forEach(consumer);
-    }
-
-    @Override
-    public void hoistingStream(Consumer<Stream<Caret>> consumer) {
-        consumer.accept(hoistingCaretLine().stream().map(CaretImpl::new));
-    }
 
     @Override
     public List<Caret> list() {
@@ -195,14 +181,6 @@ public class CaretMultiImpl implements CaretMulti {
     @Override
     public String charAt() {
         return main.charAt();
-    }
-
-
-    private List<CaretLine> hoistingCaretLine() {
-        List<CaretLine> list = new ArrayList<>(moons);
-        list.add(main);
-        list.sort(Comparator.reverseOrder());
-        return list;
     }
 
 }
