@@ -59,6 +59,10 @@ public interface Selection extends RangeSupplier {
      */
     void selectOff();
 
+    /**
+     * has selection.
+     * @return {@code true}, if this selection has range
+     */
     boolean hasSelection();
 
     /**

@@ -32,7 +32,7 @@ public class CaretLine implements OffsetPointer {
     private final Function<Long, LayoutLine> offsetToLine;
 
     /** The caret bar. */
-    private CaretBar bar;
+    private final CaretBar bar;
 
     /** The text line. */
     private LayoutLine line;

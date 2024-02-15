@@ -112,8 +112,8 @@ public class Selections {
     private static OffsetPoint[] rowPointRange(long charOffset, ScreenText texts) {
         List<TextLine> lines = texts.rowAt(charOffset);
         return new OffsetPoint[] {
-            lines.get(0).offsetPoint(),
-            lines.get(lines.size() - 1).tailPoint()
+            lines.getFirst().offsetPoint(),
+            lines.getLast().tailPoint()
         };
     }
 
