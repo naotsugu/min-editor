@@ -484,11 +484,11 @@ public class EditorModelImpl implements EditorModel {
             .map(l -> "    " + l)
             .collect(Collectors.joining());
         buffer.push(Edit.replace(text, replace, range.minOffsetPoint()));
-        Selections.select(range.minOffsetPoint().offset(), range.minOffsetPoint().offset() + replace.length(), carets, selection);
         find.reset();
         texts.markDirty();
         carets.refresh();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
+        Selections.select(range.minOffsetPoint().offset(), range.minOffsetPoint().offset() + replace.length(), carets, selection);
     }
 
     @Override
@@ -504,11 +504,11 @@ public class EditorModelImpl implements EditorModel {
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
             .collect(Collectors.joining());
         buffer.push(Edit.replace(text, replace, range.minOffsetPoint()));
-        Selections.select(range.minOffsetPoint().offset(), range.minOffsetPoint().offset() + replace.length(), carets, selection);
         find.reset();
         texts.markDirty();
         carets.refresh();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
+        Selections.select(range.minOffsetPoint().offset(), range.minOffsetPoint().offset() + replace.length(), carets, selection);
     }
     // </editor-fold>
 
