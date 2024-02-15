@@ -377,7 +377,7 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.readOnly()) {
             return;
         }
-        if (selection.length() > 0) {
+        if (selection.hasSelection()) {
             selectionDelete();
             return;
         }
@@ -476,13 +476,19 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.readOnly()) {
             return;
         }
+        carets.clear();
         OffsetPointRange range = selection.getRanges().getFirst();
         Selections.selectCurrentRow(carets, selection, range, texts);
         String text = buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> "    " + l)
             .collect(Collectors.joining());
-        selectionReplace(replace);
+        buffer.push(Edit.replace(text, replace, range.minOffsetPoint()));
+        Selections.select(range.minOffsetPoint().offset(), range.minOffsetPoint().offset() + replace.length(), carets, selection);
+        find.reset();
+        texts.markDirty();
+        carets.refresh();
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
 
     @Override
@@ -490,13 +496,19 @@ public class EditorModelImpl implements EditorModel {
         if (buffer.readOnly()) {
             return;
         }
+        carets.clear();
         OffsetPointRange range = selection.getRanges().getFirst();
         Selections.selectCurrentRow(carets, selection, range, texts);
         String text = buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
         String replace = Arrays.stream(text.split("(?<=\n)"))
             .map(l -> l.startsWith("\t") ? l.substring(1) : l.startsWith("    ") ? l.substring(4) : l)
             .collect(Collectors.joining());
-        selectionReplace(replace);
+        buffer.push(Edit.replace(text, replace, range.minOffsetPoint()));
+        Selections.select(range.minOffsetPoint().offset(), range.minOffsetPoint().offset() + replace.length(), carets, selection);
+        find.reset();
+        texts.markDirty();
+        carets.refresh();
+        screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
     // </editor-fold>
 
@@ -834,7 +846,7 @@ public class EditorModelImpl implements EditorModel {
      */
     private void copyToClipboard(boolean cut) {
         if (selection.hasSelection()) {
-            OffsetPointRange range = selection.getRanges().get(0);
+            OffsetPointRange range = selection.getRanges().getFirst();
             OffsetPoint point = range.minOffsetPoint();
             String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
             Clipboards.put(text);
@@ -858,7 +870,7 @@ public class EditorModelImpl implements EditorModel {
                 if (!selection.hasSelection()) {
                     return "";
                 }
-                OffsetPointRange range = selection.getRanges().get(0);
+                OffsetPointRange range = selection.getRanges().getFirst();
                 return buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
             }
             @Override public String currentLine() {

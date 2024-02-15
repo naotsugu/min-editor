@@ -34,7 +34,10 @@ public interface Selection extends RangeSupplier {
      */
     void selectOn(OffsetPoint start, OffsetPoint end);
 
-
+    /**
+     * Start select at the caret position.
+     * @param caret the source caret position
+     */
     void selectOn(CaretMulti caret);
 
     /**

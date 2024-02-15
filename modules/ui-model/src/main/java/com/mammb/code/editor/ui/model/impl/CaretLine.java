@@ -75,8 +75,9 @@ public class CaretLine implements OffsetPointer {
 
 
     public void at(long charOffset) {
-        line = offsetToLine.apply(charOffset);
-        bar.offsetAt(line, charOffset);
+        long offset = Math.max(0, charOffset);
+        line = offsetToLine.apply(offset);
+        bar.offsetAt(line, offset);
     }
 
     public void right() {
