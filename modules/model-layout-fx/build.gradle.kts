@@ -1,6 +1,6 @@
 plugins {
     `java-library`
-    id("code.editor.base")
+    id("buildlogic.base")
 }
 
 dependencies {

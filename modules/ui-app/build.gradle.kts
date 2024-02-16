@@ -1,7 +1,7 @@
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 plugins {
-    id("code.editor.base")
+    id("buildlogic.base")
 }
 
 
