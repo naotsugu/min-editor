@@ -17,7 +17,7 @@ val artifact = when {
 }
 
 dependencies {
-    implementation("org.openjfx:javafx-controls:21.0.1:${artifact}")
+    implementation("org.openjfx:javafx-controls:21.0.2:${artifact}")
     implementation(project(":javafx"))
     implementation(project(":ui-pane"))
     implementation(project(":ui-prefs"))

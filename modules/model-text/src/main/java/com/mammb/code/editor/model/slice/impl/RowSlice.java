@@ -73,7 +73,8 @@ public class RowSlice implements TextualSlice<Textual> {
     public void setPageSize(int capacity) {
 
         if (capacity <= 1) {
-            throw new IllegalArgumentException("Too small capacity. [%d]".formatted(capacity));
+            throw new IllegalArgumentException(
+                "Too small capacity. [%d]".formatted(capacity));
         }
 
         if (maxRowSize > capacity) {
