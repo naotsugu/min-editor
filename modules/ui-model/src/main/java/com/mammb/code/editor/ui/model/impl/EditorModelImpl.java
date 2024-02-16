@@ -274,7 +274,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void hideCaret(GraphicsContext gc) {
-        draw(gc, carets.layoutLine());
+        carets.list().forEach(c -> draw(gc, c.layoutLine()));
     }
 
     @Override
