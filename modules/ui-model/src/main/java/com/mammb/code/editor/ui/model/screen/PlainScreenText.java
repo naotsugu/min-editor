@@ -86,7 +86,7 @@ public class PlainScreenText implements ScreenText {
         List<TextLine> ret = (rollup > 0)
             ? lines.subList(rollup, lines.size())
             : lines;
-        head = ret.get(0);
+        head = ret.getFirst();
         return ret;
     }
 

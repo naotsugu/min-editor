@@ -52,7 +52,6 @@ public class SliceView implements TextualSlice<Textual> {
 
     @Override
     public List<Textual> texts() {
-
         Edit edit = editQueueRef.peek();
         if (edit == null) {
             return slice.texts();

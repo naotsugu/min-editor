@@ -73,7 +73,7 @@ public class RowSlice implements TextualSlice<Textual> {
     public void setPageSize(int capacity) {
 
         if (capacity <= 1) {
-            throw new IllegalArgumentException("Too small capacity. " + capacity);
+            throw new IllegalArgumentException("Too small capacity. [%d]".formatted(capacity));
         }
 
         if (maxRowSize > capacity) {
@@ -198,6 +198,9 @@ public class RowSlice implements TextualSlice<Textual> {
     }
 
 
+    /**
+     * Fill the row buffer.
+     */
     private void fulfillRows() {
 
         if (rows.size() > maxRowSize) {
@@ -210,16 +213,27 @@ public class RowSlice implements TextualSlice<Textual> {
             OffsetPoint next = OffsetPoint.zero;
             if (!rows.isEmpty()) {
                 Textual tail = rows.getLast();
+                if (isEof(tail)) return;
                 next = tail.offsetPoint().plus(tail.text());
             }
 
             String str = rowSupplier.at(next.cpOffset());
-            rows.add(Textual.of(next, str));
-            if (str.isEmpty() || str.charAt(str.length() - 1) != '\n') {
-                break;
-            }
+            Textual textual = Textual.of(next, str);
+            rows.add(textual);
+            if (isEof(textual)) return;
         }
 
+    }
+
+
+    /**
+     * Gets whether the specified line is the last line or not.
+     * @param line the specified line
+     * @return {@code true}, if the specified line is the last line
+     */
+    private boolean isEof(Textual line) {
+        return line.isEmpty() ||
+            line.text().charAt(line.length() - 1) != '\n';
     }
 
 }
