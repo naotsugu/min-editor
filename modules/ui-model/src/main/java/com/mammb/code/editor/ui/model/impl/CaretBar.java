@@ -43,6 +43,8 @@ public class CaretBar implements Rect {
     private double w = 2;
     /** The caret rect height. */
     private double h = 0;
+    /** hide?. */
+    private boolean hide;
 
 
     /**
@@ -68,7 +70,7 @@ public class CaretBar implements Rect {
      * @return a new CaretBar
      */
     public static CaretBar lightOf() {
-        return new CaretBar(Color.color(Color.ORANGE.getRed(), Color.ORANGE.getGreen(), Color.ORANGE.getBlue(), 0.7));
+        return new CaretBar(Color.color(Color.ORANGE.getRed(), Color.ORANGE.getGreen(), Color.ORANGE.getBlue(), 0.8));
     }
 
 
@@ -79,12 +81,17 @@ public class CaretBar implements Rect {
      * @param hScrolled the size of horizontal scroll
      */
     public void draw(GraphicsContext gc, double margin, double hScrolled) {
+
+        if (hide) return;
+
         if (x - hScrolled < 0 || y < 0 || h <= 0) return;
+
         double dx = x - hScrolled + margin;
         gc.setLineDashes(0);
         gc.setStroke(strokeColor);
         gc.setLineWidth(w);
         gc.strokeLine(dx, top() + 1, dx, bottom() - 1);
+
     }
 
 
@@ -172,5 +179,18 @@ public class CaretBar implements Rect {
     public double height() {
         return h;
     }
+
+    /**
+     * Set the hide flag.
+     * @param hide the hide flag
+     */
+    public void setHide(boolean hide) {
+        this.hide = hide;
+    }
+
+    public boolean isHide() {
+        return hide;
+    }
+
 
 }

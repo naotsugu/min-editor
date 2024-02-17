@@ -268,12 +268,14 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void showCaret(GraphicsContext gc) {
         if (!ime.enabled()) {
+            carets.setHide(false);
             carets.draw(gc, screen.textArea().x(), screen.hScrollValue());
         }
     }
 
     @Override
     public void hideCaret(GraphicsContext gc) {
+        carets.setHide(true);
         carets.list().forEach(c -> draw(gc, c.layoutLine()));
     }
 
@@ -617,6 +619,11 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="mouse behavior">
     @Override
     public void click(double x, double y, boolean isShortcutDown) {
+        if (carets.isHide()) {
+            carets.setHide(false);
+            return;
+        }
+
         if (selection.isOpened()) {
             selection.closeOn(carets.offsetPoint());
             return;
@@ -883,18 +890,6 @@ public class EditorModelImpl implements EditorModel {
                 return buffer.rowSupplier().before(carets.offsetPoint().cpOffset());
             }
         };
-    }
-
-
-    private int cpCount(String string) {
-        if (string.isEmpty()) {
-            return 0;
-        }
-        int count = string.codePoints().sum();
-        if (buffer.metrics().lineEnding().isCrLf()) {
-            count -= (int) string.chars().filter(c -> c == '\r').count();
-        }
-        return count;
     }
 
 }

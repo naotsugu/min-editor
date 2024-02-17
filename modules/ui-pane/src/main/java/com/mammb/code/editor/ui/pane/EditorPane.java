@@ -20,6 +20,7 @@ import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.ScreenPoint;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
@@ -64,7 +65,7 @@ public class EditorPane extends StackPane {
     /** The canvas. */
     private final Canvas canvas;
     /** The graphics context. */
-    private GraphicsContext gc;
+    private final GraphicsContext gc;
     /** The vertical scroll bar for line scroll. */
     private final VScrollBar vScrollBar;
     /** The horizontal scroll bar for line scroll. */
@@ -257,7 +258,9 @@ public class EditorPane extends StackPane {
      * @param e the mouse event
      */
     private void handleMouseClicked(MouseEvent e) {
+
         canvas.requestFocus();
+
         if (e.getButton() == MouseButton.PRIMARY && e.getTarget() == canvas) {
             switch (e.getClickCount()) {
                 case 1 -> model.click(e.getX(), e.getY(), e.isShortcutDown());
@@ -266,6 +269,7 @@ public class EditorPane extends StackPane {
             }
             model.draw(gc);
         }
+
     }
 
 
@@ -404,7 +408,9 @@ public class EditorPane extends StackPane {
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
         if (focused) {
-            model.showCaret(gc);
+            PauseTransition pause = new PauseTransition(Duration.millis(150));
+            pause.setOnFinished(e -> model.showCaret(gc));
+            pause.play();
             timeline.play();
         } else {
             timeline.stop();

@@ -41,6 +41,16 @@ public class CaretImpl implements Caret {
     }
 
     @Override
+    public void setHide(boolean hide) {
+        caretLine.setHide(hide);
+    }
+
+    @Override
+    public boolean isHide() {
+        return caretLine.isHide();
+    }
+
+    @Override
     public void refresh() {
         caretLine.refresh();
     }

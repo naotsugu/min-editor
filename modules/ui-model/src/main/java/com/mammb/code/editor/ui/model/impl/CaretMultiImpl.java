@@ -31,15 +31,21 @@ import java.util.function.Function;
  */
 public class CaretMultiImpl implements CaretMulti {
 
-    /** The main caret. */
+    /** The main caret line. */
     private final CaretLine main;
 
     /** The planets. */
     private final List<CaretLine> moons = new ArrayList<>();
 
+
+    /**
+     * Constructor.
+     * @param main the main caret line
+     */
     public CaretMultiImpl(CaretLine main) {
         this.main = main;
     }
+
 
     /**
      * Constructor.
@@ -54,6 +60,17 @@ public class CaretMultiImpl implements CaretMulti {
     public void draw(GraphicsContext gc, double margin, double hScrolled) {
         main.draw(gc, margin, hScrolled);
         moons.forEach(c -> c.draw(gc, margin, hScrolled));
+    }
+
+    @Override
+    public void setHide(boolean hide) {
+        main.setHide(hide);
+        moons.forEach(c -> c.setHide(hide));
+    }
+
+    @Override
+    public boolean isHide() {
+        return main.isHide();
     }
 
     @Override

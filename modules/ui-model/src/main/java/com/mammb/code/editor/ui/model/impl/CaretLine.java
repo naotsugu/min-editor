@@ -222,6 +222,19 @@ public class CaretLine implements OffsetPointer {
         }
     }
 
+    /**
+     * Set the hide flag.
+     * @param hide the hide flag
+     */
+    public void setHide(boolean hide) {
+        bar.setHide(hide);
+
+    }
+
+    public boolean isHide() {
+        return bar.isHide();
+    }
+
     LayoutLine getLine() {
         return line;
     }

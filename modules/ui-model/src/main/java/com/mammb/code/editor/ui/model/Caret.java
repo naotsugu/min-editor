@@ -34,6 +34,14 @@ public interface Caret extends OffsetPointer, Rect {
     void draw(GraphicsContext gc, double margin, double hScrolled);
 
     /**
+     * Set the hide flag.
+     * @param hide the hide flag
+     */
+    void setHide(boolean hide);
+
+    boolean isHide();
+
+    /**
      * Refresh the caret.
      */
     void refresh();
