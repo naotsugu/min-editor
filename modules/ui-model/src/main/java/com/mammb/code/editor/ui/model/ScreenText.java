@@ -159,7 +159,7 @@ public interface ScreenText {
      */
     default TextLine tail() {
         List<TextLine> lines = lines();
-        return lines.isEmpty() ? null : lines.get(lines.size() - 1);
+        return lines.isEmpty() ? null : lines.getLast();
     }
 
 
@@ -213,8 +213,8 @@ public interface ScreenText {
         final List<TextLine> lines = lines();
 
         if (lines.isEmpty() ||
-            offset < lines.get(0).offsetPoint().offset() ||
-            offset > lines.get(lines.size() - 1).tailOffset()) {
+            offset < lines.getFirst().offsetPoint().offset() ||
+            offset > lines.getLast().tailOffset()) {
             return null;
         }
 

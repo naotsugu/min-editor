@@ -619,16 +619,26 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="mouse behavior">
     @Override
     public void click(double x, double y, boolean isShortcutDown) {
+
         if (carets.isHide()) {
             carets.setHide(false);
             return;
         }
 
         if (selection.isOpened()) {
+            // end of dragged
             selection.closeOn(carets.offsetPoint());
             return;
         }
+
         selection.selectOff();
+
+        if (x < screen.textLeft()) {
+            // click on gutter
+            clickGutter(y, isShortcutDown);
+            return;
+        }
+
         long offset = texts.at(x - screen.textLeft(), y);
         if (isShortcutDown) {
             carets.add(offset);
@@ -636,6 +646,17 @@ public class EditorModelImpl implements EditorModel {
             carets.at(offset, true);
         }
     }
+
+    private void clickGutter(double y, boolean isShortcutDown) {
+        if (isShortcutDown) {
+            return;
+        }
+        // select line
+        texts.at(y).ifPresent(textLine ->
+            Selections.select(textLine.offset(), textLine.tailOffset(), carets, selection)
+        );
+    }
+
     @Override
     public void clickDouble(double x, double y) {
         long[] offsets = texts.atAroundWord(x - screen.textLeft(), y);

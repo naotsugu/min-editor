@@ -39,6 +39,10 @@ public interface Caret extends OffsetPointer, Rect {
      */
     void setHide(boolean hide);
 
+    /**
+     * Get the hide flag.
+     * @return the hide flag
+     */
     boolean isHide();
 
     /**
