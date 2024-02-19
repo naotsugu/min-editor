@@ -649,6 +649,29 @@ public class EditorModelImpl implements EditorModel {
 
     private void clickGutter(double y, boolean isShortcutDown) {
         if (isShortcutDown) {
+            carets.clear();
+            TextLine caretLine = texts.lineAt(carets.offset());
+            TextLine clickLine = texts.at(y).orElse(null);
+            if (caretLine != null && clickLine != null) {
+                double x = caretLine.offsetToX(carets.offset());
+                TextLine start = caretLine;
+                TextLine end = clickLine;
+                if (start.offset() == end.offset()) {
+                    Selections.select(start.offset(), start.tailOffset(), carets, selection);
+                    return;
+                } else if (start.offset() > end.offset()) {
+                    start = clickLine;
+                    end = caretLine;
+                }
+                for (TextLine line : texts.lines()) {
+                    if (line.offset() < start.offset() ||
+                        line.offset() > end.offset() ||
+                        line.offset() == caretLine.offset()) {
+                        continue;
+                    }
+                    carets.add(line.xToOffset(x));
+                }
+            }
             return;
         }
         // select line

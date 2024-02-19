@@ -92,7 +92,7 @@ public class WrapScreenText implements ScreenText {
         int toIndex = lineOffset + scroll.pageSize();
 
         List<TextLine> ret = lines.subList(lineOffset + rollup, Math.min(toIndex, lines.size()));
-        head = ret.get(0);
+        head = ret.getFirst();
         return ret;
     }
 
@@ -139,7 +139,7 @@ public class WrapScreenText implements ScreenText {
             if (size == 0) return 0;
 
             removeTailRow(lines, 1);
-            List<TextLine> list = translator.applyTo(added.get(0));
+            List<TextLine> list = translator.applyTo(added.getFirst());
             lines.addAll(0, list);
             lineOffset = list.size() - 1;
         } else {
@@ -182,7 +182,7 @@ public class WrapScreenText implements ScreenText {
             if (size == 0) return 0;
 
             int removedCount = removeHeadRow(lines, 1);
-            List<TextLine> list = translator.applyTo(added.get(0));
+            List<TextLine> list = translator.applyTo(added.getFirst());
             lines.addAll(list);
             lineOffset -= removedCount;
         }
@@ -195,14 +195,14 @@ public class WrapScreenText implements ScreenText {
     public boolean scrollAtScreen(int row, long offset) {
 
         List<TextLine> visibleLines = lines();
-        int start = (int) visibleLines.get(0).offset();
-        int end = (int) visibleLines.get(visibleLines.size() - 1).tailOffset();
+        int start = (int) visibleLines.getFirst().offset();
+        int end = (int) visibleLines.getLast().tailOffset();
         if (start <= offset && offset < end) {
             return false;
         }
 
-        final int first = lines.get(0).offsetPoint().row();
-        final int last = lines.get(lines.size() - 1).offsetPoint().row();
+        final int first = lines.getFirst().offsetPoint().row();
+        final int last = lines.getLast().offsetPoint().row();
         if (first > row || row > last) {
             if (row < first) {
                 int nRow = first - row;
@@ -227,8 +227,8 @@ public class WrapScreenText implements ScreenText {
 
         lineOffset = 0;
         while (true) {
-            start = (int) visibleLines.get(0).offset();
-            end = (int) visibleLines.get(visibleLines.size() - 1).tailOffset();
+            start = (int) visibleLines.getFirst().offset();
+            end = (int) visibleLines.getLast().tailOffset();
             if (start <= offset && offset < end) {
                 return true;
             }
