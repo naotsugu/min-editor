@@ -205,8 +205,11 @@ public class PlainScreenText implements ScreenText {
         final int tail = tail().offsetPoint().row();
         if (head <= row && row <= tail) {
             return false;
+        } else if (head > row) {
+            return move(row, null);
+        } else {
+            return move(row - (pageSize() - 2), null);
         }
-        return move(row, null);
     }
 
 

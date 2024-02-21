@@ -102,8 +102,7 @@ public class CaretImpl implements Caret {
 
     @Override
     public int row() {
-        OffsetPoint caretPoint = offsetPoint();
-        return caretPoint == null ? 0 : caretPoint.row();
+        return caretLine.row();
     }
 
     @Override

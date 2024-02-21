@@ -16,8 +16,8 @@
 package com.mammb.code.editor.ui.model.impl;
 
 import com.mammb.code.editor.model.text.OffsetPoint;
-import com.mammb.code.editor.ui.model.LayoutLine;
 import com.mammb.code.editor.model.text.OffsetPointer;
+import com.mammb.code.editor.ui.model.LayoutLine;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.Objects;
 import java.util.function.Function;
@@ -221,9 +221,9 @@ public class CaretLine implements OffsetPointer {
     @Override
     public int compareTo(OffsetPointer o) {
         if (o instanceof CaretLine caretLine) {
-            return Long.compare(bar.offset(), caretLine.bar.offset());
+            return Long.compare(offset(), caretLine.offset());
         } else {
-            return Long.compare(bar.offset(), o.offsetPoint().offset());
+            return Long.compare(offset(), o.offsetPoint().offset());
         }
     }
 

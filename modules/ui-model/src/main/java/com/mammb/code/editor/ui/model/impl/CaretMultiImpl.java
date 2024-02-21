@@ -133,8 +133,7 @@ public class CaretMultiImpl implements CaretMulti {
 
     @Override
     public int row() {
-        OffsetPoint caretPoint = offsetPoint();
-        return caretPoint == null ? 0 : caretPoint.row();
+        return main.row();
     }
 
     @Override

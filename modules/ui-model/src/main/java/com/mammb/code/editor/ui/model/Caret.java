@@ -121,4 +121,12 @@ public interface Caret extends OffsetPointer, Rect {
      */
     String charAt();
 
+    @Override
+    default int compareTo(OffsetPointer o) {
+        if (o instanceof Caret caret) {
+            return Long.compare(offset(), caret.offset());
+        } else {
+            return offsetPoint().compareTo(o.offsetPoint());
+        }
+    }
 }

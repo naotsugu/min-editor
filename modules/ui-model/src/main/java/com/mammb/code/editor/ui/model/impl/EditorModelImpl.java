@@ -54,6 +54,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -878,8 +879,16 @@ public class EditorModelImpl implements EditorModel {
     }
 
     private void vScrollToCaret() {
-        boolean scrolled = texts.scrollAtScreen(carets.row(), carets.offset());
+
+        // In multi carets, all carets must fit within the screen
+        List<Caret> list = carets.list();
+        Caret min = list.stream().min(Comparator.naturalOrder()).get();
+        Caret max = list.stream().max(Comparator.naturalOrder()).get();
+        Caret base = (min.offset() < texts.head().offset()) ? min : max;
+
+        boolean scrolled = texts.scrollAtScreen(base.row(), base.offset());
         if (!scrolled) return;
+
         texts.markDirty();
         carets.refresh();
         screen.vScrolled(texts.headlinesIndex());
