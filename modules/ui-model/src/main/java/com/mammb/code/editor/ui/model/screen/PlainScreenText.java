@@ -206,9 +206,9 @@ public class PlainScreenText implements ScreenText {
         if (head <= row && row <= tail) {
             return false;
         } else if (head > row) {
-            return move(row, null);
+            return move(Math.max(row - 1, 0), null);
         } else {
-            return move(row - (pageSize() - 2), null);
+            return move(Math.max(row - (pageSize() - 2), 0), null);
         }
     }
 
