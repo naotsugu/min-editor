@@ -37,15 +37,20 @@ public class CaretLine implements OffsetPointer {
     /** The text line. */
     private LayoutLine line;
 
+    /** The row index. */
+    private int row;
+
 
     /**
      * Constructor.
      * @param bar the caret bar
      * @param offsetToLine the offset to layout line function
+     * @param row the row index
      */
-    public CaretLine(CaretBar bar, Function<Long, LayoutLine> offsetToLine) {
+    public CaretLine(CaretBar bar, Function<Long, LayoutLine> offsetToLine, int row) {
         this.bar = Objects.requireNonNull(bar);
         this.offsetToLine = offsetToLine;
+        this.row = row;
     }
 
 
@@ -55,7 +60,7 @@ public class CaretLine implements OffsetPointer {
      * @return a new CaretLine
      */
     public static CaretLine of(Function<Long, LayoutLine> offsetToLine) {
-        return new CaretLine(CaretBar.of(), offsetToLine);
+        return new CaretLine(CaretBar.of(), offsetToLine, 0);
     }
 
 
@@ -65,7 +70,7 @@ public class CaretLine implements OffsetPointer {
      * @return a new CaretLine
      */
     public static CaretLine moonOf(Function<Long, LayoutLine> offsetToLine) {
-        return new CaretLine(CaretBar.lightOf(), offsetToLine);
+        return new CaretLine(CaretBar.lightOf(), offsetToLine, 0);
     }
 
 
@@ -76,7 +81,7 @@ public class CaretLine implements OffsetPointer {
 
     public void at(long charOffset) {
         long offset = Math.max(0, charOffset);
-        line = offsetToLine.apply(offset);
+        line = layoutLineAt(offset);
         bar.offsetAt(line, offset);
     }
 
@@ -97,7 +102,7 @@ public class CaretLine implements OffsetPointer {
             // | a | b|| $ |      offset:2  line.tailOffset():3  line.endMarkCount():1
             // | a | b|| $ | $ |  offset:2  line.tailOffset():4  line.endMarkCount():2
             long offset = bar.offset() + line.endMarkCount();
-            line = offsetToLine.apply(offset);
+            line = layoutLineAt(offset);
             bar.offsetAt(line, offset);
             return;
         }
@@ -122,7 +127,7 @@ public class CaretLine implements OffsetPointer {
             return;
         }
         if (bar.offset() == line.offset()) {
-            line = offsetToLine.apply(bar.offset() - 1);
+            line = layoutLineAt(bar.offset() - 1);
             bar.offsetAt(line, bar.offset() - line.endMarkCount());
             return;
         }
@@ -142,7 +147,7 @@ public class CaretLine implements OffsetPointer {
         if (line.offsetPoint().row() == 0 && line.lineIndex() == 0) {
             return;
         }
-        line = offsetToLine.apply(line.offset() - 1);
+        line = layoutLineAt(line.offset() - 1);
         bar.slipOn(line);
     }
 
@@ -154,7 +159,7 @@ public class CaretLine implements OffsetPointer {
         if (line.isBottomLine()) {
             return;
         }
-        line = offsetToLine.apply(line.tailOffset());
+        line = layoutLineAt(line.tailOffset());
         bar.slipOn(line);
     }
 
@@ -186,7 +191,7 @@ public class CaretLine implements OffsetPointer {
 
     public void refresh() {
         long offset = bar.offset();
-        line = offsetToLine.apply(offset);
+        line = layoutLineAt(offset);
         bar.offsetAt(line, offset);
     }
 
@@ -222,18 +227,51 @@ public class CaretLine implements OffsetPointer {
         }
     }
 
+
     /**
      * Set the hide flag.
      * @param hide the hide flag
      */
     public void setHide(boolean hide) {
         bar.setHide(hide);
-
     }
+
 
     public boolean isHide() {
         return bar.isHide();
     }
+
+
+    /**
+     * Get the row index at the caret.
+     * @return the row index at the caret.
+     */
+    public int row() {
+        return row;
+    }
+
+    /**
+     * Get the character offset at the caret.
+     * @return the character offset at the caret
+     */
+    public long offset() {
+        return bar.offset();
+    }
+
+    /**
+     * Get the layout line.
+     * Returns {@code null} if the specified offset is out of screen area.
+     * @param offset the character offset
+     * @return the layout line
+     */
+    private LayoutLine layoutLineAt(long offset) {
+        LayoutLine line = offsetToLine.apply(offset);
+        if (line != null) {
+            row = line.offsetPoint().row();
+        }
+        return line;
+    }
+
 
     LayoutLine getLine() {
         return line;

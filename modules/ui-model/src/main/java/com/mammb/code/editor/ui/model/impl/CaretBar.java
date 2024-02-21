@@ -27,7 +27,7 @@ import javafx.scene.paint.Color;
 public class CaretBar implements Rect {
 
     /** The stroke color of caret. */
-    private Color strokeColor;
+    private final Color strokeColor;
 
     /** The caret (char) offset. */
     private long offset = 0;

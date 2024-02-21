@@ -128,7 +128,7 @@ public class CaretMultiImpl implements CaretMulti {
 
     @Override
     public long offset() {
-        return main.getBar().offset();
+        return main.offset();
     }
 
     @Override
@@ -169,8 +169,8 @@ public class CaretMultiImpl implements CaretMulti {
 
     @Override
     public void add(long charOffset) {
-        if (main.getBar().offset() == charOffset ||
-            moons.stream().anyMatch(m -> m.getBar().offset() == charOffset)) {
+        if (main.offset() == charOffset ||
+            moons.stream().anyMatch(m -> m.offset() == charOffset)) {
             return;
         }
         moons.add(main.cloneAt(charOffset));

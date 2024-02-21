@@ -97,7 +97,7 @@ public class CaretImpl implements Caret {
 
     @Override
     public long offset() {
-        return caretLine.getBar().offset();
+        return caretLine.offset();
     }
 
     @Override
