@@ -174,9 +174,9 @@ public class CaretLine implements OffsetPointer {
             at(line.offset());
         }
         if (skipWhitespace) {
-            if (Character.isWhitespace(line.charAt(bar.offset()))) {
+            if (isWhite(line.charAt(bar.offset()))) {
                 while (bar.offset() < line.tailOffset() &&
-                    Character.isWhitespace(line.charAt(bar.offset()))) {
+                    isWhite(line.charAt(bar.offset()))) {
                     right();
                 }
             }
@@ -210,6 +210,7 @@ public class CaretLine implements OffsetPointer {
         return clone;
     }
 
+
     @Override
     public OffsetPoint offsetPoint() {
         if (bar.offset() == 0) {
@@ -217,6 +218,7 @@ public class CaretLine implements OffsetPointer {
         }
         return (line == null) ? null : line.offsetPoint(bar.offset());
     }
+
 
     @Override
     public int compareTo(OffsetPointer o) {
@@ -280,6 +282,14 @@ public class CaretLine implements OffsetPointer {
         return line;
     }
 
+    /**
+     * Gets whether the specified character is white space or not.
+     * @param ch the specified character
+     * @return {@code true} if the specified character is white space
+     */
+    private static boolean isWhite(char ch) {
+        return Character.isSpaceChar(ch) || ch == '\t';
+    }
 
     LayoutLine getLine() {
         return line;
