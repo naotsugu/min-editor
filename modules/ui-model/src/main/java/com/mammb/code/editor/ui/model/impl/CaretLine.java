@@ -259,6 +259,14 @@ public class CaretLine implements OffsetPointer {
     }
 
     /**
+     * Gets whether the caret is outside the drawing area.
+     * @return {@code true} if the caret is outside the drawing area
+     */
+    public boolean isOffScreen() {
+        return line == null;
+    }
+
+    /**
      * Get the layout line.
      * Returns {@code null} if the specified offset is out of screen area.
      * @param offset the character offset

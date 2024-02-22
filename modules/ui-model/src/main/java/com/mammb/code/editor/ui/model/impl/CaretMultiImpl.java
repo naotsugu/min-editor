@@ -22,7 +22,9 @@ import com.mammb.code.editor.ui.model.LayoutLine;
 import com.mammb.code.editor.ui.model.RangeSupplier;
 import javafx.scene.canvas.GraphicsContext;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -89,36 +91,42 @@ public class CaretMultiImpl implements CaretMulti {
     public void right() {
         main.right();
         moons.forEach(CaretLine::right);
+        unique();
     }
 
     @Override
     public void left() {
         main.left();
         moons.forEach(CaretLine::left);
+        unique();
     }
 
     @Override
     public void up() {
         main.up();
         moons.forEach(CaretLine::up);
+        unique();
     }
 
     @Override
     public void down() {
         main.down();
         moons.forEach(CaretLine::down);
+        unique();
     }
 
     @Override
     public void home() {
         main.home();
         moons.forEach(CaretLine::home);
+        unique();
     }
 
     @Override
     public void end() {
         main.end();
         moons.forEach(CaretLine::end);
+        unique();
     }
 
     @Override
@@ -197,6 +205,20 @@ public class CaretMultiImpl implements CaretMulti {
     @Override
     public String charAt() {
         return main.charAt();
+    }
+
+
+    /**
+     * Remove carets with the same offset to make them unique.
+     */
+    private void unique() {
+        if (moons.isEmpty()) {
+            return;
+        }
+        Set<Long> set = new HashSet<>();
+        set.add(main.offset());
+        moons.removeIf(m -> !set.add(m.offset()));
+        moons.removeIf(CaretLine::isOffScreen);
     }
 
 }
