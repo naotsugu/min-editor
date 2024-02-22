@@ -126,7 +126,8 @@ public class EditorModelImpl implements EditorModel {
     private EditorModelImpl(Context context, ScreenScroll screen) {
         this(context,
             TextEdit.editBuffer(null),
-            StylingTranslate.passThrough(), screen);
+            Syntax.of(context.preference().fgColor()),
+            screen);
     }
 
 

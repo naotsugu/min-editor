@@ -74,17 +74,31 @@ public class CaretLine implements OffsetPointer {
     }
 
 
+    /**
+     * Draw the caret.
+     * @param gc the graphics context
+     * @param margin the left position offset
+     * @param hScrolled the size of horizontal scroll
+     */
     public void draw(GraphicsContext gc, double margin, double hScrolled) {
         bar.draw(gc, margin, hScrolled);
     }
 
 
+    /**
+     * Moves the caret to the specified offset position.
+     * @param charOffset the specified offset position
+     */
     public void at(long charOffset) {
         long offset = Math.max(0, charOffset);
         line = layoutLineAt(offset);
         bar.offsetAt(line, offset);
     }
 
+
+    /**
+     * Move the caret to the right.
+     */
     public void right() {
 
         if (line == null) {
@@ -117,6 +131,9 @@ public class CaretLine implements OffsetPointer {
     }
 
 
+    /**
+     * Move the caret to the left.
+     */
     public void left() {
 
         if (line == null) {
@@ -140,6 +157,9 @@ public class CaretLine implements OffsetPointer {
     }
 
 
+    /**
+     * Move the caret one line up.
+     */
     public void up() {
         if (line == null) {
             return;
@@ -152,6 +172,9 @@ public class CaretLine implements OffsetPointer {
     }
 
 
+    /**
+     * Move the caret one line down.
+     */
     public void down() {
         if (line == null) {
             return;
@@ -164,6 +187,9 @@ public class CaretLine implements OffsetPointer {
     }
 
 
+    /**
+     * Move the caret to the head of the line.
+     */
     public void home() {
         boolean skipWhitespace = true;
         if (line.offset() != bar.offset()) {
@@ -184,6 +210,9 @@ public class CaretLine implements OffsetPointer {
     }
 
 
+    /**
+     * Move the caret to the end of the line.
+     */
     public void end() {
         at(line.tailOffset() - line.endMarkCount());
     }

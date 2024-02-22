@@ -44,7 +44,7 @@ public class Syntax {
             return switch (name) {
                 case "java"     -> new JavaLexer();
                 case "json"     -> new JsonLexer();
-                case "md"       -> new MarkdownLexer(lexerProvider);
+                case "md", ""   -> new MarkdownLexer(lexerProvider);
                 case "diff"     -> new DiffLexer();
                 case "rust", "rs" -> new RustLexer();
                 case "python", "py" -> new PythonLexer();
@@ -67,6 +67,16 @@ public class Syntax {
         return (lexer instanceof PassThroughLexer)
             ? StylingTranslate.passThrough()
             : new SyntaxTranslate(lexer, baseColor);
+    }
+
+
+    /**
+     * Get the defaults StylingTranslate.
+     * @param baseColor the base color string
+     * @return the StylingTranslate
+     */
+    public static StylingTranslate of(String baseColor) {
+        return new SyntaxTranslate(lexerProvider.get(""), baseColor);
     }
 
 
