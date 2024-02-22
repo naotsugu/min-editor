@@ -33,7 +33,7 @@ public interface Translate<I, O> {
 
     /**
      * Get the contextual or not.
-     * @return the contextual or not
+     * @return {@code true} if this translate is contextual
      */
     default boolean contextual() {
         return false;
@@ -48,11 +48,13 @@ public interface Translate<I, O> {
      */
     default <X> Translate<I, X> compound(Translate<O, X> that) {
         if (contextual() || that.contextual()) {
-            return new Translate<I, X>() {
-                @Override public X applyTo(I in) {
+            return new Translate<>() {
+                @Override
+                public X applyTo(I in) {
                     return that.applyTo(Translate.this.applyTo(in));
                 }
-                @Override public boolean contextual() {
+                @Override
+                public boolean contextual() {
                     return true;
                 }
             };
