@@ -41,7 +41,7 @@ public interface StyledText extends Textual, Styled {
 
     /**
      * Head of line?
-     * @return
+     * @return {@code true} if this text is head of line
      */
     boolean hol();
 

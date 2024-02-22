@@ -131,7 +131,7 @@ public interface TextLine extends Textual {
         TextRun run;
         if (offset == tailOffset() && endMarkCount() == 0) {
             List<TextRun> runs = runs();
-            run = runs.get(runs.size() - 1);
+            run = runs.getLast();
         } else {
             run = textRunAt(offset);
         }

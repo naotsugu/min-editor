@@ -123,6 +123,7 @@ public interface Content {
      */
     Path path();
 
+
     /**
      * Get the length of characters(code points) this content.
      * @return the length of characters(code points)

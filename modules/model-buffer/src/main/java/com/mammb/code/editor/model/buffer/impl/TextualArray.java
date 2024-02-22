@@ -141,7 +141,7 @@ public class TextualArray implements TextEdit, TextualScroll<Textual> {
     @Override
     public boolean move(OffsetPoint base, int rowDelta) {
         if (list.isEmpty()) return false;
-        rowDelta = base.row() - list.get(0).offsetPoint().row() + rowDelta;
+        rowDelta = base.row() - list.getFirst().offsetPoint().row() + rowDelta;
         return (rowDelta > 0) ? !next(rowDelta).isEmpty() : !prev(-rowDelta).isEmpty();
     }
 

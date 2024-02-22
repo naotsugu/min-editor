@@ -71,8 +71,8 @@ public record StyledTextRecord(
         if (style.point() + style.length() <= textual.length()) {
             styles.add(style);
         } else {
-            throw new IndexOutOfBoundsException("out of bounds:" + style +
-                "[" + textual.text() + ", " + textual.length() + "]");
+            throw new IndexOutOfBoundsException(
+                STR."out of bounds:\{style}[\{textual.text()}, \{textual.length()}]");
         }
     }
 

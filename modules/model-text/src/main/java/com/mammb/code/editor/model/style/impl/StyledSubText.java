@@ -29,13 +29,13 @@ import java.util.List;
 public class StyledSubText implements StyledText {
 
     /** The source text. */
-    private StyledText styledText;
+    private final StyledText styledText;
 
     /** The start index of sub text. */
-    private int start;
+    private final int start;
 
     /** The length of sub text. */
-    private int length;
+    private final int length;
 
     /** The cache of sub OffsetPoint. */
     private OffsetPoint subPoint;

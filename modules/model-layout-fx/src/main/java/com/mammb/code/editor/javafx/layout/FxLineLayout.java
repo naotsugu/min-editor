@@ -128,7 +128,7 @@ public class FxLineLayout implements LineLayout {
             }
 
             OffsetPoint offsetPoint = OffsetPoint.of(
-                textRuns.get(0).source().offsetPoint().row(),
+                textRuns.getFirst().source().offsetPoint().row(),
                 point.offset(),
                 point.cpOffset());
             TextLine line = TextLine.of(

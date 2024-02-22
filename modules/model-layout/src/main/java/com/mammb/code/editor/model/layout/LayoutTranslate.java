@@ -48,7 +48,7 @@ public class LayoutTranslate implements Translate<List<Span>, TextLine> {
     @Override
     public TextLine applyTo(List<Span> row) {
         List<TextLine> results = lineLayout.layout(row);
-        return results.isEmpty() ? null : results.get(0);
+        return results.isEmpty() ? null : results.getFirst();
     }
 
 }

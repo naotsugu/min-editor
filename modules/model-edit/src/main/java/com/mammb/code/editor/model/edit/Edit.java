@@ -127,7 +127,7 @@ public sealed interface Edit extends TextTranslate
      */
     static Edit insert(String text, List<OffsetPoint> points) {
         if (points.size() == 1) {
-            return insert(text, points.get(0));
+            return insert(text, points.getFirst());
         }
         long time = System.currentTimeMillis();
         return new CompoundEdit(

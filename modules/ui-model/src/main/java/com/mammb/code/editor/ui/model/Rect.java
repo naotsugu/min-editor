@@ -22,26 +22,26 @@ package com.mammb.code.editor.ui.model;
 public interface Rect {
 
     /**
-     * Get the caret rect x.
-     * @return the caret rect x
+     * Get the rect x.
+     * @return the rect x
      */
     double x();
 
     /**
-     * Get the caret rect y.
-     * @return the caret rect y
+     * Get the rect y.
+     * @return the rect y
      */
     double y();
 
     /**
-     * Get the caret rect width.
-     * @return the caret rect width
+     * Get the rect width.
+     * @return the rect width
      */
     double width();
 
     /**
-     * Get the caret rect height.
-     * @return the caret rect height
+     * Get the rect height.
+     * @return the rect height
      */
     double height();
 

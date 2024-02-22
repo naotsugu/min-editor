@@ -22,10 +22,22 @@ package com.mammb.code.editor.model.layout;
  */
 public interface FontStyle<F, C> {
 
+    /**
+     * Get the font.
+     * @return the font
+     */
     F font();
 
+    /**
+     * Get the color.
+     * @return the color
+     */
     C color();
 
+    /**
+     * Get the background color.
+     * @return the background color
+     */
     C background();
 
 }
