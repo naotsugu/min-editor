@@ -777,11 +777,11 @@ public class EditorModelImpl implements EditorModel {
     public void toggleWrap() {
         if (texts instanceof PlainScreenText linear)  {
             texts = linear.asWrapped(screen.textArea().width());
-            screen.sethScrollEnabled(false);
+            screen.setHScrollEnabled(false);
             carets.refresh();
         } else if (texts instanceof WrapScreenText wrap) {
             texts = wrap.asPlain();
-            screen.sethScrollEnabled(true);
+            screen.setHScrollEnabled(true);
             screen.setMaxWidth(texts.lines().stream().mapToDouble(TextLine::width).max().orElse(0));
             carets.refresh();
         }

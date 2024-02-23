@@ -28,6 +28,9 @@ public class ScrollThumb extends Rectangle {
     /** The base color. */
     private final Color baseColor;
 
+    /** The dragging flag. */
+    private boolean dragging;
+
 
     /**
      * Constructor.
@@ -49,6 +52,7 @@ public class ScrollThumb extends Rectangle {
 
     }
 
+
     /**
      * Initialize listener.
      */
@@ -59,12 +63,31 @@ public class ScrollThumb extends Rectangle {
         }
     }
 
+
+    /**
+     * Mouse entered handler.
+     * @param event the mouse event
+     */
     private void handleMouseEntered(MouseEvent event) {
         setFill(baseColor.deriveColor(0, 1, 1, 0.6));
     }
 
+
+    /**
+     * Mouse exited handler.
+     * @param event the mouse event
+     */
     private void handleMouseExited(MouseEvent event) {
         setFill(baseColor.deriveColor(0, 1, 1, 0.3));
+    }
+
+
+    /**
+     * Set the dragging.
+     * @param dragging the dragging
+     */
+    public void setDragging(boolean dragging) {
+        this.dragging = dragging;
     }
 
 }

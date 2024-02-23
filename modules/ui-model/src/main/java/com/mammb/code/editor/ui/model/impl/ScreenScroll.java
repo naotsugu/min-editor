@@ -72,6 +72,12 @@ public class ScreenScroll {
         this.pageLineSize = screenRowSize(height, context);
     }
 
+
+    /**
+     * Set the size.
+     * @param width the width
+     * @param height the height
+     */
     public void setSize(double width, double height) {
         this.width = width;
         this.height = height;
@@ -137,42 +143,73 @@ public class ScreenScroll {
 
     public void setMaxWidth(double maxWidth) {
         this.maxWidth = Math.max(maxWidth, width - gutter.width());
+        adjustHScroll();
     }
 
     public void resetMaxWidth() {
         maxWidth = width - gutter.width();
+        adjustHScroll();
     }
 
     public void updateMaxWith(double candidateWidth) {
         if (candidateWidth > maxWidth) {
             maxWidth = candidateWidth;
+            adjustHScroll();
         }
     }
 
-    public void sethScrollEnabled(boolean hScrollEnabled) {
+    public void setHScrollEnabled(boolean hScrollEnabled) {
         this.hScrollEnabled = hScrollEnabled;
     }
 
+    /**
+     * Get the position of left.
+     * @return the position of left
+     */
     public double textLeft() {
         return gutter.width() - hScroll.getValue();
     }
 
+
+    /**
+     * Get the width.
+     * @return the width
+     */
     public double width() {
         return width;
     }
 
+
+    /**
+     * Get the height.
+     * @return the height
+     */
     public double height() {
         return height;
     }
 
+
+    /**
+     * Get the page line size.
+     * @return the page line size
+     */
     public int pageLineSize() {
         return pageLineSize;
     }
 
+
+    /**
+     * Get the gutter.
+     * @return the gutter
+     */
     public Gutter gutter() {
         return gutter;
     }
 
+    /**
+     * Get the horizontal scroll value.
+     * @return the horizontal scroll value
+     */
     public double hScrollValue() {
         return hScroll.getValue();
     }
