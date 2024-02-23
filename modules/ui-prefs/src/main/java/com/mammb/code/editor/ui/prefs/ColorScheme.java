@@ -68,7 +68,7 @@ public enum ColorScheme {
         } else if (os.contains("mac")) {
             return macOsMode();
         } else {
-            return LIGHT;
+            return DARK;
         }
     }
 

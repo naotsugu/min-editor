@@ -24,9 +24,34 @@ import com.mammb.code.editor.ui.prefs.Preference;
  */
 public class ContextImpl implements Context {
 
-    private Preference preference = PreferenceImpl.of();
-    private double nodeWidth = 800;
-    private double nodeHeight = 480;
+    /** The preference. */
+    private Preference preference;
+
+    /** The width. */
+    private double width;
+
+    /** The height. */
+    private double height;
+
+    /**
+     * Constructor.
+     * @param preference the preference
+     * @param width the width
+     * @param height the height
+     */
+    private ContextImpl(Preference preference, double width, double height) {
+        this.preference = preference;
+        this.width = width;
+        this.height = height;
+    }
+
+    /**
+     * Constructor.
+     */
+    public ContextImpl() {
+        this(PreferenceImpl.of(), 800, 400);
+    }
+
 
     @Override
     public Preference preference() {
@@ -35,11 +60,12 @@ public class ContextImpl implements Context {
 
     @Override
     public double regionWidth() {
-        return nodeWidth;
+        return width;
     }
 
     @Override
     public double regionHeight() {
-        return nodeHeight;
+        return height;
     }
+
 }

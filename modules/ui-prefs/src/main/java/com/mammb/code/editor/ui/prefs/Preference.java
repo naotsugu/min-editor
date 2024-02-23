@@ -22,13 +22,43 @@ import com.mammb.code.editor.ui.prefs.impl.PreferenceImpl;
  * @author Naotsugu Kobayashi
  */
 public interface Preference {
+
+    /**
+     * Get the color scheme.
+     * @return the color scheme
+     */
     ColorScheme colorScheme();
+
+    /**
+     * Get the font size.
+     * @return the font size
+     */
     double fontSize();
+
+    /**
+     * Get the font name.
+     * @return the font name
+     */
     String fontName();
+
+    /**
+     * Get the background color.
+     * @return the background color
+     */
     String bgColor();
+
+    /**
+     * Get the foreground color.
+     * @return the foreground color
+     */
     String fgColor();
 
+    /**
+     * Create a new preference.
+     * @return a new preference
+     */
     static Preference of() {
         return PreferenceImpl.of();
     }
+
 }

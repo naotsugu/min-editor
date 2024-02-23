@@ -23,10 +23,28 @@ import com.mammb.code.editor.ui.prefs.impl.ContextImpl;
  */
 public interface Context {
 
+    /**
+     * Get the preference.
+     * @return the preference
+     */
     Preference preference();
+
+    /**
+     * Get the region width.
+     * @return the region width
+     */
     double regionWidth();
+
+    /**
+     * Get the region height.
+     * @return the region height
+     */
     double regionHeight();
 
+    /**
+     * Create a new context.
+     * @return a new context
+     */
     static Context of() {
         return new ContextImpl();
     }

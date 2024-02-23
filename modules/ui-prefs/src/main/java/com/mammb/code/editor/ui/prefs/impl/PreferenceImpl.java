@@ -24,18 +24,34 @@ import com.mammb.code.editor.ui.prefs.Preference;
  */
 public class PreferenceImpl implements Preference {
 
+    /** The color scheme. */
     private ColorScheme colorScheme;
 
+    /** The font size. */
     private double fontSize;
 
+    /** The font name. */
     public String fontName;
 
+    /** The background color. */
     public String bgColor;
 
+    /** The foreground color. */
     public String fgColor;
 
 
-    private PreferenceImpl(ColorScheme colorScheme, double fontSize, String fontName, String bgColor, String fgColor) {
+    /**
+     * Constructor.
+     * @param colorScheme the color scheme
+     * @param fontSize the font size
+     * @param fontName the font name
+     * @param bgColor the background color
+     * @param fgColor the foreground color
+     */
+    private PreferenceImpl(
+            ColorScheme colorScheme,
+            double fontSize, String fontName,
+            String bgColor, String fgColor) {
         this.colorScheme = colorScheme;
         this.fontSize = fontSize;
         this.fontName = fontName;
@@ -43,9 +59,18 @@ public class PreferenceImpl implements Preference {
         this.fgColor = fgColor;
     }
 
+
+    /**
+     * Create a default preference.
+     * @return a default preference
+     */
     public static Preference of() {
+
         ColorScheme colorScheme = ColorScheme.platform();
-        String fontName = System.getProperty("os.name").toLowerCase().startsWith("windows") ? "MS Gothic" : "Consolas";
+        String fontName = System.getProperty("os.name").toLowerCase().startsWith("windows")
+            ? "MS Gothic"
+            : "Consolas";
+
         return new PreferenceImpl(
             colorScheme,
             15,
