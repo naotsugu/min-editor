@@ -45,10 +45,20 @@ public class AddressPath {
         this.directory = directory;
     }
 
+    /**
+     * Create a new AddressPath.
+     * @param path the path
+     * @return a new AddressPath
+     */
     public static AddressPath of(Path path) {
         return new AddressPath(path, Files.isDirectory(path));
     }
 
+    /**
+     * Create a new AddressPath.
+     * @param path the path string
+     * @return a new AddressPath
+     */
     public static AddressPath of(String path) {
         return of(Path.of(path));
     }
@@ -66,6 +76,10 @@ public class AddressPath {
     }
 
 
+    /**
+     * Get the path.
+     * @return the path
+     */
     public Path path() {
         return path;
     }

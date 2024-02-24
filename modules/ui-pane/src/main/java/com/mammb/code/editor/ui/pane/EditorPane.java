@@ -291,11 +291,11 @@ public class EditorPane extends StackPane {
      */
     private void handleKeyPressed(KeyEvent e) {
 
-        final Keys.Action action = Keys.asAction(e);
+        final Keys.Action keyAction = Keys.asAction(e);
         final boolean withSelect = e.isShiftDown();
 
-        if (action != Keys.Action.EMPTY) {
-            switch (action) {
+        if (keyAction != Keys.Action.EMPTY) {
+            switch (keyAction) {
                 case OPEN       -> FileAction.of(this, model).open(createOpenHandler());
                 case SAVE       -> FileAction.of(this, model).save(createSaveHandler());
                 case SAVE_AS    -> FileAction.of(this, model).saveAs(createSaveHandler());

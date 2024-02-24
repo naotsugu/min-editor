@@ -124,6 +124,11 @@ public class FileAction {
         }
     }
 
+
+    /**
+     * Execute the action with dirty check.
+     * @param runnable the action to be run
+     */
     public void confirmIfDirty(Runnable runnable) {
         if (model.modified()) {
             OverlayDialog.confirm(pane,
@@ -137,6 +142,11 @@ public class FileAction {
 
     // -- private -------------------------------------------------------------
 
+    /**
+     * Update the editor model with the specified paths.
+     * @param path the specified paths
+     * @param handler the handler of model update
+     */
     private void updateModel(Path path, EventHandler<WorkerStateEvent> handler) {
 
         if (!pathChanged(path) || !Files.isRegularFile(path)) {
@@ -144,6 +154,7 @@ public class FileAction {
         }
 
         if (size(path) > 3_000_000) {
+            // Large files are partially loaded and full loading is performed as a separate task
             BlockUi.run(pane, createModelTask(() -> model.partiallyWith(path), handler));
             BackgroundRun.run(pane, createModelTask(() -> model.with(path), handler));
         } else {
@@ -201,6 +212,12 @@ public class FileAction {
     }
 
 
+    /**
+     * Gets whether the specified paths have equal extensions.
+     * @param path1 the specified path1
+     * @param path2 the specified path2
+     * @return {@code true}, if the specified paths have equal extensions
+     */
     private static boolean equalsExtension(Path path1, Path path2) {
 
         if (path1 == null || path2 == null) {
@@ -212,11 +229,16 @@ public class FileAction {
         String name2 = path2.toString();
         String ext2 = name2.substring(name2.lastIndexOf('.') + 1);
 
-        return ext1.equals(ext2);
+        return Objects.equals(ext1, ext2);
 
     }
 
 
+    /**
+     * Get the size of the specified path file.
+     * @param path the specified path
+     * @return the size of the specified path file
+     */
     private static long size(Path path) {
         try {
             return Files.size(path);
