@@ -74,6 +74,11 @@ public class Keys {
             : !e.isControlDown() && !e.isAltDown() && !e.isMetaDown();
 
 
+    /**
+     * Converts a key event into an action.
+     * @param e a key event
+     * @return a key action
+     */
     public static Action asAction(KeyEvent e) {
         if (Keys.SC_O.match(e)) return Action.OPEN;
         else if (Keys.SC_S.match(e)) return Action.SAVE;
@@ -93,4 +98,5 @@ public class Keys {
         else if (Keys.SC_D.match(e)) return Action.DEBUG;
         else return Action.EMPTY;
     }
+
 }

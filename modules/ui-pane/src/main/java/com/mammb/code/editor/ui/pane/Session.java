@@ -23,26 +23,64 @@ import java.nio.file.Path;
  */
 public interface Session {
 
+    /**
+     * Get the path.
+     * @return the path
+     */
     Path path();
 
+    /**
+     * Get the number of row(zero-origin).
+     * @return the number of row
+     */
     int row();
 
+    /**
+     * Get the character index at the caret.
+     * @return the character index at the caret
+     */
     long caretIndex();
 
+    /**
+     * Gets whether the path is empty or not.
+     * @return {@code true}, if the path is empty
+     */
     default boolean isEmptyPath() {
         return path() == null;
     }
 
+    /**
+     * Get whether the origin is pointed to.
+     * @return {@code true}, if the origin is pointed to
+     */
     default boolean isOriginPoint() {
         return row() == 0 && caretIndex() == 0;
     }
 
+    /**
+     * The recode of session.
+     * @param path the path
+     * @param row the number of row
+     * @param caretIndex the index of caret
+     */
     record SessionRecord(Path path, int row, long caretIndex) implements Session {}
 
+    /**
+     * Create a new Session.
+     * @param path the path
+     * @return a new Session
+     */
     static Session of(Path path) {
         return of(path, 0, 0);
     }
 
+    /**
+     * Create a new Session.
+     * @param path the path
+     * @param row the number of row
+     * @param caretIndex the index of caret
+     * @return a new Session
+     */
     static Session of(Path path, int row, long caretIndex) {
         return new SessionRecord(path, row, caretIndex);
     }
