@@ -36,6 +36,7 @@ import javafx.scene.text.Text;
  */
 public class StatusBar extends HBox {
 
+    /** The Height. */
     public static final double HEIGHT = 14;
 
     /** The Context. */
@@ -87,8 +88,8 @@ public class StatusBar extends HBox {
     public void bind(StateHandler stateHandler) {
         stateHandler.addLineEndingChanged(c -> lineEndingText.setText(c.asString()));
         stateHandler.addCharsetChanged(c -> charsetText.setText(c.toString()));
-        stateHandler.addCaretPointChanged(c -> caretText.setText(selectionString + " " + (caretPointString = c.asString())));
-        stateHandler.addSelectionChanged(c -> caretText.setText((selectionString = c.asString()) + " " + caretPointString));
+        stateHandler.addCaretPointChanged(c -> caretText.setText(STR."\{selectionString} \{caretPointString = c.asString()}"));
+        stateHandler.addSelectionChanged(c -> caretText.setText(STR."\{selectionString = c.asString()} \{caretPointString}"));
     }
 
 
