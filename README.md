@@ -60,14 +60,15 @@ git submodule update --remote --merge
 
 ## Usage
 
-| Operation  | Key Combinations                                   |
-|------------|----------------------------------------------------|
-| Edit       | `Ctrl+C` `Ctrl+V` `Ctrl-X` `Ctrl-A`                |
-| File       | `Ctrl+O` `Ctrl+S` `Ctrl+Shift+S`                   |
-| Undo Redo  | `Ctrl+Z` `Ctrl+Y` `Ctrl+Shift+Z`                   |
-| Window     | `Ctrl+N` `Ctrl+W`                                  |
-| Find | `Ctrl+F`                                           |
-| multicarrette | `Ctrl+Click` Ctrl + click on the left line number |
+| Operation   | Key Combinations                                  |
+|-------------|---------------------------------------------------|
+| Edit        | `Ctrl+C` `Ctrl+V` `Ctrl-X` `Ctrl-A`               |
+| File        | `Ctrl+O` `Ctrl+S` `Ctrl+Shift+S`                  |
+| Undo Redo   | `Ctrl+Z` `Ctrl+Y` `Ctrl+Shift+Z`                  |
+| Window      | `Ctrl+N` `Ctrl+W`                                 |
+| Find        | `Ctrl+F`                                          |
+| upper case  | `Ctrl+U`                                          |
+| multi caret | `Ctrl+Click` Ctrl + click on the left line number |
 
 
 

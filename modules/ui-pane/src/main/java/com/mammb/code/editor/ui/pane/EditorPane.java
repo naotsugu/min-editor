@@ -207,7 +207,7 @@ public class EditorPane extends StackPane {
             this.handleModelCreated(e);
             if (!session.isOriginPoint()) {
                 var sp = new ScreenPoint(session.row(), session.caretIndex());
-                aroundEdit(() -> model.apply(sp));
+                withDraw(() -> model.apply(sp));
             }
             upCall.pathChanged(session(), prev);
         });
@@ -300,15 +300,17 @@ public class EditorPane extends StackPane {
                 case SAVE       -> FileAction.of(this, model).save(createSaveHandler());
                 case SAVE_AS    -> FileAction.of(this, model).saveAs(createSaveHandler());
                 case COPY       -> model.copyToClipboard();
-                case PASTE      -> aroundEdit(model::pasteFromClipboard);
-                case CUT        -> aroundEdit(model::cutToClipboard);
-                case UNDO       -> aroundEdit(model::undo);
-                case REDO       -> aroundEdit(model::redo);
-                case SELECT_ALL -> aroundEdit(model::selectAll);
-                case WRAP       -> aroundEdit(model::toggleWrap);
+                case PASTE      -> withDraw(model::pasteFromClipboard);
+                case CUT        -> withDraw(model::cutToClipboard);
+                case UNDO       -> withDraw(model::undo);
+                case REDO       -> withDraw(model::redo);
+                case SELECT_ALL -> withDraw(model::selectAll);
+                case WRAP       -> withDraw(model::toggleWrap);
                 case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
                 case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
-                case UPPER,LOWER -> aroundEdit(() -> model.applyEditing(Editing.upperCase()));
+                case UPPER,LOWER -> withDraw(() -> model.applyEditing(Editing.upperCase()));
+                case SCROLL_UP  -> withDraw(() -> model.scrollPrev(1));
+                case SCROLL_DOWN-> withDraw(() -> model.scrollNext(1));
                 case DEBUG      -> debug();
                 //case NEW        -> newPane();
             }
@@ -324,9 +326,9 @@ public class EditorPane extends StackPane {
             case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
             case PAGE_UP    -> aroundEdit(model::pageUp, withSelect);
             case PAGE_DOWN  -> aroundEdit(model::pageDown, withSelect);
-            case DELETE     -> aroundEdit(model::delete);
-            case BACK_SPACE -> aroundEdit(model::backspace);
-            case ESCAPE     -> aroundEdit(model::clear);
+            case DELETE     -> withDraw(model::delete);
+            case BACK_SPACE -> withDraw(model::backspace);
+            case ESCAPE     -> withDraw(model::clear);
         }
     }
 
@@ -349,7 +351,7 @@ public class EditorPane extends StackPane {
 
             if (ascii == 9 || ascii == 25) { // 9:TAB 25:ME(shift+tab)
                 if (model.peekSelection(t -> t.contains("\n"))) {
-                    aroundEdit(() -> {
+                    withDraw(() -> {
                         if (e.isShiftDown()) model.unindent();
                         else model.indent();
                     });
@@ -365,7 +367,7 @@ public class EditorPane extends StackPane {
         String ch = (ascii == 13) // 13:CR
             ? "\n"
             : e.getCharacter();
-        aroundEdit(() -> model.applyEditing(Editing.keyTypedSteal(ch)));
+        withDraw(() -> model.applyEditing(Editing.keyTypedSteal(ch)));
     }
 
 
@@ -473,7 +475,7 @@ public class EditorPane extends StackPane {
             this.handleModelCreated(e);
             if (!prev.isOriginPoint()) {
                 var sp = new ScreenPoint(prev.row(), prev.caretIndex());
-                aroundEdit(() -> model.apply(sp));
+                withDraw(() -> model.apply(sp));
             }
             var curr = session();
             if (prev.isEmptyPath() || !prev.path().equals(curr.path())) {
@@ -515,7 +517,7 @@ public class EditorPane extends StackPane {
      */
     private void find(String regexp, boolean forward) {
         canvas.requestFocus();
-        aroundEdit(() -> model.findHandle().findNext(regexp, true, forward));
+        withDraw(() -> model.findHandle().findNext(regexp, true, forward));
     }
 
 
@@ -524,7 +526,7 @@ public class EditorPane extends StackPane {
     }
 
 
-    private void aroundEdit(Runnable runnable) {
+    private void withDraw(Runnable runnable) {
         timeline.stop();
         model.showCaret(gc);
         runnable.run();
@@ -534,7 +536,7 @@ public class EditorPane extends StackPane {
 
 
     private void aroundEdit(Runnable edit, boolean withSelect) {
-        aroundEdit(() -> {
+        withDraw(() -> {
             if (withSelect) {
                 model.selectOn();
             } else {
