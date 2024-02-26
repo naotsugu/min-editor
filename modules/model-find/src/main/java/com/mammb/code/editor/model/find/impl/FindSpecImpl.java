@@ -67,8 +67,7 @@ public class FindSpecImpl implements FindSpec {
             if (buffer.length <= foundCount) {
                 buffer = grow(foundCount + 1);
             }
-            buffer[foundCount++] = Match.of(ret, cs.length(),
-                    text.codePointCount(ret, ret + cs.length()));
+            buffer[foundCount++] = Match.of(ret, cs.length(), text.codePointCount(0, ret));
             i = ret + cs.length();
         }
         return (foundCount == 0) ? empty : Arrays.copyOf(buffer, foundCount);

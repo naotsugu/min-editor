@@ -154,6 +154,10 @@ public class FindImpl implements Find {
             text.substring(peripheralStart, peripheralEnd),
             Math.toIntExact(point.offset() - peripheralStart),
             point.row());
+        System.out.println("point.offset():" + point.offset());
+        System.out.println("match.start():" + match.start());
+        System.out.println("point.cpOffset():" + point.cpOffset());
+        System.out.println("match.startCp():" + match.startCp());
         listeners.forEach(listener -> listener.accept(found));
     }
 
