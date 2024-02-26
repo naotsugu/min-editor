@@ -40,7 +40,8 @@ public record FoundRun(
      * @return the matched text
      */
     public String text() {
-        return peripheral.substring(offsetOnPeripheral, offsetOnPeripheral + length);
+        int index = Math.toIntExact(chOffset - offsetOnPeripheral);
+        return peripheral.substring(index, index + length);
     }
 
 }
