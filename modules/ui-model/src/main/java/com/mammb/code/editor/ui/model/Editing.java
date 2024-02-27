@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import com.mammb.code.editor.ui.model.editing.HexCaseEditing;
 import com.mammb.code.editor.ui.model.editing.LineBreakEditing;
 import com.mammb.code.editor.ui.model.editing.PassThroughInput;
 import com.mammb.code.editor.ui.model.editing.TabEditing;
@@ -45,6 +46,14 @@ public interface Editing {
      */
     static Editing upperCase() {
         return new UpperCaseEditing();
+    }
+
+    /**
+     * Create to hex case editing.
+     * @return the Editing
+     */
+    static Editing hexCase() {
+        return new HexCaseEditing();
     }
 
     /**
