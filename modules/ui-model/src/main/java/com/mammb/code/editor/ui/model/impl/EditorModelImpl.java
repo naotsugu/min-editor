@@ -686,7 +686,7 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void selectAll() {
         var metrics = buffer.metrics();
-        selection.selectOn(OffsetPoint.zero,
+        selection.select(OffsetPoint.zero,
             OffsetPoint.of(metrics.lfCount() + 1, metrics.chCount(), metrics.cpCount()));
     }
     // </editor-fold>

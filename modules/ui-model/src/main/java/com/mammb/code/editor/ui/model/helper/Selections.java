@@ -38,7 +38,7 @@ public class Selections {
      * @param selection the selection
      */
     public static void select(OffsetPoint[] range, Caret caret, Selection selection) {
-        selection.selectOn(
+        selection.select(
             Objects.requireNonNull(range[0]),
             Objects.requireNonNull(range[1]));
         caret.at(range[1].offset(), true);
@@ -63,10 +63,8 @@ public class Selections {
      */
     public static void select(long offset1, long offset2, Caret caret, Selection selection) {
         caret.at(offset1, true);
-        OffsetPoint start = caret.offsetPoint();
+        selection.selectOn(caret);
         caret.at(offset2, true);
-        OffsetPoint end = caret.offsetPoint();
-        selection.selectOn(start, end);
     }
 
     /**

@@ -32,13 +32,13 @@ public interface Selection extends RangeSupplier {
      * @param start the start point
      * @param end the end point
      */
-    void selectOn(OffsetPoint start, OffsetPoint end);
+    void select(OffsetPoint start, OffsetPoint end);
 
     /**
      * Start select at the caret position.
      * @param caret the source caret position
      */
-    void selectOn(CaretMulti caret);
+    void selectOn(Caret caret);
 
     /**
      * Start select.

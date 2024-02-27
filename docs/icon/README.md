@@ -8,7 +8,7 @@ Get the png2icons from [this](https://github.com/idesis-gmbh/png2icons/releases)
 Grant execution privileges.
 
 ```
-chmod 755 png2icons
+chmod 755 icons
 ```
 
 

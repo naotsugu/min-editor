@@ -18,9 +18,9 @@ package com.mammb.code.editor.ui.model.impl;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.OffsetPointRange;
-import com.mammb.code.editor.ui.model.CaretMulti;
-import com.mammb.code.editor.ui.model.Selection;
+import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.RangeSupplier;
+import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -46,13 +46,13 @@ public class SelectionImpl implements Selection {
 
 
     @Override
-    public void selectOn(OffsetPoint start, OffsetPoint end) {
+    public void select(OffsetPoint start, OffsetPoint end) {
         rangeSupplier = RangeSupplier.of(start, end);
         mode = Mode.FIXED;
     }
 
     @Override
-    public void selectOn(CaretMulti caret) {
+    public void selectOn(Caret caret) {
         if (mode != Mode.CARET) {
             rangeSupplier = caret.selectionRange();
             mode = Mode.CARET;
