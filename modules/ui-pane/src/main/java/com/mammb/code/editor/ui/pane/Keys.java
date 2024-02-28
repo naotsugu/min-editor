@@ -41,6 +41,7 @@ public class Keys {
         UPPER, LOWER,
         SCROLL_UP, SCROLL_DOWN,
         HEX,
+        CALC,
         DEBUG,
         ;
     }
@@ -74,6 +75,7 @@ public class Keys {
     private static final KeyCombination SC_DOWN = new KeyCodeCombination(KeyCode.DOWN, KeyCombination.SHORTCUT_DOWN);
 
     private static final KeyCombination SC_0 = new KeyCharacterCombination("0", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_R = new KeyCharacterCombination("r", KeyCombination.SHORTCUT_DOWN);
 
     public static final Predicate<KeyEvent> controlKeysFilter = e ->
         System.getProperty("os.name").toLowerCase().startsWith("windows")
@@ -105,6 +107,7 @@ public class Keys {
         else if (Keys.SC_UP.match(e)) return Action.SCROLL_UP;
         else if (Keys.SC_DOWN.match(e)) return Action.SCROLL_DOWN;
         else if (Keys.SC_0.match(e)) return Action.HEX;
+        else if (Keys.SC_R.match(e)) return Action.CALC;
         else if (Keys.SC_D.match(e)) return Action.DEBUG;
         else return Action.EMPTY;
     }

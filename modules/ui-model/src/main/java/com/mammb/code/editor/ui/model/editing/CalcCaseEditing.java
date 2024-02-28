@@ -30,6 +30,9 @@ import java.util.stream.Collectors;
  */
 public class CalcCaseEditing implements Editing {
 
+    /** logger. */
+    private static final System.Logger log = System.getLogger(CalcCaseEditing.class.getName());
+
     @Override
     public boolean apply(EditorModel model, EditorQuery query) {
         String text = query.selectedText();
@@ -37,7 +40,13 @@ public class CalcCaseEditing implements Editing {
             return false;
         }
 
-        return false;
+        try {
+            model.selectionReplace("%s = %s".formatted(text, calc(text)));
+            return true;
+        } catch (Exception e) {
+            log.log(System.Logger.Level.WARNING, e);
+            return false;
+        }
     }
 
 
@@ -48,7 +57,7 @@ public class CalcCaseEditing implements Editing {
     }
 
     static List<String> infixToRpn(String text) {
-        List<String> tokens = Arrays.stream(text.splitWithDelimiters("\\W", -1))
+        List<String> tokens = Arrays.stream(text.splitWithDelimiters("[^a-zA-Z_0-9\\.]", -1))
             .filter(Predicate.not(String::isBlank)).toList();
         return shuntingYard(tokens);
     }
@@ -63,8 +72,11 @@ public class CalcCaseEditing implements Editing {
                 case "+" -> new BigDecimal(stack.pop()).add(new BigDecimal(stack.pop())).toPlainString();
                 case "-" -> new BigDecimal(stack.pop()).subtract(new BigDecimal(stack.pop())).toPlainString();
                 case "*" -> new BigDecimal(stack.pop()).multiply(new BigDecimal(stack.pop())).toPlainString();
-                case "/" -> new BigDecimal(stack.pop()).divide(new BigDecimal(stack.pop())).toPlainString();
                 case "^" -> new BigDecimal(stack.pop()).pow(Integer.parseInt(stack.pop())).toPlainString();
+                case "/" -> {
+                    var divisor = new BigDecimal(stack.pop());
+                    yield new BigDecimal(stack.pop()).divide(divisor).toPlainString();
+                }
                 default -> token;
             });
         }

@@ -312,6 +312,7 @@ public class EditorPane extends StackPane {
                 case SCROLL_UP  -> withDraw(() -> model.scrollPrev(1));
                 case SCROLL_DOWN-> withDraw(() -> model.scrollNext(1));
                 case HEX        -> withDraw(() -> model.applyEditing(Editing.hexCase()));
+                case CALC       -> withDraw(() -> model.applyEditing(Editing.calcCase()));
                 case DEBUG      -> debug();
                 //case NEW        -> newPane();
             }

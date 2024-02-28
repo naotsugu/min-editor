@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import com.mammb.code.editor.ui.model.editing.CalcCaseEditing;
 import com.mammb.code.editor.ui.model.editing.HexCaseEditing;
 import com.mammb.code.editor.ui.model.editing.LineBreakEditing;
 import com.mammb.code.editor.ui.model.editing.PassThroughInput;
@@ -40,6 +41,7 @@ public interface Editing {
      */
     boolean apply(EditorModel model, EditorQuery query);
 
+
     /**
      * Create to upper case editing.
      * @return the Editing
@@ -48,6 +50,7 @@ public interface Editing {
         return new UpperCaseEditing();
     }
 
+
     /**
      * Create to hex case editing.
      * @return the Editing
@@ -55,6 +58,16 @@ public interface Editing {
     static Editing hexCase() {
         return new HexCaseEditing();
     }
+
+
+    /**
+     * Create to calc case editing.
+     * @return the Editing
+     */
+    static Editing calcCase() {
+        return new CalcCaseEditing();
+    }
+
 
     /**
      * Create a key typed steal editing.
