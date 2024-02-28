@@ -41,7 +41,8 @@ public class CalcCaseEditing implements Editing {
         }
 
         try {
-            model.selectionReplace("%s = %s".formatted(text, calc(text)));
+            String s = text.contains(" ") ? " " : "";
+            model.selectionReplace("%s%s=%s%s".formatted(text, s, s, calc(text)));
             return true;
         } catch (Exception e) {
             log.log(System.Logger.Level.WARNING, e);
