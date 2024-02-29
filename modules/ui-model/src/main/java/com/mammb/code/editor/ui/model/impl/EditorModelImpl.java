@@ -45,6 +45,7 @@ import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.helper.Clipboards;
 import com.mammb.code.editor.ui.model.helper.Selections;
+import com.mammb.code.editor.ui.model.ModelQuery;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
 import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -53,6 +54,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -944,6 +946,29 @@ public class EditorModelImpl implements EditorModel {
                 return buffer.rowSupplier().before(carets.offsetPoint().cpOffset());
             }
         };
+    }
+
+
+    private List<ModelQuery.Result<?>> query(ModelQuery<?>... queries) {
+        List<ModelQuery.Result<?>> results = new ArrayList<>();
+        for (ModelQuery<?> query : queries) {
+            results.add(switch (query) {
+                case ModelQuery.SelectedText q -> {
+                    if (!selection.hasSelection()) {
+                        yield q.on("");
+                    }
+                    OffsetPointRange range = selection.getRanges().getFirst();
+                    yield q.on(buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE)));
+                }
+                case ModelQuery.CurrentLineText q ->
+                    q.on(texts.lineAt(carets.offset()).text());
+                case ModelQuery.CurrentRowText q ->
+                    q.on(buffer.rowSupplier().at(carets.offset()));
+                case ModelQuery.CaretBeforeText q ->
+                    q.on(buffer.rowSupplier().before(carets.offsetPoint().cpOffset()));
+            });
+        }
+        return results;
     }
 
 }
