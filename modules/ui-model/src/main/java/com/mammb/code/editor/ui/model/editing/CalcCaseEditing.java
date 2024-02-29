@@ -51,18 +51,35 @@ public class CalcCaseEditing implements Editing {
     }
 
 
+    /**
+     * Calculate the given formula.
+     * @param text the formula string
+     * @return the result string
+     */
     static String calc(String text) {
         List<String> rpn = infixToRpn(text);
         BigDecimal result = evaluate(rpn);
         return result.toPlainString();
     }
 
+
+    /**
+     * Convert the infix notation to the reverse polish notation.
+     * @param text the input text
+     * @return the reverse polish notation list
+     */
     static List<String> infixToRpn(String text) {
         List<String> tokens = Arrays.stream(text.splitWithDelimiters("[^a-zA-Z_0-9\\.]", -1))
             .filter(Predicate.not(String::isBlank)).toList();
         return shuntingYard(tokens);
     }
 
+
+    /**
+     * Evaluate the reverse polish notation.
+     * @param rpn the reverse polish notation
+     * @return the result of evaluate
+     */
     static BigDecimal evaluate(List<String> rpn) {
         if (rpn == null || rpn.isEmpty()) {
             return BigDecimal.ZERO;
@@ -85,6 +102,9 @@ public class CalcCaseEditing implements Editing {
     }
 
 
+    /**
+     * The computational operators.
+     */
     private enum Operator {
         ADD("+", false, 0),
         SUB("-", true,  0),
@@ -123,6 +143,11 @@ public class CalcCaseEditing implements Editing {
     }
 
 
+    /**
+     * Get the reverse polish notation by shunting yard algorithm.
+     * @param tokens the infix notation tokens
+     * @return the the reverse polish notation token list
+     */
     private static List<String> shuntingYard(List<String> tokens) {
 
         List<String> output = new ArrayList<>();
