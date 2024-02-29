@@ -44,8 +44,8 @@ import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.helper.Clipboards;
 import com.mammb.code.editor.ui.model.helper.Selections;
-import com.mammb.code.editor.ui.model.query.ModelQuery;
-import com.mammb.code.editor.ui.model.query.Queryable;
+import com.mammb.code.editor.ui.model.ModelQuery;
+import com.mammb.code.editor.ui.model.editing.Queryable;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
 import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -316,6 +316,10 @@ public class EditorModelImpl implements EditorModel {
             return predicate.test(buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE)));
         }
         return false;
+    }
+    @Override
+    public <R> R query(ModelQuery<R> query) {
+        return monoQuery(query).value();
     }
 
     // <editor-fold defaultstate="collapsed" desc="edit behavior">

@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import com.mammb.code.editor.ui.model.ModelQuery;
+
 /**
  * The EditorDownCall.
  * EditorDownCall is the interface for operation requests from
@@ -42,7 +44,10 @@ public interface EditorDownCall {
 
     /**
      * Request query.
+     * @param <R> the type of result
+     * @param query the query
+     * @return the result
      */
-    void requestQuery();
+    <R> R requestQuery(ModelQuery<R> query);
 
 }

@@ -16,8 +16,7 @@
 package com.mammb.code.editor.ui.model.editing;
 
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.query.ModelQuery;
-import com.mammb.code.editor.ui.model.query.Queryable;
+import com.mammb.code.editor.ui.model.ModelQuery;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;

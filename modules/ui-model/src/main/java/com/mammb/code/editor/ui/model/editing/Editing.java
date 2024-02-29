@@ -16,7 +16,6 @@
 package com.mammb.code.editor.ui.model.editing;
 
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.query.Queryable;
 
 /**
  * Editing.

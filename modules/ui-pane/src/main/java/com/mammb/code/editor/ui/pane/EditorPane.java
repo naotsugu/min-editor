@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import com.mammb.code.editor.ui.model.ModelQuery;
 import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.ScreenPoint;
@@ -180,7 +181,7 @@ public class EditorPane extends StackPane {
             @Override public void requestFocus() {
                 canvas.requestFocus();
             }
-            @Override public void requestQuery() { }
+            @Override public <R> R requestQuery(ModelQuery<R> query) { return null; }
         };
     }
 

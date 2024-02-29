@@ -195,6 +195,14 @@ public interface EditorModel extends EditorDraw {
     boolean peekSelection(Predicate<String> predicate);
 
     /**
+     * Get the result of the query.
+     * @param <R> the type of result
+     * @param query the query
+     * @return the result of query
+     */
+    <R> R query(ModelQuery<R> query);
+
+    /**
      * Create a new partially editor model.
      * @param path the specified path
      * @return a new partially EditorModel
