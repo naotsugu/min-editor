@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.model;
+package com.mammb.code.editor.ui.model.query;
 
 /**
- * The EditorQuery.
+ * ModelQuery.
  * @author Naotsugu Kobayashi
  */
-public interface EditorQuery {
+public interface Queryable {
 
     /**
-     * Get the selected text.
-     * @return the selected text
+     * Run query.
+     * @param <R> the type of result
+     * @param q the query
+     * @return the result
      */
-    String selectedText();
-
-    String currentLine();
-
-    String currentRow();
-
-    String caretBefore();
+    <R> R apply(ModelQuery<R> q);
 
 }

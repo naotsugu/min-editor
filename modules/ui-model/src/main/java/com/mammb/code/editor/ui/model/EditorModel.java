@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.model.impl.EditorModelImpl;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.scene.canvas.GraphicsContext;

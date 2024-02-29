@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.ui.model.editing;
 
-import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.EditorQuery;
+import com.mammb.code.editor.ui.model.query.ModelQuery;
+import com.mammb.code.editor.ui.model.query.Queryable;
 
 /**
  * Tab editing.
@@ -50,8 +50,8 @@ public class TabEditing implements Editing {
 
 
     @Override
-    public boolean apply(EditorModel model, EditorQuery query) {
-        var text = query.caretBefore();
+    public boolean apply(EditorModel model, Queryable query) {
+        var text = query.apply(ModelQuery.caretBeforeText());
         for (int i = text.length() - 1; i >= 0; i--) {
             char ch = text.charAt(i);
             if (ch == '\n') {

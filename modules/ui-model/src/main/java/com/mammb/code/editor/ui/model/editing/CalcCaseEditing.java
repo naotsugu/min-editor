@@ -15,11 +15,15 @@
  */
 package com.mammb.code.editor.ui.model.editing;
 
-import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.EditorQuery;
+import com.mammb.code.editor.ui.model.query.ModelQuery;
+import com.mammb.code.editor.ui.model.query.Queryable;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -34,8 +38,8 @@ public class CalcCaseEditing implements Editing {
     private static final System.Logger log = System.getLogger(CalcCaseEditing.class.getName());
 
     @Override
-    public boolean apply(EditorModel model, EditorQuery query) {
-        String text = query.selectedText();
+    public boolean apply(EditorModel model, Queryable query) {
+        String text = query.apply(ModelQuery.selectedText());
         if (text.isBlank()) {
             return false;
         }

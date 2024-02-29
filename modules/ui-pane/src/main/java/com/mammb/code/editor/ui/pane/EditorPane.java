@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.ui.model.Editing;
+import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.ScreenPoint;
 import com.mammb.code.editor.ui.prefs.Context;

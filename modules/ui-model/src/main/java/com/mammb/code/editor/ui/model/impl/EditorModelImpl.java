@@ -28,9 +28,8 @@ import com.mammb.code.editor.model.text.OffsetPointRange;
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.CaretMulti;
-import com.mammb.code.editor.ui.model.Editing;
+import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.EditorQuery;
 import com.mammb.code.editor.ui.model.FindHandle;
 import com.mammb.code.editor.ui.model.ImePallet;
 import com.mammb.code.editor.ui.model.ImeRun;
@@ -45,7 +44,8 @@ import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.draw.Draws;
 import com.mammb.code.editor.ui.model.helper.Clipboards;
 import com.mammb.code.editor.ui.model.helper.Selections;
-import com.mammb.code.editor.ui.model.ModelQuery;
+import com.mammb.code.editor.ui.model.query.ModelQuery;
+import com.mammb.code.editor.ui.model.query.Queryable;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
 import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -437,7 +437,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public boolean applyEditing(Editing editing) {
-        return editing.apply(this, editorQuery());
+        return editing.apply(this, queryable());
     }
 
     @Override
@@ -923,27 +923,16 @@ public class EditorModelImpl implements EditorModel {
         }
     }
 
+
     /**
      * Create the editor query.
      * @return the editor query
      */
-    private EditorQuery editorQuery() {
-        return new EditorQuery() {
-            @Override public String selectedText() {
-                if (!selection.hasSelection()) {
-                    return "";
-                }
-                OffsetPointRange range = selection.getRanges().getFirst();
-                return buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE));
-            }
-            @Override public String currentLine() {
-                return texts.lineAt(carets.offset()).text();
-            }
-            @Override public String currentRow() {
-                return buffer.rowSupplier().at(carets.offset());
-            }
-            @Override public String caretBefore() {
-                return buffer.rowSupplier().before(carets.offsetPoint().cpOffset());
+    private Queryable queryable() {
+        return new Queryable() {
+            @Override
+            public <R> R apply(ModelQuery<R> q) {
+                return monoQuery(q).value();
             }
         };
     }
@@ -952,23 +941,30 @@ public class EditorModelImpl implements EditorModel {
     private List<ModelQuery.Result<?>> query(ModelQuery<?>... queries) {
         List<ModelQuery.Result<?>> results = new ArrayList<>();
         for (ModelQuery<?> query : queries) {
-            results.add(switch (query) {
-                case ModelQuery.SelectedText q -> {
-                    if (!selection.hasSelection()) {
-                        yield q.on("");
-                    }
-                    OffsetPointRange range = selection.getRanges().getFirst();
-                    yield q.on(buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE)));
-                }
-                case ModelQuery.CurrentLineText q ->
-                    q.on(texts.lineAt(carets.offset()).text());
-                case ModelQuery.CurrentRowText q ->
-                    q.on(buffer.rowSupplier().at(carets.offset()));
-                case ModelQuery.CaretBeforeText q ->
-                    q.on(buffer.rowSupplier().before(carets.offsetPoint().cpOffset()));
-            });
+            results.add(monoQuery(query));
         }
         return results;
+    }
+
+
+    private <R> ModelQuery.Result<R> monoQuery(ModelQuery<R> query) {
+        @SuppressWarnings("unchecked")
+        ModelQuery.Result<R> r = (ModelQuery.Result<R>) switch (query) {
+            case ModelQuery.SelectedText q -> {
+                if (!selection.hasSelection()) {
+                    yield q.on("");
+                }
+                OffsetPointRange range = selection.getRanges().getFirst();
+                yield q.on(buffer.subText(range.minOffsetPoint(), (int) Long.min(range.length(), Integer.MAX_VALUE)));
+            }
+            case ModelQuery.CurrentLineText q ->
+                q.on(texts.lineAt(carets.offset()).text());
+            case ModelQuery.CurrentRowText q ->
+                q.on(buffer.rowSupplier().at(carets.offset()));
+            case ModelQuery.CaretBeforeText q ->
+                q.on(buffer.rowSupplier().before(carets.offsetPoint().cpOffset()));
+        };
+        return  r;
     }
 
 }

@@ -15,9 +15,8 @@
  */
 package com.mammb.code.editor.ui.model.editing;
 
-import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.EditorQuery;
+import com.mammb.code.editor.ui.model.query.Queryable;
 
 /**
  * The PassThroughInput.
@@ -35,7 +34,7 @@ public class PassThroughInput implements Editing {
     }
 
     @Override
-    public boolean apply(EditorModel model, EditorQuery query) {
+    public boolean apply(EditorModel model, Queryable query) {
         model.input(input);
         return true;
     }

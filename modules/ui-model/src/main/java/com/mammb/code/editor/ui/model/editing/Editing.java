@@ -13,14 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.model;
+package com.mammb.code.editor.ui.model.editing;
 
-import com.mammb.code.editor.ui.model.editing.CalcCaseEditing;
-import com.mammb.code.editor.ui.model.editing.HexCaseEditing;
-import com.mammb.code.editor.ui.model.editing.LineBreakEditing;
-import com.mammb.code.editor.ui.model.editing.PassThroughInput;
-import com.mammb.code.editor.ui.model.editing.TabEditing;
-import com.mammb.code.editor.ui.model.editing.UpperCaseEditing;
+import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.query.Queryable;
 
 /**
  * Editing.
@@ -39,7 +35,7 @@ public interface Editing {
      * @param model the editor model
      * @param query the editor query
      */
-    boolean apply(EditorModel model, EditorQuery query);
+    boolean apply(EditorModel model, Queryable query);
 
 
     /**

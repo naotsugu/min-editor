@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.ui.model.editing;
 
-import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.EditorQuery;
+import com.mammb.code.editor.ui.model.query.ModelQuery;
+import com.mammb.code.editor.ui.model.query.Queryable;
 import java.util.Objects;
 
 /**
@@ -27,8 +27,8 @@ import java.util.Objects;
 public class HexCaseEditing implements Editing {
 
     @Override
-    public boolean apply(EditorModel model, EditorQuery query) {
-        String text = query.selectedText();
+    public boolean apply(EditorModel model, Queryable query) {
+        String text = query.apply(ModelQuery.selectedText());
         if (text.isBlank()) {
             return false;
         }

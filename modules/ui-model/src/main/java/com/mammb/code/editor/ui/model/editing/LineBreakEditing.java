@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.ui.model.editing;
 
-import com.mammb.code.editor.ui.model.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
-import com.mammb.code.editor.ui.model.EditorQuery;
+import com.mammb.code.editor.ui.model.query.ModelQuery;
+import com.mammb.code.editor.ui.model.query.Queryable;
 
 /**
  * The LineBreakEditing.
@@ -39,8 +39,8 @@ public class LineBreakEditing implements Editing {
     }
 
     @Override
-    public boolean apply(EditorModel model, EditorQuery query) {
-        String row = query.currentRow();
+    public boolean apply(EditorModel model, Queryable query) {
+        String row = query.apply(ModelQuery.currentRowText());
         int spCount = 0;
         int tabCount = 0;
         for (int i = 0; i < row.length(); i++) {

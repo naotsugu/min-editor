@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.model;
+package com.mammb.code.editor.ui.model.query;
 
 /**
  * ModelQuery.
@@ -32,10 +32,6 @@ public sealed interface ModelQuery<R> permits
     interface Result<R> {
         ModelQuery<R> query();
         R value();
-    }
-
-    interface Queryable {
-        <R> R apply(ModelQuery<R> q);
     }
 
     default Result<R> on(R value) {
