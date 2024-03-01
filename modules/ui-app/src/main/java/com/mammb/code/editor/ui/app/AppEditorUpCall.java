@@ -22,36 +22,55 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * The AppEditorUpCall.
+ * The implementation of {@link EditorUpCall}.
  * @author Naotsugu Kobayashi
  */
 public class AppEditorUpCall implements EditorUpCall {
 
-    /** The path change handlers. */
-    private final List<Consumer<PathChang>> pathChangedHandlers = new ArrayList<>();
+    /** The path change listeners. */
+    private final List<Consumer<PathChang>> pathChangedListeners = new ArrayList<>();
 
-    /** The content modified handlers. */
-    private final List<Consumer<ContentModifyChang>> contentModifyHandlers = new ArrayList<>();
+    /** The content modified listeners. */
+    private final List<Consumer<ContentModifyChang>> contentModifiedListeners = new ArrayList<>();
 
+    /**
+     * PathChang record.
+     * @param session the session
+     * @param prevSession the previous session
+     */
     record PathChang(Session session, Session prevSession) { }
+
+    /**
+     * ContentModifyChang record.
+     * @param session the session
+     * @param modified the modified
+     */
     record ContentModifyChang(Session session, boolean modified) { }
 
     @Override
     public void pathChanged(Session session, Session prevSession) {
-        pathChangedHandlers.forEach(c -> c.accept(new PathChang(session, prevSession)));
+        pathChangedListeners.forEach(c -> c.accept(new PathChang(session, prevSession)));
     }
 
     @Override
     public void contentModified(Session session, boolean modified) {
-        contentModifyHandlers.forEach(c -> c.accept(new ContentModifyChang(session, modified)));
+        contentModifiedListeners.forEach(c -> c.accept(new ContentModifyChang(session, modified)));
     }
 
-    void onPathChanged(Consumer<PathChang> consumer) {
-        pathChangedHandlers.add(consumer);
+    /**
+     * Add the path change listener.
+     * @param consumer the path change listener
+     */
+    void addPathChangedListener(Consumer<PathChang> consumer) {
+        pathChangedListeners.add(consumer);
     }
 
-    void onContentModified(Consumer<ContentModifyChang> consumer) {
-        contentModifyHandlers.add(consumer);
+    /**
+     * Add the content modified listener.
+     * @param consumer the content modified listener
+     */
+    void addContentModifiedListener(Consumer<ContentModifyChang> consumer) {
+        contentModifiedListeners.add(consumer);
     }
 
 }

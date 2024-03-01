@@ -103,6 +103,13 @@ public class OverlayDialog extends StackPane {
     }
 
 
+    /**
+     * Build the dialog node.
+     * @param headerText the header text
+     * @param contentText the content text
+     * @param buttons the footer buttons
+     * @return the dialog node
+     */
     private Node dialog(String headerText, String contentText, Node... buttons) {
 
         GridPane grid = new GridPane();
@@ -204,6 +211,11 @@ public class OverlayDialog extends StackPane {
     }
 
 
+    /**
+     * Flip the color.
+     * @param base the original color
+     * @return the flipped color
+     */
     private static Color flip(Color base) {
         return base.deriveColor(0.0, 1.0, (base.getBrightness() > 0.5) ? 0.2 : 6.0, 1.0);
     }

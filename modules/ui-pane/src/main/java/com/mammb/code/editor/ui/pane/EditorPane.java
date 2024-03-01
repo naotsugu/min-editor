@@ -181,7 +181,6 @@ public class EditorPane extends StackPane {
             @Override public void requestFocus() {
                 canvas.requestFocus();
             }
-            @Override public <R> R requestQuery(ModelQuery<R> query) { return null; }
         };
     }
 

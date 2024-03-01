@@ -91,12 +91,12 @@ public class App extends Application {
         stage.setOnCloseRequest(editorPane::handleCloseRequest);
 
         // initEditorHandle
-        upCall.onPathChanged(c -> {
+        upCall.addPathChangedListener(c -> {
             bar.setPathText(c.session().path());
             session.push(c.session(), c.prevSession());
             stage.setTitle(String.join(" - ", Version.appName, c.session().path().getFileName().toString()));
         });
-        upCall.onContentModified(c -> bar.setPathModified(c.modified()));
+        upCall.addContentModifiedListener(c -> bar.setPathModified(c.modified()));
 
         bar.setOnPathTextCommitted((text, ke) -> downCall.requestPathChange(Session.of(Path.of(text))));
         bar.setOnPathSelected(p -> downCall.requestPathChange(Session.of(p)));

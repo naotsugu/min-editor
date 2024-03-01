@@ -44,6 +44,11 @@ public class BackgroundRun extends StackPane {
     }
 
 
+    /**
+     * Run task on the spesi.
+     * @param pane
+     * @param task
+     */
     public static void run(Pane pane, Task<?> task) {
         var run = new BackgroundRun();
         pane.getChildren().add(run);

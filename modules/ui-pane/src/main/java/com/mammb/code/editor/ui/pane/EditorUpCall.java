@@ -17,6 +17,17 @@ package com.mammb.code.editor.ui.pane;
 
 /**
  * The EditorUpCall.
+ * <pre>
+ *     ------------------------------
+ *     |             App            |
+ *     ------------------------------
+ *        | EditorDownCall      ↑
+ *        |                     |
+ *        ↓                     | EditorUpCall
+ *     ------------------------------
+ *     |        Editor Pane         |
+ *     ------------------------------
+ * </pre>
  * @author Naotsugu Kobayashi
  */
 public interface EditorUpCall {
@@ -41,8 +52,10 @@ public interface EditorUpCall {
      */
     static EditorUpCall empty() {
         return new EditorUpCall() {
-            @Override public void pathChanged(Session session, Session prevSession) { }
-            @Override public void contentModified(Session session, boolean modified) { }
+            @Override
+            public void pathChanged(Session session, Session prevSession) { }
+            @Override
+            public void contentModified(Session session, boolean modified) { }
         };
     }
 

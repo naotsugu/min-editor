@@ -19,6 +19,7 @@ import java.nio.file.Path;
 
 /**
  * ModelQuery.
+ * @param <R> the type of query result
  * @author Naotsugu Kobayashi
  */
 public sealed interface ModelQuery<R> permits
@@ -38,10 +39,29 @@ public sealed interface ModelQuery<R> permits
         R value();
     }
 
+
+    /**
+     * Set the result value.
+     * @param value the result value
+     * @return the query result
+     */
     default Result<R> on(R value) {
         record ResultRecord<R>(ModelQuery<R> query, R value) implements Result<R> {}
         return new ResultRecord<>(this, value);
     }
+
+    /** The selected text query. */
+    SelectedText selectedText = new SelectedText();
+    /** The current line text query. */
+    CurrentLineText currentLineText = new CurrentLineText();
+    /** The current row text query. */
+    CurrentRowText currentRowText = new CurrentRowText();
+    /** The caret before text query. */
+    CaretBeforeText caretBeforeText = new CaretBeforeText();
+    /** The content modified query. */
+    Modified modified = new Modified();
+    /** The content path query. */
+    ContentPath contentPath = new ContentPath();
 
     record SelectedText() implements ModelQuery<String> { }
     record CurrentLineText() implements ModelQuery<String> { }
@@ -49,12 +69,5 @@ public sealed interface ModelQuery<R> permits
     record CaretBeforeText() implements ModelQuery<String> { }
     record Modified() implements ModelQuery<Boolean> { }
     record ContentPath() implements ModelQuery<Path> { }
-
-    SelectedText selectedText = new SelectedText();
-    CurrentLineText currentLineText = new CurrentLineText();
-    CurrentRowText currentRowText = new CurrentRowText();
-    CaretBeforeText caretBeforeText = new CaretBeforeText();
-    Modified modified = new Modified();
-    ContentPath contentPath = new ContentPath();
 
 }
