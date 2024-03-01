@@ -4,7 +4,7 @@ Minimal text editor, **under development**.
 
 * A minimal text editor, not an IDE
 * Implementation with JavaFX, because there is no choice in languages with a standard multiplatform UI toolkit
-* Uses piecetable data structure, so large files can be handled without memory expansion
+* Uses piecetable data structure, so large files can be handled without memory allocation
 
 
 ![screenshot1](docs/images/screenshot-01.png)
@@ -48,7 +48,7 @@ To run the application directly, execute the following command.
 ./gradlew run
 ```
 
-If a debug run is required, do the following.
+If a debug run is required, execute the following command.
 
 ```console
 ./gradlew run -Ddebug

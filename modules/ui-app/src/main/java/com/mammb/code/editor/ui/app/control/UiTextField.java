@@ -42,6 +42,9 @@ public class UiTextField extends TextField {
     }
 
 
+    /**
+     * Set caret flash lock.
+     */
     public void caretFlashLock() {
         caretLocked = true;
     }

@@ -108,16 +108,28 @@ public class CommandBar extends HBox {
     }
 
 
+    /**
+     * Set the path modified.
+     * @param modified the path modified
+     */
     void setPathModified(boolean modified) {
         pathField.setPromptAccentuate(modified);
     }
 
 
+    /**
+     * Get the backward disable property.
+     * @return the backward disable property
+     */
     BooleanProperty backwardDisableProperty() {
         return backward.disableProperty();
     }
 
 
+    /**
+     * Get the forward disable property.
+     * @return the forward disable property
+     */
     BooleanProperty forwardDisableProperty() {
         return forward.disableProperty();
     }

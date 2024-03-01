@@ -55,6 +55,7 @@ public class WrapScreenText implements ScreenText {
     /** The count of rollup lines. */
     private int rollup = 0;
 
+    /** The head text line. */
     private TextLine head = null;
 
 
@@ -77,6 +78,10 @@ public class WrapScreenText implements ScreenText {
     }
 
 
+    /**
+     * Create the plain screen text.
+     * @return the plain screen text
+     */
     public ScreenText asPlain() {
         return new PlainScreenText(context, scroll, styling);
     }
@@ -102,10 +107,12 @@ public class WrapScreenText implements ScreenText {
         return head;
     }
 
+
     @Override
     public void markDirty() {
         lines.clear();
     }
+
 
     @Override
     public int prev(int n) {
@@ -237,16 +244,23 @@ public class WrapScreenText implements ScreenText {
         }
     }
 
+
     @Override
     public int pageSize() {
         return scroll.pageSize();
     }
+
 
     @Override
     public void setPageSize(int size) {
         scroll.setPageSize(size);
     }
 
+
+    /**
+     * Get the wrapped size.
+     * @return the wrapped size
+     */
     public int wrappedSize() {
         if (lines.isEmpty()) {
             lines();
@@ -254,9 +268,15 @@ public class WrapScreenText implements ScreenText {
         return lines.size();
     }
 
+
+    /**
+     * Set the wrap size.
+     * @return the wrap size
+     */
     public void setWrapWidth(double wrapWidth) {
         layout.setWrapWidth(wrapWidth);
     }
+
 
     /**
      * Build the translator.

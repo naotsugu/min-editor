@@ -45,9 +45,9 @@ public class BackgroundRun extends StackPane {
 
 
     /**
-     * Run task on the spesi.
-     * @param pane
-     * @param task
+     * Run task on the specified pane.
+     * @param pane the specified pane
+     * @param task the task
      */
     public static void run(Pane pane, Task<?> task) {
         var run = new BackgroundRun();

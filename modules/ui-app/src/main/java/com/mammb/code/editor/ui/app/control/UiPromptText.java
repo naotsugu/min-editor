@@ -146,7 +146,7 @@ public class UiPromptText extends StackPane {
 
         var from = text.getVisibleTextStartIndex();
         if (from > index) {
-            throw new RuntimeException("from:" + from + ", to:" + index);
+            throw new RuntimeException(STR."from:\{from}, to:\{index}");
         }
         var example = new Text(text.getText(from, index));
         example.setFont(text.getFont());

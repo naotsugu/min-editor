@@ -45,8 +45,8 @@ public class UiPathField extends StackPane {
     /** The timeline. */
     private Timeline timeline;
 
-    /** The path navi. */
-    private UiPathMenu pathNavi;
+    /** The path menu. */
+    private UiPathMenu pathMenu;
 
     /** The address path on timeline frame. */
     private AddressPath addressPath;
@@ -128,7 +128,7 @@ public class UiPathField extends StackPane {
         }
 
         var path = AddressPath.of(text.getText()).dirOn(index);
-        UiPathMenu pathNaviRef = pathNavi;
+        UiPathMenu pathNaviRef = pathMenu;
         if (path.equals(addressPath) ||
             pathNaviRef != null && pathNaviRef.getParent().equals(path.path())) {
             return;
@@ -146,14 +146,14 @@ public class UiPathField extends StackPane {
      */
     private void showPathMenu(UiPathMenu menu, Point2D point) {
         stopTimeline();
-        if (pathNavi != null) {
-            pathNavi.hide();
+        if (pathMenu != null) {
+            pathMenu.hide();
         }
-        pathNavi = menu;
+        pathMenu = menu;
         addressPath = null;
-        pathNavi.setOnHidden(e -> {  });
-        pathNavi.show(getScene().getWindow(), point.getX(), point.getY());
-        pathNavi.requestFocus();
+        pathMenu.setOnHidden(e -> {  });
+        pathMenu.show(getScene().getWindow(), point.getX(), point.getY());
+        pathMenu.requestFocus();
     }
 
 
@@ -163,13 +163,13 @@ public class UiPathField extends StackPane {
      */
     private Consumer<Path> handlePathSelect() {
         return path -> {
-            var point = pathNavi.getAnchor();
+            var point = pathMenu.getAnchor();
             clearPathNavi();
             Path raw = (path instanceof PathItem item) ? item.raw() : path;
             if (Files.isDirectory(raw)) {
                 var p = AddressPath.of(raw);
-                pathNavi = new UiPathMenu(p.path(), p.listItem(), handlePathSelect());
-                pathNavi.show(getScene().getWindow(), point.getX(),
+                pathMenu = new UiPathMenu(p.path(), p.listItem(), handlePathSelect());
+                pathMenu.show(getScene().getWindow(), point.getX(),
                     text.localToScreen(text.getBoundsInLocal()).getMaxY());
             } else if (Files.isRegularFile(raw) && pathSelectConsumer != null) {
                 pathSelectConsumer.accept(raw);
@@ -214,6 +214,7 @@ public class UiPathField extends StackPane {
         }
     }
 
+
     /**
      * Set accentuate the prompt.
      * @param accentuate accentuate
@@ -221,6 +222,7 @@ public class UiPathField extends StackPane {
     public void setPromptAccentuate(boolean accentuate) {
         text.setPromptAccentuate(accentuate);
     }
+
 
     /**
      * Set the path text.
@@ -265,9 +267,9 @@ public class UiPathField extends StackPane {
     private void clearPathNavi() {
         stopTimeline();
         addressPath = null;
-        if (pathNavi != null) {
-            pathNavi.hide();
-            pathNavi = null;
+        if (pathMenu != null) {
+            pathMenu.hide();
+            pathMenu = null;
         }
     }
 

@@ -40,6 +40,11 @@ public class EditorSession {
     private BooleanProperty backwardDisableProperty;
 
 
+    /**
+     * Push session.
+     * @param session the session
+     * @param prev the previous session
+     */
     public void push(Session session, Session prev) {
 
         if (session == null || session.isEmptyPath()) return;
@@ -86,6 +91,7 @@ public class EditorSession {
         return current;
     }
 
+
     public Session backward() {
         var currentIndex = histories.indexOf(current);
         if (currentIndex == 0) {
@@ -96,13 +102,16 @@ public class EditorSession {
         return current;
     }
 
+
     public void setForwardDisableProperty(BooleanProperty property) {
         this.forwardDisableProperty = property;
     }
 
+
     public void setBackwardDisableProperty(BooleanProperty property) {
         this.backwardDisableProperty = property;
     }
+
 
     private void ensureProperty() {
         if (current == null) {

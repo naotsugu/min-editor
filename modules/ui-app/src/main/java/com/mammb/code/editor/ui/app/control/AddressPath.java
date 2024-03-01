@@ -31,6 +31,7 @@ public class AddressPath {
 
     /** The target path. */
     private final Path path;
+
     /** Whether the target path is a directory or not. */
     private final boolean directory;
 
@@ -45,6 +46,7 @@ public class AddressPath {
         this.directory = directory;
     }
 
+
     /**
      * Create a new AddressPath.
      * @param path the path
@@ -53,6 +55,7 @@ public class AddressPath {
     public static AddressPath of(Path path) {
         return new AddressPath(path, Files.isDirectory(path));
     }
+
 
     /**
      * Create a new AddressPath.
@@ -118,6 +121,7 @@ public class AddressPath {
         return path.toString();
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -125,6 +129,7 @@ public class AddressPath {
         AddressPath that = (AddressPath) o;
         return Objects.equals(path, that.path);
     }
+
 
     @Override
     public int hashCode() {

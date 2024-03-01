@@ -27,6 +27,7 @@ public class UiBasicDialog extends Dialog<ButtonType> {
 
     /**
      * Constructor.
+     * @param owner the owner window
      */
     public UiBasicDialog(Window owner) {
         if (owner != null) {

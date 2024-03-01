@@ -71,6 +71,11 @@ public class PlainScreenText implements ScreenText {
     }
 
 
+    /**
+     * Create the wrapped screen text.
+     * @param width the width
+     * @return the wrapped screen text
+     */
     public ScreenText asWrapped(double width) {
         return new WrapScreenText(context, scroll, styling, width);
     }

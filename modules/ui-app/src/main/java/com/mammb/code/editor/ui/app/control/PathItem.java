@@ -26,16 +26,19 @@ import java.util.function.Predicate;
  */
 public interface PathItem extends Path {
 
+    /** The exclude path. */
     Predicate<Path> exclude = p ->
         !".DS_Store".equals(p.getFileName().toString()) &&
         !".localized".equals(p.getFileName().toString()) &&
         !"Thums.db".equals(p.getFileName().toString());
+
 
     /**
      * Get the name.
      * @return the name
      */
     String name();
+
 
     /**
      * Get the raw path.
