@@ -26,7 +26,7 @@ public class UpperCaseEditing implements Editing {
 
     @Override
     public boolean apply(EditorModel model, Queryable query) {
-        String text = query.apply(ModelQuery.selectedText());
+        String text = query.apply(ModelQuery.selectedText);
         if (text.isBlank()) {
             return false;
         }

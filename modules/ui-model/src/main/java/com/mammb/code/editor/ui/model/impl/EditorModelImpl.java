@@ -319,7 +319,7 @@ public class EditorModelImpl implements EditorModel {
     }
     @Override
     public <R> R query(ModelQuery<R> query) {
-        return monoQuery(query).value();
+        return run(query).value();
     }
 
     // <editor-fold defaultstate="collapsed" desc="edit behavior">
@@ -723,14 +723,6 @@ public class EditorModelImpl implements EditorModel {
     public void saveAs(Path path) {
         buffer.saveAs(path);
     }
-    @Override
-    public Path path() {
-        return buffer.metrics().path();
-    }
-    @Override
-    public boolean modified() {
-        return buffer.metrics().modified();
-    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="ime behavior">
@@ -936,7 +928,7 @@ public class EditorModelImpl implements EditorModel {
         return new Queryable() {
             @Override
             public <R> R apply(ModelQuery<R> q) {
-                return monoQuery(q).value();
+                return run(q).value();
             }
         };
     }
@@ -945,13 +937,13 @@ public class EditorModelImpl implements EditorModel {
     private List<ModelQuery.Result<?>> query(ModelQuery<?>... queries) {
         List<ModelQuery.Result<?>> results = new ArrayList<>();
         for (ModelQuery<?> query : queries) {
-            results.add(monoQuery(query));
+            results.add(run(query));
         }
         return results;
     }
 
 
-    private <R> ModelQuery.Result<R> monoQuery(ModelQuery<R> query) {
+    private <R> ModelQuery.Result<R> run(ModelQuery<R> query) {
         @SuppressWarnings("unchecked")
         ModelQuery.Result<R> r = (ModelQuery.Result<R>) switch (query) {
             case ModelQuery.SelectedText q -> {
@@ -967,6 +959,10 @@ public class EditorModelImpl implements EditorModel {
                 q.on(buffer.rowSupplier().at(carets.offset()));
             case ModelQuery.CaretBeforeText q ->
                 q.on(buffer.rowSupplier().before(carets.offsetPoint().cpOffset()));
+            case ModelQuery.Modified q ->
+                q.on(buffer.metrics().modified());
+            case ModelQuery.ContentPath q ->
+                q.on(buffer.metrics().path());
         };
         return  r;
     }

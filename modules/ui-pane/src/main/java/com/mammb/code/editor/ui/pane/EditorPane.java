@@ -221,7 +221,7 @@ public class EditorPane extends StackPane {
      */
     private Session session() {
         var screenPoint = model.screenPoint();
-        return Session.of(model.path(), screenPoint.row(), screenPoint.caretIndex());
+        return Session.of(model.query(ModelQuery.contentPath), screenPoint.row(), screenPoint.caretIndex());
     }
 
 

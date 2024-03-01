@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.pane;
 
 import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.ModelQuery;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -83,7 +84,7 @@ public class FileAction {
      */
     public void open(EventHandler<WorkerStateEvent> handler) {
         confirmIfDirty(() -> {
-            Path current = model.path();
+            Path current = model.query(ModelQuery.contentPath);
             File file = FileChoosers.fileOpenChoose(pane.getScene().getWindow(), current);
             if (file != null && file.canRead()) {
                 updateModel(file.toPath(), handler);
@@ -97,7 +98,7 @@ public class FileAction {
      * @param handler the model created handler
      */
     public void save(EventHandler<WorkerStateEvent> handler) {
-        if (model.path() == null) {
+        if (model.query(ModelQuery.contentPath) == null) {
             saveAs(handler);
         } else {
             runAsTask(model::save);
@@ -110,7 +111,7 @@ public class FileAction {
      * @param handler the model created handler
      */
     public void saveAs(EventHandler<WorkerStateEvent> handler) {
-        Path current = model.path();
+        Path current = model.query(ModelQuery.contentPath);
         File file = FileChoosers.fileSaveChoose(pane.getScene().getWindow(), current);
         if (file != null) {
             Path path = file.toPath();
@@ -130,7 +131,7 @@ public class FileAction {
      * @param runnable the action to be run
      */
     public void confirmIfDirty(Runnable runnable) {
-        if (model.modified()) {
+        if (model.query(ModelQuery.modified)) {
             OverlayDialog.confirm(pane,
                 "Are you sure you want to discard your changes?",
                 runnable);
@@ -201,7 +202,7 @@ public class FileAction {
 
     private boolean pathChanged(Path path) {
         try {
-            Path org = model.path();
+            Path org = model.query(ModelQuery.contentPath);
             if (org != null && Files.isSameFile(path, org)) {
                 return false;
             }

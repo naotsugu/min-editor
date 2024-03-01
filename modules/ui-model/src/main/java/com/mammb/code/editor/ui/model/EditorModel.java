@@ -164,12 +164,6 @@ public interface EditorModel extends EditorDraw {
      * @param path the path
      */
     void saveAs(Path path);
-    /**
-     * Get the path.
-     * @return the path
-     */
-    Path path();
-    boolean modified();
 
     // -- ime behavior --------------------------------------------------------
 
@@ -186,6 +180,9 @@ public interface EditorModel extends EditorDraw {
 
     // -- utilities -----------------------------------------------------------
 
+    /**
+     * Clear selection and multi caret.
+     */
     void clear();
     FindHandle findHandle();
     Rect textAreaRect();

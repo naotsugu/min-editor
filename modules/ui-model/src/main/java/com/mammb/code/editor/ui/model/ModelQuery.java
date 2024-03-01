@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.ui.model;
 
+import java.nio.file.Path;
+
 /**
  * ModelQuery.
  * @author Naotsugu Kobayashi
@@ -23,7 +25,9 @@ public sealed interface ModelQuery<R> permits
         ModelQuery.SelectedText,
         ModelQuery.CurrentLineText,
         ModelQuery.CurrentRowText,
-        ModelQuery.CaretBeforeText {
+        ModelQuery.CaretBeforeText,
+        ModelQuery.Modified,
+        ModelQuery.ContentPath {
 
     /**
      * The query result.
@@ -43,18 +47,14 @@ public sealed interface ModelQuery<R> permits
     record CurrentLineText() implements ModelQuery<String> { }
     record CurrentRowText() implements ModelQuery<String> { }
     record CaretBeforeText() implements ModelQuery<String> { }
+    record Modified() implements ModelQuery<Boolean> { }
+    record ContentPath() implements ModelQuery<Path> { }
 
-    static SelectedText selectedText() {
-        return new SelectedText();
-    }
-    static CurrentLineText currentLineText() {
-        return new CurrentLineText();
-    }
-    static CurrentRowText currentRowText() {
-        return new CurrentRowText();
-    }
-    static CaretBeforeText caretBeforeText() {
-        return new CaretBeforeText();
-    }
+    SelectedText selectedText = new SelectedText();
+    CurrentLineText currentLineText = new CurrentLineText();
+    CurrentRowText currentRowText = new CurrentRowText();
+    CaretBeforeText caretBeforeText = new CaretBeforeText();
+    Modified modified = new Modified();
+    ContentPath contentPath = new ContentPath();
 
 }
