@@ -33,7 +33,7 @@ public class PassThroughInput implements Editing {
     }
 
     @Override
-    public boolean apply(EditorModel model, Queryable query) {
+    public boolean apply(EditorModel model) {
         model.input(input);
         return true;
     }

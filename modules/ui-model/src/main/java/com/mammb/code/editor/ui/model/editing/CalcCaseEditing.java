@@ -37,8 +37,8 @@ public class CalcCaseEditing implements Editing {
     private static final System.Logger log = System.getLogger(CalcCaseEditing.class.getName());
 
     @Override
-    public boolean apply(EditorModel model, Queryable query) {
-        String text = query.apply(ModelQuery.selectedText);
+    public boolean apply(EditorModel model) {
+        String text = model.query(ModelQuery.selectedText);
         if (text.isBlank()) {
             return false;
         }

@@ -24,7 +24,7 @@ import com.mammb.code.editor.ui.model.EditorModel;
 public interface Editing {
 
     /** The empty editing. */
-    Editing empty = (model, query) -> false;
+    Editing empty = model -> false;
 
     /** Editing input. */
     record Input(String text) { }
@@ -32,9 +32,8 @@ public interface Editing {
     /**
      * Apply editing.
      * @param model the editor model
-     * @param query the editor query
      */
-    boolean apply(EditorModel model, Queryable query);
+    boolean apply(EditorModel model);
 
 
     /**
@@ -70,10 +69,10 @@ public interface Editing {
      * @return a key typed steal editing
      */
     static Editing keyTypedSteal(String ch) {
-        return (m, q) ->
-                LineBreakEditing.of(ch).apply(m, q) ||
-                TabEditing.of(ch).apply(m, q) ||
-                PassThroughInput.of(ch).apply(m, q)
+        return model ->
+                LineBreakEditing.of(ch).apply(model) ||
+                TabEditing.of(ch).apply(model) ||
+                PassThroughInput.of(ch).apply(model)
             ;
     }
 

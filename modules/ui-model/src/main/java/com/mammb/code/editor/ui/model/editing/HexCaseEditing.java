@@ -26,8 +26,8 @@ import java.util.Objects;
 public class HexCaseEditing implements Editing {
 
     @Override
-    public boolean apply(EditorModel model, Queryable query) {
-        String text = query.apply(ModelQuery.selectedText);
+    public boolean apply(EditorModel model) {
+        String text = model.query(ModelQuery.selectedText);
         if (text.isBlank()) {
             return false;
         }

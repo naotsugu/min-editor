@@ -49,8 +49,8 @@ public class TabEditing implements Editing {
 
 
     @Override
-    public boolean apply(EditorModel model, Queryable query) {
-        var text = query.apply(ModelQuery.caretBeforeText);
+    public boolean apply(EditorModel model) {
+        var text = model.query(ModelQuery.caretBeforeText);
         for (int i = text.length() - 1; i >= 0; i--) {
             char ch = text.charAt(i);
             if (ch == '\n') {

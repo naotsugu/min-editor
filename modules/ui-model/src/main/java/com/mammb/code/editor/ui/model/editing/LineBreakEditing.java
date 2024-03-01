@@ -38,8 +38,8 @@ public class LineBreakEditing implements Editing {
     }
 
     @Override
-    public boolean apply(EditorModel model, Queryable query) {
-        String row = query.apply(ModelQuery.currentRowText);
+    public boolean apply(EditorModel model) {
+        String row = model.query(ModelQuery.currentRowText);
         int spCount = 0;
         int tabCount = 0;
         for (int i = 0; i < row.length(); i++) {

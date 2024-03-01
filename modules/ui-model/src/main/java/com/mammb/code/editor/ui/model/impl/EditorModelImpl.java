@@ -28,12 +28,12 @@ import com.mammb.code.editor.model.text.OffsetPointRange;
 import com.mammb.code.editor.syntax.Syntax;
 import com.mammb.code.editor.ui.model.Caret;
 import com.mammb.code.editor.ui.model.CaretMulti;
-import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.FindHandle;
 import com.mammb.code.editor.ui.model.ImePallet;
 import com.mammb.code.editor.ui.model.ImeRun;
 import com.mammb.code.editor.ui.model.LayoutLine;
+import com.mammb.code.editor.ui.model.ModelQuery;
 import com.mammb.code.editor.ui.model.Rect;
 import com.mammb.code.editor.ui.model.RectBox;
 import com.mammb.code.editor.ui.model.ScreenPoint;
@@ -42,10 +42,9 @@ import com.mammb.code.editor.ui.model.ScrollBar;
 import com.mammb.code.editor.ui.model.Selection;
 import com.mammb.code.editor.ui.model.StateHandler;
 import com.mammb.code.editor.ui.model.draw.Draws;
+import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.model.helper.Clipboards;
 import com.mammb.code.editor.ui.model.helper.Selections;
-import com.mammb.code.editor.ui.model.ModelQuery;
-import com.mammb.code.editor.ui.model.editing.Queryable;
 import com.mammb.code.editor.ui.model.screen.PlainScreenText;
 import com.mammb.code.editor.ui.model.screen.WrapScreenText;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -441,7 +440,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public boolean applyEditing(Editing editing) {
-        return editing.apply(this, queryable());
+        return editing.apply(this);
     }
 
     @Override
@@ -920,21 +919,7 @@ public class EditorModelImpl implements EditorModel {
     }
 
 
-    /**
-     * Create the editor query.
-     * @return the editor query
-     */
-    private Queryable queryable() {
-        return new Queryable() {
-            @Override
-            public <R> R apply(ModelQuery<R> q) {
-                return run(q).value();
-            }
-        };
-    }
-
-
-    private List<ModelQuery.Result<?>> query(ModelQuery<?>... queries) {
+    private List<ModelQuery.Result<?>> runs(ModelQuery<?>... queries) {
         List<ModelQuery.Result<?>> results = new ArrayList<>();
         for (ModelQuery<?> query : queries) {
             results.add(run(query));
