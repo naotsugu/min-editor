@@ -66,7 +66,7 @@ git submodule update --remote --merge
 
 | Operation   | Key Combinations                                  |
 |-------------|---------------------------------------------------|
-| Edit        | `Ctrl+C` `Ctrl+V` `Ctrl-X` `Ctrl-A`               |
+| Edit        | `Ctrl+C` `Ctrl+V` `Ctrl+X` `Ctrl+A`               |
 | File        | `Ctrl+O` `Ctrl+S` `Ctrl+Shift+S`                  |
 | Undo Redo   | `Ctrl+Z` `Ctrl+Y` `Ctrl+Shift+Z`                  |
 | Window      | `Ctrl+N` `Ctrl+W`                                 |

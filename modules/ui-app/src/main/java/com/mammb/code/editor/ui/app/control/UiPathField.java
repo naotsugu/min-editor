@@ -116,6 +116,7 @@ public class UiPathField extends StackPane {
     private void handleTextMouseMoved(MouseEvent e) {
 
         if (!getScene().getWindow().isFocused() || text.getText().isBlank()) {
+
             stopTimeline();
             return;
         }
@@ -123,6 +124,7 @@ public class UiPathField extends StackPane {
         var point = new Point2D(e.getScreenX(), e.getScreenY());
         var index = text.getOffsetAtPoint(point);
         if (index <= 0 || index >= text.getText().length()) {
+
             stopTimeline();
             return;
         }
@@ -151,7 +153,7 @@ public class UiPathField extends StackPane {
         }
         pathMenu = menu;
         addressPath = null;
-        pathMenu.setOnHidden(e -> {  });
+        pathMenu.setOnHidden(e -> clearPathMenu());
         pathMenu.show(getScene().getWindow(), point.getX(), point.getY());
         pathMenu.requestFocus();
     }
@@ -164,11 +166,12 @@ public class UiPathField extends StackPane {
     private Consumer<Path> handlePathSelect() {
         return path -> {
             var point = pathMenu.getAnchor();
-            clearPathNavi();
+            clearPathMenu();
             Path raw = (path instanceof PathItem item) ? item.raw() : path;
             if (Files.isDirectory(raw)) {
                 var p = AddressPath.of(raw);
                 pathMenu = new UiPathMenu(p.path(), p.listItem(), handlePathSelect());
+                pathMenu.setOnHidden(e -> clearPathMenu());
                 pathMenu.show(getScene().getWindow(), point.getX(),
                     text.localToScreen(text.getBoundsInLocal()).getMaxY());
             } else if (Files.isRegularFile(raw) && pathSelectConsumer != null) {
@@ -198,6 +201,7 @@ public class UiPathField extends StackPane {
      */
     private void handleTextMouseExited(MouseEvent e) {
         stopTimeline();
+        addressPath = null;
     }
 
 
@@ -264,7 +268,7 @@ public class UiPathField extends StackPane {
     /**
      * Stop path selecting.
      */
-    private void clearPathNavi() {
+    private void clearPathMenu() {
         stopTimeline();
         addressPath = null;
         if (pathMenu != null) {
