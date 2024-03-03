@@ -64,15 +64,22 @@ git submodule update --remote --merge
 
 ## Usage
 
-| Operation   | Key Combinations                                  |
-|-------------|---------------------------------------------------|
-| Edit        | `Ctrl+C` `Ctrl+V` `Ctrl+X` `Ctrl+A`               |
-| File        | `Ctrl+O` `Ctrl+S` `Ctrl+Shift+S`                  |
-| Undo Redo   | `Ctrl+Z` `Ctrl+Y` `Ctrl+Shift+Z`                  |
-| Window      | `Ctrl+N` `Ctrl+W`                                 |
-| Find        | `Ctrl+F`                                          |
-| upper case  | `Ctrl+U`                                          |
-| multi caret | `Ctrl+Click` Ctrl + click on the left line number |
+| Operation         | Description |
+|-------------------|------------|
+| Cope              | `Ctrl+C`   |
+| Paste             | `Ctrl+V` |
+| Cut               | `Ctrl+X` |
+| Select all        |`Ctrl+A` |
+| Open              | `Ctrl+O` or Drop a file             |
+| Save              | `Ctrl+S`                            |
+| Save as           | `Ctrl+Shift+S`                      |
+| Open new window   | `Ctrl+N`                                 |
+| Toggle wrap       | `Ctrl+W`                                 |
+| Multi caret       | `Ctrl+Click` `Ctrl` + click on the left line number |
+| Undo              | `Ctrl+Z`                 |
+| Redo              | `Ctrl+Y` or `Ctrl+Shift+Z`                  |
+| Find              | `Ctrl+F`                                          |
+| Toggle upper case | `Ctrl+U`                                          |
 
 
 
