@@ -56,6 +56,11 @@ public class FlattenPath extends BasicPath {
     }
 
 
+    /**
+     * Delve paths that have only one file in the folder hierarchy.
+     * @param path the path
+     * @return delved paths
+     */
     private static Path delve(Path path) {
         Path p = path;
         for (int i = 0; i < limitOfDepth; i++) {

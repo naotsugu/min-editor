@@ -66,6 +66,10 @@ public class EditorSession {
     }
 
 
+    /**
+     * Replace the same path session from the history.
+     * @param session the session
+     */
     private void applyPointInHistories(Session session) {
         if (session == null || session.isEmptyPath()) {
             return;
@@ -81,6 +85,10 @@ public class EditorSession {
     }
 
 
+    /**
+     * Forward history.
+     * @return the session
+     */
     public Session forward() {
         var currentIndex = histories.indexOf(current);
         if (currentIndex == histories.size() - 1) {
@@ -92,6 +100,10 @@ public class EditorSession {
     }
 
 
+    /**
+     * Backward history.
+     * @return the session
+     */
     public Session backward() {
         var currentIndex = histories.indexOf(current);
         if (currentIndex == 0) {
@@ -103,16 +115,27 @@ public class EditorSession {
     }
 
 
+    /**
+     * Set the forward disable property.
+     * @param property the forward disable property
+     */
     public void setForwardDisableProperty(BooleanProperty property) {
         this.forwardDisableProperty = property;
     }
 
 
+    /**
+     * Set the backward disable property.
+     * @param property the backward disable property
+     */
     public void setBackwardDisableProperty(BooleanProperty property) {
         this.backwardDisableProperty = property;
     }
 
 
+    /**
+     * Ensure property.
+     */
     private void ensureProperty() {
         if (current == null) {
             forwardDisableProperty.set(true);
