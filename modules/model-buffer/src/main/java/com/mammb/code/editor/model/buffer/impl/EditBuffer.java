@@ -29,6 +29,7 @@ import com.mammb.code.editor.model.slice.TextualSlice;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.until.Until;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ public class EditBuffer implements TextEdit {
     public String subText(OffsetPoint point, int length) {
         editQueue.flush();
         byte[] bytes = content.bytes(point.cpOffset(), Until.charLen(length));
-        return new String(bytes, content.charset());
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
 

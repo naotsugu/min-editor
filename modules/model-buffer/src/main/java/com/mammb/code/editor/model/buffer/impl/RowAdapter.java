@@ -18,6 +18,7 @@ package com.mammb.code.editor.model.buffer.impl;
 import com.mammb.code.editor.model.content.Content;
 import com.mammb.code.editor.model.slice.RowSupplier;
 import com.mammb.code.editor.model.until.Until;
+import java.nio.charset.StandardCharsets;
 
 /**
  * ContentAdapter.
@@ -32,14 +33,14 @@ public record RowAdapter(Content content) implements RowSupplier {
     @Override
     public String at(long cpOffset) {
         byte[] bytes = content.bytes(cpOffset, Until.lfInclusive());
-        return (bytes.length == 0) ? empty : new String(bytes, content.charset());
+        return (bytes.length == 0) ? empty : new String(bytes, StandardCharsets.UTF_8);
     }
 
 
     @Override
     public String before(long cpOffset) {
         byte[] bytes = content.bytesBefore(cpOffset, Until.lf(2));
-        return (bytes.length == 0) ? empty : new String( bytes, content.charset());
+        return (bytes.length == 0) ? empty : new String(bytes, StandardCharsets.UTF_8);
     }
 
 
