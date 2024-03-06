@@ -15,11 +15,18 @@
  */
 package com.mammb.code.editor.ui.app.control;
 
+import com.mammb.code.editor.ui.app.helper.Directory;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -104,11 +111,22 @@ public class UiPathMenu extends ContextMenu {
     private static MenuItem[] createItems(List<PathItem> paths, Consumer<Path> consumer) {
 
         return paths.stream().map(p -> {
-            var item = new MenuItem(p.name(), UiIcon.contentOf(p.raw()));
+            UiIcon icon = UiIcon.contentOf(p.raw());
+            var hbox = new HBox(5, icon, new Label(p.name()));
+            hbox.setAlignment(Pos.CENTER_LEFT);
+            hbox.setPadding(new Insets(0, 5, 0, 5));
+            var item = new CustomMenuItem(hbox);
+
             if (Files.isReadable(p.raw())) {
                 item.setOnAction(e -> {
                     e.consume();
                     consumer.accept(p);
+                });
+                hbox.setOnMouseClicked(e -> {
+                    if (e.getButton() == MouseButton.PRIMARY && e.isShortcutDown()) {
+                        Directory.open(p.raw());
+                        e.consume();
+                    }
                 });
             } else {
                 item.setDisable(true);

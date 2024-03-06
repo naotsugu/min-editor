@@ -124,7 +124,6 @@ public class UiPathField extends StackPane {
         var point = new Point2D(e.getScreenX(), e.getScreenY());
         var index = text.getOffsetAtPoint(point);
         if (index <= 0 || index >= text.getText().length()) {
-
             stopTimeline();
             return;
         }
