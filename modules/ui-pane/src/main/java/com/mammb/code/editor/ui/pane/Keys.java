@@ -20,8 +20,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-
 import java.util.function.Predicate;
+
+import static javafx.scene.input.KeyCode.*;
 
 /**
  * Key utilities.
@@ -31,6 +32,9 @@ public class Keys {
 
     /** The key action type.*/
     public enum Action {
+        CARET_RIGHT, CARET_LEFT, CARET_UP, CARET_DOWN,
+        PAGE_UP, PAGE_DOWN,
+        DELETE, BACK_SPACE, ESCAPE,
         OPEN, SAVE, SAVE_AS,
         COPY, PASTE, CUT,
         UNDO, REDO,
@@ -71,8 +75,8 @@ public class Keys {
 
     private static final KeyCombination SC_D = new KeyCharacterCombination("d", KeyCombination.SHORTCUT_DOWN);
 
-    private static final KeyCombination SC_UP = new KeyCodeCombination(KeyCode.UP, KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_DOWN = new KeyCodeCombination(KeyCode.DOWN, KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_UP = new KeyCodeCombination(UP, KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_DOWN = new KeyCodeCombination(DOWN, KeyCombination.SHORTCUT_DOWN);
 
     private static final KeyCombination SC_0 = new KeyCharacterCombination("0", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_9 = new KeyCharacterCombination("9", KeyCombination.SHORTCUT_DOWN);
@@ -89,7 +93,16 @@ public class Keys {
      * @return a key action
      */
     public static Action asAction(KeyEvent e) {
-        if (Keys.SC_O.match(e)) return Action.OPEN;
+        if (e.getCode() == RIGHT) return Action.CARET_RIGHT;
+        else if (e.getCode() == LEFT) return Action.CARET_LEFT;
+        else if (e.getCode() == UP) return Action.CARET_UP;
+        else if (e.getCode() == DOWN) return Action.CARET_DOWN;
+        else if (e.getCode() == DELETE) return Action.DELETE;
+        else if (e.getCode() == BACK_SPACE) return Action.BACK_SPACE;
+        else if (e.getCode() == ESCAPE) return Action.ESCAPE;
+        else if (e.getCode() == PAGE_UP) return Action.PAGE_UP;
+        else if (e.getCode() == PAGE_DOWN) return Action.PAGE_DOWN;
+        else if (Keys.SC_O.match(e)) return Action.OPEN;
         else if (Keys.SC_S.match(e)) return Action.SAVE;
         else if (Keys.SC_SA.match(e)) return Action.SAVE_AS;
         else if (Keys.SC_W.match(e)) return Action.WRAP;
@@ -97,9 +110,9 @@ public class Keys {
         else if (Keys.SC_V.match(e)) return Action.PASTE;
         else if (Keys.SC_X.match(e)) return Action.CUT;
         else if (Keys.SC_Z.match(e)) return Action.UNDO;
-        else if (Keys.SC_Y.match(e)|| Keys.SC_SZ.match(e)) return Action.REDO;
-        else if (Keys.SC_HOME.match(e)) return Action.HOME;
-        else if (Keys.SC_END.match(e)) return Action.END;
+        else if (Keys.SC_Y.match(e) || Keys.SC_SZ.match(e)) return Action.REDO;
+        else if (e.getCode() == HOME || Keys.SC_HOME.match(e)) return Action.HOME;
+        else if (e.getCode() == END || Keys.SC_END.match(e)) return Action.END;
         else if (Keys.SC_A.match(e)) return Action.SELECT_ALL;
         else if (Keys.SC_N.match(e)) return Action.NEW;
         else if (Keys.SC_U.match(e)) return Action.UPPER;

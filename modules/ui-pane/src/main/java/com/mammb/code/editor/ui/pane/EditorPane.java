@@ -302,44 +302,38 @@ public class EditorPane extends StackPane {
         final Keys.Action keyAction = Keys.asAction(e);
         final boolean withSelect = e.isShiftDown();
 
-        if (keyAction != Keys.Action.EMPTY) {
-            switch (keyAction) {
-                case OPEN       -> FileAction.of(this, model).open(createOpenHandler());
-                case SAVE       -> FileAction.of(this, model).save(createSaveHandler());
-                case SAVE_AS    -> FileAction.of(this, model).saveAs(createSaveHandler());
-                case COPY       -> model.copyToClipboard();
-                case PASTE      -> withDraw(model::pasteFromClipboard);
-                case CUT        -> withDraw(model::cutToClipboard);
-                case UNDO       -> withDraw(model::undo);
-                case REDO       -> withDraw(model::redo);
-                case SELECT_ALL -> withDraw(model::selectAll);
-                case WRAP       -> withDraw(model::toggleWrap);
-                case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
-                case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
-                case UPPER,LOWER -> withDraw(() -> model.applyEditing(Editing.upperCase()));
-                case SCROLL_UP  -> withDraw(() -> model.scrollPrev(1));
-                case SCROLL_DOWN-> withDraw(() -> model.scrollNext(1));
-                case HEX        -> withDraw(() -> model.applyEditing(Editing.hexCase()));
-                case CALC       -> withDraw(() -> model.applyEditing(Editing.calcCase()));
-                case DEBUG      -> debug();
-                //case NEW        -> newPane();
-            }
-            return;
+        switch (keyAction) {
+            case CARET_RIGHT -> aroundEdit(model::moveCaretRight, withSelect);
+            case CARET_LEFT  -> aroundEdit(model::moveCaretLeft, withSelect);
+            case CARET_UP    -> aroundEdit(model::moveCaretUp, withSelect);
+            case CARET_DOWN  -> aroundEdit(model::moveCaretDown, withSelect);
+            case PAGE_UP     -> aroundEdit(model::pageUp, withSelect);
+            case PAGE_DOWN   -> aroundEdit(model::pageDown, withSelect);
+            case DELETE      -> withDraw(model::delete);
+            case BACK_SPACE  -> withDraw(model::backspace);
+            case ESCAPE      -> withDraw(model::clear);
+            case OPEN        -> FileAction.of(this, model).open(createOpenHandler());
+            case SAVE        -> FileAction.of(this, model).save(createSaveHandler());
+            case SAVE_AS     -> FileAction.of(this, model).saveAs(createSaveHandler());
+            case COPY        -> model.copyToClipboard();
+            case PASTE       -> withDraw(model::pasteFromClipboard);
+            case CUT         -> withDraw(model::cutToClipboard);
+            case UNDO        -> withDraw(model::undo);
+            case REDO        -> withDraw(model::redo);
+            case SELECT_ALL  -> withDraw(model::selectAll);
+            case WRAP        -> withDraw(model::toggleWrap);
+            case HOME        -> aroundEdit(model::moveCaretLineHome, withSelect);
+            case END         -> aroundEdit(model::moveCaretLineEnd, withSelect);
+            case UPPER,LOWER -> withDraw(() -> model.applyEditing(Editing.upperCase()));
+            case SCROLL_UP   -> withDraw(() -> model.scrollPrev(1));
+            case SCROLL_DOWN -> withDraw(() -> model.scrollNext(1));
+            case HEX         -> withDraw(() -> model.applyEditing(Editing.hexCase()));
+            case CALC        -> withDraw(() -> model.applyEditing(Editing.calcCase()));
+            case DEBUG       -> debug();
+            //case NEW       -> newPane();
+            default          -> { }
         }
 
-        switch (e.getCode()) {
-            case RIGHT      -> aroundEdit(model::moveCaretRight, withSelect);
-            case LEFT       -> aroundEdit(model::moveCaretLeft, withSelect);
-            case UP         -> aroundEdit(model::moveCaretUp, withSelect);
-            case DOWN       -> aroundEdit(model::moveCaretDown, withSelect);
-            case HOME       -> aroundEdit(model::moveCaretLineHome, withSelect);
-            case END        -> aroundEdit(model::moveCaretLineEnd, withSelect);
-            case PAGE_UP    -> aroundEdit(model::pageUp, withSelect);
-            case PAGE_DOWN  -> aroundEdit(model::pageDown, withSelect);
-            case DELETE     -> withDraw(model::delete);
-            case BACK_SPACE -> withDraw(model::backspace);
-            case ESCAPE     -> withDraw(model::clear);
-        }
     }
 
 
