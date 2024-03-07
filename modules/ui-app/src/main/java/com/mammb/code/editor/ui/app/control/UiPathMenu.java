@@ -122,10 +122,10 @@ public class UiPathMenu extends ContextMenu {
                     e.consume();
                     consumer.accept(p);
                 });
-                hbox.setOnMouseClicked(e -> {
+                hbox.setOnMousePressed(e -> {
                     if (e.getButton() == MouseButton.PRIMARY && e.isShortcutDown()) {
-                        Directory.open(p.raw());
                         e.consume();
+                        Directory.open(p.raw());
                     }
                 });
             } else {
