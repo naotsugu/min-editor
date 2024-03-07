@@ -49,6 +49,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
@@ -190,7 +191,14 @@ public class EditorPane extends StackPane {
      * @param path the content file path
      */
     public void open(Path path) {
-        open(Session.of(path));
+        if (!Files.isReadable(path)) {
+            return;
+        }
+        if (Files.isDirectory(path)) {
+
+        } else {
+            open(Session.of(path));
+        }
     }
 
 
