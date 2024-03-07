@@ -42,10 +42,8 @@ public class Keys {
         SELECT_ALL,
         WRAP, EMPTY,
         NEW,
-        UPPER, LOWER,
         SCROLL_UP, SCROLL_DOWN,
-        HEX,
-        CALC,
+        UPPER, LOWER, HEX, CALC,
         DEBUG,
         ;
     }

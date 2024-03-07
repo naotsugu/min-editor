@@ -42,7 +42,7 @@ public class HexCaseEditing implements Editing {
             }
         }
         if (isDecimalLike(trimmed)) {
-            model.selectionReplace("0x" + Integer.toHexString(Integer.parseInt(trimmed)));
+            model.selectionReplace(STR."0x\{Integer.toHexString(Integer.parseInt(trimmed))}");
             return true;
         }
         if (isHexLike(trimmed)) {
