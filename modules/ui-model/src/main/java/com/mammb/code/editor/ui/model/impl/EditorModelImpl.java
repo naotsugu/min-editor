@@ -53,7 +53,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -139,7 +138,8 @@ public class EditorModelImpl implements EditorModel {
      * @param height the screen height
      * @return a new EditorModel
      */
-    public static EditorModelImpl of(Context context,
+    public static EditorModelImpl of(
+            Context context,
             double width, double height,
             ScrollBar<Integer> vScroll, ScrollBar<Double> hScroll) {
         return new EditorModelImpl(context,
@@ -228,7 +228,12 @@ public class EditorModelImpl implements EditorModel {
         }
     }
 
-
+    /**
+     * Draw the text run.
+     * @param gc the graphics context
+     * @param run the text run
+     * @param top the top position
+     */
     private void drawRun(GraphicsContext gc, TextRun run, double top) {
 
         double left = run.layout().x() + screen.textLeft();
@@ -265,7 +270,7 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void tick(GraphicsContext gc) {
-        // carrett's blinking is useless.
+        // caret's blinking is useless.
     }
 
     @Override
@@ -316,6 +321,7 @@ public class EditorModelImpl implements EditorModel {
         }
         return false;
     }
+
     @Override
     public <R> R query(ModelQuery<R> query) {
         return run(query).value();
@@ -820,6 +826,9 @@ public class EditorModelImpl implements EditorModel {
 
     // -- private -------------------------------------------------------------
 
+    /**
+     * Delete the selection text.
+     */
     private void selectionDelete() {
 
         if (!selection.hasSelection()) {
@@ -898,36 +907,36 @@ public class EditorModelImpl implements EditorModel {
             : buffer.metrics().rowCount();
     }
 
+
     /**
      * Copy the selection text to the clipboard.
      * @param cut need cut?
      */
     private void copyToClipboard(boolean cut) {
-        if (selection.hasSelection()) {
-            OffsetPointRange range = selection.getRanges().getFirst();
-            OffsetPoint point = range.minOffsetPoint();
-            String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
-            Clipboards.put(text);
-            if (cut && !buffer.readOnly()) {
-                buffer.push(Edit.delete(text, point));
-                selection.selectOff();
-                carets.at(point.offset(), true);
-                texts.markDirty();
-                carets.refresh();
-            }
+        if (!selection.hasSelection()) {
+            return;
+        }
+        OffsetPointRange range = selection.getRanges().getFirst();
+        OffsetPoint point = range.minOffsetPoint();
+        String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
+        Clipboards.put(text);
+        if (cut && !buffer.readOnly()) {
+            selectionDelete();
+            buffer.push(Edit.delete(text, point));
+            selection.selectOff();
+            carets.at(point.offset(), true);
+            texts.markDirty();
+            carets.refresh();
         }
     }
 
 
-    private List<ModelQuery.Result<?>> runs(ModelQuery<?>... queries) {
-        List<ModelQuery.Result<?>> results = new ArrayList<>();
-        for (ModelQuery<?> query : queries) {
-            results.add(run(query));
-        }
-        return results;
-    }
-
-
+    /**
+     * Run query.
+     * @param <R> the type of result value
+     * @param query a query
+     * @return the result value
+     */
     private <R> ModelQuery.Result<R> run(ModelQuery<R> query) {
         @SuppressWarnings("unchecked")
         ModelQuery.Result<R> r = (ModelQuery.Result<R>) switch (query) {

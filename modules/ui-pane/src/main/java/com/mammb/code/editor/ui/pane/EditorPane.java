@@ -199,7 +199,7 @@ public class EditorPane extends StackPane {
             return;
         }
         if (Files.isDirectory(path)) {
-
+            // TODO list of files
         } else {
             open(Session.of(path));
         }
