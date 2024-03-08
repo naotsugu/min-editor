@@ -46,6 +46,7 @@ public interface EditorUpCall {
      */
     void contentModified(Session session, boolean modified);
 
+
     /**
      * The empty editor up call.
      * @return the empty editor up call

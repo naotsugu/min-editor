@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.app.control.ThemeCss;
+import com.mammb.code.editor.ui.pane.EditorDownCall;
 import com.mammb.code.editor.ui.pane.EditorPane;
 import com.mammb.code.editor.ui.pane.Session;
 import com.mammb.code.editor.ui.prefs.Context;
@@ -79,7 +80,9 @@ public class App extends Application {
             } else if (AppKeys.SC_BACKWARD.match(e)) {
                 downCall.requestPathChange(session.backward());
             } else if (AppKeys.SC_F.match(e)) {
-                bar.setVisibleSearchField(true);
+                var query = EditorDownCall.selectedText();
+                downCall.requestQuery(query);
+                bar.setVisibleSearchField(query.ret());
             }
         });
 
@@ -104,7 +107,7 @@ public class App extends Application {
         bar.setOnBackwardClicked(() -> downCall.requestPathChange(session.backward()));
         bar.setOnSearchTextCommitted((text, ke) -> {
             downCall.requestFind(text, !ke.isShortcutDown());
-            bar.setVisibleSearchField(true);
+            bar.setVisibleSearchField(null);
         });
         bar.setOnExit(() -> Platform.runLater(downCall::requestFocus));
 

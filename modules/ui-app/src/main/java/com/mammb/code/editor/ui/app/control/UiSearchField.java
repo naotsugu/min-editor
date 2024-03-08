@@ -86,6 +86,15 @@ public class UiSearchField extends StackPane {
 
 
     /**
+     * Set the search text.
+     * @param string the search text
+     */
+    public void setSearchText(String string) {
+        text.textField().setText(string);
+    }
+
+
+    /**
      * Set the text committed handler.
      * @param consumer the consumer
      */

@@ -182,6 +182,7 @@ public class EditorPane extends StackPane {
             @Override public void requestFocus() {
                 canvas.requestFocus();
             }
+            @Override public <T> void requestQuery(Query<T> query) { query.on(model.query(query.modelQuery())); model.selectOff(); }
         };
     }
 

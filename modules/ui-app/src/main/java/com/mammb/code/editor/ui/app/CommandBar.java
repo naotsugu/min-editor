@@ -88,13 +88,14 @@ public class CommandBar extends HBox {
 
 
 
-    void setVisibleSearchField(boolean visible) {
-        boolean old = searchField.isVisible();
-        if (old != visible) {
-            searchField.setVisible(visible);
+    void setVisibleSearchField(String text) {
+        boolean visible = searchField.isVisible();
+        if (!visible) {
+            searchField.setVisible(true);
         }
-        if (visible) {
-            searchField.requestTextFieldFocus();
+        searchField.requestTextFieldFocus();
+        if (text != null && !text.isEmpty()) {
+            searchField.setSearchText(text);
         }
     }
 

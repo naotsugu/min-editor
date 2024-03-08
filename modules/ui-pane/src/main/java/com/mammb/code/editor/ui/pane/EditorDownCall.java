@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import com.mammb.code.editor.ui.model.ModelQuery;
+
 /**
  * The EditorDownCall.
  * EditorDownCall is the interface for operation requests from
@@ -50,5 +52,31 @@ public interface EditorDownCall {
      * Request focus.
      */
     void requestFocus();
+
+    /**
+     * Request query.
+     * @param query the query
+     */
+    <T> void requestQuery(Query<T> query);
+
+
+    static Query<String> selectedText() {
+        return new Query<>() {
+            @Override ModelQuery<String> modelQuery() {
+                return ModelQuery.selectedText;
+            }
+        };
+    }
+
+    abstract class Query<T> {
+        private T ret;
+        public void on(T ret) {
+            this.ret = ret;
+        }
+        public T ret() {
+            return ret;
+        }
+        abstract ModelQuery<T> modelQuery();
+    }
 
 }
