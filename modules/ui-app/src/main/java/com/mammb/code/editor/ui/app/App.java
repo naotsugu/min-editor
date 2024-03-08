@@ -82,7 +82,10 @@ public class App extends Application {
             } else if (AppKeys.SC_F.match(e)) {
                 var query = EditorDownCall.selectedText();
                 downCall.requestQuery(query);
-                bar.setVisibleSearchField(query.ret());
+                if (query.ret() != null && !query.ret().isBlank() && !query.ret().contains("\n")) {
+                    bar.setVisibleSearchField(query.ret());
+                    downCall.requestSelectClear();
+                }
             }
         });
 

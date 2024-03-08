@@ -54,6 +54,11 @@ public interface EditorDownCall {
     void requestFocus();
 
     /**
+     * Request select clear.
+     */
+    void requestSelectClear();
+
+    /**
      * Request query.
      * @param query the query
      */
@@ -70,7 +75,7 @@ public interface EditorDownCall {
 
     abstract class Query<T> {
         private T ret;
-        public void on(T ret) {
+        public void ret(T ret) {
             this.ret = ret;
         }
         public T ret() {

@@ -91,6 +91,7 @@ public class UiSearchField extends StackPane {
      */
     public void setSearchText(String string) {
         text.textField().setText(string);
+        text.textField().end();
     }
 
 
