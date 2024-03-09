@@ -916,17 +916,16 @@ public class EditorModelImpl implements EditorModel {
         if (!selection.hasSelection()) {
             return;
         }
-        OffsetPointRange range = selection.getRanges().getFirst();
-        OffsetPoint point = range.minOffsetPoint();
-        String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
+        String text = selection.getRanges().stream()
+            .sorted(Comparator.comparing(OffsetPointRange::minOffsetPoint))
+            .map(range -> {
+                OffsetPoint point = range.minOffsetPoint();
+                return buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
+            })
+            .collect(Collectors.joining(buffer.metrics().lineEnding().str()));
         Clipboards.put(text);
         if (cut && !buffer.readOnly()) {
             selectionDelete();
-            buffer.push(Edit.delete(text, point));
-            selection.selectOff();
-            carets.at(point.offset(), true);
-            texts.markDirty();
-            carets.refresh();
         }
     }
 
