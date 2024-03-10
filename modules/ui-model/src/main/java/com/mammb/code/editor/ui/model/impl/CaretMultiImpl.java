@@ -198,6 +198,11 @@ public class CaretMultiImpl implements CaretMulti {
     }
 
     @Override
+    public boolean hasMulti() {
+        return !moons.isEmpty();
+    }
+
+    @Override
     public RangeSupplier selectionRange() {
         return new AnchoredCaretMulti(main, moons);
     }

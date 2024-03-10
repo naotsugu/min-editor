@@ -23,6 +23,7 @@ import com.mammb.code.editor.model.find.FoundRun;
 import com.mammb.code.editor.model.layout.TextLine;
 import com.mammb.code.editor.model.layout.TextRun;
 import com.mammb.code.editor.model.style.StylingTranslate;
+import com.mammb.code.editor.model.text.LineEnding;
 import com.mammb.code.editor.model.text.OffsetPoint;
 import com.mammb.code.editor.model.text.OffsetPointRange;
 import com.mammb.code.editor.syntax.Syntax;
@@ -56,6 +57,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -330,33 +332,16 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="edit behavior">
     @Override
     public void input(String input) {
-
+        vScrollToCaret();
         if (input == null || input.isEmpty() || buffer.readOnly()) {
             return;
         }
-
         String value = buffer.metrics().lineEnding().unify(input);
-
         if (selection.hasSelection()) {
-            selectionReplace(value);
-            return;
+            selectionReplace(List.of(value));
+        } else {
+            input(List.of(value));
         }
-
-        vScrollToCaret();
-
-        var unit = Edit.unit();
-        var hoisting = Hoisting.caretOf(carets.list());
-        for (Caret caret : hoisting.points()) {
-            unit.put(Edit.insert(value, caret.offsetPoint()));
-            hoisting.shiftOn(caret.offsetPoint().offset(), value.length());
-        }
-        buffer.push(unit.commit());
-        hoisting.locateOn(carets);
-
-        find.reset();
-        texts.markDirty();
-        carets.refresh();
-        screen.adjustVScroll(totalLines());
     }
 
     @Override
@@ -440,6 +425,33 @@ public class EditorModelImpl implements EditorModel {
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
 
+    private void input(List<String> inputs) {
+        if (inputs == null || inputs.isEmpty() || buffer.readOnly()) {
+            return;
+        }
+        List<Caret> caretList = carets.list();
+        Stack<String> stack = new Stack<>();
+        for (int i = 0; i < caretList.size(); i++) {
+            stack.push((inputs.size() > i) ? inputs.get(i) : "");
+        }
+
+        var unit = Edit.unit();
+        var hoisting = Hoisting.caretOf(caretList);
+        for (Caret caret : hoisting.points()) {
+            String value = stack.pop();
+            unit.put(Edit.insert(value, caret.offsetPoint()));
+            hoisting.shiftOn(caret.offsetPoint().offset(), value.length());
+        }
+        buffer.push(unit.commit());
+        hoisting.locateOn(carets);
+
+        find.reset();
+        texts.markDirty();
+        carets.refresh();
+        screen.adjustVScroll(totalLines());
+    }
+
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="special edit behavior">
@@ -463,27 +475,40 @@ public class EditorModelImpl implements EditorModel {
             input(string);
             return;
         }
+        selectionReplace(List.of(string));
+    }
+
+    private void selectionReplace(List<String> lines) {
+
+        if (lines == null || lines.isEmpty() || buffer.readOnly()) {
+            return;
+        }
+
+        List<OffsetPointRange> ranges = selection.getRanges();
+        Stack<String> stack = new Stack<>();
+        for (int i = 0; i < ranges.size(); i++) {
+            stack.push((lines.size() > i) ? lines.get(i) : "");
+        }
 
         var unit = Edit.unit();
-        var hoisting = Hoisting.rangeOf(selection.getRanges());
-        int d = 0;
+        var hoisting = Hoisting.rangeOf(ranges);
         for (OffsetPointRange range : hoisting.points()) {
+            String value = stack.pop();
             OffsetPoint point = range.minOffsetPoint();
             String text = buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
-            unit.put(Edit.replace(text, string, point));
-            hoisting.shift(range.minOffsetPoint().offset(), string.length() - text.length());
-            if (range.startOffsetPoint().offset() == range.minOffsetPoint().offset()) {
-                d = string.length();
-            }
+            unit.put(Edit.replace(text, value, point));
+            hoisting.shift(range.minOffsetPoint().offset(), value.length() - text.length());
+            hoisting.mv(range.minOffsetPoint().offset(), value.length());
         }
         buffer.push(unit.commit());
-        hoisting.locateOn(carets, d);
+        hoisting.locateOn(carets);
 
         selection.selectOff();
         find.reset();
         texts.markDirty();
         carets.refresh();
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
+
     }
 
     @Override
@@ -705,7 +730,21 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="clipboard behavior">
     @Override
     public void pasteFromClipboard() {
-        input(Clipboards.get());
+        String text = Clipboards.get();
+        if (text == null || text.isEmpty() || buffer.readOnly()) {
+            return;
+        }
+        if (carets.hasMulti() && text.contains("\n")) {
+            vScrollToCaret();
+            List<String> lines = text.lines().toList();
+            if (selection.hasSelection()) {
+                selectionReplace(lines);
+            } else {
+                input(lines);
+            }
+        } else {
+            input(text);
+        }
     }
     @Override
     public void copyToClipboard() {
@@ -901,6 +940,11 @@ public class EditorModelImpl implements EditorModel {
         screen.vScrolled(texts.headlinesIndex());
     }
 
+
+    /**
+     * Get the number of total lines.
+     * @return the number of total lines
+     */
     private int totalLines() {
         return (texts instanceof WrapScreenText w)
             ? buffer.metrics().rowCount() + (w.wrappedSize() - texts.pageSize())
@@ -922,7 +966,7 @@ public class EditorModelImpl implements EditorModel {
                 OffsetPoint point = range.minOffsetPoint();
                 return buffer.subText(point, (int) Long.min(range.length(), Integer.MAX_VALUE));
             })
-            .collect(Collectors.joining(buffer.metrics().lineEnding().str()));
+            .collect(Collectors.joining(LineEnding.platform().str()));
         Clipboards.put(text);
         if (cut && !buffer.readOnly()) {
             selectionDelete();

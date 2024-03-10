@@ -80,6 +80,14 @@ public class Hoisting<E> {
         }
     }
 
+    public void mv(long offset, int delta) {
+        for (Point<E> point : points) {
+            if (point.offset == offset) {
+                point.shift(delta);
+            }
+        }
+    }
+
     public void locateOn(CaretMulti carets) {
         locateOn(carets, 0);
     }

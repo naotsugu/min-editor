@@ -23,10 +23,27 @@ import java.util.List;
  */
 public interface CaretMulti extends Caret {
 
+    /**
+     * Add a caret.
+     * @param charOffset the offset
+     */
     void add(long charOffset);
 
+    /**
+     * Clear caret.
+     */
     void clear();
 
+    /**
+     * Get the caret list.
+     * @return the caret list
+     */
     List<Caret> list();
+
+    /**
+     * Gets whether multiple carets.
+     * @return {@code true} if whether multiple carets
+     */
+    boolean hasMulti();
 
 }
