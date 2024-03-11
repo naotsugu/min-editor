@@ -338,7 +338,7 @@ public class EditorModelImpl implements EditorModel {
         }
         String value = buffer.metrics().lineEnding().unify(input);
         if (selection.hasSelection()) {
-            selectionReplace(List.of(value));
+            selectionsReplace(List.of(value));
         } else {
             input(List.of(value));
         }
@@ -455,7 +455,6 @@ public class EditorModelImpl implements EditorModel {
         screen.adjustVScroll(totalLines());
     }
 
-
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="special edit behavior">
@@ -468,21 +467,17 @@ public class EditorModelImpl implements EditorModel {
     @Override
     public void selectionReplace(String string) {
         vScrollToCaret();
-        if (buffer.readOnly()) {
+        if (buffer.readOnly() || !selection.hasSelection()) {
             return;
         }
         if (string == null || string.isEmpty()) {
             selectionDelete();
-            return;
+        } else {
+            selectionsReplace(List.of(string));
         }
-        if (!selection.hasSelection()) {
-            input(string);
-            return;
-        }
-        selectionReplace(List.of(string));
     }
 
-    private void selectionReplace(List<String> lines) {
+    private void selectionsReplace(List<String> lines) {
 
         if (lines == null || lines.isEmpty() || buffer.readOnly()) {
             return;
@@ -746,7 +741,7 @@ public class EditorModelImpl implements EditorModel {
             vScrollToCaret();
             List<String> lines = text.lines().toList();
             if (selection.hasSelection()) {
-                selectionReplace(lines);
+                selectionsReplace(lines);
             } else {
                 input(lines);
             }
