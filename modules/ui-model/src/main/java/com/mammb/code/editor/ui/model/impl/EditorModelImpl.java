@@ -425,14 +425,18 @@ public class EditorModelImpl implements EditorModel {
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
 
-    private void input(List<String> inputs) {
-        if (inputs == null || inputs.isEmpty() || buffer.readOnly()) {
+    private void input(List<String> lines) {
+        if (lines == null || lines.isEmpty() || buffer.readOnly()) {
             return;
         }
         List<Caret> caretList = carets.list();
         Stack<String> stack = new Stack<>();
         for (int i = 0; i < caretList.size(); i++) {
-            stack.push((inputs.size() > i) ? inputs.get(i) : "");
+            if (lines.size() == 1) {
+                stack.push(lines.getFirst());
+            } else {
+                stack.push((lines.size() > i) ? lines.get(i) : "");
+            }
         }
 
         var unit = Edit.unit();
@@ -487,7 +491,11 @@ public class EditorModelImpl implements EditorModel {
         List<OffsetPointRange> ranges = selection.getRanges();
         Stack<String> stack = new Stack<>();
         for (int i = 0; i < ranges.size(); i++) {
-            stack.push((lines.size() > i) ? lines.get(i) : "");
+            if (lines.size() == 1) {
+                stack.push(lines.getFirst());
+            } else {
+                stack.push((lines.size() > i) ? lines.get(i) : "");
+            }
         }
 
         var unit = Edit.unit();
