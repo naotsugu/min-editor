@@ -344,7 +344,7 @@ public class EditorModelImpl implements EditorModel {
         } else {
             input(List.of(value));
         }
-        scrollNext(Math.max(0, lineCount - lineGapFromCaret()));
+        scrollNext(Math.max(0, lineCount - lineMarginFromCaret()));
     }
 
     @Override
@@ -954,7 +954,7 @@ public class EditorModelImpl implements EditorModel {
     }
 
 
-    private int lineGapFromCaret() {
+    private int lineMarginFromCaret() {
         List<Caret> list = carets.list();
         Caret max = list.stream().max(Comparator.naturalOrder()).get();
         int lineCount = 0;
