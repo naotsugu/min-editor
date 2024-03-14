@@ -94,6 +94,7 @@ public class EditBuffer implements TextEdit {
     @Override
     public Edit undo() {
         Edit edit = editQueue.undo();
+        metrics.apply(edit);
         metrics.setModified(editQueue.hasUndo());
         return edit;
     }
@@ -101,7 +102,9 @@ public class EditBuffer implements TextEdit {
 
     @Override
     public Edit redo() {
-        return editQueue.redo();
+        Edit edit = editQueue.redo();
+        metrics.apply(edit);
+        return edit;
     }
 
 

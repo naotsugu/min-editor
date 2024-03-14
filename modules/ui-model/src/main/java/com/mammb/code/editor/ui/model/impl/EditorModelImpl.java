@@ -415,6 +415,7 @@ public class EditorModelImpl implements EditorModel {
         texts.markDirty();
         carets.at(edit.point().offset(), true);
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
+        screen.adjustVScroll(totalLines());
     }
 
     @Override
