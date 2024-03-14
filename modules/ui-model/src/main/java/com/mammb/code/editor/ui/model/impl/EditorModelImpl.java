@@ -337,11 +337,14 @@ public class EditorModelImpl implements EditorModel {
             return;
         }
         String value = buffer.metrics().lineEnding().unify(input);
+        int lineCount = Math.toIntExact(value.chars().filter(c -> c == '\n').count());
+
         if (selection.hasSelection()) {
             selectionsReplace(List.of(value));
         } else {
             input(List.of(value));
         }
+        scrollNext(Math.max(0, lineCount - lineGapFromCaret()));
     }
 
     @Override
@@ -424,6 +427,7 @@ public class EditorModelImpl implements EditorModel {
         carets.at(edit.point().offset(), true);
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
+
 
     private void input(List<String> lines) {
         if (lines == null || lines.isEmpty() || buffer.readOnly()) {
@@ -607,6 +611,9 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="scroll behavior">
     @Override
     public void scrollPrev(int n) {
+        if (n <= 0) {
+            return;
+        }
         int size = texts.prev(n);
         carets.refresh();
         if (size == 0) {
@@ -618,6 +625,9 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void scrollNext(int n) {
+        if (n <= 0) {
+            return;
+        }
         int size = texts.next(n);
         carets.refresh();
         if (size == 0) {
@@ -941,6 +951,31 @@ public class EditorModelImpl implements EditorModel {
         texts.markDirty();
         carets.refresh();
         screen.vScrolled(texts.headlinesIndex());
+    }
+
+
+    private int lineGapFromCaret() {
+        List<Caret> list = carets.list();
+        Caret max = list.stream().max(Comparator.naturalOrder()).get();
+        int lineCount = 0;
+        double offsetY = 0;
+        double leadingHeight = 0;
+        List<TextLine> lines = texts.lines();
+        for (int i = 0;; i++) {
+            if (lines.size() > i) {
+                TextLine line = lines.get(i);
+                leadingHeight = line.leadingHeight();
+                if (line.offset() < max.offset()) {
+                    lineCount--;
+                }
+            }
+            offsetY += leadingHeight;
+            if (offsetY >= screen.height()) {
+                break;
+            }
+            lineCount++;
+        }
+        return lineCount;
     }
 
 
