@@ -332,12 +332,17 @@ public class EditorModelImpl implements EditorModel {
     // <editor-fold defaultstate="collapsed" desc="edit behavior">
     @Override
     public void input(String input) {
+
         vScrollToCaret();
+
         if (input == null || input.isEmpty() || buffer.readOnly()) {
             return;
         }
+
         String value = buffer.metrics().lineEnding().unify(input);
-        int lineCount = Math.toIntExact(value.chars().filter(c -> c == '\n').count());
+
+        int inputLineCount = Math.toIntExact(value.chars().filter(c -> c == '\n').count());
+        int marginLineCount = lineMarginFromCaret();
 
         if (selection.hasSelection()) {
             selectionsReplace(List.of(value));
@@ -345,13 +350,14 @@ public class EditorModelImpl implements EditorModel {
             input(List.of(value));
         }
 
-        if (lineCount > 0) {
+        if (inputLineCount > 0) {
+            int scrollLines = inputLineCount - marginLineCount;
             if (texts.rollup() > 0) {
                 int d = texts.rollup();
                 texts.rollDown(d);
-                scrollNext(d);
+                scrollNext(d + Math.max(0, scrollLines));
             } else {
-                scrollNext(Math.max(0, lineCount - lineMarginFromCaret()));
+                scrollNext(Math.max(0, inputLineCount - lineMarginFromCaret()));
             }
         }
     }
@@ -964,6 +970,10 @@ public class EditorModelImpl implements EditorModel {
     }
 
 
+    /**
+     * Gets the number of lines from the bottom caret to the bottom of the screen.
+     * @return the number of lines
+     */
     private int lineMarginFromCaret() {
         List<Caret> list = carets.list();
         Caret max = list.stream().max(Comparator.naturalOrder()).get();
