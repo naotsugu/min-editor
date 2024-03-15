@@ -300,7 +300,7 @@ public class EditorModelImpl implements EditorModel {
         if (caretPoint == null) {
             caretPoint = OffsetPoint.zero;
         }
-        return new ScreenPoint(texts.head().offsetPoint().row(), caretPoint.offset());
+        return ScreenPoint.of(texts.head().offsetPoint().row(), caretPoint.offset());
     }
 
     @Override
@@ -876,7 +876,7 @@ public class EditorModelImpl implements EditorModel {
                     case FoundRun run -> {
                         // TODO Need to consider if row wrapped.
                         var row = Math.max(0, run.row() - screen.pageLineSize() / 2);
-                        var point = new ScreenPoint(row, run.chOffset() + (run.right() ? run.length() : 0));
+                        var point = ScreenPoint.of(row, run.chOffset() + (run.right() ? run.length() : 0));
                         apply(point);
                         texts.markDirty();
                         carets.refresh();

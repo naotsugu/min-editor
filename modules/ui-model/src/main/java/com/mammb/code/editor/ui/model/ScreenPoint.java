@@ -19,5 +19,29 @@ package com.mammb.code.editor.ui.model;
  * The ScreenPoint.
  * @author Naotsugu Kobayashi
  */
-public record ScreenPoint(int row, long caretIndex) {
+public interface ScreenPoint {
+
+    /**
+     * Get the row number.
+     * @return the row number
+     */
+    int row();
+
+    /**
+     * Get the caret index.
+     * @return the caret index
+     */
+    long caretIndex();
+
+    /**
+     * Create a new ScreenPoint.
+     * @param row the row number
+     * @param caretIndex the caret index
+     * @return a new ScreenPoint
+     */
+    static ScreenPoint of(int row, long caretIndex) {
+        record ScreenPointRecord(int row, long caretIndex) implements ScreenPoint { }
+        return new ScreenPointRecord(row, caretIndex);
+    }
+
 }

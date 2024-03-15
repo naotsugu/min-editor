@@ -218,7 +218,7 @@ public class EditorPane extends StackPane {
         FileAction.of(this, model).open(session.path(), e -> {
             this.handleModelCreated(e);
             if (!session.isOriginPoint()) {
-                var sp = new ScreenPoint(session.row(), session.caretIndex());
+                var sp = ScreenPoint.of(session.row(), session.caretIndex());
                 withDraw(() -> model.apply(sp));
             }
             upCall.pathChanged(session(), prev);
@@ -482,7 +482,7 @@ public class EditorPane extends StackPane {
         return (WorkerStateEvent e) -> {
             this.handleModelCreated(e);
             if (!prev.isOriginPoint()) {
-                var sp = new ScreenPoint(prev.row(), prev.caretIndex());
+                var sp = ScreenPoint.of(prev.row(), prev.caretIndex());
                 withDraw(() -> model.apply(sp));
             }
             var curr = session();
