@@ -347,10 +347,12 @@ public class EditorModelImpl implements EditorModel {
 
         if (lineCount > 0) {
             if (texts.rollup() > 0) {
-                texts.rollDown(lineCount + 3);
-                texts.markDirty();
+                int d = texts.rollup();
+                texts.rollDown(d);
+                scrollNext(d);
+            } else {
+                scrollNext(Math.max(0, lineCount - lineMarginFromCaret()));
             }
-            scrollNext(Math.max(0, lineCount - lineMarginFromCaret()));
         }
     }
 
