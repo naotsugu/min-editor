@@ -31,6 +31,10 @@ public class CaretImpl implements Caret {
     /** The caretLine. */
     private final CaretLine caretLine;
 
+    /**
+     * Constructor.
+     * @param caretLine the caretLine
+     */
     public CaretImpl(CaretLine caretLine) {
         this.caretLine = caretLine;
     }

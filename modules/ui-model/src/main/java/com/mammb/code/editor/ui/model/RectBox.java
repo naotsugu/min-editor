@@ -40,10 +40,10 @@ public record RectBox(double x, double y, double width, double height) implement
      */
     public RectBox smaller(double scale) {
         if (scale > 1 || scale <= 0) {
-            throw new IllegalArgumentException("illegal scale.[" + scale + "]");
+            throw new IllegalArgumentException(STR."illegal scale.[\{scale}]");
         }
         return new RectBox(
-            x + (width * (1 - scale)) / 2,
+            x + (width  * (1 - scale)) / 2,
             y + (height * (1 - scale)) / 2,
             width * scale,
             height * scale);

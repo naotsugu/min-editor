@@ -144,6 +144,7 @@ public class CaretBar implements Rect {
         virtualX = x;
     }
 
+
     /**
      * Get the character offset.
      * @return the character offset
@@ -151,6 +152,7 @@ public class CaretBar implements Rect {
     public long offset() {
         return offset;
     }
+
 
     /**
      * Get the caret virtual x.
@@ -160,25 +162,30 @@ public class CaretBar implements Rect {
         return virtualX;
     }
 
+
     @Override
     public double x() {
         return x;
     }
+
 
     @Override
     public double y() {
         return y;
     }
 
+
     @Override
     public double width() {
         return w;
     }
 
+
     @Override
     public double height() {
         return h;
     }
+
 
     /**
      * Set the hide flag.
@@ -188,9 +195,12 @@ public class CaretBar implements Rect {
         this.hide = hide;
     }
 
+    /**
+     * Get the hide flag.
+     * @return the hide flag
+     */
     public boolean isHide() {
         return hide;
     }
-
 
 }
