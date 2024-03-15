@@ -257,6 +257,18 @@ public class WrapScreenText implements ScreenText {
     }
 
 
+    @Override
+    public int rollup() {
+        return rollup;
+    }
+
+
+    @Override
+    public void rollDown(int n) {
+        rollup = Math.max(0, rollup - n);
+    }
+
+
     /**
      * Get the wrapped size.
      * @return the wrapped size

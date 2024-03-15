@@ -344,7 +344,14 @@ public class EditorModelImpl implements EditorModel {
         } else {
             input(List.of(value));
         }
-        scrollNext(Math.max(0, lineCount - lineMarginFromCaret()));
+
+        if (lineCount > 0) {
+            if (texts.rollup() > 0) {
+                texts.rollDown(lineCount + 3);
+                texts.markDirty();
+            }
+            scrollNext(Math.max(0, lineCount - lineMarginFromCaret()));
+        }
     }
 
     @Override

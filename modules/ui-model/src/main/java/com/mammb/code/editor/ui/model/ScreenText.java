@@ -81,6 +81,18 @@ public interface ScreenText {
     void setPageSize(int size);
 
     /**
+     * Get the rollup.
+     * @return the rollup
+     */
+    int rollup();
+
+    /**
+     * Roll down.
+     * @param n the number of roll down
+     */
+    void rollDown(int n);
+
+    /**
      * Get the char offset at the specified position.
      * @param x the x position
      * @param y the y position
