@@ -13,19 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.model.editing;
-
-import com.mammb.code.editor.ui.model.EditorModel;
+package com.mammb.code.editor.ui.model.helper;
 
 /**
- * Tab editing.
+ * The scroll utilities.
  * @author Naotsugu Kobayashi
  */
-public class TabEditing implements Editing {
-
-    @Override
-    public boolean apply(EditorModel model) {
-        return false;
-    }
-
+public class Scrolls {
 }

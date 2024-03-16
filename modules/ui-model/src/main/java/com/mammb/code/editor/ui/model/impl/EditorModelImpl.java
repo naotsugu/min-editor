@@ -149,11 +149,6 @@ public class EditorModelImpl implements EditorModel {
     }
 
 
-    /**
-     * Create a new partially editor model.
-     * @param path the specified path
-     * @return a new partially EditorModel
-     */
     @Override
     public EditorModelImpl partiallyWith(Path path) {
         return new EditorModelImpl(
@@ -164,11 +159,6 @@ public class EditorModelImpl implements EditorModel {
     }
 
 
-    /**
-     * Re-create the model at the specified path.
-     * @param path the specified path
-     * @return a new EditorModel
-     */
     @Override
     public EditorModelImpl with(Path path) {
         return new EditorModelImpl(
@@ -207,6 +197,11 @@ public class EditorModelImpl implements EditorModel {
     }
 
 
+    /**
+     * Draw a line.
+     * @param gc the GraphicsContext
+     * @param layoutLine the layout line
+     */
     private void draw(GraphicsContext gc, LayoutLine layoutLine) {
         if (layoutLine == null) {
             return;
@@ -229,6 +224,7 @@ public class EditorModelImpl implements EditorModel {
             gc.setFill(Color.TRANSPARENT);
         }
     }
+
 
     /**
      * Draw the text run.
@@ -275,6 +271,7 @@ public class EditorModelImpl implements EditorModel {
         // caret's blinking is useless.
     }
 
+
     @Override
     public void showCaret(GraphicsContext gc) {
         if (!ime.enabled()) {
@@ -283,16 +280,19 @@ public class EditorModelImpl implements EditorModel {
         }
     }
 
+
     @Override
     public void hideCaret(GraphicsContext gc) {
         carets.setHide(true);
         carets.list().forEach(c -> draw(gc, c.layoutLine()));
     }
 
+
     @Override
     public StateHandler stateChange() {
         return stateChange;
     }
+
 
     @Override
     public ScreenPoint screenPoint() {
@@ -303,6 +303,7 @@ public class EditorModelImpl implements EditorModel {
         return ScreenPoint.of(texts.head().offsetPoint().row(), caretPoint.offset());
     }
 
+
     @Override
     public void apply(ScreenPoint screenPoint) {
         vScrolled(texts.head().offsetPoint().row(), screenPoint.row());
@@ -310,10 +311,12 @@ public class EditorModelImpl implements EditorModel {
         screen.syncScroll(texts.headlinesIndex(), totalLines(), carets.x());
     }
 
+
     @Override
     public Rect textAreaRect() {
         return screen.textArea();
     }
+
 
     @Override
     public boolean peekSelection(Predicate<String> predicate) {
@@ -323,6 +326,7 @@ public class EditorModelImpl implements EditorModel {
         }
         return false;
     }
+
 
     @Override
     public <R> R query(ModelQuery<R> query) {
@@ -799,6 +803,7 @@ public class EditorModelImpl implements EditorModel {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="ime behavior">
+
     @Override
     public Rect imeOn(GraphicsContext gc) {
         if (!ime.enabled()) {
@@ -808,16 +813,24 @@ public class EditorModelImpl implements EditorModel {
         }
         return new RectBox(carets.x() + screen.textLeft(), carets.y(), carets.width(), carets.height());
     }
+
+
     @Override
     public void imeOff() {
         ime.off();
         buffer.flush();
+        texts.markDirty();
+        carets.refresh();
     }
+
+
     @Override
     public void imeCommitted(String text) {
         ime.off();
         input(text);
     }
+
+
     @Override
     public void imeComposed(List<ImeRun> runs) {
         ime.composed(buffer, runs);
@@ -825,10 +838,13 @@ public class EditorModelImpl implements EditorModel {
         texts.markDirty();
         carets.refresh();
     }
+
+
     @Override
     public boolean isImeOn() {
         return ime.enabled();
     }
+
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="layout behavior">

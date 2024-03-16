@@ -89,7 +89,7 @@ public interface Editing {
     static Editing keyTypedSteal(String ch) {
         return model ->
                 LineBreakEditing.of(ch).apply(model) ||
-                TabEditing.of(ch).apply(model) ||
+                UnifyTabEditing.of(ch).apply(model) ||
                 PassThroughInput.of(ch).apply(model);
     }
 

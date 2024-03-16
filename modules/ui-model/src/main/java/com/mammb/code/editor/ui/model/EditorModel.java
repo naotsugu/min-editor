@@ -30,44 +30,53 @@ import java.util.function.Predicate;
 public interface EditorModel extends EditorDraw {
 
     // -- edit behavior -------------------------------------------------------
+
     /**
      * Input the string.
      * @param input the string.
      */
     void input(String input);
+
     /**
      * Delete a character.
      */
     void delete();
+
     /**
      * Backspace delete a character.
      */
     void backspace();
+
     /**
      * Undo.
      */
     void undo();
+
     /**
      * Redo.
      */
     void redo();
 
     // -- special edit behavior -----------------------------------------------
+
     /**
      * Apply editing.
      * @param editing the editing
      * @return {@code true} if edited
      */
     boolean applyEditing(Editing editing);
+
     /**
      * Selection replace.
      * @param string the replace text
      */
     void selectionReplace(String string);
+
     /**
      * Indent.
      */
     void indent();
+
     /**
      * Unindent.
      */
@@ -79,22 +88,27 @@ public interface EditorModel extends EditorDraw {
      * Move the caret to the right.
      */
     void moveCaretRight();
+
     /**
      * Move the caret to the left.
      */
     void moveCaretLeft();
+
     /**
      * Move the caret to the Up.
      */
     void moveCaretUp();
+
     /**
      * Move the caret to the Down.
      */
     void moveCaretDown();
+
     /**
      * Move caret to the beginning of the line.
      */
     void moveCaretLineHome();
+
     /**
      * Move caret to the ending of the line.
      */
@@ -107,19 +121,23 @@ public interface EditorModel extends EditorDraw {
      * @param n a specified number of lines
      */
     void scrollPrev(int n);
+
     /**
      * Scroll next a specified number of lines.
      * @param n a specified number of lines
      */
     void scrollNext(int n);
+
     /**
      * Page up
      */
     void pageUp();
+
     /**
      * Page down
      */
     void pageDown();
+
     /**
      * Scroll to the specified line.
      * @param oldValue the old row value
@@ -129,36 +147,76 @@ public interface EditorModel extends EditorDraw {
 
     // -- mouse behavior ------------------------------------------------------
 
+    /**
+     * Click on the specified position.
+     * @param x the position x
+     * @param y the position y
+     * @param isShortcutDown whether the shortcut key is pressed
+     */
     void click(double x, double y, boolean isShortcutDown);
+
+    /**
+     * Click double on the specified position.
+     * @param x the position x
+     * @param y the position y
+     */
     void clickDouble(double x, double y);
+
+    /**
+     * Click triple on the specified position.
+     * @param x the position x
+     * @param y the position y
+     */
     void clickTriple(double x, double y);
+
+    /**
+     * Drag to the specified position.
+     * @param x the position x
+     * @param y the position y
+     */
     void dragged(double x, double y);
 
     // -- select behavior ---------------------------------------------------
 
+    /**
+     * Select on.
+     */
     void selectOn();
+
+    /**
+     * Select off.
+     */
     void selectOff();
+
+    /**
+     * Select all.
+     */
     void selectAll();
 
     // -- clipboard behavior ---------------------------------------------------
+
     /**
      * Paste the text from the clipboard.
      */
     void pasteFromClipboard();
+
     /**
      * Copy the selection text to the clipboard.
      */
     void copyToClipboard();
+
     /**
      * Cut the selection text to the clipboard.
      */
     void cutToClipboard();
 
     // -- file behavior -------------------------------------------------------
+
     /**
      * Save.
      */
     void save();
+
     /**
      * Save as.
      * @param path the path
@@ -167,10 +225,34 @@ public interface EditorModel extends EditorDraw {
 
     // -- ime behavior --------------------------------------------------------
 
+    /**
+     * Turn on IME.
+     * @param gc the graphics context
+     * @return the location
+     */
     Rect imeOn(GraphicsContext gc);
+
+    /**
+     * Turn off IME.
+     */
     void imeOff();
+
+    /**
+     * Commit text by ime.
+     * @param text the committed text
+     */
     void imeCommitted(String text);
+
+    /**
+     * Responds to ime text composed.
+     * @param runs the ime run
+     */
     void imeComposed(List<ImeRun> runs);
+
+    /**
+     * Gets whether the IME is on or not.
+     * @return {@code true} if the IME is on
+     */
     boolean isImeOn();
 
     // -- layout behavior -----------------------------------------------------

@@ -69,12 +69,10 @@ public class ImeAction {
      * @param e the input method event
      */
     public void handle(InputMethodEvent e) {
-
         if (!e.getCommitted().isEmpty()) {
             model.imeCommitted(e.getCommitted());
 
         } else if (!e.getComposed().isEmpty()) {
-
             if (!model.isImeOn()) {
                 model.imeOn(gc);
             }
