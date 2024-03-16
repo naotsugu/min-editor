@@ -20,10 +20,10 @@ import com.mammb.code.editor.ui.model.ModelQuery;
 import java.util.stream.Collectors;
 
 /**
- * sort editing.
+ * Unique editing.
  * @author Naotsugu Kobayashi
  */
-public class SortEditing implements Editing {
+public class UniqueEditing implements Editing {
 
     @Override
     public boolean apply(EditorModel model) {
@@ -34,7 +34,7 @@ public class SortEditing implements Editing {
         }
 
         String ending = text.endsWith("\n") ? "\n" : "";
-        model.selectionReplace(text.lines().sorted().collect(Collectors.joining("\n")) + ending);
+        model.selectionReplace(text.lines().distinct().collect(Collectors.joining("\n")) + ending);
 
         return true;
     }

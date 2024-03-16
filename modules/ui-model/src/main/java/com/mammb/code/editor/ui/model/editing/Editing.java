@@ -37,7 +37,7 @@ public interface Editing {
 
 
     /**
-     * Create to upper case editing.
+     * Create upper case editing.
      * @return the Editing
      */
     static Editing upperCase() {
@@ -46,7 +46,7 @@ public interface Editing {
 
 
     /**
-     * Create to hex case editing.
+     * Create hex case editing.
      * @return the Editing
      */
     static Editing hexCase() {
@@ -55,11 +55,29 @@ public interface Editing {
 
 
     /**
-     * Create to calc case editing.
+     * Create calc case editing.
      * @return the Editing
      */
     static Editing calcCase() {
         return new CalcCaseEditing();
+    }
+
+
+    /**
+     * Create sort editing.
+     * @return the Editing
+     */
+    static Editing sortCase() {
+        return new SortEditing();
+    }
+
+
+    /**
+     * Create unique editing.
+     * @return the Editing
+     */
+    static Editing uniqueCase() {
+        return new UniqueEditing();
     }
 
 
@@ -72,8 +90,7 @@ public interface Editing {
         return model ->
                 LineBreakEditing.of(ch).apply(model) ||
                 TabEditing.of(ch).apply(model) ||
-                PassThroughInput.of(ch).apply(model)
-            ;
+                PassThroughInput.of(ch).apply(model);
     }
 
 }

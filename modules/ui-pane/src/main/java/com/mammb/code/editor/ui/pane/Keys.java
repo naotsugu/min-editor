@@ -43,7 +43,7 @@ public class Keys {
         WRAP, EMPTY,
         NEW,
         SCROLL_UP, SCROLL_DOWN,
-        UPPER, LOWER, HEX, CALC,
+        UPPER, LOWER, UNIQUE, SORT, HEX, CALC,
         DEBUG,
         ;
     }
@@ -77,6 +77,14 @@ public class Keys {
     private static final KeyCombination SC_DOWN = new KeyCodeCombination(DOWN, KeyCombination.SHORTCUT_DOWN);
 
     private static final KeyCombination SC_0 = new KeyCharacterCombination("0", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_1 = new KeyCharacterCombination("1", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_2 = new KeyCharacterCombination("2", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_3 = new KeyCharacterCombination("3", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_4 = new KeyCharacterCombination("4", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_5 = new KeyCharacterCombination("5", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_6 = new KeyCharacterCombination("6", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_7 = new KeyCharacterCombination("7", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_8 = new KeyCharacterCombination("8", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_9 = new KeyCharacterCombination("9", KeyCombination.SHORTCUT_DOWN);
 
     public static final Predicate<KeyEvent> controlKeysFilter = e ->
@@ -117,8 +125,16 @@ public class Keys {
         else if (Keys.SC_L.match(e)) return Action.LOWER;
         else if (Keys.SC_UP.match(e)) return Action.SCROLL_UP;
         else if (Keys.SC_DOWN.match(e)) return Action.SCROLL_DOWN;
-        else if (Keys.SC_0.match(e)) return Action.HEX;
+        else if (Keys.SC_1.match(e)) return Action.EMPTY;
+        else if (Keys.SC_2.match(e)) return Action.EMPTY;
+        else if (Keys.SC_3.match(e)) return Action.EMPTY;
+        else if (Keys.SC_4.match(e)) return Action.EMPTY;
+        else if (Keys.SC_5.match(e)) return Action.EMPTY;
+        else if (Keys.SC_6.match(e)) return Action.EMPTY;
+        else if (Keys.SC_7.match(e)) return Action.UNIQUE;
+        else if (Keys.SC_8.match(e)) return Action.SORT;
         else if (Keys.SC_9.match(e)) return Action.CALC;
+        else if (Keys.SC_0.match(e)) return Action.HEX;
         else if (Keys.SC_D.match(e)) return Action.DEBUG;
         else return Action.EMPTY;
     }
