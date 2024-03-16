@@ -38,9 +38,16 @@ public class CalcCaseEditing implements Editing {
 
     @Override
     public boolean apply(EditorModel model) {
+
         String text = model.query(ModelQuery.selectedText);
         if (text.isBlank()) {
             return false;
+        }
+
+        // if it contains an equal sign, delete the rest
+        int eq = text.indexOf('=');
+        if (eq > 1) {
+            text = text.substring(eq);
         }
 
         try {
