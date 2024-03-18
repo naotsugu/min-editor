@@ -114,6 +114,13 @@ public class GutterImpl implements Gutter {
     }
 
 
+    /**
+     * Fill gutter background.
+     * @param gc the graphics context
+     * @param top the position of top
+     * @param lineHeight the line height
+     * @param accent whether to display accents
+     */
     private void fillBackground(GraphicsContext gc, double top, double lineHeight, boolean accent) {
         gc.setFill(background);
         gc.fillRect(0, top, width - 0.5, lineHeight);
@@ -124,6 +131,10 @@ public class GutterImpl implements Gutter {
     }
 
 
+    /**
+     * Expand the width of the gutter.
+     * @param num the line number
+     */
     private void growWidthIf(String num) {
         double w = Math.ceil((num.length() + 2) * chWidth);
         if (w > width) {
