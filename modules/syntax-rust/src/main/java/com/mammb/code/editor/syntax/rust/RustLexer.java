@@ -97,7 +97,7 @@ public class RustLexer implements Lexer {
                 source.commitPeek();
                 return Token.of(DOC_COMMENT, Scope.INLINE_START, pos, 3);
             } else {
-                source.commitPeek();
+                source.commitPeekBefore();
                 return Token.of(LINE_COMMENT, Scope.INLINE_START, pos, 2);
             }
         } else if (ch == '*') {
