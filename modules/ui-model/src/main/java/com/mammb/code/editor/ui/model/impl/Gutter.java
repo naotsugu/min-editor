@@ -39,6 +39,10 @@ public interface Gutter {
      */
     double width();
 
+    /**
+     * Gets whether the gutter width has been changed.
+     * @return {@code true} if the gutter width has been changed
+     */
     boolean checkWidthChanged();
 
 }

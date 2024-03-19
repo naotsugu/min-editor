@@ -52,7 +52,7 @@ public class App extends Application {
      * @param context the context
      * @return the stage
      */
-    private Stage buildScene(Stage stage, Context context) {
+    Stage buildScene(Stage stage, Context context) {
 
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
