@@ -60,6 +60,11 @@ public class BlockUi extends StackPane {
     }
 
 
+    /**
+     * Run task with block ui.
+     * @param blocked the pane
+     * @param task the task
+     */
     public static void run(Pane blocked, Task<?> task) {
         var block = new BlockUi(selectBackground(blocked));
         blocked.getChildren().add(block);
