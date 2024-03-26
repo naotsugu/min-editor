@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.model.editing;
 import com.mammb.code.editor.ui.model.EditorModel;
 import com.mammb.code.editor.ui.model.ModelQuery;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -103,7 +104,7 @@ public class CalcCaseEditing implements Editing {
                 case "^" -> new BigDecimal(stack.pop()).pow(Integer.parseInt(stack.pop())).toPlainString();
                 case "/" -> {
                     var divisor = new BigDecimal(stack.pop());
-                    yield new BigDecimal(stack.pop()).divide(divisor).toPlainString();
+                    yield new BigDecimal(stack.pop()).divide(divisor, 5, RoundingMode.HALF_UP).toPlainString();
                 }
                 default -> token;
             });
