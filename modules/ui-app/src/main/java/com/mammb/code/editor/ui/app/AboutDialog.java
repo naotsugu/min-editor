@@ -34,7 +34,7 @@ public class AboutDialog extends UiBasicDialog {
         super(owner);
         setTitle("About");
         DialogPane pane = getDialogPane();
-        pane.setContentText(String.join(" ", Version.appName, Version.value));
+        pane.setContentText(STR."\{Version.appName} \{Version.value}");
         pane.getButtonTypes().addAll(ButtonType.CLOSE);
     }
 

@@ -152,7 +152,7 @@ public class FxLineLayout implements LineLayout {
 
 
     public HitPosition hitInfo(double x, double y) {
-        TextLayout.Hit hit = textLayout.getHitInfo((float) x, (float) y);
+        TextLayout.Hit hit = textLayout.getHitInfo((float) x, (float) y, null, 0, 0);
         record HitPositionRecord(int charIndex, int insertionIndex, boolean leading) implements HitPosition { }
         return new HitPositionRecord(hit.getCharIndex(), hit.getInsertionIndex(), hit.isLeading());
     }

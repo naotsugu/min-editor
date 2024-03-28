@@ -16,6 +16,7 @@
 package com.mammb.code.editor.bootstrap;
 
 import com.mammb.code.editor.ui.app.AppLauncher;
+import java.util.Locale;
 
 /**
  * The Application entry point.
@@ -28,6 +29,10 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        Locale.setDefault(Locale.US);
+        System.setProperty("user.country","US");
+        System.setProperty("user.language","en");
 
         System.setProperty(
             "java.util.logging.SimpleFormatter.format",
