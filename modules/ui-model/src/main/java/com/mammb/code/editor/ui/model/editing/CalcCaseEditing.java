@@ -103,9 +103,17 @@ public class CalcCaseEditing implements Editing {
                 case "*" -> new BigDecimal(stack.pop()).multiply(new BigDecimal(stack.pop())).toPlainString();
                 case "^" -> new BigDecimal(stack.pop()).pow(Integer.parseInt(stack.pop())).toPlainString();
                 case "/" -> {
-                    var str = stack.pop();
-                    var divisor = new BigDecimal(str);
-                    yield new BigDecimal(stack.pop()).divide(divisor, str.length(), RoundingMode.HALF_UP).toPlainString();
+                    var str1 = stack.pop();
+                    var str2 = stack.pop();
+                    int scale = 1;
+                    if (str1.indexOf('.') > 0) {
+                        scale = str1.length() - str1.lastIndexOf(".");
+                    }
+                    if (str2.indexOf('.') > 0) {
+                        scale = Math.max(str2.length() - str2.lastIndexOf("."), scale);
+                    }
+                    var divisor = new BigDecimal(str1);
+                    yield new BigDecimal(str2).divide(divisor, scale, RoundingMode.HALF_UP).toPlainString();
                 }
                 default -> token;
             });
