@@ -30,6 +30,7 @@ public class Main {
      */
     public static void main(String[] args) {
 
+        // output logs and button names in english
         Locale.setDefault(Locale.US);
         System.setProperty("user.country","US");
         System.setProperty("user.language","en");
