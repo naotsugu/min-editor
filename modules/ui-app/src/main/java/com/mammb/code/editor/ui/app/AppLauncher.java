@@ -16,7 +16,7 @@
 package com.mammb.code.editor.ui.app;
 
 /**
- * The Launcher.
+ * The application launcher.
  * @author Naotsugu Kobayashi
  */
 public class AppLauncher {

@@ -16,19 +16,12 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.app.control.ThemeCss;
-import com.mammb.code.editor.ui.pane.EditorDownCall;
-import com.mammb.code.editor.ui.pane.EditorPane;
-import com.mammb.code.editor.ui.pane.Session;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import java.nio.file.Path;
-import java.util.Objects;
 
 /**
  * The Application.
@@ -54,70 +47,18 @@ public class App extends Application {
      */
     Stage buildScene(Stage stage, Context context) {
 
-        stage.getIcons().add(new Image(
-            Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
+        EditorStage editorStage = new EditorStage(stage, context, this);
 
-        var upCall = new AppEditorUpCall();
-        var editorPane = new EditorPane(context, upCall);
-        var downCall = editorPane.downCall();
-        var bar = new CommandBar();
-        var session = new EditorSession();
-
-        var borderPane = new BorderPane(editorPane, bar, null, null, null);
-        BorderPane.setMargin(bar, new Insets(4, 2, 4, 2));
+        var borderPane = new BorderPane(editorStage.editorPane(), editorStage.commandBar(), null, null, null);
+        BorderPane.setMargin(editorStage.commandBar(), new Insets(4, 2, 4, 2));
         borderPane.setFocusTraversable(false);
-        borderPane.setOnKeyPressed(e -> {
-            if (AppKeys.SC_N.match(e)) {
-                e.consume();
-                Stage newStage = new Stage();
-                newStage.setX(stage.getX() + 15);
-                newStage.setY(stage.getY() + 15);
-                buildScene(newStage, context);
-                newStage.show();
-                newStage.requestFocus();
-            } else if (AppKeys.SC_FORWARD.match(e)) {
-                downCall.requestPathChange(session.forward());
-            } else if (AppKeys.SC_BACKWARD.match(e)) {
-                downCall.requestPathChange(session.backward());
-            } else if (AppKeys.SC_F.match(e)) {
-                var query = EditorDownCall.selectedText();
-                downCall.requestQuery(query);
-                if (query.ret() != null && !query.ret().isBlank() && !query.ret().contains("\n")) {
-                    bar.setVisibleSearchField(query.ret());
-                    downCall.requestSelectClear();
-                }
-            }
-        });
+        borderPane.setOnKeyPressed(editorStage::handleKeyPressed);
 
         var scene = new Scene(borderPane);
         ThemeCss.install(context.preference().colorScheme());
         ThemeCss.of().into(scene);
-        stage.setScene(scene);
-        stage.setTitle(Version.appName);
-        stage.setOnCloseRequest(editorPane::handleCloseRequest);
 
-        // initEditorHandle
-        upCall.addPathChangedListener(c -> {
-            bar.setPathText(c.session().path());
-            session.push(c.session(), c.prevSession());
-            stage.setTitle(String.join(" - ", Version.appName, c.session().path().getFileName().toString()));
-        });
-        upCall.addContentModifiedListener(c -> bar.setPathModified(c.modified()));
-
-        bar.setOnPathTextCommitted((text, ke) -> downCall.requestPathChange(Session.of(Path.of(text))));
-        bar.setOnPathSelected(p -> downCall.requestPathChange(Session.of(p)));
-        bar.setOnForwardClicked(() -> downCall.requestPathChange(session.forward()));
-        bar.setOnBackwardClicked(() -> downCall.requestPathChange(session.backward()));
-        bar.setOnSearchTextCommitted((text, ke) -> {
-            downCall.requestFind(text, !ke.isShortcutDown());
-            bar.setVisibleSearchField(null);
-        });
-        bar.setOnExit(() -> Platform.runLater(downCall::requestFocus));
-
-        session.setForwardDisableProperty(bar.forwardDisableProperty());
-        session.setBackwardDisableProperty(bar.backwardDisableProperty());
-
-        return stage;
+        return editorStage.bind(scene);
     }
 
 }
