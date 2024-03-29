@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.app.control;
 
 import javafx.animation.FadeTransition;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -33,6 +34,38 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
  */
 public class UiToast {
 
+    private final Stage stage;
+    private Scene scene;
+
+
+    public UiToast(Stage owner, Parent parent) {
+
+        scene = new Scene(parent);
+        ThemeCss.of().into(scene);
+        scene.setFill(Color.TRANSPARENT);
+
+        stage =  new Stage();
+        stage.initOwner(owner);
+        stage.setResizable(false);
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.initModality(Modality.NONE);
+        stage.setScene(scene);
+
+        stage.setWidth(300);
+        stage.setHeight(75);
+
+        stage.setY(owner.getY() + 70);
+        stage.setX(owner.getX() + owner.getWidth() - (stage.getWidth()) - 20);
+
+    }
+
+
+    /**
+     *
+     * @param owner
+     * @param message
+     * @return
+     */
     public static Stage of(Stage owner, String message) {
 
         var stage = new Stage();
