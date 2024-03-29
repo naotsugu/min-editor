@@ -66,13 +66,19 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
 
+    /** The previous drag thumb position. */
     private double preDragThumbPos;
 
     private double dragStart;
 
+    /** The scrolled handler. */
     private ScrolledHandler<Double> listener = (oldValue, newValue) -> { };
 
 
+    /**
+     * Constructor.
+     * @param baseColor the base color.
+     */
     public HScrollBar(Color baseColor) {
 
         backGroundActive = new Background(new BackgroundFill(
@@ -90,6 +96,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
         initListener();
     }
+
 
     /**
      * Initialize listener.
@@ -253,6 +260,9 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     }
 
 
+    /**
+     * Stop the timeline.
+     */
     private void stopTimeline() {
         if (timeline != null) {
             timeline.stop();

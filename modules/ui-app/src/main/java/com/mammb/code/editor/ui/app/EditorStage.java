@@ -15,15 +15,19 @@
  */
 package com.mammb.code.editor.ui.app;
 
+import com.mammb.code.editor.ui.app.control.Toast;
 import com.mammb.code.editor.ui.pane.EditorDownCall;
 import com.mammb.code.editor.ui.pane.EditorPane;
 import com.mammb.code.editor.ui.pane.Session;
 import com.mammb.code.editor.ui.prefs.Context;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import java.nio.file.Path;
 import java.util.Objects;
 
@@ -50,6 +54,9 @@ public class EditorStage {
     private final CommandBar bar;
     /** The editor session. */
     private final EditorSession session;
+
+    /** This timeline is used to detect the long presses of keys. */
+    private Timeline timeline;
 
 
     /**
@@ -131,6 +138,9 @@ public class EditorStage {
      * The key pressed handler.
      */
     void handleKeyPressed(KeyEvent e) {
+
+        stopTimeline();
+
         if (AppKeys.SC_N.match(e)) {
             e.consume();
             Stage newStage = new Stage();
@@ -139,10 +149,13 @@ public class EditorStage {
             app.buildScene(newStage, context);
             newStage.show();
             newStage.requestFocus();
+
         } else if (AppKeys.SC_FORWARD.match(e)) {
             downCall.requestPathChange(session.forward());
+
         } else if (AppKeys.SC_BACKWARD.match(e)) {
             downCall.requestPathChange(session.backward());
+
         } else if (AppKeys.SC_F.match(e)) {
             var query = EditorDownCall.selectedText();
             downCall.requestQuery(query);
@@ -152,8 +165,18 @@ public class EditorStage {
             }
         }
 
+        if (e.isShortcutDown()) {
+            startTimeline();
+        }
+
     }
 
+    /**
+     * The key released handler.
+     */
+    void handleKeyReleased(KeyEvent e) {
+        stopTimeline();
+    }
 
     /**
      * Get the editor pane.
@@ -181,6 +204,39 @@ public class EditorStage {
     Stage bind(Scene scene) {
         stage.setScene(scene);
         return stage;
+    }
+
+
+    /**
+     * Start the timeline.
+     */
+    private void startTimeline() {
+        timeline = new Timeline();
+        final KeyFrame kf = new KeyFrame(Duration.millis(1000), e -> {
+            toast = Toast.of(stage, STR."""
+                Ctrl + 7 : Unique selections
+                Ctrl + 8 : Sort selections
+                Ctrl + 9 : Calculate selections
+                Ctrl + 0 : Convert to hex selections
+                """);
+            stage.requestFocus();
+        });
+        timeline.getKeyFrames().add(kf);
+        timeline.play();
+    }
+    Stage toast = null;
+
+    /**
+     * Stop the timeline.
+     */
+    private void stopTimeline() {
+        if (timeline != null) {
+            timeline.stop();
+            timeline = null;
+        }
+        if (toast != null) {
+            toast.close();
+        }
     }
 
 }

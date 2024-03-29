@@ -65,15 +65,18 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
 
+    /** The previous drag thumb position. */
     private double preDragThumbPos;
 
     private double dragStart;
 
+    /** The scrolled handler. */
     private ScrolledHandler<Integer> listener = (oldValue, newValue) -> { };
 
 
     /**
      * Constructor.
+     * @param baseColor the base color.
      */
     public VScrollBar(Color baseColor) {
 
@@ -265,6 +268,9 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         }
     }
 
+    /**
+     * Stop the timeline.
+     */
     private void stopTimeline() {
         if (timeline != null) {
             timeline.stop();

@@ -53,6 +53,7 @@ public class App extends Application {
         BorderPane.setMargin(editorStage.commandBar(), new Insets(4, 2, 4, 2));
         borderPane.setFocusTraversable(false);
         borderPane.setOnKeyPressed(editorStage::handleKeyPressed);
+        borderPane.setOnKeyReleased(editorStage::handleKeyReleased);
 
         var scene = new Scene(borderPane);
         ThemeCss.install(context.preference().colorScheme());
