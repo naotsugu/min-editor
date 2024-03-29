@@ -16,11 +16,7 @@
 package com.mammb.code.editor.ui.app.control;
 
 import javafx.animation.FadeTransition;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -29,11 +25,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
+
 /**
  * The toast.
  * @author Naotsugu Kobayashi
  */
-public class Toast {
+public class UiToast {
 
     public static Stage of(Stage owner, String message) {
 
@@ -47,16 +45,15 @@ public class Toast {
         text.setFill(Color.LIGHTGRAY);
 
         var pane = new StackPane(text);
+        pane.getStyleClass().add(styleClass);
         pane.setOpacity(0);
-        pane.setBackground(new Background(
-            new BackgroundFill(Color.color(0, 0, 0, 0.8),
-                new CornerRadii(5), Insets.EMPTY)));
 
         Scene scene = new Scene(pane);
+        ThemeCss.of().into(scene);
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
-        stage.setWidth(200);
-        stage.setHeight(80);
+        stage.setWidth(300);
+        stage.setHeight(75);
 
         stage.setY(owner.getY() + 70);
         stage.setX(owner.getX() + owner.getWidth() - (stage.getWidth()) - 20);
@@ -65,11 +62,23 @@ public class Toast {
 
         FadeTransition ft = new FadeTransition(Duration.millis(500), pane);
         ft.setFromValue(0.0);
-        ft.setToValue(1.0);
+        ft.setToValue(0.9);
         ft.play();
 
         return stage;
 
     }
+
+    /** The style class name. */
+    static final String styleClass = "toast";
+
+    /** The css. */
+    static final Css css = st -> CSS."""
+        .\{styleClass} {
+          -fx-fill:\{st.text};
+          -fx-font: 13.5px "Consolas";
+        }
+        """;
+
 
 }

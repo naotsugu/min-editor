@@ -88,7 +88,8 @@ public class UiPromptText extends StackPane {
     public void setPromptAccentuate(boolean accentuate) {
         prompt.getChildren().stream()
             .filter(UiIcon.class::isInstance)
-            .map(UiIcon.class::cast).forEach(n -> n.accentuate(accentuate));
+            .map(UiIcon.class::cast)
+            .forEach(n -> n.accentuate(accentuate));
     }
 
 

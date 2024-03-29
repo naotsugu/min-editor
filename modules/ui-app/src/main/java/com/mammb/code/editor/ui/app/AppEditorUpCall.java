@@ -40,12 +40,14 @@ public class AppEditorUpCall implements EditorUpCall {
      */
     record PathChang(Session session, Session prevSession) { }
 
+
     /**
      * ContentModifyChang record.
      * @param session the session
      * @param modified the modified
      */
     record ContentModifyChang(Session session, boolean modified) { }
+
 
     @Override
     public void pathChanged(Session session, Session prevSession) {
@@ -57,6 +59,7 @@ public class AppEditorUpCall implements EditorUpCall {
         contentModifiedListeners.forEach(c -> c.accept(new ContentModifyChang(session, modified)));
     }
 
+
     /**
      * Add the path change listener.
      * @param consumer the path change listener
@@ -64,6 +67,7 @@ public class AppEditorUpCall implements EditorUpCall {
     void addPathChangedListener(Consumer<PathChang> consumer) {
         pathChangedListeners.add(consumer);
     }
+
 
     /**
      * Add the content modified listener.

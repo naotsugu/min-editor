@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.app;
 
-import com.mammb.code.editor.ui.app.control.Toast;
+import com.mammb.code.editor.ui.app.control.UiToast;
 import com.mammb.code.editor.ui.pane.EditorDownCall;
 import com.mammb.code.editor.ui.pane.EditorPane;
 import com.mammb.code.editor.ui.pane.Session;
@@ -213,12 +213,11 @@ public class EditorStage {
     private void startTimeline() {
         timeline = new Timeline();
         final KeyFrame kf = new KeyFrame(Duration.millis(1000), e -> {
-            toast = Toast.of(stage, STR."""
+            toast = UiToast.of(stage, STR."""
                 Ctrl + 7 : Unique selections
                 Ctrl + 8 : Sort selections
                 Ctrl + 9 : Calculate selections
-                Ctrl + 0 : Convert to hex selections
-                """);
+                Ctrl + 0 : Convert to hex selections""");
             stage.requestFocus();
         });
         timeline.getKeyFrames().add(kf);

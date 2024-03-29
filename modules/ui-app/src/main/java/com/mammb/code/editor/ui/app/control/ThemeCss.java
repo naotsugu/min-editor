@@ -60,7 +60,7 @@ public class ThemeCss {
      * @return the StCss
      */
     public static ThemeCss of() {
-        var css = Css.join(root, UiIcon.css, UiFlatButton.css, UiPromptText.css);
+        var css = Css.join(root, UiIcon.css, UiFlatButton.css, UiPromptText.css, UiToast.css);
         return new ThemeCss(css.on(styleTheme));
     }
 
