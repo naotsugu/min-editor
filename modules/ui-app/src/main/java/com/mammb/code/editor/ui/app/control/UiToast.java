@@ -41,7 +41,7 @@ public class UiToast {
     public UiToast(Stage owner, Parent parent) {
 
         scene = new Scene(parent);
-        ThemeCss.of().into(scene);
+        ThemeCss.rootWith(css).into(scene);
         scene.setFill(Color.TRANSPARENT);
 
         stage =  new Stage();
@@ -82,7 +82,8 @@ public class UiToast {
         pane.setOpacity(0);
 
         Scene scene = new Scene(pane);
-        ThemeCss.of().into(scene);
+        ThemeCss.rootWith(css).into(scene);
+
         scene.setFill(Color.TRANSPARENT);
         stage.setScene(scene);
         stage.setWidth(300);
@@ -108,6 +109,8 @@ public class UiToast {
     /** The css. */
     static final Css css = st -> CSS."""
         .\{styleClass} {
+          -fx-background-insets: 0;
+          -fx-background-radius: 3;
           -fx-fill:\{st.text};
           -fx-font: 13.5px "Consolas";
         }

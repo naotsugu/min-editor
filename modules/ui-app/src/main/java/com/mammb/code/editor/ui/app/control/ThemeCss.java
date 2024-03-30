@@ -60,7 +60,7 @@ public class ThemeCss {
      * @return the StCss
      */
     public static ThemeCss of() {
-        var css = Css.join(root, UiIcon.css, UiFlatButton.css, UiPromptText.css, UiToast.css);
+        var css = Css.join(root, UiIcon.css, UiFlatButton.css, UiPromptText.css);
         return new ThemeCss(css.on(styleTheme));
     }
 
@@ -81,6 +81,16 @@ public class ThemeCss {
      */
     public static ThemeCss rootOf() {
         return of(root);
+    }
+
+
+    /**
+     * Create the root theme css.
+     * @return the StCss
+     */
+    public static ThemeCss rootWith(Css css) {
+        var joined = Css.join(root, css);
+        return new ThemeCss(joined.on(styleTheme));
     }
 
 
