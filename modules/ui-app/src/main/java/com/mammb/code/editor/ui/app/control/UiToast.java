@@ -16,11 +16,12 @@
 package com.mammb.code.editor.ui.app.control;
 
 import javafx.animation.FadeTransition;
-import javafx.scene.Parent;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -35,12 +36,19 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
 public class UiToast {
 
     private final Stage stage;
+
     private Scene scene;
 
+    private Pane pane;
 
-    public UiToast(Stage owner, Parent parent) {
 
-        scene = new Scene(parent);
+    public UiToast(Stage owner, Node... nodes) {
+
+        pane = new StackPane(nodes);
+        pane.getStyleClass().add(styleClass);
+        pane.setOpacity(0);
+
+        scene = new Scene(pane);
         ThemeCss.rootWith(css).into(scene);
         scene.setFill(Color.TRANSPARENT);
 
@@ -52,56 +60,31 @@ public class UiToast {
         stage.setScene(scene);
 
         stage.setWidth(300);
-        stage.setHeight(75);
 
         stage.setY(owner.getY() + 70);
         stage.setX(owner.getX() + owner.getWidth() - (stage.getWidth()) - 20);
 
     }
 
+    public static UiToast of(Stage owner, String message) {
+        var toast = new UiToast(owner, new Label(message));
+        toast.show();
+        return toast;
+    }
 
-    /**
-     *
-     * @param owner
-     * @param message
-     * @return
-     */
-    public static Stage of(Stage owner, String message) {
 
-        var stage = new Stage();
-        stage.initOwner(owner);
-        stage.setResizable(false);
-        stage.initStyle(StageStyle.TRANSPARENT);
-        stage.initModality(Modality.NONE);
-
-        var text = new Text(message);
-        text.setFill(Color.LIGHTGRAY);
-
-        var pane = new StackPane(text);
-        pane.getStyleClass().add(styleClass);
-        pane.setOpacity(0);
-
-        Scene scene = new Scene(pane);
-        ThemeCss.rootWith(css).into(scene);
-
-        scene.setFill(Color.TRANSPARENT);
-        stage.setScene(scene);
-        stage.setWidth(300);
-        stage.setHeight(75);
-
-        stage.setY(owner.getY() + 70);
-        stage.setX(owner.getX() + owner.getWidth() - (stage.getWidth()) - 20);
-
+    void show() {
         stage.show();
-
         FadeTransition ft = new FadeTransition(Duration.millis(500), pane);
         ft.setFromValue(0.0);
         ft.setToValue(0.9);
         ft.play();
-
-        return stage;
-
     }
+
+    public void close() {
+        stage.close();
+    }
+
 
     /** The style class name. */
     static final String styleClass = "toast";

@@ -217,13 +217,13 @@ public class EditorStage {
                 Ctrl + 7 : Unique selections
                 Ctrl + 8 : Sort selections
                 Ctrl + 9 : Calculate selections
-                Ctrl + 0 : Convert to hex selections""");
+                Ctrl + 0 : Convert to hex""");
             stage.requestFocus();
         });
         timeline.getKeyFrames().add(kf);
         timeline.play();
     }
-    Stage toast = null;
+    UiToast toast = null;
 
     /**
      * Stop the timeline.
