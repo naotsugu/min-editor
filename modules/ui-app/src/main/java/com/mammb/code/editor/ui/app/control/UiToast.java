@@ -35,13 +35,21 @@ import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
  */
 public class UiToast {
 
+    /** The stage. */
     private final Stage stage;
 
+    /** The scene. */
     private Scene scene;
 
+    /** The pane. */
     private Pane pane;
 
 
+    /**
+     * Constructor.
+     * @param owner the owner stage of this toast
+     * @param nodes the contents
+     */
     public UiToast(Stage owner, Node... nodes) {
 
         pane = new StackPane(nodes);
@@ -58,7 +66,6 @@ public class UiToast {
         stage.initStyle(StageStyle.TRANSPARENT);
         stage.initModality(Modality.NONE);
         stage.setScene(scene);
-
         stage.setWidth(300);
 
         stage.setY(owner.getY() + 70);
@@ -66,6 +73,13 @@ public class UiToast {
 
     }
 
+
+    /**
+     * Create a new toast.
+     * @param owner the owner stage of this toast
+     * @param message the message string
+     * @return a new toast
+     */
     public static UiToast of(Stage owner, String message) {
         var toast = new UiToast(owner, new Label(message));
         toast.show();
@@ -73,6 +87,9 @@ public class UiToast {
     }
 
 
+    /**
+     * Show toast.
+     */
     void show() {
         stage.show();
         FadeTransition ft = new FadeTransition(Duration.millis(500), pane);
@@ -81,6 +98,10 @@ public class UiToast {
         ft.play();
     }
 
+
+    /**
+     * Close toast.
+     */
     public void close() {
         stage.close();
     }
