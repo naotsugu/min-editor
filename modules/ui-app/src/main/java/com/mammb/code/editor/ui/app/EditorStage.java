@@ -165,7 +165,7 @@ public class EditorStage {
             }
         }
 
-        if (e.isShortcutDown()) {
+        if (e.isShortcutDown() && e.getText().isBlank()) {
             startTimeline();
         }
 
