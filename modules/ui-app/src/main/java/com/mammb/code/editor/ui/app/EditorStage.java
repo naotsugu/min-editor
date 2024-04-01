@@ -166,10 +166,14 @@ public class EditorStage {
         }
 
         if (e.isShortcutDown() && e.getText().isBlank()) {
-            startTimeline();
+            var query = EditorDownCall.selectedText();
+            downCall.requestQuery(query);
+            if (query.ret() != null && !query.ret().isBlank()) {
+                startTimeline();
+            }
         }
-
     }
+
 
     /**
      * The key released handler.
@@ -214,9 +218,9 @@ public class EditorStage {
         timeline = new Timeline();
         final KeyFrame kf = new KeyFrame(Duration.millis(1000), e -> {
             toast = UiToast.of(stage, STR."""
-                Ctrl + 7 : Unique selections
-                Ctrl + 8 : Sort selections
-                Ctrl + 9 : Calculate selections
+                Ctrl + 7 : Unique
+                Ctrl + 8 : Sort
+                Ctrl + 9 : Calculate
                 Ctrl + 0 : Convert to hex""");
             stage.requestFocus();
         });
