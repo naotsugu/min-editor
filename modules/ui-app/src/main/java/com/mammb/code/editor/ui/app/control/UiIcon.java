@@ -146,7 +146,7 @@ public class UiIcon extends SVGPath {
           -fx-fill:\{st.text};
         }
         .\{styleClass}:accentuate {
-          -fx-fill:Aquamarine;
+          -fx-fill:deepskyblue;
         }
         """;
 
