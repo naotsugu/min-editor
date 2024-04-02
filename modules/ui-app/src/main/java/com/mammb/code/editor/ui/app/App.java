@@ -56,7 +56,6 @@ public class App extends Application {
         borderPane.setOnKeyReleased(editorStage::handleKeyReleased);
 
         var scene = new Scene(borderPane);
-        //ThemeCss.install(context.preference().colorScheme());
         ThemeCss.of().into(scene);
 
         return editorStage.bind(scene);

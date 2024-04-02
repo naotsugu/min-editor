@@ -185,6 +185,10 @@ public class EditorPane extends StackPane {
             @Override public void requestSelectClear() {
                 model.selectOff();
             }
+            @Override
+            public void requestKeyAction(Keys.Action keyAction) {
+                handleKeyAction(keyAction, false);
+            }
             @Override public <T> void requestQuery(Query<T> query) { query.ret(model.query(query.modelQuery())); }
         };
     }
@@ -302,10 +306,16 @@ public class EditorPane extends StackPane {
      * @param e the key event
      */
     private void handleKeyPressed(KeyEvent e) {
+        handleKeyAction(Keys.asAction(e), e.isShiftDown());
+    }
 
-        final Keys.Action keyAction = Keys.asAction(e);
-        final boolean withSelect = e.isShiftDown();
 
+    /**
+     * Handle key action.
+     * @param keyAction the key action
+     * @param withSelect the with select
+     */
+    private void handleKeyAction(Keys.Action keyAction, boolean withSelect) {
         switch (keyAction) {
             case CARET_RIGHT -> aroundEdit(model::moveCaretRight, withSelect);
             case CARET_LEFT  -> aroundEdit(model::moveCaretLeft, withSelect);
@@ -339,7 +349,6 @@ public class EditorPane extends StackPane {
             //case NEW       -> newPane();
             default          -> { }
         }
-
     }
 
 

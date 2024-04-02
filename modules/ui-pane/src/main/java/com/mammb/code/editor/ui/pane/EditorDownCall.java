@@ -59,6 +59,12 @@ public interface EditorDownCall {
     void requestSelectClear();
 
     /**
+     * Request key action.
+     * @param keyAction key action
+     */
+    void requestKeyAction(Keys.Action keyAction);
+
+    /**
      * Request query.
      * @param query the query
      */

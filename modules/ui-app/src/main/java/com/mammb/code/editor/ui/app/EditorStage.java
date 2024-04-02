@@ -82,6 +82,10 @@ public class EditorStage {
         initBar();
         initSession();
 
+        editorPane.setOnContextMenuRequested(e -> {
+            var cm = new EditorContextMenu(downCall);
+            cm.show(stage, e.getScreenX(), e.getScreenY());
+        });
     }
 
 
