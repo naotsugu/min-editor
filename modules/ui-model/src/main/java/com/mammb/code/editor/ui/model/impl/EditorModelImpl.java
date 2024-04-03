@@ -720,15 +720,6 @@ public class EditorModelImpl implements EditorModel {
 
     @Override
     public void clickDouble(double x, double y) {
-        long[] offsets = texts.atAroundWord(x - screen.textLeft(), y);
-        if (offsets.length == 2) {
-            Selections.select(offsets, carets, selection);
-        } else {
-            carets.at(offsets[0], true);
-        }
-    }
-    @Override
-    public void clickTriple(double x, double y) {
         long[] offsets = texts.atAroundDelimiter(x - screen.textLeft(), y);
         if (offsets.length == 2) {
             Selections.select(offsets, carets, selection);
@@ -736,6 +727,17 @@ public class EditorModelImpl implements EditorModel {
             carets.at(offsets[0], true);
         }
     }
+
+    @Override
+    public void clickTriple(double x, double y) {
+        long[] offsets = texts.atAroundWord(x - screen.textLeft(), y);
+        if (offsets.length == 2) {
+            Selections.select(offsets, carets, selection);
+        } else {
+            carets.at(offsets[0], true);
+        }
+    }
+
     @Override
     public void dragged(double x, double y) {
         carets.at(texts.at(Math.max(x - screen.textLeft(), 0), y), true);

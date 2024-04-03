@@ -54,6 +54,7 @@ public class EditorContextMenu extends UiContextMenu {
         if (!Clipboard.getSystemClipboard().hasString()) {
             paste.setDisable(true);
         }
+
         getItems().addAll(cut, copy, paste);
 
     }

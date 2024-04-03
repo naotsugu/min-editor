@@ -44,6 +44,7 @@ public class AroundPicks {
     public static long[] delimiter(TextLine line, double x) {
         return pick(line, x, ch -> {
             if (ch == '\\' || ch == '/' || ch ==  '.' || ch ==  '{' || ch ==  '}' ||
+                ch == '(' || ch == ')' ||
                 Character.isWhitespace(ch) || Character.isISOControl(ch)) return -1;
             return 0;
         });
