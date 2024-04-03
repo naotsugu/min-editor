@@ -79,6 +79,7 @@ public interface EditorDownCall {
         };
     }
 
+
     abstract class Query<T> {
         private T ret;
         public void ret(T ret) {
