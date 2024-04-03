@@ -19,6 +19,7 @@ import com.mammb.code.editor.ui.app.control.UiContextMenu;
 import com.mammb.code.editor.ui.pane.EditorDownCall;
 import com.mammb.code.editor.ui.pane.Keys;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -43,6 +44,16 @@ public class EditorContextMenu extends UiContextMenu {
         paste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN));
         paste.setOnAction(e -> downCall.requestKeyAction(Keys.Action.PASTE));
 
+        var query = EditorDownCall.selectedText();
+        downCall.requestQuery(query);
+        if (query.ret() == null || query.ret().isBlank()) {
+            cut.setDisable(true);
+            copy.setDisable(true);
+        }
+
+        if (!Clipboard.getSystemClipboard().hasString()) {
+            paste.setDisable(true);
+        }
         getItems().addAll(cut, copy, paste);
 
     }

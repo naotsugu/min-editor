@@ -17,10 +17,29 @@ package com.mammb.code.editor.ui.app.control;
 
 import javafx.scene.control.ContextMenu;
 
+import static com.mammb.code.editor.ui.app.control.CssProcessor.CSS;
+
 /**
  * The UiContextMenu.
  * @author Naotsugu Kobayashi
  */
 public class UiContextMenu extends ContextMenu {
 
+    /**
+     * Constructor.
+     */
+    public UiContextMenu() {
+        super();
+        getStyleClass().add(styleClass);
+    }
+
+    /** The style class name. */
+    static final String styleClass = "ctx-menu";
+
+    /** The css. */
+    static final Css css = st -> CSS."""
+    .\{styleClass} {
+      -fx-background-radius: 2;
+    }
+    """;
 }
