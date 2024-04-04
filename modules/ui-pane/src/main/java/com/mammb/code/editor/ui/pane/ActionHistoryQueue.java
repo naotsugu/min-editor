@@ -15,9 +15,77 @@
  */
 package com.mammb.code.editor.ui.pane;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * ActionHistory.
  * @author Naotsugu Kobayashi
  */
 public class ActionHistoryQueue {
+
+    /** The items. */
+    private final List<ActionHistory> items;
+
+    /**
+     * Constructor.
+     */
+    public ActionHistoryQueue() {
+        this.items = new ArrayList<>();
+    }
+
+    public List<ActionHistory> repetition() {
+        if (items.size() < 2) {
+            return Collections.emptyList();
+        }
+        // | 0 | 1 |          1
+        // | 0 | 1 | 2 |      1
+        // | 0 | 1 | 2 | 3 |  2
+        int mid = items.size() / 2;
+        for (int i = mid; mid > 1; mid--) {
+            int index = items.size() - 1 - i;
+            List<ActionHistory> l = items.subList(index - i, i);
+            List<ActionHistory> r = items.subList(i, items.size());
+            if (equals(l, r)) {
+                return r;
+            }
+        }
+        return Collections.emptyList();
+    }
+
+
+    private boolean equals(List<ActionHistory> l, List<ActionHistory> r) {
+        if (l.size() != r.size()) {
+            return false;
+        }
+        for (int i = 0; i < l.size(); i++) {
+            if (l.get(i).type() != r.get(i).type()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public int size() {
+        return items.size();
+    }
+
+    public boolean offer(ActionHistory e) {
+        if (!items.isEmpty() &&
+            items.getLast().occurredAt() + 2_500 < e.occurredAt()) {
+            items.clear();
+        }
+        return items.add(e);
+    }
+
+    public ActionHistory poll() {
+        return items.isEmpty() ? null : items.removeFirst();
+    }
+
+    public ActionHistory peek() {
+        return items.isEmpty() ? null : items.getFirst();
+    }
+
 }

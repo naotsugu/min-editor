@@ -17,20 +17,14 @@ package com.mammb.code.editor.ui.pane;
 
 /**
  * ActionHistory.
+ * @param type the type
+ * @param occurredAt occurred at
  * @author Naotsugu Kobayashi
  */
-public interface ActionHistory {
+public record ActionHistoryRecord(Keys.Action type, long occurredAt) implements ActionHistory {
 
-    /**
-     * Get the type.
-     * @return the type
-     */
-    Keys.Action type();
-
-    /**
-     * Get occurred at.
-     * @return occurred at
-     */
-    long occurredAt();
+    public ActionHistoryRecord(Keys.Action type) {
+        this(type, System.currentTimeMillis());
+    }
 
 }
