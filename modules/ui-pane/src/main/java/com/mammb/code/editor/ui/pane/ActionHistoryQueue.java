@@ -44,7 +44,7 @@ public class ActionHistoryQueue {
         // | 0 | 1 | 2 | 3 |  2
         int mid = items.size() / 2;
         for (int i = mid; mid > 1; mid--) {
-            int index = items.size() - 1 - i;
+            int index = items.size() - i;
             List<ActionHistory> l = items.subList(index - i, i);
             List<ActionHistory> r = items.subList(i, items.size());
             if (equals(l, r)) {

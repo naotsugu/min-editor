@@ -33,4 +33,8 @@ public interface ActionHistory {
      */
     long occurredAt();
 
+    static ActionHistory of(Keys.Action type) {
+        return new ActionHistoryRecord(type);
+    }
+
 }
