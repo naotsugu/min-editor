@@ -32,6 +32,7 @@ public class Keys {
 
     /** The key action type.*/
     public enum Action {
+        TYPED,
         CARET_RIGHT, CARET_LEFT, CARET_UP, CARET_DOWN,
         PAGE_UP, PAGE_DOWN,
         DELETE, BACK_SPACE, ESCAPE,
@@ -45,6 +46,7 @@ public class Keys {
         SCROLL_UP, SCROLL_DOWN,
         UPPER, LOWER, UNIQUE, SORT, HEX, CALC,
         DEBUG,
+        INDENT, UNINDENT,
         ;
     }
 

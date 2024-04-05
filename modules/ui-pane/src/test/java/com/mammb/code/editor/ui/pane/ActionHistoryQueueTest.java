@@ -47,4 +47,5 @@ class ActionHistoryQueueTest {
         assertEquals(Keys.Action.CARET_RIGHT, list.get(3).type());
         assertEquals(Keys.Action.PASTE, list.get(4).type());
     }
+
 }

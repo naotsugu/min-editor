@@ -187,7 +187,7 @@ public class EditorPane extends StackPane {
             }
             @Override
             public void requestKeyAction(Keys.Action keyAction) {
-                handleKeyAction(keyAction, false);
+                handleKeyAction(keyAction, false, null);
             }
             @Override public <T> void requestQuery(Query<T> query) { query.ret(model.query(query.modelQuery())); }
         };
@@ -306,7 +306,7 @@ public class EditorPane extends StackPane {
      * @param e the key event
      */
     private void handleKeyPressed(KeyEvent e) {
-        handleKeyAction(Keys.asAction(e), e.isShiftDown());
+        handleKeyAction(Keys.asAction(e), e.isShiftDown(), null);
     }
 
 
@@ -315,7 +315,7 @@ public class EditorPane extends StackPane {
      * @param keyAction the key action
      * @param withSelect the with select
      */
-    private void handleKeyAction(Keys.Action keyAction, boolean withSelect) {
+    private void handleKeyAction(Keys.Action keyAction, boolean withSelect, String attr) {
         switch (keyAction) {
             case CARET_RIGHT -> aroundEdit(model::moveCaretRight, withSelect);
             case CARET_LEFT  -> aroundEdit(model::moveCaretLeft, withSelect);
@@ -345,6 +345,9 @@ public class EditorPane extends StackPane {
             case CALC        -> withDraw(() -> model.applyEditing(Editing.calcCase()));
             case SORT        -> withDraw(() -> model.applyEditing(Editing.sortCase()));
             case UNIQUE      -> withDraw(() -> model.applyEditing(Editing.uniqueCase()));
+            case INDENT      -> withDraw(() -> model.indent());
+            case UNINDENT    -> withDraw(() -> model.unindent());
+            case TYPED       -> withDraw(() -> model.applyEditing(Editing.keyTypedSteal(attr)));
             case DEBUG       -> debug();
             //case NEW       -> newPane();
             default          -> { }
@@ -370,10 +373,11 @@ public class EditorPane extends StackPane {
 
             if (ascii == 9 || ascii == 25) { // 9:TAB 25:ME(shift+tab)
                 if (model.peekSelection(t -> t.contains("\n"))) {
-                    withDraw(() -> {
-                        if (e.isShiftDown()) model.unindent();
-                        else model.indent();
-                    });
+                    if (e.isShiftDown()) {
+                        handleKeyAction(Keys.Action.UNINDENT, false, null);
+                    } else {
+                        handleKeyAction(Keys.Action.INDENT, false, null);
+                    }
                     return;
                 }
             }
@@ -386,7 +390,7 @@ public class EditorPane extends StackPane {
         String ch = (ascii == 13) // 13:CR
             ? "\n"
             : e.getCharacter();
-        withDraw(() -> model.applyEditing(Editing.keyTypedSteal(ch)));
+        handleKeyAction(Keys.Action.TYPED, false, ch);
     }
 
 
