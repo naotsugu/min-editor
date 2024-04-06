@@ -170,11 +170,11 @@ public class EditorStage {
         }
 
         if (e.isShortcutDown() && e.getText().isBlank()) {
-            var query = EditorDownCall.selectedText();
-            downCall.requestQuery(query);
-            if (query.ret() != null && !query.ret().isBlank()) {
+            //var query = EditorDownCall.selectedText();
+            //downCall.requestQuery(query);
+            //if (query.ret() != null && !query.ret().isBlank()) {
                 startTimeline();
-            }
+            //}
         }
     }
 
