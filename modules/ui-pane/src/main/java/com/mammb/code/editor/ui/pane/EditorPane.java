@@ -15,10 +15,10 @@
  */
 package com.mammb.code.editor.ui.pane;
 
-import com.mammb.code.editor.ui.model.ModelQuery;
-import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.model.EditorModel;
+import com.mammb.code.editor.ui.model.ModelQuery;
 import com.mammb.code.editor.ui.model.ScreenPoint;
+import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -187,8 +187,8 @@ public class EditorPane extends StackPane {
                 model.selectOff();
             }
             @Override
-            public void requestKeyAction(Keys.Action keyAction) {
-                handleKeyAction(keyAction, false, null);
+            public void requestKeyAction(Action action) {
+                handleKeyAction(action);
             }
             @Override public <T> void requestQuery(Query<T> query) { query.ret(model.query(query.modelQuery())); }
         };
@@ -307,25 +307,45 @@ public class EditorPane extends StackPane {
      * @param e the key event
      */
     private void handleKeyPressed(KeyEvent e) {
-        handleKeyAction(Keys.asAction(e), e.isShiftDown(), null);
+        handleKeyAction(Keys.asAction(e));
     }
 
 
     /**
      * Handle key action.
-     * @param keyAction the key action
-     * @param withSelect the with select
+     * @param action the key action
      */
-    private void handleKeyAction(Keys.Action keyAction, boolean withSelect, String attr) {
-        switch (keyAction) {
-            case CARET_RIGHT -> aroundEdit(model::moveCaretRight, withSelect);
-            case CARET_LEFT  -> aroundEdit(model::moveCaretLeft, withSelect);
-            case CARET_UP    -> aroundEdit(model::moveCaretUp, withSelect);
-            case CARET_DOWN  -> aroundEdit(model::moveCaretDown, withSelect);
-            case PAGE_UP     -> aroundEdit(model::pageUp, withSelect);
-            case PAGE_DOWN   -> aroundEdit(model::pageDown, withSelect);
-            case HOME        -> aroundEdit(model::moveCaretLineHome, withSelect);
-            case END         -> aroundEdit(model::moveCaretLineEnd, withSelect);
+    private void handleKeyAction(Action action) {
+        actionEventHistory.offer(execute(action));
+    }
+
+
+    /**
+     * Handle key action.
+     * @param action the key action
+     */
+    private Action execute(Action action) {
+
+        switch (action.type()) {
+
+            case CARET_RIGHT -> aroundEdit(model::moveCaretRight, false);
+            case CARET_LEFT  -> aroundEdit(model::moveCaretLeft, false);
+            case CARET_UP    -> aroundEdit(model::moveCaretUp, false);
+            case CARET_DOWN  -> aroundEdit(model::moveCaretDown, false);
+            case PAGE_UP     -> aroundEdit(model::pageUp, false);
+            case PAGE_DOWN   -> aroundEdit(model::pageDown, false);
+            case HOME        -> aroundEdit(model::moveCaretLineHome, false);
+            case END         -> aroundEdit(model::moveCaretLineEnd, false);
+
+            case SELECT_CARET_RIGHT -> aroundEdit(model::moveCaretRight, true);
+            case SELECT_CARET_LEFT  -> aroundEdit(model::moveCaretLeft, true);
+            case SELECT_CARET_UP    -> aroundEdit(model::moveCaretUp, true);
+            case SELECT_CARET_DOWN  -> aroundEdit(model::moveCaretDown, true);
+            case SELECT_PAGE_UP     -> aroundEdit(model::pageUp, true);
+            case SELECT_PAGE_DOWN   -> aroundEdit(model::pageDown, true);
+            case SELECT_HOME        -> aroundEdit(model::moveCaretLineHome, true);
+            case SELECT_END         -> aroundEdit(model::moveCaretLineEnd, true);
+
             case DELETE      -> withDraw(model::delete);
             case BACK_SPACE  -> withDraw(model::backspace);
             case ESCAPE      -> withDraw(model::clear);
@@ -347,14 +367,14 @@ public class EditorPane extends StackPane {
             case SORT        -> withDraw(() -> model.applyEditing(Editing.sortCase()));
             case UNIQUE      -> withDraw(() -> model.applyEditing(Editing.uniqueCase()));
             case INDENT      -> withDraw(() -> model.indent());
-            case UNINDENT    -> withDraw(() -> model.unindent());
-            case TYPED       -> withDraw(() -> model.applyEditing(Editing.keyTypedSteal(attr)));
-            case REPEAT      -> repeat();
+            case UN_INDENT   -> withDraw(() -> model.unindent());
+            case TYPED       -> withDraw(() -> model.applyEditing(Editing.keyTypedSteal(action.attr())));
+            case REPEAT      -> actionEventHistory.repetition().forEach(this::execute);
             case DEBUG       -> debug();
             //case NEW       -> newPane();
             default          -> { }
         }
-        actionEventHistory.offer(null);
+        return action;
     }
 
 
@@ -377,9 +397,9 @@ public class EditorPane extends StackPane {
             if (ascii == 9 || ascii == 25) { // 9:TAB 25:ME(shift+tab)
                 if (model.peekSelection(t -> t.contains("\n"))) {
                     if (e.isShiftDown()) {
-                        handleKeyAction(Keys.Action.UNINDENT, false, null);
+                        handleKeyAction(Action.of(Action.Type.UN_INDENT));
                     } else {
-                        handleKeyAction(Keys.Action.INDENT, false, null);
+                        handleKeyAction(Action.of(Action.Type.INDENT));
                     }
                     return;
                 }
@@ -393,7 +413,7 @@ public class EditorPane extends StackPane {
         String ch = (ascii == 13) // 13:CR
             ? "\n"
             : e.getCharacter();
-        handleKeyAction(Keys.Action.TYPED, false, ch);
+        handleKeyAction(Action.of(Action.Type.TYPED, ch));
     }
 
 
@@ -546,10 +566,10 @@ public class EditorPane extends StackPane {
         withDraw(() -> model.findHandle().findNext(regexp, true, forward));
     }
 
-    private void repeat() {
 
-    }
-
+    /**
+     * Do debug.
+     */
     private void debug() {
 
     }

@@ -76,15 +76,19 @@ public class ActionHistory {
      */
     public boolean offer(Action event) {
 
-        if (!event.isRepeatable()) {
+        if (event == null || event.type() == Action.Type.REPEAT || event.type() == Action.Type.EMPTY) {
             return false;
         }
 
-        if (!items.isEmpty() &&
-            items.getLast().occurredAt() + 2_500 < event.occurredAt()) {
+        if (!event.isRepeatable()) {
             items.clear();
+            return false;
         }
 
+        if (items.size() > 0 &&
+            items.getLast().occurredAt() + 3_000 < event.occurredAt()) {
+            items.clear();
+        }
         return items.add(event);
 
     }

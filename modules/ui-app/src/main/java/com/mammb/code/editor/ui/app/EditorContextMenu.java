@@ -16,8 +16,8 @@
 package com.mammb.code.editor.ui.app;
 
 import com.mammb.code.editor.ui.app.control.UiContextMenu;
+import com.mammb.code.editor.ui.pane.Action;
 import com.mammb.code.editor.ui.pane.EditorDownCall;
-import com.mammb.code.editor.ui.pane.Keys;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.KeyCode;
@@ -34,15 +34,15 @@ public class EditorContextMenu extends UiContextMenu {
 
         var cut = new MenuItem("Cut");
         cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN));
-        cut.setOnAction(e -> downCall.requestKeyAction(Keys.Action.CUT));
+        cut.setOnAction(e -> downCall.requestKeyAction(Action.of(Action.Type.CUT)));
 
         var copy = new MenuItem("Copy");
         copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
-        copy.setOnAction(e -> downCall.requestKeyAction(Keys.Action.COPY));
+        copy.setOnAction(e -> downCall.requestKeyAction(Action.of(Action.Type.COPY)));
 
         var paste = new MenuItem("Paste");
         paste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN));
-        paste.setOnAction(e -> downCall.requestKeyAction(Keys.Action.PASTE));
+        paste.setOnAction(e -> downCall.requestKeyAction(Action.of(Action.Type.PASTE)));
 
         var query = EditorDownCall.selectedText();
         downCall.requestQuery(query);

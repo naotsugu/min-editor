@@ -30,25 +30,6 @@ import static javafx.scene.input.KeyCode.*;
  */
 public class Keys {
 
-    /** The key action type.*/
-    public enum Action {
-        TYPED,
-        CARET_RIGHT, CARET_LEFT, CARET_UP, CARET_DOWN,
-        PAGE_UP, PAGE_DOWN,
-        DELETE, BACK_SPACE, ESCAPE,
-        COPY, PASTE, CUT,
-        UNDO, REDO,
-        HOME, END,
-        SELECT_ALL,
-        SCROLL_UP, SCROLL_DOWN,
-        UPPER, LOWER, UNIQUE, SORT, HEX, CALC,
-        INDENT, UNINDENT,
-        OPEN, SAVE, SAVE_AS, NEW,
-        REPEAT,
-        WRAP, DEBUG, EMPTY,
-        ;
-    }
-
     private static final KeyCombination SC_C = new KeyCharacterCombination("c", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_V = new KeyCharacterCombination("v", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_X = new KeyCharacterCombination("x", KeyCombination.SHORTCUT_DOWN);
@@ -103,45 +84,47 @@ public class Keys {
      * @return a key action
      */
     public static Action asAction(KeyEvent e) {
-        if (e.getCode() == RIGHT) return Action.CARET_RIGHT;
-        else if (e.getCode() == LEFT) return Action.CARET_LEFT;
-        else if (e.getCode() == UP) return Action.CARET_UP;
-        else if (e.getCode() == DOWN) return Action.CARET_DOWN;
-        else if (e.getCode() == DELETE) return Action.DELETE;
-        else if (e.getCode() == BACK_SPACE) return Action.BACK_SPACE;
-        else if (e.getCode() == ESCAPE) return Action.ESCAPE;
-        else if (e.getCode() == PAGE_UP) return Action.PAGE_UP;
-        else if (e.getCode() == PAGE_DOWN) return Action.PAGE_DOWN;
-        else if (Keys.SC_O.match(e)) return Action.OPEN;
-        else if (Keys.SC_S.match(e)) return Action.SAVE;
-        else if (Keys.SC_SA.match(e)) return Action.SAVE_AS;
-        else if (Keys.SC_W.match(e)) return Action.WRAP;
-        else if (Keys.SC_C.match(e)) return Action.COPY;
-        else if (Keys.SC_V.match(e)) return Action.PASTE;
-        else if (Keys.SC_X.match(e)) return Action.CUT;
-        else if (Keys.SC_Z.match(e)) return Action.UNDO;
-        else if (Keys.SC_Y.match(e) || Keys.SC_SZ.match(e)) return Action.REDO;
-        else if (e.getCode() == HOME || Keys.SC_HOME.match(e)) return Action.HOME;
-        else if (e.getCode() == END || Keys.SC_END.match(e)) return Action.END;
-        else if (Keys.SC_A.match(e)) return Action.SELECT_ALL;
-        else if (Keys.SC_N.match(e)) return Action.NEW;
-        else if (Keys.SC_U.match(e)) return Action.UPPER;
-        else if (Keys.SC_L.match(e)) return Action.LOWER;
-        else if (Keys.SC_UP.match(e)) return Action.SCROLL_UP;
-        else if (Keys.SC_DOWN.match(e)) return Action.SCROLL_DOWN;
-        else if (Keys.SC_REPEAT.match(e)) return Action.REPEAT;
-        else if (Keys.SC_1.match(e)) return Action.EMPTY;
-        else if (Keys.SC_2.match(e)) return Action.EMPTY;
-        else if (Keys.SC_3.match(e)) return Action.EMPTY;
-        else if (Keys.SC_4.match(e)) return Action.EMPTY;
-        else if (Keys.SC_5.match(e)) return Action.EMPTY;
-        else if (Keys.SC_6.match(e)) return Action.EMPTY;
-        else if (Keys.SC_7.match(e)) return Action.UNIQUE;
-        else if (Keys.SC_8.match(e)) return Action.SORT;
-        else if (Keys.SC_9.match(e)) return Action.CALC;
-        else if (Keys.SC_0.match(e)) return Action.HEX;
-        else if (Keys.SC_D.match(e)) return Action.DEBUG;
-        else return Action.EMPTY;
+
+        if (e.getCode() == RIGHT) return e.isShiftDown() ? Action.of(Action.Type.SELECT_CARET_RIGHT) : Action.of(Action.Type.CARET_RIGHT);
+        else if (e.getCode() == LEFT) return e.isShiftDown() ? Action.of(Action.Type.SELECT_CARET_LEFT) : Action.of(Action.Type.CARET_LEFT);
+        else if (e.getCode() == UP) return e.isShiftDown() ? Action.of(Action.Type.SELECT_CARET_UP) : Action.of(Action.Type.CARET_UP);
+        else if (e.getCode() == DOWN) return e.isShiftDown() ? Action.of(Action.Type.SELECT_CARET_DOWN) : Action.of(Action.Type.CARET_DOWN);
+        else if (e.getCode() == PAGE_UP) return e.isShiftDown() ? Action.of(Action.Type.SELECT_PAGE_UP) : Action.of(Action.Type.PAGE_UP);
+        else if (e.getCode() == PAGE_DOWN) return e.isShiftDown() ? Action.of(Action.Type.SELECT_PAGE_DOWN) : Action.of(Action.Type.PAGE_DOWN);
+        else if (e.getCode() == HOME || Keys.SC_HOME.match(e)) return e.isShiftDown() ? Action.of(Action.Type.SELECT_HOME) : Action.of(Action.Type.HOME);
+        else if (e.getCode() == END || Keys.SC_END.match(e)) return e.isShiftDown() ? Action.of(Action.Type.SELECT_END) : Action.of(Action.Type.END);
+
+        else if (e.getCode() == DELETE) return Action.of(Action.Type.DELETE);
+        else if (e.getCode() == BACK_SPACE) return Action.of(Action.Type.BACK_SPACE);
+        else if (e.getCode() == ESCAPE) return Action.of(Action.Type.ESCAPE);
+        else if (Keys.SC_O.match(e)) return Action.of(Action.Type.OPEN);
+        else if (Keys.SC_S.match(e)) return Action.of(Action.Type.SAVE);
+        else if (Keys.SC_SA.match(e)) return Action.of(Action.Type.SAVE_AS);
+        else if (Keys.SC_W.match(e)) return Action.of(Action.Type.WRAP);
+        else if (Keys.SC_C.match(e)) return Action.of(Action.Type.COPY);
+        else if (Keys.SC_V.match(e)) return Action.of(Action.Type.PASTE);
+        else if (Keys.SC_X.match(e)) return Action.of(Action.Type.CUT);
+        else if (Keys.SC_Z.match(e)) return Action.of(Action.Type.UNDO);
+        else if (Keys.SC_Y.match(e) || Keys.SC_SZ.match(e)) return Action.of(Action.Type.REDO);
+        else if (Keys.SC_A.match(e)) return Action.of(Action.Type.SELECT_ALL);
+        else if (Keys.SC_N.match(e)) return Action.of(Action.Type.NEW);
+        else if (Keys.SC_U.match(e)) return Action.of(Action.Type.UPPER);
+        else if (Keys.SC_L.match(e)) return Action.of(Action.Type.LOWER);
+        else if (Keys.SC_UP.match(e)) return Action.of(Action.Type.SCROLL_UP);
+        else if (Keys.SC_DOWN.match(e)) return Action.of(Action.Type.SCROLL_DOWN);
+        else if (Keys.SC_REPEAT.match(e)) return Action.of(Action.Type.REPEAT);
+        else if (Keys.SC_1.match(e)) return Action.of(Action.Type.EMPTY);
+        else if (Keys.SC_2.match(e)) return Action.of(Action.Type.EMPTY);
+        else if (Keys.SC_3.match(e)) return Action.of(Action.Type.EMPTY);
+        else if (Keys.SC_4.match(e)) return Action.of(Action.Type.EMPTY);
+        else if (Keys.SC_5.match(e)) return Action.of(Action.Type.EMPTY);
+        else if (Keys.SC_6.match(e)) return Action.of(Action.Type.EMPTY);
+        else if (Keys.SC_7.match(e)) return Action.of(Action.Type.UNIQUE);
+        else if (Keys.SC_8.match(e)) return Action.of(Action.Type.SORT);
+        else if (Keys.SC_9.match(e)) return Action.of(Action.Type.CALC);
+        else if (Keys.SC_0.match(e)) return Action.of(Action.Type.HEX);
+        else if (Keys.SC_D.match(e)) return Action.of(Action.Type.DEBUG);
+        else return Action.of(Action.Type.EMPTY);
     }
 
 }

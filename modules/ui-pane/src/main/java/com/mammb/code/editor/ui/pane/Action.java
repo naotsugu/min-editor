@@ -39,7 +39,7 @@ public interface Action {
         COPY, PASTE, CUT,
         UNDO, REDO,
         UPPER, LOWER, UNIQUE, SORT, HEX, CALC,
-        INDENT, UNINDENT,
+        INDENT, UN_INDENT,
         OPEN, SAVE, SAVE_AS, NEW,
         REPEAT,
         WRAP, DEBUG, EMPTY,

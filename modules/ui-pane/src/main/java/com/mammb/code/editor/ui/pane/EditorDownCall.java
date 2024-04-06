@@ -60,9 +60,9 @@ public interface EditorDownCall {
 
     /**
      * Request key action.
-     * @param keyAction key action
+     * @param action key action
      */
-    void requestKeyAction(Keys.Action keyAction);
+    void requestKeyAction(Action action);
 
     /**
      * Request query.
