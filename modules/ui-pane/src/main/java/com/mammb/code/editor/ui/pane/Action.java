@@ -19,7 +19,7 @@ package com.mammb.code.editor.ui.pane;
  * The action event.
  * @author Naotsugu Kobayashi
  */
-public interface ActionEvent {
+public interface Action {
 
     /** The action event type.*/
     enum Type {
@@ -91,8 +91,8 @@ public interface ActionEvent {
      * Create a new action event.
      * @param type the action event type
      */
-    static ActionEvent of(Type type) {
-        return new ActionEventRecord(type);
+    static Action of(Type type) {
+        return new ActionRecord(type);
     }
 
 
@@ -101,8 +101,8 @@ public interface ActionEvent {
      * @param type the action event type
      * @param attr the action event attribute
      */
-    static ActionEvent of(Type type, String attr) {
-        return new ActionEventRecord(type, attr);
+    static Action of(Type type, String attr) {
+        return new ActionRecord(type, attr);
     }
 
 }

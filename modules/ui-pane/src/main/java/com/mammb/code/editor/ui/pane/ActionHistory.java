@@ -23,16 +23,16 @@ import java.util.List;
  * The action event history.
  * @author Naotsugu Kobayashi
  */
-public class ActionEventHistory {
+public class ActionHistory {
 
     /** The items. */
-    private final List<ActionEvent> items;
+    private final List<Action> items;
 
 
     /**
      * Constructor.
      */
-    public ActionEventHistory() {
+    public ActionHistory() {
         this.items = new ArrayList<>();
     }
 
@@ -41,7 +41,7 @@ public class ActionEventHistory {
      * Get the action event repetition.
      * @return the action event repetition
      */
-    public List<ActionEvent> repetition() {
+    public List<Action> repetition() {
         if (items.size() < 2) {
             return Collections.emptyList();
         }
@@ -49,8 +49,8 @@ public class ActionEventHistory {
         int mid = items.size() / 2;
         for (int i = mid; mid > 1; mid--) {
             int index = items.size() - i;
-            List<ActionEvent> l = items.subList(index - i, i);
-            List<ActionEvent> r = items.subList(i, items.size());
+            List<Action> l = items.subList(index - i, i);
+            List<Action> r = items.subList(i, items.size());
             if (equals(l, r)) {
                 return r;
             }
@@ -74,7 +74,7 @@ public class ActionEventHistory {
      * @param event the action event
      * @return {@code true} if the event offered
      */
-    public boolean offer(ActionEvent event) {
+    public boolean offer(Action event) {
 
         if (!event.isRepeatable()) {
             return false;
@@ -94,7 +94,7 @@ public class ActionEventHistory {
      * Pool the action event.
      * @return the action event
      */
-    public ActionEvent poll() {
+    public Action poll() {
         return items.isEmpty() ? null : items.removeFirst();
     }
 
@@ -103,12 +103,12 @@ public class ActionEventHistory {
      * Peek the action event.
      * @return the action event
      */
-    public ActionEvent peek() {
+    public Action peek() {
         return items.isEmpty() ? null : items.getFirst();
     }
 
 
-    private boolean equals(List<ActionEvent> l, List<ActionEvent> r) {
+    private boolean equals(List<Action> l, List<Action> r) {
         if (l.size() != r.size()) {
             return false;
         }

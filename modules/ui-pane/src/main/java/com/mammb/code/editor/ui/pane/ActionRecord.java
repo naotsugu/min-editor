@@ -21,17 +21,17 @@ package com.mammb.code.editor.ui.pane;
  * @param attr the action event attribute
  * @param occurredAt the action event occurred at
  */
-record ActionEventRecord(
-    ActionEvent.Type type,
+record ActionRecord(
+    Action.Type type,
     String attr,
     long occurredAt
-) implements ActionEvent {
+) implements Action {
 
     /**
      * Create a new action event.
      * @param type the action event type
      */
-    ActionEventRecord(ActionEvent.Type type) {
+    ActionRecord(Action.Type type) {
         this(type, null, System.currentTimeMillis());
     }
 
@@ -40,7 +40,7 @@ record ActionEventRecord(
      * @param type the action event type
      * @param attr the action event attribute
      */
-    ActionEventRecord(ActionEvent.Type type, String attr) {
+    ActionRecord(Action.Type type, String attr) {
         this(type, attr, System.currentTimeMillis());
     }
 

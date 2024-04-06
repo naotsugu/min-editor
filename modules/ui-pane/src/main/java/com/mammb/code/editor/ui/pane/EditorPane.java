@@ -80,7 +80,7 @@ public class EditorPane extends StackPane {
     /** The editor model. */
     private EditorModel model;
     /** The action event history. */
-    private ActionEventHistory actionEventHistory = new ActionEventHistory();
+    private ActionHistory actionEventHistory = new ActionHistory();
 
 
     /**
