@@ -20,42 +20,41 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * ActionHistory.
+ * The action event history.
  * @author Naotsugu Kobayashi
  */
-public class ActionHistoryQueue {
+public class ActionEventHistory {
 
     /** The items. */
-    private final List<ActionHistory> items;
+    private final List<ActionEvent> items;
 
     /**
      * Constructor.
      */
-    public ActionHistoryQueue() {
+    public ActionEventHistory() {
         this.items = new ArrayList<>();
     }
 
-    public List<ActionHistory> repetition() {
+    public List<ActionEvent> repetition() {
         if (items.size() < 2) {
             return Collections.emptyList();
         }
-        // | 0 | 1 |          1
-        // | 0 | 1 | 2 |      1
-        // | 0 | 1 | 2 | 3 |  2
+
         int mid = items.size() / 2;
         for (int i = mid; mid > 1; mid--) {
             int index = items.size() - i;
-            List<ActionHistory> l = items.subList(index - i, i);
-            List<ActionHistory> r = items.subList(i, items.size());
+            List<ActionEvent> l = items.subList(index - i, i);
+            List<ActionEvent> r = items.subList(i, items.size());
             if (equals(l, r)) {
                 return r;
             }
         }
+
         return Collections.emptyList();
     }
 
 
-    private boolean equals(List<ActionHistory> l, List<ActionHistory> r) {
+    private boolean equals(List<ActionEvent> l, List<ActionEvent> r) {
         if (l.size() != r.size()) {
             return false;
         }
@@ -72,7 +71,7 @@ public class ActionHistoryQueue {
         return items.size();
     }
 
-    public boolean offer(ActionHistory e) {
+    public boolean offer(ActionEvent e) {
         if (!items.isEmpty() &&
             items.getLast().occurredAt() + 2_500 < e.occurredAt()) {
             items.clear();
@@ -80,11 +79,11 @@ public class ActionHistoryQueue {
         return items.add(e);
     }
 
-    public ActionHistory poll() {
+    public ActionEvent poll() {
         return items.isEmpty() ? null : items.removeFirst();
     }
 
-    public ActionHistory peek() {
+    public ActionEvent peek() {
         return items.isEmpty() ? null : items.getFirst();
     }
 

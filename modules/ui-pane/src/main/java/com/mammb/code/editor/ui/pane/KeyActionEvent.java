@@ -16,13 +16,13 @@
 package com.mammb.code.editor.ui.pane;
 
 /**
- * ActionHistory.
+ * The action event.
  * @author Naotsugu Kobayashi
  */
-public interface ActionHistory {
+public interface ActionEvent {
 
     /**
-     * Get the type.
+     * Get the action type.
      * @return the type
      */
     Keys.Action type();
@@ -33,8 +33,8 @@ public interface ActionHistory {
      */
     long occurredAt();
 
-    static ActionHistory of(Keys.Action type) {
-        return new ActionHistoryRecord(type);
+    static ActionEvent of(Keys.Action type) {
+        return new ActionEventRecord(type);
     }
 
 }
