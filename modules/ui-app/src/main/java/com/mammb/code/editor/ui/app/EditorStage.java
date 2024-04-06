@@ -222,6 +222,8 @@ public class EditorStage {
         timeline = new Timeline();
         final KeyFrame kf = new KeyFrame(Duration.millis(1000), e -> {
             toast = UiToast.of(stage, STR."""
+                Ctrl + U : Toggle upper case
+                Ctrl + . : Repeat
                 Ctrl + 7 : Unique
                 Ctrl + 8 : Sort
                 Ctrl + 9 : Calculate
