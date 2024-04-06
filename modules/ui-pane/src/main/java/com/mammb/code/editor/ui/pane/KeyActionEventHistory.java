@@ -23,19 +23,19 @@ import java.util.List;
  * The action event history.
  * @author Naotsugu Kobayashi
  */
-public class ActionEventHistory {
+public class KeyActionEventHistory {
 
     /** The items. */
-    private final List<ActionEvent> items;
+    private final List<KeyActionEvent> items;
 
     /**
      * Constructor.
      */
-    public ActionEventHistory() {
+    public KeyActionEventHistory() {
         this.items = new ArrayList<>();
     }
 
-    public List<ActionEvent> repetition() {
+    public List<KeyActionEvent> repetition() {
         if (items.size() < 2) {
             return Collections.emptyList();
         }
@@ -43,8 +43,8 @@ public class ActionEventHistory {
         int mid = items.size() / 2;
         for (int i = mid; mid > 1; mid--) {
             int index = items.size() - i;
-            List<ActionEvent> l = items.subList(index - i, i);
-            List<ActionEvent> r = items.subList(i, items.size());
+            List<KeyActionEvent> l = items.subList(index - i, i);
+            List<KeyActionEvent> r = items.subList(i, items.size());
             if (equals(l, r)) {
                 return r;
             }
@@ -54,7 +54,7 @@ public class ActionEventHistory {
     }
 
 
-    private boolean equals(List<ActionEvent> l, List<ActionEvent> r) {
+    private boolean equals(List<KeyActionEvent> l, List<KeyActionEvent> r) {
         if (l.size() != r.size()) {
             return false;
         }
@@ -71,7 +71,7 @@ public class ActionEventHistory {
         return items.size();
     }
 
-    public boolean offer(ActionEvent e) {
+    public boolean offer(KeyActionEvent e) {
         if (!items.isEmpty() &&
             items.getLast().occurredAt() + 2_500 < e.occurredAt()) {
             items.clear();
@@ -79,11 +79,11 @@ public class ActionEventHistory {
         return items.add(e);
     }
 
-    public ActionEvent poll() {
+    public KeyActionEvent poll() {
         return items.isEmpty() ? null : items.removeFirst();
     }
 
-    public ActionEvent peek() {
+    public KeyActionEvent peek() {
         return items.isEmpty() ? null : items.getFirst();
     }
 

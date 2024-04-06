@@ -79,7 +79,8 @@ public class EditorPane extends StackPane {
 
     /** The editor model. */
     private EditorModel model;
-
+    /** The action event history. */
+    private KeyActionEventHistory actionHistory = new KeyActionEventHistory();
 
 
     /**
@@ -323,6 +324,8 @@ public class EditorPane extends StackPane {
             case CARET_DOWN  -> aroundEdit(model::moveCaretDown, withSelect);
             case PAGE_UP     -> aroundEdit(model::pageUp, withSelect);
             case PAGE_DOWN   -> aroundEdit(model::pageDown, withSelect);
+            case HOME        -> aroundEdit(model::moveCaretLineHome, withSelect);
+            case END         -> aroundEdit(model::moveCaretLineEnd, withSelect);
             case DELETE      -> withDraw(model::delete);
             case BACK_SPACE  -> withDraw(model::backspace);
             case ESCAPE      -> withDraw(model::clear);
@@ -336,8 +339,6 @@ public class EditorPane extends StackPane {
             case REDO        -> withDraw(model::redo);
             case SELECT_ALL  -> withDraw(model::selectAll);
             case WRAP        -> withDraw(model::toggleWrap);
-            case HOME        -> aroundEdit(model::moveCaretLineHome, withSelect);
-            case END         -> aroundEdit(model::moveCaretLineEnd, withSelect);
             case UPPER,LOWER -> withDraw(() -> model.applyEditing(Editing.upperCase()));
             case SCROLL_UP   -> withDraw(() -> model.scrollPrev(1));
             case SCROLL_DOWN -> withDraw(() -> model.scrollNext(1));
@@ -348,10 +349,12 @@ public class EditorPane extends StackPane {
             case INDENT      -> withDraw(() -> model.indent());
             case UNINDENT    -> withDraw(() -> model.unindent());
             case TYPED       -> withDraw(() -> model.applyEditing(Editing.keyTypedSteal(attr)));
+            case REPEAT      -> repeat();
             case DEBUG       -> debug();
             //case NEW       -> newPane();
             default          -> { }
         }
+        actionHistory.offer(KeyActionEvent.of(keyAction));
     }
 
 
@@ -543,6 +546,9 @@ public class EditorPane extends StackPane {
         withDraw(() -> model.findHandle().findNext(regexp, true, forward));
     }
 
+    private void repeat() {
+
+    }
 
     private void debug() {
 

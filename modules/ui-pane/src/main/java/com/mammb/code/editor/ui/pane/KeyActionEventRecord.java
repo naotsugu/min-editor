@@ -21,9 +21,9 @@ package com.mammb.code.editor.ui.pane;
  * @param occurredAt occurred at
  * @author Naotsugu Kobayashi
  */
-public record ActionEventRecord(Keys.Action type, long occurredAt) implements ActionEvent {
+public record KeyActionEventRecord(Keys.Action type, long occurredAt) implements KeyActionEvent {
 
-    public ActionEventRecord(Keys.Action type) {
+    public KeyActionEventRecord(Keys.Action type) {
         this(type, System.currentTimeMillis());
     }
 

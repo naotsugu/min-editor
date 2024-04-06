@@ -16,25 +16,32 @@
 package com.mammb.code.editor.ui.pane;
 
 /**
- * The action event.
- * @author Naotsugu Kobayashi
+ * The action event record.
+ * @param type the action event type
+ * @param attr the action event attribute
+ * @param occurredAt the action event occurred at
  */
-public interface KeyActionEvent {
+record ActionEventRecord(
+    ActionEvent.Type type,
+    String attr,
+    long occurredAt
+) implements ActionEvent {
 
     /**
-     * Get the action type.
-     * @return the type
+     * Create a new action event.
+     * @param type the action event type
      */
-    Keys.Action type();
+    ActionEventRecord(ActionEvent.Type type) {
+        this(type, null, System.currentTimeMillis());
+    }
 
     /**
-     * Get occurred at.
-     * @return occurred at
+     * Create a new action event.
+     * @param type the action event type
+     * @param attr the action event attribute
      */
-    long occurredAt();
-
-    static KeyActionEvent of(Keys.Action type) {
-        return new KeyActionEventRecord(type);
+    ActionEventRecord(ActionEvent.Type type, String attr) {
+        this(type, attr, System.currentTimeMillis());
     }
 
 }

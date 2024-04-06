@@ -36,17 +36,16 @@ public class Keys {
         CARET_RIGHT, CARET_LEFT, CARET_UP, CARET_DOWN,
         PAGE_UP, PAGE_DOWN,
         DELETE, BACK_SPACE, ESCAPE,
-        OPEN, SAVE, SAVE_AS,
         COPY, PASTE, CUT,
         UNDO, REDO,
         HOME, END,
         SELECT_ALL,
-        WRAP, EMPTY,
-        NEW,
         SCROLL_UP, SCROLL_DOWN,
         UPPER, LOWER, UNIQUE, SORT, HEX, CALC,
-        DEBUG,
         INDENT, UNINDENT,
+        OPEN, SAVE, SAVE_AS, NEW,
+        REPEAT,
+        WRAP, DEBUG, EMPTY,
         ;
     }
 
@@ -78,6 +77,8 @@ public class Keys {
     private static final KeyCombination SC_UP = new KeyCodeCombination(UP, KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_DOWN = new KeyCodeCombination(DOWN, KeyCombination.SHORTCUT_DOWN);
 
+    private static final KeyCombination SC_REPEAT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
+
     private static final KeyCombination SC_0 = new KeyCharacterCombination("0", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_1 = new KeyCharacterCombination("1", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_2 = new KeyCharacterCombination("2", KeyCombination.SHORTCUT_DOWN);
@@ -88,6 +89,7 @@ public class Keys {
     private static final KeyCombination SC_7 = new KeyCharacterCombination("7", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_8 = new KeyCharacterCombination("8", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_9 = new KeyCharacterCombination("9", KeyCombination.SHORTCUT_DOWN);
+
 
     public static final Predicate<KeyEvent> controlKeysFilter = e ->
         System.getProperty("os.name").toLowerCase().startsWith("windows")
@@ -127,6 +129,7 @@ public class Keys {
         else if (Keys.SC_L.match(e)) return Action.LOWER;
         else if (Keys.SC_UP.match(e)) return Action.SCROLL_UP;
         else if (Keys.SC_DOWN.match(e)) return Action.SCROLL_DOWN;
+        else if (Keys.SC_REPEAT.match(e)) return Action.REPEAT;
         else if (Keys.SC_1.match(e)) return Action.EMPTY;
         else if (Keys.SC_2.match(e)) return Action.EMPTY;
         else if (Keys.SC_3.match(e)) return Action.EMPTY;

@@ -20,24 +20,24 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * The test of {@link ActionHistoryQueue}.
+ * The test of {@link KeyActionEventHistory}.
  * @author Naotsugu Kobayashi
  */
 class ActionHistoryQueueTest {
 
     @Test
     void repetition() {
-        var q = new ActionHistoryQueue();
-        q.offer(ActionHistory.of(Keys.Action.CARET_DOWN));
-        q.offer(ActionHistory.of(Keys.Action.CARET_RIGHT));
-        q.offer(ActionHistory.of(Keys.Action.CARET_RIGHT));
-        q.offer(ActionHistory.of(Keys.Action.CARET_RIGHT));
-        q.offer(ActionHistory.of(Keys.Action.PASTE));
-        q.offer(ActionHistory.of(Keys.Action.CARET_DOWN));
-        q.offer(ActionHistory.of(Keys.Action.CARET_RIGHT));
-        q.offer(ActionHistory.of(Keys.Action.CARET_RIGHT));
-        q.offer(ActionHistory.of(Keys.Action.CARET_RIGHT));
-        q.offer(ActionHistory.of(Keys.Action.PASTE));
+        var q = new KeyActionEventHistory();
+        q.offer(KeyActionEvent.of(Keys.Action.CARET_DOWN));
+        q.offer(KeyActionEvent.of(Keys.Action.CARET_RIGHT));
+        q.offer(KeyActionEvent.of(Keys.Action.CARET_RIGHT));
+        q.offer(KeyActionEvent.of(Keys.Action.CARET_RIGHT));
+        q.offer(KeyActionEvent.of(Keys.Action.PASTE));
+        q.offer(KeyActionEvent.of(Keys.Action.CARET_DOWN));
+        q.offer(KeyActionEvent.of(Keys.Action.CARET_RIGHT));
+        q.offer(KeyActionEvent.of(Keys.Action.CARET_RIGHT));
+        q.offer(KeyActionEvent.of(Keys.Action.CARET_RIGHT));
+        q.offer(KeyActionEvent.of(Keys.Action.PASTE));
 
         var list = q.repetition();
         assertEquals(5, list.size());
