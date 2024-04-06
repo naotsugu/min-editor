@@ -80,7 +80,7 @@ public class EditorPane extends StackPane {
     /** The editor model. */
     private EditorModel model;
     /** The action event history. */
-    private KeyActionEventHistory actionHistory = new KeyActionEventHistory();
+    private ActionEventHistory actionEventHistory = new ActionEventHistory();
 
 
     /**
@@ -354,7 +354,7 @@ public class EditorPane extends StackPane {
             //case NEW       -> newPane();
             default          -> { }
         }
-        actionHistory.offer(KeyActionEvent.of(keyAction));
+        actionEventHistory.offer(null);
     }
 
 

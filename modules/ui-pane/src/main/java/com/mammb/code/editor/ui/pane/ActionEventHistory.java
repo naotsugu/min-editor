@@ -23,19 +23,25 @@ import java.util.List;
  * The action event history.
  * @author Naotsugu Kobayashi
  */
-public class KeyActionEventHistory {
+public class ActionEventHistory {
 
     /** The items. */
-    private final List<KeyActionEvent> items;
+    private final List<ActionEvent> items;
+
 
     /**
      * Constructor.
      */
-    public KeyActionEventHistory() {
+    public ActionEventHistory() {
         this.items = new ArrayList<>();
     }
 
-    public List<KeyActionEvent> repetition() {
+
+    /**
+     * Get the action event repetition.
+     * @return the action event repetition
+     */
+    public List<ActionEvent> repetition() {
         if (items.size() < 2) {
             return Collections.emptyList();
         }
@@ -43,8 +49,8 @@ public class KeyActionEventHistory {
         int mid = items.size() / 2;
         for (int i = mid; mid > 1; mid--) {
             int index = items.size() - i;
-            List<KeyActionEvent> l = items.subList(index - i, i);
-            List<KeyActionEvent> r = items.subList(i, items.size());
+            List<ActionEvent> l = items.subList(index - i, i);
+            List<ActionEvent> r = items.subList(i, items.size());
             if (equals(l, r)) {
                 return r;
             }
@@ -54,7 +60,55 @@ public class KeyActionEventHistory {
     }
 
 
-    private boolean equals(List<KeyActionEvent> l, List<KeyActionEvent> r) {
+    /**
+     * Get the current history size.
+     * @return the current history size
+     */
+    public int size() {
+        return items.size();
+    }
+
+
+    /**
+     * Offer the action event.
+     * @param event the action event
+     * @return {@code true} if the event offered
+     */
+    public boolean offer(ActionEvent event) {
+
+        if (!event.isRepeatable()) {
+            return false;
+        }
+
+        if (!items.isEmpty() &&
+            items.getLast().occurredAt() + 2_500 < event.occurredAt()) {
+            items.clear();
+        }
+
+        return items.add(event);
+
+    }
+
+
+    /**
+     * Pool the action event.
+     * @return the action event
+     */
+    public ActionEvent poll() {
+        return items.isEmpty() ? null : items.removeFirst();
+    }
+
+
+    /**
+     * Peek the action event.
+     * @return the action event
+     */
+    public ActionEvent peek() {
+        return items.isEmpty() ? null : items.getFirst();
+    }
+
+
+    private boolean equals(List<ActionEvent> l, List<ActionEvent> r) {
         if (l.size() != r.size()) {
             return false;
         }
@@ -64,27 +118,6 @@ public class KeyActionEventHistory {
             }
         }
         return true;
-    }
-
-
-    public int size() {
-        return items.size();
-    }
-
-    public boolean offer(KeyActionEvent e) {
-        if (!items.isEmpty() &&
-            items.getLast().occurredAt() + 2_500 < e.occurredAt()) {
-            items.clear();
-        }
-        return items.add(e);
-    }
-
-    public KeyActionEvent poll() {
-        return items.isEmpty() ? null : items.removeFirst();
-    }
-
-    public KeyActionEvent peek() {
-        return items.isEmpty() ? null : items.getFirst();
     }
 
 }
