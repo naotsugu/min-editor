@@ -26,13 +26,16 @@ import java.util.List;
  */
 public interface RangeSupplier {
 
+    /** The empty range supplier. */
     RangeSupplier empty = Collections::emptyList;
+
 
     /**
      * Get the OffsetPointRange list.
      * @return the OffsetPointRange list
      */
     List<OffsetPointRange> getRanges();
+
 
     /**
      * Create the fix point range.
@@ -56,6 +59,9 @@ public interface RangeSupplier {
     }
 
 
+    /**
+     * The open range supplier.
+     */
     class OpenRangeSupplier implements RangeSupplier {
 
         private final OffsetPoint start;
