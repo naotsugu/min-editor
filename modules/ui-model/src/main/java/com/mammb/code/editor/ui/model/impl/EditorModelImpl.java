@@ -1076,6 +1076,8 @@ public class EditorModelImpl implements EditorModel {
                 q.on(buffer.metrics().modified());
             case ModelQuery.ContentPath q ->
                 q.on(buffer.metrics().path());
+            case ModelQuery.LineSeparator q ->
+                q.on(buffer.metrics().lineEnding().str());
         };
         return  r;
     }

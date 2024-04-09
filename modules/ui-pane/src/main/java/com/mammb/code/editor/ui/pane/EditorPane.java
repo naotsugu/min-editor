@@ -49,6 +49,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -204,7 +205,15 @@ public class EditorPane extends StackPane {
             return;
         }
         if (Files.isDirectory(path)) {
-            // TODO list of files
+            var lineSeparator = model.query(ModelQuery.lineSeparator);
+            var sb = new StringBuilder();
+            sb.append(path);
+            sb.append(lineSeparator);
+            try {
+                Files.list(path).forEach(l -> sb.append(path.relativize(l)).append(lineSeparator));
+            } catch (IOException ignore) { }
+
+            handleKeyAction(Action.of(Action.Type.TYPED, sb.toString()));
         } else {
             open(Session.of(path));
         }

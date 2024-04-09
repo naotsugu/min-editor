@@ -28,7 +28,8 @@ public sealed interface ModelQuery<R> permits
         ModelQuery.CurrentRowText,
         ModelQuery.CaretBeforeText,
         ModelQuery.Modified,
-        ModelQuery.ContentPath {
+        ModelQuery.ContentPath,
+        ModelQuery.LineSeparator {
 
     /**
      * The query result.
@@ -62,6 +63,8 @@ public sealed interface ModelQuery<R> permits
     Modified modified = new Modified();
     /** The content path query. */
     ContentPath contentPath = new ContentPath();
+    /** The line separator query. */
+    LineSeparator lineSeparator = new LineSeparator();
 
     record SelectedText() implements ModelQuery<String> { }
     record CurrentLineText() implements ModelQuery<String> { }
@@ -69,5 +72,5 @@ public sealed interface ModelQuery<R> permits
     record CaretBeforeText() implements ModelQuery<String> { }
     record Modified() implements ModelQuery<Boolean> { }
     record ContentPath() implements ModelQuery<Path> { }
-
+    record LineSeparator() implements ModelQuery<String> { }
 }
