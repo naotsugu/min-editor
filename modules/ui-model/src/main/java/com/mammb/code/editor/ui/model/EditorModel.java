@@ -257,7 +257,16 @@ public interface EditorModel extends EditorDraw {
 
     // -- layout behavior -----------------------------------------------------
 
+    /**
+     * Reflects layout bounds changes.
+     * @param width the width
+     * @param height the height
+     */
     void layoutBounds(double width, double height);
+
+    /**
+     * Toggle word wrap.
+     */
     void toggleWrap();
 
     // -- utilities -----------------------------------------------------------
@@ -266,11 +275,29 @@ public interface EditorModel extends EditorDraw {
      * Clear selection and multi caret.
      */
     void clear();
+
+    /**
+     * Get the find handler.
+     * @return the find handler
+     */
     FindHandle findHandle();
+
     Rect textAreaRect();
+
+    /**
+     * Get the state change handler.
+     * @return the state change handler
+     */
     StateHandler stateChange();
+
+    /**
+     * Get the screen point.
+     * @return the screen point
+     */
     ScreenPoint screenPoint();
+
     void apply(ScreenPoint screenPoint);
+
     boolean peekSelection(Predicate<String> predicate);
 
     /**
