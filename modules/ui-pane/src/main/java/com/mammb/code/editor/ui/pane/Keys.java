@@ -58,7 +58,8 @@ public class Keys {
     private static final KeyCombination SC_UP = new KeyCodeCombination(UP, KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_DOWN = new KeyCodeCombination(DOWN, KeyCombination.SHORTCUT_DOWN);
 
-    private static final KeyCombination SC_REPEAT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_DOT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_SC = new KeyCharacterCombination(";", KeyCombination.SHORTCUT_DOWN);
 
     private static final KeyCombination SC_0 = new KeyCharacterCombination("0", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_1 = new KeyCharacterCombination("1", KeyCombination.SHORTCUT_DOWN);
@@ -112,7 +113,8 @@ public class Keys {
         else if (Keys.SC_L.match(e)) return Action.of(Action.Type.LOWER);
         else if (Keys.SC_UP.match(e)) return Action.of(Action.Type.SCROLL_UP);
         else if (Keys.SC_DOWN.match(e)) return Action.of(Action.Type.SCROLL_DOWN);
-        else if (Keys.SC_REPEAT.match(e)) return Action.of(Action.Type.REPEAT);
+        else if (Keys.SC_DOT.match(e)) return Action.of(Action.Type.REPEAT);
+        else if (Keys.SC_SC.match(e)) return Action.of(Action.Type.NOW);
         else if (Keys.SC_1.match(e)) return Action.of(Action.Type.EMPTY);
         else if (Keys.SC_2.match(e)) return Action.of(Action.Type.EMPTY);
         else if (Keys.SC_3.match(e)) return Action.of(Action.Type.EMPTY);

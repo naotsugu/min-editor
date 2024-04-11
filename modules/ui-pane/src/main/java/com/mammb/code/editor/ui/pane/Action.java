@@ -41,7 +41,7 @@ public interface Action {
         UPPER, LOWER, UNIQUE, SORT, HEX, CALC,
         INDENT, UN_INDENT,
         OPEN, SAVE, SAVE_AS, NEW,
-        REPEAT,
+        REPEAT, NOW,
         WRAP, DEBUG, EMPTY,
         ;
     }

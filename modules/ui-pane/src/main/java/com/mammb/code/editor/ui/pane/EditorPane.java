@@ -375,6 +375,7 @@ public class EditorPane extends StackPane {
             case CALC        -> withDraw(() -> model.applyEditing(Editing.calcCase()));
             case SORT        -> withDraw(() -> model.applyEditing(Editing.sortCase()));
             case UNIQUE      -> withDraw(() -> model.applyEditing(Editing.uniqueCase()));
+            case NOW         -> withDraw(() -> model.applyEditing(Editing.now()));
             case INDENT      -> withDraw(() -> model.indent());
             case UN_INDENT   -> withDraw(() -> model.unindent());
             case TYPED       -> withDraw(() -> model.applyEditing(Editing.keyTypedSteal(action.attr())));

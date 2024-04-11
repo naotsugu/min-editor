@@ -80,6 +80,13 @@ public interface Editing {
         return new UniqueEditing();
     }
 
+    /**
+     * Create now editing.
+     * @return the Editing
+     */
+    static Editing now() {
+        return new NowEditing();
+    }
 
     /**
      * Create a key typed steal editing.
