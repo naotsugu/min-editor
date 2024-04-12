@@ -35,18 +35,18 @@ public class HexCaseEditing implements Editing {
         if (trimmed.startsWith("0x")) {
             if (trimmed.length() > 2 &&
                 isHexLike(trimmed.substring(2))) {
-                model.selectionReplace(String.valueOf(Integer.parseInt(trimmed.substring(2), 16)));
+                model.selectionReplace(String.valueOf(Integer.parseInt(trimmed.substring(2), 16)), false);
                 return true;
             } else {
                 return false;
             }
         }
         if (isDecimalLike(trimmed)) {
-            model.selectionReplace(STR."0x\{Integer.toHexString(Integer.parseInt(trimmed))}");
+            model.selectionReplace(STR."0x\{Integer.toHexString(Integer.parseInt(trimmed))}", false);
             return true;
         }
         if (isHexLike(trimmed)) {
-            model.selectionReplace(String.valueOf(Integer.parseInt(trimmed, 16)));
+            model.selectionReplace(String.valueOf(Integer.parseInt(trimmed, 16)), false);
             return true;
         }
 

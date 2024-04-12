@@ -34,7 +34,7 @@ public class UniqueEditing implements Editing {
         }
 
         String ending = text.endsWith("\n") ? "\n" : "";
-        model.selectionReplace(text.lines().distinct().collect(Collectors.joining("\n")) + ending);
+        model.selectionReplace(text.lines().distinct().collect(Collectors.joining("\n")) + ending, true);
 
         return true;
     }

@@ -349,7 +349,7 @@ public class EditorModelImpl implements EditorModel {
         int marginLineCount = lineMarginFromCaret();
 
         if (selection.hasSelection()) {
-            selectionsReplace(List.of(value));
+            selectionsReplace(List.of(value), true);
         } else {
             input(List.of(value));
         }
@@ -489,7 +489,7 @@ public class EditorModelImpl implements EditorModel {
     }
 
     @Override
-    public void selectionReplace(String string) {
+    public void selectionReplace(String string, boolean selectOff) {
         vScrollToCaret();
         if (buffer.readOnly() || !selection.hasSelection()) {
             return;
@@ -497,11 +497,11 @@ public class EditorModelImpl implements EditorModel {
         if (string == null || string.isEmpty()) {
             selectionDelete();
         } else {
-            selectionsReplace(List.of(string));
+            selectionsReplace(List.of(string), selectOff);
         }
     }
 
-    private void selectionsReplace(List<String> lines) {
+    private void selectionsReplace(List<String> lines, boolean selectOff) {
 
         if (lines == null || lines.isEmpty() || buffer.readOnly()) {
             return;
@@ -530,7 +530,7 @@ public class EditorModelImpl implements EditorModel {
         buffer.push(unit.commit());
         hoisting.locateOn(carets);
 
-        selection.selectOff();
+        if (selectOff) selection.selectOff();
         find.reset();
         texts.markDirty();
         carets.refresh();
@@ -773,7 +773,7 @@ public class EditorModelImpl implements EditorModel {
             vScrollToCaret();
             List<String> lines = text.lines().toList();
             if (selection.hasSelection()) {
-                selectionsReplace(lines);
+                selectionsReplace(lines, true);
             } else {
                 input(lines);
             }

@@ -53,7 +53,7 @@ public class CalcCaseEditing implements Editing {
 
         try {
             String s = text.contains(" ") ? " " : "";
-            model.selectionReplace("%s%s=%s%s".formatted(text, s, s, calc(text)));
+            model.selectionReplace("%s%s=%s%s".formatted(text, s, s, calc(text)), true);
             return true;
         } catch (Exception e) {
             log.log(System.Logger.Level.WARNING, e);

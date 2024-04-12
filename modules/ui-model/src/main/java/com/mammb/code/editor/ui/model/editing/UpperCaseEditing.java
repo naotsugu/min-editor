@@ -32,12 +32,12 @@ public class UpperCaseEditing implements Editing {
         }
         String upper = text.toUpperCase();
         if (!text.equals(upper)) {
-            model.selectionReplace(upper);
+            model.selectionReplace(upper, false);
             return true;
         } else {
             String lower = text.toLowerCase();
             if (!text.equals(lower)) {
-                model.selectionReplace(lower);
+                model.selectionReplace(lower, false);
                 return true;
             }
         }

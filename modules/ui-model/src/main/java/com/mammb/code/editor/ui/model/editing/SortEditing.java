@@ -34,7 +34,7 @@ public class SortEditing implements Editing {
         }
 
         String ending = text.endsWith("\n") ? "\n" : "";
-        model.selectionReplace(text.lines().sorted().collect(Collectors.joining("\n")) + ending);
+        model.selectionReplace(text.lines().sorted().collect(Collectors.joining("\n")) + ending, true);
 
         return true;
     }

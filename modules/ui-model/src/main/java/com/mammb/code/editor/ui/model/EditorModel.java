@@ -69,8 +69,9 @@ public interface EditorModel extends EditorDraw {
     /**
      * Selection replace.
      * @param string the replace text
+     * @param selectOff select off?
      */
-    void selectionReplace(String string);
+    void selectionReplace(String string, boolean selectOff);
 
     /**
      * Indent.
