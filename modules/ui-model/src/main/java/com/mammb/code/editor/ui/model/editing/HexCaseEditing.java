@@ -83,11 +83,11 @@ public class HexCaseEditing implements Editing {
         if (text.isEmpty()) {
             return false;
         }
+        if (text.charAt(0) == '0') {
+            return false;
+        }
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
-            if (i == 0 && ch == '0') {
-                return false;
-            }
             if ((ch >= '0' && ch <= '9') || ch == '_') {
                 continue;
             }
@@ -106,7 +106,7 @@ public class HexCaseEditing implements Editing {
         if (text.startsWith("0x")) {
             return true;
         }
-        if (text.startsWith("0")) {
+        if (text.charAt(0) == '0') {
             return false;
         }
 
