@@ -228,7 +228,7 @@ public class EditorStage {
                 Ctrl + 7 : Unique
                 Ctrl + 8 : Sort
                 Ctrl + 9 : Calculate
-                Ctrl + 0 : Convert to hex""");
+                Ctrl + 0 : Toggle dec/hex/bin""");
             stage.requestFocus();
         });
         timeline.getKeyFrames().add(kf);

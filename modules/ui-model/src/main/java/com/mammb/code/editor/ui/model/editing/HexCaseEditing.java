@@ -21,33 +21,56 @@ import java.util.Objects;
 
 /**
  * Hex case editing.
+ * dec -> hex -> bin
  * @author Naotsugu Kobayashi
  */
 public class HexCaseEditing implements Editing {
 
     @Override
     public boolean apply(EditorModel model) {
-        String text = model.query(ModelQuery.selectedText);
-        if (text.isBlank()) {
+
+        String selected = model.query(ModelQuery.selectedText);
+        if (selected.isBlank()) {
             return false;
         }
-        String trimmed = text.trim();
-        if (trimmed.startsWith("0x")) {
-            if (trimmed.length() > 2 &&
-                isHexLike(trimmed.substring(2))) {
-                model.selectionReplace(String.valueOf(Integer.parseInt(trimmed.substring(2), 16)), false);
-                return true;
-            } else {
+
+        String trimmed = selected.trim().toLowerCase().replace(" ", "").replace("_", "");
+
+        if (isDecimalLike(trimmed)) {
+            String hex = Integer.toHexString(Integer.parseInt(trimmed));
+            if (isDecimalLike(hex) || isBinaryLike(hex)) {
+                hex = "0x" + hex;
+            }
+            model.selectionReplace(hex, false);
+            return true;
+        }
+
+        if (isHexLike(trimmed)) {
+            String text = trimmed.startsWith("0x") ? trimmed.substring(2) : trimmed;
+            if (text.isBlank()) {
                 return false;
+            } else {
+                String bin = Integer.toBinaryString(Integer.parseInt(text, 16));
+                bin = "0".repeat(bin.length() % 4) + bin;
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < bin.length(); i++) {
+                    if (i != 0 && (i % 4) == 0) sb.append(" ");
+                    sb.append(bin.charAt(i));
+                }
+                bin = sb.charAt(0) == '1' ? "0b" + sb : sb.toString();
+                model.selectionReplace(bin, false);
+                return true;
             }
         }
-        if (isDecimalLike(trimmed)) {
-            model.selectionReplace(STR."0x\{Integer.toHexString(Integer.parseInt(trimmed))}", false);
-            return true;
-        }
-        if (isHexLike(trimmed)) {
-            model.selectionReplace(String.valueOf(Integer.parseInt(trimmed, 16)), false);
-            return true;
+
+        if (isBinaryLike(trimmed)) {
+            String text = trimmed.startsWith("0b") ? trimmed.substring(2) : trimmed;
+            if (text.isBlank()) {
+                return false;
+            } else {
+                model.selectionReplace(String.valueOf(Integer.parseInt(text, 2)), false);
+                return true;
+            }
         }
 
         return false;
@@ -80,9 +103,16 @@ public class HexCaseEditing implements Editing {
         if (text.isEmpty()) {
             return false;
         }
+        if (text.startsWith("0x")) {
+            return true;
+        }
+        if (text.startsWith("0")) {
+            return false;
+        }
+
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
-            if ((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || ch == ' ') {
+            if ((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || ch == ' ' || ch == '_') {
                 continue;
             }
             return false;
@@ -90,15 +120,19 @@ public class HexCaseEditing implements Editing {
         return true;
     }
 
+
     private boolean isBinaryLike(String text) {
         Objects.requireNonNull(text);
-        text = text.trim();
+        text = text.trim().toLowerCase();
         if (text.isEmpty()) {
             return false;
         }
+        if (text.startsWith("0b")) {
+            return true;
+        }
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
-            if (ch == '0' || ch == '1' || ch == ' ') {
+            if (ch == '0' || ch == '1' || ch == ' ' || ch == '_') {
                 continue;
             }
             return false;
