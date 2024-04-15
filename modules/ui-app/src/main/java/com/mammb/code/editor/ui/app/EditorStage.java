@@ -166,6 +166,8 @@ public class EditorStage {
             if (query.ret() != null && !query.ret().isBlank() && !query.ret().contains("\n")) {
                 bar.setVisibleSearchField(query.ret());
                 downCall.requestSelectClear();
+            } else {
+                bar.setVisibleSearchField("");
             }
         }
 
