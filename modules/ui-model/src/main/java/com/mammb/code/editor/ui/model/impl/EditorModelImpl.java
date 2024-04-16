@@ -944,7 +944,7 @@ public class EditorModelImpl implements EditorModel {
             TextLine caretLine = texts.lineAt(carets.offset());
             TextLine clickLine = texts.at(y).orElse(null);
             if (caretLine != null && clickLine != null) {
-                double x = caretLine.offsetToX(carets.offset());
+                double x = caretLine.offsetToX(carets.offset()) + 1;
                 TextLine start = caretLine;
                 TextLine end = clickLine;
                 if (start.offset() == end.offset()) {

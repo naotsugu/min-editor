@@ -222,7 +222,7 @@ public class EditorStage {
      */
     private void startTimeline() {
         timeline = new Timeline();
-        final KeyFrame kf = new KeyFrame(Duration.millis(1000), e -> {
+        final KeyFrame kf = new KeyFrame(Duration.millis(2000), e -> {
             toast = UiToast.of(stage, STR."""
                 Ctrl + U : Toggle upper/lower
                 Ctrl + ; : Current date time
