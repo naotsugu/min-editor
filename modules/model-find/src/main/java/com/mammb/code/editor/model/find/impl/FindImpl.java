@@ -143,17 +143,24 @@ public class FindImpl implements Find {
 
 
     private void fire(String text, OffsetPoint point, boolean right, Match match) {
+
         int margin = 60;
         int peripheralStart = Math.max(0, match.start() - margin);
         int peripheralEnd = Math.clamp(match.end() + margin, match.end(), text.length());
+        // point              chOffset
+        // |                  |
+        // ....................aaa.....
+        //    |                        |
+        //    peripheralStart          peripheralEnd
         var found = new FoundRun(
-            point.offset() + match.start(),
-            point.cpOffset() + match.startCp(),
-            match.length(),
-            right,
-            text.substring(peripheralStart, peripheralEnd),
-            Math.toIntExact(point.offset() - peripheralStart),
+            point.offset() + match.start(),         // chOffset
+            point.cpOffset() + match.startCp(),     // cpOffset
+            match.length(),                         // length
+            right,                                  // right
+            text.substring(peripheralStart, peripheralEnd),    // peripheral
+            Math.toIntExact(point.offset() + peripheralStart), // offsetOnPeripheral
             point.row());
+
         listeners.forEach(listener -> listener.accept(found));
     }
 
