@@ -88,11 +88,20 @@ public class AddressPath {
     }
 
 
+    /**
+     * Get the path item list.
+     * @return the path item list
+     */
     public List<PathItem> listItem() {
         return listItem(directory ? path : path.getParent());
     }
 
 
+    /**
+     * Get the path list.
+     * @param path the base path
+     * @return the path list
+     */
     private List<Path> list(Path path) {
         try (Stream<Path> s = Files.list(path)) {
             return s.sorted(Comparator.comparing(p -> Files.isDirectory(p) ? -1 : 1)).toList();
@@ -102,6 +111,11 @@ public class AddressPath {
     }
 
 
+    /**
+     * Get the path item list.
+     * @param path the base path
+     * @return the path item list
+     */
     private List<PathItem> listItem(Path path) {
         try (Stream<Path> s = Files.list(path).filter(PathItem.exclude)) {
             return s.map(FlattenPath::of).sorted().toList();
@@ -111,6 +125,10 @@ public class AddressPath {
     }
 
 
+    /**
+     * Get the path string length.
+     * @return the path string length
+     */
     public int stringLength() {
         return toString().length();
     }
