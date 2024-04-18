@@ -16,8 +16,6 @@
 package com.mammb.code.editor.ui.app;
 
 import javafx.scene.input.KeyCharacterCombination;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 
 /**
@@ -31,8 +29,8 @@ public class AppKeys {
     /** Shortcut f. */
     public static final KeyCombination SC_F = new KeyCharacterCombination("f", KeyCombination.SHORTCUT_DOWN);
     /** Shortcut right. */
-    public static final KeyCombination SC_FORWARD  = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.ALT_DOWN);
+    public static final KeyCombination SC_FORWARD  = new KeyCharacterCombination("]", KeyCombination.SHORTCUT_DOWN);
     /** Shortcut left. */
-    public static final KeyCombination SC_BACKWARD = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.ALT_DOWN);
+    public static final KeyCombination SC_BACKWARD = new KeyCharacterCombination("[", KeyCombination.SHORTCUT_DOWN);
 
 }
