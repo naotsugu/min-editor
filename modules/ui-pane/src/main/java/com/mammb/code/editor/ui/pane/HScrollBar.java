@@ -59,9 +59,9 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
 
     /** The active background color. */
     private final Background backGroundActive;
+
     /** The passive background color. */
     private final Background backGroundPassive;
-
 
     /** This timeline is used to adjust the value of the bar when the track has been pressed but not released. */
     private Timeline timeline;
@@ -69,6 +69,7 @@ public class HScrollBar extends StackPane implements ScrollBar<Double> {
     /** The previous drag thumb position. */
     private double preDragThumbPos;
 
+    /** The drag start position. */
     private double dragStart;
 
     /** The scrolled handler. */

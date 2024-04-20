@@ -35,6 +35,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Vertical ScrollBar.
@@ -59,6 +61,7 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
 
     /** The active background color. */
     private final Background backGroundActive;
+
     /** The passive background color. */
     private final Background backGroundPassive;
 
@@ -68,10 +71,13 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     /** The previous drag thumb position. */
     private double preDragThumbPos;
 
+    /** The drag start position. */
     private double dragStart;
 
     /** The scrolled handler. */
     private ScrolledHandler<Integer> listener = (oldValue, newValue) -> { };
+
+    private List<Integer> marks = new ArrayList<>();
 
 
     /**
