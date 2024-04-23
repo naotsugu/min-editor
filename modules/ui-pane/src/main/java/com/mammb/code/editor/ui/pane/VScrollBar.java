@@ -34,6 +34,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,10 +76,15 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
     /** The drag start position. */
     private double dragStart;
 
+    /** The marks. */
+    private List<Mark> marks = new ArrayList<>();
+
+    /** The mark. */
+    record Mark(int value, Shape shape) { }
+
     /** The scrolled handler. */
     private ScrolledHandler<Integer> listener = (oldValue, newValue) -> { };
 
-    private List<Integer> marks = new ArrayList<>();
 
 
     /**
@@ -292,6 +299,24 @@ public class VScrollBar extends StackPane implements ScrollBar<Integer> {
         if (value > max.getValue()) return max.getValue();
         return value;
     }
+
+
+    public void addLineMarks(List<Integer> values) {
+        clearMarks();
+        marks = values.stream().map(val -> {
+            double y = (clamp(val) - getMin()) / valueLength();
+            Shape line = new Line(0, y, WIDTH, y);
+            getChildren().add(line);
+            return new Mark(val, line);
+        }).toList();
+    }
+
+
+    public void clearMarks() {
+        marks.forEach(m -> getChildren().remove(m.shape));
+        marks.clear();
+    }
+
 
     @Override
     public void setOnScrolled(ScrolledHandler<Integer> listener) {

@@ -23,6 +23,7 @@ module code.editor.ui.pane {
     requires code.editor.javafx;
     requires code.editor.ui.prefs;
     requires code.editor.ui.model;
+    requires java.desktop;
 
     exports com.mammb.code.editor.ui.pane;
 

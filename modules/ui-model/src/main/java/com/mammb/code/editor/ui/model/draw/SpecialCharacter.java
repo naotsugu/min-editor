@@ -25,7 +25,7 @@ import javafx.scene.canvas.GraphicsContext;
 public interface SpecialCharacter {
 
     /**
-     * Draw
+     * Draw the special character.
      * @param gc the graphics context
      * @param r the plot area
      */
