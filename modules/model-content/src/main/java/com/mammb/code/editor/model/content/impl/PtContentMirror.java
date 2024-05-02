@@ -118,6 +118,12 @@ public class PtContentMirror implements Content {
         return originalCs;
     }
 
+
+    /**
+     * Create a new mirror file.
+     * @param original the path
+     * @return the path of the mirror file
+     */
     private static Path createMirror(Path original) {
         try {
             final String fileName = original.getFileName().toString();
@@ -133,13 +139,21 @@ public class PtContentMirror implements Content {
     }
 
 
+    /**
+     * Copy.
+     * @param source the path of source
+     * @param sourceCs the charset of source
+     * @param dest the path of destination
+     * @param destCs the charset of destination
+     */
     private static void copy(Path source, Charset sourceCs, Path dest, Charset destCs) {
         try (BufferedReader r = Files.newBufferedReader(source, sourceCs);
              BufferedWriter w = Files.newBufferedWriter(dest, destCs)) {
             char[] buffer = new char[8192];
             int read;
-            while ((read = r.read(buffer)) != -1)
+            while ((read = r.read(buffer)) != -1) {
                 w.write(buffer, 0, read);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

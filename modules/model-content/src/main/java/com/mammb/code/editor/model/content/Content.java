@@ -130,6 +130,7 @@ public interface Content {
      */
     long length();
 
+
     /**
      * Create a new Content
      * @param path the content path

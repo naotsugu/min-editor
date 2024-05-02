@@ -18,5 +18,9 @@ package com.mammb.code.editor.model.edit;
 import com.mammb.code.editor.model.text.Textual;
 import com.mammb.code.editor.model.text.Translate;
 
+/**
+ * TextTranslate{@link Textual} to {@link Textual}.
+ * @author Naotsugu Kobayashi
+ */
 public interface TextTranslate extends Translate<Textual, Textual> {
 }
