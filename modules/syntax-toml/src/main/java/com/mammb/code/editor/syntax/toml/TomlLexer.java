@@ -21,6 +21,7 @@ import com.mammb.code.editor.syntax.base.ScopeTree;
 import com.mammb.code.editor.syntax.base.Token;
 import com.mammb.code.editor.syntax.base.*;
 
+import static com.mammb.code.editor.syntax.toml.Toml.TomlToken.COMMENT;
 import static com.mammb.code.editor.syntax.toml.Toml.TomlToken.TEXT;
 
 /**
@@ -57,6 +58,7 @@ public class TomlLexer implements Lexer {
             case ' ', '\t'  -> Token.whitespace(source);
             case '\n', '\r' -> Token.lineEnd(source);
             case '"', '\'' -> readText(source);
+            case '#' -> readComment(source);
             case 0 -> Token.empty(source);
             default -> Token.any(source);
         };
@@ -80,6 +82,17 @@ public class TomlLexer implements Lexer {
                 return Token.of(TEXT, Scope.NEUTRAL, source.offset() + pos, source.position() + 1 - pos);
             }
         }
+    }
+
+    /**
+     * Read comment.
+     * @param source the lexer source
+     * @return the token
+     */
+    private Token readComment(LexerSource source) {
+        long pos = source.offset() + source.position();
+        source.commitPeek();
+        return Token.of(COMMENT, Scope.INLINE_START, pos, 1);
     }
 
 }
