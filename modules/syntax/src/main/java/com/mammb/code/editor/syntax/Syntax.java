@@ -28,7 +28,7 @@ import com.mammb.code.editor.syntax.kotlin.KotlinLexer;
 import com.mammb.code.editor.syntax.markdown.MarkdownLexer;
 import com.mammb.code.editor.syntax.python.PythonLexer;
 import com.mammb.code.editor.syntax.rust.RustLexer;
-
+import com.mammb.code.editor.syntax.toml.TomlLexer;
 import java.nio.file.Path;
 
 /**
@@ -50,6 +50,7 @@ public class Syntax {
                 case "python", "py" -> new PythonLexer();
                 case "kotlin", "kt", "kts" -> new KotlinLexer();
                 case "html", "xhtml" -> new HtmlLexer();
+                case "toml"     -> new TomlLexer();
                 default         -> new PassThroughLexer(name);
             };
         }

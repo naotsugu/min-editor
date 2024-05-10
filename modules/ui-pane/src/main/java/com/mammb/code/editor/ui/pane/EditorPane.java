@@ -21,7 +21,6 @@ import com.mammb.code.editor.ui.model.ScreenPoint;
 import com.mammb.code.editor.ui.model.editing.Editing;
 import com.mammb.code.editor.ui.prefs.Context;
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.WorkerStateEvent;
@@ -466,12 +465,13 @@ public class EditorPane extends StackPane {
      */
     private void focusChanged(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
         if (focused) {
-            PauseTransition pause = new PauseTransition(Duration.millis(150));
-            pause.setOnFinished(e -> model.showCaret(gc));
-            pause.play();
-            timeline.play();
+            // PauseTransition pause = new PauseTransition(Duration.millis(150));
+            // pause.setOnFinished(e -> model.showCaret(gc));
+            // pause.play();
+            // timeline.play();
+            model.showCaret(gc);
         } else {
-            timeline.stop();
+            // timeline.stop();
             model.hideCaret(gc);
         }
     }

@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.syntax.toml;
+
+import com.mammb.code.editor.syntax.base.Hue;
+import com.mammb.code.editor.syntax.base.TokenType;
 
 /**
- * The syntax module.
+ * Toml.
  * @author Naotsugu Kobayashi
  */
-module code.editor.syntax {
+public class Toml {
 
-    requires transitive code.editor.syntax.base;
-    requires code.editor.syntax.basic;
-    requires code.editor.syntax.java;
-    requires code.editor.syntax.javascript;
-    requires code.editor.syntax.markdown;
-    requires code.editor.syntax.rust;
-    requires code.editor.syntax.kotlin;
-    requires code.editor.syntax.python;
-    requires code.editor.syntax.html;
-    requires code.editor.syntax.toml;
-    requires code.editor.model.text;
-
-    exports com.mammb.code.editor.syntax;
+    /** Toml Token type. */
+    public interface TomlToken extends com.mammb.code.editor.syntax.base.TokenType {
+        TokenType TEXT = TokenType.build(Hue.LIGHT_GREEN);
+        TokenType COMMENT = TokenType.build(Hue.DARK_GREY);
+    }
 
 }

@@ -12,5 +12,6 @@ dependencies {
     implementation(project(":syntax-kotlin"))
     implementation(project(":syntax-python"))
     implementation(project(":syntax-html"))
+    implementation(project(":syntax-toml"))
     implementation(project(":model-text"))
 }
