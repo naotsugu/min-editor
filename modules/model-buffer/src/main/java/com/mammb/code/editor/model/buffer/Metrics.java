@@ -32,7 +32,6 @@ public interface Metrics {
     /** logger. */
     System.Logger log = System.getLogger(Metrics.class.getName());
 
-
     /**
      * Get the content path.
      * @return the content path

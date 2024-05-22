@@ -116,7 +116,6 @@ public class UiPathField extends StackPane {
     private void handleTextMouseMoved(MouseEvent e) {
 
         if (!getScene().getWindow().isFocused() || text.getText().isBlank()) {
-
             stopTimeline();
             return;
         }
