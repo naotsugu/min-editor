@@ -13,5 +13,6 @@ dependencies {
     implementation(project(":syntax-python"))
     implementation(project(":syntax-html"))
     implementation(project(":syntax-toml"))
+    implementation(project(":syntax-sql"))
     implementation(project(":model-text"))
 }
