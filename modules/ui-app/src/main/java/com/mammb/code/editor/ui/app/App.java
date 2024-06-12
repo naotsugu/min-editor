@@ -40,7 +40,7 @@ public class App extends Application {
 
 
     /**
-     * Build the scene.
+     * Build the editor scene.
      * @param stage the stage
      * @param context the context
      * @return the stage
@@ -49,7 +49,10 @@ public class App extends Application {
 
         EditorStage editorStage = new EditorStage(stage, context, this);
 
-        var borderPane = new BorderPane(editorStage.editorPane(), editorStage.commandBar(), null, null, null);
+        var borderPane = new BorderPane(
+            editorStage.editorPane(),
+            editorStage.commandBar(),
+            null, null, null);
         BorderPane.setMargin(editorStage.commandBar(), new Insets(4, 2, 4, 2));
         borderPane.setFocusTraversable(false);
         borderPane.setOnKeyPressed(editorStage::handleKeyPressed);

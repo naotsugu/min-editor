@@ -20,18 +20,18 @@ import com.mammb.code.editor.ui.prefs.Preference;
 import javafx.application.Application;
 
 /**
- * The AppContext.
+ * The application context.
  * @author Naotsugu Kobayashi
  */
 public class AppContext implements Context {
 
     /** The Preference. */
-    private Preference preference = Preference.of();
+    private final Preference preference = Preference.of();
 
-    /** The width. */
+    /** The width of window. */
     public double width;
 
-    /** The height. */
+    /** The height of window. */
     public double height;
 
 

@@ -95,8 +95,8 @@ public enum ColorScheme {
                 }
             }
 
-        } catch (IOException | InterruptedException e) {
-            log.log(Level.ERROR, e);
+        } catch (IOException | InterruptedException ignore) {
+            log.log(Level.ERROR, ignore);
         }
         return LIGHT;
     }
@@ -135,8 +135,8 @@ public enum ColorScheme {
                 }
             }
 
-        } catch (IOException | InterruptedException e) {
-            log.log(Level.ERROR, e);
+        } catch (IOException | InterruptedException ignore) {
+            log.log(Level.ERROR, ignore);
         }
 
         return LIGHT;
