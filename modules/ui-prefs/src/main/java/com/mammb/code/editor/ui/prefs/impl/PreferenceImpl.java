@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.prefs.impl;
 
 import com.mammb.code.editor.ui.prefs.ColorScheme;
+import com.mammb.code.editor.ui.prefs.Platform;
 import com.mammb.code.editor.ui.prefs.Preference;
 
 /**
@@ -67,9 +68,7 @@ public class PreferenceImpl implements Preference {
     public static Preference of() {
 
         ColorScheme colorScheme = ColorScheme.platform();
-        String fontName = System.getProperty("os.name").toLowerCase().startsWith("windows")
-            ? "MS Gothic"
-            : "Consolas";
+        String fontName = Platform.current == Platform.WINDOWS ? "MS Gothic" : "Consolas";
 
         return new PreferenceImpl(
             colorScheme,

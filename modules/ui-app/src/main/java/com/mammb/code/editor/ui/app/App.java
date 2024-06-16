@@ -47,7 +47,7 @@ public class App extends Application {
      */
     Stage buildScene(Stage stage, Context context) {
 
-        EditorStage editorStage = new EditorStage(stage, context, this);
+        var editorStage = new EditorStage(stage, context, this);
 
         var borderPane = new BorderPane(
             editorStage.editorPane(),

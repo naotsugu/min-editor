@@ -62,14 +62,11 @@ public enum ColorScheme {
      * @return the platform color scheme
      */
     public static ColorScheme platform() {
-        String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("windows")) {
-            return windowsMode();
-        } else if (os.contains("mac")) {
-            return macOsMode();
-        } else {
-            return DARK;
-        }
+        return switch (Platform.current) {
+            case WINDOWS -> windowsMode();
+            case MACOS -> macOsMode();
+            default -> DARK;
+        };
     }
 
 
