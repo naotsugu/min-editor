@@ -25,9 +25,13 @@ import javafx.scene.text.Font;
  */
 public interface FxFontStyle extends FontStyle<Font, Color> {
 
+    /** The default font name. */
     String defaultName = System.getProperty("os.name").toLowerCase().startsWith("windows") ? "MS Gothic" : "Consolas";
+    /** The default font size. */
     double defaultSize = 15;
+    /** The default font color. */
     Color defaultColor = Color.BLACK;
+    /** The default background color. */
     Color defaultBgColor = Color.TRANSPARENT;
 
     /**

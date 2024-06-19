@@ -37,11 +37,18 @@ public class FxFontMetrics implements com.mammb.code.editor.model.layout.FontMet
     /** The base font. */
     private Font base;
 
-
+    /**
+     * Constructor.
+     */
     public FxFontMetrics() {
         this(Font.getDefault());
     }
 
+
+    /**
+     * Constructor.
+     * @param font the base font
+     */
     public FxFontMetrics(Font font) {
         fontLoader = Toolkit.getToolkit().getFontLoader();
         base = Objects.requireNonNull(font);
@@ -82,6 +89,5 @@ public class FxFontMetrics implements com.mammb.code.editor.model.layout.FontMet
     public float getCharWidth(Font font, char ch) {
         return metrics.computeIfAbsent(font, fontLoader::getFontMetrics).getCharWidth(ch);
     }
-
 
 }

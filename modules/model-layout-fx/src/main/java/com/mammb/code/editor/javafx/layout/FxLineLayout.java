@@ -73,9 +73,14 @@ public class FxLineLayout implements LineLayout {
     }
 
 
+    /**
+     * Add the spans.
+     * @param spans the spans
+     */
     public void add(List<Span> spans) {
         this.spans.addAll(spans);
     }
+
 
     /**
      * Perform layout.
@@ -210,6 +215,13 @@ public class FxLineLayout implements LineLayout {
         return layout();
     }
 
+    /**
+     * The text span.
+     * @param getText the text
+     * @param getFont the font
+     * @param getBounds the bounds
+     * @param peer the peer span
+     */
     record TextSpan(String getText, Object getFont, RectBounds getBounds, Span peer)
         implements com.sun.javafx.scene.text.TextSpan { }
 
