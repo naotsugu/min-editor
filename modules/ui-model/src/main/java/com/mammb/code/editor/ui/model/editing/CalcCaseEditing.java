@@ -68,7 +68,7 @@ public class CalcCaseEditing implements Editing {
      * @return the result string
      */
     static String calc(String text) {
-        List<String> rpn = infixToRpn(text);
+        List<String> rpn = infixToRpn(text.replace(",", ""));
         BigDecimal result = evaluate(rpn);
         return result.toPlainString();
     }
@@ -166,7 +166,7 @@ public class CalcCaseEditing implements Editing {
     /**
      * Get the reverse polish notation by shunting yard algorithm.
      * @param tokens the infix notation tokens
-     * @return the the reverse polish notation token list
+     * @return the reverse polish notation token list
      */
     private static List<String> shuntingYard(List<String> tokens) {
 
