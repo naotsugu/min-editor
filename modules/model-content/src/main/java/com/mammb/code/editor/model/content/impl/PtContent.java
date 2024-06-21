@@ -34,12 +34,14 @@ public class PtContent implements Content {
     /** The piece table. */
     private PieceTable pt;
 
+
     /**
      * Constructor.
      */
     public PtContent() {
         this.pt = PieceTable.of("");
     }
+
 
     /**
      * Create content for specified path.
@@ -50,6 +52,7 @@ public class PtContent implements Content {
         this.pt = PieceTable.of(path, traverse);
         this.path = path;
     }
+
 
     @Override
     public byte[] bytes(long startPos, Predicate<byte[]> until) {
