@@ -15,18 +15,22 @@ val artifact = when {
     else -> throw Error("Unsupported OS: $os, ARCH: $arch")
 }
 
-val javafxGraphics: Configuration by configurations.creating
 val javafxBase: Configuration by configurations.creating
+val javafxGraphics: Configuration by configurations.creating
+val javafxControls: Configuration by configurations.creating
 
-val javafxGraphicsSources: Configuration by configurations.creating
 val javafxBaseSources: Configuration by configurations.creating
+val javafxGraphicsSources: Configuration by configurations.creating
+val javafxControlsSources: Configuration by configurations.creating
 
 dependencies {
-    javafxGraphics("org.openjfx:javafx-graphics:22:${artifact}")
-    javafxBase("org.openjfx:javafx-base:22:${artifact}")
+    javafxBase("org.openjfx:javafx-base:23:${artifact}")
+    javafxGraphics("org.openjfx:javafx-graphics:23:${artifact}")
+    javafxControls("org.openjfx:javafx-controls:23:${artifact}")
 
-    javafxGraphicsSources("org.openjfx:javafx-graphics:22:sources")
-    javafxBaseSources("org.openjfx:javafx-base:22:sources")
+    javafxBaseSources("org.openjfx:javafx-base:23:sources")
+    javafxGraphicsSources("org.openjfx:javafx-graphics:23:sources")
+    javafxControlsSources("org.openjfx:javafx-controls:23:sources")
 }
 
 
@@ -81,6 +85,15 @@ tasks.register<Jar>("baseJar") {
     })
 }
 
+tasks.register<Jar>("controlsJar") {
+    archiveBaseName.set("javafx-controls")
+    from({ javafxControls
+        .filter { it.name.endsWith("jar") }
+        .filter { it.name.startsWith("javafx-controls-") }
+        .map { zipTree(it) }
+    })
+}
+
 tasks.register<Jar>("graphicsSourcesJar") {
     archiveBaseName.set("javafx-graphics-sources")
     from({ javafxGraphicsSources.map { zipTree(it) } })
@@ -89,10 +102,16 @@ tasks.register<Jar>("baseSourcesJar") {
     archiveBaseName.set("javafx-base-sources")
     from({ javafxBaseSources.map { zipTree(it) } })
 }
+tasks.register<Jar>("controlsSourcesJar") {
+    archiveBaseName.set("javafx-controls-sources")
+    from({ javafxControlsSources.map { zipTree(it) } })
+}
 
 tasks.assemble {
     dependsOn("graphicsJar")
     dependsOn("baseJar")
+    dependsOn("controlsJar")
     dependsOn("graphicsSourcesJar")
     dependsOn("baseSourcesJar")
+    dependsOn("controlsSourcesJar")
 }

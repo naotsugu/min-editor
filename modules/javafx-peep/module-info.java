@@ -35,13 +35,15 @@ module javafx.graphics {
 //        javafx.web;
     exports com.sun.javafx.css to
         javafx.controls;
-//    exports com.sun.javafx.font to
-//        javafx.web;
+    exports com.sun.javafx.font to
+        code.editor.ui.fx,
+        javafx.web;
     exports com.sun.javafx.geom to
-        code.editor.javafx.layout,
+        code.editor.ui.fx,
         javafx.controls;
 //        javafx.web;
     exports com.sun.javafx.geom.transform to
+        code.editor.ui.fx,
         javafx.controls;
 //        javafx.web;
 //    exports com.sun.javafx.iio to
@@ -55,11 +57,11 @@ module javafx.graphics {
         javafx.controls;
 //        javafx.web;
     exports com.sun.javafx.scene.layout to
-        code.editor.javafx.layout,
+        code.editor.ui.fx,
         javafx.controls;
 //        javafx.web;
     exports com.sun.javafx.scene.text to
-        code.editor.javafx.layout,
+        code.editor.ui.fx,
         javafx.controls;
 //        javafx.web;
     exports com.sun.javafx.scene.traversal to
@@ -70,10 +72,10 @@ module javafx.graphics {
     exports com.sun.javafx.stage to
         javafx.controls;
     exports com.sun.javafx.text to
-        code.editor.javafx.layout;
+        code.editor.ui.fx;
 //        javafx.web;
     exports com.sun.javafx.tk to
-        code.editor.javafx.layout,
+        code.editor.ui.fx,
         javafx.controls;
 //        javafx.web;
     exports com.sun.javafx.util to

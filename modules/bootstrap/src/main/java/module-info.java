@@ -19,6 +19,6 @@
  * @author Naotsugu Kobayashi
  */
 module code.editor.bootstrap {
-    requires code.editor.ui.app;
+    requires code.editor.ui.fx;
     exports com.mammb.code.editor.bootstrap;
 }

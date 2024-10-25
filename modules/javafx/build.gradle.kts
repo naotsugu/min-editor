@@ -6,6 +6,7 @@ plugins {
 dependencies {
     api(files("../javafx-peep/build/libs/javafx-base.jar"))
     api(files("../javafx-peep/build/libs/javafx-graphics.jar"))
+    api(files("../javafx-peep/build/libs/javafx-controls.jar"))
 }
 
 tasks.named<JavaCompile>("compileJava") {

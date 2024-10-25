@@ -7,9 +7,6 @@ repositories {
 }
 
 dependencies {
-    //constraints {
-    //    implementation("org.apache.commons:commons-text:1.10.0")
-    //}
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
@@ -20,7 +17,7 @@ tasks.named<Test>("test") {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(22))
+        languageVersion.set(JavaLanguageVersion.of(23))
     }
 }
 
@@ -37,14 +34,10 @@ tasks.withType<Test>().configureEach {
     jvmArgs("--enable-preview")
 }
 
-//tasks.withType<JavaExec>().configureEach {
-//    jvmArgs("--enable-preview")
-//}
-
 tasks.withType<Javadoc>().configureEach {
     options {
         this as StandardJavadocDocletOptions
         addBooleanOption("-enable-preview", true)
-        addStringOption("-release", "22")
+        addStringOption("-release", "23")
     }
 }

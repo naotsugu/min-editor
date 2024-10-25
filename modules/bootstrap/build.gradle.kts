@@ -19,7 +19,7 @@ val platform = when {
 }
 
 dependencies {
-    implementation(project(":ui-app"))
+    implementation(project(":ui-fx"))
 }
 
 application {

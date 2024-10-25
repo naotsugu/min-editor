@@ -15,11 +15,11 @@
  */
 package com.mammb.code.editor.bootstrap;
 
-import com.mammb.code.editor.ui.app.AppLauncher;
+import com.mammb.code.editor.fx.AppLauncher;
 import java.util.Locale;
 
 /**
- * The Application entry point.
+ * The application entry point.
  * @author Naotsugu Kobayashi
  */
 public class Main {
@@ -37,8 +37,8 @@ public class Main {
 
         // setup log format
         System.setProperty(
-            "java.util.logging.SimpleFormatter.format",
-            "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
+                "java.util.logging.SimpleFormatter.format",
+                "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
 
         new AppLauncher().launch(args);
     }
