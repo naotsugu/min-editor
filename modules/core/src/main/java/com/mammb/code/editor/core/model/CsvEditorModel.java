@@ -15,9 +15,211 @@
  */
 package com.mammb.code.editor.core.model;
 
+import com.mammb.code.editor.core.Clipboard;
+import com.mammb.code.editor.core.Draw;
+import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.layout.Loc;
+import java.nio.file.Path;
+import java.util.Optional;
+
 /**
  * The csv editor model.
  * @author Naotsugu Kobayashi
  */
-public class CsvEditorModel {
+public class CsvEditorModel implements EditorModel {
+
+    @Override
+    public void draw(Draw draw) {
+
+    }
+
+    @Override
+    public void setSize(double width, double height) {
+
+    }
+
+    @Override
+    public void scrollNext(int delta) {
+
+    }
+
+    @Override
+    public void scrollPrev(int delta) {
+
+    }
+
+    @Override
+    public void scrollAt(int line) {
+
+    }
+
+    @Override
+    public void scrollX(double x) {
+
+    }
+
+    @Override
+    public void scrollToCaret() {
+
+    }
+
+    @Override
+    public void moveCaretRight(boolean withSelect) {
+
+    }
+
+    @Override
+    public void moveCaretLeft(boolean withSelect) {
+
+    }
+
+    @Override
+    public void moveCaretDown(boolean withSelect) {
+
+    }
+
+    @Override
+    public void moveCaretUp(boolean withSelect) {
+
+    }
+
+    @Override
+    public void moveCaretHome(boolean withSelect) {
+
+    }
+
+    @Override
+    public void moveCaretEnd(boolean withSelect) {
+
+    }
+
+    @Override
+    public void moveCaretPageUp(boolean withSelect) {
+
+    }
+
+    @Override
+    public void moveCaretPageDown(boolean withSelect) {
+
+    }
+
+    @Override
+    public void click(double x, double y, boolean withSelect) {
+
+    }
+
+    @Override
+    public void ctrlClick(double x, double y) {
+
+    }
+
+    @Override
+    public void clickDouble(double x, double y) {
+
+    }
+
+    @Override
+    public void clickTriple(double x, double y) {
+
+    }
+
+    @Override
+    public void moveDragged(double x, double y) {
+
+    }
+
+    @Override
+    public void setCaretVisible(boolean visible) {
+
+    }
+
+    @Override
+    public void input(String text) {
+
+    }
+
+    @Override
+    public void delete() {
+
+    }
+
+    @Override
+    public void backspace() {
+
+    }
+
+    @Override
+    public void undo() {
+
+    }
+
+    @Override
+    public void redo() {
+
+    }
+
+    @Override
+    public void pasteFromClipboard(Clipboard clipboard) {
+
+    }
+
+    @Override
+    public void copyToClipboard(Clipboard clipboard) {
+
+    }
+
+    @Override
+    public void cutToClipboard(Clipboard clipboard) {
+
+    }
+
+    @Override
+    public boolean isModified() {
+        return false;
+    }
+
+    @Override
+    public Optional<Path> path() {
+        return Optional.empty();
+    }
+
+    @Override
+    public void save(Path path) {
+
+    }
+
+    @Override
+    public void escape() {
+
+    }
+
+    @Override
+    public void wrap() {
+
+    }
+
+    @Override
+    public Optional<Loc> imeOn() {
+        return Optional.empty();
+    }
+
+    @Override
+    public void imeOff() {
+
+    }
+
+    @Override
+    public boolean isImeOn() {
+        return false;
+    }
+
+    @Override
+    public void inputImeComposed(String text) {
+
+    }
+
+    @Override
+    public void findAll(String text) {
+
+    }
 }

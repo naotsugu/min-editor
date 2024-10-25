@@ -18,9 +18,11 @@ package com.mammb.code.editor.fx;
 import com.mammb.code.editor.core.Theme;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * The application.
@@ -36,6 +38,8 @@ public class App extends Application {
         scene.getStylesheets().add(css);
         stage.setScene(scene);
         stage.setTitle("min-editor");
+        stage.getIcons().add(new Image(
+            Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
         stage.show();
     }
 
@@ -58,18 +62,7 @@ public class App extends Application {
         .text-input, .label {
           -fx-font: 14px "Consolas";
         }
-        
-        .text-input {
-            -fx-padding: 0.333333em;
-            -fx-background-color:
-                derive(-fx-control-inner-background,10%),
-                -fx-control-inner-background;
-        }
-        .text-input:focused {
-            -fx-background-color:
-                derive(-fx-control-inner-background,30%),
-                -fx-control-inner-background;
-        }
+
         .dialog-pane > .button-bar > .container {
             -fx-padding: 0;
         }

@@ -20,26 +20,54 @@ import javafx.scene.Node;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.stage.StageStyle;
 
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.ESCAPE;
 
+/**
+ * The CommandPalette.
+ * @author Naotsugu Kobayashi
+ */
 public class CommandPalette extends Dialog<CommandPalette.Command> {
 
     private final TextField textField = new TextField();
+    private final HBox box = new HBox(Icons.terminal(), textField);
 
     public CommandPalette(Node node) {
+
         super();
         initOwner(node.getScene().getWindow());
         initStyle(StageStyle.TRANSPARENT);
+
         DialogPane pane = getDialogPane();
-        pane.setContent(textField);
+        pane.setContent(box);
         pane.setPadding(Insets.EMPTY);
 
         var bounds = node.localToScreen(node.getBoundsInLocal());
         var width = Math.max(bounds.getWidth() * 1 / 3, 300);
+        setOnShowing(e -> {
+            setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
+            setY(bounds.getMinY() + bounds.getHeight() * 1 / 5);
+        });
+        initBox();
+        initTextField(width);
 
+    }
+
+    private void initBox() {
+        box.setStyle("""
+            -fx-background-color: derive(-fx-control-inner-background,10%);
+            -fx-padding: 0.5em;
+            -fx-alignment: CENTER;
+            """);
+    }
+
+    private void initTextField(double width) {
+        textField.setStyle("""
+            -fx-background-color: derive(-fx-control-inner-background,10%);
+            """);
         textField.setPrefWidth(width);
         textField.setOnKeyPressed(e -> {
             if (e.getCode() == ESCAPE) {
@@ -55,11 +83,6 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
                     e.consume();
                 }
             }
-        });
-
-        setOnShowing(e -> {
-            setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
-            setY(bounds.getMinY() + bounds.getHeight() * 1 / 5);
         });
     }
 
