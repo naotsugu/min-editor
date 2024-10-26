@@ -16,8 +16,8 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Caret;
-import com.mammb.code.editor.core.Caret.Point;
-import com.mammb.code.editor.core.Caret.Range;
+import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.CaretGroup;
 import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Content;

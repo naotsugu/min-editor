@@ -15,8 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.Caret.Range;
-import com.mammb.code.editor.core.Caret.Point;
+import com.mammb.code.editor.core.Point.Range;
 import java.util.ArrayList;
 import java.util.List;
 

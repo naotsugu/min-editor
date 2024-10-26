@@ -15,10 +15,8 @@
  */
 package com.mammb.code.editor.core;
 
+import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.piecetable.TextEdit;
-import com.mammb.code.editor.core.Caret.Point;
-import com.mammb.code.editor.core.Caret.PointRec;
-import com.mammb.code.editor.core.Caret.Range;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -84,14 +82,14 @@ public interface Content {
         @Override
         public Point insert(Point point, String text) {
             var pos = edit.insert(point.row(), point.col(), text);
-            return new PointRec(pos.row(), pos.col());
+            return Point.of(pos.row(), pos.col());
         }
 
         @Override
         public List<Point> insert(List<Point> points, String text) {
             var pos = edit.insert(points.stream()
                     .map(p -> new TextEdit.Pos(p.row(), p.col())).toList(), text);
-            return pos.stream().map(p -> (Point) new PointRec(p.row(), p.col())).toList();
+            return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
         }
 
         @Override
@@ -103,26 +101,26 @@ public interface Content {
         public List<Point> delete(List<Point> points) {
             var pos = edit.delete(points.stream()
                     .map(p -> new TextEdit.Pos(p.row(), p.col())).toList());
-            return pos.stream().map(p -> (Point) new PointRec(p.row(), p.col())).toList();
+            return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
         }
 
         @Override
         public Point backspace(Point point) {
             var pos = edit.backspace(point.row(), point.col());
-            return new PointRec(pos.row(), pos.col());
+            return Point.of(pos.row(), pos.col());
         }
 
         @Override
         public List<Point> backspace(List<Point> points) {
             var pos = edit.backspace(points.stream()
                     .map(p -> new TextEdit.Pos(p.row(), p.col())).toList());
-            return pos.stream().map(p -> (Point) new PointRec(p.row(), p.col())).toList();
+            return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
         }
 
         @Override
         public Point replace(Point start, Point end, String text) {
             var pos = edit.replace(start.row(), start.col(), end.row(), end.col(), text);
-            return new PointRec(pos.row(), pos.col());
+            return Point.of(pos.row(), pos.col());
         }
 
         @Override
@@ -133,7 +131,7 @@ public interface Content {
                             range.min().row(), range.min().col(),
                             range.max().row(), range.max().col(),
                             text))
-                    .map(pos -> new PointRec(pos.row(), pos.col()))
+                    .map(pos -> Point.of(pos.row(), pos.col()))
                     .map(Point.class::cast)
                     .toList();
         }
@@ -200,7 +198,7 @@ public interface Content {
         @Override
         public Point insertFlush(Point point, String text) {
             flushes.add(new PointText(point, text));
-            return new PointRec(point.row(), point.col() + text.length());
+            return Point.of(point.row(), point.col() + text.length());
         }
 
         @Override
@@ -212,7 +210,7 @@ public interface Content {
         public List<Point> findAll(String text) {
             var founds = edit.findAll(text);
             return founds.stream()
-                    .map(found -> (Point) new PointRec(found.row(), found.col()))
+                    .map(found -> Point.of(found.row(), found.col()))
                     .toList();
         }
 

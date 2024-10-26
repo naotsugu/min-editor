@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
+import com.mammb.code.editor.core.Point.Range;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -110,7 +111,7 @@ public interface Caret extends Comparable<Caret>{
 
         @Override
         public Range markedRange() {
-            return isMarked() ? new Range(new PointRec(point), mark) : null;
+            return isMarked() ? new Range(Point.of(point), mark) : null;
         }
 
         @Override
@@ -192,28 +193,6 @@ public interface Caret extends Comparable<Caret>{
         }
     }
 
-    interface Point extends Comparable<Point> {
-        int row();
-        int col();
-        static Point of(int row, int col) { return new PointRec(row, col); }
-        default boolean isZero() {
-            return row() == 0 && col() == 0;
-        }
-        @Override
-        default int compareTo(Point that) {
-            int c = Integer.compare(this.row(), that.row());
-            if (c == 0) {
-                return Integer.compare(this.col(), that.col());
-            } else {
-                return c;
-            }
-        }
-    }
-
-    record PointRec(int row, int col) implements Point {
-        PointRec(Point p) { this(p.row(), p.col()); }
-    }
-
     class PointMut implements Point {
 
         private int row, col;
@@ -255,20 +234,6 @@ public interface Caret extends Comparable<Caret>{
                     .add("row=" + row)
                     .add("col=" + col)
                     .toString();
-        }
-    }
-
-    record Range(Point start, Point end) implements Comparable<Range> {
-        public Point min() {
-            return start.compareTo(end) < 0 ? start : end;
-        }
-        public Point max() {
-            return start.compareTo(end) > 0 ? start : end;
-        }
-
-        @Override
-        public int compareTo(Range o) {
-            return min().compareTo(o.min());
         }
     }
 
