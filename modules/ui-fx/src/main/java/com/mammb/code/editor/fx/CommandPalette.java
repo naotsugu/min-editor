@@ -75,13 +75,12 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
                 close();
                 e.consume();
             } else if (e.getCode() == ENTER) {
-                if (textField.getText().isBlank()) {
-                    setResult(new Empty());
-                } else {
-                    setResult(new FindAll(textField.getText()));
-                    close();
-                    e.consume();
-                }
+                var command = textField.getText().isBlank()
+                    ? new Empty()
+                    : new FindAll(textField.getText());
+                setResult(command);
+                close();
+                e.consume();
             }
         });
     }
