@@ -56,16 +56,16 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
             setY(bounds.getMinY() + bounds.getHeight() * 1 / 5);
         });
-        commandLabel = initCommandLabel();
-        textField = initTextField();
-        box = initBox(width, Icons.terminal(), new Label(" "), commandLabel, textField);
+        commandLabel = createCommandLabel();
+        textField = createTextField();
+        box = createBox(width, Icons.terminal(), new Label(" "), commandLabel, textField);
         HBox.setHgrow(textField, Priority.ALWAYS);
         DialogPane pane = getDialogPane();
         pane.setContent(box);
         pane.setPadding(Insets.EMPTY);
     }
 
-    private HBox initBox(double width, Node... nodes) {
+    private HBox createBox(double width, Node... nodes) {
         var box = new HBox(nodes);
         box.setPrefWidth(width);
         box.setStyle("""
@@ -77,7 +77,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
         return box;
     }
 
-    private Label initCommandLabel() {
+    private Label createCommandLabel() {
         //var label = new Label("FindAll");
         var label = new Label();
         label.setVisible(false);
@@ -91,7 +91,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
         return label;
     }
 
-    private TextField initTextField() {
+    private TextField createTextField() {
         var textField = new AcTextField();
         textField.setOnKeyPressed(e -> {
             if (e.getCode() == ESCAPE) {
