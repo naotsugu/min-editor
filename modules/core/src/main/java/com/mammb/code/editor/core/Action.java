@@ -54,22 +54,34 @@ public interface Action {
         UNDO, REDO,
         OPEN, SAVE, SAVE_AS, NEW,
         WRAP,
-        FIND,
+        COMMAND_PALETTE, FIND,
         ESC, EMPTY,
         ;
 
         public boolean syncCaret() {
             return !(this == OPEN || this == SAVE || this ==  SAVE_AS ||
-                    this ==  NEW || this == ESC || this ==  EMPTY);
+                    this ==  NEW || this == ESC || this == FIND ||
+                    this == COMMAND_PALETTE || this ==  EMPTY);
         }
     }
 
     record ActionRecord(Type type, String attr, long occurredAt) implements Action { }
 
+    /**
+     * Create a new action record.
+     * @param type action type
+     * @return a new action
+     */
     static Action of(Type type) {
         return new ActionRecord(type, "", System.currentTimeMillis());
     }
 
+    /**
+     * Create a new action record with attribute.
+     * @param type action type
+     * @param attr attribute
+     * @return a new action
+     */
     static Action of(Type type, String attr) {
         return new ActionRecord(type, attr, System.currentTimeMillis());
     }

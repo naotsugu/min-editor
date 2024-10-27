@@ -17,7 +17,7 @@ public class Icons {
         var svg = new SVGPath();
         svg.setContent(d);
         svg.getStyleClass().add("icon");
-        svg.setFill(Color.GRAY);
+        svg.setStroke(Color.GRAY);
         return svg;
     }
 

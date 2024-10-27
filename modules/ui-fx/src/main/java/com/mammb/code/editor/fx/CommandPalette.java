@@ -19,8 +19,10 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.StageStyle;
 
 import static javafx.scene.input.KeyCode.ENTER;
@@ -32,61 +34,110 @@ import static javafx.scene.input.KeyCode.ESCAPE;
  */
 public class CommandPalette extends Dialog<CommandPalette.Command> {
 
-    private final TextField textField = new TextField();
-    private final HBox box = new HBox(Icons.terminal(), textField);
+    private final TextField textField;
+    private final HBox box;
+    private final Label commandLabel;
+    private Command command;
 
     public CommandPalette(Node node) {
+        this(node, Command.empty);
+    }
+
+    public CommandPalette(Node node, Command command) {
 
         super();
+        this.command = command;
         initOwner(node.getScene().getWindow());
         initStyle(StageStyle.TRANSPARENT);
 
-        DialogPane pane = getDialogPane();
-        pane.setContent(box);
-        pane.setPadding(Insets.EMPTY);
-
         var bounds = node.localToScreen(node.getBoundsInLocal());
-        var width = Math.max(bounds.getWidth() * 1 / 3, 300);
+        var width = Math.max(bounds.getWidth() * 2 / 3, 300.0);
         setOnShowing(e -> {
             setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
             setY(bounds.getMinY() + bounds.getHeight() * 1 / 5);
         });
-        initBox();
-        initTextField(width);
-
+        commandLabel = initCommandLabel();
+        textField = initTextField();
+        box = initBox(width, Icons.terminal(), new Label(" "), commandLabel, textField);
+        HBox.setHgrow(textField, Priority.ALWAYS);
+        DialogPane pane = getDialogPane();
+        pane.setContent(box);
+        pane.setPadding(Insets.EMPTY);
     }
 
-    private void initBox() {
+    private HBox initBox(double width, Node... nodes) {
+        var box = new HBox(nodes);
+        box.setPrefWidth(width);
         box.setStyle("""
             -fx-background-color: derive(-fx-control-inner-background,10%);
+            -fx-background-radius: 3;
             -fx-padding: 0.5em;
             -fx-alignment: CENTER;
             """);
+        return box;
     }
 
-    private void initTextField(double width) {
-        textField.setStyle("""
-            -fx-background-color: derive(-fx-control-inner-background,10%);
+    private Label initCommandLabel() {
+        //var label = new Label("FindAll");
+        var label = new Label();
+        label.setVisible(false);
+        label.setStyle("""
+            -fx-font-size: 0.95em;
+            -fx-border-style: solid;
+            -fx-border-color: gray;
+            -fx-border-radius: 3;
+            -fx-text-fill: gray;
             """);
-        textField.setPrefWidth(width);
+        return label;
+    }
+
+    private TextField initTextField() {
+        var textField = new AcTextField();
         textField.setOnKeyPressed(e -> {
             if (e.getCode() == ESCAPE) {
-                setResult(new Empty());
+                setResult(Command.empty);
                 close();
                 e.consume();
             } else if (e.getCode() == ENTER) {
                 var command = textField.getText().isBlank()
-                    ? new Empty()
+                    ? Command.empty
                     : new FindAll(textField.getText());
                 setResult(command);
                 close();
                 e.consume();
             }
         });
+        return textField;
     }
 
-    interface Command {}
-    record Empty() implements Command {}
-    record FindAll(String text) implements Command {}
+    /**
+     * Auto Complete TextField.
+     */
+    static class AcTextField extends TextField {
+        public AcTextField() {
+            super();
+            setStyle("""
+            -fx-background-color: derive(-fx-control-inner-background,10%);
+            -fx-padding: 0.333333em 0.583em 0.333333em 0.2em;
+            """);
+        }
+    }
+
+    interface Command {
+        Command empty = new Empty();
+        String name();
+    }
+    record Empty() implements Command {
+        @Override
+        public String name() {
+            return "";
+        }
+    }
+    record FindAll(String text) implements Command {
+        @Override
+        public String name() {
+            return "FindAll";
+        }
+    }
 
 }

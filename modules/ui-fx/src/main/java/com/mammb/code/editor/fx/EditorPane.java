@@ -254,6 +254,7 @@ public class EditorPane extends StackPane {
             case SAVE_AS -> saveAs();
             case NEW -> newEdit();
             case FIND -> find();
+            case COMMAND_PALETTE -> showCommandPalette();
         }
         if (action.type().syncCaret()) {
             model.scrollToCaret();
@@ -361,6 +362,10 @@ public class EditorPane extends StackPane {
     }
 
     private void find() {
+        showCommandPalette();
+    }
+
+    private void showCommandPalette() {
         var cp = new CommandPalette(this);
         var command = cp.showAndWait();
         command.ifPresent(c -> {
