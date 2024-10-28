@@ -147,8 +147,11 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             if (focused) {
                 popup.hide();
             } else {
-                popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
-                popup.setWidth(AcTextField.this.getWidth());
+                if (getText().isBlank()) {
+                    populatePopup(entries);
+                } else {
+                    populatePopup(entries.stream().filter(c -> c.match(getText())).toList());
+                }
             }
         }
         private void populatePopup(List<Command> filtered) {
