@@ -126,7 +126,8 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
      */
     static class AcTextField extends TextField {
         private final ContextMenu popup = new ContextMenu();
-        private final List<Command> entries = List.of(new FindAll(""), new GoTo());
+        private final List<Command> entries = List.of(
+            new FindAll(), new ToLowerCase(), new ToUpperCase(), new Sort(), new Unique(), new GoTo());
         public AcTextField() {
             super();
             setStyle("""
@@ -195,12 +196,28 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
     }
     static class FindAll implements Command {
         String text;
+        public FindAll() { this(""); }
         public FindAll(String text) { this.text = text; }
         @Override public String name() { return "FindAll"; }
         public String text() { return text; }
     }
     static class GoTo implements Command {
         @Override public String name() { return "GoTo"; }
+    }
+    static class ToLowerCase implements Command {
+        @Override public String name() { return "ToLowerCase"; }
+    }
+    static class ToUpperCase implements Command {
+        @Override public String name() { return "ToUpperCase"; }
+    }
+    static class Sort implements Command {
+        @Override public String name() { return "Sort"; }
+    }
+    static class Unique implements Command {
+        @Override public String name() { return "Unique"; }
+    }
+    static class Calc implements Command {
+        @Override public String name() { return "Calc"; }
     }
 
 }

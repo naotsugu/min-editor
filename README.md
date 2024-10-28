@@ -60,32 +60,3 @@ Therefore, to update a submodule, do the following.
 ```
 git submodule update --remote --merge
 ```
-
-
-## Usage
-
-| Operation                | Description                                           |
-|--------------------------|-------------------------------------------------------|
-| Cope                     | `Ctrl + C`                                            |
-| Paste                    | `Ctrl + V`                                            |
-| Cut                      | `Ctrl + X`                                            |
-| Select all               | `Ctrl + A`                                            |
-| Open                     | `Ctrl + O` or Drop a file                             |
-| Save                     | `Ctrl + S`                                            |
-| Save as                  | `Ctrl + Shift + S`                                    |
-| History back             | `Ctrl + [`                                            |
-| History forward          | `Ctrl + ]`                                            |
-| Open new window          | `Ctrl + N`                                            |
-| Toggle wrap              | `Ctrl + W`                                            |
-| Multi caret              | `Ctrl + Click` `Ctrl` + click on the left line number |
-| Undo                     | `Ctrl + Z`                                            |
-| Redo                     | `Ctrl + Y` or `Ctrl + Shift + Z`                      |
-| Find                     | `Ctrl + F`                                            |
-| Repeat                   | `Ctrl + .`  Repeats the last repeated keystroke       |
-| Toggle upper/lower       | `Ctrl + U`                                            |
-| Current date-time        | `Ctrl + ;`                                            |
-| Unique | `Ctrl + 7`                                            |
-| Sort                     | `Ctrl + 8`                                            |
-| Calculate                | `Ctrl + 9`  Calculates the selected formula           |
-| Toggle dec/hex/bin       | `Ctrl + 0`                                            |
-
