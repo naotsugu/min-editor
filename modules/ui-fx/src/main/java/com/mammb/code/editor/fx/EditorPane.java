@@ -361,8 +361,8 @@ public class EditorPane extends StackPane {
         stage.show();
     }
 
-    private void showCommandPalette(CommandPalette.Command ini) {
-        var cp = new CommandPalette(this, ini);
+    private void showCommandPalette(CommandPalette.Command init) {
+        var cp = new CommandPalette(this, init);
         var command = cp.showAndWait();
         command.ifPresent(c -> {
             switch (c) {
