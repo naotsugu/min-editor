@@ -253,8 +253,8 @@ public class EditorPane extends StackPane {
             case SAVE -> save();
             case SAVE_AS -> saveAs();
             case NEW -> newEdit();
-            case FIND -> find();
-            case COMMAND_PALETTE -> showCommandPalette();
+            case FIND -> showCommandPalette(new CommandPalette.FindAll(""));
+            case COMMAND_PALETTE -> showCommandPalette(null);
         }
         if (action.type().syncCaret()) {
             model.scrollToCaret();
@@ -361,12 +361,8 @@ public class EditorPane extends StackPane {
         stage.show();
     }
 
-    private void find() {
-        showCommandPalette();
-    }
-
-    private void showCommandPalette() {
-        var cp = new CommandPalette(this);
+    private void showCommandPalette(CommandPalette.Command ini) {
+        var cp = new CommandPalette(this, ini);
         var command = cp.showAndWait();
         command.ifPresent(c -> {
             switch (c) {
