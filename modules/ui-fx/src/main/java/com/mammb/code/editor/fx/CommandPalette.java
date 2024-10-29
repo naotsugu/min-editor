@@ -170,7 +170,6 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
 
             popup.getItems().clear();
             if (!menuItems.isEmpty()) {
-                menuItems.getFirst().f
                 popup.getItems().addAll(menuItems);
                 popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
             }
