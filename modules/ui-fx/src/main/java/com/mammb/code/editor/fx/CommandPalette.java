@@ -49,7 +49,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
 
     private final HBox box = new HBox();
     private final Label commandLabel = new Label();
-    private final TextField textField = new AcTextField();
+    private final AcTextField textField = new AcTextField();
     private Command command;
 
     public CommandPalette(Node node) {
@@ -142,20 +142,21 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             focusedProperty().addListener(this::handleTextFocused);
         }
         private void handleTextChanged(ObservableValue<? extends String> ob, String o, String text) {
-            populatePopup(entries.stream().filter(c -> c.match(text)).toList());
+            populatePopup(text);
         }
         private void handleTextFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
             if (focused) {
                 popup.hide();
             } else {
-                if (getText().isBlank()) {
-                    populatePopup(entries);
-                } else {
-                    populatePopup(entries.stream().filter(c -> c.match(getText())).toList());
-                }
+                populatePopup(getText());
             }
         }
-        private void populatePopup(List<Command> filtered) {
+
+        private void populatePopup(String input) {
+
+            List<Command> filtered = (input == null || input.isBlank())
+                ? entries
+                : entries.stream().filter(c -> c.match(getText())).toList();
 
             List<CustomMenuItem> menuItems = new ArrayList<>();
             for (Command cmd : filtered) {
@@ -168,9 +169,11 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             }
 
             popup.getItems().clear();
-            popup.getItems().addAll(menuItems);
-            popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
-
+            if (!menuItems.isEmpty()) {
+                menuItems.getFirst().f
+                popup.getItems().addAll(menuItems);
+                popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
+            }
         }
 
     }
