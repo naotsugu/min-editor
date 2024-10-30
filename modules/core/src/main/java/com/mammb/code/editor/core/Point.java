@@ -21,6 +21,8 @@ package com.mammb.code.editor.core;
  */
 public interface Point extends Comparable<Point> {
 
+    Point zero = new PointRec(0, 0);
+
     int row();
 
     int col();

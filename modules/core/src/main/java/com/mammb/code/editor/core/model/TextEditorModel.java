@@ -462,12 +462,20 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void undo() {
-        carets.at(content.undo());
+        List<Point> points = content.undo();
+        view.refreshBuffer(
+            points.stream().min(Point::compareTo).orElse(Point.zero).row(),
+            points.stream().max(Point::compareTo).orElse(Point.zero).row() + 1);
+        carets.at(points);
     }
 
     @Override
     public void redo() {
-        carets.at(content.redo());
+        List<Point> points = content.redo();
+        view.refreshBuffer(
+            points.stream().min(Point::compareTo).orElse(Point.zero).row(),
+            points.stream().max(Point::compareTo).orElse(Point.zero).row() + 1);
+        carets.at(points);
     }
 
     @Override

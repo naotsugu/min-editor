@@ -60,6 +60,21 @@ public class MarkdownSyntax implements Syntax {
                 var s = source.nextRemaining();
                 Syntax syntax = Syntax.of(s.string().substring(3).trim());
                 scopes.putNeutral(source.row(), s.index(), BlockType.neutral("```", syntax));
+            } else if (ch == '#' && source.match("#####")) {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.darkPale, s.index(), s.length()));
+            } else if (ch == '#' && source.match("####")) {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.darkPale, s.index(), s.length()));
+            } else if (ch == '#' && source.match("###")) {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.darkPale, s.index(), s.length()));
+            } else if (ch == '#' && source.match("##")) {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.darkPale, s.index(), s.length()));
+            } else if (ch == '#') {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.darkOrange, s.index(), s.length()));
             }
             source.commitPeek();
         }
