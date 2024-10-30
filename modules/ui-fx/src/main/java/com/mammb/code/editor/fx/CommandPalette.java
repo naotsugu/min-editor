@@ -25,6 +25,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
@@ -40,6 +41,7 @@ import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.ESCAPE;
+import static javafx.scene.input.KeyEvent.KEY_PRESSED;
 
 /**
  * The CommandPalette.
@@ -47,7 +49,7 @@ import static javafx.scene.input.KeyCode.ESCAPE;
  */
 public class CommandPalette extends Dialog<CommandPalette.Command> {
 
-    private static final String PROMPT = "<select command>";
+    private static final String PROMPT = " <enter command> ";
 
     private final HBox box;
     private final Label commandLabel;
@@ -87,13 +89,12 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             """);
 
         // init text field
-        textField.setPromptText(PROMPT);
         textField.setOnKeyPressed(e -> {
             if (e.getCode() == ESCAPE) {
                 setResult(Command.empty);
                 close();
                 e.consume();
-            } else if (e.getCode() == ENTER) {
+            } else if (e.getCode() == ENTER && cmdType != null) {
                 setResult(textField.getText().isBlank()
                     ? Command.empty
                     : new Command(CmdType.findAll, textField.getText()));
@@ -105,7 +106,6 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             } else if (e.getCode() == DOWN) {
                 textField.popup.requestFocus();
             }
-
         });
 
         // init box
@@ -130,8 +130,25 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
     private void initCommandLabel() {
         CmdType type = cmdType;
         commandLabel.setVisible(type != null);
-        commandLabel.setText(type == null ? "" : type.name());
+        commandLabel.setText((type == null) ? "" : type.name());
+        textField.setPromptText((type == null) ? PROMPT : type.assistPromptText());
     }
+
+    private void selectCommand(CmdType cmdType) {
+        this.cmdType = cmdType;
+        if (cmdType.requireArgs()) {
+            initCommandLabel();
+            textField.setText("");
+        } else {
+            fireCommand();
+        }
+    }
+
+    private void fireCommand() {
+        setResult((cmdType == null) ? Command.empty : new Command(cmdType, textField.getText()));
+        close();
+    }
+
 
     /**
      * Auto Complete TextField.
@@ -157,8 +174,13 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             textProperty().addListener(this::handleTextChanged);
             focusedProperty().addListener(this::handleTextFocused);
         }
+
         private void handleTextChanged(ObservableValue<? extends String> ob, String o, String text) {
-            populatePopup(text);
+            if (commandPalette.cmdType != null) {
+                popup.hide();
+            } else {
+                populatePopup(text);
+            }
         }
         private void handleTextFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
             if (focused) {
@@ -182,6 +204,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             TextFlow menuText = new TextFlow(text);
             menuText.setPrefWidth(AcTextField.this.getWidth());
             CustomMenuItem item = new CustomMenuItem(menuText, true);
+            item.setOnAction(e -> commandPalette.selectCommand(type));
             return item;
         }
 
@@ -197,10 +220,17 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             if (!menuItems.isEmpty()) {
                 popup.getItems().addAll(menuItems);
                 popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
-                popup.getSkin().getNode().lookup(".menu-item").requestFocus();
+                focusFirstItem();
             }
         }
-
+        void focusFirstItem() {
+            if (popup.getSkin() == null) {
+                return;
+            }
+            Node node = popup.getSkin().getNode().lookup(".menu-item");
+            node.requestFocus();
+            node.fireEvent(new KeyEvent(KEY_PRESSED, "", "", DOWN, false, false, false, false));
+        }
     }
 
     enum CmdType {
@@ -211,6 +241,14 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
         }
         boolean requireArgs() {
             return this == findAll || this == goTo || this == filter;
+        }
+        String assistPromptText() {
+            return switch (this) {
+                case findAll -> " <enter a string to search> ";
+                case goTo    -> " <enter a line number> ";
+                case filter  -> " <enter a regexp string to filter> ";
+                default -> "";
+            };
         }
     }
 

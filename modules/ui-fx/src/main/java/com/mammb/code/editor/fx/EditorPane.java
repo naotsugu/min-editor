@@ -365,6 +365,7 @@ public class EditorPane extends StackPane {
         var cp = new CommandPalette(this, init);
         var command = cp.showAndWait();
         command.ifPresent(c -> {
+            if (c.type() == null) return;
             switch (c.type()) {
                 case findAll -> model.findAll(c.args()[0]);
                 default -> {}
