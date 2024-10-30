@@ -31,11 +31,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.StageStyle;
-import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
+import java.util.SequencedMap;
 
 import static javafx.scene.input.KeyCode.BACK_SPACE;
+import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.ESCAPE;
 
@@ -47,19 +49,23 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
 
     private static final String PROMPT = "<select command>";
 
-    private final HBox box = new HBox();
-    private final Label commandLabel = new Label();
-    private final AcTextField textField = new AcTextField();
-    private Command command;
+    private final HBox box;
+    private final Label commandLabel;
+    private final AcTextField textField;
+    private CmdType cmdType;
 
     public CommandPalette(Node node) {
-        this(node, Command.empty);
+        this(node, null);
     }
 
-    public CommandPalette(Node node, Command init) {
+    public CommandPalette(Node node, CmdType init) {
 
         super();
-        this.command = Objects.isNull(init) ? Command.empty : init;
+        this.box = new HBox();
+        this.commandLabel = new Label();
+        this.cmdType = init;
+        this.textField = new AcTextField(this);
+
         initOwner(node.getScene().getWindow());
         initStyle(StageStyle.TRANSPARENT);
 
@@ -88,13 +94,18 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
                 close();
                 e.consume();
             } else if (e.getCode() == ENTER) {
-                setResult(textField.getText().isBlank() ? Command.empty : new FindAll(textField.getText()));
+                setResult(textField.getText().isBlank()
+                    ? Command.empty
+                    : new Command(CmdType.findAll, textField.getText()));
                 close();
                 e.consume();
             } else if (e.getCode() == BACK_SPACE && textField.getText().isEmpty()) {
-                command = Command.empty;
+                cmdType = null;
                 initCommandLabel();
+            } else if (e.getCode() == DOWN) {
+                textField.popup.requestFocus();
             }
+
         });
 
         // init box
@@ -117,19 +128,24 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
     }
 
     private void initCommandLabel() {
-        commandLabel.setVisible(!(command instanceof Empty));
-        commandLabel.setText(command.name());
+        CmdType type = cmdType;
+        commandLabel.setVisible(type != null);
+        commandLabel.setText(type == null ? "" : type.name());
     }
 
     /**
      * Auto Complete TextField.
      */
     static class AcTextField extends TextField {
-        private final ContextMenu popup = new ContextMenu();
-        private final List<Command> entries = List.of(
-            new FindAll(), new ToLowerCase(), new ToUpperCase(), new Sort(), new Unique(), new GoTo());
-        public AcTextField() {
+        final CommandPalette commandPalette;
+        final ContextMenu popup;
+        SequencedMap<CmdType, CustomMenuItem> items;
+
+        public AcTextField(CommandPalette commandPalette) {
             super();
+            this.commandPalette = commandPalette;
+            this.popup = new ContextMenu();
+
             setStyle("""
             -fx-background-color: derive(-fx-control-inner-background,10%);
             -fx-padding: 0.333333em 0.583em 0.333333em 0.2em;
@@ -152,74 +168,57 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             }
         }
 
-        private void populatePopup(String input) {
-
-            List<Command> filtered = (input == null || input.isBlank())
-                ? entries
-                : entries.stream().filter(c -> c.match(getText())).toList();
-
-            List<CustomMenuItem> menuItems = new ArrayList<>();
-            for (Command cmd : filtered) {
-                var text = new Text(cmd.name());
-                text.setFill(Color.GRAY);
-                TextFlow menuText = new TextFlow(text);
-                menuText.setPrefWidth(AcTextField.this.getWidth());
-                CustomMenuItem item = new CustomMenuItem(menuText, true);
-                menuItems.add(item);
+        private SequencedMap<CmdType, CustomMenuItem> commandTypeItems() {
+            SequencedMap<CmdType, CustomMenuItem> keywordMappedItems = new LinkedHashMap<>();
+            for (CmdType type : CmdType.values()) {
+                keywordMappedItems.put(type, buildItem(type));
             }
+            return keywordMappedItems;
+        }
 
+        private CustomMenuItem buildItem(CmdType type) {
+            var text = new Text(type.name());
+            text.setFill(Color.GRAY);
+            TextFlow menuText = new TextFlow(text);
+            menuText.setPrefWidth(AcTextField.this.getWidth());
+            CustomMenuItem item = new CustomMenuItem(menuText, true);
+            return item;
+        }
+
+        private void populatePopup(String input) {
+            if (items == null) {
+                 items = commandTypeItems();
+            }
+            List<CustomMenuItem> menuItems = items.entrySet().stream()
+                .filter(e -> e.getKey().match(input))
+                .map(Map.Entry::getValue)
+                .toList();
             popup.getItems().clear();
             if (!menuItems.isEmpty()) {
                 popup.getItems().addAll(menuItems);
                 popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
+                popup.getSkin().getNode().lookup(".menu-item").requestFocus();
             }
         }
 
     }
 
-
-    interface Command {
-        Command empty = new Empty();
-        String name();
-        default String description() { return ""; }
-        default String promptText() { return ""; }
-        default boolean match(String text) {
-            if (name().toLowerCase().contains(text.toLowerCase())) {
-                return true;
-            }
-            if (description().toLowerCase().contains(text.toLowerCase())) {
-                return true;
-            }
-            return false;
+    enum CmdType {
+        findAll, goTo, toLowerCase, toUpperCase, sort, unique, filter, calc,
+        ;
+        boolean match(String candidate) {
+            return this.name().toLowerCase().contains(candidate.toLowerCase());
+        }
+        boolean requireArgs() {
+            return this == findAll || this == goTo || this == filter;
         }
     }
-    record Empty() implements Command {
-        @Override public String name() { return ""; }
-    }
-    static class FindAll implements Command {
-        String text;
-        public FindAll() { this(""); }
-        public FindAll(String text) { this.text = text; }
-        @Override public String name() { return "FindAll"; }
-        public String text() { return text; }
-    }
-    static class GoTo implements Command {
-        @Override public String name() { return "GoTo"; }
-    }
-    static class ToLowerCase implements Command {
-        @Override public String name() { return "ToLowerCase"; }
-    }
-    static class ToUpperCase implements Command {
-        @Override public String name() { return "ToUpperCase"; }
-    }
-    static class Sort implements Command {
-        @Override public String name() { return "Sort"; }
-    }
-    static class Unique implements Command {
-        @Override public String name() { return "Unique"; }
-    }
-    static class Calc implements Command {
-        @Override public String name() { return "Calc"; }
+
+    record Command(CmdType type, String[] args) {
+        Command(CmdType type) { this(type, new String[0]); }
+        Command(CmdType type, String arg) { this(type, new String[] { arg } ); }
+        Command(CmdType type, String arg1, String arg2) { this(type, new String[] { arg1, arg2 } ); }
+        static Command empty = new Command(null);
     }
 
 }

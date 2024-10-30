@@ -253,7 +253,7 @@ public class EditorPane extends StackPane {
             case SAVE -> save();
             case SAVE_AS -> saveAs();
             case NEW -> newEdit();
-            case FIND -> showCommandPalette(new CommandPalette.FindAll(""));
+            case FIND -> showCommandPalette(CommandPalette.CmdType.findAll);
             case COMMAND_PALETTE -> showCommandPalette(null);
         }
         if (action.type().syncCaret()) {
@@ -361,12 +361,12 @@ public class EditorPane extends StackPane {
         stage.show();
     }
 
-    private void showCommandPalette(CommandPalette.Command init) {
+    private void showCommandPalette(CommandPalette.CmdType init) {
         var cp = new CommandPalette(this, init);
         var command = cp.showAndWait();
         command.ifPresent(c -> {
-            switch (c) {
-                case CommandPalette.FindAll findAll -> model.findAll(findAll.text());
+            switch (c.type()) {
+                case findAll -> model.findAll(c.args()[0]);
                 default -> {}
             }
         });
