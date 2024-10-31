@@ -71,13 +71,13 @@ public class MarkdownSyntax implements Syntax {
                 scopes.putNeutral(source.row(), s.index(), BlockType.neutral("```", syntax));
 
             } else if (ch == '#' && peek.index() == 0) {
-                var s = source.nextRemaining();
                 Style style;
                 if (source.match("#####"))     style = Palette.darkPale;
                 else if (source.match("####")) style = Palette.darkPale;
                 else if (source.match("###"))  style = Palette.darkPale;
                 else if (source.match("##"))   style = Palette.darkPale;
                 else style = Palette.darkOrange;
+                var s = source.nextRemaining();
                 spans.add(new Style.StyleSpan(style, s.index(), s.length()));
             }
             source.commitPeek();

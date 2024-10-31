@@ -100,30 +100,42 @@ public class BlockScopes {
         interface Range extends BlockType { }
 
         static Neutral neutral(String open) {
-            record NeutralRecord(String open) implements Neutral { }
             return new NeutralRecord(open);
         }
         static Neutral neutral(String open, Syntax syntax) {
-            record NeutralRecord(String open, Syntax attribute) implements Neutral {
-                @Override
-                public boolean equals(Object o) {
-                    if (this == o) return true;
-                    if (o == null || getClass() != o.getClass()) return false;
-                    NeutralRecord that = (NeutralRecord) o;
-                    return Objects.equals(open, that.open);
-                }
-                @Override
-                public int hashCode() {
-                    return Objects.hashCode(open);
-                }
-            }
             return new NeutralRecord(open, syntax);
         }
         static Range range(String open, String close) {
             record RangeRecord(String open, String close) implements Range { }
             return new RangeRecord(open, close);
         }
+
     }
 
+    private static class NeutralRecord implements BlockType.Neutral {
+        private final String open;
+        private final Object attribute;
+        public NeutralRecord(String open) {
+            this(open, null);
+        }
+        public NeutralRecord(String open, Syntax syntax) {
+            this(open, (Object) syntax);
+        }
+        private NeutralRecord(String open, Object attribute) {
+            this.open = open;
+            this.attribute = attribute;
+        }
+        @Override public String open() { return open; }
+        @Override public Object attribute() { return attribute; }
+        @Override public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            NeutralRecord that = (NeutralRecord) o;
+            return Objects.equals(open, that.open);
+        }
+        @Override public int hashCode() {
+            return Objects.hashCode(open);
+        }
+    }
 
 }
