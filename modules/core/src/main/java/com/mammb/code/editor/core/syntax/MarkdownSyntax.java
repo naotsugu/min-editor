@@ -15,8 +15,9 @@
  */
 package com.mammb.code.editor.core.syntax;
 
-import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.syntax.BlockScopes.BlockType;
+import com.mammb.code.editor.core.text.Style;
+import com.mammb.code.editor.core.syntax.LexerSource.Indexed;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +48,7 @@ public class MarkdownSyntax implements Syntax {
 
         while (source.hasNext()) {
 
-            var peek = source.peek();
+            Indexed peek = source.peek();
             char ch = peek.ch();
             Optional<BlockType> block = scopes.inScope(source.row(), peek.index());
             Optional<BlockType> fence = block.filter(t -> t.open().startsWith("```"));
@@ -60,21 +61,16 @@ public class MarkdownSyntax implements Syntax {
                 var s = source.nextRemaining();
                 Syntax syntax = Syntax.of(s.string().substring(3).trim());
                 scopes.putNeutral(source.row(), s.index(), BlockType.neutral("```", syntax));
-            } else if (ch == '#' && source.match("#####")) {
+
+            } else if (ch == '#' && peek.index() == 0) {
                 var s = source.nextRemaining();
-                spans.add(new Style.StyleSpan(Palette.darkPale, s.index(), s.length()));
-            } else if (ch == '#' && source.match("####")) {
-                var s = source.nextRemaining();
-                spans.add(new Style.StyleSpan(Palette.darkPale, s.index(), s.length()));
-            } else if (ch == '#' && source.match("###")) {
-                var s = source.nextRemaining();
-                spans.add(new Style.StyleSpan(Palette.darkPale, s.index(), s.length()));
-            } else if (ch == '#' && source.match("##")) {
-                var s = source.nextRemaining();
-                spans.add(new Style.StyleSpan(Palette.darkPale, s.index(), s.length()));
-            } else if (ch == '#') {
-                var s = source.nextRemaining();
-                spans.add(new Style.StyleSpan(Palette.darkOrange, s.index(), s.length()));
+                Style style;
+                if (source.match("#####"))     style = Palette.darkPale;
+                else if (source.match("####")) style = Palette.darkPale;
+                else if (source.match("###"))  style = Palette.darkPale;
+                else if (source.match("##"))   style = Palette.darkPale;
+                else style = Palette.darkOrange;
+                spans.add(new Style.StyleSpan(style, s.index(), s.length()));
             }
             source.commitPeek();
         }
