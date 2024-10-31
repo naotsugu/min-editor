@@ -168,6 +168,14 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
+    public void moveTo(int row) {
+        // TODO consider syntax scope
+        view.scrollAt(view.rowToFirstLine(row));
+        Caret c = carets.getFirst();
+        c.at(row, 0);
+    }
+
+    @Override
     public void scrollX(double x) {
         view.scrollX(x);
     }

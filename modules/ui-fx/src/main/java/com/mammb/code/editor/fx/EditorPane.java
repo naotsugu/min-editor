@@ -367,6 +367,7 @@ public class EditorPane extends StackPane {
         command.ifPresent(c -> {
             switch (c.type()) {
                 case findAll -> model.findAll(c.args()[0]);
+                case goTo    -> model.moveTo(Integer.parseInt(c.args()[0]) - 1);
                 case null -> { }
                 default -> { }
             }

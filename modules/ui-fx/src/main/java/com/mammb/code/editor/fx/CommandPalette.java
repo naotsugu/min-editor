@@ -95,10 +95,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
                 close();
                 e.consume();
             } else if (e.getCode() == ENTER && cmdType != null) {
-                setResult(textField.getText().isBlank()
-                    ? Command.empty
-                    : new Command(CmdType.findAll, textField.getText()));
-                close();
+                fireCommand();
                 e.consume();
             } else if (e.getCode() == BACK_SPACE && textField.getText().isEmpty()) {
                 cmdType = null;
@@ -145,6 +142,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
     }
 
     private void fireCommand() {
+System.out.println(textField.getText());
         setResult((cmdType == null) ? Command.empty : new Command(cmdType, textField.getText()));
         close();
     }

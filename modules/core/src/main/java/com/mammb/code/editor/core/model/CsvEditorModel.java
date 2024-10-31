@@ -54,6 +54,11 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
+    public void moveTo(int row) {
+
+    }
+
+    @Override
     public void scrollX(double x) {
 
     }
