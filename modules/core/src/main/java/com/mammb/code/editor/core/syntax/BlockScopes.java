@@ -16,9 +16,7 @@
 package com.mammb.code.editor.core.syntax;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Deque;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -106,7 +104,19 @@ public class BlockScopes {
             return new NeutralRecord(open);
         }
         static Neutral neutral(String open, Syntax syntax) {
-            record NeutralRecord(String open, Syntax attribute) implements Neutral { }
+            record NeutralRecord(String open, Syntax attribute) implements Neutral {
+                @Override
+                public boolean equals(Object o) {
+                    if (this == o) return true;
+                    if (o == null || getClass() != o.getClass()) return false;
+                    NeutralRecord that = (NeutralRecord) o;
+                    return Objects.equals(open, that.open);
+                }
+                @Override
+                public int hashCode() {
+                    return Objects.hashCode(open);
+                }
+            }
             return new NeutralRecord(open, syntax);
         }
         static Range range(String open, String close) {

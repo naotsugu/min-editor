@@ -30,6 +30,7 @@ import java.util.Optional;
 public class MarkdownSyntax implements Syntax {
 
     private final BlockScopes scopes = new BlockScopes();
+    private final String FENCE = "```";
 
     @Override
     public String name() {
@@ -51,13 +52,20 @@ public class MarkdownSyntax implements Syntax {
             Indexed peek = source.peek();
             char ch = peek.ch();
             Optional<BlockType> block = scopes.inScope(source.row(), peek.index());
-            Optional<BlockType> fence = block.filter(t -> t.open().startsWith("```"));
+            Optional<BlockType> fence = block.filter(t -> t.open().startsWith(FENCE));
 
             if (fence.isPresent()) {
-                Syntax syntax = (Syntax) fence.get().attribute();
-                return syntax.apply(row, text);
+                if (ch == '`' && source.match(FENCE) && peek.index() == 0) {
+                    var s = source.nextRemaining();
+                    scopes.putNeutral(source.row(), s.index(), BlockType.neutral(FENCE, Syntax.of("")));
+                    return spans;
+                } else {
+                    Syntax syntax = (Syntax) fence.get().attribute();
+                    return syntax.apply(row, text);
+                }
             }
-            if (ch == '`' && source.match("```")) {
+
+            if (ch == '`' && source.match(FENCE)) {
                 var s = source.nextRemaining();
                 Syntax syntax = Syntax.of(s.string().substring(3).trim());
                 scopes.putNeutral(source.row(), s.index(), BlockType.neutral("```", syntax));
