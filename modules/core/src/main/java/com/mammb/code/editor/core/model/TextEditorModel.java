@@ -312,10 +312,10 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                var points = content.replace(carets.ranges(), text);
+                List<Point> points = content.replace(carets.ranges(), text);
                 refreshPointsRange(points);
             } else {
-                var points = content.insert(carets.points(), text);
+                List<Point> points = content.insert(carets.points(), text);
                 refreshPointsRange(points);
             }
         }
@@ -333,10 +333,10 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                var points = content.replace(carets.ranges(), "");
+                List<Point> points = content.replace(carets.ranges(), "");
                 refreshPointsRange(points);
             } else {
-                var points = content.delete(carets.points());
+                List<Point> points = content.delete(carets.points());
                 refreshPointsRange(points);
             }
         }
@@ -355,10 +355,10 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                var points = content.replace(carets.ranges(), "");
+                List<Point> points = content.replace(carets.ranges(), "");
                 refreshPointsRange(points);
             } else {
-                var points = content.backspace(carets.points());
+                List<Point> points = content.backspace(carets.points());
                 refreshPointsRange(points);
             }
         }

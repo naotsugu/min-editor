@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * The content.
@@ -37,6 +38,7 @@ public interface Content {
     List<Point> backspace(List<Point> points);
     Point replace(Point start, Point end, String text);
     List<Point> replace(List<Range> ranges, String text);
+    List<Point> replace(List<Range> ranges, Function<String, String> fun);
 
     /**
      * Undo.
@@ -134,6 +136,11 @@ public interface Content {
                     .map(pos -> Point.of(pos.row(), pos.col()))
                     .map(Point.class::cast)
                     .toList();
+        }
+
+        @Override
+        public List<Point> replace(List<Range> ranges, Function<String, String> fun) {
+            return List.of();
         }
 
         @Override
