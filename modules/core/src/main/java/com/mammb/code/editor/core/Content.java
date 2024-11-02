@@ -120,7 +120,7 @@ public interface Content {
 
         @Override
         public Point replace(Point start, Point end, String text) {
-            var pos = edit.replace(start.row(), start.col(), end.row(), end.col(), text);
+            var pos = edit.replace(start.row(), start.col(), end.row(), end.col(), org -> text);
             return Point.of(pos.row(), pos.col());
         }
 
