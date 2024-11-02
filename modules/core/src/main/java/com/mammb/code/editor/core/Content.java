@@ -37,7 +37,6 @@ public interface Content {
     Point backspace(Point point);
     List<Point> backspace(List<Point> points);
     Point replace(Point start, Point end, String text);
-    List<Point> replace(List<Range> ranges, String text);
     List<Point> replace(List<Range> ranges, Function<String, String> fun);
 
     /**
@@ -126,21 +125,16 @@ public interface Content {
         }
 
         @Override
-        public List<Point> replace(List<Range> ranges, String text) {
+        public List<Point> replace(List<Range> ranges, Function<String, String> fun) {
             // TODO transaction replace
             return ranges.stream().sorted(Comparator.reverseOrder())
-                    .map(range -> edit.replace(
-                            range.min().row(), range.min().col(),
-                            range.max().row(), range.max().col(),
-                            text))
-                    .map(pos -> Point.of(pos.row(), pos.col()))
-                    .map(Point.class::cast)
-                    .toList();
-        }
-
-        @Override
-        public List<Point> replace(List<Range> ranges, Function<String, String> fun) {
-            return List.of();
+                .map(range -> edit.replace(
+                    range.min().row(), range.min().col(),
+                    range.max().row(), range.max().col(),
+                    fun))
+                .map(pos -> Point.of(pos.row(), pos.col()))
+                .map(Point.class::cast)
+                .toList();
         }
 
         @Override

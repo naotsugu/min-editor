@@ -312,7 +312,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                List<Point> points = content.replace(carets.ranges(), text);
+                List<Point> points = content.replace(carets.ranges(), org -> text);
                 refreshPointsRange(points);
             } else {
                 List<Point> points = content.insert(carets.points(), text);
@@ -333,7 +333,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                List<Point> points = content.replace(carets.ranges(), "");
+                List<Point> points = content.replace(carets.ranges(), org -> "");
                 refreshPointsRange(points);
             } else {
                 List<Point> points = content.delete(carets.points());
@@ -355,7 +355,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                List<Point> points = content.replace(carets.ranges(), "");
+                List<Point> points = content.replace(carets.ranges(), org -> "");
                 refreshPointsRange(points);
             } else {
                 List<Point> points = content.backspace(carets.points());
@@ -403,7 +403,7 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void cutToClipboard(Clipboard clipboard) {
         copyToClipboard(clipboard);
-        content.replace(carets.marked(), "");
+        content.replace(carets.marked(), org -> "");
     }
 
     @Override
