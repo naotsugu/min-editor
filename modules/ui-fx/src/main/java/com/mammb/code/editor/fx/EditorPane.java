@@ -368,8 +368,8 @@ public class EditorPane extends StackPane {
             switch (c.type()) {
                 case findAll -> model.findAll(c.args()[0]);
                 case goTo    -> model.moveTo(Integer.parseInt(c.args()[0]) - 1);
-                case toLowerCase -> { }
-                case toUpperCase -> { }
+                case toLowerCase -> model.replace(String::toLowerCase);
+                case toUpperCase -> model.replace(String::toUpperCase);
                 case calc        -> { }
                 case sort        -> { }
                 case unique      -> { }

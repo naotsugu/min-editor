@@ -312,8 +312,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                List<Point> points = content.replace(carets.ranges(), org -> text);
-                refreshPointsRange(points);
+                replace(_ -> text);
             } else {
                 List<Point> points = content.insert(carets.points(), text);
                 refreshPointsRange(points);
@@ -333,8 +332,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                List<Point> points = content.replace(carets.ranges(), org -> "");
-                refreshPointsRange(points);
+                replace(_ -> "");
             } else {
                 List<Point> points = content.delete(carets.points());
                 refreshPointsRange(points);
@@ -355,8 +353,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                List<Point> points = content.replace(carets.ranges(), org -> "");
-                refreshPointsRange(points);
+                replace(_ -> "");
             } else {
                 List<Point> points = content.backspace(carets.points());
                 refreshPointsRange(points);
@@ -369,7 +366,8 @@ public class TextEditorModel implements EditorModel {
         if (!carets.hasMarked()) {
             return;
         }
-
+        List<Point> points = content.replace(carets.ranges(), fun);
+        refreshPointsRange(points);
     }
 
     @Override
@@ -403,7 +401,7 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void cutToClipboard(Clipboard clipboard) {
         copyToClipboard(clipboard);
-        content.replace(carets.marked(), org -> "");
+        content.replace(carets.marked(), _ -> "");
     }
 
     @Override
@@ -436,7 +434,9 @@ public class TextEditorModel implements EditorModel {
         Caret caret = carets.getFirst();
         caret.flushAt(caret.point());
         return view.locationOn(caret.row(), caret.col())
-                .map(top -> new Loc(top.x() + marginLeft, top.y() + marginTop + view.lineHeight() + 5));
+                .map(top -> new Loc(
+                    top.x() + marginLeft,
+                    top.y() + marginTop + view.lineHeight() + 5));
     }
 
     @Override

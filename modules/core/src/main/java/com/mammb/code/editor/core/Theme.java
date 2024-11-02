@@ -25,7 +25,8 @@ public interface Theme {
             "#292929",
             "#A9B7C6",
             "#214283AA",
-            "#303030");
+            "#303030"
+    );
 
     String baseColor();
     String fgColor();
