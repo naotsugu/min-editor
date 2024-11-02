@@ -110,6 +110,11 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
+    public void selectAll() {
+
+    }
+
+    @Override
     public void click(double x, double y, boolean withSelect) {
 
     }

@@ -225,6 +225,14 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
+    public void selectAll() {
+        Caret c = carets.unique();
+        c.at(0, 0);
+        c.mark();
+        c.at(view.rowSize(), view.endColOnRow(view.lineSize()));
+    }
+
+    @Override
     public void click(double x, double y, boolean withSelect) {
         Caret c = carets.unique();
         if (c.isFloating()) {
@@ -476,7 +484,9 @@ public class TextEditorModel implements EditorModel {
         for (Range r : carets.marked()) {
             Loc l1 = view.locationOn(r.min().row(), r.min().col()).orElse(null);
             Loc l2 = view.locationOn(r.max().row(), r.max().col()).orElse(null);
-            if (l1 == null && l2 == null) break;
+            if (l1 == null && l2 == null &&
+                (view.rowToLine(r.min().row(), r.min().col()) > view.topLine() ||
+                 view.rowToLine(r.max().row(), r.max().col()) < view.topLine())) break;
             if (l1 == null) l1 = new Loc(0, 0);
             if (l2 == null) l2 = new Loc(view.screenWidth(), view.screenHeight());
             draw.select(

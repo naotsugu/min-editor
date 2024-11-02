@@ -243,6 +243,7 @@ public class EditorPane extends StackPane {
             case SELECT_CARET_DOWN -> model.moveCaretDown(true);
             case SELECT_HOME -> model.moveCaretHome(true);
             case SELECT_END -> model.moveCaretEnd(true);
+            case SELECT_ALL -> model.selectAll();
             case PAGE_UP -> model.moveCaretPageUp(false);
             case PAGE_DOWN -> model.moveCaretPageDown(false);
             case SELECT_PAGE_UP -> model.moveCaretPageUp(true);
