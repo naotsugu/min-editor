@@ -21,6 +21,7 @@ import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.layout.Loc;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * The csv editor model.
@@ -150,6 +151,11 @@ public class CsvEditorModel implements EditorModel {
 
     @Override
     public void backspace() {
+
+    }
+
+    @Override
+    public void replace(Function<String, String> fun) {
 
     }
 

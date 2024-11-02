@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -71,80 +72,6 @@ public class TextEditorModel implements EditorModel {
         drawMap(draw);
         if (caretVisible) drawCaret(draw);
         drawLeftGarter(draw);
-    }
-
-    private void drawSelection(Draw draw) {
-        for (Range r : carets.marked()) {
-            Loc l1 = view.locationOn(r.min().row(), r.min().col()).orElse(null);
-            Loc l2 = view.locationOn(r.max().row(), r.max().col()).orElse(null);
-            if (l1 == null && l2 == null) break;
-            if (l1 == null) l1 = new Loc(0, 0);
-            if (l2 == null) l2 = new Loc(view.screenWidth(), view.screenHeight());
-            draw.select(
-                    l1.x() + marginLeft - scroll.xVal(), l1.y() + marginTop,
-                    l2.x() + marginLeft - scroll.xVal(), l2.y() + marginTop,
-                    marginLeft - scroll.xVal(), view.screenWidth() + marginLeft);
-        }
-    }
-
-    private void drawText(Draw draw) {
-        double x, y = 0;
-        for (Text text : view.texts()) {
-            x = 0;
-            List<StyleSpan> spans = decorate.apply(text);
-            for (StyledText st : StyledText.of(text).putAll(spans).build()) {
-                draw.text(st.value(),
-                        x + marginLeft - scroll.xVal(),
-                        y + marginTop,
-                        st.width(),
-                        st.styles());
-                x += st.width();
-            }
-            y += text.height();
-        }
-    }
-
-    private void drawMap(Draw draw) {
-        for (int row : decorate.highlightsRows()) {
-            int line = view.rowToFirstLine(row);
-            double y = (view.screenHeight() - marginTop) * line / (view.lineSize() + view.screenLineSize());
-            draw.hLine(view.screenWidth() + marginLeft - 12, y, 12);
-        }
-    }
-
-    private void drawCaret(Draw draw) {
-        for (Caret c : carets.carets()) {
-            Point p = c.pointFlush();
-            view.locationOn(p.row(), p.col()).ifPresent(loc -> {
-                draw.caret(loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop);
-                if (c.hasFlush()) {
-                    view.locationOn(c.point().row(), c.point().col()).ifPresent(org ->
-                            draw.underline(org.x() + marginLeft - scroll.xVal(), org.y() + marginTop,
-                                    loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop));
-                }
-            });
-        }
-    }
-
-    private void drawLeftGarter(Draw draw) {
-        List<Text> lineNumbers = view.lineNumbers();
-        double nw = lineNumbers.stream().mapToDouble(Text::width).max().orElse(0);
-        if (nw + 16 * 2 > marginLeft) {
-            double newMarginLeft = nw + 8 * 2;
-            setSize(view.screenWidth() + marginLeft - newMarginLeft, view.screenHeight());
-            draw(draw);
-            return;
-        }
-        draw.rect(0, 0, marginLeft - 5, view.screenHeight() + marginTop);
-        double y = 0;
-        for (Text num : lineNumbers) {
-            String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
-                    ? Theme.dark.fgColor()
-                    : Theme.dark.fgColor() + "66";
-            draw.text(num.value(), marginLeft - 16 - num.width(), y + marginTop, num.width(),
-                    List.of(new Style.TextColor(colorString)));
-            y += num.height();
-        }
     }
 
     @Override
@@ -385,18 +312,11 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                var ranges = carets.ranges();
-                var points = content.replace(ranges, text);
-                view.refreshBuffer(
-                        Collections.min(points).row(),
-                        Collections.max(points).row() + 1);
-                carets.at(points);
+                var points = content.replace(carets.ranges(), text);
+                refreshPointsRange(points);
             } else {
                 var points = content.insert(carets.points(), text);
-                view.refreshBuffer(
-                        Collections.min(points).row(),
-                        Collections.max(points).row() + 1);
-                carets.at(points);
+                refreshPointsRange(points);
             }
         }
     }
@@ -413,18 +333,11 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                var ranges = carets.ranges();
-                var points = content.replace(ranges, "");
-                view.refreshBuffer(
-                        Collections.min(points).row(),
-                        Collections.max(points).row() + 1);
-                carets.at(points);
+                var points = content.replace(carets.ranges(), "");
+                refreshPointsRange(points);
             } else {
                 var points = content.delete(carets.points());
-                view.refreshBuffer(
-                        Collections.min(points).row(),
-                        Collections.max(points).row() + 1);
-                carets.at(points);
+                refreshPointsRange(points);
             }
         }
     }
@@ -442,48 +355,33 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                var ranges = carets.ranges();
-                var points = content.replace(ranges, "");
-                view.refreshBuffer(
-                        Collections.min(points).row(),
-                        Collections.max(points).row() + 1);
-                carets.at(points);
+                var points = content.replace(carets.ranges(), "");
+                refreshPointsRange(points);
             } else {
                 var points = content.backspace(carets.points());
-                view.refreshBuffer(
-                        Collections.min(points).row(),
-                        Collections.max(points).row() + 1);
-                carets.at(points);
+                refreshPointsRange(points);
             }
         }
     }
 
-    private Point selectionReplace(Caret caret, String text) {
-        assert caret.isMarked();
-        var range = caret.markedRange();
-        var pos = content.replace(range.start(), range.end(), text);
-        view.refreshBuffer(range.start().row(), range.end().row() + 1);
-        caret.clearMark();
-        caret.at(pos);
-        return pos;
+    @Override
+    public void replace(Function<String, String> fun) {
+        if (!carets.hasMarked()) {
+            return;
+        }
+
     }
 
     @Override
     public void undo() {
         List<Point> points = content.undo();
-        view.refreshBuffer(
-            points.stream().min(Point::compareTo).orElse(Point.zero).row(),
-            points.stream().max(Point::compareTo).orElse(Point.zero).row() + 1);
-        carets.at(points);
+        refreshPointsRange(points);
     }
 
     @Override
     public void redo() {
         List<Point> points = content.redo();
-        view.refreshBuffer(
-            points.stream().min(Point::compareTo).orElse(Point.zero).row(),
-            points.stream().max(Point::compareTo).orElse(Point.zero).row() + 1);
-        carets.at(points);
+        refreshPointsRange(points);
     }
 
     @Override
@@ -570,6 +468,100 @@ public class TextEditorModel implements EditorModel {
                     text.length())
             );
         }
+    }
+
+    // -- private -------------------------------------------------------------
+
+    private void drawSelection(Draw draw) {
+        for (Range r : carets.marked()) {
+            Loc l1 = view.locationOn(r.min().row(), r.min().col()).orElse(null);
+            Loc l2 = view.locationOn(r.max().row(), r.max().col()).orElse(null);
+            if (l1 == null && l2 == null) break;
+            if (l1 == null) l1 = new Loc(0, 0);
+            if (l2 == null) l2 = new Loc(view.screenWidth(), view.screenHeight());
+            draw.select(
+                l1.x() + marginLeft - scroll.xVal(), l1.y() + marginTop,
+                l2.x() + marginLeft - scroll.xVal(), l2.y() + marginTop,
+                marginLeft - scroll.xVal(), view.screenWidth() + marginLeft);
+        }
+    }
+
+    private void drawText(Draw draw) {
+        double x, y = 0;
+        for (Text text : view.texts()) {
+            x = 0;
+            List<StyleSpan> spans = decorate.apply(text);
+            for (StyledText st : StyledText.of(text).putAll(spans).build()) {
+                draw.text(st.value(),
+                    x + marginLeft - scroll.xVal(),
+                    y + marginTop,
+                    st.width(),
+                    st.styles());
+                x += st.width();
+            }
+            y += text.height();
+        }
+    }
+
+    private void drawMap(Draw draw) {
+        for (int row : decorate.highlightsRows()) {
+            int line = view.rowToFirstLine(row);
+            double y = (view.screenHeight() - marginTop) * line / (view.lineSize() + view.screenLineSize());
+            draw.hLine(view.screenWidth() + marginLeft - 12, y, 12);
+        }
+    }
+
+    private void drawCaret(Draw draw) {
+        for (Caret c : carets.carets()) {
+            Point p = c.pointFlush();
+            view.locationOn(p.row(), p.col()).ifPresent(loc -> {
+                draw.caret(loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop);
+                if (c.hasFlush()) {
+                    view.locationOn(c.point().row(), c.point().col()).ifPresent(org ->
+                        draw.underline(org.x() + marginLeft - scroll.xVal(), org.y() + marginTop,
+                            loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop));
+                }
+            });
+        }
+    }
+
+    private void drawLeftGarter(Draw draw) {
+        List<Text> lineNumbers = view.lineNumbers();
+        double nw = lineNumbers.stream().mapToDouble(Text::width).max().orElse(0);
+        if (nw + 16 * 2 > marginLeft) {
+            double newMarginLeft = nw + 8 * 2;
+            setSize(view.screenWidth() + marginLeft - newMarginLeft, view.screenHeight());
+            draw(draw);
+            return;
+        }
+        draw.rect(0, 0, marginLeft - 5, view.screenHeight() + marginTop);
+        double y = 0;
+        for (Text num : lineNumbers) {
+            String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
+                ? Theme.dark.fgColor()
+                : Theme.dark.fgColor() + "66";
+            draw.text(num.value(), marginLeft - 16 - num.width(), y + marginTop, num.width(),
+                List.of(new Style.TextColor(colorString)));
+            y += num.height();
+        }
+    }
+
+    private Point selectionReplace(Caret caret, String text) {
+        assert caret.isMarked();
+        var range = caret.markedRange();
+        var pos = content.replace(range.start(), range.end(), text);
+        view.refreshBuffer(range.start().row(), range.end().row() + 1);
+        caret.clearMark();
+        caret.at(pos);
+        return pos;
+    }
+
+    private void refreshPointsRange(List<Point> points) {
+        if (points == null || points.isEmpty()) return;
+        view.refreshBuffer(
+            Collections.min(points).row(),
+            Collections.max(points).row() + 1);
+        carets.at(points);
     }
 
 }

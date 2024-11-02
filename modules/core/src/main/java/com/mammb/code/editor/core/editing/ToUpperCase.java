@@ -1,10 +1,10 @@
 package com.mammb.code.editor.core.editing;
 
-import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.model.InternalModel;
 
 public class ToUpperCase implements Editing {
     @Override
-    public boolean apply(EditorModel model) {
+    public boolean apply(InternalModel model) {
         return false;
     }
 }

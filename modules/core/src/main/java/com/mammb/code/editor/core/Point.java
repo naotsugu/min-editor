@@ -28,8 +28,8 @@ public interface Point extends Comparable<Point> {
     int col();
 
     static Point of(int row, int col) {
-        record PointRec(int row, int col) implements Point { }
-        return new PointRec(row, col);
+        record PointRecord(int row, int col) implements Point { }
+        return new PointRecord(row, col);
     }
 
     static <E extends Point> Point of(E p) {
@@ -62,5 +62,7 @@ public interface Point extends Comparable<Point> {
             return min().compareTo(o.min());
         }
     }
+
+    record PointText(Point point, String text) {}
 
 }

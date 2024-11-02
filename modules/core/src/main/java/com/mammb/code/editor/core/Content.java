@@ -70,7 +70,7 @@ public interface Content {
 
     class ContentImpl implements Content {
         private final TextEdit edit;
-        private final List<PointText> flushes = new ArrayList<>();
+        private final List<Point.PointText> flushes = new ArrayList<>();
 
         public ContentImpl() {
             this.edit = TextEdit.of();
@@ -150,7 +150,7 @@ public interface Content {
         public String getText(int row) {
             if (!flushes.isEmpty()) {
                 var sb = new StringBuilder(edit.getText(row));
-                flushes.stream().filter(p -> p.point.row() == row)
+                flushes.stream().filter(p -> p.point().row() == row)
                         .forEach(p -> sb.insert(p.point().col(), p.text()));
                 return sb.toString();
             } else {
@@ -197,7 +197,7 @@ public interface Content {
 
         @Override
         public Point insertFlush(Point point, String text) {
-            flushes.add(new PointText(point, text));
+            flushes.add(new Point.PointText(point, text));
             return Point.of(point.row(), point.col() + text.length());
         }
 
@@ -213,8 +213,6 @@ public interface Content {
                     .map(found -> Point.of(found.row(), found.col()))
                     .toList();
         }
-
-        record PointText(Point point, String text) {}
 
     }
 }

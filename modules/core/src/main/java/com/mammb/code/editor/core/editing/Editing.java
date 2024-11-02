@@ -15,16 +15,18 @@
  */
 package com.mammb.code.editor.core.editing;
 
-import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.model.InternalModel;
 
 /**
  * Editing.
  * @author Naotsugu Kobayashi
  */
 public interface Editing {
+
     /**
      * Apply editing.
      * @param model the editor model
      */
-    boolean apply(EditorModel model);
+    boolean apply(InternalModel model);
+
 }

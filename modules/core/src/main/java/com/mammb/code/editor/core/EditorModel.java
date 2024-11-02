@@ -20,6 +20,7 @@ import com.mammb.code.editor.core.model.TextEditorModel;
 import com.mammb.code.editor.core.syntax.Syntax;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * The facade of editor.
@@ -70,6 +71,7 @@ public interface EditorModel {
     void input(String text);
     void delete();
     void backspace();
+    void replace(Function<String, String> fun);
     void undo();
     void redo();
     void pasteFromClipboard(Clipboard clipboard);
