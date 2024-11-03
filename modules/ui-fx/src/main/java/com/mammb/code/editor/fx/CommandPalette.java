@@ -231,19 +231,20 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
     }
 
     enum CmdType {
-        findAll, goTo, toLowerCase, toUpperCase, sort, unique, filter, calc,
+        findAll, goTo, toLowerCase, toUpperCase, sort, unique, filter, calc, wrap
         ;
         boolean match(String candidate) {
             return this.name().toLowerCase().contains(candidate.toLowerCase());
         }
         boolean requireArgs() {
-            return this == findAll || this == goTo || this == filter;
+            return this == findAll || this == goTo || this == filter || this == wrap;
         }
         String assistPromptText() {
             return switch (this) {
                 case findAll -> " <enter a string to search> ";
                 case goTo    -> " <enter a line number> ";
                 case filter  -> " <enter a regexp string to filter> ";
+                case wrap    -> " <enter a wrap width> ";
                 default -> "";
             };
         }

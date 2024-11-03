@@ -433,7 +433,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void wrap() {
+    public void wrap(double width) {
         // TODO
     }
 
