@@ -133,16 +133,15 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
 
     private void selectCommand(CmdType cmdType) {
         this.cmdType = cmdType;
+        textField.setText("");
         if (cmdType.requireArgs()) {
             initCommandLabel();
-            textField.setText("");
         } else {
             fireCommand();
         }
     }
 
     private void fireCommand() {
-System.out.println(textField.getText());
         setResult((cmdType == null) ? Command.empty : new Command(cmdType, textField.getText()));
         close();
     }

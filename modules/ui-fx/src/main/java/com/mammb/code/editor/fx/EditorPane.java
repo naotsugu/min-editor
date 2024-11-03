@@ -19,6 +19,7 @@ import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.ScreenScroll;
+import com.mammb.code.editor.core.Calculator;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -373,7 +374,7 @@ public class EditorPane extends StackPane {
                 case goTo    -> model.moveTo(Integer.parseInt(c.args()[0]) - 1);
                 case toLowerCase -> model.replace(String::toLowerCase);
                 case toUpperCase -> model.replace(String::toUpperCase);
-                case calc        -> { }
+                case calc        -> model.replace(new Calculator());
                 case sort        -> { }
                 case unique      -> { }
                 case filter      -> { }
