@@ -378,7 +378,8 @@ public class EditorPane extends StackPane {
                 case calc        -> model.replace(new Calculator());
                 case sort        -> model.replace(text -> Arrays.stream(text.split("(?<=\\R)"))
                     .sorted().collect(Collectors.joining()));
-                case unique      -> { }
+                case unique      -> model.replace(text -> Arrays.stream(text.split("(?<=\\R)"))
+                    .distinct().collect(Collectors.joining()));
                 case filter      -> { }
                 case null        -> { }
                 default -> { }
