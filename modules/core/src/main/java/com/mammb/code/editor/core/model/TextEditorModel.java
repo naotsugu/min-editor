@@ -514,6 +514,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void drawMap(Draw draw) {
+
         for (int row : decorate.highlightsRows()) {
             int line = view.rowToFirstLine(row);
             double y = (view.screenHeight() - marginTop) * line / (view.lineSize() + view.screenLineSize());

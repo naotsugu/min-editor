@@ -47,6 +47,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -375,7 +376,8 @@ public class EditorPane extends StackPane {
                 case toLowerCase -> model.replace(String::toLowerCase);
                 case toUpperCase -> model.replace(String::toUpperCase);
                 case calc        -> model.replace(new Calculator());
-                case sort        -> { }
+                case sort        -> model.replace(text -> Arrays.stream(text.split("(?<=\\R)"))
+                    .sorted().collect(Collectors.joining()));
                 case unique      -> { }
                 case filter      -> { }
                 case null        -> { }
