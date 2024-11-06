@@ -63,7 +63,7 @@ public class App extends Application {
           -fx-font: 14px "Consolas";
         }
 
-        .dialog-pane > .button-bar > .container {
+        .app-command-palette-dialog-pane > .button-bar > .container {
             -fx-padding: 0;
         }
         .menu-bar {

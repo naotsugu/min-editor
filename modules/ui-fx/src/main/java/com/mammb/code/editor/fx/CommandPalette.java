@@ -120,6 +120,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
         DialogPane pane = getDialogPane();
         pane.setContent(box);
         pane.setPadding(Insets.EMPTY);
+        pane.getStyleClass().add("app-command-palette-dialog-pane");
 
         initCommandLabel();
     }
