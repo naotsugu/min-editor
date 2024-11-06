@@ -82,14 +82,16 @@ public interface Content {
 
         @Override
         public Point insert(Point point, String text) {
-            var pos = edit.insert(point.row(), point.col(), text);
+            String txt = edit.rowEnding().unify(text).toString();
+            var pos = edit.insert(point.row(), point.col(), txt);
             return Point.of(pos.row(), pos.col());
         }
 
         @Override
         public List<Point> insert(List<Point> points, String text) {
+            String txt = edit.rowEnding().unify(text).toString();
             var pos = edit.insert(points.stream()
-                    .map(p -> new TextEdit.Pos(p.row(), p.col())).toList(), text);
+                    .map(p -> new TextEdit.Pos(p.row(), p.col())).toList(), txt);
             return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
         }
 
@@ -120,7 +122,8 @@ public interface Content {
 
         @Override
         public Point replace(Point start, Point end, String text) {
-            var pos = edit.replace(start.row(), start.col(), end.row(), end.col(), org -> text);
+            String txt = edit.rowEnding().unify(text).toString();
+            var pos = edit.replace(start.row(), start.col(), end.row(), end.col(), _ -> txt);
             return Point.of(pos.row(), pos.col());
         }
 
