@@ -33,7 +33,7 @@ After that, the app will be saved as a safe app to open, and you can double-clic
 
 To create the distribution, run the following command.
 
-```
+```shell
 git clone --recursive https://github.com/naotsugu/min-editor.git
 cd min-editor
 ./gradlew clean pkg
@@ -44,19 +44,19 @@ The distribution archive will be created in the `/modules/bootstrap/build/distri
 
 To run the application directly, execute the following command.
 
-```console
+```shell
 ./gradlew run
 ```
 
 If a debug run is required, execute the following command.
 
-```console
+```shell
 ./gradlew run -Ddebug
 ```
 
 This repository contains git submodules.
 Therefore, to update a submodule, do the following.
 
-```
+```shell
 git submodule update --remote --merge
 ```
