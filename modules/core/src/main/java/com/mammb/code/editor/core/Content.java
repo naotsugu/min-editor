@@ -62,21 +62,21 @@ public interface Content {
     List<Point> findAll(String text);
 
     static Content of() {
-        return new ContentImpl();
+        return new TextEditContent();
     }
     static Content of(Path path) {
-        return new ContentImpl(path);
+        return new TextEditContent(path);
     }
 
 
-    class ContentImpl implements Content {
+    class TextEditContent implements Content {
         private final TextEdit edit;
         private final List<Point.PointText> flushes = new ArrayList<>();
 
-        public ContentImpl() {
+        public TextEditContent() {
             this.edit = TextEdit.of();
         }
-        public ContentImpl(Path path) {
+        public TextEditContent(Path path) {
             this.edit = TextEdit.of(path);
         }
 
@@ -217,6 +217,61 @@ public interface Content {
                     .map(found -> Point.of(found.row(), found.col()))
                     .toList();
         }
-
     }
+
+    class ReadOnlyStringContent implements Content {
+        private final List<String> stringList = new ArrayList<>();
+        private final Path path;
+        public ReadOnlyStringContent(Path path) {
+            this.path = path;
+
+        }
+        @Override public Point insert(Point point, String text) { return point; }
+        @Override public List<Point> insert(List<Point> points, String text) { return points; }
+        @Override public String delete(Point point) { return ""; }
+        @Override public List<Point> delete(List<Point> points) { return List.of(); }
+        @Override public Point backspace(Point point) { return point; }
+        @Override public List<Point> backspace(List<Point> points) { return points; }
+        @Override public Point replace(Point start, Point end, String text) { return end; }
+        @Override public List<Point> replace(List<Range> ranges, Function<String, String> fun) { return ranges.stream().map(Range::end).toList(); }
+        @Override public List<Point> undo() { return List.of(); }
+        @Override public List<Point> redo() { return List.of(); }
+        @Override public void save(Path path) { }
+        @Override public boolean isModified() { return false; }
+        @Override public Point insertFlush(Point point, String text) { return point; }
+        @Override public void clearFlush() { }
+
+        @Override
+        public String getText(int row) {
+            return stringList.get(Math.clamp(row, 0, stringList.size() - 1));
+        }
+
+        @Override
+        public String getText(Point start, Point end) {
+            var sb = new StringBuilder();
+            for (int i = start.row(); i <= end.row(); i++) {
+                String row = getText(i);
+                row = (i == end.row()) ? row.substring(0, end.col()) : row;
+                row = (i == start.row()) ? row.substring(start.col()) : row;
+                sb.append(row);
+            }
+            return sb.toString();
+        }
+
+        @Override
+        public int rows() {
+            return stringList.size();
+        }
+
+        @Override
+        public Optional<Path> path() {
+            return Optional.of(path);
+        }
+
+        @Override
+        public List<Point> findAll(String text) {
+            return List.of();
+        }
+    }
+
 }
