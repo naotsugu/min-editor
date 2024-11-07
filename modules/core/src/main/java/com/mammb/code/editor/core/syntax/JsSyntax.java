@@ -89,7 +89,7 @@ public class JsSyntax implements Syntax {
                 if (span != null) spans.add(span);
 
             } else if (isIdentifierStart(ch)) {
-                var s = source.nextIdentifierPart();
+                var s = source.nextUntil(JsSyntax::isIdentifierPart);
                 if (keywords.match(s.string())) {
                     var span = new Style.StyleSpan(Palette.darkOrange, s.index(), s.length());
                     spans.add(span);
