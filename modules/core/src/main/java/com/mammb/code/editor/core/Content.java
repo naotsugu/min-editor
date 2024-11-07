@@ -17,6 +17,9 @@ package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.piecetable.TextEdit;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -220,11 +223,21 @@ public interface Content {
     }
 
     class ReadOnlyStringContent implements Content {
-        private final List<String> stringList = new ArrayList<>();
+        private final List<String> stringList;
         private final Path path;
         public ReadOnlyStringContent(Path path) {
+            this(path, 1000);
+        }
+        public ReadOnlyStringContent(Path path, int limitLines) {
             this.path = path;
-
+            try (BufferedReader reader = Files.newBufferedReader(path)) {
+                stringList = reader.lines()
+                    .map(s -> s + System.lineSeparator())
+                    .limit(limitLines)
+                    .toList();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         @Override public Point insert(Point point, String text) { return point; }
         @Override public List<Point> insert(List<Point> points, String text) { return points; }
