@@ -29,14 +29,16 @@ import java.util.stream.Stream;
  * The read only string content.
  * @author Naotsugu Kobayashi
  */
-public class ReadOnlyStringContent implements Content {
+public class RoStringContent implements Content {
 
     private final List<String> stringList;
     private final Path path;
-    public ReadOnlyStringContent(Path path) {
+
+    public RoStringContent(Path path) {
         this(path, 1000);
     }
-    public ReadOnlyStringContent(Path path, int limitLines) {
+
+    public RoStringContent(Path path, int limitLines) {
         this.path = path;
 
         try (Stream<String> stream = Files.lines(path)) {
@@ -48,20 +50,74 @@ public class ReadOnlyStringContent implements Content {
             throw new RuntimeException(e);
         }
     }
-    @Override public Point insert(Point point, String text) { return point; }
-    @Override public List<Point> insert(List<Point> points, String text) { return points; }
-    @Override public String delete(Point point) { return ""; }
-    @Override public List<Point> delete(List<Point> points) { return List.of(); }
-    @Override public Point backspace(Point point) { return point; }
-    @Override public List<Point> backspace(List<Point> points) { return points; }
-    @Override public Point replace(Point start, Point end, String text) { return end; }
-    @Override public List<Point> replace(List<Point.Range> ranges, Function<String, String> fun) { return ranges.stream().map(Point.Range::end).toList(); }
-    @Override public List<Point> undo() { return List.of(); }
-    @Override public List<Point> redo() { return List.of(); }
-    @Override public void save(Path path) { }
-    @Override public boolean isModified() { return false; }
-    @Override public Point insertFlush(Point point, String text) { return point; }
-    @Override public void clearFlush() { }
+
+    @Override
+    public Point insert(Point point, String text) {
+        return point;
+    }
+
+    @Override
+    public List<Point> insert(List<Point> points, String text) {
+        return points;
+    }
+
+    @Override
+    public String delete(Point point) {
+        return "";
+    }
+
+    @Override
+    public List<Point> delete(List<Point> points) {
+        return List.of();
+    }
+
+    @Override
+    public Point backspace(Point point) {
+        return point;
+    }
+
+    @Override
+    public List<Point> backspace(List<Point> points) {
+        return points;
+    }
+
+    @Override
+    public Point replace(Point start, Point end, String text) {
+        return end;
+    }
+
+    @Override
+    public List<Point> replace(List<Point.Range> ranges, Function<String, String> fun) {
+        return ranges.stream().map(Point.Range::end).toList();
+    }
+
+    @Override
+    public List<Point> undo() {
+        return List.of();
+    }
+
+    @Override
+    public List<Point> redo() {
+        return List.of();
+    }
+
+    @Override
+    public void save(Path path) {
+    }
+
+    @Override
+    public boolean isModified() {
+        return false;
+    }
+
+    @Override
+    public Point insertFlush(Point point, String text) {
+        return point;
+    }
+
+    @Override
+    public void clearFlush() {
+    }
 
     @Override
     public String getText(int row) {

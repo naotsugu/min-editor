@@ -28,8 +28,22 @@ import java.util.function.Function;
  */
 public interface Content {
 
+    /**
+     * Insert specific text.
+     * @param point the insert point
+     * @param text the text
+     * @return the caret position after insertion
+     */
     Point insert(Point point, String text);
+
+    /**
+     * Insert specific text.
+     * @param points the insert point list
+     * @param text the text
+     * @return the caret position after insertion
+     */
     List<Point> insert(List<Point> points, String text);
+
     String delete(Point point);
     List<Point> delete(List<Point> points);
     Point backspace(Point point);
