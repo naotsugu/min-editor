@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Point;
+import com.mammb.code.piecetable.DocumentStat;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,13 +39,16 @@ public class RoStringContent implements Content {
         this(path, 1000);
     }
 
-    public RoStringContent(Path path, int limitLines) {
+    public RoStringContent(Path path, int rowLimit) {
         this.path = path;
 
-        try (Stream<String> stream = Files.lines(path)) {
+        var stat = DocumentStat.of(path, rowLimit);
+        var rowEnding = stat.rowEnding().str();
+
+        try (Stream<String> stream = Files.lines(path, stat.charset())) {
             stringList = stream
-                .map(s -> s + System.lineSeparator())
-                .limit(limitLines)
+                .map(s -> s + rowEnding)
+                .limit(rowLimit)
                 .toList();
         } catch (IOException e) {
             throw new RuntimeException(e);

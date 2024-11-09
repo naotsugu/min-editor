@@ -29,7 +29,7 @@ import java.util.function.Function;
 public interface Content {
 
     /**
-     * Insert specific text.
+     * Insert specified text.
      * @param point the insert point
      * @param text the text
      * @return the caret position after insertion
@@ -37,7 +37,7 @@ public interface Content {
     Point insert(Point point, String text);
 
     /**
-     * Insert specific text.
+     * Insert specified text.
      * @param points the insert point list
      * @param text the text
      * @return the caret position after insertion
