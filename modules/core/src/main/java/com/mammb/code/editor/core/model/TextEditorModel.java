@@ -433,7 +433,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void wrap(double width) {
+    public void wrap(int width) {
         view.wrapWith(width);
     }
 

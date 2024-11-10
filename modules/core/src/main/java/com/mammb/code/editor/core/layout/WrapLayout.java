@@ -49,8 +49,8 @@ public class WrapLayout implements ContentLayout {
         this.fm = fm;
     }
 
-    public void setScreenWidth(double width) {
-        this.screenWidth = width;
+    public void setScreenWidth(int width) {
+        this.screenWidth = width * standardCharWidth;
         refresh(0);
     }
 

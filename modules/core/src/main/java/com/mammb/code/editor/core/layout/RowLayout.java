@@ -42,7 +42,7 @@ public class RowLayout implements ContentLayout {
         this.fm = fm;
     }
 
-    public void setScreenWidth(double width) {
+    public void setScreenWidth(int width) {
         // nothing to do
     }
 

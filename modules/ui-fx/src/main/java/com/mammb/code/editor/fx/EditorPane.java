@@ -372,7 +372,7 @@ public class EditorPane extends StackPane {
             switch (c.type()) {
                 case findAll     -> model.findAll(c.args()[0]);
                 case goTo        -> model.moveTo(Integer.parseInt(c.args()[0]) - 1);
-                case wrap        -> model.wrap(Double.parseDouble(c.args()[0]));
+                case wrap        -> model.wrap(Integer.parseInt(c.args()[0]));
                 case toLowerCase -> model.replace(EditingFunctions.toLower);
                 case toUpperCase -> model.replace(EditingFunctions.toUpper);
                 case calc        -> model.replace(EditingFunctions.toCalc);

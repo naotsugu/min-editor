@@ -26,7 +26,7 @@ import java.util.Optional;
  */
 interface ContentLayout extends LineLayout {
 
-    void setScreenWidth(double width);
+    void setScreenWidth(int width);
     void refresh(int line);
     void refreshAt(int startRow, int endRow);
     List<Text> texts(int startLine, int endLine);

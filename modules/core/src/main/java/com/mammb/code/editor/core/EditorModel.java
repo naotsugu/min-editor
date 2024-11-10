@@ -82,7 +82,7 @@ public interface EditorModel {
     Optional<Path> path();
     void save(Path path);
     void escape();
-    void wrap(double width);
+    void wrap(int width);
 
     Optional<Loc> imeOn();
     void imeOff();

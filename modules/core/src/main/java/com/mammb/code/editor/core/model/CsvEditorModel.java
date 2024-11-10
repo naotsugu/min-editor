@@ -210,7 +210,7 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void wrap(double width) {
+    public void wrap(int width) {
         // do nothing
     }
 

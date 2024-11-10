@@ -46,7 +46,7 @@ public interface ScreenLayout extends LineLayout {
     int topLine();
     void applyScreenScroll(ScreenScroll screenScroll);
 
-    void wrapWith(double width);
+    void wrapWith(int width);
 
     static ScreenLayout of(Content content, FontMetrics fm) {
         ContentLayout layout = new RowLayout(content, fm);
@@ -259,7 +259,7 @@ public interface ScreenLayout extends LineLayout {
         }
 
         @Override
-        public void wrapWith(double width) {
+        public void wrapWith(int width) {
             if (width > 0) {
                 if (layout instanceof RowLayout rowLayout) {
                     layout = new WrapLayout(rowLayout.getContent(), rowLayout.getFm());
