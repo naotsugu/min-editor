@@ -46,6 +46,8 @@ public interface ScreenLayout extends LineLayout {
     int topLine();
     void applyScreenScroll(ScreenScroll screenScroll);
 
+    void wrapWith(double width);
+
     static ScreenLayout of(Content content, FontMetrics fm) {
         ContentLayout layout = new RowLayout(content, fm);
         return new BasicScreenLayout(layout);
@@ -62,7 +64,7 @@ public interface ScreenLayout extends LineLayout {
         private double xMax = 0;
         private int topLine = 0;
         private final List<Text> buffer = new ArrayList<>();
-        private final ContentLayout layout;
+        private ContentLayout layout;
 
         private BasicScreenLayout(ContentLayout layout) {
             this.layout = layout;
@@ -70,7 +72,6 @@ public interface ScreenLayout extends LineLayout {
 
         @Override
         public void setScreenSize(double width, double height) {
-            layout.setScreenWidth(width);
             this.screenWidth = width;
             this.screenHeight = height;
             fillBuffer();
@@ -255,6 +256,19 @@ public interface ScreenLayout extends LineLayout {
             scroll.vertical(0, layout.lineSize() - 1, topLine, screenLineSize());
             double max = xMax - Math.min(xMax, screenWidth / 2);
             scroll.horizontal(0, max, xShift, screenWidth * max / xMax);
+        }
+
+        @Override
+        public void wrapWith(double width) {
+            if (width > 0) {
+                if (layout instanceof RowLayout rowLayout) {
+                    layout = new WrapLayout(rowLayout.getContent(), rowLayout.getFm());
+                }
+            } else if (layout instanceof WrapLayout wrapLayout) {
+                layout = new RowLayout(wrapLayout.getContent(), wrapLayout.getFm());
+            }
+            layout.setScreenWidth(width);
+            fillBuffer();
         }
 
         private void fillBuffer() {

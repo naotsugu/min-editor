@@ -91,8 +91,13 @@ public class WrapLayout implements ContentLayout {
     }
 
     private List<SubRange> subRanges(int row) {
-        int line = rowToFirstLine(row);
-        return lines.subList(line, line + lines.get(line).subLines());
+        List<SubRange> list = new ArrayList<>();
+        List<SubText> subTexts = subTextsAt(row);
+        for (int i = 0; i < subTexts.size(); i++) {
+            SubText subText = subTexts.get(i);
+            list.add(new SubRange(row, i, subTexts.size(), subText.fromIndex(), subText.toIndex()));
+        }
+        return list;
     }
 
     public Text text(int line) {
@@ -249,6 +254,14 @@ public class WrapLayout implements ContentLayout {
                     .thenComparing(SubRange::subLine)
                     .compare(this, that);
         }
+    }
+
+    Content getContent() {
+        return content;
+    }
+
+    FontMetrics getFm() {
+        return fm;
     }
 
 }

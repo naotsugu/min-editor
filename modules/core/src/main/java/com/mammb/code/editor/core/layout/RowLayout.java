@@ -135,4 +135,12 @@ public class RowLayout implements ContentLayout {
         }
     }
 
+    Content getContent() {
+        return content;
+    }
+
+    FontMetrics getFm() {
+        return fm;
+    }
+
 }

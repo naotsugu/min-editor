@@ -59,7 +59,7 @@ public interface SubText extends Text {
             if (advance <= 0) continue;
             if (w + advance > width) {
                 var sub = new SubTextRecord(rowText, fromIndex, i, w, prev);
-                if (subs.getLast() != null) {
+                if (!subs.isEmpty()) {
                     ((SubTextRecord) subs.getLast()).next = sub;
                 }
                 subs.add(sub);
@@ -70,7 +70,7 @@ public interface SubText extends Text {
             w += advance;
         }
         var sub = new SubTextRecord(rowText, fromIndex, rowText.length(), w, prev);
-        if (subs.getLast() != null) {
+        if (!subs.isEmpty()) {
             ((SubTextRecord) subs.getLast()).next = sub;
         }
         subs.add(sub);
