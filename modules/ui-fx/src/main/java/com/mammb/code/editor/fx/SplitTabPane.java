@@ -42,8 +42,12 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.lang.System.Logger;
+import static java.lang.System.Logger.Level.*;
 
 public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane> {
+
+    private static final Logger logger = System.getLogger(SplitTabPane.class.getName());
 
     private static final AtomicReference<Tab> draggedTab = new AtomicReference<>();
     private static final AtomicReference<DndTabPane> activePane = new AtomicReference<>();
@@ -176,6 +180,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var label = new Label(node.fileNameProperty().get());
             tab.setGraphic(label);
             label.setOnDragDetected(this::handleTabDragDetected);
+            tab.setOnCloseRequest(this::handleOnTabCloseRequest);
             tab.setOnClosed(this::handleOnTabClosed);
             node.fileNameProperty().addListener((ob, o, n) -> label.setText(n));
             node.setNewOpenHandler(path -> add(new EditorPane()));
@@ -199,6 +204,24 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleSelectedTabItem(ObservableValue<? extends Tab> ob, Tab o, Tab tab) {
             if (tab != null) {
                 ((EditorPane) tab.getContent()).focus();
+            }
+        }
+
+        /**
+         * Check for any edits in the editor before closing the tab.
+         * @param e the event
+         */
+        private void handleOnTabCloseRequest(Event e) {
+            var maybeTab = e.getTarget();
+            if (maybeTab instanceof Tab tab) {
+                var maybeEditorPane = tab.getContent();
+                if (maybeEditorPane instanceof EditorPane editorPane) {
+                    if (!editorPane.canDiscardCurrent()) {
+                        e.consume();
+                    }
+                } else {
+                    logger.log(ERROR, "An unexpected node configuration has been detected.");
+                }
             }
         }
         private void handleOnTabClosed(Event e) {

@@ -33,6 +33,7 @@ import java.util.Optional;
  * @author Naotsugu Kobayashi
  */
 public class FxDraw implements Draw {
+
     private final GraphicsContext gc;
     private final FontMetrics fontMetrics;
     private final Map<String, Color> colors = new HashMap<>();

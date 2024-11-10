@@ -317,7 +317,7 @@ public class EditorPane extends StackPane {
         fileNameProperty.setValue(path.getFileName().toString());
     }
 
-    private boolean canDiscardCurrent() {
+    boolean canDiscardCurrent() {
         if (model.isModified()) {
             var result = FxDialog.confirmation(getScene().getWindow(),
                     "Are you sure you want to discard your changes?").showAndWait();
