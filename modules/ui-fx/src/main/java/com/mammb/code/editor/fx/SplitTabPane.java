@@ -45,6 +45,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.lang.System.Logger;
 import static java.lang.System.Logger.Level.*;
 
+/**
+ * The SplitTabPane.
+ * It is implemented at the prototype level.
+ * @author Naotsugu Kobayashi
+ */
 public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane> {
 
     private static final Logger logger = System.getLogger(SplitTabPane.class.getName());
