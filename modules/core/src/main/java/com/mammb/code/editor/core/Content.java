@@ -37,17 +37,41 @@ public interface Content {
     Point insert(Point point, String text);
 
     /**
-     * Insert specified text.
+     * Insert specific text at multiple caret points.
      * @param points the insert point list
      * @param text the text
      * @return the caret position after insertion
      */
     List<Point> insert(List<Point> points, String text);
 
+    /**
+     * Deletes the character at a specific caret point.
+     * @param point a specific caret point
+     * @return the deleted characters
+     */
     String delete(Point point);
+
+    /**
+     * Deletes the character at multiple caret points.
+     * @param points the deletes point list
+     * @return the caret position after deletion
+     */
     List<Point> delete(List<Point> points);
+
+    /**
+     * Backspace the character at a specific caret point.
+     * @param point a specific caret point
+     * @return the caret position after backspace
+     */
     Point backspace(Point point);
+
+    /**
+     * Backspace the character at multiple caret points.
+     * @param points the deletes point list
+     * @return the caret position after backspace
+     */
     List<Point> backspace(List<Point> points);
+
     Point replace(Point start, Point end, String text);
     List<Point> replace(List<Range> ranges, Function<String, String> fun);
 

@@ -28,6 +28,9 @@ import java.util.stream.Stream;
 
 /**
  * The read only string content.
+ * This content is intended to provide a temporary content implementation,
+ * such as when loading large files.
+ *
  * @author Naotsugu Kobayashi
  */
 public class RoStringContent implements Content {
