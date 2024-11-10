@@ -62,6 +62,9 @@ public class App extends Application {
         .text-input, .label {
           -fx-font: 14px "Consolas";
         }
+        .button {
+          -fx-background-color: /* -fx-shadow-highlight-color, */ -fx-outer-border, -fx-inner-border, -fx-body-color;
+        }
 
         .app-command-palette-dialog-pane > .button-bar > .container {
             -fx-padding: 0;

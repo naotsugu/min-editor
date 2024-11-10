@@ -20,6 +20,7 @@ package com.mammb.code.editor.fx;
  * @author Naotsugu Kobayashi
  */
 public class AppLauncher {
+
     /**
      * Launch the application.
      * @param args the arguments
@@ -27,4 +28,5 @@ public class AppLauncher {
     public void launch(String[] args) {
         App.launch(App.class, args);
     }
+
 }
