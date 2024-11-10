@@ -114,8 +114,8 @@ public class WrapLayout implements ContentLayout {
             startLine = endLine;
             endLine = tmp;
         }
-        var startRange = lines.get(startLine);
-        var endRange   = lines.get(endLine - 1);
+        var startRange = lines.get(Math.min(startLine, lines.size() - 1));
+        var endRange   = lines.get(Math.min(endLine - 1, lines.size() - 1));
         return IntStream.rangeClosed(startRange.row(), endRange.row()).mapToObj(i -> {
             var subs = subTextsAt(i);
             if (i == endRange.row() && subs.size() >= endRange.subLine() + 1) {
@@ -206,7 +206,7 @@ public class WrapLayout implements ContentLayout {
     @Override
     public Optional<Loc> loc(int row, int col, int rangeLineStart, int rangeLineEnd) {
         for (int i = rangeLineStart; i < rangeLineEnd; i++) {
-            SubRange sub = lines.get(i);
+            SubRange sub = lines.get(Math.clamp(i, 0, lines.size() - 1));
             if (sub.contains(row, col)) {
                 return Optional.of(new Loc(xOnLayout(i, col), yOnLayout(i)));
             }
