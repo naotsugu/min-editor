@@ -19,7 +19,7 @@ import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.ScreenScroll;
-import com.mammb.code.editor.core.Calculator;
+import com.mammb.code.editor.core.editing.EditingFunctions;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -47,7 +47,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -373,13 +372,11 @@ public class EditorPane extends StackPane {
             switch (c.type()) {
                 case findAll -> model.findAll(c.args()[0]);
                 case goTo    -> model.moveTo(Integer.parseInt(c.args()[0]) - 1);
-                case toLowerCase -> model.replace(String::toLowerCase);
-                case toUpperCase -> model.replace(String::toUpperCase);
-                case calc        -> model.replace(new Calculator());
-                case sort        -> model.replace(text -> Arrays.stream(text.split("(?<=\\R)"))
-                    .sorted().collect(Collectors.joining()));
-                case unique      -> model.replace(text -> Arrays.stream(text.split("(?<=\\R)"))
-                    .distinct().collect(Collectors.joining()));
+                case toLowerCase -> model.replace(EditingFunctions.toLower);
+                case toUpperCase -> model.replace(EditingFunctions.toUpper);
+                case calc        -> model.replace(EditingFunctions.toCalc);
+                case sort        -> model.replace(EditingFunctions.sort);
+                case unique      -> model.replace(EditingFunctions.unique);
                 case filter      -> { }
                 case null        -> { }
                 default -> { }

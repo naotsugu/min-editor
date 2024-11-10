@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core;
+package com.mammb.code.editor.core.editing;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -31,26 +30,7 @@ import java.util.stream.Collectors;
  * Calculator.
  * @author Naotsugu Kobayashi
  */
-public class Calculator implements Function<String, String> {
-
-    /** logger. */
-    private static final System.Logger log = System.getLogger(Calculator.class.getName());
-
-    @Override
-    public String apply(String text) {
-
-        // if it contains an equal sign, delete the rest
-        int eq = text.indexOf('=');
-        String formula = (eq > 1) ? text.substring(eq) : text;
-
-        try {
-            String s = text.contains(" ") ? " " : "";
-            return "%s%s=%s%s".formatted(text, s, s, calc(text));
-        } catch (Exception ignore) {
-            log.log(System.Logger.Level.WARNING, ignore);
-        }
-        return text;
-    }
+public class Calculator {
 
     /**
      * Calculate the given formula.
