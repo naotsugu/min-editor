@@ -85,7 +85,6 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             -fx-border-style: solid;
             -fx-border-color: gray;
             -fx-border-radius: 3;
-            -fx-text-fill: gray;
             """);
 
         // init text field
