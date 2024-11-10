@@ -72,7 +72,21 @@ public interface Content {
      */
     List<Point> backspace(List<Point> points);
 
+    /**
+     * Replace a specific range of text with the specified text.
+     * @param start the start point
+     * @param end  the start point(inclusive)
+     * @param text the specified text
+     * @return the caret position after replacement
+     */
     Point replace(Point start, Point end, String text);
+
+    /**
+     * Replace the specific ranges of text with the specified function.
+     * @param ranges the specific ranges
+     * @param fun the specified function
+     * @return the caret position after replacement
+     */
     List<Point> replace(List<Range> ranges, Function<String, String> fun);
 
     /**
@@ -87,22 +101,41 @@ public interface Content {
      */
     List<Point> redo();
 
+    /**
+     * Get the text of a specific row.
+     * @param row a specific row
+     * @return the text of a specific row
+     */
     String getText(int row);
+
+    /**
+     * Get the specific ranges of text.
+     * @param start the start point
+     * @param end  the start point(inclusive)
+     * @return the specific ranges of text
+     */
     String getText(Point start, Point end);
+
     int rows();
+
     Optional<Path> path();
+
     void save(Path path);
+
     boolean isModified();
+
     Point insertFlush(Point point, String text);
+
     void clearFlush();
+
     List<Point> findAll(String text);
 
     static Content of() {
         return new TextEditContent();
     }
+
     static Content of(Path path) {
         return new TextEditContent(path);
     }
-
 
 }
