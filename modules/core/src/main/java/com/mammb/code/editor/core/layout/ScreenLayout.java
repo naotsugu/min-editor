@@ -98,7 +98,8 @@ public interface ScreenLayout extends LineLayout {
                 if (delta > 0) {
                     // scroll next
                     buffer.subList(0, delta).clear();
-                    texts = layout.texts(line + buffer.size(), line + buffer.size() + delta);
+                    int startLine = line + buffer.size();
+                    texts = layout.texts(startLine, startLine + delta);
                     buffer.addAll(texts);
                 } else {
                     // scroll prev
