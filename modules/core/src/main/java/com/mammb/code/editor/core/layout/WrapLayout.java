@@ -114,8 +114,8 @@ public class WrapLayout implements ContentLayout {
             startLine = endLine;
             endLine = tmp;
         }
-        var startRange = lines.get(Math.min(startLine, lines.size() - 1));
-        var endRange   = lines.get(Math.min(endLine - 1, lines.size() - 1));
+        var startRange = lines.get(Math.clamp(startLine, 0, lines.size() - 1));
+        var endRange   = lines.get(Math.clamp(endLine - 1, 0, lines.size() - 1));
         return IntStream.rangeClosed(startRange.row(), endRange.row()).mapToObj(i -> {
             var subs = subTextsAt(i);
             if (i == endRange.row() && subs.size() >= endRange.subLine() + 1) {

@@ -16,8 +16,6 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Caret;
-import com.mammb.code.editor.core.Point;
-import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.CaretGroup;
 import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Content;
@@ -25,6 +23,8 @@ import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.layout.Loc;
@@ -37,6 +37,7 @@ import com.mammb.code.editor.core.text.Text;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -547,12 +548,17 @@ public class TextEditorModel implements EditorModel {
         }
         draw.rect(0, 0, marginLeft - 5, view.screenHeight() + marginTop);
         double y = 0;
+        String prevValue = "";
         for (Text num : lineNumbers) {
-            String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
-                ? Theme.dark.fgColor()
-                : Theme.dark.fgColor() + "66";
-            draw.text(num.value(), marginLeft - 16 - num.width(), y + marginTop, num.width(),
-                List.of(new Style.TextColor(colorString)));
+            // If the text is wrapped, display the row number only on the first line.
+            if (!Objects.equals(prevValue, num.value())) {
+                String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
+                    ? Theme.dark.fgColor()
+                    : Theme.dark.fgColor() + "66";
+                draw.text(num.value(), marginLeft - 16 - num.width(), y + marginTop, num.width(),
+                    List.of(new Style.TextColor(colorString)));
+            }
+            prevValue = num.value();
             y += num.height();
         }
     }

@@ -29,6 +29,13 @@ interface ContentLayout extends LineLayout {
     void setScreenWidth(int width);
     void refresh(int line);
     void refreshAt(int startRow, int endRow);
+
+    /**
+     * Get the text list.
+     * @param startLine the inclusive start line
+     * @param endLine the exclusive end line
+     * @return the text list
+     */
     List<Text> texts(int startLine, int endLine);
     RowText rowText(int line);
     @Override RowText rowTextAt(int row);
