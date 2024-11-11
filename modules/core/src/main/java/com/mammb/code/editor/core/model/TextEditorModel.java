@@ -435,6 +435,8 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void wrap(int width) {
+        carets.unique().at(0, 0);
+        decorate.clear();
         view.wrapWith(width);
     }
 
