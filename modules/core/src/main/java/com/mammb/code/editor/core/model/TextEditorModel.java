@@ -156,7 +156,7 @@ public class TextEditorModel implements EditorModel {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = view.rowToLine(c.row(), c.col());
-            if (line == view.lineSize()) continue;
+            if (line >= view.lineSize() - 1) continue;
             double x = (c.vPos() < 0)
                     ? view.xOnLayout(line, c.col())
                     : c.vPos();

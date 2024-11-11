@@ -92,7 +92,8 @@ public interface ScreenLayout extends LineLayout {
             line = Math.clamp(line, 0, layout.lineSize() - 1);
             int delta = line - topLine;
             if (delta == 0) return;
-            if (Math.abs(delta) < screenLineSize() * 2 / 3) {
+            int screenLineSize = screenLineSize();
+            if (Math.abs(delta) < screenLineSize * 2 / 3) {
                 topLine = line;
                 List<Text> texts;
                 if (delta > 0) {
@@ -103,9 +104,14 @@ public interface ScreenLayout extends LineLayout {
                     buffer.addAll(texts);
                 } else {
                     // scroll prev
-                    buffer.subList(buffer.size() + delta, buffer.size()).clear();
                     texts = layout.texts(line, line - delta);
                     buffer.addAll(0, texts);
+                    if (buffer.size() > screenLineSize) {
+                        buffer.subList(
+                            buffer.size() + screenLineSize - buffer.size(),
+                            buffer.size()
+                        ).clear();
+                    }
                 }
                 texts.stream().mapToDouble(Text::width)
                         .filter(w -> w > xMax).max()

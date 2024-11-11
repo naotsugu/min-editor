@@ -231,7 +231,10 @@ public class WrapLayout implements ContentLayout {
         public int toIndex() { return toIndex; }
         public int length() { return toIndex - fromIndex; }
         boolean contains(int row, int col) {
-            return this.row == row && this.fromIndex <= col && col < this.toIndex;
+            return this.row == row && (
+                (this.fromIndex <= col && col < this.toIndex) ||
+                (col == 0 && fromIndex == 0 && toIndex == 0)
+            );
         }
         @Override
         public boolean equals(Object o) {

@@ -62,8 +62,10 @@ public class RowLayout implements ContentLayout {
 
     @Override
     public List<Text> texts(int startLine, int endLine) {
-        return IntStream.range(startLine, endLine)
-                .mapToObj(this::rowText).map(Text.class::cast).toList();
+        return IntStream.range(
+                Math.clamp(startLine, 0, content.rows() - 1),
+                Math.clamp(endLine,   0, content.rows())
+            ).mapToObj(this::rowText).map(Text.class::cast).toList();
     }
 
     @Override
