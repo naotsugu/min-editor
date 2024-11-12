@@ -372,9 +372,6 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void replace(Function<String, String> fun) {
-        if (!carets.hasMarked()) {
-            return;
-        }
         List<Point> points = content.replace(carets.ranges(), fun);
         refreshPointsRange(points);
     }

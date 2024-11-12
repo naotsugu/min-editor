@@ -33,6 +33,9 @@ public interface EditingFunctions {
     Function<String, String> toLower = String::toLowerCase;
     Function<String, String> toUpper = String::toUpperCase;
 
+    Function<String, String> indent = text -> "    " + text;// TODO
+    Function<String, String> unindent = text -> "    " + text;
+
     Function<String, String> sort = text -> Arrays.stream(text.split("(?<=\\R)"))
         .sorted().collect(Collectors.joining());
 

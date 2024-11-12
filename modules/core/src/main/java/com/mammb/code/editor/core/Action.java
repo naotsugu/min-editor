@@ -44,6 +44,7 @@ public interface Action {
     /** The action event type.*/
     enum Type {
         TYPED, DELETE, BACK_SPACE,
+        INDENT, UNINDENT,
         CARET_RIGHT, CARET_LEFT, CARET_UP, CARET_DOWN,
         SELECT_CARET_RIGHT, SELECT_CARET_LEFT, SELECT_CARET_UP, SELECT_CARET_DOWN,
         HOME, SELECT_HOME, END, SELECT_END,

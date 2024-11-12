@@ -53,6 +53,9 @@ public abstract class FxActions {
         else if (e.getCode() == PAGE_DOWN) return e.isShiftDown()
                 ? Action.of(Action.Type.SELECT_PAGE_DOWN)
                 : Action.of(Action.Type.PAGE_DOWN);
+        else if (e.getCode() == TAB) return e.isShiftDown()
+            ? Action.of(Action.Type.UNINDENT)
+            : Action.of(Action.Type.INDENT);
         else if (e.getCode() == ESCAPE) return Action.of(Action.Type.ESC);
         else if (e.getCode() == DELETE) return Action.of(Action.Type.DELETE);
         else if (e.getCode() == BACK_SPACE) return Action.of(Action.Type.BACK_SPACE);
@@ -73,15 +76,13 @@ public abstract class FxActions {
             if (keyInput.test(e)) {
                 int ascii = e.getCharacter().getBytes()[0];
                 if (ascii < 32 || ascii == 127) { // 127:DEL
-                    if (ascii != 9 && ascii != 10 && ascii != 13) { // 9:HT 10:LF 13:CR
+                    if (/* ascii != 9 && */ascii != 10 && ascii != 13) { // 9:HT 10:LF 13:CR
                         return Action.of(Action.Type.EMPTY);
                     }
                 }
                 String ch = (ascii == 13) // 13:CR
                         ? "\n"
-                        : (ascii == 9)
-                            ? "    " // TODO
-                            : e.getCharacter();
+                        : e.getCharacter();
 
                 return ch.isEmpty()
                         ? Action.of(Action.Type.EMPTY)
