@@ -33,14 +33,18 @@ public interface EditingFunctions {
     Function<String, String> toLower = String::toLowerCase;
     Function<String, String> toUpper = String::toUpperCase;
 
-    Function<String, String> indent = text -> "    " + text;// TODO
-    Function<String, String> unindent = text -> "    " + text;
+    Function<String, String> indent = text -> Arrays.stream(text.split("(?<=\\R)"))
+            .map(s -> " ".repeat(4) + s)
+            .collect(Collectors.joining());
+    Function<String, String> unindent = text -> Arrays.stream(text.split("(?<=\\R)"))
+            .map(s -> s.replaceFirst("^ {4}?|^\t", ""))
+            .collect(Collectors.joining());
 
     Function<String, String> sort = text -> Arrays.stream(text.split("(?<=\\R)"))
-        .sorted().collect(Collectors.joining());
+            .sorted().collect(Collectors.joining());
 
     Function<String, String> unique = text -> Arrays.stream(text.split("(?<=\\R)"))
-        .distinct().collect(Collectors.joining());
+            .distinct().collect(Collectors.joining());
 
     Function<String, String> toCalc = text -> {
         // if it contains an equal sign, delete the rest
