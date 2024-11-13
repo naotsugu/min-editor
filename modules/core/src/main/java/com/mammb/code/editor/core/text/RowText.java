@@ -35,10 +35,10 @@ public interface RowText extends LinedText {
             if (Character.isHighSurrogate(ch1)) {
                 width += advances[i] = fm.getAdvance(ch1, text.charAt(i + 1));
                 i++;
-            } else if (Character.isISOControl(ch1)) {
-                i++;
             } else if (ch1 == '\t') {
                 width += advances[i] = fm.getAdvance(" ".repeat(4));
+            } else if (Character.isISOControl(ch1)) {
+                i++;
             } else {
                 width += advances[i] = fm.getAdvance(ch1);
             }
