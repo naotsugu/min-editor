@@ -72,7 +72,7 @@ public interface EditorModel {
     void input(String text);
     void delete();
     void backspace();
-    void replace(Function<String, String> fun);
+    void replace(Function<String, String> fun, boolean keepSelection);
     void undo();
     void redo();
     void pasteFromClipboard(Clipboard clipboard);

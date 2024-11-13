@@ -259,8 +259,8 @@ public class EditorPane extends StackPane {
             case NEW -> newEdit();
             case FIND -> showCommandPalette(CommandPalette.CmdType.findAll);
             case COMMAND_PALETTE -> showCommandPalette(null);
-            case INDENT -> model.replace(EditingFunctions.indent);
-            case UNINDENT -> model.replace(EditingFunctions.unindent);
+            case INDENT -> model.replace(EditingFunctions.indent, true);
+            case UNINDENT -> model.replace(EditingFunctions.unindent, true);
         }
         if (action.type().syncCaret()) {
             model.scrollToCaret();
@@ -375,11 +375,11 @@ public class EditorPane extends StackPane {
                 case findAll     -> model.findAll(c.args()[0]);
                 case goTo        -> model.moveTo(Integer.parseInt(c.args()[0]) - 1);
                 case wrap        -> model.wrap(Integer.parseInt(c.args()[0]));
-                case toLowerCase -> model.replace(EditingFunctions.toLower);
-                case toUpperCase -> model.replace(EditingFunctions.toUpper);
-                case calc        -> model.replace(EditingFunctions.toCalc);
-                case sort        -> model.replace(EditingFunctions.sort);
-                case unique      -> model.replace(EditingFunctions.unique);
+                case toLowerCase -> model.replace(EditingFunctions.toLower, true);
+                case toUpperCase -> model.replace(EditingFunctions.toUpper, true);
+                case calc        -> model.replace(EditingFunctions.toCalc, false);
+                case sort        -> model.replace(EditingFunctions.sort, false);
+                case unique      -> model.replace(EditingFunctions.unique, false);
                 case filter      -> { }
                 case null        -> { }
                 default -> { }

@@ -321,7 +321,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                replace(_ -> text);
+                replace(_ -> text, false);
             } else {
                 List<Point> points = content.insert(carets.points(), text);
                 refreshPointsRange(points);
@@ -341,7 +341,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                replace(_ -> "");
+                replace(_ -> "", false);
             } else {
                 List<Point> points = content.delete(carets.points());
                 refreshPointsRange(points);
@@ -362,7 +362,7 @@ public class TextEditorModel implements EditorModel {
             }
         } else {
             if (carets.hasMarked()) {
-                replace(_ -> "");
+                replace(_ -> "", false);
             } else {
                 List<Point> points = content.backspace(carets.points());
                 refreshPointsRange(points);
@@ -371,7 +371,8 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void replace(Function<String, String> fun) {
+    public void replace(Function<String, String> fun, boolean keepSelection) {
+        // TODO keepSelection
         List<Point> points = content.replace(carets.ranges(), fun);
         refreshPointsRange(points);
     }

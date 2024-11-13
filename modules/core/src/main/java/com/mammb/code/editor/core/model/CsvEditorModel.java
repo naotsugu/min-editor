@@ -160,7 +160,7 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void replace(Function<String, String> fun) {
+    public void replace(Function<String, String> fun, boolean keepSelection) {
 
     }
 
