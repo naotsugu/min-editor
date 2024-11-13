@@ -541,9 +541,7 @@ public class TextEditorModel implements EditorModel {
         double nw = lineNumbers.stream().mapToDouble(Text::width).max().orElse(0);
         if (nw + 16 * 2 > marginLeft) {
             double newMarginLeft = nw + 8 * 2;
-            setSize(view.screenWidth() + marginLeft - newMarginLeft, view.screenHeight());
-            draw(draw);
-            return;
+            view.setScreenSize(view.screenWidth() + marginLeft - newMarginLeft, view.screenHeight());
         }
         draw.rect(0, 0, marginLeft - 5, view.screenHeight() + marginTop);
         double y = 0;
