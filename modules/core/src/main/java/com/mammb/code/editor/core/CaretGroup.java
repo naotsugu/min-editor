@@ -30,6 +30,11 @@ public interface CaretGroup {
     List<Point> points();
     List<Caret> carets();
     List<Range> marked();
+
+    /**
+     * Get the caret points as range.
+     * @return the caret points as range
+     */
     List<Range> ranges();
     boolean hasMarked();
     void at(List<Point> points);
