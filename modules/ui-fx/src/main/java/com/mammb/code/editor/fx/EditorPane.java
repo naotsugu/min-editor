@@ -66,6 +66,8 @@ public class EditorPane extends StackPane {
     private final ScrollBar vScroll = new ScrollBar();
     /** The horizon scroll bar. */
     private final ScrollBar hScroll = new ScrollBar();
+    /** The float bar. */
+    private final FloatBar floatBar = new FloatBar(vScroll, hScroll);
     /** The file name property. */
     private final SimpleStringProperty fileNameProperty = new SimpleStringProperty("Untitled");
 
@@ -87,7 +89,7 @@ public class EditorPane extends StackPane {
         hScroll.setOrientation(Orientation.HORIZONTAL);
         StackPane.setAlignment(vScroll, Pos.TOP_RIGHT);
         StackPane.setAlignment(hScroll, Pos.BOTTOM_LEFT);
-        getChildren().addAll(canvas, vScroll, hScroll);
+        getChildren().addAll(canvas, floatBar, vScroll, hScroll);
 
         layoutBoundsProperty().addListener(this::handleLayoutBoundsChanged);
         setOnScroll(this::handleScroll);
