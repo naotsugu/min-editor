@@ -89,7 +89,7 @@ public class EditorPane extends StackPane {
         hScroll.setOrientation(Orientation.HORIZONTAL);
         StackPane.setAlignment(vScroll, Pos.TOP_RIGHT);
         StackPane.setAlignment(hScroll, Pos.BOTTOM_LEFT);
-        getChildren().addAll(canvas, floatBar, vScroll, hScroll);
+        getChildren().addAll(canvas, vScroll, hScroll, floatBar);
 
         layoutBoundsProperty().addListener(this::handleLayoutBoundsChanged);
         setOnScroll(this::handleScroll);
