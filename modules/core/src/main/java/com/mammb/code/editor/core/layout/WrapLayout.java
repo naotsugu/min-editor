@@ -108,16 +108,19 @@ public class WrapLayout implements ContentLayout {
 
     @Override
     public List<Text> texts(int startLine, int endLine) {
-        if (startLine == endLine)  return List.of();
+        if (startLine == endLine ||
+            (startLine >= lines.size() && endLine >= lines.size()))  return List.of();
         if (startLine > endLine) {
             int tmp = startLine;
             startLine = endLine;
             endLine = tmp;
         }
-        var startRange = lines.get(Math.clamp(startLine, 0, lines.size() - 1));
-        var endRange   = lines.get(Math.clamp(endLine - 1, 0, lines.size() - 1));
+        SubRange startRange = lines.get(Math.clamp(startLine, 0, lines.size() - 1));
+        SubRange endRange   = lines.get(Math.clamp(endLine - 1, 0, lines.size() - 1));
+
         return IntStream.rangeClosed(startRange.row(), endRange.row()).mapToObj(i -> {
             var subs = subTextsAt(i);
+
             if (i == endRange.row() && subs.size() >= endRange.subLine() + 1) {
                 subs.subList(endRange.subLine() + 1, subs.size()).clear();
             }
