@@ -24,8 +24,10 @@ import com.mammb.code.editor.core.model.QueryRecords;
  */
 public interface Query<R> extends QueryRecords {
 
-    RowEndingSymbol rowEndingSymbol = new RowEndingSymbol();
-    CharsetSymbol charsetSymbol = new CharsetSymbol();
-    Modified modified = new Modified();
+    Query<String> rowEndingSymbol = new RowEndingSymbol();
+    Query<String> charsetSymbol = new CharsetSymbol();
+    Query<Boolean> modified = new Modified();
+    Query<byte[]> bom = new Bom();
+    Query<Point> caretPoint = new CaretPoint();
 
 }

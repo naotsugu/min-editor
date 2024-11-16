@@ -182,10 +182,13 @@ public class TextEditContent implements Content {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
             case Query.RowEndingSymbol q -> (R) edit.rowEnding().toString();
             case Query.CharsetSymbol q -> (R) edit.charset().toString();
+            case Query.Modified q -> (R) (Boolean) isModified();
+            case Query.Bom q -> (R) null; // TODO
             default -> null;
         };
     }

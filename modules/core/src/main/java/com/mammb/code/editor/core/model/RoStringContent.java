@@ -18,7 +18,6 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
-import com.mammb.code.piecetable.Document;
 import com.mammb.code.piecetable.DocumentStat;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -39,7 +38,7 @@ public class RoStringContent implements Content {
 
     private final List<String> stringList;
     private final Path path;
-    private final Document.RowEnding rowEnding;
+    private final DocumentStat stat;
 
     public RoStringContent(Path path) {
         this(path, 1000);
@@ -48,12 +47,12 @@ public class RoStringContent implements Content {
     public RoStringContent(Path path, int rowLimit) {
         this.path = path;
 
-        var stat = DocumentStat.of(path, rowLimit);
-        rowEnding = stat.rowEnding();
+        stat = DocumentStat.of(path, rowLimit);
+        String rowEnding = stat.rowEnding().str();
 
         try (Stream<String> stream = Files.lines(path, stat.charset())) {
             stringList = stream
-                .map(s -> s + rowEnding.str())
+                .map(s -> s + rowEnding)
                 .limit(rowLimit)
                 .toList();
         } catch (IOException e) {
@@ -162,7 +161,13 @@ public class RoStringContent implements Content {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
-        return null;
+        return switch (query) {
+            case Query.RowEndingSymbol q -> (R) stat.rowEnding().toString();
+            case Query.CharsetSymbol q -> (R) stat.charset().toString();
+            case Query.Modified q -> (R) Boolean.FALSE;
+            default -> null;
+        };
     }
 }

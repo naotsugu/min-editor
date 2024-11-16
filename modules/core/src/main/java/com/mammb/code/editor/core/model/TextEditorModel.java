@@ -481,8 +481,11 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
+            case QueryRecords.CaretPoint q -> (R) carets.getFirst().point();
+            case null -> null;
             default -> content.query(query);
         };
     }
