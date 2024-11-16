@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.layout.Loc;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -237,5 +238,10 @@ public class CsvEditorModel implements EditorModel {
     @Override
     public void findAll(String text) {
 
+    }
+
+    @Override
+    public <R> R query(Query<R> query) {
+        return null;
     }
 }

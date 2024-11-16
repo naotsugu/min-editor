@@ -17,6 +17,8 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Query;
+import com.mammb.code.piecetable.Document;
 import com.mammb.code.piecetable.DocumentStat;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,6 +39,7 @@ public class RoStringContent implements Content {
 
     private final List<String> stringList;
     private final Path path;
+    private final Document.RowEnding rowEnding;
 
     public RoStringContent(Path path) {
         this(path, 1000);
@@ -46,11 +49,11 @@ public class RoStringContent implements Content {
         this.path = path;
 
         var stat = DocumentStat.of(path, rowLimit);
-        var rowEnding = stat.rowEnding().str();
+        rowEnding = stat.rowEnding();
 
         try (Stream<String> stream = Files.lines(path, stat.charset())) {
             stringList = stream
-                .map(s -> s + rowEnding)
+                .map(s -> s + rowEnding.str())
                 .limit(rowLimit)
                 .toList();
         } catch (IOException e) {
@@ -156,5 +159,10 @@ public class RoStringContent implements Content {
     @Override
     public List<Point> findAll(String text) {
         return List.of();
+    }
+
+    @Override
+    public <R> R query(Query<R> query) {
+        return null;
     }
 }

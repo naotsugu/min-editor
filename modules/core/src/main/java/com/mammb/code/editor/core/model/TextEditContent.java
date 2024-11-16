@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Query;
 import com.mammb.code.piecetable.TextEdit;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -178,6 +179,15 @@ public class TextEditContent implements Content {
         return founds.stream()
             .map(found -> Point.of(found.row(), found.col()))
             .toList();
+    }
+
+    @Override
+    public <R> R query(Query<R> query) {
+        return switch (query) {
+            case Query.RowEndingSymbol q -> (R) edit.rowEnding().toString();
+            case Query.CharsetSymbol q -> (R) edit.charset().toString();
+            default -> null;
+        };
     }
 
 }

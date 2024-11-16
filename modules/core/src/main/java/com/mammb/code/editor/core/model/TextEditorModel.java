@@ -25,6 +25,7 @@ import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Point.Range;
+import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.layout.Loc;
@@ -477,6 +478,13 @@ public class TextEditorModel implements EditorModel {
                     text.length())
             );
         }
+    }
+
+    @Override
+    public <R> R query(Query<R> query) {
+        return switch (query) {
+            default -> content.query(query);
+        };
     }
 
     // -- private -------------------------------------------------------------

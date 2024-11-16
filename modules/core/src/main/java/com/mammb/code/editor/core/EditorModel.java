@@ -91,6 +91,14 @@ public interface EditorModel {
 
     void findAll(String text);
 
+    /**
+     * Get the result of the query.
+     * @param <R> the type of result
+     * @param query the query
+     * @return the result of query
+     */
+    <R> R query(Query<R> query);
+
     private static String extension(Path path) {
         return Optional.of(path.getFileName().toString())
                 .filter(f -> f.contains("."))

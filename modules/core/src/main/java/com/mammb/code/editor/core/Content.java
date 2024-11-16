@@ -130,6 +130,8 @@ public interface Content {
 
     List<Point> findAll(String text);
 
+    <R> R query(Query<R> query);
+
     static Content of() {
         return new TextEditContent();
     }

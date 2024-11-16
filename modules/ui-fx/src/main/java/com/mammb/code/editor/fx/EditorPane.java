@@ -18,6 +18,7 @@ package com.mammb.code.editor.fx;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -297,6 +298,9 @@ public class EditorPane extends StackPane {
 
     private void draw() {
         model.draw(draw);
+        floatBar.setText(
+            model.query(Query.rowEndingSymbol),
+            model.query(Query.charsetSymbol));
     }
 
     private void openWithChooser() {
