@@ -26,6 +26,10 @@ import java.util.Optional;
  */
 interface ContentLayout extends LineLayout {
 
+    /**
+     * Set the screen width.
+     * @param width the number of characters per line
+     */
     void setScreenWidth(int width);
     void refresh(int line);
     void refreshAt(int startRow, int endRow);

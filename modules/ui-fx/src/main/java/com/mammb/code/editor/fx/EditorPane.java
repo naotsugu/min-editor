@@ -78,6 +78,7 @@ public class EditorPane extends StackPane {
     public EditorPane() {
         this(null);
     }
+
     public EditorPane(Path path) {
 
         canvas = new Canvas();
@@ -304,6 +305,9 @@ public class EditorPane extends StackPane {
             p.row() + 1 + ":" + p.col(),
             model.query(Query.rowEndingSymbol),
             model.query(Query.charsetSymbol));
+        if (model.query(Query.modified) && !fileNameProperty.getValue().startsWith("*")) {
+            fileNameProperty.setValue("* " + fileNameProperty.getValue());
+        }
     }
 
     private void openWithChooser() {
