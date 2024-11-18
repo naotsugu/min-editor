@@ -39,6 +39,11 @@ public interface Syntax {
     List<StyleSpan> apply(int row, String text);
 
 
+    default boolean isBlockScoped() {
+        return true;
+    }
+
+
     static Syntax of(String name) {
         return switch (name.toLowerCase()) {
             case "java" -> new JavaSyntax();
@@ -52,10 +57,10 @@ public interface Syntax {
     }
 
     record PassThrough(String name) implements Syntax {
-        @Override
-        public List<StyleSpan> apply(int row, String text) {
+        @Override public List<StyleSpan> apply(int row, String text) {
             return List.of();
         }
+        @Override public boolean isBlockScoped() { return false; }
     }
 
     /**
