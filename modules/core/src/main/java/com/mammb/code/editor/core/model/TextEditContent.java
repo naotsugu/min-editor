@@ -188,7 +188,7 @@ public class TextEditContent implements Content {
             case Query.RowEndingSymbol q -> (R) edit.rowEnding().toString();
             case Query.CharsetSymbol q -> (R) edit.charset().toString();
             case Query.Modified q -> (R) (Boolean) isModified();
-            case Query.Bom q -> (R) null; // TODO
+            case Query.Bom q -> (R) edit.bom();
             default -> null;
         };
     }

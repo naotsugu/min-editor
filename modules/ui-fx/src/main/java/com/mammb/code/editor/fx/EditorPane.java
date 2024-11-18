@@ -304,7 +304,7 @@ public class EditorPane extends StackPane {
         floatBar.setText(
             p.row() + 1 + ":" + p.col(),
             model.query(Query.rowEndingSymbol),
-            model.query(Query.charsetSymbol));
+            model.query(Query.charsetSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
         if (model.query(Query.modified) && !fileNameProperty.getValue().startsWith("*")) {
             fileNameProperty.setValue("* " + fileNameProperty.getValue());
         }
