@@ -28,24 +28,32 @@ public interface EditingFunctions {
     /** logger. */
     System.Logger log = System.getLogger(EditingFunctions.class.getName());
 
+    /** Pass through function. */
     Function<String, String> passThrough = text -> text;
 
+    /** To lower case function. */
     Function<String, String> toLower = String::toLowerCase;
+    /** To upper case function. */
     Function<String, String> toUpper = String::toUpperCase;
 
+    /** Indent function. */
     Function<String, String> indent = text -> Arrays.stream(text.split("(?<=\\n)"))
             .map(s -> " ".repeat(4) + s)
             .collect(Collectors.joining());
+    /** Un indent function. */
     Function<String, String> unindent = text -> Arrays.stream(text.split("(?<=\\n)"))
             .map(s -> s.replaceFirst("^ {4}?|^\t", ""))
             .collect(Collectors.joining());
 
+    /** Sort function. */
     Function<String, String> sort = text -> Arrays.stream(text.split("(?<=\\n)"))
             .sorted().collect(Collectors.joining());
 
+    /** Unique function. */
     Function<String, String> unique = text -> Arrays.stream(text.split("(?<=\\n)"))
             .distinct().collect(Collectors.joining());
 
+    /** Calc function. */
     Function<String, String> toCalc = text -> {
         // if it contains an equal sign, delete the rest
         int eq = text.indexOf('=');

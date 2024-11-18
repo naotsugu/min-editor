@@ -17,6 +17,8 @@ package com.mammb.code.editor.core.layout;
 
 /**
  * The location.
+ * @param x the location of x
+ * @param y the location of y
  * @author Naotsugu Kobayashi
  */
 public record Loc(double x, double y) {
