@@ -252,8 +252,8 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
 
     record Command(CmdType type, String[] args) {
         Command(CmdType type) { this(type, new String[0]); }
-        Command(CmdType type, String arg) { this(type, new String[] { arg } ); }
-        Command(CmdType type, String arg1, String arg2) { this(type, new String[] { arg1, arg2 } ); }
+        Command(CmdType type, String arg) { this(type, new String[] { arg.trim() } ); }
+        Command(CmdType type, String arg1, String arg2) { this(type, new String[] { arg1.trim(), arg2.trim() } ); }
         static Command empty = new Command(null);
     }
 

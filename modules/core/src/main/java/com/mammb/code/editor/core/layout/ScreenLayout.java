@@ -93,7 +93,7 @@ public interface ScreenLayout extends LineLayout {
             int delta = line - topLine;
             if (delta == 0) return;
             int screenLineSize = screenLineSize();
-            if (Math.abs(delta) < screenLineSize * 2 / 3) {
+            if (Math.abs(delta) < screenLineSize) {
                 topLine = line;
                 List<Text> texts;
                 if (delta > 0) {
