@@ -52,7 +52,7 @@ import static java.lang.System.Logger.Level.*;
  */
 public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane> {
 
-    private static final Logger logger = System.getLogger(SplitTabPane.class.getName());
+    private static final Logger log = System.getLogger(SplitTabPane.class.getName());
 
     private static final AtomicReference<Tab> draggedTab = new AtomicReference<>();
     private static final AtomicReference<DndTabPane> activePane = new AtomicReference<>();
@@ -225,7 +225,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                         e.consume();
                     }
                 } else {
-                    logger.log(ERROR, "An unexpected node configuration has been detected.");
+                    log.log(ERROR, "An unexpected node configuration has been detected.");
                 }
             }
         }
