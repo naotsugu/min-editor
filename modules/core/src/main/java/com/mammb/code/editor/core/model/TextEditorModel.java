@@ -98,8 +98,16 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void moveTo(int row) {
-        // TODO consider syntax scope
-        view.scrollAt(view.rowToFirstLine(row));
+        if (decorate.isBlockScoped()) {
+            int delta = view.rowToFirstLine(row) - view.topLine();
+            if (delta > 0) {
+                scrollNext(delta);
+            } else {
+                scrollPrev(delta);
+            }
+        } else {
+            view.scrollAt(view.rowToFirstLine(row));
+        }
         Caret c = carets.getFirst();
         c.at(row, 0);
     }

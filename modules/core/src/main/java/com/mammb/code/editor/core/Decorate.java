@@ -35,6 +35,8 @@ public interface Decorate {
     void addHighlights(int row, StyleSpan span);
     void clear();
     Set<Integer> highlightsRows();
+    boolean isBlockScoped();
+
 
     static Decorate of(Syntax syntax) {
         return new DecorateImpl(syntax);
@@ -91,6 +93,11 @@ public interface Decorate {
         @Override
         public Set<Integer> highlightsRows() {
             return highlights.keySet();
+        }
+
+        @Override
+        public boolean isBlockScoped() {
+            return syntax.isBlockScoped();
         }
 
     }
