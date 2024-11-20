@@ -75,7 +75,15 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     public boolean close() {
-        // TODO
+        for (Node node : contents) {
+            if (node instanceof EditorPane editorPane) {
+                if (!editorPane.canDiscardCurrent()) {
+                    // TODO tab select
+                    System.out.println(editorPane);
+                    return false;
+                }
+            }
+        }
         return true;
     }
 
