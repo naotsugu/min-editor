@@ -23,10 +23,18 @@ import com.mammb.code.editor.core.FontMetrics;
  */
 public interface RowText extends LinedText {
 
+    @Override
     default int line() {
         return row();
     }
 
+    /**
+     * Create a new {@link RowText}.
+     * @param row the row number
+     * @param text the text
+     * @param fm the font metrics
+     * @return a new {@link RowText}
+     */
     static RowText of(int row, String text, FontMetrics fm) {
         double width = 0;
         double[] advances = new double[text.length()];
@@ -43,11 +51,12 @@ public interface RowText extends LinedText {
                 width += advances[i] = fm.getAdvance(ch1);
             }
         }
-        return new RowTextRecord(row, text, advances, width, fm.getLineHeight());
-    }
 
-    record RowTextRecord(int row, String value, double[] advances, double width, double height)
+        record RowTextRecord(int row, String value, double[] advances, double width, double height)
             implements RowText {
+        }
+
+        return new RowTextRecord(row, text, advances, width, fm.getLineHeight());
     }
 
 }

@@ -43,6 +43,7 @@ public class App extends Application {
         stage.show();
     }
 
+    /** The app css. */
     private static String css = String.join(",", "data:text/css;base64",
         Base64.getEncoder().encodeToString("""
         .root {
