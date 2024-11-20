@@ -115,11 +115,6 @@ public class RoStringContent implements Content {
     }
 
     @Override
-    public boolean isModified() {
-        return false;
-    }
-
-    @Override
     public Point insertFlush(Point point, String text) {
         return point;
     }

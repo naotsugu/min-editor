@@ -191,11 +191,6 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public boolean isModified() {
-        return false;
-    }
-
-    @Override
     public Optional<Path> path() {
         return Optional.empty();
     }

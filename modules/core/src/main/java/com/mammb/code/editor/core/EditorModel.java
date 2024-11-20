@@ -78,7 +78,6 @@ public interface EditorModel {
     void pasteFromClipboard(Clipboard clipboard);
     void copyToClipboard(Clipboard clipboard);
     void cutToClipboard(Clipboard clipboard);
-    boolean isModified();
     Optional<Path> path();
     void save(Path path);
     void escape();

@@ -423,11 +423,6 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public boolean isModified() {
-        return content.isModified();
-    }
-
-    @Override
     public Optional<Path> path() {
         return content.path();
     }

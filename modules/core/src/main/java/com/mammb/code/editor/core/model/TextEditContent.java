@@ -156,7 +156,6 @@ public class TextEditContent implements Content {
         edit.save(path);
     }
 
-    @Override
     public boolean isModified() {
         edit.flush();
         return edit.hasUndoRecord();

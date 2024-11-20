@@ -122,8 +122,6 @@ public interface Content {
 
     void save(Path path);
 
-    boolean isModified();
-
     Point insertFlush(Point point, String text);
 
     void clearFlush();
