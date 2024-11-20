@@ -33,7 +33,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         Parameters params = getParameters();
-        var appPane = new AppPane();
+        var appPane = new AppPane(stage);
         Scene scene = new Scene(appPane, 640, 480);
         scene.getStylesheets().add(css);
         stage.setScene(scene);

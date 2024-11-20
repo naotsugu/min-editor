@@ -16,6 +16,7 @@
 package com.mammb.code.editor.fx;
 
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 /**
  * The application pane.
@@ -23,11 +24,20 @@ import javafx.scene.layout.BorderPane;
  */
 public class AppPane extends BorderPane {
 
+    /** The split tab pane. */
     private SplitTabPane container;
 
-    public AppPane() {
-        container = new SplitTabPane(new EditorPane());
+    /**
+     * Constructor.
+     * @param stage the stage
+     */
+    public AppPane(Stage stage) {
+        EditorPane editorPane = new EditorPane();
+        container = new SplitTabPane(editorPane);
         setCenter(container);
+        stage.setOnCloseRequest(req -> {
+            // TODO
+        });
     }
 
 }

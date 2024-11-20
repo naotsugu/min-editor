@@ -386,8 +386,8 @@ public class EditorPane extends StackPane {
         command.ifPresent(c -> {
             switch (c.type()) {
                 case findAll     -> model.findAll(c.args()[0]);
-                case goTo        -> model.moveTo(Integer.parseInt(c.args()[0]) - 1);
-                case wrap        -> model.wrap(Integer.parseInt(c.args()[0]));
+                case goTo        -> model.moveTo(Integer.parseInt(c.args()[0]) - 1); // TODO handle parse error
+                case wrap        -> model.wrap(Integer.parseInt(c.args()[0])); // TODO handle parse error
                 case toLowerCase -> model.replace(EditingFunctions.toLower, true);
                 case toUpperCase -> model.replace(EditingFunctions.toUpper, true);
                 case calc        -> model.replace(EditingFunctions.toCalc, false);
