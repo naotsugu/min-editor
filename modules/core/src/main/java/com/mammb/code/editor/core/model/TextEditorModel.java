@@ -100,11 +100,13 @@ public class TextEditorModel implements EditorModel {
     public void moveTo(int row) {
         if (decorate.isBlockScoped()) {
             int delta = view.rowToFirstLine(row) - view.topLine();
-            if (delta > 0) {
-                scrollNext(delta);
-            } else {
-                scrollPrev(delta);
+            int page = view.screenLineSize() - 1;
+            int n = Math.abs(delta / page);
+            int d = Math.abs(delta % page);
+            for (int i = 0; i < n; i++) {
+                if (delta > 0) scrollNext(page); else scrollPrev(page);
             }
+            if (delta > 0) scrollNext(d); else scrollPrev(d);
         } else {
             view.scrollAt(view.rowToFirstLine(row));
         }
