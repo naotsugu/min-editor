@@ -39,11 +39,14 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.io.File;
+import java.lang.System.Logger;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
-import java.lang.System.Logger;
-import static java.lang.System.Logger.Level.*;
+
+import static java.lang.System.Logger.Level.ERROR;
 
 /**
  * The SplitTabPane.
@@ -60,6 +63,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
     private SplitPane pane = new SplitPane();
     private SplitTabPane parent;
+    private List<Node> contents = new ArrayList<>();
 
     public SplitTabPane() {
         getChildren().add(pane);
@@ -67,7 +71,14 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     public SplitTabPane(EditorPane node) {
         this();
         add(node);
+        contents.add(node);
     }
+
+    public boolean close() {
+        // TODO
+        return true;
+    }
+
     private SplitTabPane(EditorPane node, SplitTabPane parent) {
         this();
         add(node);
@@ -78,10 +89,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         pane.getItems().add(node);
         this.parent = parent;
         node.setParent(this);
-    }
-    public boolean close() {
-        // TODO
-        return true;
     }
     private DndTabPane add(EditorPane node) {
         pane.getItems().clear();
@@ -191,8 +198,12 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             label.setOnDragDetected(this::handleTabDragDetected);
             tab.setOnCloseRequest(this::handleOnTabCloseRequest);
             tab.setOnClosed(this::handleOnTabClosed);
-            node.fileNameProperty().addListener((ob, o, n) -> label.setText(n));
-            node.setNewOpenHandler(path -> add(new EditorPane()));
+            node.fileNameProperty().addListener((_, _, n) -> label.setText(n));
+            node.setNewOpenHandler(_ -> {
+                EditorPane editorPane = new EditorPane();
+                add(editorPane);
+                parent.contents.add(editorPane);
+            });
         }
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
             if (focused) focus();
@@ -228,6 +239,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     if (!editorPane.canDiscardCurrent()) {
                         e.consume();
                     }
+                    parent.contents.remove(editorPane);
                 } else {
                     log.log(ERROR, "An unexpected node configuration has been detected.");
                 }
@@ -236,7 +248,9 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleOnTabClosed(Event e) {
             if (tabPane.getTabs().isEmpty()) {
                 if (parent.parent == null) {
-                    add(new EditorPane());
+                    EditorPane editorPane = new EditorPane();
+                    add(editorPane);
+                    parent.contents.add(editorPane);
                 } else {
                     parent.parent.remove(parent);
                 }
@@ -303,13 +317,14 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             e.consume();
         }
         private void handleDragDropped(DragEvent e) {
-
             var db = e.getDragboard();
             if (db.hasFiles() && dropPoint(this, e) == DropPoint.HEADER) {
                 var path = db.getFiles().stream().map(File::toPath)
                         .filter(Files::isReadable).filter(Files::isRegularFile)
                         .findFirst().orElse(null);
-                add(new EditorPane(path));
+                EditorPane editorPane = new EditorPane(path);
+                add(editorPane);
+                parent.contents.add(editorPane);
                 e.setDropCompleted(false);
                 return;
             }
