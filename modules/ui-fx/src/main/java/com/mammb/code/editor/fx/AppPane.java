@@ -32,11 +32,15 @@ public class AppPane extends BorderPane {
      * @param stage the stage
      */
     public AppPane(Stage stage) {
-        EditorPane editorPane = new EditorPane();
+        var editorPane = new EditorPane();
         container = new SplitTabPane(editorPane);
         setCenter(container);
-        stage.setOnCloseRequest(req -> {
-            // TODO
+        stage.setOnCloseRequest(e -> {
+            e.consume();
+            var ret = container.close();
+            if (ret) {
+                stage.close();
+            }
         });
     }
 

@@ -79,6 +79,10 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         this.parent = parent;
         node.setParent(this);
     }
+    public boolean close() {
+        // TODO
+        return true;
+    }
     private DndTabPane add(EditorPane node) {
         pane.getItems().clear();
         DndTabPane dndTabPane = new DndTabPane(this, node);
