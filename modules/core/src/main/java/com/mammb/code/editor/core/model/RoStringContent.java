@@ -162,6 +162,7 @@ public class RoStringContent implements Content {
             case Query.RowEndingSymbol q -> (R) stat.rowEnding().toString();
             case Query.CharsetSymbol q -> (R) stat.charset().toString();
             case Query.Modified q -> (R) Boolean.FALSE;
+            case Query.Bom q -> (R) stat.bom();
             default -> null;
         };
     }
