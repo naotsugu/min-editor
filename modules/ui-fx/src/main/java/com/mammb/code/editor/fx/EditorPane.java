@@ -305,8 +305,10 @@ public class EditorPane extends StackPane {
             p.row() + 1 + ":" + p.col(),
             model.query(Query.rowEndingSymbol),
             model.query(Query.charsetSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
-        if (model.query(Query.modified) && !fileNameProperty.getValue().startsWith("*")) {
-            fileNameProperty.setValue("* " + fileNameProperty.getValue());
+        if (model.query(Query.modified)) {
+            fileNameProperty.setValue("*" + model.path().map(Path::getFileName).map(Path::toString).orElse("Untitled"));
+        } else {
+            fileNameProperty.setValue(model.path().map(Path::getFileName).map(Path::toString).orElse("Untitled"));
         }
     }
 

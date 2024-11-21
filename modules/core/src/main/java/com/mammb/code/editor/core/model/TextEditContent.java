@@ -34,6 +34,7 @@ public class TextEditContent implements Content {
 
     private final TextEdit edit;
     private final List<Point.PointText> flushes = new ArrayList<>();
+    private boolean modified;
 
     public TextEditContent() {
         this.edit = TextEdit.of();
@@ -46,6 +47,7 @@ public class TextEditContent implements Content {
     @Override
     public Point insert(Point point, String text) {
         String txt = edit.rowEnding().unify(text).toString();
+        modified = true;
         var pos = edit.insert(point.row(), point.col(), txt);
         return Point.of(pos.row(), pos.col());
     }
@@ -53,6 +55,7 @@ public class TextEditContent implements Content {
     @Override
     public List<Point> insert(List<Point> points, String text) {
         String txt = edit.rowEnding().unify(text).toString();
+        modified = true;
         var pos = edit.insert(points.stream()
             .map(p -> new TextEdit.Pos(p.row(), p.col())).toList(), txt);
         return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
@@ -60,11 +63,13 @@ public class TextEditContent implements Content {
 
     @Override
     public String delete(Point point) {
+        modified = true;
         return edit.delete(point.row(), point.col());
     }
 
     @Override
     public List<Point> delete(List<Point> points) {
+        modified = true;
         var pos = edit.delete(points.stream()
             .map(p -> new TextEdit.Pos(p.row(), p.col())).toList());
         return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
@@ -72,12 +77,14 @@ public class TextEditContent implements Content {
 
     @Override
     public Point backspace(Point point) {
+        modified = true;
         var pos = edit.backspace(point.row(), point.col());
         return Point.of(pos.row(), pos.col());
     }
 
     @Override
     public List<Point> backspace(List<Point> points) {
+        modified = true;
         var pos = edit.backspace(points.stream()
             .map(p -> new TextEdit.Pos(p.row(), p.col())).toList());
         return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
@@ -92,6 +99,7 @@ public class TextEditContent implements Content {
 
     @Override
     public List<Point> replace(List<Point.Range> ranges, Function<String, String> fun) {
+        modified = true;
         // TODO transaction replace
         return ranges.stream().sorted(Comparator.reverseOrder())
             .map(range -> edit.replace(
@@ -105,12 +113,16 @@ public class TextEditContent implements Content {
 
     @Override
     public List<Point> undo() {
-        return edit.undo().stream().map(p -> Point.of(p.row(), p.col())).toList();
+        var ret = edit.undo().stream().map(p -> Point.of(p.row(), p.col())).toList();
+        modified |= !ret.isEmpty();
+        return ret;
     }
 
     @Override
     public List<Point> redo() {
-        return edit.redo().stream().map(p -> Point.of(p.row(), p.col())).toList();
+        var ret = edit.redo().stream().map(p -> Point.of(p.row(), p.col())).toList();
+        modified |= !ret.isEmpty();
+        return ret;
     }
 
     @Override
@@ -154,11 +166,7 @@ public class TextEditContent implements Content {
     @Override
     public void save(Path path) {
         edit.save(path);
-    }
-
-    public boolean isModified() {
-        edit.flush();
-        return edit.hasUndoRecord();
+        modified = false;
     }
 
     @Override
@@ -186,7 +194,7 @@ public class TextEditContent implements Content {
         return switch (query) {
             case Query.RowEndingSymbol q -> (R) edit.rowEnding().toString();
             case Query.CharsetSymbol q -> (R) edit.charset().toString();
-            case Query.Modified q -> (R) (Boolean) isModified();
+            case Query.Modified q -> (R) (Boolean) modified;
             case Query.Bom q -> (R) edit.bom();
             default -> null;
         };
