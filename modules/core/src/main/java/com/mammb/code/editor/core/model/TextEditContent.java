@@ -194,10 +194,17 @@ public class TextEditContent implements Content {
         return switch (query) {
             case Query.RowEndingSymbol q -> (R) edit.rowEnding().toString();
             case Query.CharsetSymbol q -> (R) edit.charset().toString();
-            case Query.Modified q -> (R) (Boolean) modified;
+            case Query.Modified q -> (R) (Boolean) isModified();
             case Query.Bom q -> (R) edit.bom();
             default -> null;
         };
+    }
+
+    private boolean isModified() {
+        if (flushes.isEmpty() && !edit.hasUndoRecord()) {
+            return false;
+        }
+        return modified;
     }
 
 }
