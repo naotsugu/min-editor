@@ -63,7 +63,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
     private SplitPane pane = new SplitPane();
     private SplitTabPane parent;
-    private List<Node> contents = new ArrayList<>();
+    private List<Tab> contents = new ArrayList<>();
 
     public SplitTabPane() {
         getChildren().add(pane);
@@ -71,15 +71,13 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     public SplitTabPane(EditorPane node) {
         this();
         add(node);
-        contents.add(node);
     }
 
     public boolean close() {
-        for (Node node : contents) {
-            if (node instanceof EditorPane editorPane) {
+        for (Tab tab : contents) {
+            if (tab.getContent() instanceof  EditorPane editorPane) {
+                tab.getTabPane().getSelectionModel().select(tab);
                 if (!editorPane.canDiscardCurrent()) {
-                    // TODO tab select
-                    System.out.println(editorPane);
                     return false;
                 }
             }
@@ -198,6 +196,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             tabPane.getTabs().add(tab);
             tabPane.getSelectionModel().select(tab);
             tabPane.getSelectionModel().selectedItemProperty().addListener(this::handleSelectedTabItem);
+            parent.contents.add(tab);
         }
         private void initTab(Tab tab) {
             var node = (EditorPane) tab.getContent();
@@ -210,7 +209,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             node.setNewOpenHandler(_ -> {
                 EditorPane editorPane = new EditorPane();
                 add(editorPane);
-                parent.contents.add(editorPane);
             });
         }
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
@@ -247,7 +245,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     if (!editorPane.canDiscardCurrent()) {
                         e.consume();
                     }
-                    parent.contents.remove(editorPane);
+                    parent.contents.remove(tab);
                 } else {
                     log.log(ERROR, "An unexpected node configuration has been detected.");
                 }
@@ -258,7 +256,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 if (parent.parent == null) {
                     EditorPane editorPane = new EditorPane();
                     add(editorPane);
-                    parent.contents.add(editorPane);
                 } else {
                     parent.parent.remove(parent);
                 }
@@ -332,7 +329,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                         .findFirst().orElse(null);
                 EditorPane editorPane = new EditorPane(path);
                 add(editorPane);
-                parent.contents.add(editorPane);
                 e.setDropCompleted(false);
                 return;
             }
