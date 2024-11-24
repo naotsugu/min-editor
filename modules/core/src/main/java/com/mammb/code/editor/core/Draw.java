@@ -53,8 +53,10 @@ public interface Draw {
     /// @return
     FontMetrics fontMetrics();
 
+    /// Draw the line.
+    /// @param lines
     void line(Line... lines);
 
-    record Line(double x1, double y1, double x2, double y2) {}
+    record Line(double x1, double y1, double x2, double y2, String color) {}
 
 }
