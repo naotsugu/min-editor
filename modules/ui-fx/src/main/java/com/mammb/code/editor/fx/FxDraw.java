@@ -156,6 +156,15 @@ public class FxDraw implements Draw {
         return fontMetrics;
     }
 
+    @Override
+    public void line(Line... lines) {
+        gc.setStroke(Color.GRAY);
+        gc.setLineWidth(1);
+        for (Line(double x1, double y1, double x2, double y2) : lines) {
+            gc.strokeLine(x1, y1, x2, y2);
+        }
+    }
+
     private Font defaultFont() {
         String fontName = System.getProperty("os.name").toLowerCase().startsWith("windows")
                 ? "MS Gothic" : "Consolas";

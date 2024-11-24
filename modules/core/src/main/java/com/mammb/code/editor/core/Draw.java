@@ -48,5 +48,13 @@ public interface Draw {
     void select(double x1, double y1, double x2, double y2, double l, double r);
     void underline(double x1, double y1, double x2, double y2);
     void hLine(double x, double y, double w);
+
+    /// Get the FontMetrics.
+    /// @return
     FontMetrics fontMetrics();
+
+    void line(Line... lines);
+
+    record Line(double x1, double y1, double x2, double y2) {}
+
 }
