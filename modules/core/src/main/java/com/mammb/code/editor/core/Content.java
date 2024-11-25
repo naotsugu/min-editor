@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.Point.Range;
+import com.mammb.code.editor.core.model.RoStringContent;
 import com.mammb.code.editor.core.model.TextEditContent;
 import java.nio.file.Path;
 import java.util.List;
@@ -136,6 +137,10 @@ public interface Content {
 
     static Content of(Path path) {
         return new TextEditContent(path);
+    }
+
+    static Content readOnlyPartOf(Path path) {
+        return new RoStringContent(path);
     }
 
 }

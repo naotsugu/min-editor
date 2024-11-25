@@ -32,6 +32,7 @@ import java.util.function.Function;
  */
 public class TextEditContent implements Content {
 
+    /** The text edit. */
     private final TextEdit edit;
     private final List<Point.PointText> flushes = new ArrayList<>();
     private boolean modified;
