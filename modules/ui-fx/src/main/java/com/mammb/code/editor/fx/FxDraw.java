@@ -34,10 +34,17 @@ import java.util.Optional;
  */
 public class FxDraw implements Draw {
 
+    /** The graphics context. */
     private final GraphicsContext gc;
+    /** The font metrics. */
     private final FontMetrics fontMetrics;
+    /** The cache of color. */
     private final Map<String, Color> colors = new HashMap<>();
 
+    /**
+     * Constructor.
+     * @param gc the graphics context
+     */
     public FxDraw(GraphicsContext gc) {
         this.gc = gc;
         Font font = defaultFont();
