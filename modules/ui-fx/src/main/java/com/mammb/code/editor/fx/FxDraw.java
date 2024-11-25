@@ -159,9 +159,9 @@ public class FxDraw implements Draw {
     @Override
     public void line(Line... lines) {
         gc.setLineWidth(1);
-        for (Line(double x1, double y1, double x2, double y2, String color) : lines) {
-            gc.setStroke(color(color));
-            gc.strokeLine(x1, y1, x2, y2);
+        for (Line line : lines) {
+            gc.setStroke(color(line.color()));
+            gc.strokeLine(line.x1(), line.y1(), line.x2(), line.y2());
         }
     }
 
