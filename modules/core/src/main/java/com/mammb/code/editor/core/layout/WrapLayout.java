@@ -211,7 +211,7 @@ public class WrapLayout implements ContentLayout {
         for (int i = rangeLineStart; i < rangeLineEnd; i++) {
             SubRange sub = lines.get(Math.clamp(i, 0, lines.size() - 1));
             if (sub.contains(row, col)) {
-                return Optional.of(new Loc(xOnLayout(i, col), yOnLayout(i)));
+                return Optional.of(new Loc(xOnLayout(i, col - sub.fromIndex), yOnLayout(i)));
             }
         }
         return Optional.empty();
