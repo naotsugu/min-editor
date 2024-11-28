@@ -28,20 +28,19 @@ import java.util.function.Function;
  */
 public interface EditorModel {
 
-    static EditorModel of(FontMetrics fm, ScreenScroll scroll) {
+    /**
+     * Create a new {@link EditorModel}.
+     * @param content the content
+     * @param fm the font metrics
+     * @param scroll the screen scroll
+     * @return a new {@link EditorModel}
+     */
+    static EditorModel of(Content content, FontMetrics fm, ScreenScroll scroll) {
         return new TextEditorModel(
-                Content.of(),
-                fm,
-                Syntax.of(""),
-                scroll);
-    }
-
-    static EditorModel of(Path path, FontMetrics fm, ScreenScroll scroll) {
-        return new TextEditorModel(
-                Content.of(path),
-                fm,
-                Syntax.of(extension(path)),
-                scroll);
+            content,
+            fm,
+            Syntax.of(content.path().map(EditorModel::extension).orElse("")),
+            scroll);
     }
 
     void draw(Draw draw);

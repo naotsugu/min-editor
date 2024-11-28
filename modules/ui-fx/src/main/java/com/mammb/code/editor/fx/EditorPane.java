@@ -16,6 +16,7 @@
 package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Action;
+import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Point;
@@ -86,8 +87,8 @@ public class EditorPane extends StackPane {
         canvas.setFocusTraversable(true);
         draw = new FxDraw(canvas.getGraphicsContext2D());
         model = (path == null)
-                ? EditorModel.of(draw.fontMetrics(), screenScroll())
-                : EditorModel.of(path, draw.fontMetrics(), screenScroll());
+                ? EditorModel.of(Content.of(), draw.fontMetrics(), screenScroll())
+                : EditorModel.of(Content.of(path), draw.fontMetrics(), screenScroll());
         vScroll.setOrientation(Orientation.VERTICAL);
         hScroll.setOrientation(Orientation.HORIZONTAL);
         StackPane.setAlignment(vScroll, Pos.TOP_RIGHT);
@@ -323,7 +324,7 @@ public class EditorPane extends StackPane {
     }
 
     private void open(Path path) {
-        model = EditorModel.of(path, draw.fontMetrics(), screenScroll());
+        model = EditorModel.of(Content.of(path), draw.fontMetrics(), screenScroll());
         model.setSize(getWidth(), getHeight());
         fileNameProperty.setValue(path.getFileName().toString());
     }
