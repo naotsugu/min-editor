@@ -139,6 +139,10 @@ public interface Content {
         return new TextEditContent(path);
     }
 
+    static Content of(Path path, Function<byte[], Boolean> traverseCallback) {
+        return new TextEditContent(path, traverseCallback);
+    }
+
     static Content readOnlyPartOf(Path path) {
         return new RoStringContent(path);
     }

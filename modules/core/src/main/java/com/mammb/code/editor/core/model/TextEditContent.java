@@ -45,6 +45,10 @@ public class TextEditContent implements Content {
         this.edit = TextEdit.of(path);
     }
 
+    public TextEditContent(Path path, Function<byte[], Boolean> traverseCallback) {
+        this.edit = TextEdit.of(path, traverseCallback);
+    }
+
     @Override
     public Point insert(Point point, String text) {
         String txt = edit.rowEnding().unify(text).toString();
