@@ -189,8 +189,8 @@ public interface ScreenLayout extends LineLayout {
         }
 
         @Override
-        public double xOnLayout(int line, int col) {
-            return layout.xOnLayout(line, col);
+        public double xOnLayout(int line, int index) {
+            return layout.xOnLayout(line, index);
         }
 
         @Override
