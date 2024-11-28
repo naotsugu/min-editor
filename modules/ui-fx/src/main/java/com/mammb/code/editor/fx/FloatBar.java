@@ -16,8 +16,11 @@
 package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Theme;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -63,7 +66,24 @@ public class FloatBar extends HBox {
             return;
         }
         text.setText(String.join(" ", strings));
-        setWidth(text.getLayoutBounds().getWidth() + 16);
+        layoutSize();
+    }
+
+    public void handleProgress(Task<?> task) {
+        ProgressBar progressBar = new ProgressBar(0);
+        progressBar.progressProperty().bind(task.progressProperty());
+        task.addEventHandler(WorkerStateEvent.WORKER_STATE_SUCCEEDED, e -> getChildren().remove(progressBar));
+        task.addEventHandler(WorkerStateEvent.WORKER_STATE_CANCELLED, e -> getChildren().remove(progressBar));
+        task.addEventHandler(WorkerStateEvent.WORKER_STATE_FAILED, e -> getChildren().remove(progressBar));
+        task.addEventHandler(WorkerStateEvent.WORKER_STATE_RUNNING, e -> getChildren().remove(progressBar));
+        getChildren().addFirst(progressBar);
+        // TODO queue task
+        layoutSize();
+    }
+
+
+    private void layoutSize() {
+        setWidth(text.getLayoutBounds().getWidth() + 16 + (getChildren().size() - 1) * 100);
         setHeight(text.getLayoutBounds().getHeight());
     }
 
