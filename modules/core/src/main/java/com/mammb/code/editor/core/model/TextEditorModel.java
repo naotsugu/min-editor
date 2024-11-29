@@ -37,6 +37,7 @@ import com.mammb.code.editor.core.text.StyledText;
 import com.mammb.code.editor.core.text.Symbols;
 import com.mammb.code.editor.core.text.Text;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -528,15 +529,24 @@ public class TextEditorModel implements EditorModel {
                         if (st.isEndWithCrLf()) {
                             draw.line(Symbols.crlf(
                                 px + st.width() + view.standardCharWidth() * 0.2,
-                                py + view.lineHeight() * 0.1,
+                                py,
                                 view.standardCharWidth() * 0.8,
                                 view.lineHeight() * 0.8, "#80808088"));
                         } else if (st.isEndWithLf()) {
                             draw.line(Symbols.lineFeed(
                                 px + st.width() + view.standardCharWidth() * 0.2,
-                                py + view.lineHeight() * 0.1,
+                                py,
                                 view.standardCharWidth() * 0.8,
                                 view.lineHeight() * 0.8, "#80808088"));
+                        }
+                        for (int i = 0; i < st.value().length(); i++) {
+                            i = st.value().indexOf('　', i);
+                            if (i < 0) break;
+                            draw.line(Symbols.whiteSpace(
+                                px + Arrays.stream(st.advances()).limit(i).sum(),
+                                py - view.lineHeight() * 0.2,
+                                view.standardCharWidth() * 1.7,
+                                view.lineHeight(), "#80808088"));
                         }
                     }
                 }

@@ -20,6 +20,16 @@ package com.mammb.code.editor.core;
  * @author Naotsugu Kobayashi
  */
 public interface Clipboard {
+
+    /**
+     * Put the string to the clipboard.
+     * @param text the string
+     */
     void setPlainText(String text);
+
+    /**
+     * Get the string from the clipboard.
+     * @return the string
+     */
     String getString();
 }

@@ -44,6 +44,11 @@ public interface CaretGroup {
     boolean hasMarked();
     void at(List<Point> points);
     void add(List<Point> points);
+
+    /**
+     * Get the count of caret.
+     * @return the count of caret
+     */
     int size();
 
     static CaretGroup of() {
