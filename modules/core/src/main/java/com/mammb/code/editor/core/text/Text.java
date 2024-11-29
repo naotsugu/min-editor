@@ -26,8 +26,16 @@ import java.util.List;
  */
 public interface Text {
 
+    /**
+     * Get the number of row.
+     * @return the number of row
+     */
     int row();
 
+    /**
+     * Get the text value.
+     * @return the text value
+     */
     String value();
 
     double[] advances();
