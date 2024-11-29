@@ -29,8 +29,17 @@ import java.util.stream.Collectors;
  */
 public interface StyledText extends Text {
 
+    /**
+     * Get the styles.
+     * @return the styles
+     */
     List<Style> styles();
 
+    /**
+     * Create the style builder.
+     * @param text the source text
+     * @return the style builder
+     */
     static Builder of(Text text) {
         return new Builder(text);
     }
