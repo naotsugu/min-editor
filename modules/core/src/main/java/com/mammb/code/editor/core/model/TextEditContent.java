@@ -46,7 +46,7 @@ public class TextEditContent implements Content {
     }
 
     public TextEditContent(Path path, Function<byte[], Boolean> traverseCallback) {
-        this.edit = TextEdit.of(path, (bytes, cs) -> traverseCallback.apply(bytes));
+        this.edit = TextEdit.of(path, traverseCallback::apply);
     }
 
     @Override

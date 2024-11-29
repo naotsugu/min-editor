@@ -123,6 +123,17 @@ public class App extends Application {
         .tab-label {
           -fx-font: 13px "Consolas";
         }
+
+        .progress-bar > .bar {
+            -fx-background-color: derive(-fx-accent, 50%);
+            -fx-background-insets: 0;
+            -fx-background-radius: 0;
+        }
+        .progress-bar > .track {
+            -fx-background-color: transparent;
+            -fx-background-insets: 0;
+            -fx-background-radius: 0;
+         }
         """
         .replaceAll("app-base", Theme.dark.baseColor())
         .replaceAll("app-text", Theme.dark.fgColor())

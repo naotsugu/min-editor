@@ -26,6 +26,7 @@ import com.mammb.code.editor.core.editing.EditingFunctions;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
@@ -50,6 +51,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -324,9 +326,30 @@ public class EditorPane extends StackPane {
     }
 
     private void open(Path path) {
-        model = EditorModel.of(Content.of(path), draw.fontMetrics(), screenScroll());
+        final long size = fileSize(path);
+        boolean openInBackground = size > 2_000_000;
+        Content content = openInBackground ? Content.readOnlyPartOf(path) : Content.of(path);
+        model = EditorModel.of(content, draw.fontMetrics(), screenScroll());
         model.setSize(getWidth(), getHeight());
         fileNameProperty.setValue(path.getFileName().toString());
+
+        if (openInBackground) {
+            Task<Content> task = new Task<>() {
+                private final AtomicLong total = new AtomicLong(0);
+                @Override protected Content call() {
+                    return Content.of(path, bytes -> {
+                        updateProgress(total.addAndGet(bytes.length), size);
+                        return !isCancelled();
+                    });
+                }
+            };
+            task.setOnSucceeded(e -> {
+                model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll());
+                model.setSize(getWidth(), getHeight());
+            });
+            floatBar.handleProgress(task);
+            new Thread(task).start();
+        }
     }
 
     boolean canDiscardCurrent() {
@@ -413,6 +436,13 @@ public class EditorPane extends StackPane {
             @Override
             public String getSelectedText() { return ""; }
         };
+    }
+
+    private long fileSize(Path path) {
+        try {
+            return Files.size(path);
+        } catch (Exception ignore) { }
+        return 0;
     }
 
 }
