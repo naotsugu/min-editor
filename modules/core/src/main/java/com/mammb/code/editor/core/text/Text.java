@@ -48,13 +48,19 @@ public interface Text {
         return value().length();
     }
 
+    default boolean isEndWithLf() {
+        int len = value().length();
+        return (len > 0) && value().charAt(len - 1) == '\n';
+    }
+
+    default boolean isEndWithCrLf() {
+        int len = value().length();
+        return (len > 1) && value().charAt(len - 2) == '\r' && value().charAt(len - 1) == '\n';
+    }
+
     default int textLength() {
         int len = value().length();
-        char ch1 = (len > 0) ? value().charAt(len - 1) : 0;
-        char ch2 = (len > 1) ? value().charAt(len - 2) : 0;
-        return len - (
-                (ch2 == '\r' && ch1  == '\n') ? 2 : (ch1  == '\n') ? 1 : 0
-        );
+        return isEndWithCrLf() ? len - 2 : isEndWithLf() ? len - 1 : len;
     }
 
     default boolean isSurrogate(int index) {

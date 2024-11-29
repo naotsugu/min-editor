@@ -189,6 +189,11 @@ public interface ScreenLayout extends LineLayout {
         }
 
         @Override
+        public double standardCharWidth() {
+            return layout.standardCharWidth();
+        }
+
+        @Override
         public double xOnLayout(int line, int col) {
             return layout.xOnLayout(line, col);
         }

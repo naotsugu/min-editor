@@ -43,7 +43,6 @@ interface ContentLayout extends LineLayout {
     List<Text> texts(int startLine, int endLine);
     RowText rowText(int line);
     @Override RowText rowTextAt(int row);
-    double standardCharWidth();
     Optional<Loc> loc(int row, int col, int rangeLineStart, int rangeLineEnd);
 
 }

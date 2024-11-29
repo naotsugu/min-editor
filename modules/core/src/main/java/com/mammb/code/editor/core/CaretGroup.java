@@ -27,6 +27,11 @@ public interface CaretGroup {
 
     Caret getFirst();
     Caret unique();
+
+    /**
+     * Get the caret points.
+     * @return the caret points
+     */
     List<Point> points();
     List<Caret> carets();
     List<Range> marked();

@@ -34,7 +34,9 @@ public interface LineLayout {
     double lineHeight();
 
     int homeColOnRow(int line);
-    default int endColOnRow(int line) { return homeColOnRow(line) + text(line).textLength(); }
+    default int endColOnRow(int line) {
+        return homeColOnRow(line) + text(line).textLength();
+    }
 
     int xToCol(int line, double x);
     default double xOnLayout(int line, int col) {
@@ -44,4 +46,5 @@ public interface LineLayout {
         return line * lineHeight();
     }
 
+    double standardCharWidth();
 }

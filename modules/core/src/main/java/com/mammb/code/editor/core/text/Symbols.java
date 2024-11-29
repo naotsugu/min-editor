@@ -51,7 +51,7 @@ public interface Symbols {
         Draw.Line[] lines = new Draw.Line[3];
         lines[0] = new Draw.Line(x1, y0, x1, y2, color);
         lines[1] = new Draw.Line(x0, y1, x1, y2, color);
-        lines[2] = new Draw.Line(x2, y2, x1, y2, color);
+        lines[2] = new Draw.Line(x2, y1, x1, y2, color);
         return lines;
     }
 

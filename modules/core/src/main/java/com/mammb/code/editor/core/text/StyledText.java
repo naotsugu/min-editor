@@ -44,6 +44,9 @@ public interface StyledText extends Text {
         return new Builder(text);
     }
 
+    /**
+     * The style builder.
+     */
     class Builder {
         private final Text text;
         private final Set<Integer> bounds = new HashSet<>();

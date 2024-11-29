@@ -34,6 +34,7 @@ import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.text.StyledText;
+import com.mammb.code.editor.core.text.Symbols;
 import com.mammb.code.editor.core.text.Text;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -522,6 +523,23 @@ public class TextEditorModel implements EditorModel {
                 double px = x + marginLeft - scroll.xVal();
                 double py = y + marginTop;
                 draw.text(st.value(), px, py, st.width(), st.styles());
+                for (var p : carets.points()) {
+                    if (st.row() == p.row()) {
+                        if (st.isEndWithCrLf()) {
+                            draw.line(Symbols.crlf(
+                                px + st.width() + view.standardCharWidth() * 0.2,
+                                py + view.lineHeight() * 0.1,
+                                view.standardCharWidth() * 0.8,
+                                view.lineHeight() * 0.8, "#80808088"));
+                        } else if (st.isEndWithLf()) {
+                            draw.line(Symbols.lineFeed(
+                                px + st.width() + view.standardCharWidth() * 0.2,
+                                py + view.lineHeight() * 0.1,
+                                view.standardCharWidth() * 0.8,
+                                view.lineHeight() * 0.8, "#80808088"));
+                        }
+                    }
+                }
                 x += st.width();
             }
             y += text.height();
