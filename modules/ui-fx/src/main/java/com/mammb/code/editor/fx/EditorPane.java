@@ -230,6 +230,7 @@ public class EditorPane extends StackPane {
     }
 
     private Action execute(Action action) {
+
         if (model.isImeOn()) return Action.EMPTY;
 
         switch (action.type()) {

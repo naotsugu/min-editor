@@ -545,7 +545,16 @@ public class TextEditorModel implements EditorModel {
                             draw.line(Symbols.whiteSpace(
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - view.lineHeight() * 0.2,
-                                view.standardCharWidth() * 1.7,
+                                st.advances()[i],
+                                view.lineHeight(), "#80808088"));
+                        }
+                        for (int i = 0; i < st.value().length(); i++) {
+                            i = st.value().indexOf('\t', i);
+                            if (i < 0) break;
+                            draw.line(Symbols.tab(
+                                px + Arrays.stream(st.advances()).limit(i).sum(),
+                                py - view.lineHeight() * 0.2,
+                                st.advances()[i] / 4,
                                 view.lineHeight(), "#80808088"));
                         }
                     }
