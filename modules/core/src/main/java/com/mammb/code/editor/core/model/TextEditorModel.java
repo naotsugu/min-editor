@@ -447,13 +447,18 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public Optional<Loc> imeOn() {
+    public void imeOn() {
         Caret caret = carets.getFirst();
         caret.flushAt(caret.point());
+    }
+
+    @Override
+    public Optional<Loc> imeLoc() {
+        Caret caret = carets.getFirst();
         return view.locationOn(caret.row(), caret.col())
-                .map(top -> new Loc(
-                    top.x() + marginLeft,
-                    top.y() + marginTop + view.lineHeight() + 5));
+            .map(top -> new Loc(
+                top.x() + marginLeft,
+                top.y() + marginTop + view.lineHeight() + 5));
     }
 
     @Override

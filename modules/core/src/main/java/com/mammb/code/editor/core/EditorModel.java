@@ -82,7 +82,8 @@ public interface EditorModel {
     void escape();
     void wrap(int width);
 
-    Optional<Loc> imeOn();
+    void imeOn();
+    Optional<Loc> imeLoc();
     void imeOff();
     boolean isImeOn();
     void inputImeComposed(String text);

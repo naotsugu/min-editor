@@ -426,7 +426,7 @@ public class EditorPane extends StackPane {
         return new InputMethodRequests() {
             @Override
             public Point2D getTextLocation(int i) {
-                return model.imeOn()
+                return model.imeLoc()
                         .map(loc -> canvas.localToScreen(loc.x(), loc.y()))
                         .orElse(null);
             }

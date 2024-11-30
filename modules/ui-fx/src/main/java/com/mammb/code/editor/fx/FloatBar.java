@@ -52,10 +52,10 @@ public class FloatBar extends HBox {
         text.setFont(Font.font("Consolas", 12));
         text.setFill(Color.web(Theme.dark.fgColor()));
 
-        vScroll.layoutBoundsProperty().addListener((ob, o , n) -> layout(vScroll, hScroll));
-        hScroll.layoutBoundsProperty().addListener((ob, o , n) -> layout(vScroll, hScroll));
-        hScroll.visibleProperty().addListener((ob, o , n) -> layout(vScroll, hScroll));
-        layoutBoundsProperty().addListener((ob, o , n) -> layout(vScroll, hScroll));
+        vScroll.layoutBoundsProperty().addListener((_, _, _) -> layout(vScroll, hScroll));
+        hScroll.layoutBoundsProperty().addListener((_, _, _) -> layout(vScroll, hScroll));
+        hScroll.visibleProperty().addListener((_, _, _) -> layout(vScroll, hScroll));
+        layoutBoundsProperty().addListener((_, _, _) -> layout(vScroll, hScroll));
 
         getChildren().add(text);
         layout(vScroll, hScroll);

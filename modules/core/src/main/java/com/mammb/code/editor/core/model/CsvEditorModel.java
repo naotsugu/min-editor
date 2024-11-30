@@ -211,7 +211,11 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public Optional<Loc> imeOn() {
+    public void imeOn() {
+    }
+
+    @Override
+    public Optional<Loc> imeLoc() {
         return Optional.empty();
     }
 
