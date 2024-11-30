@@ -44,6 +44,10 @@ public interface Text {
 
     double height();
 
+    /**
+     * Get the text length.
+     * @return the text length
+     */
     default int length() {
         return value().length();
     }

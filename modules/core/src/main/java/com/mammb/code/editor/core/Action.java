@@ -21,6 +21,7 @@ package com.mammb.code.editor.core;
  */
 public interface Action {
 
+    /** The empty action. */
     Action EMPTY = Action.of(Type.EMPTY);
 
     /**
@@ -66,15 +67,13 @@ public interface Action {
         }
     }
 
-    record ActionRecord(Type type, String attr, long occurredAt) implements Action { }
-
     /**
      * Create a new action record.
      * @param type action type
      * @return a new action
      */
     static Action of(Type type) {
-        return new ActionRecord(type, "", System.currentTimeMillis());
+        return of(type, "");
     }
 
     /**
@@ -84,6 +83,7 @@ public interface Action {
      * @return a new action
      */
     static Action of(Type type, String attr) {
+        record ActionRecord(Type type, String attr, long occurredAt) implements Action { }
         return new ActionRecord(type, attr, System.currentTimeMillis());
     }
 }
