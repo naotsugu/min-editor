@@ -30,4 +30,6 @@ public interface Query<R> extends QueryRecords {
     Query<byte[]> bom = new Bom();
     Query<Point> caretPoint = new CaretPoint();
 
+    Query<Integer> widthAsCharacters = new WidthAsCharacters();
+
 }

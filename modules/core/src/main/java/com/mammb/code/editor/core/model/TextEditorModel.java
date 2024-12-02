@@ -55,21 +55,21 @@ public class TextEditorModel implements EditorModel {
     private double marginTop = 5, marginLeft = 70;
     private boolean caretVisible = true;
     private final Content content;
-    private final ScreenLayout view;
+    private final ScreenLayout screenLayout;
     private final CaretGroup carets = CaretGroup.of();
     private final Decorate decorate;
     private final ScreenScroll scroll;
 
     public TextEditorModel(Content content, FontMetrics fm, Syntax syntax, ScreenScroll scroll) {
         this.content = content;
-        this.view = ScreenLayout.of(content, fm);
+        this.screenLayout = ScreenLayout.of(content, fm);
         this.decorate = Decorate.of(syntax);
         this.scroll = scroll;
     }
 
     @Override
     public void draw(Draw draw) {
-        view.applyScreenScroll(scroll);
+        screenLayout.applyScreenScroll(scroll);
         draw.clear();
         drawSelection(draw);
         drawText(draw);
@@ -80,29 +80,29 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void setSize(double width, double height) {
-        view.setScreenSize(width - marginLeft, height - marginTop);
+        screenLayout.setScreenSize(width - marginLeft, height - marginTop);
     }
 
     @Override
     public void scrollNext(int delta) {
-        view.scrollNext(delta);
+        screenLayout.scrollNext(delta);
     }
 
     @Override
     public void scrollPrev(int delta) {
-        view.scrollPrev(delta);
+        screenLayout.scrollPrev(delta);
     }
 
     @Override
     public void scrollAt(int line) {
-        view.scrollAt(line);
+        screenLayout.scrollAt(line);
     }
 
     @Override
     public void moveTo(int row) {
         if (decorate.isBlockScoped()) {
-            int delta = view.rowToFirstLine(row) - view.topLine();
-            int page = view.screenLineSize() - 1;
+            int delta = screenLayout.rowToFirstLine(row) - screenLayout.topLine();
+            int page = screenLayout.screenLineSize() - 1;
             int n = Math.abs(delta / page);
             int d = Math.abs(delta % page);
             for (int i = 0; i < n; i++) {
@@ -110,7 +110,7 @@ public class TextEditorModel implements EditorModel {
             }
             if (delta > 0) scrollNext(d); else scrollPrev(d);
         } else {
-            view.scrollAt(view.rowToFirstLine(row));
+            screenLayout.scrollAt(screenLayout.rowToFirstLine(row));
         }
         Caret c = carets.getFirst();
         c.at(row, 0);
@@ -118,17 +118,17 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void scrollX(double x) {
-        view.scrollX(x);
+        screenLayout.scrollX(x);
     }
 
     @Override
     public void scrollToCaret() {
         Caret caret = carets.getFirst();
-        int line = view.rowToLine(caret.row(), caret.col());
-        if (line - view.topLine() < 0) {
-            view.scrollAt(line);
-        } else if (line - (view.topLine() + view.screenLineSize() - 3) > 0) {
-            view.scrollAt(line - view.screenLineSize() + 3);
+        int line = screenLayout.rowToLine(caret.row(), caret.col());
+        if (line - screenLayout.topLine() < 0) {
+            screenLayout.scrollAt(line);
+        } else if (line - (screenLayout.topLine() + screenLayout.screenLineSize() - 3) > 0) {
+            screenLayout.scrollAt(line - screenLayout.screenLineSize() + 3);
         }
         // TODO scroll x
     }
@@ -137,7 +137,7 @@ public class TextEditorModel implements EditorModel {
     public void moveCaretRight(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
-            var text = view.rowTextAt(c.row());
+            var text = screenLayout.rowTextAt(c.row());
             if (text == null) continue;
             int next = text.indexRight(c.col());
             if (next <= 0) {
@@ -154,10 +154,10 @@ public class TextEditorModel implements EditorModel {
             c.markIf(withSelect);
             if (c.isZero()) continue;
             if (c.col() == 0) {
-                var text = view.rowTextAt(c.row() - 1);
+                var text = screenLayout.rowTextAt(c.row() - 1);
                 c.at(c.row() - 1, text.textLength());
             } else {
-                var text = view.rowTextAt(c.row());
+                var text = screenLayout.rowTextAt(c.row());
                 int next = text.indexLeft(c.col());
                 c.at(c.row(), next);
             }
@@ -168,13 +168,13 @@ public class TextEditorModel implements EditorModel {
     public void moveCaretDown(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
-            int line = view.rowToLine(c.row(), c.col());
-            if (line >= view.lineSize() - 1) continue;
+            int line = screenLayout.rowToLine(c.row(), c.col());
+            if (line >= screenLayout.lineSize() - 1) continue;
             double x = (c.vPos() < 0)
-                    ? view.xOnLayout(line, c.col())
+                    ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
             line++;
-            c.at(view.lineToRow(line), view.xToCol(line, x), x);
+            c.at(screenLayout.lineToRow(line), screenLayout.xToCol(line, x), x);
         }
     }
 
@@ -182,13 +182,13 @@ public class TextEditorModel implements EditorModel {
     public void moveCaretUp(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
-            int line = view.rowToLine(c.row(), c.col());
+            int line = screenLayout.rowToLine(c.row(), c.col());
             if (line == 0) continue;
             double x = (c.vPos() < 0)
-                    ? view.xOnLayout(line, c.col())
+                    ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
             line--;
-            c.at(view.lineToRow(line), view.xToCol(line, x), x);
+            c.at(screenLayout.lineToRow(line), screenLayout.xToCol(line, x), x);
         }
     }
 
@@ -196,8 +196,8 @@ public class TextEditorModel implements EditorModel {
     public void moveCaretHome(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
-            int line = view.rowToLine(c.row(), c.col());
-            c.at(c.row(), view.homeColOnRow(line));
+            int line = screenLayout.rowToLine(c.row(), c.col());
+            c.at(c.row(), screenLayout.homeColOnRow(line));
         }
     }
 
@@ -205,36 +205,36 @@ public class TextEditorModel implements EditorModel {
     public void moveCaretEnd(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
-            int line = view.rowToLine(c.row(), c.col());
-            c.at(c.row(), view.endColOnRow(line));
+            int line = screenLayout.rowToLine(c.row(), c.col());
+            c.at(c.row(), screenLayout.endColOnRow(line));
         }
     }
 
     @Override
     public void moveCaretPageUp(boolean withSelect) {
-        int n = view.screenLineSize() - 1;
+        int n = screenLayout.screenLineSize() - 1;
         scrollPrev(n);
         if (withSelect && carets.size() > 1) carets.unique();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
             c.markIf(withSelect);
-            int line = view.rowToLine(c.row(), c.col());
-            double x = view.xOnLayout(line, c.col());
-            c.at(view.lineToRow(line - n), view.xToCol(line, x));
+            int line = screenLayout.rowToLine(c.row(), c.col());
+            double x = screenLayout.xOnLayout(line, c.col());
+            c.at(screenLayout.lineToRow(line - n), screenLayout.xToCol(line, x));
         }
     }
 
     @Override
     public void moveCaretPageDown(boolean withSelect) {
-        int n = view.screenLineSize() - 1;
+        int n = screenLayout.screenLineSize() - 1;
         scrollNext(n);
         if (withSelect && carets.size() > 1) carets.unique();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
             c.markIf(withSelect);
-            int line = view.rowToLine(c.row(), c.col());
-            double x = view.xOnLayout(line, c.col());
-            c.at(view.lineToRow(line + n), view.xToCol(line, x));
+            int line = screenLayout.rowToLine(c.row(), c.col());
+            double x = screenLayout.xOnLayout(line, c.col());
+            c.at(screenLayout.lineToRow(line + n), screenLayout.xToCol(line, x));
         }
     }
 
@@ -243,7 +243,7 @@ public class TextEditorModel implements EditorModel {
         Caret c = carets.unique();
         c.at(0, 0);
         c.mark();
-        c.at(view.rowSize(), view.endColOnRow(view.lineSize()));
+        c.at(screenLayout.rowSize(), screenLayout.endColOnRow(screenLayout.lineSize()));
     }
 
     @Override
@@ -254,44 +254,44 @@ public class TextEditorModel implements EditorModel {
             return;
         }
         c.clearMark();
-        int line = view.yToLineOnScreen(y - marginTop);
-        c.at(view.lineToRow(line), view.xToCol(line, x - marginLeft));
+        int line = screenLayout.yToLineOnScreen(y - marginTop);
+        c.at(screenLayout.lineToRow(line), screenLayout.xToCol(line, x - marginLeft));
     }
 
     @Override
     public void ctrlClick(double x, double y) {
         if (x < marginLeft) {
             Caret caret = carets.unique();
-            int clickLine = view.yToLineOnScreen(y - marginTop);
-            int caretLine = view.rowToLine(caret.row(), caret.col());
-            double caretX = view.xOnLayout(caretLine, caret.col());
+            int clickLine = screenLayout.yToLineOnScreen(y - marginTop);
+            int caretLine = screenLayout.rowToLine(caret.row(), caret.col());
+            double caretX = screenLayout.xOnLayout(caretLine, caret.col());
             if (clickLine == caretLine) return;
             var stream = (clickLine < caretLine)
                     ? IntStream.rangeClosed(clickLine, caretLine - 1)
                     : IntStream.rangeClosed(caretLine + 1, clickLine);
             carets.add(stream
                     .mapToObj(line -> Point.of(
-                            view.lineToRow(line),
-                            view.xToCol(line, caretX)))
+                            screenLayout.lineToRow(line),
+                            screenLayout.xToCol(line, caretX)))
                     .toList());
         } else {
-            int line = view.yToLineOnScreen(y - marginTop);
+            int line = screenLayout.yToLineOnScreen(y - marginTop);
             carets.add(List.of(
-                    Point.of(view.lineToRow(line), view.xToCol(line, x - marginLeft))));
+                    Point.of(screenLayout.lineToRow(line), screenLayout.xToCol(line, x - marginLeft))));
         }
     }
 
     @Override
     public void clickDouble(double x, double y) {
-        int line = view.yToLineOnScreen(y - marginTop);
-        var text = view.text(line);
+        int line = screenLayout.yToLineOnScreen(y - marginTop);
+        var text = screenLayout.text(line);
         double xp = 0;
         for (var word : text.words()) {
             if (xp + word.width() > x - marginLeft) {
                 Caret c = carets.getFirst();
-                int row = view.lineToRow(line);
-                c.markTo(row, view.xToCol(line, xp),
-                        row, view.xToCol(line, xp + word.width()));
+                int row = screenLayout.lineToRow(line);
+                c.markTo(row, screenLayout.xToCol(line, xp),
+                        row, screenLayout.xToCol(line, xp + word.width()));
                 break;
             }
             xp += word.width();
@@ -300,17 +300,17 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void clickTriple(double x, double y) {
-        int line = view.yToLineOnScreen(y - marginTop);
-        int row = view.lineToRow(line);
+        int line = screenLayout.yToLineOnScreen(y - marginTop);
+        int row = screenLayout.lineToRow(line);
         Caret c = carets.unique();
-        c.markTo(row, view.xToCol(line, 0), row, view.xToCol(line, Double.MAX_VALUE));
+        c.markTo(row, screenLayout.xToCol(line, 0), row, screenLayout.xToCol(line, Double.MAX_VALUE));
     }
 
     @Override
     public void moveDragged(double x, double y) {
-        int line = view.yToLineOnScreen(y - marginTop);
-        int row = view.lineToRow(line);
-        int col = view.xToCol(line, x - marginLeft);
+        int line = screenLayout.yToLineOnScreen(y - marginTop);
+        int row = screenLayout.lineToRow(line);
+        int col = screenLayout.xToCol(line, x - marginLeft);
         Caret caret = carets.getFirst();
         caret.floatAt(row, col);
         caret.markIf(true);
@@ -329,7 +329,7 @@ public class TextEditorModel implements EditorModel {
                 selectionReplace(caret, text);
             } else {
                 var pos = content.insert(caret.point(), text);
-                view.refreshBuffer(caret.row(), pos.row() + 1);
+                screenLayout.refreshBuffer(caret.row(), pos.row() + 1);
                 caret.at(pos);
             }
         } else {
@@ -350,7 +350,7 @@ public class TextEditorModel implements EditorModel {
                 selectionReplace(caret, "");
             } else {
                 var del = content.delete(caret.point());
-                view.refreshBuffer(caret.row(), caret.row() + 1);
+                screenLayout.refreshBuffer(caret.row(), caret.row() + 1);
             }
         } else {
             if (carets.hasMarked()) {
@@ -370,7 +370,7 @@ public class TextEditorModel implements EditorModel {
                 selectionReplace(caret, "");
             } else {
                 var pos = content.backspace(caret.point());
-                view.refreshBuffer(pos.row(), caret.row() + 1);
+                screenLayout.refreshBuffer(pos.row(), caret.row() + 1);
                 caret.at(pos);
             }
         } else {
@@ -444,7 +444,7 @@ public class TextEditorModel implements EditorModel {
     public void wrap(int width) {
         carets.unique().at(0, 0);
         decorate.clear();
-        view.wrapWith(width);
+        screenLayout.wrapWith(width);
     }
 
     @Override
@@ -456,10 +456,10 @@ public class TextEditorModel implements EditorModel {
     @Override
     public Optional<Loc> imeLoc() {
         Caret caret = carets.getFirst();
-        return view.locationOn(caret.row(), caret.col())
+        return screenLayout.locationOn(caret.row(), caret.col())
             .map(top -> new Loc(
                 top.x() + marginLeft,
-                top.y() + marginTop + view.lineHeight() + 5));
+                top.y() + marginTop + screenLayout.lineHeight() + 5));
     }
 
     @Override
@@ -478,7 +478,7 @@ public class TextEditorModel implements EditorModel {
         Caret caret = carets.getFirst();
         content.clearFlush();
         var pos = content.insertFlush(caret.point(), text);
-        view.refreshBuffer(caret.row(), pos.row() + 1);
+        screenLayout.refreshBuffer(caret.row(), pos.row() + 1);
         caret.flushAt(pos);
     }
 
@@ -498,6 +498,7 @@ public class TextEditorModel implements EditorModel {
     public <R> R query(Query<R> query) {
         return switch (query) {
             case QueryRecords.CaretPoint q -> (R) carets.getFirst().point();
+            //case QueryRecords.WidthAsCharacters q -> (R) TODO
             case null -> null;
             default -> content.query(query);
         };
@@ -507,23 +508,23 @@ public class TextEditorModel implements EditorModel {
 
     private void drawSelection(Draw draw) {
         for (Range r : carets.marked()) {
-            Loc l1 = view.locationOn(r.min().row(), r.min().col()).orElse(null);
-            Loc l2 = view.locationOn(r.max().row(), r.max().col()).orElse(null);
+            Loc l1 = screenLayout.locationOn(r.min().row(), r.min().col()).orElse(null);
+            Loc l2 = screenLayout.locationOn(r.max().row(), r.max().col()).orElse(null);
             if (l1 == null && l2 == null &&
-                (view.rowToLine(r.min().row(), r.min().col()) > view.topLine() ||
-                 view.rowToLine(r.max().row(), r.max().col()) < view.topLine())) break;
+                (screenLayout.rowToLine(r.min().row(), r.min().col()) > screenLayout.topLine() ||
+                 screenLayout.rowToLine(r.max().row(), r.max().col()) < screenLayout.topLine())) break;
             if (l1 == null) l1 = new Loc(0, 0);
-            if (l2 == null) l2 = new Loc(view.screenWidth(), view.screenHeight());
+            if (l2 == null) l2 = new Loc(screenLayout.screenWidth(), screenLayout.screenHeight());
             draw.select(
                 l1.x() + marginLeft - scroll.xVal(), l1.y() + marginTop,
                 l2.x() + marginLeft - scroll.xVal(), l2.y() + marginTop,
-                marginLeft - scroll.xVal(), view.screenWidth() + marginLeft);
+                marginLeft - scroll.xVal(), screenLayout.screenWidth() + marginLeft);
         }
     }
 
     private void drawText(Draw draw) {
         double x, y = 0;
-        for (Text text : view.texts()) {
+        for (Text text : screenLayout.texts()) {
             x = 0;
             List<StyleSpan> spans = decorate.apply(text);
             for (StyledText st : StyledText.of(text).putAll(spans).build()) {
@@ -534,34 +535,34 @@ public class TextEditorModel implements EditorModel {
                     if (st.row() == p.row()) {
                         if (st.isEndWithCrLf()) {
                             draw.line(Symbols.crlf(
-                                px + st.width() + view.standardCharWidth() * 0.2,
+                                px + st.width() + screenLayout.standardCharWidth() * 0.2,
                                 py,
-                                view.standardCharWidth() * 0.8,
-                                view.lineHeight() * 0.8, "#80808088"));
+                                screenLayout.standardCharWidth() * 0.8,
+                                screenLayout.lineHeight() * 0.8, "#80808088"));
                         } else if (st.isEndWithLf()) {
                             draw.line(Symbols.lineFeed(
-                                px + st.width() + view.standardCharWidth() * 0.2,
+                                px + st.width() + screenLayout.standardCharWidth() * 0.2,
                                 py,
-                                view.standardCharWidth() * 0.8,
-                                view.lineHeight() * 0.8, "#80808088"));
+                                screenLayout.standardCharWidth() * 0.8,
+                                screenLayout.lineHeight() * 0.8, "#80808088"));
                         }
                         for (int i = 0; i < st.value().length(); i++) {
                             i = st.value().indexOf('　', i);
                             if (i < 0) break;
                             draw.line(Symbols.whiteSpace(
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
-                                py - view.lineHeight() * 0.1,
+                                py - screenLayout.lineHeight() * 0.1,
                                 st.advances()[i],
-                                view.lineHeight(), "#80808088"));
+                                screenLayout.lineHeight(), "#80808088"));
                         }
                         for (int i = 0; i < st.value().length(); i++) {
                             i = st.value().indexOf('\t', i);
                             if (i < 0) break;
                             draw.line(Symbols.tab(
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
-                                py - view.lineHeight() * 0.1,
+                                py - screenLayout.lineHeight() * 0.1,
                                 st.advances()[i] / 4,
-                                view.lineHeight(), "#80808088"));
+                                screenLayout.lineHeight(), "#80808088"));
                         }
                     }
                 }
@@ -573,19 +574,19 @@ public class TextEditorModel implements EditorModel {
 
     private void drawMap(Draw draw) {
         for (int row : decorate.highlightsRows()) {
-            int line = view.rowToFirstLine(row);
-            double y = (view.screenHeight() - marginTop) * line / (view.lineSize() + view.screenLineSize());
-            draw.hLine(view.screenWidth() + marginLeft - 12, y, 12);
+            int line = screenLayout.rowToFirstLine(row);
+            double y = (screenLayout.screenHeight() - marginTop) * line / (screenLayout.lineSize() + screenLayout.screenLineSize());
+            draw.hLine(screenLayout.screenWidth() + marginLeft - 12, y, 12);
         }
     }
 
     private void drawCaret(Draw draw) {
         for (Caret c : carets.carets()) {
             Point p = c.pointFlush();
-            view.locationOn(p.row(), p.col()).ifPresent(loc -> {
+            screenLayout.locationOn(p.row(), p.col()).ifPresent(loc -> {
                 draw.caret(loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop);
                 if (c.hasFlush()) {
-                    view.locationOn(c.point().row(), c.point().col()).ifPresent(org ->
+                    screenLayout.locationOn(c.point().row(), c.point().col()).ifPresent(org ->
                         draw.underline(org.x() + marginLeft - scroll.xVal(), org.y() + marginTop,
                             loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop));
                 }
@@ -594,13 +595,13 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void drawLeftGarter(Draw draw) {
-        List<Text> lineNumbers = view.lineNumbers();
+        List<Text> lineNumbers = screenLayout.lineNumbers();
         double nw = lineNumbers.stream().mapToDouble(Text::width).max().orElse(0);
         if (nw + 16 * 2 > marginLeft) {
             double newMarginLeft = nw + 8 * 2;
-            view.setScreenSize(view.screenWidth() + marginLeft - newMarginLeft, view.screenHeight());
+            screenLayout.setScreenSize(screenLayout.screenWidth() + marginLeft - newMarginLeft, screenLayout.screenHeight());
         }
-        draw.rect(0, 0, marginLeft - 5, view.screenHeight() + marginTop);
+        draw.rect(0, 0, marginLeft - 5, screenLayout.screenHeight() + marginTop);
         double y = 0;
         String prevValue = "";
         for (Text num : lineNumbers) {
@@ -621,7 +622,7 @@ public class TextEditorModel implements EditorModel {
         assert caret.isMarked();
         var range = caret.markedRange();
         var pos = content.replace(range.start(), range.end(), text);
-        view.refreshBuffer(range.start().row(), range.end().row() + 1);
+        screenLayout.refreshBuffer(range.start().row(), range.end().row() + 1);
         caret.clearMark();
         caret.at(pos);
         return pos;
@@ -629,7 +630,7 @@ public class TextEditorModel implements EditorModel {
 
     private void refreshPointsRange(List<Point> points) {
         if (points == null || points.isEmpty()) return;
-        view.refreshBuffer(
+        screenLayout.refreshBuffer(
             Collections.min(points).row(),
             Collections.max(points).row() + 1);
         carets.at(points);

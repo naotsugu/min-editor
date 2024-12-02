@@ -28,4 +28,6 @@ public interface QueryRecords {
     record Modified() implements Query<Boolean> {}
     record Bom() implements Query<byte[]> {}
     record CaretPoint() implements Query<Point> {}
+
+    record WidthAsCharacters() implements Query<Integer> {}
 }
