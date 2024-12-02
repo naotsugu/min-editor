@@ -272,7 +272,7 @@ public interface ScreenLayout extends LineLayout {
 
         @Override
         public void wrapWith(int width) {
-            if (width > 0) {
+            if (width > 0 && layout.rowSize() < 50_000) { // large files are not allowed to wrap.
                 if (layout instanceof RowLayout rowLayout) {
                     layout = new WrapLayout(rowLayout.getContent(), rowLayout.getFm());
                 }

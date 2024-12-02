@@ -268,6 +268,7 @@ public class EditorPane extends StackPane {
             case COMMAND_PALETTE -> showCommandPalette(null);
             case INDENT -> model.replace(EditingFunctions.indent, true);
             case UNINDENT -> model.replace(EditingFunctions.unindent, true);
+            case WRAP -> { }
         }
         if (action.type().syncCaret()) {
             model.scrollToCaret();
