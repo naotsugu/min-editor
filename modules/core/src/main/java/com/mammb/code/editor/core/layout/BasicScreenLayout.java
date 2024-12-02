@@ -27,13 +27,19 @@ import java.util.Optional;
  * @author Naotsugu Kobayashi
  */
 class BasicScreenLayout implements ScreenLayout {
+
     private double screenWidth = 0, screenHeight = 0;
     private double xShift = 0;
     private double xMax = 0;
     private int topLine = 0;
     private final List<Text> buffer = new ArrayList<>();
+    /** The content layout. */
     private ContentLayout layout;
 
+    /**
+     * Constructor.
+     * @param layout the content layout
+     */
     BasicScreenLayout(ContentLayout layout) {
         this.layout = layout;
     }
@@ -220,6 +226,11 @@ class BasicScreenLayout implements ScreenLayout {
     @Override
     public int screenLineSize() {
         return (int) Math.ceil(Math.max(0, screenHeight) / layout.lineHeight());
+    }
+
+    @Override
+    public int screenColSize() {
+        return (int) Math.floor(screenWidth / layout.standardCharWidth());
     }
 
     @Override

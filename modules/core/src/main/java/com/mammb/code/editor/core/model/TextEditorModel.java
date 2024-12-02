@@ -498,10 +498,11 @@ public class TextEditorModel implements EditorModel {
     public <R> R query(Query<R> query) {
         return switch (query) {
             case QueryRecords.CaretPoint q -> (R) carets.getFirst().point();
-            //case QueryRecords.WidthAsCharacters q -> (R) TODO
+            case QueryRecords.WidthAsCharacters q -> (R) Integer.valueOf(screenLayout.screenColSize());
             case null -> null;
             default -> content.query(query);
         };
+
     }
 
     // -- private -------------------------------------------------------------
