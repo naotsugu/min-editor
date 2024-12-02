@@ -431,11 +431,17 @@ public class EditorPane extends StackPane {
                         .orElse(null);
             }
             @Override
-            public void cancelLatestCommittedText() { model.imeOff(); }
+            public void cancelLatestCommittedText() {
+                model.imeOff();
+            }
             @Override
-            public int getLocationOffset(int x, int y) { return 0; }
+            public int getLocationOffset(int x, int y) {
+                return 0;
+            }
             @Override
-            public String getSelectedText() { return ""; }
+            public String getSelectedText() {
+                return "";
+            }
         };
     }
 

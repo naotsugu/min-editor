@@ -428,6 +428,7 @@ public class TextEditorModel implements EditorModel {
     public Optional<Path> path() {
         return content.path();
     }
+
     @Override
     public void save(Path path) {
         content.save(path);
@@ -549,7 +550,7 @@ public class TextEditorModel implements EditorModel {
                             if (i < 0) break;
                             draw.line(Symbols.whiteSpace(
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
-                                py - view.lineHeight() * 0.2,
+                                py - view.lineHeight() * 0.1,
                                 st.advances()[i],
                                 view.lineHeight(), "#80808088"));
                         }
@@ -558,7 +559,7 @@ public class TextEditorModel implements EditorModel {
                             if (i < 0) break;
                             draw.line(Symbols.tab(
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
-                                py - view.lineHeight() * 0.2,
+                                py - view.lineHeight() * 0.1,
                                 st.advances()[i] / 4,
                                 view.lineHeight(), "#80808088"));
                         }
@@ -571,7 +572,6 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void drawMap(Draw draw) {
-
         for (int row : decorate.highlightsRows()) {
             int line = view.rowToFirstLine(row);
             double y = (view.screenHeight() - marginTop) * line / (view.lineSize() + view.screenLineSize());
