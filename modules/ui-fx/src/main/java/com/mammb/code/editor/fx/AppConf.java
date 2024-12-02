@@ -1,0 +1,37 @@
+/*
+ * Copyright 2023-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mammb.code.editor.fx;
+
+import java.nio.file.Path;
+
+/**
+ * The App configuration.
+ * @author Naotsugu Kobayashi
+ */
+public class AppConf {
+    private final Path dir;
+    {
+        Path home = Path.of(System.getProperty("user.home"));
+        String osName = System.getProperty("os.name").toLowerCase();
+        dir = osName.contains("windows")
+            ? home.resolve("AppData", "Roaming", "min-editor")
+            : osName.contains("linux")
+            ? home.resolve(".config", "min-editor")
+            : osName.contains("mac")
+            ? home.resolve("Library", "Application Support", "min-editor")
+            : home.resolve("min-editor");
+    }
+}
