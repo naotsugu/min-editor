@@ -22,16 +22,18 @@ import java.nio.file.Path;
  * @author Naotsugu Kobayashi
  */
 public class AppConf {
-    private final Path dir;
-    {
+
+    private final Path dir = baseDir();
+
+    private static Path baseDir() {
         Path home = Path.of(System.getProperty("user.home"));
         String osName = System.getProperty("os.name").toLowerCase();
-        dir = osName.contains("windows")
-            ? home.resolve("AppData", "Roaming", "min-editor")
+        return osName.contains("windows")
+            ? home.resolve("AppData", "Roaming", "min-editor", Version.val)
             : osName.contains("linux")
-            ? home.resolve(".config", "min-editor")
+            ? home.resolve(".config", "min-editor", Version.val)
             : osName.contains("mac")
-            ? home.resolve("Library", "Application Support", "min-editor")
-            : home.resolve("min-editor");
+            ? home.resolve("Library", "Application Support", "min-editor", Version.val)
+            : home.resolve("min-editor", Version.val);
     }
 }
