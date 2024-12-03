@@ -15,15 +15,46 @@
  */
 package com.mammb.code.editor.fx;
 
+import com.mammb.code.editor.core.Conf;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.Properties;
 
 /**
  * The App configuration.
  * @author Naotsugu Kobayashi
  */
-public class AppConf {
+public class AppConf implements Conf {
 
-    private final Path dir = baseDir();
+    private final Path baseDir;
+    private final Path propertiesPath;
+    private final Properties properties;
+
+    private AppConf() {
+        baseDir = baseDir();
+        propertiesPath = baseDir.resolve(Path.of("conf.properties"));
+        properties = new Properties();
+
+        try {
+            Files.createDirectories(baseDir);
+            if (Files.exists(propertiesPath)) {
+                try (var r = Files.newBufferedReader(propertiesPath)) {
+                    properties.load(r);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try (var w = Files.newBufferedWriter(propertiesPath)) {
+                properties.store(w, LocalDateTime.now().toString());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+    }
 
     private static Path baseDir() {
         Path home = Path.of(System.getProperty("user.home"));
