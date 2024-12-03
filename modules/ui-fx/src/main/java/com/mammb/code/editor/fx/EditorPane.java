@@ -410,13 +410,17 @@ public class EditorPane extends StackPane {
         command.ifPresent(c -> {
             switch (c.type()) {
                 case findAll     -> model.findAll(c.args()[0]);
-                case goTo        -> model.moveTo(Integer.parseInt(c.args()[0]) - 1); // TODO handle parse error
-                case wrap        -> model.wrap(Integer.parseInt(c.args()[0])); // TODO handle parse error
+                case goTo        -> model.moveTo(c.arg0AsInt() - 1);
+                case wrap        -> model.wrap(c.arg0AsInt());
                 case toLowerCase -> model.replace(EditingFunctions.toLower, true);
                 case toUpperCase -> model.replace(EditingFunctions.toUpper, true);
                 case calc        -> model.replace(EditingFunctions.toCalc, false);
                 case sort        -> model.replace(EditingFunctions.sort, false);
                 case unique      -> model.replace(EditingFunctions.unique, false);
+                case pwd         -> { }
+                case pwf         -> { }
+                case now         -> { }
+                case today       -> { }
                 case filter      -> { }
                 case null        -> { }
                 default -> { }

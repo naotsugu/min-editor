@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
+import java.nio.file.Path;
 
 /**
  * The query records.
@@ -28,6 +29,7 @@ public interface QueryRecords {
     record Modified() implements Query<Boolean> {}
     record Bom() implements Query<byte[]> {}
     record CaretPoint() implements Query<Point> {}
+    record ContentPath() implements Query<Path> {}
 
     record WidthAsCharacters() implements Query<Integer> {}
 }

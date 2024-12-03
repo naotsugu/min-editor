@@ -231,7 +231,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
     }
 
     enum CmdType {
-        findAll, goTo, toLowerCase, toUpperCase, sort, unique, filter, calc, wrap
+        findAll, goTo, toLowerCase, toUpperCase, sort, unique, filter, calc, wrap, pwd, pwf, today, now
         ;
         boolean match(String candidate) {
             return this.name().toLowerCase().contains(candidate.toLowerCase());
@@ -255,6 +255,18 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
         Command(CmdType type, String arg) { this(type, new String[] { arg.trim() } ); }
         Command(CmdType type, String arg1, String arg2) { this(type, new String[] { arg1.trim(), arg2.trim() } ); }
         static Command empty = new Command(null);
+
+        public int arg0AsInt() {
+            if (args == null || args.length == 0) {
+                return 0;
+            }
+            var str = args[0].replaceAll("\\D", "");
+            if (str.isBlank()) {
+                return 0;
+            }
+            return Integer.parseInt(str);
+        }
+
     }
 
 }

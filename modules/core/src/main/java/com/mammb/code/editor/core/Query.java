@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.model.QueryRecords;
+import java.nio.file.Path;
 
 /**
  * The Editor model query.
@@ -29,6 +30,7 @@ public interface Query<R> extends QueryRecords {
     Query<Boolean> modified = new Modified();
     Query<byte[]> bom = new Bom();
     Query<Point> caretPoint = new CaretPoint();
+    Query<Path> contentPath = new ContentPath();
 
     Query<Integer> widthAsCharacters = new WidthAsCharacters();
 
