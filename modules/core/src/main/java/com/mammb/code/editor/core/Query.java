@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.model.QueryRecords;
+import com.mammb.code.editor.core.model.QueryRecords.*;
 import java.nio.file.Path;
 
 /**
@@ -23,7 +23,7 @@ import java.nio.file.Path;
  * @param <R> the type of query result
  * @author Naotsugu Kobayashi
  */
-public interface Query<R> extends QueryRecords {
+public interface Query<R> {
 
     Query<String> rowEndingSymbol = new RowEndingSymbol();
     Query<String> charsetSymbol = new CharsetSymbol();

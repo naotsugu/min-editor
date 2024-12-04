@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
+import com.mammb.code.editor.core.model.QueryRecords.*;
 import com.mammb.code.piecetable.DocumentStat;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -159,10 +160,10 @@ public class RoStringContent implements Content {
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
-            case Query.RowEndingSymbol q -> (R) stat.rowEnding().toString();
-            case Query.CharsetSymbol q -> (R) stat.charset().toString();
-            case Query.Modified q -> (R) Boolean.FALSE;
-            case Query.Bom q -> (R) stat.bom();
+            case RowEndingSymbol q -> (R) stat.rowEnding().toString();
+            case CharsetSymbol q -> (R) stat.charset().toString();
+            case Modified q -> (R) Boolean.FALSE;
+            case Bom q -> (R) stat.bom();
             default -> null;
         };
     }
