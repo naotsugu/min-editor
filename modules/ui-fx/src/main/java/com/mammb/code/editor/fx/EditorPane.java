@@ -419,8 +419,8 @@ public class EditorPane extends StackPane {
                 case unique      -> model.replace(EditingFunctions.unique, false);
                 case pwd         -> { }
                 case pwf         -> { }
-                case now         -> { }
-                case today       -> { }
+                case now         -> model.replace(EditingFunctions.now, false);
+                case today       -> model.replace(EditingFunctions.today, false);
                 case filter      -> { }
                 case null        -> { }
                 default -> { }

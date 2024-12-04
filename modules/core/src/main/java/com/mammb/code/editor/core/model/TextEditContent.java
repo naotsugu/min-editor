@@ -201,6 +201,7 @@ public class TextEditContent implements Content {
             case Query.CharsetSymbol q -> (R) edit.charset().toString();
             case Query.Modified q -> (R) (Boolean) isModified();
             case Query.Bom q -> (R) edit.bom();
+            case Query.ContentPath q -> (R) edit.path();
             default -> null;
         };
     }
