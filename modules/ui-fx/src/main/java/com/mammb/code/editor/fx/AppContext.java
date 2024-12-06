@@ -58,31 +58,31 @@ public class AppContext implements Context {
         }
 
         public double windowWidth() {
-            return Double.parseDouble(map.getOrDefault("windowWidth", 640).toString());
+            return Double.parseDouble(map.getOrDefault("app.windowWidth", 640).toString());
         }
         public void windowWidth(double val) {
-            map.put("windowWidth", val);
+            map.put("app.windowWidth", val);
         }
 
         public double windowHeight() {
-            return Double.parseDouble(map.getOrDefault("windowHeight", 480.0).toString());
+            return Double.parseDouble(map.getOrDefault("app.windowHeight", 480.0).toString());
         }
         public void windowHeight(double val) {
-            map.put("windowHeight", val);
+            map.put("app.windowHeight", val);
         }
 
         public double windowPositionX() {
-            return Double.parseDouble(map.getOrDefault("windowPositionX", 320).toString());
+            return Double.parseDouble(map.getOrDefault("app.windowPositionX", 320).toString());
         }
         public void windowPositionX(double val) {
-            map.put("windowPositionX", val);
+            map.put("app.windowPositionX", val);
         }
 
         public double windowPositionY() {
-            return Double.parseDouble(map.getOrDefault("windowPositionY", 240).toString());
+            return Double.parseDouble(map.getOrDefault("app.windowPositionY", 240).toString());
         }
         public void windowPositionY(double val) {
-            map.put("windowPositionY", val);
+            map.put("app.windowPositionY", val);
         }
 
 
