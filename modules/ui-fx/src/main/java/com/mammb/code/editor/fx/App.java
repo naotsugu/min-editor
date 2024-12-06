@@ -32,14 +32,25 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+
         Parameters params = getParameters();
+        AppContext appContext = new AppContext();
+
         var appPane = new AppPane(stage);
-        Scene scene = new Scene(appPane, 640, 480);
+        Scene scene = new Scene(appPane, appContext.config().windowWidth(), appContext.config().windowHeight());
         scene.getStylesheets().add(css);
         stage.setScene(scene);
         stage.setTitle("min-editor");
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
+        stage.setX(appContext.config().windowPositionX());
+        stage.setY(appContext.config().windowPositionY());
+
+        scene.heightProperty().addListener((_, _, height) -> appContext.config().windowHeight(height.doubleValue()));
+        scene.widthProperty().addListener((_, _, width) -> appContext.config().windowWidth(width.doubleValue()));
+        stage.xProperty().addListener((_, _, x) -> appContext.config().windowPositionX(x.doubleValue()));
+        stage.yProperty().addListener((_, _, y) -> appContext.config().windowPositionY(y.doubleValue()));
+
         stage.show();
     }
 
