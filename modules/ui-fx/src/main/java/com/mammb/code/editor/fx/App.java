@@ -34,24 +34,25 @@ public class App extends Application {
     public void start(Stage stage) {
 
         Parameters params = getParameters();
-        AppContext appContext = new AppContext();
-
+        var ctx = new AppContext();
+        stage.setX(ctx.config().windowPositionX());
+        stage.setY(ctx.config().windowPositionY());
         var appPane = new AppPane(stage);
-        Scene scene = new Scene(appPane, appContext.config().windowWidth(), appContext.config().windowHeight());
+        Scene scene = new Scene(appPane, ctx.config().windowWidth(), ctx.config().windowHeight());
         scene.getStylesheets().add(css);
         stage.setScene(scene);
-        stage.setTitle("min-editor");
+        stage.setTitle(Version.appName);
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
-        stage.setX(appContext.config().windowPositionX());
-        stage.setY(appContext.config().windowPositionY());
-
-        scene.heightProperty().addListener((_, _, height) -> appContext.config().windowHeight(height.doubleValue()));
-        scene.widthProperty().addListener((_, _, width) -> appContext.config().windowWidth(width.doubleValue()));
-        stage.xProperty().addListener((_, _, x) -> appContext.config().windowPositionX(x.doubleValue()));
-        stage.yProperty().addListener((_, _, y) -> appContext.config().windowPositionY(y.doubleValue()));
-
+        setupSyncConfigProperty(stage, scene, ctx);
         stage.show();
+    }
+
+    private void setupSyncConfigProperty(Stage stage, Scene scene, AppContext ctx) {
+        scene.heightProperty().addListener((_, _, height) -> ctx.config().windowHeight(height.doubleValue()));
+        scene.widthProperty().addListener((_, _, width) -> ctx.config().windowWidth(width.doubleValue()));
+        stage.xProperty().addListener((_, _, x) -> ctx.config().windowPositionX(x.doubleValue()));
+        stage.yProperty().addListener((_, _, y) -> ctx.config().windowPositionY(y.doubleValue()));
     }
 
     /** The app css. */

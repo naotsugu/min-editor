@@ -20,6 +20,10 @@ package com.mammb.code.editor.fx;
  * @author Naotsugu Kobayashi
  */
 public interface Version {
+
+    /** The application name. */
+    String appName = "min-editor";
+
     /** The version value. */
     String val = "0.0.8";
 }

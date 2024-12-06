@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023-2024 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Context;
@@ -9,10 +24,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The application context.
+ * @author Naotsugu Kobayashi
+ */
 public class AppContext implements Context {
 
+    /** The logger. */
     private static final System.Logger log = System.getLogger(AppContext.class.getName());
 
+    /** The configuration instance. */
     private AppConfig appConfig = new AppConfig();
 
     @Override
@@ -103,16 +124,20 @@ public class AppContext implements Context {
         }
     }
 
+    /**
+     * Get the configuration directory for platform.
+     * @return the configuration directory
+     */
     private static Path configDir() {
         Path home = Path.of(System.getProperty("user.home"));
         String osName = System.getProperty("os.name").toLowerCase();
         return osName.contains("windows")
-            ? home.resolve("AppData", "Roaming", "min-editor", Version.val)
+            ? home.resolve("AppData", "Roaming", Version.appName, Version.val)
             : osName.contains("linux")
-            ? home.resolve(".config", "min-editor", Version.val)
+            ? home.resolve(".config", Version.appName, Version.val)
             : osName.contains("mac")
-            ? home.resolve("Library", "Application Support", "min-editor", Version.val)
-            : home.resolve("min-editor", Version.val);
+            ? home.resolve("Library", "Application Support", Version.appName, Version.val)
+            : home.resolve("." + Version.appName, Version.val);
     }
 
 }
