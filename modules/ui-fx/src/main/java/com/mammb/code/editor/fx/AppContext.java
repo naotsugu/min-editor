@@ -72,14 +72,14 @@ public class AppContext implements Context {
         }
 
         public double windowPositionX() {
-            return Double.parseDouble(map.getOrDefault("app.windowPositionX", 320).toString());
+            return Double.parseDouble(map.getOrDefault("app.windowPositionX", -1).toString());
         }
         public void windowPositionX(double val) {
             map.put("app.windowPositionX", val);
         }
 
         public double windowPositionY() {
-            return Double.parseDouble(map.getOrDefault("app.windowPositionY", 240).toString());
+            return Double.parseDouble(map.getOrDefault("app.windowPositionY", -1).toString());
         }
         public void windowPositionY(double val) {
             map.put("app.windowPositionY", val);

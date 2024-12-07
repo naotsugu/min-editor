@@ -51,8 +51,11 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -80,11 +83,19 @@ public class EditorPane extends StackPane {
 
     private Consumer<Path> newOpenHandler;
 
-
+    /**
+     * Constructor.
+     * @param ctx the application context
+     */
     public EditorPane(AppContext ctx) {
         this(null, ctx);
     }
 
+    /**
+     * Constructor.
+     * @param path the path of content
+     * @param ctx the application context
+     */
     public EditorPane(Path path, AppContext ctx) {
         context = ctx;
         canvas = new Canvas();
@@ -420,10 +431,10 @@ public class EditorPane extends StackPane {
                 case calc        -> model.replace(EditingFunctions.toCalc, false);
                 case sort        -> model.replace(EditingFunctions.sort, false);
                 case unique      -> model.replace(EditingFunctions.unique, false);
-                case pwd         -> { }
-                case pwf         -> { }
-                case now         -> model.replace(EditingFunctions.now, false);
-                case today       -> model.replace(EditingFunctions.today, false);
+                case pwd         -> model.input(stringify(() -> model.query(Query.contentPath).getParent().toString()));
+                case pwf         -> model.input(stringify(() -> model.query(Query.contentPath).toString()));
+                case now         -> model.input(stringify(() -> LocalDateTime.now().toString()));
+                case today       -> model.input(stringify(() -> LocalDate.now().toString()));
                 case filter      -> { }
                 case null        -> { }
                 default -> { }
@@ -463,6 +474,14 @@ public class EditorPane extends StackPane {
 
     AppContext context() {
         return context;
+    }
+
+    private static String stringify(Supplier<String> supplier) {
+        try {
+            return supplier.get();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
 }

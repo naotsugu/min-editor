@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor.core.editing;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,11 +52,6 @@ public interface EditingFunctions {
     /** Unique function. */
     Function<String, String> unique = text -> Arrays.stream(text.split("(?<=\\n)"))
             .distinct().collect(Collectors.joining());
-
-    /** Today function. */
-    Function<String, String> today = text -> LocalDate.now().toString();
-    /** Now function. */
-    Function<String, String> now = text -> LocalDateTime.now().toString();
 
     /** Calc function. */
     Function<String, String> toCalc = text -> {

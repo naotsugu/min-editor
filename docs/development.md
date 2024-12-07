@@ -9,15 +9,15 @@ com.mammb.code.editor.ui.app.Version
 
 Commit changes.
 
-```
+```shell
 git add -A
-git commit -m "Release v0.0.7"
+git commit -m "Release v0.0.8"
 git push origin main:main
 ```
 
 By pushing a tag, the github action creates a release.
 
-```
-git tag v0.0.7
-git push origin v0.0.7
+```shell
+git tag v0.0.8
+git push origin v0.0.8
 ```

@@ -35,8 +35,10 @@ public class App extends Application {
 
         Parameters params = getParameters();
         var ctx = new AppContext();
-        stage.setX(ctx.config().windowPositionX());
-        stage.setY(ctx.config().windowPositionY());
+        if (ctx.config().windowPositionX() >= 0 && ctx.config().windowPositionY() >= 0) {
+            stage.setX(ctx.config().windowPositionX());
+            stage.setY(ctx.config().windowPositionY());
+        }
         var appPane = new AppPane(stage, ctx);
         Scene scene = new Scene(appPane, ctx.config().windowWidth(), ctx.config().windowHeight());
         scene.getStylesheets().add(css);
