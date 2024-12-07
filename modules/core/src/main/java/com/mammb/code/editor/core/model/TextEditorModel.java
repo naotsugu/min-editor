@@ -276,8 +276,10 @@ public class TextEditorModel implements EditorModel {
                     .toList());
         } else {
             int line = screenLayout.yToLineOnScreen(y - marginTop);
-            carets.add(List.of(
-                    Point.of(screenLayout.lineToRow(line), screenLayout.xToCol(line, x - marginLeft))));
+            var point = Point.of(
+                screenLayout.lineToRow(line),
+                screenLayout.xToCol(line, x - marginLeft));
+            carets.toggle(point);
         }
     }
 

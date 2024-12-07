@@ -44,6 +44,7 @@ public interface CaretGroup {
     boolean hasMarked();
     void at(List<Point> points);
     void add(List<Point> points);
+    void toggle(Point point);
 
     /**
      * Get the count of caret.
@@ -103,13 +104,21 @@ public interface CaretGroup {
         @Override
         public void at(List<Point> points) {
             carets.clear();
-            add(points);
-        }
+            points.stream().distinct()
+                .forEach(p -> carets.add(Caret.of(p.row(), p.col())));        }
 
         @Override
         public void add(List<Point> points) {
             points.stream().distinct()
-                    .forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+                .filter(p -> points().stream().allMatch(pp -> pp.compareTo(p) != 0))
+                .forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+        }
+
+        @Override
+        public void toggle(final Point point) {
+            if (!carets.removeIf(p -> p.pointFlush().compareTo(point) == 0) || size() == 0) {
+                carets.add(Caret.of(point.row(), point.col()));
+            }
         }
 
         @Override
