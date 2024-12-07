@@ -42,9 +42,13 @@ public class FxFontMetrics implements FontMetrics {
     /** The font that was used to construct these metrics. */
     private final Font font;
 
+    /** The font strike. */
     private final FontStrike strike;
+    /** The font resource. */
     private final FontResource resource;
+    /** The glyph mapper. */
     private final CharToGlyphMapper mapper;
+    /** The cache of advance. */
     private final Map<Integer, Float> advanceCache = new ConcurrentHashMap<>();
 
     /**
@@ -62,6 +66,11 @@ public class FxFontMetrics implements FontMetrics {
         this.mapper  = resource.getGlyphMapper();
     }
 
+    /**
+     * Create the new {@link FxFontMetrics}.
+     * @param font the font
+     * @return the new {@link FxFontMetrics}
+     */
     public static FxFontMetrics of(Font font) {
         return new FxFontMetrics(font);
     }
@@ -129,4 +138,5 @@ public class FxFontMetrics implements FontMetrics {
     public float getAdvance(char high, char low) {
         return getAdvance(Character.toCodePoint(high, low));
     }
+
 }

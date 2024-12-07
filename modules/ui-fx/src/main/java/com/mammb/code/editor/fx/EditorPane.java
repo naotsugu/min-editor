@@ -271,7 +271,7 @@ public class EditorPane extends StackPane {
             case COMMAND_PALETTE -> showCommandPalette(null);
             case INDENT -> model.replace(EditingFunctions.indent, true);
             case UNINDENT -> model.replace(EditingFunctions.unindent, true);
-            case WRAP -> model.wrap(model.query(Query.widthAsCharacters));
+            case WRAP -> model.wrap(model.query(Query.widthAsCharacters) - 2);
         }
 
         if (action.type().syncCaret()) {
@@ -349,7 +349,7 @@ public class EditorPane extends StackPane {
                     });
                 }
             };
-            task.setOnSucceeded(e -> {
+            task.setOnSucceeded(_ -> {
                 model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll());
                 model.setSize(getWidth(), getHeight());
             });

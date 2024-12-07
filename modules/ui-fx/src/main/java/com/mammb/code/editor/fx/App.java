@@ -49,8 +49,8 @@ public class App extends Application {
     }
 
     private void setupSyncConfigProperty(Stage stage, Scene scene, AppContext ctx) {
-        scene.heightProperty().addListener((_, _, height) -> ctx.config().windowHeight(height.doubleValue()));
-        scene.widthProperty().addListener((_, _, width) -> ctx.config().windowWidth(width.doubleValue()));
+        scene.heightProperty().addListener((_, _, h) -> ctx.config().windowHeight(h.doubleValue()));
+        scene.widthProperty().addListener((_, _, w) -> ctx.config().windowWidth(w.doubleValue()));
         stage.xProperty().addListener((_, _, x) -> ctx.config().windowPositionX(x.doubleValue()));
         stage.yProperty().addListener((_, _, y) -> ctx.config().windowPositionY(y.doubleValue()));
     }
@@ -80,72 +80,74 @@ public class App extends Application {
         }
 
         .app-command-palette-dialog-pane > .button-bar > .container {
-            -fx-padding: 0;
+          -fx-padding: 0;
         }
         .menu-bar {
           -fx-use-system-menu-bar:true;
           -fx-background-color:derive(-fx-control-inner-background,20%);
         }
         .scroll-bar {
-            -fx-background-color: derive(-fx-box-border,30%)
+          -fx-background-color: derive(-fx-box-border,30%)
         }
         .scroll-bar .thumb {
-            -fx-background-color :-fx-inner-border;
-            -fx-background-insets : 1.0, 0.0, 0.0;
+          -fx-background-color :-fx-inner-border;
+          -fx-background-insets : 1.0, 0.0, 0.0;
         }
         .scroll-bar .increment-button,
         .scroll-bar .decrement-button {
-            -fx-background-color:transparent;
-            -fx-background-radius:0;
+          -fx-background-color:transparent;
+          -fx-background-radius:0;
         }
         .scroll-bar:vertical .decrement-button {
-            -fx-padding:0 10 0 0;
+          -fx-padding:0 10 0 0;
         }
         .scroll-bar:vertical .increment-button {
-            -fx-padding:0 0 10 0;
+          -fx-padding:0 0 10 0;
         }
         .scroll-bar:horizontal .decrement-button {
-            -fx-padding:0 0 10 0;
+          -fx-padding:0 0 10 0;
         }
         .scroll-bar:horizontal .increment-button {
-            -fx-padding:0 10 0 0;
+          -fx-padding:0 10 0 0;
         }
         .scroll-bar .increment-arrow,
         .scroll-bar .decrement-arrow {
-            -fx-background-color:transparent;
-            -fx-shape:"";
-            -fx-padding:0;
+          -fx-background-color:transparent;
+          -fx-shape:"";
+          -fx-padding:0;
         }
 
         .tab-pane > .tab-header-area > .headers-region > .tab {
-            -fx-background-color: -fx-hover-base;
+          -fx-background-color: -fx-hover-base;
         }
         .app-tab-pane-active > .tab-pane > .tab-header-area > .headers-region > .tab:selected {
-            -fx-background-color: derive(-fx-box-border, 30%);
+          -fx-background-color: derive(-fx-box-border, 30%);
         }
         .tab-pane > .tab-header-area > .headers-region > .tab:selected {
-            -fx-color: -fx-hover-base;
+          /* -fx-color: -fx-hover-base; */
+          -fx-color: app-base;
+          -fx-border-color: app-base;
         }
         .tab-pane > .tab-header-area > .tab-header-background {
-            -fx-background-color: derive(-fx-text-box-border, 30%);
+          -fx-background-color: derive(-fx-text-box-border, 30%);
         }
         .tab-pane > .tab-header-area {
-            -fx-padding: 0;
+          -fx-padding: 0;
         }
         .tab-label {
           -fx-font: 13px "Consolas";
         }
 
         .progress-bar > .bar {
-            -fx-background-color: derive(-fx-accent, 50%);
-            -fx-background-insets: 0;
-            -fx-background-radius: 0;
+          -fx-background-color: derive(-fx-accent, 50%);
+          -fx-background-insets: 0;
+          -fx-background-radius: 0;
         }
         .progress-bar > .track {
-            -fx-background-color: transparent;
-            -fx-background-insets: 0;
-            -fx-background-radius: 0;
-         }
+          -fx-background-color: transparent;
+          -fx-background-insets: 0;
+          -fx-background-radius: 0;
+        }
         """
         .replaceAll("app-base", Theme.dark.baseColor())
         .replaceAll("app-text", Theme.dark.fgColor())

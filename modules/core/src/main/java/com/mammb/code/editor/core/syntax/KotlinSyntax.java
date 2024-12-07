@@ -28,6 +28,7 @@ import java.util.Optional;
  */
 public class KotlinSyntax implements Syntax {
 
+    /** The keywords. */
     private final Trie keywords = Trie.of("""
             as,as?,break,class,continue,do,else,false,for,fun,if,in,!in,interface,is,!is,null,
             object,package,return,super,this,throw,true,try,typealias,typeof,val,var,when,while,

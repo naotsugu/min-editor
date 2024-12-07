@@ -21,15 +21,35 @@ package com.mammb.code.editor.core;
  */
 public interface Point extends Comparable<Point> {
 
+    /**
+     * Get the number of row.
+     * @return the number of row
+     */
     int row();
 
+    /**
+     * Get the number of column.
+     * @return the number of column
+     */
     int col();
 
+    /**
+     * Create a new caret point.
+     * @param row the number of row
+     * @param col the number of column
+     * @return the new caret point
+     */
     static Point of(int row, int col) {
         record PointRecord(int row, int col) implements Point { }
         return new PointRecord(row, col);
     }
 
+    /**
+     * Create a new caret point from the other point.
+     * @param p the other point
+     * @return a new caret point
+     * @param <E> the type of other point
+     */
     static <E extends Point> Point of(E p) {
         return of(p.row(), p.col());
     }

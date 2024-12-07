@@ -49,11 +49,13 @@ public class WrapLayout implements ContentLayout {
         this.fm = fm;
     }
 
+    @Override
     public void setScreenWidth(int width) {
         this.screenWidth = width * standardCharWidth;
         refresh(0);
     }
 
+    @Override
     public void refresh(int line) {
         lines.subList(line, lines.size()).clear();
         int i = 0;
@@ -70,6 +72,8 @@ public class WrapLayout implements ContentLayout {
             lines.addAll(subRanges(i));
         }
     }
+
+    @Override
     public void refreshAt(int startRow, int endRow) {
         int start = rowToFirstLine(startRow);
         int end   = rowToFirstLine(endRow);
@@ -100,6 +104,7 @@ public class WrapLayout implements ContentLayout {
         return list;
     }
 
+    @Override
     public SubText text(int line) {
         SubRange range = lines.get(line);
         List<SubText> subs = subTextsAt(range.row());

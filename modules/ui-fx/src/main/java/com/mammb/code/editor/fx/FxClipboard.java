@@ -25,6 +25,7 @@ import java.util.Map;
  */
 public class FxClipboard implements Clipboard {
 
+    /** The fx clipboard instance. */
     static final Clipboard instance = new FxClipboard();
 
     @Override

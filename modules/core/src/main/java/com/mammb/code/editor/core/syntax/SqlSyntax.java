@@ -29,6 +29,7 @@ import java.util.Optional;
  */
 public class SqlSyntax implements Syntax {
 
+    /** The keywords. */
     private final Trie keywords = Trie.of("""
         add,all,alter,and,any,as,asc,backup,between,by,case,check,column,constraint,create,
         database,default,delete,desc,distinct,drop,exec,exists,foreign,from,full,group,

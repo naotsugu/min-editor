@@ -43,10 +43,21 @@ public class FxDialog extends Dialog<ButtonType> {
         pane.getButtonTypes().addAll(buttonTypes);
     }
 
+    /**
+     * Create the about dialog.
+     * @param owner the owner of dialog
+     * @return the about dialog
+     */
     public static FxDialog about(Window owner) {
         return new FxDialog(owner, "About", "min-editor", ButtonType.CLOSE);
     }
 
+    /**
+     * Create the confirmation dialog.
+     * @param owner the owner of dialog
+     * @param text the text
+     * @return the confirmation dialog
+     */
     public static FxDialog confirmation(Window owner, String text) {
         return new FxDialog(owner, "Confirmation", text, ButtonType.CANCEL, ButtonType.OK);
     }

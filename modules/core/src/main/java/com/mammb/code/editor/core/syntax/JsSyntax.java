@@ -27,6 +27,7 @@ import java.util.Optional;
  */
 public class JsSyntax implements Syntax {
 
+    /** The keywords. */
     private final Trie keywords = Trie.of("""
         abstract,arguments,await,boolean,break,byte,case,catch,char,class,const,continue,
         debugger,default,delete,do,double,else,enum,eval,export,extends,false,final,finally,

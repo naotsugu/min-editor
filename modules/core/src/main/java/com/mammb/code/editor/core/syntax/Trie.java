@@ -26,6 +26,7 @@ import java.util.stream.Stream;
  */
 public class Trie {
 
+    /** The root node. */
     private final TrieNode root;
 
     public Trie() {
@@ -38,6 +39,10 @@ public class Trie {
         return trie;
     }
 
+    /**
+     * Put the word.
+     * @param word the word
+     */
     public void put(String word) {
         TrieNode node = root;
         for (int i = 0; i < word.length();) {
@@ -48,6 +53,10 @@ public class Trie {
         node.setEndOfWord();
     }
 
+    /**
+     * Remove the word.
+     * @param word the word
+     */
     public void remove(String word) {
         TrieNode node = searchPrefix(word);
         if (node == null || !node.isEndOfWord()) {
@@ -57,15 +66,30 @@ public class Trie {
         node.removeIfEmpty();
     }
 
+    /**
+     * Gets whether the specified word matches.
+     * @param word the words to be inspected
+     * @return {@code true}, if the specified word matches
+     */
     public boolean match(String word) {
         TrieNode node = searchPrefix(word);
         return node != null && node.isEndOfWord();
     }
 
+    /**
+     * Gets whether the specified word left-hand matches.
+     * @param prefix the text to be inspected
+     * @return {@code true}, if the specified word left-hand matches
+     */
     public boolean startsWith(String prefix) {
         return searchPrefix(prefix) != null;
     }
 
+    /**
+     * Gets the list of suggestion by the specified word.
+     * @param word the specified word
+     * @return the specified word
+     */
     public List<String> suggestion(String word) {
         TrieNode node = root;
         for (int i = 0; i < word.length();) {
@@ -94,12 +118,22 @@ public class Trie {
         return node;
     }
 
+    /**
+     * TrieNode.
+     */
     class TrieNode {
 
+        /** The parent node. */
         private final TrieNode parent;
+        /** The children. */
         private final Map<Integer, TrieNode> children;
+        /** The marker of end of word. */
         private boolean endOfWord;
 
+        /**
+         * Constructor.
+         * @param parent the parent node
+         */
         TrieNode(TrieNode parent) {
             this.parent = parent;
             this.children = new HashMap<>();
@@ -146,11 +180,17 @@ public class Trie {
             return children.keySet().stream().map(Character::toString).toList();
         }
 
-        void setEndOfWord() { endOfWord = true; }
+        void setEndOfWord() {
+            endOfWord = true;
+        }
 
-        void setEndOfWord(boolean endOfWord) { this.endOfWord = endOfWord; }
+        void setEndOfWord(boolean endOfWord) {
+            this.endOfWord = endOfWord;
+        }
 
-        boolean isEndOfWord() { return endOfWord; }
+        boolean isEndOfWord() {
+            return endOfWord;
+        }
     }
 
 }

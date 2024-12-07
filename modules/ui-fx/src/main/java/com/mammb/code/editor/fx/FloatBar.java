@@ -40,6 +40,11 @@ public class FloatBar extends HBox {
 
     private final Text text = new Text();
 
+    /**
+     * Constructor.
+     * @param vScroll the vertical ScrollBar
+     * @param hScroll the horizontal ScrollBar
+     */
     public FloatBar(ScrollBar vScroll, ScrollBar hScroll) {
 
         setManaged(false);

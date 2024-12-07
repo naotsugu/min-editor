@@ -27,6 +27,7 @@ import java.util.Optional;
  */
 public class RustSyntax implements Syntax {
 
+    /** The keywords. */
     private final Trie keywords = Trie.of("""
         as,break,const,continue,crate,else,enum,extern,false,fn,for,if,impl,in,
         let,loop,match,mod,move,mut,pub,ref,return,self,Self,static,struct,super,

@@ -157,7 +157,6 @@ public class FxDraw implements Draw {
         gc.fillRect(x, y, w, h);
     }
 
-
     @Override
     public FontMetrics fontMetrics() {
         return fontMetrics;
@@ -172,12 +171,21 @@ public class FxDraw implements Draw {
         }
     }
 
+    /**
+     * Get the default font.
+     * @return the default font
+     */
     private Font defaultFont() {
         String fontName = System.getProperty("os.name").toLowerCase().startsWith("windows")
                 ? "MS Gothic" : "Consolas";
         return Font.font(fontName, 3 * 5);
     }
 
+    /**
+     * Get the Color from the specified color string.
+     * @param name the color string
+     * @return the Color
+     */
     private Color color(String name) {
         return colors.computeIfAbsent(name, Color::web);
     }

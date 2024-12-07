@@ -21,6 +21,10 @@ package com.mammb.code.editor.core.text;
  */
 public interface LinedText extends Text {
 
+    /**
+     * Get the number of line.
+     * @return the number of line
+     */
     int line();
 
     static LinedText of(int line, Text text) {

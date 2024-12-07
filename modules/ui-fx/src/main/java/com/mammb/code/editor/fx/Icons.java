@@ -18,6 +18,10 @@ package com.mammb.code.editor.fx;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
+/**
+ * The icons.
+ * @author Naotsugu Kobayashi
+ */
 public class Icons {
 
     public static SVGPath terminal() {

@@ -42,10 +42,12 @@ public class RowLayout implements ContentLayout {
         this.fm = fm;
     }
 
+    @Override
     public void setScreenWidth(int width) {
         // nothing to do
     }
 
+    @Override
     public void refresh(int line) {
         // nothing to do
     }
