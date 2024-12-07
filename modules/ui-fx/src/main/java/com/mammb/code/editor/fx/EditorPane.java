@@ -61,6 +61,8 @@ import java.util.stream.Collectors;
  */
 public class EditorPane extends StackPane {
 
+    /** The context. */
+    private final AppContext context;
     /** The canvas. */
     private final Canvas canvas;
     /** The draw. */
@@ -78,12 +80,13 @@ public class EditorPane extends StackPane {
 
     private Consumer<Path> newOpenHandler;
 
-    public EditorPane() {
-        this(null);
+
+    public EditorPane(AppContext ctx) {
+        this(null, ctx);
     }
 
-    public EditorPane(Path path) {
-
+    public EditorPane(Path path, AppContext ctx) {
+        context = ctx;
         canvas = new Canvas();
         canvas.setManaged(false);
         canvas.setFocusTraversable(true);
@@ -111,7 +114,7 @@ public class EditorPane extends StackPane {
         hScroll.valueProperty().addListener(this::handleHorizontalScroll);
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethodTextChanged);
-        canvas.focusedProperty().addListener((ob, o, n) -> {
+        canvas.focusedProperty().addListener((_, _, n) -> {
             model.setCaretVisible(n);
             draw();
         });
@@ -396,11 +399,11 @@ public class EditorPane extends StackPane {
         Stage stage = new Stage();
         stage.setX(current.getX() + (current.isFullScreen() ? 0 : 15));
         stage.setY(current.getY() + (current.isFullScreen() ? 0 : 15));
-        var editorPane = new EditorPane();
+        var editorPane = new EditorPane(context);
         Scene scene = new Scene(editorPane, current.getWidth(), current.getHeight());
         scene.getStylesheets().addAll(getScene().getStylesheets());
         stage.setScene(scene);
-        stage.setTitle("min-editor");
+        stage.setTitle(Version.appName);
         stage.show();
     }
 
@@ -456,6 +459,10 @@ public class EditorPane extends StackPane {
             return Files.size(path);
         } catch (Exception ignore) { }
         return 0;
+    }
+
+    AppContext context() {
+        return context;
     }
 
 }

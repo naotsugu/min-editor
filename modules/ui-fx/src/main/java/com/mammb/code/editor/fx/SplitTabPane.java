@@ -61,15 +61,18 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     private static final AtomicReference<DndTabPane> activePane = new AtomicReference<>();
     private static final DataFormat tabMove = new DataFormat("SplitTabPane:tabMove");
 
+    private AppContext context;
     private SplitPane pane = new SplitPane();
     private SplitTabPane parent;
     private List<Tab> contents = new ArrayList<>();
 
-    public SplitTabPane() {
+    private SplitTabPane(AppContext ctx) {
+        context = ctx;
         getChildren().add(pane);
     }
+
     public SplitTabPane(EditorPane node) {
-        this();
+        this(node.context());
         add(node);
     }
 
@@ -86,12 +89,12 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     private SplitTabPane(EditorPane node, SplitTabPane parent) {
-        this();
+        this(parent.context);
         add(node);
         this.parent = parent;
     }
     private SplitTabPane(DndTabPane node, SplitTabPane parent) {
-        this();
+        this(parent.context);
         pane.getItems().add(node);
         this.parent = parent;
         node.setParent(this);
@@ -207,7 +210,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             tab.setOnClosed(this::handleOnTabClosed);
             node.fileNameProperty().addListener((_, _, n) -> label.setText(n));
             node.setNewOpenHandler(_ -> {
-                EditorPane editorPane = new EditorPane();
+                EditorPane editorPane = new EditorPane(parent.context);
                 add(editorPane);
             });
         }
@@ -254,7 +257,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleOnTabClosed(Event e) {
             if (tabPane.getTabs().isEmpty()) {
                 if (parent.parent == null) {
-                    EditorPane editorPane = new EditorPane();
+                    EditorPane editorPane = new EditorPane(parent.context);
                     add(editorPane);
                 } else {
                     parent.parent.remove(parent);
@@ -327,7 +330,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 var path = db.getFiles().stream().map(File::toPath)
                         .filter(Files::isReadable).filter(Files::isRegularFile)
                         .findFirst().orElse(null);
-                EditorPane editorPane = new EditorPane(path);
+                EditorPane editorPane = new EditorPane(path, parent.context);
                 add(editorPane);
                 e.setDropCompleted(false);
                 return;

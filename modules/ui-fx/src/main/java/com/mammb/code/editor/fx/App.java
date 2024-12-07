@@ -37,7 +37,7 @@ public class App extends Application {
         var ctx = new AppContext();
         stage.setX(ctx.config().windowPositionX());
         stage.setY(ctx.config().windowPositionY());
-        var appPane = new AppPane(stage);
+        var appPane = new AppPane(stage, ctx);
         Scene scene = new Scene(appPane, ctx.config().windowWidth(), ctx.config().windowHeight());
         scene.getStylesheets().add(css);
         stage.setScene(scene);
