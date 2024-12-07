@@ -122,6 +122,15 @@ public class AppContext implements Context {
                 log.log(System.Logger.Level.ERROR, ignore);
             }
         }
+
+        public void clear() {
+            try {
+                Files.delete(configPath);
+                log.log(System.Logger.Level.INFO, "deleted config file.");
+            } catch (IOException ignore) {
+                log.log(System.Logger.Level.ERROR, ignore);
+            }
+        }
     }
 
     /**
