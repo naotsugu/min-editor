@@ -31,6 +31,11 @@ public interface LineLayout {
     int rowSize();
     Text text(int line);
     Text rowTextAt(int row);
+
+    /**
+     * Get the line height.
+     * @return the line height
+     */
     double lineHeight();
 
     int homeColOnRow(int line);
@@ -46,5 +51,10 @@ public interface LineLayout {
         return line * lineHeight();
     }
 
+    /**
+     * Get the standard a character width.
+     * @return the standard a character width
+     */
     double standardCharWidth();
+
 }
