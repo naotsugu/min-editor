@@ -80,7 +80,7 @@ public interface Text {
     }
 
     default int indexRight(int index) {
-        if (isEmpty()) return index;
+        if (isEmpty() || index == value().length()) return index;
         index += isHighSurrogate(index) ? 2 : 1;
         return (index > textLength()) ? -1 : index;
     }
