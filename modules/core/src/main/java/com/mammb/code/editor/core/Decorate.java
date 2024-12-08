@@ -37,15 +37,28 @@ public interface Decorate {
     Set<Integer> highlightsRows();
     boolean isBlockScoped();
 
-
+    /**
+     * Create a new {@link Decorate}.
+     * @param syntax the syntax
+     * @return a new {@link Decorate}
+     */
     static Decorate of(Syntax syntax) {
         return new DecorateImpl(syntax);
     }
 
+    /**
+     * The decorate implementation.
+     */
     class DecorateImpl implements Decorate {
+
+        /** The syntax. */
         private final Syntax syntax;
         private final Map<Integer, List<StyleSpan>> highlights = new HashMap<>();
 
+        /**
+         * Constructor.
+         * @param syntax the syntax
+         */
         public DecorateImpl(Syntax syntax) {
             this.syntax = syntax;
         }

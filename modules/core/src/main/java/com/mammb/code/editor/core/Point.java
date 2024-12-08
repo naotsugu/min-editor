@@ -54,6 +54,10 @@ public interface Point extends Comparable<Point> {
         return of(p.row(), p.col());
     }
 
+    /**
+     * Get whether this point is zero or not.
+     * @return {@code true} if this point is zero
+     */
     default boolean isZero() {
         return row() == 0 && col() == 0;
     }
@@ -68,6 +72,11 @@ public interface Point extends Comparable<Point> {
         }
     }
 
+    /**
+     * The range of points.
+     * @param start the start point
+     * @param end the end point
+     */
     record Range(Point start, Point end) implements Comparable<Range> {
         public Point min() {
             return start.compareTo(end) < 0 ? start : end;
@@ -81,6 +90,11 @@ public interface Point extends Comparable<Point> {
         }
     }
 
+    /**
+     * The text with point.
+     * @param point the point
+     * @param text the text
+     */
     record PointText(Point point, String text) {}
 
 }
