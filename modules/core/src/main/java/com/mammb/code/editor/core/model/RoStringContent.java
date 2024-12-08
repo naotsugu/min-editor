@@ -37,14 +37,26 @@ import java.util.stream.Stream;
  */
 public class RoStringContent implements Content {
 
+    /** The content. */
     private final List<String> stringList;
+    /** The content path. */
     private final Path path;
+    /** The document statistics. */
     private final DocumentStat stat;
 
+    /**
+     * Constructor.
+     * @param path the content path
+     */
     public RoStringContent(Path path) {
-        this(path, 1000);
+        this(path, 5_000);
     }
 
+    /**
+     * Constructor.
+     * @param path the content path
+     * @param rowLimit the size of row Limit
+     */
     public RoStringContent(Path path, int rowLimit) {
         this.path = path;
 
@@ -167,4 +179,5 @@ public class RoStringContent implements Content {
             default -> null;
         };
     }
+
 }

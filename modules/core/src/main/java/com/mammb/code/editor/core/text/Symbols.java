@@ -24,6 +24,7 @@ import com.mammb.code.editor.core.Draw;
 public interface Symbols {
 
     /**
+     * The line feed symbol.
      * <pre>
      *     y0  *************
      *         ****** ******        (x1, y0)
@@ -38,7 +39,6 @@ public interface Symbols {
      *     y2  *************
      *        x0     x1     x2
      * </pre>
-     *
      */
     static Draw.Line[] lineFeed(double x, double y, double w, double h, String color) {
         double x0 = x + w * 0.1;
@@ -57,6 +57,7 @@ public interface Symbols {
 
 
     /**
+     * The carriage return - line feed symbol.
      * <pre>
      *     y0  *************
      *         ***** *******        (x1, y0)
@@ -88,6 +89,7 @@ public interface Symbols {
     }
 
     /**
+     * The tab symbol.
      * <pre>
      *     y0  *************
      *         ******* *****        (x1, y0)
@@ -119,6 +121,7 @@ public interface Symbols {
     }
 
     /**
+     * The white space symbol.
      * <pre>
      *     y0  *************
      *         *************

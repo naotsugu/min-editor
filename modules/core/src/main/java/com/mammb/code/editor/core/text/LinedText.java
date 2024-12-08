@@ -27,6 +27,12 @@ public interface LinedText extends Text {
      */
     int line();
 
+    /**
+     * Create a new {@link LinedText}.
+     * @param line the number of line
+     * @param text the text
+     * @return a new {@link LinedText}
+     */
     static LinedText of(int line, Text text) {
         record LinedTextRecord(int line, Text peer) implements LinedText {
             @Override public int row() { return peer.row(); }

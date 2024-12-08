@@ -26,24 +26,7 @@ import java.util.List;
 public interface SubText extends Text {
     int fromIndex();
     int toIndex();
-    SubText prev();
-    SubText next();
     Text parent();
-    default boolean hasPrev() {
-        return prev() != null;
-    }
-    default boolean hasNext() {
-        return next() != null;
-    }
-    default boolean isHead() {
-        return prev() == null;
-    }
-    default boolean isTail() {
-        return next() == null;
-    }
-    default boolean contains(int col) {
-        return fromIndex() <= col && col < toIndex();
-    }
 
     static List<SubText> of(RowText rowText, double width) {
         if (width <= 0) {
@@ -107,10 +90,6 @@ public interface SubText extends Text {
         public int fromIndex() { return fromIndex; }
         @Override
         public int toIndex() { return toIndex; }
-        @Override
-        public SubText prev() { return prev; }
-        @Override
-        public SubText next() { return next; }
         @Override
         public Text parent() { return parent; }
     }
