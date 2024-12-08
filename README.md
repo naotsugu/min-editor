@@ -28,6 +28,18 @@ The easiest way to allow an app from an unidentified developer to run on macOS i
 
 After that, the app will be saved as a safe app to open, and you can double-click to use it in the future as you can with any registered apps.
 
+## Uninstalling
+
+Delete executable files and configuration files.
+
+The configuration files for each platform exist in the following
+
+| platform | location                                  |
+|---------|-------------------------------------------|
+| max os  | `~/Library/Application Support/min-editor/` |
+| linux   | `~/.config/min-editor/`                     |
+| windows | `~/AppData/Roaming/min-editor/`             |
+
 
 ## Building
 

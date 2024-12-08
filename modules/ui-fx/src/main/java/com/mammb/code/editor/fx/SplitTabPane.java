@@ -205,6 +205,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var node = (EditorPane) tab.getContent();
             var label = new Label(node.fileNameProperty().get());
             tab.setGraphic(label);
+            // TODO file path prop
+            // tab.setTooltip(new Tooltip(label.getText()));
             label.setOnDragDetected(this::handleTabDragDetected);
             tab.setOnCloseRequest(this::handleOnTabCloseRequest);
             tab.setOnClosed(this::handleOnTabClosed);
