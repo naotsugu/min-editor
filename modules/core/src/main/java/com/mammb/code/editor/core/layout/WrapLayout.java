@@ -247,7 +247,8 @@ public class WrapLayout implements ContentLayout {
         boolean contains(int row, int col) {
             return this.row == row && (
                 (this.fromIndex <= col && col < this.toIndex) ||
-                (col == 0 && fromIndex == 0 && toIndex == 0)
+                (col == 0 && fromIndex == 0 && toIndex == 0) ||
+                (col == this.toIndex && subLine == subLines - 1)
             );
         }
         @Override
