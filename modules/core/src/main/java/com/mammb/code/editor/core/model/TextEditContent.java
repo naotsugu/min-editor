@@ -35,17 +35,31 @@ public class TextEditContent implements Content {
 
     /** The text edit. */
     private final TextEdit edit;
+    /** The flushes(text being edited with IME). */
     private final List<Point.PointText> flushes = new ArrayList<>();
+    /** Whether it has been modified or not. */
     private boolean modified;
 
+    /**
+     * Constructor.
+     */
     public TextEditContent() {
         this.edit = TextEdit.of();
     }
 
+    /**
+     * Constructor.
+     * @param path the path of content
+     */
     public TextEditContent(Path path) {
         this.edit = TextEdit.of(path);
     }
 
+    /**
+     * Constructor.
+     * @param path the path of content
+     * @param traverseCallback the traverseCallback
+     */
     public TextEditContent(Path path, Function<byte[], Boolean> traverseCallback) {
         this.edit = TextEdit.of(path, traverseCallback::apply);
     }
@@ -207,6 +221,10 @@ public class TextEditContent implements Content {
         };
     }
 
+    /**
+     * Whether it has been modified or not.
+     * @return {@code true} if it has been modified
+     */
     private boolean isModified() {
         if (flushes.isEmpty() && !edit.hasUndoRecord()) {
             return false;

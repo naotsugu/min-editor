@@ -223,8 +223,7 @@ public class EditorPane extends StackPane {
                         .map(Path::toString).collect(Collectors.joining("\n"));
                     model.input(list.isEmpty() ? dir.get().toAbsolutePath().toString() : list);
                     draw();
-                } catch (IOException ignore) {
-                }
+                } catch (IOException ignore) {  }
                 return;
             }
         }

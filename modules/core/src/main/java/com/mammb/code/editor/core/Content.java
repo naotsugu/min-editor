@@ -117,14 +117,35 @@ public interface Content {
      */
     String getText(Point start, Point end);
 
+    /**
+     * Get the size of rows.
+     * @return the size of rows
+     */
     int rows();
 
+    /**
+     * Get the content path.
+     * @return the content path
+     */
     Optional<Path> path();
 
+    /**
+     * Save the target content to a file.
+     * @param path the path of file
+     */
     void save(Path path);
 
+    /**
+     * Insert the text being edited with IME.
+     * @param point the point at insertion
+     * @param text the text being edited with IME
+     * @return caret point after insert
+     */
     Point insertFlush(Point point, String text);
 
+    /**
+     * Clear the flushes(text being edited with IME).
+     */
     void clearFlush();
 
     List<Point> findAll(String text);
