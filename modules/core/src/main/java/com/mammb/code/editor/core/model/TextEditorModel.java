@@ -52,14 +52,28 @@ import java.util.stream.IntStream;
  */
 public class TextEditorModel implements EditorModel {
 
-    private double marginTop = 5, marginLeft = 70;
+    private double marginTop = 5;
+    private double marginLeft = 70;
+    /** caretVisible?. */
     private boolean caretVisible = true;
+    /** The content. */
     private final Content content;
+    /** The screen layout. */
     private final ScreenLayout screenLayout;
+    /** The carets. */
     private final CaretGroup carets = CaretGroup.of();
+    /** decorate. */
     private final Decorate decorate;
+    /** The screen scroll. */
     private final ScreenScroll scroll;
 
+    /**
+     * Constructor.
+     * @param content the content
+     * @param fm the font metrics
+     * @param syntax the syntax
+     * @param scroll the screen scroll
+     */
     public TextEditorModel(Content content, FontMetrics fm, Syntax syntax, ScreenScroll scroll) {
         this.content = content;
         this.screenLayout = ScreenLayout.of(content, fm);
