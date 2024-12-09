@@ -77,6 +77,11 @@ public interface EditorModel {
     void copyToClipboard(Clipboard clipboard);
     void cutToClipboard(Clipboard clipboard);
     Optional<Path> path();
+
+    /**
+     * Save the target content to a file.
+     * @param path the path of file
+     */
     void save(Path path);
     void escape();
     void wrap(int width);

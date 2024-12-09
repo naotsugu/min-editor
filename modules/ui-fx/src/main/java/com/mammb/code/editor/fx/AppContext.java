@@ -41,6 +41,9 @@ public class AppContext implements Context {
         return appConfig;
     }
 
+    /**
+     * The application configuration.
+     */
     public static class AppConfig implements Context.Config {
 
         private static final Map<String, Object> map = new ConcurrentHashMap<>();
