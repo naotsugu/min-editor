@@ -45,6 +45,7 @@ public class AppContext implements Context {
 
         private static final Map<String, Object> map = new ConcurrentHashMap<>();
         private final Path configPath = configDir().resolve(Path.of("config.properties"));
+        private final String osName = System.getProperty("os.name").toLowerCase();
 
         public AppConfig() {
             try {
@@ -55,6 +56,42 @@ public class AppContext implements Context {
             }
             load();
             Runtime.getRuntime().addShutdownHook(new Thread(this::save));
+        }
+
+        @Override public String fontName() {
+            return osName.contains("windows") ? fontNameWin()
+                : osName.contains("mac") ? fontNameMac()
+                : fontNameLinux();
+        }
+
+        @Override public double fontSize() {
+            return osName.contains("windows") ? fontSizeWin()
+                : osName.contains("mac") ? fontSizeMac()
+                : fontSizeLinux();
+        }
+
+        @Override public String fontNameWin() {
+            return map.getOrDefault("fontNameWin", "MS Gothic").toString();
+        }
+
+        @Override public double fontSizeWin() {
+            return Double.parseDouble(map.getOrDefault("fontSize", 15).toString());
+        }
+
+        @Override public String fontNameMac() {
+            return map.getOrDefault("fontNameWin", "Menlo").toString();
+        }
+
+        @Override public double fontSizeMac() {
+            return Double.parseDouble(map.getOrDefault("fontSize", 14).toString());
+        }
+
+        @Override public String fontNameLinux() {
+            return map.getOrDefault("fontNameWin", "monospace").toString();
+        }
+
+        @Override public double fontSizeLinux() {
+            return Double.parseDouble(map.getOrDefault("fontSize", 15).toString());
         }
 
         public double windowWidth() {
@@ -131,6 +168,7 @@ public class AppContext implements Context {
                 log.log(System.Logger.Level.ERROR, ignore);
             }
         }
+
     }
 
     /**

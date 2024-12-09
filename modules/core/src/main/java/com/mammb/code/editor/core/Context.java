@@ -29,6 +29,15 @@ public interface Context {
 
 
     interface Config {
+        String fontName();
+        double fontSize();
+
+        String fontNameWin();
+        double fontSizeWin();
+        String fontNameMac();
+        double fontSizeMac();
+        String fontNameLinux();
+        double fontSizeLinux();
 
     }
 

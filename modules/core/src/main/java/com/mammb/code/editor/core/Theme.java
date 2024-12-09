@@ -23,7 +23,7 @@ public interface Theme {
 
     Theme dark = new ThemeRecord(
             "#292929",
-            "#A9B7C6",
+            "#B8C7D6",
             "#214283AA",
             "#303030"
     );

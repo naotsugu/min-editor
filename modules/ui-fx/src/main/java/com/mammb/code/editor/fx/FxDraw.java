@@ -176,9 +176,11 @@ public class FxDraw implements Draw {
      * @return the default font
      */
     private Font defaultFont() {
-        String fontName = System.getProperty("os.name").toLowerCase().startsWith("windows")
-                ? "MS Gothic" : "Consolas";
-        return Font.font(fontName, 3 * 5);
+        String osName = System.getProperty("os.name").toLowerCase();
+        String fontName = osName.contains("windows") ? "MS Gothic"
+            : osName.contains("mac") ? "Menlo"
+            : "Consolas";
+        return Font.font(fontName, 14);
     }
 
     /**
