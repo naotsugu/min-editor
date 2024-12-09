@@ -401,7 +401,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void replace(Function<String, String> fun, boolean keepSelection) {
-        // TODO keepSelection
+        // TODO keep selection
         List<Point> points = content.replace(carets.ranges(), fun);
         refreshPointsRange(points);
     }

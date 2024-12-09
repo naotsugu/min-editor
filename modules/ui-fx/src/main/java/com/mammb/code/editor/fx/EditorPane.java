@@ -49,6 +49,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -210,6 +211,20 @@ public class EditorPane extends StackPane {
                 e.consume();
                 open(path.get());
                 draw();
+                return;
+            }
+            var dir = board.getFiles().stream().map(File::toPath)
+                .filter(Files::isReadable).filter(Files::isDirectory).findFirst();
+            if (dir.isPresent()) {
+                e.setDropCompleted(true);
+                e.consume();
+                try (var stream = Files.list(dir.get())) {
+                    String list = stream.map(Path::toAbsolutePath)
+                        .map(Path::toString).collect(Collectors.joining("\n"));
+                    model.input(list.isEmpty() ? dir.get().toAbsolutePath().toString() : list);
+                    draw();
+                } catch (IOException ignore) {
+                }
                 return;
             }
         }
