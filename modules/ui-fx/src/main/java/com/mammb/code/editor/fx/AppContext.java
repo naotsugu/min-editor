@@ -32,13 +32,20 @@ public class AppContext implements Context {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(AppContext.class.getName());
+    /** The os name. */
+    private final String osName = System.getProperty("os.name").toLowerCase();
 
     /** The configuration instance. */
-    private AppConfig appConfig = new AppConfig();
+    private AppConfig appConfig = new AppConfig(osName);
 
     @Override
     public AppConfig config() {
         return appConfig;
+    }
+
+    @Override
+    public String osName() {
+        return osName;
     }
 
     /**
@@ -46,11 +53,15 @@ public class AppContext implements Context {
      */
     public static class AppConfig implements Context.Config {
 
+        /** The config map. */
         private static final Map<String, Object> map = new ConcurrentHashMap<>();
+        /** The path of config. */
         private final Path configPath = configDir().resolve(Path.of("config.properties"));
-        private final String osName = System.getProperty("os.name").toLowerCase();
+        /** The os name. */
+        private final String osName;
 
-        public AppConfig() {
+        public AppConfig(String osName) {
+            this.osName = osName;
             try {
                 Files.createDirectories(configPath.getParent());
                 if (!Files.exists(configPath)) Files.createFile(configPath);

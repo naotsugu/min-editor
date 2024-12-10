@@ -27,6 +27,11 @@ public interface Context {
      */
     Config config();
 
+    /**
+     * Get the os name.
+     * @return the os name
+     */
+    String osName();
 
     interface Config {
         String fontName();

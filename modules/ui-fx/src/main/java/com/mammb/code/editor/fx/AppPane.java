@@ -30,6 +30,7 @@ public class AppPane extends BorderPane {
     /**
      * Constructor.
      * @param stage the stage
+     * @param ctx the application context
      */
     public AppPane(Stage stage, AppContext ctx) {
         var editorPane = new EditorPane(ctx);
