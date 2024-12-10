@@ -34,6 +34,8 @@ import java.util.Optional;
  */
 public class FxDraw implements Draw {
 
+    /** The context. */
+    private final AppContext context;
     /** The graphics context. */
     private final GraphicsContext gc;
     /** The font metrics. */
@@ -43,11 +45,13 @@ public class FxDraw implements Draw {
 
     /**
      * Constructor.
+     * @param ctx the application context
      * @param gc the graphics context
      */
-    public FxDraw(GraphicsContext gc) {
+    public FxDraw(AppContext ctx, GraphicsContext gc) {
+        this.context = ctx;
         this.gc = gc;
-        Font font = defaultFont();
+        Font font = Font.font(context.config().fontName(), context.config().fontSize());
         this.fontMetrics = FxFontMetrics.of(font);
         this.gc.setFont(font);
     }
@@ -169,18 +173,6 @@ public class FxDraw implements Draw {
             gc.setStroke(color(line.color()));
             gc.strokeLine(line.x1(), line.y1(), line.x2(), line.y2());
         }
-    }
-
-    /**
-     * Get the default font.
-     * @return the default font
-     */
-    private Font defaultFont() {
-        String osName = System.getProperty("os.name").toLowerCase();
-        String fontName = osName.contains("windows") ? "MS Gothic"
-            : osName.contains("mac") ? "Menlo"
-            : "Consolas";
-        return Font.font(fontName, 14);
     }
 
     /**

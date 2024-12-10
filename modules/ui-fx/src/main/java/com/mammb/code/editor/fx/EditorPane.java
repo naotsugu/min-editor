@@ -102,7 +102,7 @@ public class EditorPane extends StackPane {
         canvas = new Canvas();
         canvas.setManaged(false);
         canvas.setFocusTraversable(true);
-        draw = new FxDraw(canvas.getGraphicsContext2D());
+        draw = new FxDraw(context, canvas.getGraphicsContext2D());
         model = (path == null)
                 ? EditorModel.of(Content.of(), draw.fontMetrics(), screenScroll())
                 : EditorModel.of(Content.of(path), draw.fontMetrics(), screenScroll());
