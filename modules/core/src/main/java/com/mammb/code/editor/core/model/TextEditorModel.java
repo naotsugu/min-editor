@@ -68,7 +68,7 @@ public class TextEditorModel implements EditorModel {
     /** The screen scroll. */
     private final ScreenScroll scroll;
     /** The context. */
-    private final Context context;
+    private final Context ctx;
 
     /**
      * Constructor.
@@ -83,7 +83,7 @@ public class TextEditorModel implements EditorModel {
         this.screenLayout = ScreenLayout.of(content, fm);
         this.decorate = Decorate.of(syntax);
         this.scroll = scroll;
-        this.context = ctx;
+        this.ctx = ctx;
     }
 
     @Override
@@ -471,6 +471,8 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void zoom(int delta) {
         if (delta == 0) return;
+        double size = ctx.config().fontSize() + ((delta > 0) ? 0.5 : -0.5);
+        ctx.config().fontSize((double) Math.round(size * 10) / 10);
         // TODO
     }
 
