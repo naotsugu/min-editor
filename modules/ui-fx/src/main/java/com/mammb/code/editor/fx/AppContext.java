@@ -74,7 +74,7 @@ public class AppContext implements Context {
         }
 
         @Override public String fontNameWin() {
-            return map.getOrDefault("fontNameWin", "MS Gothic").toString();
+            return map.getOrDefault("fontNameWin", "BIZ UDGothic").toString();
         }
 
         @Override public double fontSizeWin() {
