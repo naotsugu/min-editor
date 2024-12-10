@@ -84,6 +84,17 @@ public class AppContext implements Context {
                 : fontSizeLinux();
         }
 
+        @Override
+        public void fontSize(double fontSize) {
+            if (osName.contains("windows")) {
+                map.put("fontSizeWin", fontSize);
+            } else if (osName.contains("mac")) {
+                map.put("fontSizeMac", fontSize);
+            } else {
+                map.put("fontSizeLinux", fontSize);
+            }
+        }
+
         @Override public String fontNameWin() {
             return map.getOrDefault("fontNameWin", "BIZ UDGothic").toString();
         }

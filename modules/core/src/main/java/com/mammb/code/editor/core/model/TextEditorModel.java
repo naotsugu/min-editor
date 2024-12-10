@@ -67,6 +67,8 @@ public class TextEditorModel implements EditorModel {
     private final Decorate decorate;
     /** The screen scroll. */
     private final ScreenScroll scroll;
+    /** The context. */
+    private final Context context;
 
     /**
      * Constructor.
@@ -74,12 +76,14 @@ public class TextEditorModel implements EditorModel {
      * @param fm the font metrics
      * @param syntax the syntax
      * @param scroll the screen scroll
+     * @param ctx the context
      */
     public TextEditorModel(Content content, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx) {
         this.content = content;
         this.screenLayout = ScreenLayout.of(content, fm);
         this.decorate = Decorate.of(syntax);
         this.scroll = scroll;
+        this.context = ctx;
     }
 
     @Override

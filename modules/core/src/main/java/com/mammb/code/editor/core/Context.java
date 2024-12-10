@@ -36,6 +36,7 @@ public interface Context {
     interface Config {
         String fontName();
         double fontSize();
+        void fontSize(double fontSize);
 
         String fontNameWin();
         double fontSizeWin();
