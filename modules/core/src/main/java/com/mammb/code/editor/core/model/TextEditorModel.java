@@ -19,6 +19,7 @@ import com.mammb.code.editor.core.Caret;
 import com.mammb.code.editor.core.CaretGroup;
 import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
@@ -74,7 +75,7 @@ public class TextEditorModel implements EditorModel {
      * @param syntax the syntax
      * @param scroll the screen scroll
      */
-    public TextEditorModel(Content content, FontMetrics fm, Syntax syntax, ScreenScroll scroll) {
+    public TextEditorModel(Content content, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx) {
         this.content = content;
         this.screenLayout = ScreenLayout.of(content, fm);
         this.decorate = Decorate.of(syntax);
@@ -461,6 +462,12 @@ public class TextEditorModel implements EditorModel {
         carets.unique().at(0, 0);
         decorate.clear();
         screenLayout.wrapWith(width);
+    }
+
+    @Override
+    public void zoom(int delta) {
+        if (delta == 0) return;
+        // TODO
     }
 
     @Override

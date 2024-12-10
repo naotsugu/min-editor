@@ -103,9 +103,8 @@ public class EditorPane extends StackPane {
         canvas.setManaged(false);
         canvas.setFocusTraversable(true);
         draw = new FxDraw(context, canvas.getGraphicsContext2D());
-        model = (path == null)
-                ? EditorModel.of(Content.of(), draw.fontMetrics(), screenScroll())
-                : EditorModel.of(Content.of(path), draw.fontMetrics(), screenScroll());
+        model = EditorModel.of((path == null) ? Content.of() : Content.of(path),
+            draw.fontMetrics(), screenScroll(), context);
         vScroll.setOrientation(Orientation.VERTICAL);
         hScroll.setOrientation(Orientation.HORIZONTAL);
         StackPane.setAlignment(vScroll, Pos.TOP_RIGHT);
@@ -154,10 +153,14 @@ public class EditorPane extends StackPane {
 
     private void handleScroll(ScrollEvent e) {
         if (e.getEventType() == ScrollEvent.SCROLL && e.getDeltaY() != 0) {
-            if (e.getDeltaY() < 0) {
-                model.scrollNext((int) Math.min(5, Math.abs(e.getDeltaY())));
+            if (e.isShortcutDown()) {
+                model.zoom((int) Math.clamp(e.getDeltaY(), -1, 1));
             } else {
-                model.scrollPrev((int) Math.min(5, e.getDeltaY()));
+                if (e.getDeltaY() < 0) {
+                    model.scrollNext((int) Math.min(5, -e.getDeltaY()));
+                } else {
+                    model.scrollPrev((int) Math.min(5, e.getDeltaY()));
+                }
             }
             draw();
         }
@@ -360,7 +363,7 @@ public class EditorPane extends StackPane {
         final long size = fileSize(path);
         boolean openInBackground = size > 2_000_000;
         Content content = openInBackground ? Content.readOnlyPartOf(path) : Content.of(path);
-        model = EditorModel.of(content, draw.fontMetrics(), screenScroll());
+        model = EditorModel.of(content, draw.fontMetrics(), screenScroll(), context);
         model.setSize(getWidth(), getHeight());
         fileNameProperty.setValue(path.getFileName().toString());
 
@@ -375,7 +378,7 @@ public class EditorPane extends StackPane {
                 }
             };
             task.setOnSucceeded(_ -> {
-                model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll());
+                model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll(), context);
                 model.setSize(getWidth(), getHeight());
             });
             floatBar.handleProgress(task);

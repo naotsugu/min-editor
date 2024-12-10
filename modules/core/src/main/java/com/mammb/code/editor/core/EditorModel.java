@@ -33,14 +33,16 @@ public interface EditorModel {
      * @param content the content
      * @param fm the font metrics
      * @param scroll the screen scroll
+     * @param ctx the context
      * @return a new {@link EditorModel}
      */
-    static EditorModel of(Content content, FontMetrics fm, ScreenScroll scroll) {
+    static EditorModel of(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
         return new TextEditorModel(
             content,
             fm,
             Syntax.of(content.path().map(EditorModel::extension).orElse("")),
-            scroll);
+            scroll,
+            ctx);
     }
 
     void draw(Draw draw);
@@ -85,6 +87,7 @@ public interface EditorModel {
     void save(Path path);
     void escape();
     void wrap(int width);
+    void zoom(int delta);
 
     void imeOn();
     Optional<Loc> imeLoc();

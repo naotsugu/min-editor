@@ -211,6 +211,11 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
+    public void zoom(int delta) {
+
+    }
+
+    @Override
     public void imeOn() {
     }
 
