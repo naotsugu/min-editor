@@ -30,7 +30,7 @@ public interface Caret extends Comparable<Caret>{
     void at(int row, int col, double vPos);
     void floatAt(int row, int col);
     void flushAt(int row, int col);
-    void markTo(int markRow, int markCcol, int row, int col);
+    void markTo(int markRow, int markCol, int row, int col);
     void clearFloat();
     void clearFlush();
     boolean hasFlush();
@@ -40,6 +40,7 @@ public interface Caret extends Comparable<Caret>{
     boolean isMarked();
     boolean isFloating();
     Range markedRange();
+    Range range();
     double vPos();
     default int row() {
         return point().row();
@@ -112,6 +113,11 @@ public interface Caret extends Comparable<Caret>{
         @Override
         public Range markedRange() {
             return isMarked() ? new Range(Point.of(point), mark) : null;
+        }
+
+        @Override
+        public Range range() {
+            return isMarked() ? markedRange() : new Range(point(), point());
         }
 
         @Override

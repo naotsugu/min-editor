@@ -17,6 +17,7 @@ package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.Point.Range;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -34,6 +35,7 @@ public interface CaretGroup {
      */
     List<Point> points();
     List<Caret> carets();
+    List<Caret> carets(Comparator<? super Caret> comparator);
     List<Range> marked();
 
     /**
@@ -87,13 +89,19 @@ public interface CaretGroup {
         }
 
         @Override
+        public List<Caret> carets(Comparator<? super Caret> comparator) {
+            return carets.stream().sorted(comparator).toList();
+        }
+
+        @Override
         public List<Range> marked() {
             return carets.stream().filter(Caret::isMarked).map(Caret::markedRange).toList();
         }
 
         @Override
         public List<Range> ranges() {
-            return carets.stream().map(c -> c.isMarked() ? c.markedRange() : new Range(c.point(), c.point())).toList();
+            // TODO merge overlapping ranges
+            return carets.stream().map(Caret::range).toList();
         }
 
         @Override

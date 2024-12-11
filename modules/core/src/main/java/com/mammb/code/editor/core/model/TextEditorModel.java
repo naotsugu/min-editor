@@ -38,8 +38,10 @@ import com.mammb.code.editor.core.text.StyledText;
 import com.mammb.code.editor.core.text.Symbols;
 import com.mammb.code.editor.core.text.Text;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -428,9 +430,27 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void replace(Function<String, String> fun, boolean keepSelection) {
-        // TODO keep selection
-        List<Point> points = content.replace(carets.ranges(), fun);
-        refreshPointsRange(points);
+        if (keepSelection) {
+            List<Point> points = new ArrayList<>();
+            for (Caret caret : carets.carets(Comparator.reverseOrder())) {
+                Point point = content.replace(List.of(caret.range()), fun).getFirst();
+                points.add(point);
+                if (caret.isMarked()) {
+                    var r = caret.markedRange();
+                    if (r.start().compareTo(point) == 0) {
+                        caret.markTo(r.end().row(), r.end().col(), point.row(), point.col());
+                    } else {
+                        caret.markTo(point.row(), point.col(), r.start().row(), r.start().col());
+                    }
+                }
+            }
+            screenLayout.refreshBuffer(
+                Collections.min(points).row(),
+                Collections.max(points).row() + 1);
+        } else {
+            List<Point> points = content.replace(carets.ranges(), fun);
+            refreshPointsRange(points);
+        }
     }
 
     @Override
