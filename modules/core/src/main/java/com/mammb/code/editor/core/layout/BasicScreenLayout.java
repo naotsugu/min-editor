@@ -105,7 +105,7 @@ class BasicScreenLayout implements ScreenLayout {
 
     @Override
     public void scrollX(double x) {
-        xShift = x;
+        xShift = Math.max(x, 0);
     }
 
     @Override
@@ -248,6 +248,11 @@ class BasicScreenLayout implements ScreenLayout {
     @Override
     public int topLine() {
         return topLine;
+    }
+
+    @Override
+    public double xShift() {
+        return xShift;
     }
 
     @Override

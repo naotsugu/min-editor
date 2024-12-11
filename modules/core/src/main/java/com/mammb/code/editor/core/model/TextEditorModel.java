@@ -156,7 +156,18 @@ public class TextEditorModel implements EditorModel {
         Caret caret = carets.getFirst();
         int line = screenLayout.rowToLine(caret.row(), caret.col());
         double caretX = screenLayout.xOnLayout(line, caret.col());
-        // TODO scroll x
+        double left = screenLayout.xShift();
+        double right = left + screenLayout.screenWidth();
+        double gap = screenLayout.standardCharWidth();
+        if (!(left <= caretX && caretX <= (right - gap))) {
+            // caret present off-screen
+            double margin = screenLayout.screenWidth() / 6;
+            if (caretX > (right - gap)) {
+                screenLayout.scrollX(left + (caretX - right) + margin);
+            } else {
+                screenLayout.scrollX(left - (left - caretX) - margin);
+            }
+        }
     }
 
     @Override
@@ -172,6 +183,7 @@ public class TextEditorModel implements EditorModel {
                 c.at(c.row(), next);
             }
         }
+        scrollToCaretX();
     }
 
     @Override
@@ -188,6 +200,7 @@ public class TextEditorModel implements EditorModel {
                 c.at(c.row(), next);
             }
         }
+        scrollToCaretX();
     }
 
     @Override
@@ -225,6 +238,7 @@ public class TextEditorModel implements EditorModel {
             int line = screenLayout.rowToLine(c.row(), c.col());
             c.at(c.row(), screenLayout.homeColOnRow(line));
         }
+        screenLayout.scrollX(0);
     }
 
     @Override
@@ -234,6 +248,7 @@ public class TextEditorModel implements EditorModel {
             int line = screenLayout.rowToLine(c.row(), c.col());
             c.at(c.row(), screenLayout.endColOnRow(line));
         }
+        scrollToCaretX();
     }
 
     @Override
