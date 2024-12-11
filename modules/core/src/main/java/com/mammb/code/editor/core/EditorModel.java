@@ -52,7 +52,8 @@ public interface EditorModel {
     void scrollAt(int line);
     void moveTo(int row);
     void scrollX(double x);
-    void scrollToCaret();
+    void scrollToCaretY();
+    void scrollToCaretX();
     void moveCaretRight(boolean withSelect);
     void moveCaretLeft(boolean withSelect);
     void moveCaretDown(boolean withSelect);

@@ -141,7 +141,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void scrollToCaret() {
+    public void scrollToCaretY() {
         Caret caret = carets.getFirst();
         int line = screenLayout.rowToLine(caret.row(), caret.col());
         if (line - screenLayout.topLine() < 0) {
@@ -149,6 +149,13 @@ public class TextEditorModel implements EditorModel {
         } else if (line - (screenLayout.topLine() + screenLayout.screenLineSize() - 3) > 0) {
             screenLayout.scrollAt(line - screenLayout.screenLineSize() + 3);
         }
+    }
+
+    @Override
+    public void scrollToCaretX() {
+        Caret caret = carets.getFirst();
+        int line = screenLayout.rowToLine(caret.row(), caret.col());
+        double caretX = screenLayout.xOnLayout(line, caret.col());
         // TODO scroll x
     }
 
@@ -472,7 +479,7 @@ public class TextEditorModel implements EditorModel {
     public void zoom(int delta) {
         if (delta == 0) return;
         double size = ctx.config().fontSize() + ((delta > 0) ? 0.5 : -0.5);
-        ctx.config().fontSize((double) Math.round(size * 10) / 10);
+        //ctx.config().fontSize((double) Math.round(size * 10) / 10);
         // TODO
     }
 

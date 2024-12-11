@@ -66,7 +66,12 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void scrollToCaret() {
+    public void scrollToCaretY() {
+
+    }
+
+    @Override
+    public void scrollToCaretX() {
 
     }
 

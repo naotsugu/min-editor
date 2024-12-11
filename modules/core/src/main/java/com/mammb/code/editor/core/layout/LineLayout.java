@@ -25,10 +25,29 @@ public interface LineLayout {
 
     int rowToFirstLine(int row);
     int rowToLastLine(int row);
+
+    /**
+     * Get the number of line from the specified caret position.
+     * @param row the number of row
+     * @param col the number of col
+     * @return the number of line
+     */
     int rowToLine(int row, int col);
+
     int lineToRow(int line);
+
+    /**
+     * Get the total number of lines.
+     * @return the total number of lines
+     */
     int lineSize();
+
+    /**
+     * Get the total number of rows.
+     * @return the total number of rows
+     */
     int rowSize();
+
     Text text(int line);
     Text rowTextAt(int row);
 

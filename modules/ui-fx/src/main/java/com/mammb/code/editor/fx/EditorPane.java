@@ -303,7 +303,7 @@ public class EditorPane extends StackPane {
         }
 
         if (action.type().syncCaret()) {
-            model.scrollToCaret();
+            model.scrollToCaretY();
         }
         draw();
         return action;
