@@ -36,12 +36,17 @@ public interface Caret extends Comparable<Caret>{
     boolean hasFlush();
     Point pointFlush();
     void mark();
+    Point markedPoint();
+    boolean marge(Caret other);
     void clearMark();
     boolean isMarked();
     boolean isFloating();
     Range markedRange();
     Range range();
     double vPos();
+    default int direction() {
+        return !isMarked() ? 0 : point().compareTo(markedPoint());
+    }
     default int row() {
         return point().row();
     }
@@ -57,7 +62,6 @@ public interface Caret extends Comparable<Caret>{
     default boolean isZero() {
         return point().isZero();
     }
-
     default void markIf(boolean withSelect) {
         if (!withSelect) {
             clearMark();
@@ -93,6 +97,17 @@ public interface Caret extends Comparable<Caret>{
         @Override
         public void mark() {
             mark = new PointMut(point.row(), point.col());
+        }
+
+        @Override
+        public Point markedPoint() {
+            return mark;
+        }
+
+        @Override
+        public boolean marge(Caret other) {
+            // TODO
+            return false;
         }
 
         @Override
@@ -135,7 +150,7 @@ public interface Caret extends Comparable<Caret>{
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Caret caret = (Caret) o;
-            return Objects.equals(point, caret.point());
+            return point.compareTo(caret.point()) == 0;
         }
 
         @Override

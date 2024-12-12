@@ -15,29 +15,19 @@
  */
 package com.mammb.code.editor.core;
 
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 /**
- * The Theme.
+ * Test of {@link CaretGroup}.
  * @author Naotsugu Kobayashi
  */
-public interface Theme {
+class CaretGroupTest {
 
-    Theme dark = new ThemeRecord(
-            "#292929",
-            "#C8D7E6",
-            "#214283AA",
-            "#303030"
-    );
-
-    String baseColor();
-    String fgColor();
-    String paleHighlightColor();
-    String uiBaseColor();
-
-    record ThemeRecord(
-            String baseColor,
-            String fgColor,
-            String paleHighlightColor,
-            String uiBaseColor
-    ) implements Theme { }
-
+    @Test
+    void getFirst() {
+        var carets = CaretGroup.of();
+        assertEquals(Caret.of(), carets.getFirst());
+    }
 }
