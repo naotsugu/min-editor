@@ -26,7 +26,12 @@ import java.util.List;
  */
 public interface CaretGroup {
 
+    /**
+     * Get the caret first one.
+     * @return the caret first one
+     */
     Caret getFirst();
+
     Caret unique();
 
     /**
@@ -47,6 +52,7 @@ public interface CaretGroup {
     void at(List<Point> points);
     void add(List<Point> points);
     void toggle(Point point);
+    void normalize();
 
     /**
      * Get the count of caret.
@@ -54,6 +60,10 @@ public interface CaretGroup {
      */
     int size();
 
+    /**
+     * Create a new {@link CaretGroup}.
+     * @return a new {@link CaretGroup}
+     */
     static CaretGroup of() {
         return new CaretGroupImpl();
     }
@@ -127,6 +137,11 @@ public interface CaretGroup {
             if (!carets.removeIf(p -> p.pointFlush().compareTo(point) == 0) || size() == 0) {
                 carets.add(Caret.of(point.row(), point.col()));
             }
+        }
+
+        @Override
+        public void normalize() {
+            // TODO
         }
 
         @Override
