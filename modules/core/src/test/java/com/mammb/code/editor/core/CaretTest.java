@@ -62,7 +62,7 @@ class CaretTest {
         assertEquals(true, caret2.marge(caret1));
 
         //        | 0 | 1 | 2 |
-        // caret1 |-->|
+        // caret1 --->|
         // caret2 |
         caret1.markTo(Point.of(0, 0), Point.of(0, 1));
         assertEquals(true, caret1.marge(caret2));
@@ -70,27 +70,36 @@ class CaretTest {
         assertEquals(Point.of(0, 1), caret1.point());
 
         //        | 0 | 1 | 2 |
-        // caret1 |-->|
+        // caret1 --->|
         // caret2         |
         caret1.markTo(Point.of(0, 0), Point.of(0, 1));
         caret2.at(Point.of(0, 2));
         assertEquals(false, caret1.marge(caret2));
 
         //        | 0 | 1 | 2 |
-        // caret1 |-->|
-        // caret2         |-->|
+        // caret1 --->|
+        // caret2         --->|
         caret1.markTo(Point.of(0, 0), Point.of(0, 1));
         caret2.markTo(Point.of(0, 2), Point.of(0, 3));
         assertEquals(false, caret1.marge(caret2));
 
         //        | 0 | 1 | 2 |
-        // caret1 |------>|
-        // caret2     |------>|
+        // caret1 ------->|
+        // caret2     =------>|
         caret1.markTo(Point.of(0, 0), Point.of(0, 2));
         caret2.markTo(Point.of(0, 1), Point.of(0, 3));
         assertEquals(true, caret1.marge(caret2));
         assertEquals(Point.of(0, 0), caret1.markedPoint());
         assertEquals(Point.of(0, 3), caret1.point());
+
+        //        | 0 | 1 | 2 |
+        // caret1 |<-------
+        // caret2     |<------
+        caret1.markTo(Point.of(0, 2), Point.of(0, 0));
+        caret2.markTo(Point.of(0, 3), Point.of(0, 1));
+        assertEquals(true, caret1.marge(caret2));
+        assertEquals(Point.of(0, 3), caret1.markedPoint());
+        assertEquals(Point.of(0, 0), caret1.point());
 
     }
 
