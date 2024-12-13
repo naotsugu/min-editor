@@ -27,25 +27,35 @@ import java.util.StringJoiner;
  */
 public interface Caret extends Comparable<Caret>{
 
+    /**
+     * Get the caret point.
+     * @return the caret point
+     */
     Point point();
+
     void at(int row, int col);
     void at(int row, int col, double vPos);
     void floatAt(int row, int col);
-    void flushAt(int row, int col);
+    void imeFlushAt(int row, int col);
     void markTo(int markRow, int markCol, int row, int col);
-    void clearFloat();
-    void clearFlush();
-    boolean hasFlush();
-    Point pointFlush();
+    boolean hasImeFlush();
     void mark();
     Point markedPoint();
+    Point flushedPoint();
     boolean marge(Caret other);
     void clearMark();
+    void clearFloat();
+    void clearImeFlush();
     boolean isMarked();
     boolean isFloating();
-    Range markedRange();
-    Range range();
     double vPos();
+
+    default Range markedRange() {
+        return isMarked() ? new Range(Point.of(point()), markedPoint()) : null;
+    }
+    default Range range() {
+        return isMarked() ? markedRange() : new Range(point(), point());
+    }
     default int direction() {
         return !isMarked() ? 0 : point().compareTo(markedPoint());
     }
@@ -58,8 +68,8 @@ public interface Caret extends Comparable<Caret>{
     default void at(Point point) {
         at(point.row(), point.col());
     }
-    default void flushAt(Point point) {
-        flushAt(point.row(), point.col());
+    default void imeFlushAt(Point point) {
+        imeFlushAt(point.row(), point.col());
     }
     default void markTo(Point m, Point p) {
         markTo(m.row(), m.col(), p.row(), p.col());
@@ -157,16 +167,6 @@ public interface Caret extends Comparable<Caret>{
         }
 
         @Override
-        public Range markedRange() {
-            return isMarked() ? new Range(Point.of(point), mark) : null;
-        }
-
-        @Override
-        public Range range() {
-            return isMarked() ? markedRange() : new Range(point(), point());
-        }
-
-        @Override
         public double vPos() {
             return vPos;
         }
@@ -214,7 +214,7 @@ public interface Caret extends Comparable<Caret>{
         }
 
         @Override
-        public void flushAt(int row, int col) {
+        public void imeFlushAt(int row, int col) {
             flush = Point.of(row, col);
         }
 
@@ -230,18 +230,18 @@ public interface Caret extends Comparable<Caret>{
         }
 
         @Override
-        public void clearFlush() {
+        public void clearImeFlush() {
             flush = null;
         }
 
         @Override
-        public boolean hasFlush() {
+        public boolean hasImeFlush() {
             return flush != null;
         }
 
         @Override
-        public Point pointFlush() {
-            return Objects.isNull(flush) ? point : flush;
+        public Point flushedPoint() {
+            return hasImeFlush() ? flush :  point;
         }
     }
 

@@ -90,7 +90,7 @@ public interface CaretGroup {
 
         @Override
         public List<Point> points() {
-            return carets.stream().map(Caret::pointFlush).toList();
+            return carets.stream().map(Caret::flushedPoint).toList();
         }
 
         @Override
@@ -134,7 +134,7 @@ public interface CaretGroup {
 
         @Override
         public void toggle(final Point point) {
-            if (!carets.removeIf(p -> p.pointFlush().compareTo(point) == 0) || size() == 0) {
+            if (!carets.removeIf(p -> p.flushedPoint().compareTo(point) == 0) || size() == 0) {
                 carets.add(Caret.of(point.row(), point.col()));
             }
         }

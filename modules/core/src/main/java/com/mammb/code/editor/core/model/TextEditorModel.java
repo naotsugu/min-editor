@@ -521,7 +521,7 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void imeOn() {
         Caret caret = carets.getFirst();
-        caret.flushAt(caret.point());
+        caret.imeFlushAt(caret.point());
     }
 
     @Override
@@ -536,12 +536,12 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void imeOff() {
         content.clearFlush();
-        carets.getFirst().clearFlush();
+        carets.getFirst().clearImeFlush();
     }
 
     @Override
     public boolean isImeOn() {
-        return carets.getFirst().hasFlush();
+        return carets.getFirst().hasImeFlush();
     }
 
     @Override
@@ -550,7 +550,7 @@ public class TextEditorModel implements EditorModel {
         content.clearFlush();
         var pos = content.insertFlush(caret.point(), text);
         screenLayout.refreshBuffer(caret.row(), pos.row() + 1);
-        caret.flushAt(pos);
+        caret.imeFlushAt(pos);
     }
 
     @Override
@@ -654,10 +654,10 @@ public class TextEditorModel implements EditorModel {
 
     private void drawCaret(Draw draw) {
         for (Caret c : carets.carets()) {
-            Point p = c.pointFlush();
+            Point p = c.flushedPoint();
             screenLayout.locationOn(p.row(), p.col()).ifPresent(loc -> {
                 draw.caret(loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop);
-                if (c.hasFlush()) {
+                if (c.hasImeFlush()) {
                     screenLayout.locationOn(c.point().row(), c.point().col()).ifPresent(org ->
                         draw.underline(org.x() + marginLeft - scroll.xVal(), org.y() + marginTop,
                             loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop));
