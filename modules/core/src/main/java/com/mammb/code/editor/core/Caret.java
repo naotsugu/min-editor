@@ -270,8 +270,7 @@ public interface Caret extends Comparable<Caret>{
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            Point point = (Point) o;
+            if (!(o instanceof Point point)) return false;
             return row == point.row() && col == point.col();
         }
 

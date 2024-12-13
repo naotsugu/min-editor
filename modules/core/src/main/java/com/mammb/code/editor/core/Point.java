@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.core;
 
+import java.util.Objects;
+
 /**
  * The caret point.
  * @author Naotsugu Kobayashi
@@ -40,7 +42,18 @@ public interface Point extends Comparable<Point> {
      * @return the new caret point
      */
     static Point of(int row, int col) {
-        record PointRecord(int row, int col) implements Point { }
+        record PointRecord(int row, int col) implements Point {
+            @Override
+            public boolean equals(Object object) {
+                if (!(object instanceof Point that)) return false;
+                return row == that.row() && col == that.col();
+            }
+
+            @Override
+            public int hashCode() {
+                return Objects.hash(row, col);
+            }
+        }
         return new PointRecord(row, col);
     }
 
