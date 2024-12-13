@@ -141,7 +141,17 @@ public interface CaretGroup {
 
         @Override
         public void normalize() {
-            // TODO
+            if (carets.size() <= 1) return;
+            List<Caret> merged = new ArrayList<>();
+            for (Caret caret : carets.stream().sorted().toList()) {
+                if (merged.isEmpty()) {
+                    merged.add(caret);
+                    continue;
+                }
+                if (!merged.getLast().marge(caret)) {
+                    merged.add(caret);
+                }
+            }
         }
 
         @Override

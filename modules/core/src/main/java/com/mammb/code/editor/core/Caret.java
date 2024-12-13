@@ -16,6 +16,8 @@
 package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.Point.Range;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -58,6 +60,9 @@ public interface Caret extends Comparable<Caret>{
     }
     default void flushAt(Point point) {
         flushAt(point.row(), point.col());
+    }
+    default void markTo(Point m, Point p) {
+        markTo(m.row(), m.col(), p.row(), p.col());
     }
     default boolean isZero() {
         return point().isZero();
@@ -105,8 +110,34 @@ public interface Caret extends Comparable<Caret>{
         }
 
         @Override
-        public boolean marge(Caret other) {
-            // TODO
+        public boolean marge(Caret that) {
+            int self = direction();
+            int other = that.direction();
+            if (self == 0 && other == 0) {
+                return point.compareTo(that.point()) == 0;
+            } else if (self == 0) {
+                if (that.range().contains(point())) {
+                    markTo(that.markedPoint(), that.point());
+                    return true;
+                }
+                return false;
+            } else if (other == 0) {
+                return range().contains(that.point());
+            } else if (self == other) {
+                var r = range();
+                if (r.contains(that.point()) || r.contains(that.markedPoint())) {
+                    if (self > 0) {
+                        markTo(
+                            Collections.min(List.of(markedPoint(), that.markedPoint())),
+                            Collections.max(List.of(point(), that.point())));
+                    } else {
+                        markTo(
+                            Collections.max(List.of(markedPoint(), that.markedPoint())),
+                            Collections.min(List.of(point(), that.point())));
+                    }
+                    return true;
+                }
+            }
             return false;
         }
 
