@@ -123,7 +123,8 @@ public interface CaretGroup {
         public void at(List<Point> points) {
             carets.clear();
             points.stream().distinct()
-                .forEach(p -> carets.add(Caret.of(p.row(), p.col())));        }
+                .forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+        }
 
         @Override
         public void add(List<Point> points) {
@@ -134,7 +135,7 @@ public interface CaretGroup {
 
         @Override
         public void toggle(final Point point) {
-            if (!carets.removeIf(p -> p.flushedPoint().compareTo(point) == 0) || size() == 0) {
+            if (!carets.removeIf(p -> p.point().compareTo(point) == 0) || size() == 0) {
                 carets.add(Caret.of(point.row(), point.col()));
             }
         }

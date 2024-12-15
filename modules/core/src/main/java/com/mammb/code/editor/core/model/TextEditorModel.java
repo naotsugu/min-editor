@@ -514,7 +514,6 @@ public class TextEditorModel implements EditorModel {
     public void zoom(int delta) {
         if (delta == 0) return;
         double size = ctx.config().fontSize() + ((delta > 0) ? 0.5 : -0.5);
-        //ctx.config().fontSize((double) Math.round(size * 10) / 10);
         // TODO
     }
 
@@ -605,6 +604,7 @@ public class TextEditorModel implements EditorModel {
                 draw.text(st.value(), px, py, st.width(), st.styles());
                 for (var p : carets.points()) {
                     if (st.row() == p.row()) {
+                        // draw special symbol
                         if (st.isEndWithCrLf()) {
                             draw.line(Symbols.crlf(
                                 px + st.width() + screenLayout.standardCharWidth() * 0.2,
@@ -693,8 +693,8 @@ public class TextEditorModel implements EditorModel {
     private Point selectionReplace(Caret caret, String text) {
         assert caret.isMarked();
         var range = caret.markedRange();
-        var pos = content.replace(range.start(), range.end(), text);
-        screenLayout.refreshBuffer(range.start().row(), range.end().row() + 1);
+        var pos = content.replace(range.min(), range.max(), text);
+        screenLayout.refreshBuffer(range.min().row(), range.max().row() + 1);
         caret.clearMark();
         caret.at(pos);
         return pos;
