@@ -127,7 +127,6 @@ public class TextEditContent implements Content {
                 range.max().row(), range.max().col(),
                 fun::apply))
             .map(pos -> Point.of(pos.row(), pos.col()))
-            .map(Point.class::cast)
             .toList();
     }
 
