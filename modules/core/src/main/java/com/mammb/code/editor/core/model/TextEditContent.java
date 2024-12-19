@@ -18,11 +18,15 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
-import com.mammb.code.editor.core.model.QueryRecords.*;
+import com.mammb.code.editor.core.model.QueryRecords.Bom;
+import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
+import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
+import com.mammb.code.editor.core.model.QueryRecords.Modified;
+import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
+import com.mammb.code.piecetable.Pos;
 import com.mammb.code.piecetable.TextEdit;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -77,7 +81,7 @@ public class TextEditContent implements Content {
         String txt = edit.rowEnding().unify(text).toString();
         modified = true;
         var pos = edit.insert(points.stream()
-            .map(p -> new TextEdit.Pos(p.row(), p.col())).toList(), txt);
+            .map(p -> Pos.of(p.row(), p.col())).toList(), txt);
         return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
     }
 
@@ -91,7 +95,7 @@ public class TextEditContent implements Content {
     public List<Point> delete(List<Point> points) {
         modified = true;
         var pos = edit.delete(points.stream()
-            .map(p -> new TextEdit.Pos(p.row(), p.col())).toList());
+            .map(p -> Pos.of(p.row(), p.col())).toList());
         return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
     }
 
@@ -106,7 +110,7 @@ public class TextEditContent implements Content {
     public List<Point> backspace(List<Point> points) {
         modified = true;
         var pos = edit.backspace(points.stream()
-            .map(p -> new TextEdit.Pos(p.row(), p.col())).toList());
+            .map(p -> Pos.of(p.row(), p.col())).toList());
         return pos.stream().map(p -> Point.of(p.row(), p.col())).toList();
     }
 
@@ -120,12 +124,11 @@ public class TextEditContent implements Content {
     @Override
     public List<Point> replace(List<Point.Range> ranges, Function<String, String> fun) {
         modified = true;
-        // TODO transaction replace
-        return ranges.stream().sorted(Comparator.reverseOrder())
-            .map(range -> edit.replace(
-                range.min().row(), range.min().col(),
-                range.max().row(), range.max().col(),
-                fun::apply))
+        var rep = ranges.stream().map(r -> new TextEdit.Replace(
+            Pos.of(r.start().row(), r.start().col()),
+            Pos.of(r.end().row(), r.end().col()),
+            fun::apply)).toList();
+        return edit.replace(rep).stream()
             .map(pos -> Point.of(pos.row(), pos.col()))
             .toList();
     }
