@@ -429,7 +429,8 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void replace(Function<String, String> fun, boolean keepSelection) {
         if (keepSelection) {
-            List<Point> points = content.replace(carets.ranges(), fun);
+            List<Range> ranges = content.replace(carets.ranges(), fun);
+            List<Point> points = ranges.stream().map(Range::end).toList();
             List<Caret> caretList = carets.carets();
             for (int i = 0; i < caretList.size(); i++) {
                 Caret caret = caretList.get(i);
@@ -439,8 +440,8 @@ public class TextEditorModel implements EditorModel {
                 Collections.min(points).row(),
                 Collections.max(points).row() + 1);
         } else {
-            List<Point> points = content.replace(carets.ranges(), fun);
-            refreshPointsRange(points);
+            List<Range> ranges = content.replace(carets.ranges(), fun);
+            refreshPointsRange(ranges.stream().map(Range::end).toList());
         }
     }
 

@@ -122,14 +122,14 @@ public class TextEditContent implements Content {
     }
 
     @Override
-    public List<Point> replace(List<Point.Range> ranges, Function<String, String> fun) {
+    public List<Point.Range> replace(List<Point.Range> ranges, Function<String, String> fun) {
         modified = true;
         var rep = ranges.stream().map(r -> new TextEdit.Replace(
             Pos.of(r.start().row(), r.start().col()),
             Pos.of(r.end().row(), r.end().col()),
             fun::apply)).toList();
         return edit.replace(rep).stream()
-            .map(pos -> Point.of(pos.row(), pos.col()))
+            .map(r -> new Point.Range(Point.of(r.from().row(), r.from().col()), Point.of(r.to().row(), r.to().col())))
             .toList();
     }
 

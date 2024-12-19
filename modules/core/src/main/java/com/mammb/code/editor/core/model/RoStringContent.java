@@ -109,8 +109,8 @@ public class RoStringContent implements Content {
     }
 
     @Override
-    public List<Point> replace(List<Point.Range> ranges, Function<String, String> fun) {
-        return ranges.stream().map(Point.Range::end).toList();
+    public List<Point.Range> replace(List<Point.Range> ranges, Function<String, String> fun) {
+        return ranges;
     }
 
     @Override

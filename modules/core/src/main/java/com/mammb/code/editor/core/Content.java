@@ -88,7 +88,7 @@ public interface Content {
      * @param fun the specified function
      * @return the caret position after replacement
      */
-    List<Point> replace(List<Range> ranges, Function<String, String> fun);
+    List<Range> replace(List<Range> ranges, Function<String, String> fun);
 
     /**
      * Undo.
