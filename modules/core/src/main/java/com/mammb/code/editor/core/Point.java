@@ -100,6 +100,9 @@ public interface Point extends Comparable<Point> {
         public boolean contains(Point point) {
             return min().compareTo(point) <= 0 && max().compareTo(point) >= 0;
         }
+        public boolean isAsc() {
+            return start.compareTo(end) >= 0;
+        }
         @Override
         public int compareTo(Range o) {
             return min().compareTo(o.min());

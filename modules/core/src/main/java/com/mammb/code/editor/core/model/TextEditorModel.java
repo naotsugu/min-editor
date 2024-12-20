@@ -428,20 +428,25 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void replace(Function<String, String> fun, boolean keepSelection) {
+        List<Range> ranges = content.replace(carets.ranges(), fun);
+        Range rangeMin = Collections.min(ranges);
+        Range rangeMax = Collections.max(ranges);
         if (keepSelection) {
-            List<Range> ranges = content.replace(carets.ranges(), fun);
-            List<Point> points = ranges.stream().map(Range::end).toList();
             List<Caret> caretList = carets.carets();
             for (int i = 0; i < caretList.size(); i++) {
                 Caret caret = caretList.get(i);
-                caret.at(points.get(i));
+                Range range = ranges.get(i);
+                if (range.isAsc()) {
+                    caret.markTo(range.start(), range.end());
+                } else {
+                    caret.markTo(range.end(), range.start());
+                }
             }
             screenLayout.refreshBuffer(
-                Collections.min(points).row(),
-                Collections.max(points).row() + 1);
+                rangeMin.min().row(),
+                rangeMax.max().row() + 1);
         } else {
-            List<Range> ranges = content.replace(carets.ranges(), fun);
-            refreshPointsRange(ranges.stream().map(Range::end).toList());
+            refreshPointsRange(List.of(rangeMin.min(), rangeMax.max()));
         }
     }
 
