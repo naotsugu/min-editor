@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.model;
+package com.mammb.code.editor.core;
 
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
@@ -22,41 +22,37 @@ import java.nio.file.attribute.FileTime;
  * The Session.
  * @author Naotsugu Kobayashi
  */
-public class Session {
-
-    /** The path. */
-    private Path path;
-    /** The last modified time. */
-    private FileTime lastModifiedTime;
-    /** the row index at the caret. */
-    private int row;
-    /** the column index at the caret. */
-    private int col;
-    /** The timestamp of this session. */
-    private long timestamp;
+public interface Session {
 
     /**
      * Get the path.
      * @return the path
      */
-    public Path path() {
-        return path;
-    }
+    Path path();
+
+    /**
+     * Get the last modified time.
+     * @return the last modified time
+     */
+    FileTime lastModifiedTime();
 
     /**
      * Get the row index at the caret(zero-origin).
      * @return the row index at the caret
      */
-    public int caretRow() {
-        return row;
-    }
+    int caretRow();
 
     /**
      * Get the column index at the caret.
      * @return the column index at the caret
      */
-    public int caretCol() {
-        return col;
-    }
+    int caretCol();
+
+
+    /**
+     * Get the timestamp of this session.
+     * @return the timestamp of this session
+     */
+    long timestamp();
 
 }
