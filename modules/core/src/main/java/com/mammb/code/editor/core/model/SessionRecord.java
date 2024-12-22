@@ -21,43 +21,18 @@ import java.nio.file.attribute.FileTime;
 
 /**
  * The SessionRecord.
+ * @param path the path
+ * @param lastModifiedTime the last modified time
+ * @param caretRow the row index at the caret
+ * @param caretCol the column index at the caret
+ * @param timestamp the timestamp of this session
  * @author Naotsugu Kobayashi
  */
-public class SessionRecord implements Session {
+record SessionRecord(
+    Path path,
+    FileTime lastModifiedTime,
+    int caretRow,
+    int caretCol,
+    long timestamp) implements Session {
 
-    /** The path. */
-    private Path path;
-    /** The last modified time. */
-    private FileTime lastModifiedTime;
-    /** the row index at the caret. */
-    private int row;
-    /** the column index at the caret. */
-    private int col;
-    /** The timestamp of this session. */
-    private long timestamp;
-
-    @Override
-    public Path path() {
-        return path;
-    }
-
-    @Override
-    public FileTime lastModifiedTime() {
-        return lastModifiedTime;
-    }
-
-    @Override
-    public int caretRow() {
-        return row;
-    }
-
-    @Override
-    public int caretCol() {
-        return col;
-    }
-
-    @Override
-    public long timestamp() {
-        return timestamp;
-    }
 }

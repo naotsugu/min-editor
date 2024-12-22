@@ -50,8 +50,8 @@ public interface Session {
 
 
     /**
-     * Get the timestamp of this session.
-     * @return the timestamp of this session
+     * Get the timestamp of this session in milliseconds.
+     * @return the timestamp of this session in milliseconds
      */
     long timestamp();
 

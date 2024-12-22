@@ -98,6 +98,8 @@ public interface EditorModel {
 
     void findAll(String text);
 
+    Session getSession();
+
     /**
      * Get the result of the query.
      * @param <R> the type of result

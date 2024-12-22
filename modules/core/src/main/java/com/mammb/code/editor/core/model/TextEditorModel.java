@@ -28,6 +28,7 @@ import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
+import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.layout.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
@@ -37,6 +38,8 @@ import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.text.StyledText;
 import com.mammb.code.editor.core.text.Symbols;
 import com.mammb.code.editor.core.text.Text;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collections;
@@ -558,6 +561,22 @@ public class TextEditorModel implements EditorModel {
                     text.length())
             );
         }
+    }
+
+    @Override
+    public Session getSession() {
+        return new SessionRecord(
+            content.path().orElse(null),
+            content.path().map(p -> {
+                try {
+                    return Files.getLastModifiedTime(p);
+                } catch (IOException e) {
+                    return null;
+                }
+            }).orElse(null),
+            carets.getFirst().row(),
+            carets.getFirst().col(),
+            System.currentTimeMillis());
     }
 
     @Override
