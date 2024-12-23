@@ -46,6 +46,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
@@ -102,7 +103,8 @@ public class EditorPane extends StackPane {
         canvas = new Canvas();
         canvas.setManaged(false);
         canvas.setFocusTraversable(true);
-        draw = new FxDraw(context, canvas.getGraphicsContext2D());
+        Font font = Font.font(context.config().fontName(), context.config().fontSize());
+        draw = new FxDraw(canvas.getGraphicsContext2D(), font);
         model = EditorModel.of((path == null) ? Content.of() : Content.of(path),
             draw.fontMetrics(), screenScroll(), context);
         vScroll.setOrientation(Orientation.VERTICAL);

@@ -22,7 +22,6 @@ import com.sun.javafx.font.FontStrike;
 import com.sun.javafx.font.PGFont;
 import com.sun.javafx.geom.transform.BaseTransform;
 import com.sun.javafx.scene.text.FontHelper;
-import com.sun.javafx.tk.FontLoader;
 import com.sun.javafx.tk.Toolkit;
 import javafx.scene.text.Font;
 import java.util.Map;
@@ -35,12 +34,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FxFontMetrics implements FontMetrics {
 
-    /** The font loader. */
-    private final FontLoader fontLoader;
     /** The font metrics. */
     private final com.sun.javafx.tk.FontMetrics fontMetrics;
-    /** The font that was used to construct these metrics. */
-    private final Font font;
     /** The standard a character width. */
     private final double standardCharWidth;
 
@@ -58,10 +53,8 @@ public class FxFontMetrics implements FontMetrics {
      * @param font the font that was used to construct these metrics
      */
     FxFontMetrics(Font font) {
-        this.fontLoader = Toolkit.getToolkit().getFontLoader();
-        this.font = Objects.requireNonNull(font);
-        this.fontMetrics = fontLoader.getFontMetrics(font);
-
+        Objects.requireNonNull(font);
+        this.fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
         var pgFont = (PGFont) FontHelper.getNativeFont(font);
         this.strike = pgFont.getStrike(BaseTransform.IDENTITY_TRANSFORM, FontResource.AA_GREYSCALE);
         this.resource = strike.getFontResource();
@@ -76,14 +69,6 @@ public class FxFontMetrics implements FontMetrics {
      */
     public static FxFontMetrics of(Font font) {
         return new FxFontMetrics(font);
-    }
-
-    /**
-     * The font that was used to construct these metrics.
-     * @return the font
-     */
-    public final Font getFont() {
-        return font;
     }
 
     @Override

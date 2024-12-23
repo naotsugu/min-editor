@@ -34,8 +34,6 @@ import java.util.Optional;
  */
 public class FxDraw implements Draw {
 
-    /** The context. */
-    private final AppContext context;
     /** The graphics context. */
     private final GraphicsContext gc;
     /** The font metrics. */
@@ -45,13 +43,11 @@ public class FxDraw implements Draw {
 
     /**
      * Constructor.
-     * @param ctx the application context
      * @param gc the graphics context
+     * @param font the font
      */
-    public FxDraw(AppContext ctx, GraphicsContext gc) {
-        this.context = ctx;
+    public FxDraw(GraphicsContext gc, Font font) {
         this.gc = gc;
-        Font font = Font.font(context.config().fontName(), context.config().fontSize());
         this.fontMetrics = FxFontMetrics.of(font);
         this.gc.setFont(font);
     }
