@@ -80,6 +80,12 @@ public interface FontMetrics {
     float getLineHeight();
 
     /**
+      * The standard a character width.
+      * @return the standard a character width
+      */
+    double standardCharWidth();
+
+    /**
      * Access to individual character advances are frequently needed for layout
      * understand that advance may vary for single glyph if ligatures or kerning
      * are enabled

@@ -35,12 +35,8 @@ import java.util.stream.IntStream;
  */
 public class WrapLayout implements ContentLayout {
 
-    /** The width of screen. */
+    /** The width of screen(number of characters per line). */
     private double screenWidth = 0;
-    /** The line height. */
-    private final double lineHeight;
-    /** The standard a character width. */
-    private final double standardCharWidth;
     /** The content. */
     private final Content content;
     /** The font metrics. */
@@ -54,15 +50,13 @@ public class WrapLayout implements ContentLayout {
      * @param fm the wrapped lines
      */
     public WrapLayout(Content content, FontMetrics fm) {
-        this.lineHeight = fm.getLineHeight();
-        this.standardCharWidth = fm.getAdvance("0");
         this.content = content;
         this.fm = fm;
     }
 
     @Override
     public void setScreenWidth(int width) {
-        this.screenWidth = width * standardCharWidth;
+        this.screenWidth = width;
         refresh(0);
     }
 
@@ -158,12 +152,12 @@ public class WrapLayout implements ContentLayout {
     }
 
     private List<SubText> subTextsAt(int row) {
-        return SubText.of(rowTextAt(row), screenWidth);
+        return SubText.of(rowTextAt(row), screenWidth * fm.standardCharWidth());
     }
 
     @Override
     public double lineHeight() {
-        return lineHeight;
+        return fm.getLineHeight();
     }
 
     @Override
@@ -184,7 +178,7 @@ public class WrapLayout implements ContentLayout {
 
     @Override
     public double standardCharWidth() {
-        return standardCharWidth;
+        return fm.standardCharWidth();
     }
 
     @Override

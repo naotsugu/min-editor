@@ -41,6 +41,8 @@ public class FxFontMetrics implements FontMetrics {
     private final com.sun.javafx.tk.FontMetrics fontMetrics;
     /** The font that was used to construct these metrics. */
     private final Font font;
+    /** The standard a character width. */
+    private final double standardCharWidth;
 
     /** The font strike. */
     private final FontStrike strike;
@@ -64,6 +66,7 @@ public class FxFontMetrics implements FontMetrics {
         this.strike = pgFont.getStrike(BaseTransform.IDENTITY_TRANSFORM, FontResource.AA_GREYSCALE);
         this.resource = strike.getFontResource();
         this.mapper  = resource.getGlyphMapper();
+        this.standardCharWidth = getAdvance("0");
     }
 
     /**
@@ -121,6 +124,11 @@ public class FxFontMetrics implements FontMetrics {
     @Override
     public final float getLineHeight() {
         return fontMetrics.getLineHeight();
+    }
+
+    @Override
+    public double standardCharWidth() {
+        return standardCharWidth;
     }
 
     @Override

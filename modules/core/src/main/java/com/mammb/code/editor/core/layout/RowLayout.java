@@ -29,10 +29,6 @@ import java.util.stream.IntStream;
  */
 public class RowLayout implements ContentLayout {
 
-    /** The line height. */
-    private final double lineHeight;
-    /** The standard a character width. */
-    private final double standardCharWidth;
     /** The content. */
     private final Content content;
     /** The font metrics. */
@@ -44,8 +40,6 @@ public class RowLayout implements ContentLayout {
      * @param fm the font metrics
      */
     public RowLayout(Content content, FontMetrics fm) {
-        this.lineHeight = fm.getLineHeight();
-        this.standardCharWidth = fm.getAdvance("0");
         this.content = content;
         this.fm = fm;
     }
@@ -90,7 +84,7 @@ public class RowLayout implements ContentLayout {
 
     @Override
     public double lineHeight() {
-        return lineHeight;
+        return fm.getLineHeight();
     }
 
     @Override
@@ -105,7 +99,7 @@ public class RowLayout implements ContentLayout {
 
     @Override
     public double standardCharWidth() {
-        return standardCharWidth;
+        return fm.standardCharWidth();
     }
 
     @Override
