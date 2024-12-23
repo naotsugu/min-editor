@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core.layout;
 
+import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.text.Text;
 
 /**
@@ -75,5 +76,7 @@ public interface LineLayout {
      * @return the standard a character width
      */
     double standardCharWidth();
+
+    void updateFontMetrics(FontMetrics fontMetrics);
 
 }

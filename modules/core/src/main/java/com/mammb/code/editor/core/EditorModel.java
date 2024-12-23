@@ -88,7 +88,7 @@ public interface EditorModel {
     void save(Path path);
     void escape();
     void wrap(int width);
-    void zoom(int delta);
+    void updateFontMetrics(FontMetrics fontMetrics);
 
     void imeOn();
     Optional<Loc> imeLoc();

@@ -47,7 +47,7 @@ public interface ScreenLayout extends LineLayout {
     void applyScreenScroll(ScreenScroll screenScroll);
 
     void wrapWith(int width);
-
+    void updateFontMetrics(FontMetrics fontMetrics);
 
     static ScreenLayout of(Content content, FontMetrics fm) {
         ContentLayout layout = new RowLayout(content, fm);

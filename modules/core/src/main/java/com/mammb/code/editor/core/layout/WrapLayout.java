@@ -40,7 +40,7 @@ public class WrapLayout implements ContentLayout {
     /** The content. */
     private final Content content;
     /** The font metrics. */
-    private final FontMetrics fm;
+    private FontMetrics fm;
     /** The wrapped lines. */
     private final List<SubRange> lines = new ArrayList<>();
 
@@ -179,6 +179,11 @@ public class WrapLayout implements ContentLayout {
     @Override
     public double standardCharWidth() {
         return fm.standardCharWidth();
+    }
+
+    @Override
+    public void updateFontMetrics(FontMetrics fontMetrics) {
+        fm = fontMetrics;
     }
 
     @Override

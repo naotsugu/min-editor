@@ -511,10 +511,8 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void zoom(int delta) {
-        if (delta == 0) return;
-        double size = ctx.config().fontSize() + ((delta > 0) ? 0.5 : -0.5);
-        // TODO
+    public void updateFontMetrics(FontMetrics fontMetrics) {
+        screenLayout.updateFontMetrics(fontMetrics);
     }
 
     @Override

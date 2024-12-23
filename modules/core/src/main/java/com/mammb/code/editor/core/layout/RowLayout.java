@@ -32,7 +32,7 @@ public class RowLayout implements ContentLayout {
     /** The content. */
     private final Content content;
     /** The font metrics. */
-    private final FontMetrics fm;
+    private FontMetrics fm;
 
     /**
      * Constructor.
@@ -100,6 +100,11 @@ public class RowLayout implements ContentLayout {
     @Override
     public double standardCharWidth() {
         return fm.standardCharWidth();
+    }
+
+    @Override
+    public void updateFontMetrics(FontMetrics fontMetrics) {
+        fm = fontMetrics;
     }
 
     @Override

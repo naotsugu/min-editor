@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.layout.Loc;
@@ -217,7 +218,7 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void zoom(int delta) {
+    public void updateFontMetrics(FontMetrics fontMetrics) {
 
     }
 

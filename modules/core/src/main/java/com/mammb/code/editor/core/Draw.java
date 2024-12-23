@@ -49,6 +49,10 @@ public interface Draw {
     void underline(double x1, double y1, double x2, double y2);
     void hLine(double x, double y, double w);
 
+    /// Update font size.
+    /// @param sizeDelta the font size delta
+    void increaseFontSize(double sizeDelta);
+
     /// Get the FontMetrics.
     /// @return
     FontMetrics fontMetrics();

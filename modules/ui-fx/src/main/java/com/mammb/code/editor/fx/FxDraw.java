@@ -37,7 +37,7 @@ public class FxDraw implements Draw {
     /** The graphics context. */
     private final GraphicsContext gc;
     /** The font metrics. */
-    private final FontMetrics fontMetrics;
+    private FontMetrics fontMetrics;
     /** The cache of color. */
     private final Map<String, Color> colors = new HashMap<>();
 
@@ -48,8 +48,8 @@ public class FxDraw implements Draw {
      */
     public FxDraw(GraphicsContext gc, Font font) {
         this.gc = gc;
-        this.fontMetrics = FxFontMetrics.of(font);
         this.gc.setFont(font);
+        this.fontMetrics = FxFontMetrics.of(font);
     }
 
     @Override
@@ -155,6 +155,17 @@ public class FxDraw implements Draw {
         Color color = color(Theme.dark.uiBaseColor());
         gc.setFill(color);
         gc.fillRect(x, y, w, h);
+    }
+
+    @Override
+    public void increaseFontSize(double sizeDelta) {
+        if (sizeDelta == 0) {
+            return;
+        }
+        Font old = gc.getFont();
+        Font font = Font.font(old.getFamily(), old.getSize() + sizeDelta);
+        gc.setFont(font);
+        fontMetrics = FxFontMetrics.of(font);
     }
 
     @Override

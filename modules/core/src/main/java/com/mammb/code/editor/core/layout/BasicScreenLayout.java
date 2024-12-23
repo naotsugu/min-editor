@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core.layout;
 
+import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.text.Text;
 import java.util.ArrayList;
@@ -272,6 +273,12 @@ class BasicScreenLayout implements ScreenLayout {
             layout = new RowLayout(wrapLayout.getContent(), wrapLayout.getFm());
         }
         layout.setScreenWidth(width);
+        fillBuffer();
+    }
+
+    @Override
+    public void updateFontMetrics(FontMetrics fontMetrics) {
+        layout.updateFontMetrics(fontMetrics);
         fillBuffer();
     }
 

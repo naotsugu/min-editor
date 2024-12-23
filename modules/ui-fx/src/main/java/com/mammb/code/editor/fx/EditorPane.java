@@ -156,7 +156,8 @@ public class EditorPane extends StackPane {
     private void handleScroll(ScrollEvent e) {
         if (e.getEventType() == ScrollEvent.SCROLL && e.getDeltaY() != 0) {
             if (e.isShortcutDown()) {
-                model.zoom((int) Math.clamp(e.getDeltaY(), -1, 1));
+                draw.increaseFontSize(Math.clamp(e.getDeltaY(), -1, 1));
+                model.updateFontMetrics(draw.fontMetrics());
             } else {
                 if (e.getDeltaY() < 0) {
                     model.scrollNext((int) Math.min(5, -e.getDeltaY()));
