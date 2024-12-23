@@ -163,7 +163,9 @@ public class FxDraw implements Draw {
             return;
         }
         Font old = gc.getFont();
-        Font font = Font.font(old.getFamily(), old.getSize() + sizeDelta);
+        double size = old.getSize() + sizeDelta;
+        if (size < 6) return;
+        Font font = Font.font(old.getFamily(), size);
         gc.setFont(font);
         fontMetrics = FxFontMetrics.of(font);
     }

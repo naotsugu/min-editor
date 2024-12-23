@@ -96,7 +96,8 @@ public class AppContext implements Context {
         }
 
         @Override public String fontNameWin() {
-            return map.getOrDefault("fontNameWin", "BIZ UDGothic").toString();
+            // return map.getOrDefault("fontNameWin", "BIZ UDGothic").toString();
+            return map.getOrDefault("fontNameWin", "MS Gothic").toString();
         }
 
         @Override public double fontSizeWin() {
@@ -204,7 +205,8 @@ public class AppContext implements Context {
         Path home = Path.of(System.getProperty("user.home"));
         String osName = System.getProperty("os.name").toLowerCase();
         return osName.contains("windows")
-            ? home.resolve("AppData", "Roaming", Version.appName, Version.val)
+            //? home.resolve("AppData", "Roaming", Version.appName, Version.val)
+            ? home.resolve("AppData", "Local", Version.appName, Version.val)
             : osName.contains("linux")
             ? home.resolve(".config", Version.appName, Version.val)
             : osName.contains("mac")
