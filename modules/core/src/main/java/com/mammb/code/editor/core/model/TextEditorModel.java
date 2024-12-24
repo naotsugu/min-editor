@@ -445,12 +445,12 @@ public class TextEditorModel implements EditorModel {
                     caret.markTo(range.end(), range.start());
                 }
             }
-            screenLayout.refreshBuffer(
-                rangeMin.min().row(),
-                rangeMax.max().row() + 1);
         } else {
-            refreshPointsRange(List.of(rangeMin.min(), rangeMax.max()));
+            carets.at(ranges.stream().map(r -> r.isAsc() ? r.start() : r.end()).toList());
         }
+        screenLayout.refreshBuffer(
+            rangeMin.min().row(),
+            rangeMax.max().row() + 1);
     }
 
     @Override
