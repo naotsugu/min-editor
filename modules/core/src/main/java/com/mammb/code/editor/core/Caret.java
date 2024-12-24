@@ -51,7 +51,7 @@ public interface Caret extends Comparable<Caret>{
     double vPos();
 
     default Range markedRange() {
-        return isMarked() ? new Range(Point.of(point()), markedPoint()) : null;
+        return isMarked() ? new Range(markedPoint(), Point.of(point())) : null;
     }
     default Range range() {
         return isMarked() ? markedRange() : new Range(point(), point());
