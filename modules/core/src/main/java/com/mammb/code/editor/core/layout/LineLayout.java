@@ -64,6 +64,7 @@ public interface LineLayout {
     }
 
     int xToCol(int line, double x);
+
     default double xOnLayout(int line, int col) {
         return text(line).widthTo(col);
     }

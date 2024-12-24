@@ -299,7 +299,8 @@ public class TextEditorModel implements EditorModel {
         }
         c.clearMark();
         int line = screenLayout.yToLineOnScreen(y - marginTop);
-        c.at(screenLayout.lineToRow(line), screenLayout.xToCol(line, x - marginLeft));
+        c.at(screenLayout.lineToRow(line),
+            screenLayout.xToCol(line, x + (screenLayout.standardCharWidth() / 2) - marginLeft));
     }
 
     @Override
