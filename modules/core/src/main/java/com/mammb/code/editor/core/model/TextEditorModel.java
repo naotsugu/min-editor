@@ -692,7 +692,7 @@ public class TextEditorModel implements EditorModel {
         double y = 0;
         String prevValue = "";
         for (Text num : lineNumbers) {
-            // If the text is wrapped, display the row number only on the first line.
+            // if the text is wrapped, display the row number only on the first line.
             if (!Objects.equals(prevValue, num.value())) {
                 String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
                     ? Theme.dark.fgColor()
