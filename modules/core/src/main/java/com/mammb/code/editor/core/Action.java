@@ -16,7 +16,7 @@
 package com.mammb.code.editor.core;
 
 /**
- * The Action.
+ * The editor action.
  * @author Naotsugu Kobayashi
  */
 public interface Action {

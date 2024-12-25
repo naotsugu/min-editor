@@ -33,6 +33,12 @@ public interface Context {
      */
     String osName();
 
+    /**
+     * Get the clipboard.
+     * @return the clipboard
+     */
+    Clipboard clipboard();
+
     interface Config {
         String fontName();
         double fontSize();

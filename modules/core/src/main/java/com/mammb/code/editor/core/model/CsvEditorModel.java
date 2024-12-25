@@ -21,6 +21,7 @@ import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
+import com.mammb.code.editor.core.action.Action;
 import com.mammb.code.editor.core.layout.Loc;
 import java.nio.file.Path;
 import java.util.Optional;
@@ -254,6 +255,11 @@ public class CsvEditorModel implements EditorModel {
     @Override
     public Session getSession() {
         return null;
+    }
+
+    @Override
+    public void apply(Action action) {
+
     }
 
     @Override

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
+import com.mammb.code.editor.core.action.Action;
 import com.mammb.code.editor.core.layout.Loc;
 import com.mammb.code.editor.core.model.TextEditorModel;
 import com.mammb.code.editor.core.syntax.Syntax;
@@ -99,6 +100,8 @@ public interface EditorModel {
     void findAll(String text);
 
     Session getSession();
+
+    void apply(Action action);
 
     /**
      * Get the result of the query.

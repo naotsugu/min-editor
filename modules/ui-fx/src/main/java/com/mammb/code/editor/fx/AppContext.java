@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.fx;
 
+import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Context;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,6 +47,11 @@ public class AppContext implements Context {
     @Override
     public String osName() {
         return osName;
+    }
+
+    @Override
+    public Clipboard clipboard() {
+        return FxClipboard.instance;
     }
 
     /**

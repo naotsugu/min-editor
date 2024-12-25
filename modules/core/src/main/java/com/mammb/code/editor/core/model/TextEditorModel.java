@@ -30,6 +30,8 @@ import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Theme;
+import com.mammb.code.editor.core.action.Action;
+import com.mammb.code.editor.core.action.ActionRecords.*;
 import com.mammb.code.editor.core.layout.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.syntax.Syntax;
@@ -576,6 +578,34 @@ public class TextEditorModel implements EditorModel {
             carets.getFirst().row(),
             carets.getFirst().col(),
             System.currentTimeMillis());
+    }
+
+    @Override
+    public void apply(Action action) {
+        if (isImeOn()) return;
+        switch (action) {
+            case Input a -> input(a.attr());
+            case Delete a -> delete();
+            case Backspace a -> backspace();
+            case Undo a -> undo();
+            case Redo a -> redo();
+            case Home a -> moveCaretHome(a.withSelect());
+            case End a -> moveCaretEnd(a.withSelect());
+            case CaretRight a -> moveCaretRight(a.withSelect());
+            case CaretLeft a -> moveCaretLeft(a.withSelect());
+            case CaretUp a -> moveCaretUp(a.withSelect());
+            case CaretDown a -> moveCaretDown(a.withSelect());
+            case PageUp a -> moveCaretPageUp(a.withSelect());
+            case PageDown a -> moveCaretPageDown(a.withSelect());
+            case Copy a -> copyToClipboard(a.attr());
+            case Cut a -> cutToClipboard(a.attr());
+            case Paste a -> pasteFromClipboard(a.attr());
+            case SelectAll a -> selectAll();
+            case Wrap a -> wrap(screenLayout.screenColSize() - 2);
+            case Escape a -> escape();
+            case Replace a -> replace(a.attr(), true);
+            case Save a -> save(a.attr());
+        }
     }
 
     @Override
