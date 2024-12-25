@@ -605,6 +605,7 @@ public class TextEditorModel implements EditorModel {
             case Escape a -> escape();
             case Replace a -> replace(a.attr(), true);
             case Save a -> save(a.attr());
+            case Empty a -> { }
         }
     }
 

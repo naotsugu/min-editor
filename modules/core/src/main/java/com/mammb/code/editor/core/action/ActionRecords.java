@@ -28,6 +28,7 @@ import java.util.function.Function;
  */
 public interface ActionRecords {
 
+    record Empty(long occurredAt) implements Action, Repeatable { }
     record Input(String attr, long occurredAt) implements Action, WithAttr<String>, Repeatable { }
     record Replace(Function<String, String> attr, long occurredAt) implements Action, WithAttr<Function<String, String>>, Repeatable { }
     record Delete(long occurredAt) implements Action, Repeatable { }

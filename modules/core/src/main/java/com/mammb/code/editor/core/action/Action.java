@@ -25,8 +25,8 @@ import java.util.function.Function;
  * @author Naotsugu Kobayashi
  */
 public sealed interface Action
-    permits Backspace, CaretDown, CaretLeft, CaretRight, CaretUp, Copy, Cut, Delete, End, Escape,
-    Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll, Undo, Wrap {
+    permits Backspace, CaretDown, CaretLeft, CaretRight, CaretUp, Copy, Cut, Delete, Empty,
+    End, Escape, Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll, Undo, Wrap {
 
     /**
      * Get occurred at.
@@ -43,6 +43,9 @@ public sealed interface Action
         boolean withSelect();
     }
 
+    static Action empty() {
+        return new Empty(System.currentTimeMillis());
+    }
     static Action input(String string) {
         return new Input(string, System.currentTimeMillis());
     }
