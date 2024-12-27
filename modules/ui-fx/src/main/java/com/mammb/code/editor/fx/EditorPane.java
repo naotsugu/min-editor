@@ -269,27 +269,27 @@ public class EditorPane extends StackPane {
     private void execute(Command command) {
         switch (command) {
             case ActionCommand cmd -> model.apply(cmd.action());
-            case Open cmd          -> openWithChooser();
-            case Save cmd          -> save();
-            case SaveAs cmd        -> saveAs();
-            case New cmd           -> newEdit();
-            case Find cmd          -> showCommandPalette(FindAll.class);
-            case Palette cmd       -> showCommandPalette(null);
+            case OpenChoose _      -> openWithChooser();
+            case Save _            -> save();
+            case SaveAs _          -> saveAs();
+            case New _             -> newEdit();
+            case Find _            -> showCommandPalette(FindAll.class);
+            case Palette _         -> showCommandPalette(null);
 
-            case FindAll cmd     -> model.findAll(cmd.str()); // TODO
-            case GoTo cmd        -> model.moveTo(cmd.lineNumber() - 1); // TODO
-            case Wrap cmd        -> model.apply(Action.wrap(cmd.width()));
-            case ToLowerCase cmd -> model.apply(Action.replace(EditingFunctions.toLower, true));
-            case ToUpperCase cmd -> model.apply(Action.replace(EditingFunctions.toUpper, true));
-            case Calc cmd        -> model.apply(Action.replace(EditingFunctions.toCalc, false));
-            case Sort cmd        -> model.apply(Action.replace(EditingFunctions.sort, false));
-            case Unique cmd      -> model.apply(Action.replace(EditingFunctions.unique, false));
-            case Pwd cmd         -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).getParent().toString())));
-            case Pwf cmd         -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).toString())));
-            case Now cmd         -> model.apply(Action.input(stringify(() -> LocalDateTime.now().toString())));
-            case Today cmd       -> model.apply(Action.input(stringify(() -> LocalDate.now().toString())));
-            case Filter cmd      -> { }
-            case Empty cmd       -> { }
+            case FindAll cmd       -> model.findAll(cmd.str());
+            case GoTo cmd          -> model.moveTo(cmd.lineNumber() - 1);
+            case Wrap cmd          -> model.apply(Action.wrap(cmd.width()));
+            case ToLowerCase _     -> model.apply(Action.replace(EditingFunctions.toLower, true));
+            case ToUpperCase _     -> model.apply(Action.replace(EditingFunctions.toUpper, true));
+            case Calc _            -> model.apply(Action.replace(EditingFunctions.toCalc, false));
+            case Sort _            -> model.apply(Action.replace(EditingFunctions.sort, false));
+            case Unique _          -> model.apply(Action.replace(EditingFunctions.unique, false));
+            case Pwd _             -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).getParent().toString())));
+            case Pwf _             -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).toString())));
+            case Now _             -> model.apply(Action.input(stringify(() -> LocalDateTime.now().toString())));
+            case Today _           -> model.apply(Action.input(stringify(() -> LocalDate.now().toString())));
+            case Filter cmd        -> { }
+            case Empty _           -> { }
         }
         draw();
     }

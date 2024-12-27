@@ -53,11 +53,11 @@ public class CommandKeys {
         else if (SC_Y.match(e) || SC_SZ.match(e)) return of(Action.redo());
         else if (SC_W.match(e)) return of(Action.wrap());
         else if (SC_A.match(e)) return of(Action.selectAll());
-        else if (SC_O.match(e)) return new Command.Open();
+        else if (SC_O.match(e)) return new Command.OpenChoose();
         else if (SC_S.match(e)) return new Command.Save();
         else if (SC_SA.match(e)) return new Command.SaveAs();
         else if (SC_N.match(e)) return new Command.New();
-        else if (SC_F.match(e)) return new Command.FindAll("");
+        else if (SC_F.match(e)) return new Command.Find();
         else if (SC_P.match(e)) return new Command.Palette();
 
         else {

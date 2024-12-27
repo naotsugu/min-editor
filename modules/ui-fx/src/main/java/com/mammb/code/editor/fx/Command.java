@@ -39,7 +39,7 @@ public sealed interface Command {
     interface RequireArgs1<T> extends RequireArgs { }
 
     record ActionCommand(Action action) implements Command {}
-    record Open() implements Command {}
+    record OpenChoose() implements Command {}
     record Save() implements Command {}
     record SaveAs() implements Command {}
     record New() implements Command {}
@@ -59,7 +59,7 @@ public sealed interface Command {
 
     record FindAll(String str) implements Command, RequireArgs1<String> { }
     record GoTo(Integer lineNumber) implements Command, RequireArgs1<Integer> { }
-    record Filter() implements Command, RequireArgs1<String> { }
+    record Filter(String str) implements Command, RequireArgs1<String> { }
     record Wrap(Integer width) implements Command, RequireArgs1<Integer> { }
 
     static String promptText(Class<? extends Command> clazz) {
