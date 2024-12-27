@@ -26,7 +26,7 @@ import java.util.function.Function;
  */
 public sealed interface Action
     permits Backspace, CaretDown, CaretLeft, CaretRight, CaretUp, Copy, Cut, Delete, Empty,
-    End, Escape, Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll, Undo, Wrap {
+    End, Escape, Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll, Tab, Undo, Wrap {
 
     /**
      * Get occurred at.
@@ -50,7 +50,10 @@ public sealed interface Action
         return new Input(string, System.currentTimeMillis());
     }
     static Action replace(Function<String, String> fun) {
-        return new Replace(fun, System.currentTimeMillis());
+        return new Replace(fun, false, System.currentTimeMillis());
+    }
+    static Action replace(Function<String, String> fun, boolean keepSelect) {
+        return new Replace(fun, keepSelect, System.currentTimeMillis());
     }
     static Action delete() {
         return new Delete(System.currentTimeMillis());
@@ -74,7 +77,10 @@ public sealed interface Action
         return new Save(path, System.currentTimeMillis());
     }
     static Action wrap() {
-        return new Wrap(System.currentTimeMillis());
+        return new Wrap(0, System.currentTimeMillis());
+    }
+    static Action wrap(int width) {
+        return new Wrap(width, System.currentTimeMillis());
     }
     static Action copy(Clipboard clipboard) {
         return new Copy(clipboard, System.currentTimeMillis());
@@ -90,6 +96,9 @@ public sealed interface Action
     }
     static Action end(boolean withSelect) {
         return new End(withSelect, System.currentTimeMillis());
+    }
+    static Action tab(boolean withSelect) {
+        return new Tab(withSelect, System.currentTimeMillis());
     }
     static Action caretRight(boolean withSelect) {
         return new CaretRight(withSelect, System.currentTimeMillis());

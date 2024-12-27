@@ -47,21 +47,24 @@ import static javafx.scene.input.KeyEvent.KEY_PRESSED;
  * The CommandPalette.
  * @author Naotsugu Kobayashi
  */
-public class CommandPalette extends Dialog<CommandPalette.Command> {
+public class CommandPalette extends Dialog<Command> {
 
+    /** The logger. */
+    private static final System.Logger log = System.getLogger(CommandPalette.class.getName());
+
+    /** The default prompt text. */
     private static final String PROMPT = " <enter command> ";
 
     private final HBox box;
     private final Label commandLabel;
     private final AcTextField textField;
-    private CmdType cmdType;
+    private Class<? extends Command> cmdType;
 
     public CommandPalette(Node node) {
         this(node, null);
     }
 
-    public CommandPalette(Node node, CmdType init) {
-
+    public CommandPalette(Node node, Class<? extends Command> init) {
         super();
         this.box = new HBox();
         this.commandLabel = new Label();
@@ -90,7 +93,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
         // init text field
         textField.setOnKeyPressed(e -> {
             if (e.getCode() == ESCAPE) {
-                setResult(Command.empty);
+                setResult(new Command.Empty());
                 close();
                 e.consume();
             } else if (e.getCode() == ENTER && cmdType != null) {
@@ -124,25 +127,34 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
         initCommandLabel();
     }
 
-    private void initCommandLabel() {
-        CmdType type = cmdType;
-        commandLabel.setVisible(type != null);
-        commandLabel.setText((type == null) ? "" : type.name());
-        textField.setPromptText((type == null) ? PROMPT : type.assistPromptText());
-    }
 
-    private void selectCommand(CmdType cmdType) {
-        this.cmdType = cmdType;
+    private void selectCommand(Class<? extends Command> commandClass) {
+        cmdType = commandClass;
         textField.setText("");
-        if (cmdType.requireArgs()) {
+        if (Command.RequireArgs.class.isAssignableFrom(commandClass)) {
             initCommandLabel();
         } else {
             fireCommand();
         }
     }
 
+    private void initCommandLabel() {
+        var type = cmdType;
+        commandLabel.setVisible(type != null);
+        commandLabel.setText((type == null) ? "" : type.getSimpleName());
+        textField.setPromptText((type == null) ? PROMPT : Command.promptText(type));
+    }
+
     private void fireCommand() {
-        setResult((cmdType == null) ? Command.empty : new Command(cmdType, textField.getText()));
+        if (cmdType == null) {
+            setResult(new Command.Empty());
+        } else {
+            if (Command.RequireArgs1.class.isAssignableFrom(cmdType)) {
+                setResult(Command.newInstance(cmdType, textField.getText().trim()));
+            } else {
+                setResult(Command.newInstance(cmdType));
+            }
+        }
         close();
     }
 
@@ -153,7 +165,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
     static class AcTextField extends TextField {
         final CommandPalette commandPalette;
         final ContextMenu popup;
-        SequencedMap<CmdType, CustomMenuItem> items;
+        SequencedMap<String, CustomMenuItem> items;
 
         public AcTextField(CommandPalette commandPalette) {
             super();
@@ -187,22 +199,18 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             }
         }
 
-        private SequencedMap<CmdType, CustomMenuItem> commandTypeItems() {
-            SequencedMap<CmdType, CustomMenuItem> keywordMappedItems = new LinkedHashMap<>();
-            for (CmdType type : CmdType.values()) {
-                keywordMappedItems.put(type, buildItem(type));
+        private SequencedMap<String, CustomMenuItem> commandTypeItems() {
+            SequencedMap<String, CustomMenuItem> keywordMappedItems = new LinkedHashMap<>();
+            for (var entry : Command.values().entrySet()) {
+                var text = new Text(entry.getKey());
+                text.setFill(Color.GRAY);
+                TextFlow menuText = new TextFlow(text);
+                menuText.setPrefWidth(AcTextField.this.getWidth());
+                CustomMenuItem item = new CustomMenuItem(menuText, true);
+                item.setOnAction(e -> commandPalette.selectCommand(entry.getValue()));
+                keywordMappedItems.put(entry.getKey(), item);
             }
             return keywordMappedItems;
-        }
-
-        private CustomMenuItem buildItem(CmdType type) {
-            var text = new Text(type.name());
-            text.setFill(Color.GRAY);
-            TextFlow menuText = new TextFlow(text);
-            menuText.setPrefWidth(AcTextField.this.getWidth());
-            CustomMenuItem item = new CustomMenuItem(menuText, true);
-            item.setOnAction(e -> commandPalette.selectCommand(type));
-            return item;
         }
 
         private void populatePopup(String input) {
@@ -210,7 +218,7 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
                  items = commandTypeItems();
             }
             List<CustomMenuItem> menuItems = items.entrySet().stream()
-                .filter(e -> e.getKey().match(input))
+                .filter(e -> e.getKey().toLowerCase().contains(input.toLowerCase()))
                 .map(Map.Entry::getValue)
                 .toList();
             popup.getItems().clear();
@@ -228,45 +236,6 @@ public class CommandPalette extends Dialog<CommandPalette.Command> {
             node.requestFocus();
             node.fireEvent(new KeyEvent(KEY_PRESSED, "", "", DOWN, false, false, false, false));
         }
-    }
-
-    enum CmdType {
-        findAll, goTo, toLowerCase, toUpperCase, sort, unique, filter, calc, wrap, pwd, pwf, today, now
-        ;
-        boolean match(String candidate) {
-            return this.name().toLowerCase().contains(candidate.toLowerCase());
-        }
-        boolean requireArgs() {
-            return this == findAll || this == goTo || this == filter || this == wrap;
-        }
-        String assistPromptText() {
-            return switch (this) {
-                case findAll -> " <enter a string to search> ";
-                case goTo    -> " <enter a line number> ";
-                case filter  -> " <enter a regexp string to filter> ";
-                case wrap    -> " <enter a wrap width> ";
-                default -> "";
-            };
-        }
-    }
-
-    record Command(CmdType type, String[] args) {
-        Command(CmdType type) { this(type, new String[0]); }
-        Command(CmdType type, String arg) { this(type, new String[] { arg.trim() } ); }
-        Command(CmdType type, String arg1, String arg2) { this(type, new String[] { arg1.trim(), arg2.trim() } ); }
-        static Command empty = new Command(null);
-
-        public int arg0AsInt() {
-            if (args == null || args.length == 0) {
-                return 0;
-            }
-            var str = args[0].replaceAll("\\D", "");
-            if (str.isBlank()) {
-                return 0;
-            }
-            return Integer.parseInt(str);
-        }
-
     }
 
 }

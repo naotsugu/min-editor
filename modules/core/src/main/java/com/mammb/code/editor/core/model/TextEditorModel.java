@@ -32,6 +32,7 @@ import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.action.Action;
 import com.mammb.code.editor.core.action.ActionRecords.*;
+import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.layout.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.syntax.Syntax;
@@ -591,6 +592,17 @@ public class TextEditorModel implements EditorModel {
             case Redo a -> redo();
             case Home a -> moveCaretHome(a.withSelect());
             case End a -> moveCaretEnd(a.withSelect());
+            case Tab a -> {
+                if (carets.hasMarked()) {
+                    if (a.withSelect()) {
+                        replace(EditingFunctions.indent, true);
+                    } else {
+                        replace(EditingFunctions.unindent, true);
+                    }
+                } else {
+                    // TODO
+                }
+            }
             case CaretRight a -> moveCaretRight(a.withSelect());
             case CaretLeft a -> moveCaretLeft(a.withSelect());
             case CaretUp a -> moveCaretUp(a.withSelect());
@@ -601,11 +613,15 @@ public class TextEditorModel implements EditorModel {
             case Cut a -> cutToClipboard(a.attr());
             case Paste a -> pasteFromClipboard(a.attr());
             case SelectAll a -> selectAll();
-            case Wrap a -> wrap(screenLayout.screenColSize() - 2);
+            case Wrap a -> wrap(a.attr() == 0 ? screenLayout.screenColSize() - 2 : a.attr());
             case Escape a -> escape();
             case Replace a -> replace(a.attr(), true);
             case Save a -> save(a.attr());
             case Empty a -> { }
+        }
+        switch (action) {
+            case Empty _, Escape _ -> {}
+            default -> scrollToCaretY();
         }
     }
 

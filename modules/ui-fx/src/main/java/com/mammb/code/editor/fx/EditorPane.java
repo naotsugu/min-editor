@@ -15,14 +15,15 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
+import com.mammb.code.editor.core.action.Action;
 import com.mammb.code.editor.core.editing.EditingFunctions;
+import com.mammb.code.editor.fx.Command.*;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -196,7 +197,7 @@ public class EditorPane extends StackPane {
     }
 
     private void handleKeyAction(KeyEvent e) {
-        execute(FxActions.of(e));
+        execute(CommandKeys.of(e));
     }
 
     private void handleDragDetect(MouseEvent e) {
@@ -251,7 +252,7 @@ public class EditorPane extends StackPane {
     private void handleInputMethodTextChanged(InputMethodEvent e) {
         if (!e.getCommitted().isEmpty()) {
             model.imeOff();
-            execute(Action.of(Action.Type.TYPED, e.getCommitted()));
+            execute(CommandKeys.of(Action.input(e.getCommitted())));
         } else if (!e.getComposed().isEmpty()) {
             if (!model.isImeOn()) model.imeOn();
             model.inputImeComposed(e.getComposed().stream()
@@ -265,53 +266,32 @@ public class EditorPane extends StackPane {
         draw();
     }
 
-    private Action execute(Action action) {
+    private void execute(Command command) {
+        switch (command) {
+            case ActionCommand cmd -> model.apply(cmd.action());
+            case Open cmd          -> openWithChooser();
+            case Save cmd          -> save();
+            case SaveAs cmd        -> saveAs();
+            case New cmd           -> newEdit();
+            case Find cmd          -> showCommandPalette(FindAll.class);
+            case Palette cmd       -> showCommandPalette(null);
 
-        if (model.isImeOn()) return Action.EMPTY;
-
-        switch (action.type()) {
-            case TYPED -> model.input(action.attr());
-            case DELETE -> model.delete();
-            case BACK_SPACE -> model.backspace();
-            case UNDO -> model.undo();
-            case REDO -> model.redo();
-            case HOME -> model.moveCaretHome(false);
-            case END -> model.moveCaretEnd(false);
-            case CARET_RIGHT -> model.moveCaretRight(false);
-            case CARET_LEFT -> model.moveCaretLeft(false);
-            case CARET_UP -> model.moveCaretUp(false);
-            case CARET_DOWN -> model.moveCaretDown(false);
-            case SELECT_CARET_RIGHT -> model.moveCaretRight(true);
-            case SELECT_CARET_LEFT -> model.moveCaretLeft(true);
-            case SELECT_CARET_UP -> model.moveCaretUp(true);
-            case SELECT_CARET_DOWN -> model.moveCaretDown(true);
-            case SELECT_HOME -> model.moveCaretHome(true);
-            case SELECT_END -> model.moveCaretEnd(true);
-            case SELECT_ALL -> model.selectAll();
-            case PAGE_UP -> model.moveCaretPageUp(false);
-            case PAGE_DOWN -> model.moveCaretPageDown(false);
-            case SELECT_PAGE_UP -> model.moveCaretPageUp(true);
-            case SELECT_PAGE_DOWN -> model.moveCaretPageDown(true);
-            case COPY -> model.copyToClipboard(FxClipboard.instance);
-            case CUT -> model.cutToClipboard(FxClipboard.instance);
-            case PASTE -> model.pasteFromClipboard(FxClipboard.instance);
-            case ESC -> model.escape();
-            case OPEN -> openWithChooser();
-            case SAVE -> save();
-            case SAVE_AS -> saveAs();
-            case NEW -> newEdit();
-            case FIND -> showCommandPalette(CommandPalette.CmdType.findAll);
-            case COMMAND_PALETTE -> showCommandPalette(null);
-            case INDENT -> model.replace(EditingFunctions.indent, true);
-            case UNINDENT -> model.replace(EditingFunctions.unindent, true);
-            case WRAP -> model.wrap(model.query(Query.widthAsCharacters) - 2);
-        }
-
-        if (action.type().syncCaret()) {
-            model.scrollToCaretY();
+            case FindAll cmd     -> model.findAll(cmd.str()); // TODO
+            case GoTo cmd        -> model.moveTo(cmd.lineNumber() - 1); // TODO
+            case Wrap cmd        -> model.apply(Action.wrap(cmd.width()));
+            case ToLowerCase cmd -> model.apply(Action.replace(EditingFunctions.toLower, true));
+            case ToUpperCase cmd -> model.apply(Action.replace(EditingFunctions.toUpper, true));
+            case Calc cmd        -> model.apply(Action.replace(EditingFunctions.toCalc, false));
+            case Sort cmd        -> model.apply(Action.replace(EditingFunctions.sort, false));
+            case Unique cmd      -> model.apply(Action.replace(EditingFunctions.unique, false));
+            case Pwd cmd         -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).getParent().toString())));
+            case Pwf cmd         -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).toString())));
+            case Now cmd         -> model.apply(Action.input(stringify(() -> LocalDateTime.now().toString())));
+            case Today cmd       -> model.apply(Action.input(stringify(() -> LocalDate.now().toString())));
+            case Filter cmd      -> { }
+            case Empty cmd       -> { }
         }
         draw();
-        return action;
     }
 
     private ScreenScroll screenScroll() {
@@ -440,28 +420,9 @@ public class EditorPane extends StackPane {
         stage.show();
     }
 
-    private void showCommandPalette(CommandPalette.CmdType init) {
-        var cp = new CommandPalette(this, init);
-        var command = cp.showAndWait();
-        command.ifPresent(c -> {
-            switch (c.type()) {
-                case findAll     -> model.findAll(c.args()[0]);
-                case goTo        -> model.moveTo(c.arg0AsInt() - 1);
-                case wrap        -> model.wrap(c.arg0AsInt());
-                case toLowerCase -> model.replace(EditingFunctions.toLower, true);
-                case toUpperCase -> model.replace(EditingFunctions.toUpper, true);
-                case calc        -> model.replace(EditingFunctions.toCalc, false);
-                case sort        -> model.replace(EditingFunctions.sort, false);
-                case unique      -> model.replace(EditingFunctions.unique, false);
-                case pwd         -> model.input(stringify(() -> model.query(Query.contentPath).getParent().toString()));
-                case pwf         -> model.input(stringify(() -> model.query(Query.contentPath).toString()));
-                case now         -> model.input(stringify(() -> LocalDateTime.now().toString()));
-                case today       -> model.input(stringify(() -> LocalDate.now().toString()));
-                case filter      -> { }
-                case null        -> { }
-                default -> { }
-            }
-        });
+    private void showCommandPalette(Class<? extends Command> clazz) {
+        var cp = new CommandPalette(this, clazz);
+        cp.showAndWait().ifPresent(this::execute);
     }
 
     private InputMethodRequests inputMethodRequests() {
