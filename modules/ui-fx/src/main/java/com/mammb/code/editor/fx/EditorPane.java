@@ -101,11 +101,14 @@ public class EditorPane extends StackPane {
      * @param ctx the application context
      */
     public EditorPane(Path path, AppContext ctx) {
+
         context = ctx;
+
         canvas = new Canvas();
         canvas.setManaged(false);
         canvas.setFocusTraversable(true);
         canvas.setCursor(Cursor.TEXT);
+
         Font font = Font.font(context.config().fontName(), context.config().fontSize());
         draw = new FxDraw(canvas.getGraphicsContext2D(), font);
         model = EditorModel.of((path == null) ? Content.of() : Content.of(path),
@@ -273,8 +276,7 @@ public class EditorPane extends StackPane {
             case Save _            -> save();
             case SaveAs _          -> saveAs();
             case New _             -> newEdit();
-            case Find _            -> showCommandPalette(FindAll.class);
-            case Palette _         -> showCommandPalette(null);
+            case Palette cmd       -> showCommandPalette(cmd.initial());
 
             case FindAll cmd       -> model.findAll(cmd.str());
             case GoTo cmd          -> model.moveTo(cmd.lineNumber() - 1);
@@ -284,11 +286,11 @@ public class EditorPane extends StackPane {
             case Calc _            -> model.apply(Action.replace(EditingFunctions.toCalc, false));
             case Sort _            -> model.apply(Action.replace(EditingFunctions.sort, false));
             case Unique _          -> model.apply(Action.replace(EditingFunctions.unique, false));
-            case Pwd _             -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).getParent().toString())));
-            case Pwf _             -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).toString())));
-            case Now _             -> model.apply(Action.input(stringify(() -> LocalDateTime.now().toString())));
-            case Today _           -> model.apply(Action.input(stringify(() -> LocalDate.now().toString())));
-            case Filter cmd        -> { }
+            case Pwd _             -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).getParent())));
+            case Pwf _             -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath))));
+            case Now _             -> model.apply(Action.input(stringify(LocalDateTime::now)));
+            case Today _           -> model.apply(Action.input(stringify(LocalDate::now)));
+            case Filter cmd        -> { } // TODO
             case Empty _           -> { }
         }
         draw();
@@ -459,9 +461,9 @@ public class EditorPane extends StackPane {
         return context;
     }
 
-    private static String stringify(Supplier<String> supplier) {
+    private static String stringify(Supplier<Object> supplier) {
         try {
-            return supplier.get();
+            return supplier.get().toString();
         } catch (Exception e) {
             return "";
         }

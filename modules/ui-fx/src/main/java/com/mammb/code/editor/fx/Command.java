@@ -43,8 +43,7 @@ public sealed interface Command {
     record Save() implements Command {}
     record SaveAs() implements Command {}
     record New() implements Command {}
-    record Find() implements Command {}
-    record Palette() implements Command, Hidden {}
+    record Palette(Class<? extends Command> initial) implements Command, Hidden {}
     record Empty() implements Command, Hidden {}
 
     record ToLowerCase() implements Command {}
