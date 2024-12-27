@@ -33,6 +33,7 @@ public class AppContext implements Context {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(AppContext.class.getName());
+
     /** The os name. */
     private final String osName = System.getProperty("os.name").toLowerCase();
 

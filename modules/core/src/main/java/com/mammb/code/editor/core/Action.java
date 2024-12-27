@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2022-2024 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,18 @@
  */
 package com.mammb.code.editor.core;
 
+import java.nio.file.Path;
+import java.util.function.Function;
+import com.mammb.code.editor.core.model.ActionRecords.*;
+
 /**
  * The editor action.
  * @author Naotsugu Kobayashi
  */
-public interface Action {
-
-    /** The empty action. */
-    Action EMPTY = Action.of(Type.EMPTY);
-
-    /**
-     * Get the action type.
-     * @return the type
-     */
-    Type type();
-
-    /**
-     * Get the attribute.
-     * @return the attribute
-     */
-    String attr();
+public sealed interface Action
+    permits Backspace, CaretDown, CaretLeft, CaretRight, CaretUp, Copy, Cut, Delete, Empty,
+    End, Escape, Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll,
+    Tab, Undo, Wrap, Goto, FindAll, Repeat {
 
     /**
      * Get occurred at.
@@ -42,48 +34,95 @@ public interface Action {
      */
     long occurredAt();
 
-    /** The action event type.*/
-    enum Type {
-        TYPED, DELETE, BACK_SPACE,
-        INDENT, UNINDENT,
-        CARET_RIGHT, CARET_LEFT, CARET_UP, CARET_DOWN,
-        SELECT_CARET_RIGHT, SELECT_CARET_LEFT, SELECT_CARET_UP, SELECT_CARET_DOWN,
-        HOME, SELECT_HOME, END, SELECT_END,
-        PAGE_UP, SELECT_PAGE_UP,
-        PAGE_DOWN, SELECT_PAGE_DOWN,
-        SELECT_ALL,
-        COPY, PASTE, CUT,
-        UNDO, REDO,
-        OPEN, SAVE, SAVE_AS, NEW,
-        WRAP,
-        COMMAND_PALETTE, FIND,
-        ESC, EMPTY,
-        ;
+    interface WithAttr<T> {
+        T attr();
+    }
+    interface Repeatable { }
 
-        public boolean syncCaret() {
-            return !(this == OPEN || this == SAVE || this ==  SAVE_AS ||
-                    this ==  NEW || this == ESC || this == FIND ||
-                    this == COMMAND_PALETTE || this ==  EMPTY);
-        }
+    interface WithSelect {
+        boolean withSelect();
     }
 
-    /**
-     * Create a new action record.
-     * @param type action type
-     * @return a new action
-     */
-    static Action of(Type type) {
-        return of(type, "");
+    static Action empty() {
+        return new Empty(System.currentTimeMillis());
+    }
+    static Action input(String string) {
+        return new Input(string, System.currentTimeMillis());
+    }
+    static Action replace(Function<String, String> fun, boolean keepSelect) {
+        return new Replace(fun, keepSelect, System.currentTimeMillis());
+    }
+    static Action delete() {
+        return new Delete(System.currentTimeMillis());
+    }
+    static Action backspace() {
+        return new Backspace(System.currentTimeMillis());
+    }
+    static Action undo() {
+        return new Undo(System.currentTimeMillis());
+    }
+    static Action redo() {
+        return new Redo(System.currentTimeMillis());
+    }
+    static Action selectAll() {
+        return new SelectAll(System.currentTimeMillis());
+    }
+    static Action escape() {
+        return new Escape(System.currentTimeMillis());
+    }
+    static Action repeat() {
+        return new Repeat(System.currentTimeMillis());
+    }
+    static Action save(Path path) {
+        return new Save(path, System.currentTimeMillis());
+    }
+    static Action wrap() {
+        return new Wrap(0, System.currentTimeMillis());
+    }
+    static Action wrap(int width) {
+        return new Wrap(width, System.currentTimeMillis());
+    }
+    static Action goTo(int row) {
+        return new Goto(row, System.currentTimeMillis());
+    }
+    static Action findAll(String str) {
+        return new FindAll(str, System.currentTimeMillis());
+    }
+    static Action copy(Clipboard clipboard) {
+        return new Copy(clipboard, System.currentTimeMillis());
+    }
+    static Action cut(Clipboard clipboard) {
+        return new Cut(clipboard, System.currentTimeMillis());
+    }
+    static Action paste(Clipboard clipboard) {
+        return new Paste(clipboard, System.currentTimeMillis());
+    }
+    static Action home(boolean withSelect) {
+        return new Home(withSelect, System.currentTimeMillis());
+    }
+    static Action end(boolean withSelect) {
+        return new End(withSelect, System.currentTimeMillis());
+    }
+    static Action tab(boolean withSelect) {
+        return new Tab(withSelect, System.currentTimeMillis());
+    }
+    static Action caretRight(boolean withSelect) {
+        return new CaretRight(withSelect, System.currentTimeMillis());
+    }
+    static Action caretLeft(boolean withSelect) {
+        return new CaretLeft(withSelect, System.currentTimeMillis());
+    }
+    static Action caretUp(boolean withSelect) {
+        return new CaretUp(withSelect, System.currentTimeMillis());
+    }
+    static Action caretDown(boolean withSelect) {
+        return new CaretDown(withSelect, System.currentTimeMillis());
+    }
+    static Action pageUp(boolean withSelect) {
+        return new PageUp(withSelect, System.currentTimeMillis());
+    }
+    static Action pageDown(boolean withSelect) {
+        return new PageDown(withSelect, System.currentTimeMillis());
     }
 
-    /**
-     * Create a new action record with attribute.
-     * @param type action type
-     * @param attr attribute
-     * @return a new action
-     */
-    static Action of(Type type, String attr) {
-        record ActionRecord(Type type, String attr, long occurredAt) implements Action { }
-        return new ActionRecord(type, attr, System.currentTimeMillis());
-    }
 }

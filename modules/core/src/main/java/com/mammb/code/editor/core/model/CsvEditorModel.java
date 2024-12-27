@@ -15,17 +15,15 @@
  */
 package com.mammb.code.editor.core.model;
 
-import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
-import com.mammb.code.editor.core.action.Action;
-import com.mammb.code.editor.core.layout.Loc;
+import com.mammb.code.editor.core.Action;
+import com.mammb.code.editor.core.Loc;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * The csv editor model.
@@ -59,11 +57,6 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void moveTo(int row) {
-
-    }
-
-    @Override
     public void scrollX(double x) {
 
     }
@@ -75,51 +68,6 @@ public class CsvEditorModel implements EditorModel {
 
     @Override
     public void scrollToCaretX() {
-
-    }
-
-    @Override
-    public void moveCaretRight(boolean withSelect) {
-
-    }
-
-    @Override
-    public void moveCaretLeft(boolean withSelect) {
-
-    }
-
-    @Override
-    public void moveCaretDown(boolean withSelect) {
-
-    }
-
-    @Override
-    public void moveCaretUp(boolean withSelect) {
-
-    }
-
-    @Override
-    public void moveCaretHome(boolean withSelect) {
-
-    }
-
-    @Override
-    public void moveCaretEnd(boolean withSelect) {
-
-    }
-
-    @Override
-    public void moveCaretPageUp(boolean withSelect) {
-
-    }
-
-    @Override
-    public void moveCaretPageDown(boolean withSelect) {
-
-    }
-
-    @Override
-    public void selectAll() {
 
     }
 
@@ -154,51 +102,6 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void input(String text) {
-
-    }
-
-    @Override
-    public void delete() {
-
-    }
-
-    @Override
-    public void backspace() {
-
-    }
-
-    @Override
-    public void replace(Function<String, String> fun, boolean keepSelection) {
-
-    }
-
-    @Override
-    public void undo() {
-
-    }
-
-    @Override
-    public void redo() {
-
-    }
-
-    @Override
-    public void pasteFromClipboard(Clipboard clipboard) {
-
-    }
-
-    @Override
-    public void copyToClipboard(Clipboard clipboard) {
-
-    }
-
-    @Override
-    public void cutToClipboard(Clipboard clipboard) {
-
-    }
-
-    @Override
     public Optional<Path> path() {
         return Optional.empty();
     }
@@ -206,16 +109,6 @@ public class CsvEditorModel implements EditorModel {
     @Override
     public void save(Path path) {
 
-    }
-
-    @Override
-    public void escape() {
-
-    }
-
-    @Override
-    public void wrap(int width) {
-        // do nothing
     }
 
     @Override
@@ -244,11 +137,6 @@ public class CsvEditorModel implements EditorModel {
 
     @Override
     public void inputImeComposed(String text) {
-
-    }
-
-    @Override
-    public void findAll(String text) {
 
     }
 

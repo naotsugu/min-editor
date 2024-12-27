@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.action;
+package com.mammb.code.editor.core.model;
 
+import com.mammb.code.editor.core.Action;
+import com.mammb.code.editor.core.Action.*;
 import com.mammb.code.editor.core.Clipboard;
-import com.mammb.code.editor.core.action.Action.Repeatable;
-import com.mammb.code.editor.core.action.Action.WithAttr;
-import com.mammb.code.editor.core.action.Action.WithSelect;
 import java.nio.file.Path;
 import java.util.function.Function;
 
@@ -37,9 +36,12 @@ public interface ActionRecords {
     record Redo(long occurredAt) implements Action, Repeatable { }
     record SelectAll(long occurredAt) implements Action, Repeatable { }
     record Escape(long occurredAt) implements Action, Repeatable { }
+    record Repeat(long occurredAt) implements Action { }
 
     record Save(Path attr, long occurredAt) implements Action, WithAttr<Path> { }
     record Wrap(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
+    record Goto(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
+    record FindAll(String attr, long occurredAt) implements Action, WithAttr<String> { }
 
     record Copy(Clipboard attr, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }
     record Cut(Clipboard attr, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }

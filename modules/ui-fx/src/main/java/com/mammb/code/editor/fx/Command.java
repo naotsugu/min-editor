@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.action.Action;
+import com.mammb.code.editor.core.Action;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
@@ -57,9 +57,10 @@ public sealed interface Command {
     record Now() implements Command {}
 
     record FindAll(String str) implements Command, RequireArgs1<String> { }
-    record GoTo(Integer lineNumber) implements Command, RequireArgs1<Integer> { }
+    record GoTo(Integer rowNumber) implements Command, RequireArgs1<Integer> { }
     record Filter(String str) implements Command, RequireArgs1<String> { }
     record Wrap(Integer width) implements Command, RequireArgs1<Integer> { }
+    record Open(String path) implements Command, RequireArgs1<String> { }
 
     static String promptText(Class<? extends Command> clazz) {
         if (FindAll.class.isAssignableFrom(clazz)) {

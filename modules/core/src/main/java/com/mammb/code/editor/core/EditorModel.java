@@ -15,13 +15,10 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.action.Action;
-import com.mammb.code.editor.core.layout.Loc;
 import com.mammb.code.editor.core.model.TextEditorModel;
 import com.mammb.code.editor.core.syntax.Syntax;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * The facade of editor.
@@ -51,19 +48,10 @@ public interface EditorModel {
     void scrollNext(int delta);
     void scrollPrev(int delta);
     void scrollAt(int line);
-    void moveTo(int row);
     void scrollX(double x);
     void scrollToCaretY();
     void scrollToCaretX();
-    void moveCaretRight(boolean withSelect);
-    void moveCaretLeft(boolean withSelect);
-    void moveCaretDown(boolean withSelect);
-    void moveCaretUp(boolean withSelect);
-    void moveCaretHome(boolean withSelect);
-    void moveCaretEnd(boolean withSelect);
-    void moveCaretPageUp(boolean withSelect);
-    void moveCaretPageDown(boolean withSelect);
-    void selectAll();
+
     void click(double x, double y, boolean withSelect);
     void ctrlClick(double x, double y);
     void clickDouble(double x, double y);
@@ -71,15 +59,6 @@ public interface EditorModel {
     void moveDragged(double x, double y);
     void setCaretVisible(boolean visible);
 
-    void input(String text);
-    void delete();
-    void backspace();
-    void replace(Function<String, String> fun, boolean keepSelection);
-    void undo();
-    void redo();
-    void pasteFromClipboard(Clipboard clipboard);
-    void copyToClipboard(Clipboard clipboard);
-    void cutToClipboard(Clipboard clipboard);
     Optional<Path> path();
 
     /**
@@ -87,8 +66,7 @@ public interface EditorModel {
      * @param path the path of file
      */
     void save(Path path);
-    void escape();
-    void wrap(int width);
+
     void updateFontMetrics(FontMetrics fontMetrics);
 
     void imeOn();
@@ -96,8 +74,6 @@ public interface EditorModel {
     void imeOff();
     boolean isImeOn();
     void inputImeComposed(String text);
-
-    void findAll(String text);
 
     Session getSession();
 

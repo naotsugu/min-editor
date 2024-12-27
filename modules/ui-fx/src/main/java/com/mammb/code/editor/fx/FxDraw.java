@@ -60,7 +60,7 @@ public class FxDraw implements Draw {
 
     @Override
     public void text(String text, double x, double y, double w, List<Style> styles) {
-        text = text.replace("\t", "    ");
+        text = text.replace("\t", "    "); // TODO
         var bgColor = bgColor(styles);
         if (bgColor.isPresent()) {
             var bg = bgColor.get();

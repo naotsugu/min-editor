@@ -30,10 +30,9 @@ import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Theme;
-import com.mammb.code.editor.core.action.Action;
-import com.mammb.code.editor.core.action.ActionRecords.*;
+import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.editing.EditingFunctions;
-import com.mammb.code.editor.core.layout.Loc;
+import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
@@ -52,6 +51,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import com.mammb.code.editor.core.model.ActionRecords.*;
 
 /**
  * The text editor model.
@@ -59,7 +59,7 @@ import java.util.stream.IntStream;
  */
 public class TextEditorModel implements EditorModel {
 
-    private double marginTop = 5;
+    private final double marginTop = 5;
     private double marginLeft = 70;
     /** caretVisible?. */
     private boolean caretVisible = true;
@@ -123,8 +123,7 @@ public class TextEditorModel implements EditorModel {
         screenLayout.scrollAt(line);
     }
 
-    @Override
-    public void moveTo(int row) {
+    void moveTo(int row) {
         if (decorate.isBlockScoped()) {
             int delta = screenLayout.rowToFirstLine(row) - screenLayout.topLine();
             int page = screenLayout.screenLineSize() - 1;
@@ -176,8 +175,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    @Override
-    public void moveCaretRight(boolean withSelect) {
+    void moveCaretRight(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             var text = screenLayout.rowTextAt(c.row());
@@ -192,8 +190,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    @Override
-    public void moveCaretLeft(boolean withSelect) {
+    void moveCaretLeft(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             if (c.isZero()) continue;
@@ -209,8 +206,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    @Override
-    public void moveCaretDown(boolean withSelect) {
+    void moveCaretDown(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -223,8 +219,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    @Override
-    public void moveCaretUp(boolean withSelect) {
+    void moveCaretUp(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -237,8 +232,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    @Override
-    public void moveCaretHome(boolean withSelect) {
+    void moveCaretHome(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -247,8 +241,7 @@ public class TextEditorModel implements EditorModel {
         screenLayout.scrollX(0);
     }
 
-    @Override
-    public void moveCaretEnd(boolean withSelect) {
+    void moveCaretEnd(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -257,8 +250,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    @Override
-    public void moveCaretPageUp(boolean withSelect) {
+    void moveCaretPageUp(boolean withSelect) {
         int n = screenLayout.screenLineSize() - 1;
         scrollPrev(n);
         if (withSelect && carets.size() > 1) carets.unique();
@@ -271,8 +263,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    @Override
-    public void moveCaretPageDown(boolean withSelect) {
+    void moveCaretPageDown(boolean withSelect) {
         int n = screenLayout.screenLineSize() - 1;
         scrollNext(n);
         if (withSelect && carets.size() > 1) carets.unique();
@@ -285,7 +276,6 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    @Override
     public void selectAll() {
         Caret c = carets.unique();
         c.at(0, 0);
@@ -371,8 +361,7 @@ public class TextEditorModel implements EditorModel {
         this.caretVisible = visible;
     }
 
-    @Override
-    public void input(String text) {
+    void input(String text) {
         if (carets.size() == 1) {
             Caret caret = carets.getFirst();
             if (caret.isMarked()) {
@@ -392,8 +381,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    @Override
-    public void delete() {
+    void delete() {
         if (carets.size() == 1) {
             Caret caret = carets.getFirst();
             if (caret.isMarked()) {
@@ -412,8 +400,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    @Override
-    public void backspace() {
+    void backspace() {
         if (carets.size() == 1) {
             Caret caret = carets.getFirst();
             if (caret.isMarked()) {
@@ -433,8 +420,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    @Override
-    public void replace(Function<String, String> fun, boolean keepSelection) {
+    void replace(Function<String, String> fun, boolean keepSelection) {
         List<Range> ranges = content.replace(carets.ranges(), fun);
         Range rangeMin = Collections.min(ranges);
         Range rangeMax = Collections.max(ranges);
@@ -457,27 +443,23 @@ public class TextEditorModel implements EditorModel {
             rangeMax.max().row() + 1);
     }
 
-    @Override
-    public void undo() {
+    void undo() {
         List<Point> points = content.undo();
         refreshPointsRange(points);
     }
 
-    @Override
-    public void redo() {
+    void redo() {
         List<Point> points = content.redo();
         refreshPointsRange(points);
     }
 
-    @Override
-    public void pasteFromClipboard(Clipboard clipboard) {
+    void pasteFromClipboard(Clipboard clipboard) {
         var text = clipboard.getString();
         if (text.isEmpty()) return;
         input(text);
     }
 
-    @Override
-    public void copyToClipboard(Clipboard clipboard) {
+    void copyToClipboard(Clipboard clipboard) {
         String copy = carets.marked().stream()
                 .map(range -> content.getText(range.min(), range.max()))
                 .collect(Collectors.joining(System.lineSeparator()));
@@ -485,8 +467,7 @@ public class TextEditorModel implements EditorModel {
         clipboard.setPlainText(copy);
     }
 
-    @Override
-    public void cutToClipboard(Clipboard clipboard) {
+    void cutToClipboard(Clipboard clipboard) {
         copyToClipboard(clipboard);
         content.replace(carets.marked(), _ -> "");
     }
@@ -501,14 +482,12 @@ public class TextEditorModel implements EditorModel {
         content.save(path);
     }
 
-    @Override
-    public void escape() {
+    void escape() {
         carets.unique().clearMark();
         decorate.clear();
     }
 
-    @Override
-    public void wrap(int width) {
+    void wrap(int width) {
         carets.unique().at(0, 0);
         decorate.clear();
         screenLayout.wrapWith(width);
@@ -554,8 +533,7 @@ public class TextEditorModel implements EditorModel {
         caret.imeFlushAt(pos);
     }
 
-    @Override
-    public void findAll(String text) {
+    void findAll(String text) {
         for (Point point : content.findAll(text)) {
             decorate.addHighlights(point.row(), new StyleSpan(
                     new Style.BgColor("#FDD835"),
@@ -585,14 +563,14 @@ public class TextEditorModel implements EditorModel {
     public void apply(Action action) {
         if (isImeOn()) return;
         switch (action) {
-            case Input a -> input(a.attr());
-            case Delete a -> delete();
-            case Backspace a -> backspace();
-            case Undo a -> undo();
-            case Redo a -> redo();
-            case Home a -> moveCaretHome(a.withSelect());
-            case End a -> moveCaretEnd(a.withSelect());
-            case Tab a -> {
+            case Input a     -> input(a.attr());
+            case Delete _    -> delete();
+            case Backspace _ -> backspace();
+            case Undo _      -> undo();
+            case Redo _      -> redo();
+            case Home a      -> moveCaretHome(a.withSelect());
+            case End a       -> moveCaretEnd(a.withSelect());
+            case Tab a       -> {
                 if (carets.hasMarked()) {
                     if (a.withSelect()) {
                         replace(EditingFunctions.indent, true);
@@ -604,25 +582,29 @@ public class TextEditorModel implements EditorModel {
                 }
             }
             case CaretRight a -> moveCaretRight(a.withSelect());
-            case CaretLeft a -> moveCaretLeft(a.withSelect());
-            case CaretUp a -> moveCaretUp(a.withSelect());
-            case CaretDown a -> moveCaretDown(a.withSelect());
-            case PageUp a -> moveCaretPageUp(a.withSelect());
-            case PageDown a -> moveCaretPageDown(a.withSelect());
-            case Copy a -> copyToClipboard(a.attr());
-            case Cut a -> cutToClipboard(a.attr());
-            case Paste a -> pasteFromClipboard(a.attr());
-            case SelectAll a -> selectAll();
-            case Wrap a -> wrap(a.attr() == 0 ? screenLayout.screenColSize() - 2 : a.attr());
-            case Escape a -> escape();
-            case Replace a -> replace(a.attr(), true);
-            case Save a -> save(a.attr());
-            case Empty a -> { }
+            case CaretLeft a  -> moveCaretLeft(a.withSelect());
+            case CaretUp a    -> moveCaretUp(a.withSelect());
+            case CaretDown a  -> moveCaretDown(a.withSelect());
+            case PageUp a     -> moveCaretPageUp(a.withSelect());
+            case PageDown a   -> moveCaretPageDown(a.withSelect());
+            case Copy a       -> copyToClipboard(a.attr());
+            case Cut a        -> cutToClipboard(a.attr());
+            case Paste a      -> pasteFromClipboard(a.attr());
+            case SelectAll _  -> selectAll();
+            case Wrap a       -> wrap(a.attr() == 0 ? screenLayout.screenColSize() - 2 : a.attr());
+            case Goto a       -> moveTo(a.attr());
+            case FindAll a    -> findAll(a.attr());
+            case Escape _     -> escape();
+            case Repeat _     -> { } // TODO impl
+            case Replace a    -> replace(a.attr(), true);
+            case Save a       -> save(a.attr());
+            case Empty a      -> { }
         }
         switch (action) {
             case Empty _, Escape _ -> {}
             default -> scrollToCaretY();
         }
+        // TODO action history
     }
 
     @Override

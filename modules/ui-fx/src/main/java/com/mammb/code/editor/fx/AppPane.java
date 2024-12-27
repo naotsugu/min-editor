@@ -25,7 +25,7 @@ import javafx.stage.Stage;
 public class AppPane extends BorderPane {
 
     /** The split tab pane. */
-    private SplitTabPane container;
+    private final SplitTabPane container;
 
     /**
      * Constructor.
@@ -38,8 +38,8 @@ public class AppPane extends BorderPane {
         setCenter(container);
         stage.setOnCloseRequest(e -> {
             e.consume();
-            var ret = container.close();
-            if (ret) {
+            var notExistsUnsaved = container.close();
+            if (notExistsUnsaved) {
                 stage.close();
             }
         });

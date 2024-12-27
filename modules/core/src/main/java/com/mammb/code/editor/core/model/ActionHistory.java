@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.layout;
+package com.mammb.code.editor.core.model;
 
 /**
- * The location.
- * @param x the location of x
- * @param y the location of y
+ * The action history.
  * @author Naotsugu Kobayashi
  */
-public record Loc(double x, double y) {
+public interface ActionHistory {
 }

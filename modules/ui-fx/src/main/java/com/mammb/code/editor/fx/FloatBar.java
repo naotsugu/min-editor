@@ -75,6 +75,8 @@ public class FloatBar extends HBox {
         layoutSize();
     }
 
+    // TODO add toast messages
+
     public void handleProgress(Task<?> task) {
         ProgressBar progressBar = new ProgressBar(0);
         progressBar.progressProperty().bind(task.progressProperty());

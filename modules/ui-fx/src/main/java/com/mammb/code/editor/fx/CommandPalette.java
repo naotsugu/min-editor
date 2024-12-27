@@ -205,6 +205,7 @@ public class CommandPalette extends Dialog<Command> {
                 var text = new Text(entry.getKey());
                 text.setFill(Color.GRAY);
                 TextFlow menuText = new TextFlow(text);
+                // TODO displaying description and shortcut labels
                 menuText.setPrefWidth(AcTextField.this.getWidth());
                 CustomMenuItem item = new CustomMenuItem(menuText, true);
                 item.setOnAction(e -> commandPalette.selectCommand(entry.getValue()));

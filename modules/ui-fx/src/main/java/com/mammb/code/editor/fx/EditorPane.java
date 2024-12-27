@@ -21,7 +21,7 @@ import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
-import com.mammb.code.editor.core.action.Action;
+import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.fx.Command.*;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -231,9 +231,10 @@ public class EditorPane extends StackPane {
                 e.setDropCompleted(true);
                 e.consume();
                 try (var stream = Files.list(dir.get())) {
+                    // TODO replace as EditingFunctions
                     String list = stream.map(Path::toAbsolutePath)
                         .map(Path::toString).collect(Collectors.joining("\n"));
-                    model.input(list.isEmpty() ? dir.get().toAbsolutePath().toString() : list);
+                    model.apply(Action.input(list.isEmpty() ? dir.get().toAbsolutePath().toString() : list));
                     draw();
                 } catch (IOException ignore) {  }
                 return;
@@ -277,9 +278,9 @@ public class EditorPane extends StackPane {
             case SaveAs _          -> saveAs();
             case New _             -> newEdit();
             case Palette cmd       -> showCommandPalette(cmd.initial());
-
-            case FindAll cmd       -> model.findAll(cmd.str());
-            case GoTo cmd          -> model.moveTo(cmd.lineNumber() - 1);
+            case Open cmd          -> open(Path.of(cmd.path()));
+            case FindAll cmd       -> model.apply(Action.findAll(cmd.str()));
+            case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
             case Wrap cmd          -> model.apply(Action.wrap(cmd.width()));
             case ToLowerCase _     -> model.apply(Action.replace(EditingFunctions.toLower, true));
             case ToUpperCase _     -> model.apply(Action.replace(EditingFunctions.toUpper, true));

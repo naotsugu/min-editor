@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.layout;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.text.Text;
 import java.util.List;

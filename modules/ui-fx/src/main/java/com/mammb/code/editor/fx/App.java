@@ -33,6 +33,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
+        // TODO file open with command line arguments
         Parameters params = getParameters();
         var ctx = new AppContext();
         if (ctx.config().windowPositionX() >= 0 && ctx.config().windowPositionY() >= 0) {
@@ -151,7 +152,7 @@ public class App extends Application {
           -fx-background-radius: 0;
         }
         """
-        .replaceAll("app-base", Theme.dark.baseColor())
+        .replaceAll("app-base", Theme.dark.baseColor()) // TODO theme vs config
         .replaceAll("app-text", Theme.dark.fgColor())
         .replaceAll("app-back", Theme.dark.baseColor())
         .replaceAll("app-accent", Theme.dark.paleHighlightColor())
