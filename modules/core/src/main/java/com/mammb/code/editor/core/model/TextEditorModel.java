@@ -75,6 +75,8 @@ public class TextEditorModel implements EditorModel {
     private final ScreenScroll scroll;
     /** The context. */
     private final Context ctx;
+    /** The action history. */
+    private final ActionHistory actionHistory = new ActionHistory();
 
     /**
      * Constructor.
@@ -561,7 +563,9 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void apply(Action action) {
+
         if (isImeOn()) return;
+
         switch (action) {
             case Input a     -> input(a.attr());
             case Delete _    -> delete();
@@ -595,7 +599,7 @@ public class TextEditorModel implements EditorModel {
             case Goto a       -> moveTo(a.attr());
             case FindAll a    -> findAll(a.attr());
             case Escape _     -> escape();
-            case Repeat _     -> { } // TODO impl
+            case Repeat _     -> actionHistory.repetition().forEach(this::apply);
             case Replace a    -> replace(a.attr(), true);
             case Save a       -> save(a.attr());
             case Empty a      -> { }
@@ -604,7 +608,7 @@ public class TextEditorModel implements EditorModel {
             case Empty _, Escape _ -> {}
             default -> scrollToCaretY();
         }
-        // TODO action history
+        actionHistory.offer(action);
     }
 
     @Override

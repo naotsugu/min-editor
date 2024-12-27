@@ -46,6 +46,7 @@ public class CommandKeys {
         else if (e.getCode() == ESCAPE) return of(Action.escape());
         else if (e.getCode() == DELETE) return of(Action.delete());
         else if (e.getCode() == BACK_SPACE) return of(Action.backspace());
+
         else if (SC_C.match(e)) return of(Action.copy(FxClipboard.instance));
         else if (SC_V.match(e)) return of(Action.paste(FxClipboard.instance));
         else if (SC_X.match(e)) return of(Action.cut(FxClipboard.instance));
@@ -53,6 +54,7 @@ public class CommandKeys {
         else if (SC_Y.match(e) || SC_SZ.match(e)) return of(Action.redo());
         else if (SC_W.match(e)) return of(Action.wrap());
         else if (SC_A.match(e)) return of(Action.selectAll());
+        else if (SC_DOT.match(e)) return of(Action.repeat());
         else if (SC_O.match(e)) return new Command.OpenChoose();
         else if (SC_S.match(e)) return new Command.Save();
         else if (SC_SA.match(e)) return new Command.SaveAs();
@@ -100,6 +102,7 @@ public class CommandKeys {
     private static final KeyCombination SC_F = new KeyCharacterCombination("f", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_P = new KeyCharacterCombination("p", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_W = new KeyCharacterCombination("w", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_DOT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
 
     private static final Predicate<KeyEvent> controlKeysFilter = e ->
         System.getProperty("os.name").toLowerCase().startsWith("windows")

@@ -15,9 +15,93 @@
  */
 package com.mammb.code.editor.core.model;
 
+import com.mammb.code.editor.core.Action;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * The action history.
  * @author Naotsugu Kobayashi
  */
-public interface ActionHistory {
+public class ActionHistory {
+
+    /** The items. */
+    private final List<Action> actions = new ArrayList<>();
+
+    /**
+     * Offer the action event.
+     * @param action the action event
+     * @return {@code true} if the event offered
+     */
+    public boolean offer(Action action) {
+
+        Objects.requireNonNull(action);
+
+        if (action instanceof ActionRecords.Empty || action instanceof ActionRecords.Repeat) {
+            return false;
+        }
+
+        if (action instanceof Action.Repeatable) {
+
+            if (!actions.isEmpty() &&
+                actions.getLast().occurredAt() + 3_000 < action.occurredAt()) {
+                actions.clear();
+            }
+            return actions.add(action);
+
+        } else {
+            actions.clear();
+            return false;
+        }
+    }
+
+    /**
+     * Get the action event repetition.
+     * @return the action event repetition
+     */
+    public List<Action> repetition() {
+
+        if (actions.size() == 1) {
+            return List.of(actions.getFirst());
+        }
+
+        int mid = actions.size() / 2;
+        for (int i = mid; mid > 1; mid--) {
+            int index = actions.size() - i;
+            List<Action> l = actions.subList(index - i, i);
+            List<Action> r = actions.subList(i, actions.size());
+            if (equals(l, r)) {
+                List<Action> list = new ArrayList<>(r);
+                actions.clear();
+                actions.addAll(list);
+                return list;
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
+    private boolean equals(List<Action> l, List<Action> r) {
+        if (l.size() != r.size()) {
+            return false;
+        }
+        for (int i = 0; i < l.size(); i++) {
+            var la = l.get(i);
+            var ra = r.get(i);
+            if (!Objects.equals(la.getClass(), ra.getClass())) {
+                return false;
+            }
+            if (la instanceof Action.WithAttr<?>) {
+                var lo = ((Action.WithAttr<?>) la).attr();
+                var ro = ((Action.WithAttr<?>) ra).attr();
+                if (!Objects.equals(lo, ro)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
 }
