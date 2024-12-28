@@ -184,7 +184,7 @@ public class TextEditorModel implements EditorModel {
             if (text == null) continue;
             int next = text.indexRight(c.col());
             if (next <= 0) {
-                c.at(c.row() + 1, 0);
+                c.at(Math.min(screenLayout.rowSize() - 1, c.row() + 1), 0);
             } else {
                 c.at(c.row(), next);
             }
