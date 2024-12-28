@@ -60,7 +60,6 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -162,8 +161,7 @@ public class EditorPane extends StackPane {
     private void handleScroll(ScrollEvent e) {
         if (e.getEventType() == ScrollEvent.SCROLL && e.getDeltaY() != 0) {
             if (e.isShortcutDown()) {
-                draw.increaseFontSize(Math.clamp(e.getDeltaY(), -1, 1));
-                model.updateFonts(draw.fontMetrics());
+                zoom(e.getDeltaY());
             } else {
                 if (e.getDeltaY() < 0) {
                     model.scrollNext((int) Math.min(5, -e.getDeltaY()));
@@ -173,6 +171,11 @@ public class EditorPane extends StackPane {
             }
             draw();
         }
+    }
+
+    private void zoom(double n) {
+        draw.increaseFontSize(Math.clamp(n, -1, 1));
+        model.updateFonts(draw.fontMetrics());
     }
 
     private void handleMouseClicked(MouseEvent e) {
@@ -291,6 +294,8 @@ public class EditorPane extends StackPane {
             case Pwf _             -> inputText(() -> model.query(Query.contentPath));
             case Now _             -> inputText(LocalDateTime::now);
             case Today _           -> inputText(LocalDate::now);
+            case ZoomIn _          -> zoom( 1);
+            case ZoomOut _         -> zoom(-1);
             case Filter cmd        -> { } // TODO
             case Empty _           -> { }
         }

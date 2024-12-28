@@ -62,7 +62,9 @@ public class CommandKeys {
         else if (SC_N.match(e)) return new Command.New();
         else if (SC_F.match(e)) return new Command.Palette(Command.FindAll.class);
         else if (SC_P.match(e)) return new Command.Palette(null);
-        else if (SC_COM.match(e)) return new Command.Config();
+        else if (SC_COMMA.match(e)) return new Command.Config();
+        else if (SC_PLUS.match(e)) return new Command.ZoomIn();
+        else if (SC_MINUS.match(e)) return new Command.ZoomOut();
 
         else {
             if (keyInput.test(e)) {
@@ -105,7 +107,9 @@ public class CommandKeys {
     private static final KeyCombination SC_P = new KeyCharacterCombination("p", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_W = new KeyCharacterCombination("w", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_DOT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_COM = new KeyCharacterCombination(",", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_COMMA = new KeyCharacterCombination(",", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_PLUS = new KeyCharacterCombination("+", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_MINUS = new KeyCharacterCombination("-", KeyCombination.SHORTCUT_DOWN);
 
 
     private static final Predicate<KeyEvent> controlKeysFilter = e ->
