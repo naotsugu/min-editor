@@ -28,6 +28,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -204,14 +205,18 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
         private void initTab(Tab tab) {
             var node = (EditorPane) tab.getContent();
-            var label = new Label(node.fileNameProperty().get());
+            var label = new Label(node.filePathProperty().get().getFileName().toString());
             tab.setGraphic(label);
-            // TODO file path prop
-            // tab.setTooltip(new Tooltip(label.getText()));
+            tab.setTooltip(new Tooltip(node.filePathProperty().get().toString()));
             label.setOnDragDetected(this::handleTabDragDetected);
             tab.setOnCloseRequest(this::handleOnTabCloseRequest);
             tab.setOnClosed(this::handleOnTabClosed);
-            node.fileNameProperty().addListener((_, _, n) -> label.setText(n));
+            node.modifiedProperty().addListener((_, _, modified) ->
+                label.setText((modified ? "*" : "") + node.filePathProperty().get().getFileName().toString()));
+            node.filePathProperty().addListener((_, _, path) -> {
+                label.setText(path.getFileName().toString());
+                tab.setTooltip(new Tooltip(path.toString()));
+            });
             node.setNewOpenHandler(_ -> {
                 EditorPane editorPane = new EditorPane(parent.context);
                 add(editorPane);

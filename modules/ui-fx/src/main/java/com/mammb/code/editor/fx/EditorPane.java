@@ -24,7 +24,11 @@ import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.fx.Command.*;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -82,9 +86,10 @@ public class EditorPane extends StackPane {
     private final ScrollBar hScroll = new ScrollBar();
     /** The float bar. */
     private final FloatBar floatBar = new FloatBar(vScroll, hScroll);
-    /** The file name property. */
-    private final SimpleStringProperty fileNameProperty = new SimpleStringProperty("Untitled");
-
+    /** The file path property. */
+    private final SimpleObjectProperty<Path> filePathProperty = new SimpleObjectProperty<>(Path.of("Untitled"));
+    /** The modified property. */
+    private final SimpleBooleanProperty modifiedProperty = new SimpleBooleanProperty();
     private Consumer<Path> newOpenHandler;
 
     /**
@@ -137,10 +142,6 @@ public class EditorPane extends StackPane {
             model.setCaretVisible(n);
             draw();
         });
-    }
-
-    public ReadOnlyStringProperty fileNameProperty() {
-        return fileNameProperty;
     }
 
     public void setNewOpenHandler(Consumer<Path> newOpenHandler) {
@@ -333,8 +334,7 @@ public class EditorPane extends StackPane {
             p.row() + 1 + ":" + p.col(),
             model.query(Query.rowEndingSymbol),
             model.query(Query.charsetSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
-        var fileName = model.path().map(Path::getFileName).map(Path::toString).orElse("Untitled");
-        fileNameProperty.setValue((model.query(Query.modified) ? "*" : "") + fileName);
+        modifiedProperty.setValue(model.query(Query.modified));
     }
 
     private void openWithChooser() {
@@ -358,7 +358,7 @@ public class EditorPane extends StackPane {
         Content content = openInBackground ? Content.readOnlyPartOf(path) : Content.of(path);
         model = EditorModel.of(content, draw.fontMetrics(), screenScroll(), context);
         model.setSize(getWidth(), getHeight());
-        fileNameProperty.setValue(path.getFileName().toString());
+        filePathProperty.setValue(path);
 
         if (openInBackground) {
             Task<Content> task = new Task<>() {
@@ -408,7 +408,7 @@ public class EditorPane extends StackPane {
         if (file == null) return;
         Path path = file.toPath();
         model.save(path);
-        fileNameProperty.setValue(path.getFileName().toString());
+        filePathProperty.setValue(path);
     }
 
     private void newEdit() {
@@ -466,6 +466,13 @@ public class EditorPane extends StackPane {
 
     AppContext context() {
         return context;
+    }
+
+    public ReadOnlyObjectProperty<Path> filePathProperty() {
+        return filePathProperty;
+    }
+    public ReadOnlyBooleanProperty modifiedProperty() {
+        return modifiedProperty;
     }
 
 }

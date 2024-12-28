@@ -151,6 +151,10 @@ public class App extends Application {
           -fx-background-insets: 0;
           -fx-background-radius: 0;
         }
+
+        .tooltip {
+          -fx-font: 13px "Consolas";
+        }
         """
         .replaceAll("app-base", Theme.dark.baseColor()) // TODO theme vs config
         .replaceAll("app-text", Theme.dark.fgColor())
