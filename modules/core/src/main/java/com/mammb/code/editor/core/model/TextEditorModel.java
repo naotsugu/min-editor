@@ -471,7 +471,7 @@ public class TextEditorModel implements EditorModel {
 
     void cutToClipboard(Clipboard clipboard) {
         copyToClipboard(clipboard);
-        content.replace(carets.marked(), _ -> "");
+        replace(_ -> "", false);
     }
 
     @Override
