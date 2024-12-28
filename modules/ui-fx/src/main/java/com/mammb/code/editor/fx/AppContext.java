@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Context;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -58,20 +57,24 @@ public class AppContext implements Context {
         /** The config map. */
         private static final Map<String, Object> map = new ConcurrentHashMap<>();
         /** The path of config. */
-        private final Path configPath = configDir().resolve(Path.of("config.properties"));
+        private final Path path = configDir().resolve(Path.of("config.properties"));
         /** The os name. */
         private final String osName;
 
         public AppConfig(String osName) {
             this.osName = osName;
             try {
-                Files.createDirectories(configPath.getParent());
-                if (!Files.exists(configPath)) Files.createFile(configPath);
+                Files.createDirectories(path.getParent());
+                if (!Files.exists(path)) Files.createFile(path);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
             load();
             Runtime.getRuntime().addShutdownHook(new Thread(this::save));
+        }
+
+        Path path() {
+            return path;
         }
 
         @Override public String fontName() {
@@ -153,7 +156,7 @@ public class AppContext implements Context {
 
         private void load() {
             try {
-                for (String line : Files.readAllLines(configPath)) {
+                for (String line : Files.readAllLines(path)) {
                     var str = line.trim();
                     if (str.startsWith("#") || str.startsWith("!") || !str.contains("=")) continue;
                     var kv = str.split("=", 2);
@@ -167,7 +170,7 @@ public class AppContext implements Context {
         private void save() {
             try {
                 List<String> merged = new ArrayList<>();
-                for (String line : Files.readAllLines(configPath)) {
+                for (String line : Files.readAllLines(path)) {
                     var str = line.trim();
                     if (str.startsWith("#") || str.startsWith("!") || !str.contains("=")) {
                         merged.add(line);
@@ -182,7 +185,7 @@ public class AppContext implements Context {
                 for (var entry : map.entrySet()) {
                     merged.add(entry.getKey() + "=" + entry.getValue());
                 }
-                Files.write(configPath, merged);
+                Files.write(path, merged);
             } catch (IOException ignore) {
                 log.log(System.Logger.Level.ERROR, ignore);
             }
@@ -190,7 +193,7 @@ public class AppContext implements Context {
 
         public void clear() {
             try {
-                Files.delete(configPath);
+                Files.delete(path);
                 log.log(System.Logger.Level.INFO, "deleted config file.");
             } catch (IOException ignore) {
                 log.log(System.Logger.Level.ERROR, ignore);

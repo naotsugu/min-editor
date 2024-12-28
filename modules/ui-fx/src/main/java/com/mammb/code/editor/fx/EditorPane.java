@@ -26,10 +26,8 @@ import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.fx.Command.*;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
@@ -63,6 +61,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -90,7 +89,7 @@ public class EditorPane extends StackPane {
     private final SimpleObjectProperty<Path> filePathProperty = new SimpleObjectProperty<>(Path.of("Untitled"));
     /** The modified property. */
     private final SimpleBooleanProperty modifiedProperty = new SimpleBooleanProperty();
-    private Consumer<Path> newOpenHandler;
+    private Function<Path, EditorPane> newOpenHandler;
 
     /**
      * Constructor.
@@ -144,7 +143,7 @@ public class EditorPane extends StackPane {
         });
     }
 
-    public void setNewOpenHandler(Consumer<Path> newOpenHandler) {
+    public void setNewOpenHandler(Function<Path, EditorPane> newOpenHandler) {
         this.newOpenHandler = newOpenHandler;
     }
 
@@ -279,6 +278,7 @@ public class EditorPane extends StackPane {
             case New _             -> newEdit();
             case Palette cmd       -> showCommandPalette(cmd.initial());
             case Open cmd          -> open(Path.of(cmd.path()));
+            case Config _          -> newEdit().open(context.config().path());
             case FindAll cmd       -> model.apply(Action.findAll(cmd.str()));
             case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
             case Wrap cmd          -> model.apply(Action.wrap(cmd.width()));
@@ -379,6 +379,7 @@ public class EditorPane extends StackPane {
         }
     }
 
+
     boolean canDiscardCurrent() {
         if (model.query(Query.modified)) {
             var result = FxDialog.confirmation(getScene().getWindow(),
@@ -411,11 +412,10 @@ public class EditorPane extends StackPane {
         filePathProperty.setValue(path);
     }
 
-    private void newEdit() {
+    private EditorPane newEdit() {
         var handler = newOpenHandler;
         if (handler != null) {
-            handler.accept(null);
-            return;
+            return handler.apply(null);
         }
         Stage current = (Stage) getScene().getWindow();
         Stage stage = new Stage();
@@ -427,6 +427,7 @@ public class EditorPane extends StackPane {
         stage.setScene(scene);
         stage.setTitle(Version.appName);
         stage.show();
+        return editorPane;
     }
 
     private void showCommandPalette(Class<? extends Command> clazz) {

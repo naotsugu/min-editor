@@ -220,6 +220,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             node.setNewOpenHandler(_ -> {
                 EditorPane editorPane = new EditorPane(parent.context);
                 add(editorPane);
+                return editorPane;
             });
         }
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
