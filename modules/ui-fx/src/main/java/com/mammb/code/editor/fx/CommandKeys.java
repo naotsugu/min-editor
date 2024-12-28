@@ -62,6 +62,7 @@ public class CommandKeys {
         else if (SC_N.match(e)) return new Command.New();
         else if (SC_F.match(e)) return new Command.Palette(Command.FindAll.class);
         else if (SC_P.match(e)) return new Command.Palette(null);
+        // TODO open config
 
         else {
             if (keyInput.test(e)) {

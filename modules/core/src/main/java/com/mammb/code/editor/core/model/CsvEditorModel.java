@@ -112,7 +112,7 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void updateFontMetrics(FontMetrics fontMetrics) {
+    public void updateFonts(FontMetrics fontMetrics) {
 
     }
 
@@ -136,7 +136,7 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void inputImeComposed(String text) {
+    public void imeComposed(String text) {
 
     }
 

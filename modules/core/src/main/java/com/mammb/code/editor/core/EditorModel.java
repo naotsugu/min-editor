@@ -67,13 +67,13 @@ public interface EditorModel {
      */
     void save(Path path);
 
-    void updateFontMetrics(FontMetrics fontMetrics);
+    void updateFonts(FontMetrics fontMetrics);
 
     void imeOn();
     Optional<Loc> imeLoc();
     void imeOff();
     boolean isImeOn();
-    void inputImeComposed(String text);
+    void imeComposed(String text);
 
     Session getSession();
 

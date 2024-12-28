@@ -50,11 +50,6 @@ public class AppContext implements Context {
         return osName;
     }
 
-    @Override
-    public Clipboard clipboard() {
-        return FxClipboard.instance;
-    }
-
     /**
      * The application configuration.
      */

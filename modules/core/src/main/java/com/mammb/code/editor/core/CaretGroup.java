@@ -17,7 +17,6 @@ package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.Point.Range;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -40,7 +39,6 @@ public interface CaretGroup {
      */
     List<Point> points();
     List<Caret> carets();
-    List<Caret> carets(Comparator<? super Caret> comparator);
     List<Range> marked();
 
     /**
@@ -52,7 +50,6 @@ public interface CaretGroup {
     void at(List<Point> points);
     void add(List<Point> points);
     void toggle(Point point);
-    void normalize();
 
     /**
      * Get the count of caret.
@@ -90,27 +87,25 @@ public interface CaretGroup {
 
         @Override
         public List<Point> points() {
+            normalize();
             return carets.stream().map(Caret::flushedPoint).toList();
         }
 
         @Override
         public List<Caret> carets() {
+            normalize();
             return carets;
         }
 
         @Override
-        public List<Caret> carets(Comparator<? super Caret> comparator) {
-            return carets.stream().sorted(comparator).toList();
-        }
-
-        @Override
         public List<Range> marked() {
+            normalize();
             return carets.stream().filter(Caret::isMarked).map(Caret::markedRange).toList();
         }
 
         @Override
         public List<Range> ranges() {
-            // TODO merge overlapping ranges
+            normalize();
             return carets.stream().map(Caret::range).toList();
         }
 
@@ -122,15 +117,14 @@ public interface CaretGroup {
         @Override
         public void at(List<Point> points) {
             carets.clear();
-            points.stream().distinct()
-                .forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+            points.forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+            normalize();
         }
 
         @Override
         public void add(List<Point> points) {
-            points.stream().distinct()
-                .filter(p -> points().stream().allMatch(pp -> pp.compareTo(p) != 0))
-                .forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+            points.forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+            normalize();
         }
 
         @Override
@@ -141,7 +135,11 @@ public interface CaretGroup {
         }
 
         @Override
-        public void normalize() {
+        public int size() {
+            return carets.size();
+        }
+
+        void normalize() {
             if (carets.size() <= 1) return;
             List<Caret> merged = new ArrayList<>();
             for (Caret caret : carets.stream().sorted().toList()) {
@@ -153,12 +151,10 @@ public interface CaretGroup {
                     merged.add(caret);
                 }
             }
+            carets.clear();
+            carets.addAll(merged);
         }
 
-        @Override
-        public int size() {
-            return carets.size();
-        }
     }
 
 }

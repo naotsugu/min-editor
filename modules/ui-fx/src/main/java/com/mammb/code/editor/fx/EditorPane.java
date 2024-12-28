@@ -163,7 +163,7 @@ public class EditorPane extends StackPane {
         if (e.getEventType() == ScrollEvent.SCROLL && e.getDeltaY() != 0) {
             if (e.isShortcutDown()) {
                 draw.increaseFontSize(Math.clamp(e.getDeltaY(), -1, 1));
-                model.updateFontMetrics(draw.fontMetrics());
+                model.updateFonts(draw.fontMetrics());
             } else {
                 if (e.getDeltaY() < 0) {
                     model.scrollNext((int) Math.min(5, -e.getDeltaY()));
@@ -234,8 +234,7 @@ public class EditorPane extends StackPane {
                     // TODO replace as EditingFunctions
                     String list = stream.map(Path::toAbsolutePath)
                         .map(Path::toString).collect(Collectors.joining("\n"));
-                    model.apply(Action.input(list.isEmpty() ? dir.get().toAbsolutePath().toString() : list));
-                    draw();
+                    inputText(() -> list.isEmpty() ? dir.get().toAbsolutePath().toString() : list);
                 } catch (IOException ignore) {  }
                 return;
             }
@@ -259,12 +258,12 @@ public class EditorPane extends StackPane {
             execute(CommandKeys.of(Action.input(e.getCommitted())));
         } else if (!e.getComposed().isEmpty()) {
             if (!model.isImeOn()) model.imeOn();
-            model.inputImeComposed(e.getComposed().stream()
+            model.imeComposed(e.getComposed().stream()
                     .map(InputMethodTextRun::getText)
                     .collect(Collectors.joining()));
             model.draw(draw);
         } else {
-            model.inputImeComposed("");
+            model.imeComposed("");
             model.imeOff();
         }
         draw();
@@ -287,14 +286,20 @@ public class EditorPane extends StackPane {
             case Calc _            -> model.apply(Action.replace(EditingFunctions.toCalc, false));
             case Sort _            -> model.apply(Action.replace(EditingFunctions.sort, false));
             case Unique _          -> model.apply(Action.replace(EditingFunctions.unique, false));
-            case Pwd _             -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath).getParent())));
-            case Pwf _             -> model.apply(Action.input(stringify(() -> model.query(Query.contentPath))));
-            case Now _             -> model.apply(Action.input(stringify(LocalDateTime::now)));
-            case Today _           -> model.apply(Action.input(stringify(LocalDate::now)));
+            case Pwd _             -> inputText(() -> model.query(Query.contentPath).getParent());
+            case Pwf _             -> inputText(() -> model.query(Query.contentPath));
+            case Now _             -> inputText(LocalDateTime::now);
+            case Today _           -> inputText(LocalDate::now);
             case Filter cmd        -> { } // TODO
             case Empty _           -> { }
         }
         draw();
+    }
+
+    private void inputText(Supplier<Object> supplier) {
+        try {
+            model.apply(Action.input(supplier.get().toString()));
+        } catch (Exception ignore) { }
     }
 
     private ScreenScroll screenScroll() {
@@ -461,14 +466,6 @@ public class EditorPane extends StackPane {
 
     AppContext context() {
         return context;
-    }
-
-    private static String stringify(Supplier<Object> supplier) {
-        try {
-            return supplier.get().toString();
-        } catch (Exception e) {
-            return "";
-        }
     }
 
 }

@@ -497,7 +497,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void updateFontMetrics(FontMetrics fontMetrics) {
+    public void updateFonts(FontMetrics fontMetrics) {
         screenLayout.updateFontMetrics(fontMetrics);
     }
 
@@ -528,7 +528,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void inputImeComposed(String text) {
+    public void imeComposed(String text) {
         Caret caret = carets.getFirst();
         content.clearFlush();
         var pos = content.insertFlush(caret.point(), text);

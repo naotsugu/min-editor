@@ -33,13 +33,11 @@ public interface Context {
      */
     String osName();
 
-    /**
-     * Get the clipboard.
-     * @return the clipboard
-     */
-    Clipboard clipboard();
+    // TODO recent file with session
 
     interface Config {
+        // TODO config font
+        // TODO config color
         String fontName();
         double fontSize();
         void fontSize(double fontSize);
