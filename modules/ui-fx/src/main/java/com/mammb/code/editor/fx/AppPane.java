@@ -19,7 +19,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /**
- * The application pane.
+ * The application main pane.
  * @author Naotsugu Kobayashi
  */
 public class AppPane extends BorderPane {

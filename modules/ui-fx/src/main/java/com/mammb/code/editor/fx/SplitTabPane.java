@@ -99,6 +99,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         this.parent = parent;
         node.setParent(this);
     }
+    // TODO double-click in the tab area to open a new tab
     private DndTabPane add(EditorPane node) {
         pane.getItems().clear();
         DndTabPane dndTabPane = new DndTabPane(this, node);
@@ -327,6 +328,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             e.consume();
         }
         private void handleDragDropped(DragEvent e) {
+            // TODO if dropped outside window, open a new window
             var db = e.getDragboard();
             if (db.hasFiles() && dropPoint(this, e) == DropPoint.HEADER) {
                 var path = db.getFiles().stream().map(File::toPath)

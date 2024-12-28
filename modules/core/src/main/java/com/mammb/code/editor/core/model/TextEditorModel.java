@@ -182,11 +182,12 @@ public class TextEditorModel implements EditorModel {
             c.markIf(withSelect);
             var text = screenLayout.rowTextAt(c.row());
             if (text == null) continue;
-            int next = text.indexRight(c.col());
-            if (next <= 0) {
-                c.at(Math.min(screenLayout.rowSize() - 1, c.row() + 1), 0);
+            int nextCol = text.indexRight(c.col());
+            if (nextCol <= 0) {
+                int nextRow = Math.min(screenLayout.rowSize() - 1, c.row() + 1);
+                c.at(nextRow, 0);
             } else {
-                c.at(c.row(), next);
+                c.at(c.row(), nextCol);
             }
         }
         scrollToCaretX();
@@ -564,7 +565,7 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void apply(Action action) {
 
-        if (isImeOn()) return;
+        if (isImeOn() || action.isEmpty()) return;
 
         switch (action) {
             case Input a     -> input(a.attr());
@@ -605,7 +606,7 @@ public class TextEditorModel implements EditorModel {
             case Empty a      -> { }
         }
         switch (action) {
-            case Empty _, Escape _ -> {}
+            case Escape _ -> {}
             default -> scrollToCaretY();
         }
         actionHistory.offer(action);

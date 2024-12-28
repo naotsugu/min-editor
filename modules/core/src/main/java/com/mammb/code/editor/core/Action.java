@@ -34,6 +34,10 @@ public sealed interface Action
      */
     long occurredAt();
 
+    default boolean isEmpty() {
+        return false;
+    }
+
     interface WithAttr<T> {
         T attr();
     }
@@ -44,7 +48,7 @@ public sealed interface Action
     }
 
     static Action empty() {
-        return new Empty(System.currentTimeMillis());
+        return new Empty(0);
     }
     static Action input(String string) {
         return new Input(string, System.currentTimeMillis());

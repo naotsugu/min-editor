@@ -55,6 +55,8 @@ public sealed interface Command {
     record Pwf() implements Command {}
     record Today() implements Command {}
     record Now() implements Command {}
+    // TODO convert dec to hex to bin to ..
+    // TODO find next, find prev
 
     record FindAll(String str) implements Command, RequireArgs1<String> { }
     record GoTo(Integer rowNumber) implements Command, RequireArgs1<Integer> { }

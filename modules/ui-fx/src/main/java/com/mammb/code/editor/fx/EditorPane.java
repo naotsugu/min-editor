@@ -385,6 +385,7 @@ public class EditorPane extends StackPane {
     }
 
     private void save() {
+        // TODO saving large files runs in the background
         if (model.path().isPresent()) {
             model.save(model.path().get());
         } else {
