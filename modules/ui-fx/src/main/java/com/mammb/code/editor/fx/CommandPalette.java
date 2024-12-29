@@ -76,7 +76,7 @@ public class CommandPalette extends Dialog<Command> {
 
         var bounds = node.localToScreen(node.getBoundsInLocal());
         var width = Math.max(bounds.getWidth() * 2 / 3, 300);
-        setOnShowing(e -> {
+        setOnShowing(_ -> {
             setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
             setY(bounds.getMinY() + bounds.getHeight() * 1 / 5);
         });

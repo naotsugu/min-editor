@@ -149,8 +149,8 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void scrollToCaretY() {
-        Caret caret = carets.getFirst();
-        int line = screenLayout.rowToLine(caret.row(), caret.col());
+        Caret c = carets.getFirst();
+        int line = screenLayout.rowToLine(c.row(), c.col());
         if (line - screenLayout.topLine() < 0) {
             screenLayout.scrollAt(line);
         } else if (line - (screenLayout.topLine() + screenLayout.screenLineSize() - 3) > 0) {
@@ -160,9 +160,9 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void scrollToCaretX() {
-        Caret caret = carets.getFirst();
-        int line = screenLayout.rowToLine(caret.row(), caret.col());
-        double caretX = screenLayout.xOnLayout(line, caret.col());
+        Caret c = carets.getFirst();
+        int line = screenLayout.rowToLine(c.row(), c.col());
+        double caretX = screenLayout.xOnLayout(line, c.col());
         double left = screenLayout.xShift();
         double right = left + screenLayout.screenWidth();
         double gap = screenLayout.standardCharWidth();
@@ -302,10 +302,10 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void ctrlClick(double x, double y) {
         if (x < marginLeft) {
-            Caret caret = carets.unique();
+            Caret c = carets.unique();
             int clickLine = screenLayout.yToLineOnScreen(y - marginTop);
-            int caretLine = screenLayout.rowToLine(caret.row(), caret.col());
-            double caretX = screenLayout.xOnLayout(caretLine, caret.col());
+            int caretLine = screenLayout.rowToLine(c.row(), c.col());
+            double caretX = screenLayout.xOnLayout(caretLine, c.col());
             if (clickLine == caretLine) return;
             var stream = (clickLine < caretLine)
                     ? IntStream.rangeClosed(clickLine, caretLine - 1)
@@ -354,9 +354,9 @@ public class TextEditorModel implements EditorModel {
         int line = screenLayout.yToLineOnScreen(y - marginTop);
         int row = screenLayout.lineToRow(line);
         int col = screenLayout.xToCol(line, x - marginLeft);
-        Caret caret = carets.getFirst();
-        caret.floatAt(row, col);
-        caret.markIf(true);
+        Caret c = carets.getFirst();
+        c.floatAt(row, col);
+        c.markIf(true);
     }
 
     @Override
@@ -366,13 +366,13 @@ public class TextEditorModel implements EditorModel {
 
     void input(String text) {
         if (carets.size() == 1) {
-            Caret caret = carets.getFirst();
-            if (caret.isMarked()) {
-                selectionReplace(caret, text);
+            Caret c = carets.getFirst();
+            if (c.isMarked()) {
+                selectionReplace(c, text);
             } else {
-                var pos = content.insert(caret.point(), text);
-                screenLayout.refreshBuffer(caret.row(), pos.row() + 1);
-                caret.at(pos);
+                var pos = content.insert(c.point(), text);
+                screenLayout.refreshBuffer(c.row(), pos.row() + 1);
+                c.at(pos);
             }
         } else {
             if (carets.hasMarked()) {
@@ -386,12 +386,12 @@ public class TextEditorModel implements EditorModel {
 
     void delete() {
         if (carets.size() == 1) {
-            Caret caret = carets.getFirst();
-            if (caret.isMarked()) {
-                selectionReplace(caret, "");
+            Caret c = carets.getFirst();
+            if (c.isMarked()) {
+                selectionReplace(c, "");
             } else {
-                var del = content.delete(caret.point());
-                screenLayout.refreshBuffer(caret.row(), caret.row() + 1);
+                var del = content.delete(c.point());
+                screenLayout.refreshBuffer(c.row(), c.row() + 1);
             }
         } else {
             if (carets.hasMarked()) {
@@ -405,13 +405,13 @@ public class TextEditorModel implements EditorModel {
 
     void backspace() {
         if (carets.size() == 1) {
-            Caret caret = carets.getFirst();
-            if (caret.isMarked()) {
-                selectionReplace(caret, "");
+            Caret c = carets.getFirst();
+            if (c.isMarked()) {
+                selectionReplace(c, "");
             } else {
-                var pos = content.backspace(caret.point());
-                screenLayout.refreshBuffer(pos.row(), caret.row() + 1);
-                caret.at(pos);
+                var pos = content.backspace(c.point());
+                screenLayout.refreshBuffer(pos.row(), c.row() + 1);
+                c.at(pos);
             }
         } else {
             if (carets.hasMarked()) {
@@ -430,12 +430,12 @@ public class TextEditorModel implements EditorModel {
         if (keepSelection) {
             List<Caret> caretList = carets.carets();
             for (int i = 0; i < caretList.size(); i++) {
-                Caret caret = caretList.get(i);
+                Caret c = caretList.get(i);
                 Range range = ranges.get(i);
                 if (range.isAsc()) {
-                    caret.markTo(range.start(), range.end());
+                    c.markTo(range.start(), range.end());
                 } else {
-                    caret.markTo(range.end(), range.start());
+                    c.markTo(range.end(), range.start());
                 }
             }
         } else {
@@ -503,14 +503,14 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void imeOn() {
-        Caret caret = carets.getFirst();
-        caret.imeFlushAt(caret.point());
+        Caret c = carets.getFirst();
+        c.imeFlushAt(c.point());
     }
 
     @Override
     public Optional<Loc> imeLoc() {
-        Caret caret = carets.getFirst();
-        return screenLayout.locationOn(caret.row(), caret.col())
+        Caret c = carets.getFirst();
+        return screenLayout.locationOn(c.row(), c.col())
             .map(top -> new Loc(
                 top.x() + marginLeft,
                 top.y() + marginTop + screenLayout.lineHeight() + 5));
@@ -529,11 +529,11 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void imeComposed(String text) {
-        Caret caret = carets.getFirst();
+        Caret c = carets.getFirst();
         content.clearFlush();
-        var pos = content.insertFlush(caret.point(), text);
-        screenLayout.refreshBuffer(caret.row(), pos.row() + 1);
-        caret.imeFlushAt(pos);
+        var pos = content.insertFlush(c.point(), text);
+        screenLayout.refreshBuffer(c.row(), pos.row() + 1);
+        c.imeFlushAt(pos);
     }
 
     void findAll(String text) {
@@ -548,7 +548,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session getSession() {
-        return new SessionRecord(
+        return new Session.SessionRecord(
             content.path().orElse(null),
             content.path().map(p -> {
                 try {
@@ -616,8 +616,8 @@ public class TextEditorModel implements EditorModel {
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
-            case QueryRecords.CaretPoint q -> (R) carets.getFirst().point();
-            case QueryRecords.WidthAsCharacters q -> (R) Integer.valueOf(screenLayout.screenColSize());
+            case QueryRecords.CaretPoint _ -> (R) carets.getFirst().point();
+            case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
             case null -> null;
             default -> content.query(query);
         };

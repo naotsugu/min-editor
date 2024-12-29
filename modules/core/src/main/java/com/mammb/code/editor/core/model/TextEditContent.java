@@ -219,12 +219,12 @@ public class TextEditContent implements Content {
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
-            case RowEndingSymbol q -> (R) edit.rowEnding().toString();
-            case CharsetSymbol q -> (R) edit.charset().toString();
-            case Modified q -> (R) (Boolean) isModified();
-            case Bom q -> (R) edit.bom();
-            case ContentPath q -> (R) edit.path();
-            default -> null;
+            case RowEndingSymbol _ -> (R) edit.rowEnding().toString();
+            case CharsetSymbol _   -> (R) edit.charset().displayName();
+            case Modified _        -> (R) (Boolean) isModified();
+            case Bom _             -> (R) edit.bom();
+            case ContentPath _     -> (R) edit.path();
+            default                -> null;
         };
     }
 

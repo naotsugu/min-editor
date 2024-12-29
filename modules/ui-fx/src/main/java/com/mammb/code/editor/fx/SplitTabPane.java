@@ -79,9 +79,10 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
     public boolean close() {
         for (Tab tab : contents) {
+            // check unsaved tabs
             if (tab.getContent() instanceof  EditorPane editorPane) {
                 tab.getTabPane().getSelectionModel().select(tab);
-                if (!editorPane.canDiscardCurrent()) {
+                if (!editorPane.canDiscard()) {
                     return false;
                 }
             }
@@ -254,7 +255,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             if (maybeTab instanceof Tab tab) {
                 var maybeEditorPane = tab.getContent();
                 if (maybeEditorPane instanceof EditorPane editorPane) {
-                    if (!editorPane.canDiscardCurrent()) {
+                    if (!editorPane.canDiscard()) {
                         e.consume();
                     }
                     parent.contents.remove(tab);

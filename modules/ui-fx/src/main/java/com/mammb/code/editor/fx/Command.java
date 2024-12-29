@@ -57,8 +57,11 @@ public sealed interface Command {
     record Today() implements Command {}
     record Now() implements Command {}
 
+    record Backward() implements Command {}
+    record Forward() implements Command {}
     record ZoomIn() implements Command {}
     record ZoomOut() implements Command {}
+    record Help() implements Command {}
 
     // TODO convert dec to hex to bin to ..
     // TODO find next, find prev

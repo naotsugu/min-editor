@@ -22,6 +22,8 @@ import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Action;
+import com.mammb.code.editor.core.Session;
+import com.mammb.code.editor.core.Session.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.fx.Command.*;
 import javafx.beans.property.ReadOnlyBooleanProperty;
@@ -84,6 +86,8 @@ public class EditorPane extends StackPane {
     private final ScrollBar hScroll = new ScrollBar();
     /** The float bar. */
     private final FloatBar floatBar = new FloatBar(vScroll, hScroll);
+    /** The session history. */
+    private final SessionHistory sessionHistory = new SessionHistory();
     /** The file path property. */
     private final SimpleObjectProperty<Path> filePathProperty = new SimpleObjectProperty<>(Path.of("Untitled"));
     /** The modified property. */
@@ -221,10 +225,10 @@ public class EditorPane extends StackPane {
             var path = board.getFiles().stream().map(File::toPath)
                     .filter(Files::isReadable).filter(Files::isRegularFile).findFirst();
             if (path.isPresent()) {
-                if (!canDiscardCurrent()) return;
+                if (!canDiscard()) return;
                 e.setDropCompleted(true);
                 e.consume();
-                open(path.get());
+                open(Session.of(path.get()));
                 draw();
                 return;
             }
@@ -280,8 +284,8 @@ public class EditorPane extends StackPane {
             case SaveAs _          -> saveAs();
             case New _             -> newEdit();
             case Palette cmd       -> showCommandPalette(cmd.initial());
-            case Open cmd          -> open(Path.of(cmd.path()));
-            case Config _          -> newEdit().open(context.config().path());
+            case Open cmd          -> open(Session.of(Path.of(cmd.path())));
+            case Config _          -> newEdit().open(Session.of(context.config().path()));
             case FindAll cmd       -> model.apply(Action.findAll(cmd.str()));
             case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
             case Wrap cmd          -> model.apply(Action.wrap(cmd.width()));
@@ -294,9 +298,12 @@ public class EditorPane extends StackPane {
             case Pwf _             -> inputText(() -> model.query(Query.contentPath));
             case Now _             -> inputText(LocalDateTime::now);
             case Today _           -> inputText(LocalDate::now);
+            case Forward _         -> sessionHistory.forward().ifPresent(this::open);
+            case Backward _        -> sessionHistory.backward().ifPresent(this::open);
             case ZoomIn _          -> zoom( 1);
             case ZoomOut _         -> zoom(-1);
-            case Filter cmd        -> { } // TODO
+            case Help _            -> FxDialog.about(getScene().getWindow()).showAndWait();
+            case Filter cmd        -> { } // TODO impl
             case Empty _           -> { }
         }
         draw();
@@ -343,7 +350,7 @@ public class EditorPane extends StackPane {
     }
 
     private void openWithChooser() {
-        if (!canDiscardCurrent()) return;
+        if (!canDiscard()) return;
         FileChooser fc = new FileChooser();
         fc.setTitle("Select file...");
         if (model.path().isPresent()) {
@@ -354,22 +361,23 @@ public class EditorPane extends StackPane {
         }
         File file = fc.showOpenDialog(getScene().getWindow());
         if (file == null) return;
-        open(file.toPath());
+        open(Session.of(file.toPath()));
     }
 
-    private void open(Path path) {
-        final long size = fileSize(path);
+    private void open(Session session) {
+        final long size = fileSize(session.path());
         boolean openInBackground = size > 2_000_000;
-        Content content = openInBackground ? Content.readOnlyPartOf(path) : Content.of(path);
+        Content content = openInBackground ? Content.readOnlyPartOf(session.path()) : Content.of(session.path());
         model = EditorModel.of(content, draw.fontMetrics(), screenScroll(), context);
         model.setSize(getWidth(), getHeight());
-        filePathProperty.setValue(path);
+        sessionHistory.push(session);
+        filePathProperty.setValue(session.path());
 
         if (openInBackground) {
             Task<Content> task = new Task<>() {
                 private final AtomicLong total = new AtomicLong(0);
                 @Override protected Content call() {
-                    return Content.of(path, bytes -> {
+                    return Content.of(session.path(), bytes -> {
                         updateProgress(total.addAndGet(bytes.length), size);
                         return !isCancelled();
                     });
@@ -378,6 +386,7 @@ public class EditorPane extends StackPane {
             task.setOnSucceeded(_ -> {
                 model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll(), context);
                 model.setSize(getWidth(), getHeight());
+                sessionHistory.push(session);
             });
             floatBar.handleProgress(task);
             new Thread(task).start();
@@ -385,14 +394,17 @@ public class EditorPane extends StackPane {
     }
 
 
-    boolean canDiscardCurrent() {
+    boolean canDiscard() {
+        boolean canDiscard = true;
         if (model.query(Query.modified)) {
-            var result = FxDialog.confirmation(getScene().getWindow(),
+            var ret = FxDialog.confirmation(getScene().getWindow(),
                     "Are you sure you want to discard your changes?").showAndWait();
-            return (result.isPresent() && result.get() == ButtonType.OK);
-        } else {
-            return true;
+            canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;
         }
+        if (canDiscard) {
+            sessionHistory.updateCurrent(model.getSession());
+        }
+        return canDiscard;
     }
 
     private void save() {
@@ -436,8 +448,7 @@ public class EditorPane extends StackPane {
     }
 
     private void showCommandPalette(Class<? extends Command> clazz) {
-        var cp = new CommandPalette(this, clazz);
-        cp.showAndWait().ifPresent(this::execute);
+        new CommandPalette(this, clazz).showAndWait().ifPresent(this::execute);
     }
 
     private InputMethodRequests inputMethodRequests() {

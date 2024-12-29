@@ -46,7 +46,7 @@ public class CommandKeys {
         else if (e.getCode() == ESCAPE) return of(Action.escape());
         else if (e.getCode() == DELETE) return of(Action.delete());
         else if (e.getCode() == BACK_SPACE) return of(Action.backspace());
-        else if (e.getCode() == F1) return of(Action.empty()); // TODO show help
+        else if (e.getCode() == F1) return new Command.Help();
 
         else if (SC_C.match(e)) return of(Action.copy(FxClipboard.instance));
         else if (SC_V.match(e)) return of(Action.paste(FxClipboard.instance));
@@ -65,6 +65,8 @@ public class CommandKeys {
         else if (SC_COMMA.match(e)) return new Command.Config();
         else if (SC_PLUS.match(e)) return new Command.ZoomIn();
         else if (SC_MINUS.match(e)) return new Command.ZoomOut();
+        else if (SC_FW.match(e)) return new Command.Forward();
+        else if (SC_BW.match(e)) return new Command.Backward();
 
         else {
             if (keyInput.test(e)) {
@@ -110,6 +112,8 @@ public class CommandKeys {
     private static final KeyCombination SC_COMMA = new KeyCharacterCombination(",", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_PLUS = new KeyCharacterCombination("+", KeyCombination.SHORTCUT_DOWN);
     private static final KeyCombination SC_MINUS = new KeyCharacterCombination("-", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_FW = new KeyCharacterCombination("]", KeyCombination.SHORTCUT_DOWN);
+    private static final KeyCombination SC_BW = new KeyCharacterCombination("[", KeyCombination.SHORTCUT_DOWN);
 
 
     private static final Predicate<KeyEvent> controlKeysFilter = e ->
