@@ -44,6 +44,7 @@ public interface EditorModel {
     }
 
     void draw(Draw draw);
+    void init(Session session);
     void setSize(double width, double height);
     void scrollNext(int delta);
     void scrollPrev(int delta);

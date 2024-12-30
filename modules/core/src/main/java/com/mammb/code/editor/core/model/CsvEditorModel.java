@@ -37,6 +37,11 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
+    public void init(Session session) {
+
+    }
+
+    @Override
     public void setSize(double width, double height) {
 
     }

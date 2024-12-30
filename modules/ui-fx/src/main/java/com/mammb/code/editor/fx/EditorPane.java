@@ -288,7 +288,7 @@ public class EditorPane extends StackPane {
             case Config _          -> newEdit().open(Session.of(context.config().path()));
             case FindAll cmd       -> model.apply(Action.findAll(cmd.str()));
             case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
-            case Wrap cmd          -> model.apply(Action.wrapLine(cmd.width()));
+            case WrapLine cmd      -> model.apply(Action.wrapLine(cmd.width()));
             case ToLowerCase _     -> model.apply(Action.replace(EditingFunctions.toLower, true));
             case ToUpperCase _     -> model.apply(Action.replace(EditingFunctions.toUpper, true));
             case Calc _            -> model.apply(Action.replace(EditingFunctions.toCalc, false));
@@ -367,9 +367,12 @@ public class EditorPane extends StackPane {
     private void open(Session session) {
         final long size = fileSize(session.path());
         boolean openInBackground = size > 2_000_000;
-        Content content = openInBackground ? Content.readOnlyPartOf(session.path()) : Content.of(session.path());
+        Content content = openInBackground
+            ? Content.readOnlyPartOf(session.path())
+            : Content.of(session.path());
         model = EditorModel.of(content, draw.fontMetrics(), screenScroll(), context);
         model.setSize(getWidth(), getHeight());
+
         sessionHistory.push(session);
         filePathProperty.setValue(session.path());
 

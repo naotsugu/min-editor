@@ -69,7 +69,7 @@ public sealed interface Command {
     record FindAll(String str) implements Command, RequireArgs1<String> { }
     record GoTo(Integer rowNumber) implements Command, RequireArgs1<Integer> { }
     record Filter(String str) implements Command, RequireArgs1<String> { }
-    record Wrap(Integer width) implements Command, RequireArgs1<Integer> { }
+    record WrapLine(Integer width) implements Command, RequireArgs1<Integer> { }
     record Open(String path) implements Command, RequireArgs1<String> { }
 
     static String promptText(Class<? extends Command> clazz) {
@@ -82,7 +82,7 @@ public sealed interface Command {
         if (Filter.class.isAssignableFrom(clazz)) {
             return "enter a regexp string to filter";
         }
-        if (Wrap.class.isAssignableFrom(clazz)) {
+        if (WrapLine.class.isAssignableFrom(clazz)) {
             return "enter a wrap width(number of characters)";
         }
         return "";
