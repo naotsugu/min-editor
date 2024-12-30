@@ -94,6 +94,13 @@ public class TextEditorModel implements EditorModel {
         this.ctx = ctx;
     }
 
+    public TextEditorModel(Session session, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx) {
+        this(session.hasPath() ? Content.of(session.path()) : Content.of(), fm, syntax, scroll, ctx);
+        wrap(session.lineWidth());
+        scrollAt(session.topLine()); // TODO init decorate
+        carets.getFirst().at(session.caretRow(), session.caretCol());
+    }
+
     @Override
     public void draw(Draw draw) {
         screenLayout.applyScreenScroll(scroll);
@@ -103,11 +110,6 @@ public class TextEditorModel implements EditorModel {
         drawMap(draw);
         if (caretVisible) drawCaret(draw);
         drawLeftGarter(draw);
-    }
-
-    @Override
-    public void init(Session session) {
-
     }
 
     @Override

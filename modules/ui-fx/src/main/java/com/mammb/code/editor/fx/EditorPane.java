@@ -284,8 +284,8 @@ public class EditorPane extends StackPane {
             case SaveAs _          -> saveAs();
             case New _             -> newEdit();
             case Palette cmd       -> showCommandPalette(cmd.initial());
-            case Open cmd          -> open(Session.of(Path.of(cmd.path())));
-            case Config _          -> newEdit().open(Session.of(context.config().path()));
+            case Open cmd          -> open(Session.of(Path.of(cmd.path()))); // TODO can canDiscard
+            case Config _          -> newEdit().open(Session.of(context.config().path())); // TODO can canDiscard
             case FindAll cmd       -> model.apply(Action.findAll(cmd.str()));
             case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd      -> model.apply(Action.wrapLine(cmd.width()));
@@ -365,15 +365,17 @@ public class EditorPane extends StackPane {
     }
 
     private void open(Session session) {
+
         final long size = fileSize(session.path());
         boolean openInBackground = size > 2_000_000;
-        Content content = openInBackground
-            ? Content.readOnlyPartOf(session.path())
-            : Content.of(session.path());
-        model = EditorModel.of(content, draw.fontMetrics(), screenScroll(), context);
-        model.setSize(getWidth(), getHeight());
 
-        sessionHistory.push(session);
+        // save previous session
+        sessionHistory.push(model.getSession());
+
+        model = openInBackground
+            ? EditorModel.of(Content.readOnlyPartOf(session.path()), draw.fontMetrics(), screenScroll(), context)
+            : EditorModel.of(session, draw.fontMetrics(), screenScroll(), context);
+        model.setSize(getWidth(), getHeight());
         filePathProperty.setValue(session.path());
 
         if (openInBackground) {
@@ -389,7 +391,6 @@ public class EditorPane extends StackPane {
             task.setOnSucceeded(_ -> {
                 model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll(), context);
                 model.setSize(getWidth(), getHeight());
-                sessionHistory.push(session);
             });
             floatBar.handleProgress(task);
             new Thread(task).start();
@@ -403,9 +404,6 @@ public class EditorPane extends StackPane {
             var ret = FxDialog.confirmation(getScene().getWindow(),
                     "Are you sure you want to discard your changes?").showAndWait();
             canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;
-        }
-        if (canDiscard) {
-            sessionHistory.updateCurrent(model.getSession());
         }
         return canDiscard;
     }

@@ -122,37 +122,35 @@ public interface Session {
         /** The forward queue. */
         private final Deque<Session> right = new ArrayDeque<>();
 
-        public void push(Session session) {
-            if (session.hasPath() && (left.isEmpty() || !Objects.equals(left.peek().path(), session.path()))) {
-                left.push(session);
-                right.clear();
-            }
-        }
+        private Deque<Session> select;
 
-        public void updateCurrent(Session session) {
+        public void push(Session session) {
             if (!session.hasPath()) return;
-            if (!left.isEmpty() && Objects.equals(left.peek().path(), session.path())) {
-                left.remove();
+            boolean clearForward = (select == null);
+            Deque<Session> sel = clearForward ? left : select;
+            select = null;
+            if (sel.isEmpty() || !Objects.equals(sel.peek().path(), session.path())) {
+                sel.push(session);
+                if (clearForward) {
+                    right.clear();
+                }
             }
-            left.push(session);
         }
 
         public Optional<Session> backward() {
-            if (left.size() < 2) {
+            if (left.isEmpty()) {
                 return Optional.empty();
             }
-            right.add(left.poll());
-            Session s = left.peek();
-            return (s != null && s.existsFile()) ? Optional.of(s) : backward();
+            select = right;
+            return Optional.of(left.pop());
         }
 
         public Optional<Session> forward() {
             if (right.isEmpty()) {
                 return Optional.empty();
             }
-            left.push(right.pollLast());
-            Session s = left.peek();
-            return (s != null && s.existsFile()) ? Optional.of(s) : forward();
+            select = left;
+            return Optional.of(right.pop());
         }
 
     }
