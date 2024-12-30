@@ -58,6 +58,18 @@ public interface LineLayout {
      */
     double lineHeight();
 
+    /**
+     * Set the width of line wrap characters.
+     * @param width the number of characters per line
+     */
+    void setLineWidth(int width);
+
+    /**
+     * Get the width of line wrap characters.
+     * @return the width of line wrap characters
+     */
+    int lineWidth();
+
     int homeColOnRow(int line);
     default int endColOnRow(int line) {
         return homeColOnRow(line) + text(line).textLength();

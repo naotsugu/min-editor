@@ -490,10 +490,13 @@ public class TextEditorModel implements EditorModel {
         decorate.clear();
     }
 
+    /**
+     * Set the width of line wrap characters.
+     */
     void wrap(int width) {
         carets.unique().at(0, 0);
         decorate.clear();
-        screenLayout.wrapWith(width);
+        screenLayout.setLineWidth(width);
     }
 
     @Override
@@ -557,6 +560,8 @@ public class TextEditorModel implements EditorModel {
                     return null;
                 }
             }).orElse(null),
+            screenLayout.topLine(),
+            screenLayout.lineWidth(),
             carets.getFirst().row(),
             carets.getFirst().col(),
             System.currentTimeMillis());
@@ -596,7 +601,7 @@ public class TextEditorModel implements EditorModel {
             case Cut a        -> cutToClipboard(a.attr());
             case Paste a      -> pasteFromClipboard(a.attr());
             case SelectAll _  -> selectAll();
-            case Wrap a       -> wrap(a.attr() == 0 ? screenLayout.screenColSize() - 2 : a.attr());
+            case WrapLine a       -> wrap(a.attr() == 0 ? screenLayout.screenColSize() - 2 : a.attr());
             case Goto a       -> moveTo(a.attr());
             case FindAll a    -> findAll(a.attr());
             case Escape _     -> escape();

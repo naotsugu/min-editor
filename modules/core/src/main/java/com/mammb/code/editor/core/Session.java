@@ -42,6 +42,18 @@ public interface Session {
     FileTime lastModifiedTime();
 
     /**
+     * The line number at the top of the screen.
+     * @return line number at the top of the screen
+     */
+    int topLine();
+
+    /**
+     * The width of line wrap characters.
+     * @return the width of line wrap characters
+     */
+    int lineWidth();
+
+    /**
      * Get the row index at the caret(zero-origin).
      * @return the row index at the caret
      */
@@ -71,10 +83,10 @@ public interface Session {
     static Session of(Path path) {
         if (path != null && Files.exists(path)) {
             try {
-                return new SessionRecord(path, Files.getLastModifiedTime(path), 0, 0, System.currentTimeMillis());
+                return new SessionRecord(path, Files.getLastModifiedTime(path), 0, 0, 0, 0, System.currentTimeMillis());
             } catch (Exception e) { throw new RuntimeException(e); }
         } else {
-            return new SessionRecord(null, null, 0, 0, System.currentTimeMillis());
+            return new SessionRecord(null, null, 0, 0, 0, 0, System.currentTimeMillis());
         }
     }
 
@@ -82,6 +94,8 @@ public interface Session {
      * The SessionRecord.
      * @param path the path
      * @param lastModifiedTime the last modified time
+     * @param topLine the line number at the top of the screen
+     * @param lineWidth the width of line wrap characters
      * @param caretRow the row index at the caret
      * @param caretCol the column index at the caret
      * @param timestamp the timestamp of this session
@@ -90,6 +104,8 @@ public interface Session {
     record SessionRecord(
         Path path,
         FileTime lastModifiedTime,
+        int topLine,
+        int lineWidth,
         int caretRow,
         int caretCol,
         long timestamp) implements Session {

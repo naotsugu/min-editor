@@ -265,7 +265,7 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
-    public void wrapWith(int width) {
+    public void setLineWidth(int width) {
         if (width > 0 && layout.rowSize() < 50_000) { // large files are not allowed to wrap.
             if (layout instanceof RowLayout rowLayout) {
                 layout = new WrapLayout(rowLayout.getContent(), rowLayout.getFm());
@@ -273,8 +273,13 @@ class BasicScreenLayout implements ScreenLayout {
         } else if (layout instanceof WrapLayout wrapLayout) {
             layout = new RowLayout(wrapLayout.getContent(), wrapLayout.getFm());
         }
-        layout.setScreenWidth(width);
+        layout.setLineWidth(width);
         fillBuffer();
+    }
+
+    @Override
+    public int lineWidth() {
+        return layout.lineWidth();
     }
 
     @Override

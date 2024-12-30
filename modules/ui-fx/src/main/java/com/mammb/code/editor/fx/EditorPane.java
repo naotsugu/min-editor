@@ -288,7 +288,7 @@ public class EditorPane extends StackPane {
             case Config _          -> newEdit().open(Session.of(context.config().path()));
             case FindAll cmd       -> model.apply(Action.findAll(cmd.str()));
             case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
-            case Wrap cmd          -> model.apply(Action.wrap(cmd.width()));
+            case Wrap cmd          -> model.apply(Action.wrapLine(cmd.width()));
             case ToLowerCase _     -> model.apply(Action.replace(EditingFunctions.toLower, true));
             case ToUpperCase _     -> model.apply(Action.replace(EditingFunctions.toUpper, true));
             case Calc _            -> model.apply(Action.replace(EditingFunctions.toCalc, false));

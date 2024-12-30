@@ -41,7 +41,7 @@ public interface ActionRecords {
     record Repeat(long occurredAt) implements Action { }
 
     record Save(Path attr, long occurredAt) implements Action, WithAttr<Path> { }
-    record Wrap(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
+    record WrapLine(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
     record Goto(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
     record FindAll(String attr, long occurredAt) implements Action, WithAttr<String> { }
 

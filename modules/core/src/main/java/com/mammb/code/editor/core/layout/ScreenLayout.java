@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The screen layout.
+ * The screen view port layout.
  * @author Naotsugu Kobayashi
  */
 public interface ScreenLayout extends LineLayout {
@@ -47,7 +47,6 @@ public interface ScreenLayout extends LineLayout {
     double xShift();
     void applyScreenScroll(ScreenScroll screenScroll);
 
-    void wrapWith(int width);
     void updateFontMetrics(FontMetrics fontMetrics);
 
     static ScreenLayout of(Content content, FontMetrics fm) {
