@@ -284,8 +284,8 @@ public class EditorPane extends StackPane {
             case SaveAs _          -> saveAs();
             case New _             -> newEdit();
             case Palette cmd       -> showCommandPalette(cmd.initial());
-            case Open cmd          -> open(Session.of(Path.of(cmd.path()))); // TODO can canDiscard
-            case Config _          -> newEdit().open(Session.of(context.config().path())); // TODO can canDiscard
+            case Open cmd          -> open(cmd.path());
+            case Config _          -> newEdit().open(Session.of(context.config().path()));
             case FindAll cmd       -> model.apply(Action.findAll(cmd.str()));
             case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd      -> model.apply(Action.wrapLine(cmd.width()));
@@ -362,6 +362,21 @@ public class EditorPane extends StackPane {
         File file = fc.showOpenDialog(getScene().getWindow());
         if (file == null) return;
         open(Session.of(file.toPath()));
+    }
+
+    private void open(String pathString) {
+        if (!canDiscard()) return;
+        var path = Path.of(pathString);
+        if (!Files.exists(path) || !Files.isReadable(path)) return;
+        if (Files.isRegularFile(path)) {
+            open(Session.of(path));
+        } else if (Files.isDirectory(path)) {
+            try (var stream = Files.list(path)) {
+                String list = stream.map(Path::toAbsolutePath)
+                    .map(Path::toString).collect(Collectors.joining("\n"));
+                newEdit().inputText(() -> list.isEmpty() ? path.toAbsolutePath().toString() : list);
+            } catch (IOException ignore) {  }
+        }
     }
 
     private void open(Session session) {
