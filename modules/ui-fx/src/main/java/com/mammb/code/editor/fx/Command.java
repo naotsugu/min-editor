@@ -93,7 +93,7 @@ public sealed interface Command {
         var permitted = (Class<? extends Command>[]) Command.class.getPermittedSubclasses();
         return Arrays.stream(permitted)
             .filter(not(Hidden.class::isAssignableFrom))
-            .collect(Collectors.toMap(Class::getSimpleName, UnaryOperator.identity(), (e1, e2) -> e2));
+            .collect(Collectors.toMap(Class::getSimpleName, UnaryOperator.identity(), (_, e2) -> e2));
     }
 
     static Command newInstance(Class<? extends Command> clazz, String... args) {
@@ -115,7 +115,9 @@ public sealed interface Command {
                     .filter(Class.class::isInstance)
                     .map(Class.class::cast)
                     .findFirst().get();
-                Object argObj = argType.getMethod("valueOf", String.class).invoke(null, args[0]);
+                Object argObj = String.class.isAssignableFrom(argType)
+                    ? args[0]
+                    : argType.getMethod("valueOf", String.class).invoke(null, args[0]);
                 Constructor<? extends Command> constructor = clazz.getConstructor(argType);
                 return constructor.newInstance(argType.cast(argObj));
             } catch (Exception ignore) {

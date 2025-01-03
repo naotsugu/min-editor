@@ -31,7 +31,13 @@ import java.util.Set;
  */
 public interface Decorate {
 
+    /**
+     * Applies a style to the specified text.
+     * @param text the text
+     * @return list of style span
+     */
     List<StyleSpan> apply(Text text);
+
     void addHighlights(int row, StyleSpan span);
     void clear();
     Set<Integer> highlightsRows();
@@ -53,6 +59,8 @@ public interface Decorate {
 
         /** The syntax. */
         private final Syntax syntax;
+
+        /** The style spans keyed by row number. */
         private final Map<Integer, List<StyleSpan>> highlights = new HashMap<>();
 
         /**
@@ -72,30 +80,7 @@ public interface Decorate {
 
         @Override
         public void addHighlights(int row, StyleSpan span) {
-            highlights.computeIfAbsent(row,
-                    r -> new ArrayList<>()).add(span);
-        }
-
-        private List<StyleSpan> apply(SubText sub) {
-            List<StyleSpan> spans = new ArrayList<>();
-            for (StyleSpan span : apply(sub.row(), sub.parent().value())) {
-                if (span.offset() + span.length() <= sub.fromIndex() ||
-                        sub.toIndex() <= span.offset()) {
-                    continue;
-                }
-                spans.add(new StyleSpan(
-                        span.style(),
-                        Math.max(0, span.offset() - sub.fromIndex()),
-                        span.length()
-                ));
-            }
-            return spans;
-        }
-
-        private List<StyleSpan> apply(int row, String text) {
-            List<StyleSpan> spans = highlights.getOrDefault(row, new ArrayList<>());
-            spans.addAll(syntax.apply(row, text));
-            return spans;
+            highlights.computeIfAbsent(row, _ -> new ArrayList<>()).add(span);
         }
 
         @Override
@@ -111,6 +96,28 @@ public interface Decorate {
         @Override
         public boolean isBlockScoped() {
             return syntax.isBlockScoped();
+        }
+
+        private List<StyleSpan> apply(SubText sub) {
+            List<StyleSpan> spans = new ArrayList<>();
+            for (StyleSpan span : apply(sub.row(), sub.parent().value())) {
+                if (span.offset() + span.length() <= sub.fromIndex() ||
+                    sub.toIndex() <= span.offset()) {
+                    continue;
+                }
+                spans.add(new StyleSpan(
+                    span.style(),
+                    Math.max(0, span.offset() - sub.fromIndex()),
+                    span.length()
+                ));
+            }
+            return spans;
+        }
+
+        private List<StyleSpan> apply(int row, String text) {
+            List<StyleSpan> spans = highlights.getOrDefault(row, new ArrayList<>());
+            spans.addAll(syntax.apply(row, text));
+            return spans;
         }
 
     }

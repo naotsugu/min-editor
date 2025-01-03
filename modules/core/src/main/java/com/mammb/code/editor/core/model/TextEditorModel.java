@@ -94,6 +94,14 @@ public class TextEditorModel implements EditorModel {
         this.ctx = ctx;
     }
 
+    /**
+     * Constructor.
+     * @param session the session
+     * @param fm the font metrics
+     * @param syntax the syntax
+     * @param scroll the screen scroll
+     * @param ctx the context
+     */
     public TextEditorModel(Session session, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx) {
         this(session.hasPath() ? Content.of(session.path()) : Content.of(), fm, syntax, scroll, ctx);
         wrap(session.lineWidth());
