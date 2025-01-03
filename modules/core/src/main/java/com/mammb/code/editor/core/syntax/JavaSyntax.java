@@ -35,8 +35,8 @@ public class JavaSyntax implements Syntax {
         return,transient,catch,extends,int,short,try,char,final,interface,static,void,class,finally,long,
         strictfp,volatile,const,float,native,super,while,var,record,sealed,with,yield,to,transitive,uses
         """);
-    static final BlockType.Range blockComment = BlockType.range("/*", "*/");
-    static final BlockType.Neutral textBlock = BlockType.neutral("\"\"\"");
+    static final BlockScopes.Range blockComment = BlockType.range("/*", "*/");
+    static final BlockScopes.Neutral textBlock = BlockType.neutral("\"\"\"");
 
     private final BlockScopes scopes = new BlockScopes();
 
@@ -45,6 +45,7 @@ public class JavaSyntax implements Syntax {
     public String name() {
         return "java";
     }
+
 
     @Override
     public List<StyleSpan> apply(int row, String text) {

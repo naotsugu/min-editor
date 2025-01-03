@@ -167,7 +167,7 @@ public class LexerSource {
         return null;
     }
 
-    Style.StyleSpan readBlockClose(BlockScopes scopes, BlockScopes.BlockType.Range blockType, Style style) {
+    Style.StyleSpan readBlockClose(BlockScopes scopes, BlockScopes.Range blockType, Style style) {
         var open = rollbackPeek().peek();
         var close = nextMatch(blockType.close());
         if (close.isPresent()) {

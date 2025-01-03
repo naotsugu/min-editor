@@ -20,6 +20,7 @@ import java.util.Deque;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Function;
 
 /**
  * The block scopes.
@@ -33,15 +34,15 @@ public class BlockScopes {
         scopes.subMap(new Anchor(row, 0), new Anchor(row, Integer.MAX_VALUE)).clear();
     }
 
-    public void putOpen(int row, int col, BlockType.Range type) {
+    public void putOpen(int row, int col, Range type) {
         scopes.put(new Anchor(row, col), new StartToken(type));
     }
 
-    public void putClose(int row, int col, BlockType.Range type) {
+    public void putClose(int row, int col, Range type) {
         scopes.put(new Anchor(row, col), new EndToken(type));
     }
 
-    public void putNeutral(int row, int col, BlockType.Neutral type) {
+    public void putNeutral(int row, int col, Neutral type) {
         scopes.put(new Anchor(row, col), new OpenToken(type));
     }
 
@@ -85,20 +86,15 @@ public class BlockScopes {
     }
 
     private sealed interface Token { BlockType type(); }
-    private record OpenToken(BlockType.Neutral type) implements Token { }
-    private record StartToken(BlockType.Range type) implements Token { }
-    private record EndToken(BlockType.Range type) implements Token { }
+    private record OpenToken(Neutral type) implements Token { }
+    private record StartToken(Range type) implements Token { }
+    private record EndToken(Range type) implements Token { }
 
 
     public interface BlockType {
         String open();
         String close();
         default Object attribute() { return null; }
-        interface Neutral extends BlockType {
-            default String close() { return open(); }
-        }
-        interface Range extends BlockType { }
-
         static Neutral neutral(String open) {
             return new NeutralRecord(open);
         }
@@ -109,10 +105,13 @@ public class BlockScopes {
             record RangeRecord(String open, String close) implements Range { }
             return new RangeRecord(open, close);
         }
-
     }
+    public interface Neutral extends BlockType {
+        default String close() { return open(); }
+    }
+    public interface Range extends BlockType { }
 
-    private static class NeutralRecord implements BlockType.Neutral {
+    private static class NeutralRecord implements Neutral {
         private final String open;
         private final Object attribute;
         public NeutralRecord(String open) {

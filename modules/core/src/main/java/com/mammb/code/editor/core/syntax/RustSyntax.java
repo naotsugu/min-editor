@@ -34,7 +34,7 @@ public class RustSyntax implements Syntax {
         trait,true,type,unsafe,use,where,while,async,await,dyn,try,
         abstract,become,box,do,final,macro,override,priv,typeof,unsized,virtual,yield
         """);
-    static final BlockScopes.BlockType.Range blockComment = BlockScopes.BlockType.range("/*", "*/");
+    static final BlockScopes.Range blockComment = BlockScopes.BlockType.range("/*", "*/");
     private final BlockScopes scopes = new BlockScopes();
 
     @Override

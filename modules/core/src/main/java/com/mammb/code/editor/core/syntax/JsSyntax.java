@@ -36,7 +36,7 @@ public class JsSyntax implements Syntax {
         synchronized,this,throw,throws,transient,true,try,typeof,var,void,volatile,while,
         with,yield
         """);
-    static final BlockScopes.BlockType.Range blockComment = BlockScopes.BlockType.range("/*", "*/");
+    static final BlockScopes.Range blockComment = BlockScopes.BlockType.range("/*", "*/");
     private final BlockScopes scopes = new BlockScopes();
 
     @Override

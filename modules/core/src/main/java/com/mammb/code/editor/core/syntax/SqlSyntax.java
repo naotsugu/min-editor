@@ -17,7 +17,6 @@ package com.mammb.code.editor.core.syntax;
 
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.syntax.BlockScopes.BlockType;
-import com.mammb.code.editor.core.syntax.BlockScopes.BlockType.Range;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +35,7 @@ public class SqlSyntax implements Syntax {
         having,in,index,insert,into,is,join,key,left,like,limit,not,null,or,order,outer,
         primary,procedure,replace,right,rownum,select,set,table,top,truncate,union,unique,
         update,values,view,where""");
-    static final Range blockComment = BlockType.range("/*", "*/");
+    static final BlockScopes.Range blockComment = BlockType.range("/*", "*/");
     private final BlockScopes scopes = new BlockScopes();
 
     @Override

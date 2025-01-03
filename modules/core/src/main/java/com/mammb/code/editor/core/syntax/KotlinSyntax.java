@@ -34,8 +34,8 @@ public class KotlinSyntax implements Syntax {
             object,package,return,super,this,throw,true,try,typealias,typeof,val,var,when,while,
             by,catch,constructor,delegate,dynamic,field,file,finally,get,import,init,param,
             property,receiver,set,setparam,value,where,it""");
-    static final BlockType.Range blockComment = BlockType.range("/*", "*/");
-    static final BlockType.Neutral textBlock = BlockType.neutral("\"\"\"");
+    static final BlockScopes.Range blockComment = BlockType.range("/*", "*/");
+    static final BlockScopes.Neutral textBlock = BlockType.neutral("\"\"\"");
 
     private final BlockScopes scopes = new BlockScopes();
 
