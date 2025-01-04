@@ -60,7 +60,7 @@ public class MarkdownSyntax implements Syntax {
                     scopes.putNeutral(source.row(), s.index(), BlockType.neutral(FENCE, Syntax.of("")));
                     return spans;
                 } else {
-                    Syntax syntax = (Syntax) fence.get().attribute();
+                    Syntax syntax = (Syntax) ((BlockScopes.NeutralAttributed) fence.get()).attribute();
                     return syntax.apply(row, text);
                 }
             }

@@ -94,11 +94,11 @@ public class BlockScopes {
     public interface BlockType {
         String open();
         String close();
-        default Object attribute() { return null; }
         static Neutral neutral(String open) {
+            record NeutralRecord(String open) implements Neutral { }
             return new NeutralRecord(open);
         }
-        static Neutral neutral(String open, Syntax syntax) {
+        static NeutralAttributed neutral(String open, Syntax syntax) {
             return new NeutralRecord(open, syntax);
         }
         static Range range(String open, String close) {
@@ -109,14 +109,14 @@ public class BlockScopes {
     public interface Neutral extends BlockType {
         default String close() { return open(); }
     }
+    public interface NeutralAttributed extends Neutral {
+        Object attribute();
+    }
     public interface Range extends BlockType { }
 
-    private static class NeutralRecord implements Neutral {
+    private static class NeutralRecord implements NeutralAttributed {
         private final String open;
         private final Object attribute;
-        public NeutralRecord(String open) {
-            this(open, null);
-        }
         public NeutralRecord(String open, Syntax syntax) {
             this(open, (Object) syntax);
         }
