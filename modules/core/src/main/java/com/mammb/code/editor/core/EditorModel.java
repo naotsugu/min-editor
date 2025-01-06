@@ -61,7 +61,7 @@ public interface EditorModel {
     void scrollX(double x);
     void scrollToCaretY();
     void scrollToCaretX();
-
+    void mousePressed(double x, double y);
     void click(double x, double y, boolean withSelect);
     void ctrlClick(double x, double y);
     void clickDouble(double x, double y);

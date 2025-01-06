@@ -302,13 +302,17 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void click(double x, double y, boolean withSelect) {
-        Caret c = carets.unique();
+    public void mousePressed(double x, double y) {
+        Caret c = carets.getFirst();
         if (c.isFloating()) {
             c.clearFloat();
-            return;
         }
         c.clearMark();
+    }
+
+    @Override
+    public void click(double x, double y, boolean withSelect) {
+        Caret c = carets.unique();
         int line = screenLayout.yToLineOnScreen(y - marginTop);
         c.at(screenLayout.lineToRow(line),
             screenLayout.xToCol(line, x + (screenLayout.standardCharWidth() / 2) - marginLeft));

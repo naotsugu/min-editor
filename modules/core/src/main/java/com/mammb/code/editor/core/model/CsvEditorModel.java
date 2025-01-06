@@ -72,6 +72,11 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
+    public void mousePressed(double x, double y) {
+
+    }
+
+    @Override
     public void click(double x, double y, boolean withSelect) {
 
     }
