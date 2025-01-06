@@ -266,14 +266,19 @@ class BasicScreenLayout implements ScreenLayout {
 
     @Override
     public void setLineWidth(int width) {
-        if (width > 0 && layout.rowSize() < 50_000) { // large files are not allowed to wrap.
-            if (layout instanceof RowLayout rowLayout) {
-                layout = new WrapLayout(rowLayout.getContent(), rowLayout.getFm());
+        if (layout instanceof RowLayout rowLayout) {
+            if (layout.rowSize() > 50_000) {
+                return; // large files are not allowed to wrap.
             }
+            layout = new WrapLayout(rowLayout.getContent(), rowLayout.getFm());
+            layout.setLineWidth((width <= 0) ? screenColSize() : width);
         } else if (layout instanceof WrapLayout wrapLayout) {
-            layout = new RowLayout(wrapLayout.getContent(), wrapLayout.getFm());
+            if (width <= 0) {
+                layout = new RowLayout(wrapLayout.getContent(), wrapLayout.getFm());
+            } else {
+                layout.setLineWidth(width);
+            }
         }
-        layout.setLineWidth(width);
         fillBuffer();
     }
 

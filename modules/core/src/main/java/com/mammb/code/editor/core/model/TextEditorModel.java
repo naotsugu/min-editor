@@ -104,7 +104,7 @@ public class TextEditorModel implements EditorModel {
      */
     public TextEditorModel(Session session, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx) {
         this(session.hasPath() ? Content.of(session.path()) : Content.of(), fm, syntax, scroll, ctx);
-        wrap(session.lineWidth());
+        if (session.lineWidth() > 0) wrap(session.lineWidth());
         scrollAt(session.topLine()); // TODO init decorate
         carets.getFirst().at(session.caretRow(), session.caretCol());
     }
@@ -616,7 +616,7 @@ public class TextEditorModel implements EditorModel {
             case Cut a        -> cutToClipboard(a.attr());
             case Paste a      -> pasteFromClipboard(a.attr());
             case SelectAll _  -> selectAll();
-            case WrapLine a       -> wrap(a.attr() == 0 ? screenLayout.screenColSize() - 2 : a.attr());
+            case WrapLine a   -> wrap(a.attr());
             case Goto a       -> moveTo(a.attr());
             case FindAll a    -> findAll(a.attr());
             case Escape _     -> escape();
