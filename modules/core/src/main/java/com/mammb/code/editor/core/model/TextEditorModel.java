@@ -314,8 +314,7 @@ public class TextEditorModel implements EditorModel {
     public void click(double x, double y, boolean withSelect) {
         Caret c = carets.unique();
         int line = screenLayout.yToLineOnScreen(y - marginTop);
-        c.at(screenLayout.lineToRow(line),
-            screenLayout.xToCol(line, x + (screenLayout.standardCharWidth() / 2) - marginLeft));
+        c.at(screenLayout.lineToRow(line), screenLayout.xToMidCol(line, x - marginLeft));
     }
 
     @Override
@@ -338,7 +337,7 @@ public class TextEditorModel implements EditorModel {
             int line = screenLayout.yToLineOnScreen(y - marginTop);
             var point = Point.of(
                 screenLayout.lineToRow(line),
-                screenLayout.xToCol(line, x - marginLeft));
+                screenLayout.xToMidCol(line, x - marginLeft));
             carets.toggle(point);
         }
     }
@@ -372,7 +371,7 @@ public class TextEditorModel implements EditorModel {
     public void moveDragged(double x, double y) {
         int line = screenLayout.yToLineOnScreen(y - marginTop);
         int row = screenLayout.lineToRow(line);
-        int col = screenLayout.xToCol(line, x - marginLeft);
+        int col = screenLayout.xToMidCol(line, x - marginLeft);
         Caret c = carets.getFirst();
         c.floatAt(row, col);
         c.markIf(true);

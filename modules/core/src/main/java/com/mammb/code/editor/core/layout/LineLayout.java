@@ -77,6 +77,10 @@ public interface LineLayout {
 
     int xToCol(int line, double x);
 
+    default int xToMidCol(int line, double x) {
+        return xToCol(line, x + standardCharWidth() / 2);
+    }
+
     default double xOnLayout(int line, int col) {
         return text(line).widthTo(col);
     }
