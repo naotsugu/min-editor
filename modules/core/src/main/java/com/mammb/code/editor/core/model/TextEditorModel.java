@@ -384,7 +384,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     void input(String text) {
-        decorate.clear();
+        preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
             if (c.isMarked()) {
@@ -405,7 +405,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     void delete() {
-        decorate.clear();
+        preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
             if (c.isMarked()) {
@@ -425,7 +425,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     void backspace() {
-        decorate.clear();
+        preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
             if (c.isMarked()) {
@@ -446,7 +446,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     void replace(Function<String, String> fun, boolean keepSelection) {
-        decorate.clear();
+        preEditing();
         List<Range> ranges = content.replace(carets.ranges(), fun);
         Range rangeMin = Collections.min(ranges);
         Range rangeMax = Collections.max(ranges);
@@ -470,13 +470,13 @@ public class TextEditorModel implements EditorModel {
     }
 
     void undo() {
-        decorate.clear();
+        preEditing();
         List<Point> points = content.undo();
         refreshPointsRange(points);
     }
 
     void redo() {
-        decorate.clear();
+        preEditing();
         List<Point> points = content.redo();
         refreshPointsRange(points);
     }
@@ -655,6 +655,10 @@ public class TextEditorModel implements EditorModel {
     }
 
     // -- private -------------------------------------------------------------
+
+    private void preEditing() {
+        decorate.clear();
+    }
 
     private void drawSelection(Draw draw) {
         for (Range r : carets.marked()) {
