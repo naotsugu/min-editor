@@ -271,7 +271,7 @@ class BasicScreenLayout implements ScreenLayout {
                 return; // large files are not allowed to wrap.
             }
             layout = new WrapLayout(rowLayout.getContent(), rowLayout.getFm());
-            layout.setLineWidth((width <= 0) ? screenColSize() : width);
+            layout.setLineWidth((width <= 0) ? screenColSize() - 1 /* margin */ : width);
         } else if (layout instanceof WrapLayout wrapLayout) {
             if (width <= 0) {
                 layout = new RowLayout(wrapLayout.getContent(), wrapLayout.getFm());
