@@ -679,8 +679,7 @@ public class TextEditorModel implements EditorModel {
         double x, y = 0;
         for (Text text : screenLayout.texts()) {
             x = 0;
-            List<StyleSpan> spans = decorate.apply(text);
-            for (StyledText st : StyledText.of(text).putAll(spans).build()) {
+            for (StyledText st : StyledText.of(text, decorate.apply(text))) {
                 double px = x + marginLeft - scroll.xVal();
                 double py = y + marginTop;
                 draw.text(st.value(), px, py, st.width(), st.styles());

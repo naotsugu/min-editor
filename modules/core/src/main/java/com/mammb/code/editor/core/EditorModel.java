@@ -97,6 +97,11 @@ public interface EditorModel {
      */
     <R> R query(Query<R> query);
 
+    /**
+     * Get the extension string.
+     * @param path the path
+     * @return the extension string
+     */
     private static String extension(Path path) {
         return Optional.of(path.getFileName().toString())
                 .filter(f -> f.contains("."))

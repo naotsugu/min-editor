@@ -36,6 +36,16 @@ public interface StyledText extends Text {
     List<Style> styles();
 
     /**
+     * Create the style text list.
+     * @param text the source text
+     * @param spans the style span
+     * @return the style text list
+     */
+    static List<StyledText> of(Text text, List<StyleSpan> spans) {
+        return new Builder(text).putAll(spans).build();
+    }
+
+    /**
      * Create the style builder.
      * @param text the source text
      * @return the style builder
@@ -43,6 +53,7 @@ public interface StyledText extends Text {
     static Builder of(Text text) {
         return new Builder(text);
     }
+
 
     /**
      * The style builder.
@@ -73,9 +84,7 @@ public interface StyledText extends Text {
         }
 
         public List<StyledText> build() {
-            return (text instanceof SubText sub)
-                    ? apply(sub, sub.fromIndex(), sub.toIndex())
-                    : apply(text, 0, text.length());
+            return apply(text, 0, text.length());
         }
 
         private List<StyledText> apply(Text text, int from, int to) {
