@@ -54,13 +54,13 @@ public class CommandKeys {
         else if (SC_Z.match(e)) return of(Action.undo());
         else if (SC_Y.match(e) || SC_SZ.match(e)) return of(Action.redo());
         else if (SC_L.match(e)) return of(Action.wrapLine());
-        // TODO W to close tab
         else if (SC_A.match(e)) return of(Action.selectAll());
         else if (SC_DOT.match(e)) return of(Action.repeat());
         else if (SC_O.match(e)) return new Command.OpenChoose();
         else if (SC_S.match(e)) return new Command.Save();
         else if (SC_SA.match(e)) return new Command.SaveAs();
         else if (SC_N.match(e)) return new Command.New();
+        else if (SC_W.match(e)) return new Command.TabClose();
         else if (SC_F.match(e)) return new Command.Palette(Command.FindAll.class);
         else if (SC_P.match(e)) return new Command.Palette(null);
         else if (SC_COMMA.match(e)) return new Command.Config();

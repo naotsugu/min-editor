@@ -289,6 +289,7 @@ public class EditorPane extends StackPane {
             case Save _            -> save();
             case SaveAs _          -> saveAs();
             case New _             -> newEdit();
+            case TabClose _        -> { } // TODO impl
             case Palette cmd       -> showCommandPalette(cmd.initial());
             case Open cmd          -> open(cmd.path());
             case Config _          -> newEdit().open(Session.of(context.config().path()));
