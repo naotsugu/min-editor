@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -264,6 +264,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 }
             }
         }
+
         private void handleOnTabClosed(Event e) {
             if (tabPane.getTabs().isEmpty()) {
                 if (parent.parent == null) {
@@ -274,6 +275,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 }
             }
         }
+
         private void handleTabDragDetected(MouseEvent e) {
             if (e.getSource() instanceof Label label) {
                 Dragboard db = label.startDragAndDrop(TransferMode.MOVE);

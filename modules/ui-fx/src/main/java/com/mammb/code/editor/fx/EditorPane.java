@@ -114,7 +114,9 @@ public class EditorPane extends StackPane {
         canvas = new Canvas();
         canvas.setManaged(false);
         canvas.setFocusTraversable(true);
-        canvas.setCursor(Cursor.TEXT); // TODO
+        canvas.setOnMouseMoved(e -> {
+            canvas.setCursor(Cursor.TEXT);
+        });
 
         Font font = Font.font(context.config().fontName(), context.config().fontSize());
         draw = new FxDraw(canvas.getGraphicsContext2D(), font);
@@ -188,6 +190,7 @@ public class EditorPane extends StackPane {
             model.mousePressed(e.getX(), e.getY());
         }
     }
+
     private void handleMouseClicked(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY && e.getTarget() == canvas) {
             switch (e.getClickCount()) {
