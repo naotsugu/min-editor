@@ -93,7 +93,7 @@ public class WrapLayout implements ContentLayout {
                 .mapToObj(this::subRanges)
                 .flatMap(Collection::stream)
                 .toList();
-        var next = lines.get(start);
+        var next = (start >= lines.size()) ? null : lines.get(start);
         int n = (next == null || newLines.isEmpty())
                 ? 0
                 : (newLines.getLast().row() + 1) - next.row();
@@ -117,6 +117,9 @@ public class WrapLayout implements ContentLayout {
 
     @Override
     public SubText text(int line) {
+        if (line >= lines.size()) {
+            return SubText.of(RowText.of(lines.getLast().row + 1, "", fm), 0).getLast();
+        }
         SubRange range = lines.get(line);
         List<SubText> subs = subTextsAt(range.row());
         return subs.get(range.subLine());
