@@ -468,6 +468,18 @@ public class TextEditorModel implements EditorModel {
             rangeMax.max().row() + 1);
     }
 
+    void inputTab(boolean sc) {
+        if (carets.hasMarked()) {
+            if (sc) {
+                replace(EditingFunctions.unindent, true);
+            } else {
+                replace(EditingFunctions.indent, true);
+            }
+        } else {
+            // TODO
+        }
+    }
+
     void undo() {
         preEditing();
         List<Point> points = content.undo();
@@ -604,17 +616,7 @@ public class TextEditorModel implements EditorModel {
             case Redo _      -> redo();
             case Home a      -> moveCaretHome(a.withSelect());
             case End a       -> moveCaretEnd(a.withSelect());
-            case Tab a       -> {
-                if (carets.hasMarked()) {
-                    if (a.withSelect()) {
-                        replace(EditingFunctions.indent, true);
-                    } else {
-                        replace(EditingFunctions.unindent, true);
-                    }
-                } else {
-                    // TODO
-                }
-            }
+            case Tab a       -> inputTab(a.withSelect());
             case CaretRight a -> moveCaretRight(a.withSelect());
             case CaretLeft a  -> moveCaretLeft(a.withSelect());
             case CaretUp a    -> moveCaretUp(a.withSelect());
@@ -751,7 +753,7 @@ public class TextEditorModel implements EditorModel {
         List<Text> lineNumbers = screenLayout.lineNumbers();
         double nw = lineNumbers.stream().mapToDouble(Text::width).max().orElse(0);
         if (nw + 16 * 2 > marginLeft) {
-            double newMarginLeft = nw + 8 * 2;
+            double newMarginLeft = nw + 8 * 2; // TODO
             screenLayout.setScreenSize(screenLayout.screenWidth() + marginLeft - newMarginLeft, screenLayout.screenHeight());
         }
         draw.rect(0, 0, marginLeft - 5, screenLayout.screenHeight() + marginTop);
