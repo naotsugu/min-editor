@@ -470,13 +470,14 @@ public class TextEditorModel implements EditorModel {
 
     void inputTab(boolean sc) {
         if (carets.hasMarked()) {
-            if (sc) {
-                replace(EditingFunctions.unindent, true);
-            } else {
-                replace(EditingFunctions.indent, true);
-            }
+            replace(sc ? EditingFunctions.unindent : EditingFunctions.indent, true);
         } else {
-            // TODO
+            for (Caret c : carets.carets()) {
+                int tabSize = 4;
+                var pos = content.insert(c.point(), " ".repeat(tabSize - c.col() % tabSize));
+                screenLayout.refreshBuffer(c.row(), pos.row() + 1);
+                c.at(pos);
+            }
         }
     }
 
