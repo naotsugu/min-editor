@@ -455,9 +455,9 @@ public class TextEditorModel implements EditorModel {
                 Caret c = caretList.get(i);
                 Range range = ranges.get(i);
                 if (range.isAsc()) {
-                    c.markTo(range.start(), range.end());
-                } else {
                     c.markTo(range.end(), range.start());
+                } else {
+                    c.markTo(range.start(), range.end());
                 }
             }
         } else {
