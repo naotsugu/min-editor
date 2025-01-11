@@ -38,10 +38,22 @@ public interface Text {
      */
     String value();
 
+    /**
+     * Get the advances.
+     * @return the advances
+     */
     double[] advances();
 
+    /**
+     * Get the width.
+     * @return the width
+     */
     double width();
 
+    /**
+     * Get the height.
+     * @return the height
+     */
     double height();
 
     /**
@@ -52,16 +64,28 @@ public interface Text {
         return value().length();
     }
 
+    /**
+     * Gets whether this text is terminated by an LF.
+     * @return {@code true} if this text is terminated by an LF
+     */
     default boolean isEndWithLf() {
         int len = value().length();
         return (len > 0) && value().charAt(len - 1) == '\n';
     }
 
+    /**
+     * Get whether this text ends with a CRLF.
+     * @return {@code true} if this text is terminated by an CRLF
+     */
     default boolean isEndWithCrLf() {
         int len = value().length();
         return (len > 1) && value().charAt(len - 2) == '\r' && value().charAt(len - 1) == '\n';
     }
 
+    /**
+     * Get the number of characters excluding newline codes.
+     * @return the number of characters excluding newline codes
+     */
     default int textLength() {
         int len = value().length();
         return isEndWithCrLf() ? len - 2 : isEndWithLf() ? len - 1 : len;
@@ -71,10 +95,20 @@ public interface Text {
         return Character.isSurrogate(value().charAt(index));
     }
 
+    /**
+     * Gets whether the character at the specified index is High Surrogate or not.
+     * @param index the specified index
+     * @return {@code true} if the character at the specified index is High Surrogate
+     */
     default boolean isHighSurrogate(int index) {
         return Character.isHighSurrogate(value().charAt(index));
     }
 
+    /**
+     * Gets whether the character at the specified index is Low Surrogate or not.
+     * @param index the specified index
+     * @return {@code true} if the character at the specified index is Low Surrogate
+     */
     default boolean isLowSurrogate(int index) {
         return Character.isLowSurrogate(value().charAt(index));
     }
@@ -128,6 +162,14 @@ public interface Text {
         return ret;
     }
 
+    /**
+     * Create a new Text instance.
+     * @param row the number of row
+     * @param value the text value
+     * @param advances the advances
+     * @param height the height
+     * @return a new Text instance
+     */
     static Text of(int row, String value, double[] advances, double height) {
         record TextRecord(int row, String value, double[] advances, double width, double height) implements Text { }
         return new TextRecord(row, value, advances, Arrays.stream(advances).sum(), height);

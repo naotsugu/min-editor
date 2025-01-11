@@ -682,6 +682,7 @@ public class TextEditorModel implements EditorModel {
         double x, y = 0;
         for (Text text : screenLayout.texts()) {
             x = 0;
+            // TODO
             for (StyledText st : StyledText.of(text, decorate.apply(text))) {
                 double px = x + marginLeft - scroll.xVal();
                 double py = y + marginTop;
