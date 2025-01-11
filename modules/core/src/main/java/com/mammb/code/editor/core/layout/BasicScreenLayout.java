@@ -178,6 +178,11 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
+    public int tabSize() {
+        return layout.tabSize();
+    }
+
+    @Override
     public double xOnLayout(int line, int col) {
         return layout.xOnLayout(line, col);
     }

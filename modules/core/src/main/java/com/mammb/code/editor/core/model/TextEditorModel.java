@@ -473,7 +473,7 @@ public class TextEditorModel implements EditorModel {
             replace(sc ? EditingFunctions.unindent : EditingFunctions.indent, true);
         } else {
             for (Caret c : carets.carets()) {
-                int tabSize = 4;
+                int tabSize = screenLayout.tabSize();
                 var pos = content.insert(c.point(), " ".repeat(tabSize - c.col() % tabSize));
                 screenLayout.refreshBuffer(c.row(), pos.row() + 1);
                 c.at(pos);
@@ -686,7 +686,7 @@ public class TextEditorModel implements EditorModel {
             for (StyledText st : StyledText.of(text, decorate.apply(text))) {
                 double px = x + marginLeft - scroll.xVal();
                 double py = y + marginTop;
-                draw.text(st.value(), px, py, st.width(), st.styles());
+                draw.text(st, px, py, st.width(), st.styles());
                 for (var p : carets.points()) {
                     if (st.row() == p.row()) {
                         // draw special symbol
@@ -718,7 +718,7 @@ public class TextEditorModel implements EditorModel {
                             draw.line(Symbols.tab(
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - screenLayout.lineHeight() * 0.1,
-                                st.advances()[i] / 4,
+                                st.advances()[i] / 4, // TODO
                                 screenLayout.lineHeight(), "#80808088"));
                         }
                     }
@@ -767,7 +767,7 @@ public class TextEditorModel implements EditorModel {
                 String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
                     ? Theme.dark.fgColor()
                     : Theme.dark.fgColor() + "66";
-                draw.text(num.value(), marginLeft - 16 - num.width(), y + marginTop, num.width(),
+                draw.text(num, marginLeft - 16 - num.width(), y + marginTop, num.width(),
                     List.of(new Style.TextColor(colorString)));
             }
             prevValue = num.value();

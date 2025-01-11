@@ -191,6 +191,11 @@ public class WrapLayout implements ContentLayout {
     }
 
     @Override
+    public int tabSize() {
+        return fm.getTabSize();
+    }
+
+    @Override
     public void updateFontMetrics(FontMetrics fontMetrics) {
         fm = fontMetrics;
     }

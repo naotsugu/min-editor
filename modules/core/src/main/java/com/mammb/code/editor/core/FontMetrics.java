@@ -109,4 +109,9 @@ public interface FontMetrics {
      */
     float getAdvance(char high, char low);
 
+    /**
+     * Get the tab size.
+     * @return the tab size
+     */
+    int getTabSize();
 }

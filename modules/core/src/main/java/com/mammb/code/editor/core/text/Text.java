@@ -91,6 +91,11 @@ public interface Text {
         return isEndWithCrLf() ? len - 2 : isEndWithLf() ? len - 1 : len;
     }
 
+    /**
+     * Gets whether the character at the specified index is Surrogate or not.
+     * @param index the specified index
+     * @return {@code true} if the character at the specified index is Surrogate
+     */
     default boolean isSurrogate(int index) {
         return Character.isSurrogate(value().charAt(index));
     }

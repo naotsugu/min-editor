@@ -19,10 +19,13 @@ import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Theme;
+import com.mammb.code.editor.core.text.SubText;
+import com.mammb.code.editor.core.text.Text;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +62,8 @@ public class FxDraw implements Draw {
     }
 
     @Override
-    public void text(String text, double x, double y, double w, List<Style> styles) {
-        text = text.replace("\t", "    "); // TODO serious implementation
+    public void text(Text sourceText, double x, double y, double w, List<Style> styles) {
+        var text = formatTab(sourceText);
         var bgColor = bgColor(styles);
         if (bgColor.isPresent()) {
             var bg = bgColor.get();
@@ -191,6 +194,25 @@ public class FxDraw implements Draw {
      */
     private Color color(String name) {
         return colors.computeIfAbsent(name, Color::web);
+    }
+
+    private String formatTab(Text source) {
+        int col = (source instanceof SubText sub) ? sub.fromIndex() : 0;
+        int tabSize = fontMetrics.getTabSize();
+        var tabs = new ArrayList<String>();
+        var text = source.value();
+        for (int i = 0; i < text.length(); i++) {
+            int index = text.indexOf("\t", i);
+            if (index < 0) {
+                break;
+            }
+            tabs.add(" ".repeat(tabSize - ((col + index) % tabSize)));
+            i = index;
+        }
+        for (String tab : tabs) {
+            text = text.replaceFirst("\t", tab);
+        }
+        return text;
     }
 
 }

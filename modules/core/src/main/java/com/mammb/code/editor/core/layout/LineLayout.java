@@ -94,6 +94,12 @@ public interface LineLayout {
      */
     double standardCharWidth();
 
+    /**
+     * Get the tab size.
+     * @return the tab size
+     */
+    int tabSize();
+
     void updateFontMetrics(FontMetrics fontMetrics);
 
 }

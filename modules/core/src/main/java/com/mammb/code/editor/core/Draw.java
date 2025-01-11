@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.text.Style;
+import com.mammb.code.editor.core.text.Text;
 import java.util.List;
 
 /// The Draw.
@@ -31,7 +32,7 @@ public interface Draw {
     /// @param y the position y
     /// @param w the width
     /// @param styles the styles
-    void text(String text, double x, double y, double w, List<Style> styles);
+    void text(Text text, double x, double y, double w, List<Style> styles);
 
     /// Draw the text.
     /// @param x the position x

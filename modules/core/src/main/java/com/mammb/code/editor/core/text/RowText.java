@@ -44,7 +44,8 @@ public interface RowText extends LinedText {
                 width += advances[i] = fm.getAdvance(ch1, text.charAt(i + 1));
                 i++;
             } else if (ch1 == '\t') {
-                width += advances[i] = fm.getAdvance(" ".repeat(4));
+                int tabSize = fm.getTabSize();
+                width += advances[i] = fm.standardCharWidth() * ((tabSize - i) % tabSize);
             } else if (Character.isISOControl(ch1)) {
                 i++;
             } else {

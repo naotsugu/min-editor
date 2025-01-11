@@ -132,4 +132,9 @@ public class FxFontMetrics implements FontMetrics {
         return getAdvance(Character.toCodePoint(high, low));
     }
 
+    @Override
+    public int getTabSize() {
+        return 4;
+    }
+
 }
