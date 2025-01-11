@@ -29,8 +29,8 @@ import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Session;
-import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.Action;
+import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
@@ -718,7 +718,7 @@ public class TextEditorModel implements EditorModel {
                             draw.line(Symbols.tab(
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - screenLayout.lineHeight() * 0.1,
-                                st.advances()[i] / 4, // TODO
+                                screenLayout.standardCharWidth(),
                                 screenLayout.lineHeight(), "#80808088"));
                         }
                     }
@@ -752,11 +752,14 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void drawLeftGarter(Draw draw) {
+
         List<Text> lineNumbers = screenLayout.lineNumbers();
-        double nw = lineNumbers.stream().mapToDouble(Text::width).max().orElse(0);
-        if (nw + 16 * 2 > marginLeft) {
-            double newMarginLeft = nw + 8 * 2; // TODO
-            screenLayout.setScreenSize(screenLayout.screenWidth() + marginLeft - newMarginLeft, screenLayout.screenHeight());
+        double minWidth = 70;
+        double width = Math.max(minWidth,
+            lineNumbers.stream().mapToDouble(Text::width).max().orElse(0) + screenLayout.standardCharWidth() * 2);
+        if (marginLeft != width) {
+            screenLayout.setScreenSize(screenLayout.screenWidth() + marginLeft - width, screenLayout.screenHeight());
+            marginLeft = width;
         }
         draw.rect(0, 0, marginLeft - 5, screenLayout.screenHeight() + marginTop);
         double y = 0;
