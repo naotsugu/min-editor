@@ -62,6 +62,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -92,7 +93,10 @@ public class EditorPane extends StackPane {
     private final SimpleObjectProperty<Path> filePathProperty = new SimpleObjectProperty<>(Path.of("Untitled"));
     /** The modified property. */
     private final SimpleBooleanProperty modifiedProperty = new SimpleBooleanProperty();
+
     private Function<Path, EditorPane> newOpenHandler;
+
+    private Consumer<EditorPane> closeListener;
 
     /**
      * Constructor.
@@ -292,7 +296,7 @@ public class EditorPane extends StackPane {
             case Save _            -> save();
             case SaveAs _          -> saveAs();
             case New _             -> newEdit();
-            case TabClose _        -> { } // TODO impl
+            case TabClose _        -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd       -> showCommandPalette(cmd.initial());
             case Open cmd          -> open(cmd.path());
             case Config _          -> newEdit().open(Session.of(context.config().path()));
@@ -516,6 +520,10 @@ public class EditorPane extends StackPane {
     }
     public ReadOnlyBooleanProperty modifiedProperty() {
         return modifiedProperty;
+    }
+
+    void setCloseListener(Consumer<EditorPane> closeListener) {
+        this.closeListener = closeListener;
     }
 
 }

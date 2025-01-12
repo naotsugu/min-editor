@@ -59,7 +59,9 @@ import com.mammb.code.editor.core.model.ActionRecords.*;
  */
 public class TextEditorModel implements EditorModel {
 
+    /** The margin top. */
     private final double marginTop = 5;
+    /** The margin left(garter width). */
     private double marginLeft = 70;
     /** caretVisible?. */
     private boolean caretVisible = true;
@@ -754,13 +756,16 @@ public class TextEditorModel implements EditorModel {
     private void drawLeftGarter(Draw draw) {
 
         List<Text> lineNumbers = screenLayout.lineNumbers();
-        double minWidth = 70;
+
+        // calculate the width of the garter
+        double minWidth = screenLayout.standardCharWidth() * 8;
         double width = Math.max(minWidth,
             lineNumbers.stream().mapToDouble(Text::width).max().orElse(0) + screenLayout.standardCharWidth() * 2);
         if (marginLeft != width) {
             screenLayout.setScreenSize(screenLayout.screenWidth() + marginLeft - width, screenLayout.screenHeight());
             marginLeft = width;
         }
+
         draw.rect(0, 0, marginLeft - 5, screenLayout.screenHeight() + marginTop);
         double y = 0;
         String prevValue = "";
