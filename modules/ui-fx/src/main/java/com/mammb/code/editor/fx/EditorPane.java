@@ -151,6 +151,7 @@ public class EditorPane extends StackPane {
             model.setCaretVisible(n);
             draw();
         });
+        if (path != null) filePathProperty.setValue(path);
     }
 
     public void setNewOpenHandler(Function<Path, EditorPane> newOpenHandler) {
