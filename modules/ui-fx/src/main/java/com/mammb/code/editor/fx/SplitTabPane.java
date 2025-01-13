@@ -227,6 +227,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 label.setText(path.getFileName().toString());
                 tab.setTooltip(new Tooltip(path.toString()));
             });
+
             node.setNewOpenHandler(_ -> {
                 EditorPane editorPane = new EditorPane(parent.context);
                 add(editorPane);
@@ -511,8 +512,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         node = tabNode(node);
         var snapshotParams = new SnapshotParameters();
         snapshotParams.setFill(Color.TRANSPARENT);
-        var snapshot = node.snapshot(snapshotParams, null);
-        return snapshot;
+        return node.snapshot(snapshotParams, null);
     }
 
     private static Node tabNode(Node node) {
