@@ -45,6 +45,7 @@ public interface Syntax {
 
 
     static Syntax of(String name) {
+        if (name == null) name = "";
         return switch (name.toLowerCase()) {
             case "java" -> new JavaSyntax();
             case "md" -> new MarkdownSyntax();
