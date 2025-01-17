@@ -103,7 +103,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         this.parent = parent;
         node.setParent(this);
     }
-    // TODO double-click in the tab area to open a new tab
+
     private DndTabPane add(EditorPane node) {
         pane.getItems().clear();
         DndTabPane dndTabPane = new DndTabPane(this, node);
@@ -196,6 +196,13 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             setOnDragExited(this::handleDragExited);
             setOnDragDone(this::handleDragDone);
             add(node);
+            Platform.runLater(() -> {
+                // double-click in the tab area to open a new tab
+                Node headerArea = tabPane.lookup(".tab-header-area");
+                headerArea.setOnMouseClicked(e -> {
+                    if (e.getClickCount() == 2) addNewEdit();
+                });
+            });
         }
         void add(EditorPane node) {
             var tab = new Tab();
@@ -216,6 +223,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void initTab(Tab tab) {
             var node = (EditorPane) tab.getContent();
             var label = new Label(node.filePathProperty().get().getFileName().toString());
+            label.setOnMouseClicked(Event::consume);
             tab.setGraphic(label);
             tab.setTooltip(new Tooltip(node.filePathProperty().get().toString()));
             label.setOnDragDetected(this::handleTabDragDetected);
@@ -227,13 +235,15 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 label.setText(path.getFileName().toString());
                 tab.setTooltip(new Tooltip(path.toString()));
             });
-
-            node.setNewOpenHandler(_ -> {
-                EditorPane editorPane = new EditorPane(parent.context);
-                add(editorPane);
-                return editorPane;
-            });
+            node.setNewOpenHandler(_ -> addNewEdit());
         }
+
+        private EditorPane addNewEdit() {
+            EditorPane editorPane = new EditorPane(parent.context);
+            add(editorPane);
+            return editorPane;
+        }
+
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
             if (focused) focus();
         }
