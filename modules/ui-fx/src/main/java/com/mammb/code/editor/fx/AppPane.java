@@ -17,6 +17,7 @@ package com.mammb.code.editor.fx;
 
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import java.nio.file.Path;
 
 /**
  * The application main pane.
@@ -30,10 +31,11 @@ public class AppPane extends BorderPane {
     /**
      * Constructor.
      * @param stage the stage
+     * @param path the path of content or {@code null}
      * @param ctx the application context
      */
-    public AppPane(Stage stage, AppContext ctx) {
-        var editorPane = new EditorPane(ctx);
+    public AppPane(Stage stage, Path path, AppContext ctx) {
+        var editorPane = new EditorPane(path, ctx);
         container = new SplitTabPane(editorPane);
         setCenter(container);
         stage.setOnCloseRequest(e -> {

@@ -61,6 +61,10 @@ public class AppContext implements Context {
         /** The os name. */
         private final String osName;
 
+        /**
+         * Constructor.
+         * @param osName the os name
+         */
         public AppConfig(String osName) {
             this.osName = osName;
             try {
@@ -73,17 +77,23 @@ public class AppContext implements Context {
             Runtime.getRuntime().addShutdownHook(new Thread(this::save));
         }
 
+        /**
+         * Get the path of config
+         * @return the path of config
+         */
         Path path() {
             return path;
         }
 
-        @Override public String fontName() {
+        @Override
+        public String fontName() {
             return osName.contains("windows") ? fontNameWin()
                 : osName.contains("mac") ? fontNameMac()
                 : fontNameLinux();
         }
 
-        @Override public double fontSize() {
+        @Override
+        public double fontSize() {
             return osName.contains("windows") ? fontSizeWin()
                 : osName.contains("mac") ? fontSizeMac()
                 : fontSizeLinux();
@@ -100,28 +110,34 @@ public class AppContext implements Context {
             }
         }
 
-        @Override public String fontNameWin() {
+        @Override
+        public String fontNameWin() {
             // return map.getOrDefault("fontNameWin", "BIZ UDGothic").toString();
             return map.getOrDefault("fontNameWin", "MS Gothic").toString();
         }
 
-        @Override public double fontSizeWin() {
+        @Override
+        public double fontSizeWin() {
             return Double.parseDouble(map.getOrDefault("fontSize", 15).toString());
         }
 
-        @Override public String fontNameMac() {
+        @Override
+        public String fontNameMac() {
             return map.getOrDefault("fontNameWin", "Menlo").toString();
         }
 
-        @Override public double fontSizeMac() {
+        @Override
+        public double fontSizeMac() {
             return Double.parseDouble(map.getOrDefault("fontSize", 14).toString());
         }
 
-        @Override public String fontNameLinux() {
+        @Override
+        public String fontNameLinux() {
             return map.getOrDefault("fontNameWin", "monospace").toString();
         }
 
-        @Override public double fontSizeLinux() {
+        @Override
+        public double fontSizeLinux() {
             return Double.parseDouble(map.getOrDefault("fontSize", 15).toString());
         }
 
@@ -210,7 +226,7 @@ public class AppContext implements Context {
         Path home = Path.of(System.getProperty("user.home"));
         String osName = System.getProperty("os.name").toLowerCase();
         return osName.contains("windows")
-            //? home.resolve("AppData", "Roaming", Version.appName, Version.val)
+            // ? home.resolve("AppData", "Roaming", Version.appName, Version.val)
             ? home.resolve("AppData", "Local", Version.appName, Version.val)
             : osName.contains("linux")
             ? home.resolve(".config", Version.appName, Version.val)

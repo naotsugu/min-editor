@@ -21,6 +21,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -33,14 +35,12 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
-        // TODO file open with command line arguments
-        Parameters params = getParameters();
         var ctx = new AppContext();
         if (ctx.config().windowPositionX() >= 0 && ctx.config().windowPositionY() >= 0) {
             stage.setX(ctx.config().windowPositionX());
             stage.setY(ctx.config().windowPositionY());
         }
-        var appPane = new AppPane(stage, ctx);
+        var appPane = new AppPane(stage, paramPath(), ctx);
         Scene scene = new Scene(appPane, ctx.config().windowWidth(), ctx.config().windowHeight());
         scene.getStylesheets().add(css);
         stage.setScene(scene);
@@ -49,6 +49,7 @@ public class App extends Application {
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
         setupSyncConfigProperty(stage, scene, ctx);
         stage.show();
+
     }
 
     private void setupSyncConfigProperty(Stage stage, Scene scene, AppContext ctx) {
@@ -56,6 +57,16 @@ public class App extends Application {
         scene.widthProperty().addListener((_, _, w) -> ctx.config().windowWidth(w.doubleValue()));
         stage.xProperty().addListener((_, _, x) -> ctx.config().windowPositionX(x.doubleValue()));
         stage.yProperty().addListener((_, _, y) -> ctx.config().windowPositionY(y.doubleValue()));
+    }
+
+    private Path paramPath() {
+        Parameters params = getParameters();
+        if (params.getRaw().isEmpty()) return null;
+        Path path = Path.of(params.getRaw().getLast());
+        if (!Files.exists(path)) return null;
+        if (!Files.isReadable(path)) return null;
+        if (!Files.isRegularFile(path)) return null;
+        return path;
     }
 
     /** The app css. */
