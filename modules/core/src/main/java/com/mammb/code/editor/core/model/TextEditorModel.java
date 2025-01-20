@@ -316,7 +316,7 @@ public class TextEditorModel implements EditorModel {
     public void click(double x, double y, boolean withSelect) {
         Caret c = carets.unique();
         int line = screenLayout.yToLineOnScreen(y - marginTop);
-        c.at(screenLayout.lineToRow(line), screenLayout.xToMidCol(line, x - marginLeft));
+        c.at(screenLayout.lineToRow(line), screenLayout.xToMidCol(line, x - marginLeft + screenLayout.xShift()));
     }
 
     @Override
@@ -339,7 +339,7 @@ public class TextEditorModel implements EditorModel {
             int line = screenLayout.yToLineOnScreen(y - marginTop);
             var point = Point.of(
                 screenLayout.lineToRow(line),
-                screenLayout.xToMidCol(line, x - marginLeft));
+                screenLayout.xToMidCol(line, x - marginLeft + screenLayout.xShift()));
             carets.toggle(point);
         }
     }
@@ -350,7 +350,7 @@ public class TextEditorModel implements EditorModel {
         var text = screenLayout.text(line);
         double xp = 0;
         for (var word : text.words()) {
-            if (xp + word.width() > x - marginLeft) {
+            if (xp + word.width() > x - marginLeft + screenLayout.xShift()) {
                 Caret c = carets.getFirst();
                 int row = screenLayout.lineToRow(line);
                 c.markTo(row, screenLayout.xToCol(line, xp),
@@ -373,7 +373,7 @@ public class TextEditorModel implements EditorModel {
     public void moveDragged(double x, double y) {
         int line = screenLayout.yToLineOnScreen(y - marginTop);
         int row = screenLayout.lineToRow(line);
-        int col = screenLayout.xToMidCol(line, x - marginLeft);
+        int col = screenLayout.xToMidCol(line, x - marginLeft + screenLayout.xShift());
         Caret c = carets.getFirst();
         c.floatAt(row, col);
         c.markIf(true);
