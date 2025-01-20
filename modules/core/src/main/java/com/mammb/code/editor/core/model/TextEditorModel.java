@@ -554,7 +554,7 @@ public class TextEditorModel implements EditorModel {
         Caret c = carets.getFirst();
         return screenLayout.locationOn(c.row(), c.col())
             .map(top -> new Loc(
-                top.x() + marginLeft,
+                top.x() + marginLeft - screenLayout.xShift(),
                 top.y() + marginTop + screenLayout.lineHeight() + 5));
     }
 
