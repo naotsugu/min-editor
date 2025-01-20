@@ -18,6 +18,7 @@ package com.mammb.code.editor.fx;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.Float;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
@@ -118,9 +119,7 @@ public class EditorPane extends StackPane {
         canvas = new Canvas();
         canvas.setManaged(false);
         canvas.setFocusTraversable(true);
-        canvas.setOnMouseMoved(e -> {
-            canvas.setCursor(Cursor.TEXT);
-        });
+        canvas.setOnMouseMoved(this::handleMouseMoved);
 
         Font font = Font.font(context.config().fontName(), context.config().fontSize());
         draw = new FxDraw(canvas.getGraphicsContext2D(), font);
@@ -190,6 +189,12 @@ public class EditorPane extends StackPane {
         model.updateFonts(draw.fontMetrics());
     }
 
+    private void handleMouseMoved(MouseEvent e) {
+        switch (model.floatLoc(e.getX(), e.getY())) {
+            case Float.GarterRegion _ -> canvas.setCursor(Cursor.DEFAULT);
+            case null, default -> canvas.setCursor(Cursor.TEXT);
+        }
+    }
     private void handleMousePressed(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY) {
             model.mousePressed(e.getX(), e.getY());

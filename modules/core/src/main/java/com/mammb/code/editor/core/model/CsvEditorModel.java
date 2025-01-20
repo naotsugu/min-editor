@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.Float;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
@@ -99,6 +100,11 @@ public class CsvEditorModel implements EditorModel {
     @Override
     public void moveDragged(double x, double y) {
 
+    }
+
+    @Override
+    public Float floatLoc(double x, double y) {
+        return null;
     }
 
     @Override
