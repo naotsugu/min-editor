@@ -19,6 +19,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import com.mammb.code.editor.core.syntax2.BlockToken.Open;
 import com.mammb.code.editor.core.syntax2.BlockToken.Close;
@@ -28,10 +29,21 @@ public class ScopeStack {
     private final TreeMap<Anchor, BlockToken> scopes = new TreeMap<>();
     private final Deque<BlockToken> stack = new ArrayDeque<>();
 
+    public ScopeStack() {
+    }
 
     void clear(int row) {
-        scopes.subMap(Anchor.min(row), Anchor.max(row)).clear();
+        var map = scopes.subMap(Anchor.min(row), Anchor.max(row));
+        if (map.isEmpty()) {
+            return;
+        }
+        map.clear();
         fillStack();
+    }
+
+    void put(int row, int col, BlockToken token) {
+        scopes.put(new Anchor(row, col), token);
+        stack.push(token);
     }
 
     Optional<Open> current() {

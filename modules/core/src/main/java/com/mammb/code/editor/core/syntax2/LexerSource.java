@@ -22,6 +22,7 @@ import java.util.Objects;
  * @author Naotsugu Kobayashi
  */
 public class LexerSource {
+
     private int row;
     private String text;
     private int index = 0;
@@ -42,14 +43,26 @@ public class LexerSource {
         return new LexerSource(row, source);
     }
 
+    /**
+     * Get the number of row.
+     * @return the number of row
+     */
     public int row() {
         return row;
     }
 
+    /**
+     * Get the source text.
+     * @return the source text
+     */
     public String text() {
         return text;
     }
 
+    /**
+     * Get the source text length.
+     * @return the source text length
+     */
     public int length() {
         return text.length();
     }

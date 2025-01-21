@@ -17,6 +17,10 @@ package com.mammb.code.editor.core.syntax2;
 
 import java.util.function.Function;
 
+/**
+ * The block type.
+ * @author Naotsugu Kobayashi
+ */
 public interface BlockType {
 
     String open();

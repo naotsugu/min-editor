@@ -15,5 +15,9 @@
  */
 package com.mammb.code.editor.core.syntax2;
 
+/**
+ * The with.
+ * @author Naotsugu Kobayashi
+ */
 public interface With<T> {
 }

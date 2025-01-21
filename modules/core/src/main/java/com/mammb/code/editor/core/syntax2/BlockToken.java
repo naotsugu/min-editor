@@ -43,10 +43,9 @@ public interface BlockToken {
         return new CloseRecord(type);
     }
 
-    static <T> OpenWith<T> open(BlockTypeWith<T> type, T with) {
+    static <T> OpenWith<T> open(BlockTypeWith<T> type, String string) {
         record OpenWithRecord<T>(BlockTypeWith<T> type, T with) implements OpenWith<T> {}
-        return new OpenWithRecord<>(type, with);
+        return new OpenWithRecord<>(type, type.withSupply().apply(string));
     }
-
 
 }

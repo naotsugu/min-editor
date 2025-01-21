@@ -30,6 +30,7 @@ public class BlockScopes {
     BlockType blockComment = range("/*", "*/");
     BlockType fence = neutral("```", Syntax::of);
 
+    private final ScopeStack scopes = new ScopeStack();
     private final List<BlockType> types = new ArrayList<>();
 
     public BlockScopes(BlockType... blockTypes) {
@@ -41,45 +42,48 @@ public class BlockScopes {
         if (!sources.hasNext()) return;
 
         LexerSource source = sources.next();
-        //scope.clear(source.row());
+        scopes.clear(source.row());
 
         for (;;) {
 
-            var peek = source.peek();
-            char ch = peek.ch();
+            var maybeOpen = scopes.current();
+            if (maybeOpen.isPresent()) {
+                readUntilClose(maybeOpen.get().type(), source);
+            }
+            readUntilOpen(source);
 
-
-            if (!sources.hasNext()) break;
-            source = sources.next();
+            if (!source.hasNext()) {
+                if (!sources.hasNext()) break;
+                source = sources.next();
+            }
         }
+    }
+
+    private void readUntilClose(BlockType type, LexerSource source) {
 
     }
 
-    private void put(LexerSource source) {
+    private void readUntilOpen(LexerSource source) {
 
         while (source.hasNext()) {
-
             var peek = source.peek();
+
             Optional<BlockType> blockType = matches(peek.ch()).stream()
                 .filter(type -> source.match(type.open()))
                 .findFirst();
+
             if (blockType.isPresent()) {
                 BlockType type = blockType.get();
-                source.next(type.open().length());
-                if (type instanceof BlockType.BlockTypeWith<?> withSupply) {
-
+                int col = source.next(type.open().length()).index();
+                if (type instanceof BlockType.BlockTypeWith<?> t) {
+                    scopes.put(source.row(), col, BlockToken.open(t, source.nextUntilWs().text()));
                 } else {
-
-                    BlockToken.open(type);
+                    scopes.put(source.row(), col, BlockToken.open(type));
                 }
+                return;
             }
             source.commitPeek();
         }
-    }
-
-
-    private BlockType matchNext() {
-        return null;
     }
 
     private List<BlockType> matches(char ch) {
