@@ -23,7 +23,7 @@ import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
-import com.mammb.code.editor.core.Float;
+import com.mammb.code.editor.core.FloatOn;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Point.Range;
@@ -381,8 +381,8 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public Float floatLoc(double x, double y) {
-        return (x < marginLeft) ? Float.garterRegion : Float.editRegion;
+    public FloatOn floatLoc(double x, double y) {
+        return (x < marginLeft) ? FloatOn.garterRegion : FloatOn.editRegion;
     }
 
     @Override

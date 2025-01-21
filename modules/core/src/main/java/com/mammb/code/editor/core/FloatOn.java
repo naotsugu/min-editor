@@ -19,11 +19,11 @@ package com.mammb.code.editor.core;
  * The float.
  * @author Naotsugu Kobayashi
  */
-public interface Float {
+public sealed interface FloatOn {
 
     GarterRegion garterRegion = new GarterRegion();
     EditRegion editRegion = new EditRegion();
 
-    record GarterRegion() implements Float { }
-    record EditRegion() implements Float { }
+    record GarterRegion() implements FloatOn { }
+    record EditRegion() implements FloatOn { }
 }
