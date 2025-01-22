@@ -67,6 +67,14 @@ public class LexerSource {
         return text.length();
     }
 
+    /**
+     * Get the current index.
+     * @return the current index
+     */
+    public int index() {
+        return index;
+    }
+
     public boolean hasNext() {
         return index < text.length();
     }

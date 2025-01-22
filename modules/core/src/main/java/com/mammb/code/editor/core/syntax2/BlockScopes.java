@@ -15,20 +15,16 @@
  */
 package com.mammb.code.editor.core.syntax2;
 
-import com.mammb.code.editor.core.syntax.Syntax;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
-import static com.mammb.code.editor.core.syntax2.BlockType.range;
-
+/**
+ * The block scopes.
+ * @author Naotsugu Kobayashi
+ */
 public class BlockScopes {
-
-    BlockType blockComment = range("/*", "*/");
-    BlockType fence = neutral("```", Syntax::of);
 
     private final ScopeStack scopes = new ScopeStack();
     private final List<BlockType> types = new ArrayList<>();
@@ -46,11 +42,12 @@ public class BlockScopes {
 
         for (;;) {
 
-            var maybeOpen = scopes.current();
-            if (maybeOpen.isPresent()) {
-                readUntilClose(maybeOpen.get().type(), source);
+            var maybeBlockOpen = scopes.current();
+            if (maybeBlockOpen.isPresent()) {
+                readUntilClose(maybeBlockOpen.get().type(), source);
+            } else {
+                readUntilOpen(source);
             }
-            readUntilOpen(source);
 
             if (!source.hasNext()) {
                 if (!sources.hasNext()) break;
@@ -59,31 +56,69 @@ public class BlockScopes {
         }
     }
 
-    private void readUntilClose(BlockType type, LexerSource source) {
+    public Optional<BlockSpan> read(LexerSource source) {
 
+        if (!source.hasNext()) {
+            return Optional.empty();
+        }
+
+        scopes.clear(source.row());
+        var maybeBlockOpen = scopes.current();
+        if (maybeBlockOpen.isEmpty() && readOpen(source).isPresent()) {
+            maybeBlockOpen = scopes.current();
+        }
+
+        if (maybeBlockOpen.isPresent()) {
+            int index = source.index();
+            BlockToken token = maybeBlockOpen.get();
+            readUntilClose(token.type(), source);
+            return Optional.of(new BlockSpan(token, index, source.index() - index));
+        }
+
+        return Optional.empty();
+    }
+
+
+    public record BlockSpan(BlockToken token, int index, int length) {
+        public BlockType type() { return token.type(); }
+    }
+
+    private void readUntilClose(BlockType type, LexerSource source) {
+        while (source.hasNext()) {
+            var peek = source.peek();
+            if (peek.ch() == type.close().charAt(0) && source.match(type.close())) {
+                int col = source.next(type.close().length()).index();
+                scopes.put(source.row(), col, BlockToken.close(type));
+                return;            }
+            source.commitPeek();
+        }
     }
 
     private void readUntilOpen(LexerSource source) {
-
         while (source.hasNext()) {
-            var peek = source.peek();
-
-            Optional<BlockType> blockType = matches(peek.ch()).stream()
-                .filter(type -> source.match(type.open()))
-                .findFirst();
-
-            if (blockType.isPresent()) {
-                BlockType type = blockType.get();
-                int col = source.next(type.open().length()).index();
-                if (type instanceof BlockType.BlockTypeWith<?> t) {
-                    scopes.put(source.row(), col, BlockToken.open(t, source.nextUntilWs().text()));
-                } else {
-                    scopes.put(source.row(), col, BlockToken.open(type));
-                }
-                return;
-            }
+            readOpen(source);
             source.commitPeek();
         }
+    }
+
+    private Optional<BlockToken> readOpen(LexerSource source) {
+        var peek = source.peek();
+
+        Optional<BlockType> blockType = matches(peek.ch()).stream()
+            .filter(type -> source.match(type.open()))
+            .findFirst();
+
+        if (blockType.isPresent()) {
+            BlockType type = blockType.get();
+            int col = source.index();
+            source.next(type.open().length());
+            BlockToken token = (type instanceof BlockType.BlockTypeWith<?> t)
+                ? BlockToken.open(t, source.nextUntilWs().text())
+                : BlockToken.open(type);
+            scopes.put(source.row(), col, token);
+            return Optional.of(token);
+        }
+        return Optional.empty();
     }
 
     private List<BlockType> matches(char ch) {
