@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.syntax2;
 
 import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * The lexer source.
@@ -114,6 +115,17 @@ public class LexerSource {
     public Indexed nextUntilWs() {
         String split = text.substring(index).split("\\s", 2)[0];
         return next(split.length());
+    }
+
+    public Indexed nextUntil(Predicate<Character> predicate) {
+        int i = index;
+        for (; i < text.length(); i++) {
+            if (!predicate.test(text.charAt(i))) break;
+        }
+        var ret = new Indexed(index, text.substring(index, i), text.length());
+        index = i;
+        peek = 0;
+        return ret;
     }
 
     public Indexed nextRemaining() {

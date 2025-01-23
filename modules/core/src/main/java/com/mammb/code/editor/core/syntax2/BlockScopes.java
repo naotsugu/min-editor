@@ -75,12 +75,21 @@ public class BlockScopes {
             return Optional.of(new BlockSpan(token, index, source.index() - index));
         }
 
+        source.rollbackPeek();
         return Optional.empty();
     }
 
 
     public record BlockSpan(BlockToken token, int index, int length) {
         public BlockType type() { return token.type(); }
+        public <T> T with() {
+            if (token instanceof BlockToken.BlockTokenWith<?> a) {
+                @SuppressWarnings("unchecked")
+                T ret = (T) a.with();
+                return ret;
+            }
+            return null;
+        }
     }
 
     private void readUntilClose(BlockType type, LexerSource source) {
@@ -89,7 +98,8 @@ public class BlockScopes {
             if (peek.ch() == type.close().charAt(0) && source.match(type.close())) {
                 int col = source.next(type.close().length()).index();
                 scopes.put(source.row(), col, BlockToken.close(type));
-                return;            }
+                return;
+            }
             source.commitPeek();
         }
     }
