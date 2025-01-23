@@ -37,6 +37,7 @@ public interface ScreenLayout extends LineLayout {
     void refreshBuffer(int startRow, int endRow);
     List<Text> texts();
     List<Text> lineNumbers();
+    double lineNumberWidth();
     Optional<Loc> locationOn(int row, int col);
     int yToLineOnScreen(double y);
     double screenWidth();

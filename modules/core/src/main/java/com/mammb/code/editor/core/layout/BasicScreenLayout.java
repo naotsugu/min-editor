@@ -152,6 +152,12 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
+    public double lineNumberWidth() {
+        return layout.standardCharWidth() *
+            String.valueOf((buffer.isEmpty() ? 0 : buffer.getLast().row()) + 1).length();
+    }
+
+    @Override
     public Optional<Loc> locationOn(int row, int col) {
         return layout.loc(row, col, topLine, topLine + screenLineSize())
             .map(loc -> new Loc(loc.x(), loc.y() - yOnLayout(topLine)));

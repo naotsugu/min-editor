@@ -63,7 +63,7 @@ public class TextEditorModel implements EditorModel {
     /** The margin top. */
     private final double marginTop = 5;
     /** The margin left(garter width). */
-    private double marginLeft = 70;
+    private double marginLeft = 5;
     /** caretVisible?. */
     private boolean caretVisible = true;
     /** The content. */
@@ -116,6 +116,7 @@ public class TextEditorModel implements EditorModel {
     public void draw(Draw draw) {
         screenLayout.applyScreenScroll(scroll);
         draw.clear();
+        calcScreenLayout();
         drawSelection(draw);
         drawText(draw);
         drawMap(draw);
@@ -759,23 +760,15 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
+    /**
+     * Draw left garter.
+     * @param draw the draw
+     */
     private void drawLeftGarter(Draw draw) {
-
-        List<Text> lineNumbers = screenLayout.lineNumbers();
-
-        // calculate the width of the garter
-        double minWidth = screenLayout.standardCharWidth() * 8;
-        double width = Math.max(minWidth,
-            lineNumbers.stream().mapToDouble(Text::width).max().orElse(0) + screenLayout.standardCharWidth() * 2);
-        if (marginLeft != width) {
-            screenLayout.setScreenSize(screenLayout.screenWidth() + marginLeft - width, screenLayout.screenHeight());
-            marginLeft = width;
-        }
-
         draw.rect(0, 0, marginLeft - 5, screenLayout.screenHeight() + marginTop);
         double y = 0;
         String prevValue = "";
-        for (Text num : lineNumbers) {
+        for (Text num : screenLayout.lineNumbers()) {
             // if the text is wrapped, display the row number only on the first line.
             if (!Objects.equals(prevValue, num.value())) {
                 String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
@@ -786,6 +779,21 @@ public class TextEditorModel implements EditorModel {
             }
             prevValue = num.value();
             y += num.height();
+        }
+    }
+
+    /**
+     * Calculate the screenLayout.
+     */
+    private void calcScreenLayout() {
+        double charWidth = screenLayout.standardCharWidth();
+        double minWidth = charWidth * 8;
+        double width = Math.max(minWidth, screenLayout.lineNumberWidth() + charWidth * 2);
+        if (marginLeft != width) {
+            screenLayout.setScreenSize(
+                screenLayout.screenWidth() + marginLeft - width,
+                screenLayout.screenHeight());
+            marginLeft = width;
         }
     }
 
