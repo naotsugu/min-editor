@@ -63,13 +63,14 @@ public class BlockScopes {
         }
 
         scopes.clear(source.row());
+        int index = source.index();
+
         var maybeBlockOpen = scopes.current();
         if (maybeBlockOpen.isEmpty() && readOpen(source).isPresent()) {
             maybeBlockOpen = scopes.current();
         }
 
         if (maybeBlockOpen.isPresent()) {
-            int index = source.index();
             BlockToken token = maybeBlockOpen.get();
             readUntilClose(token.type(), source);
             return Optional.of(new BlockSpan(token, index, source.index() - index));

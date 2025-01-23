@@ -15,12 +15,6 @@
  */
 package com.mammb.code.editor.core.syntax2;
 
-import com.mammb.code.editor.core.syntax.JavaSyntax;
-import com.mammb.code.editor.core.syntax.JsSyntax;
-import com.mammb.code.editor.core.syntax.KotlinSyntax;
-import com.mammb.code.editor.core.syntax.MarkdownSyntax;
-import com.mammb.code.editor.core.syntax.PythonSyntax;
-import com.mammb.code.editor.core.syntax.SqlSyntax;
 import com.mammb.code.editor.core.text.Style;
 import java.util.List;
 

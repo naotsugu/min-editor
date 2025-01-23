@@ -1,8 +1,6 @@
 package com.mammb.code.editor.core.syntax2;
 
-import com.mammb.code.editor.core.syntax.Syntax;
 import org.junit.jupiter.api.Test;
-
 import java.util.Optional;
 
 import static com.mammb.code.editor.core.syntax2.BlockType.neutral;

@@ -33,7 +33,7 @@ public class ScopeStack {
     }
 
     void clear(int row) {
-        var map = scopes.subMap(Anchor.min(row), Anchor.max(row));
+        var map = scopes.tailMap(Anchor.min(row));
         if (map.isEmpty()) {
             return;
         }

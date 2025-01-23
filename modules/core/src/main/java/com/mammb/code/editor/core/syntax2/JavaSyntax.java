@@ -65,6 +65,8 @@ public class JavaSyntax implements Syntax {
                 spans.add(new StyleSpan(Palette.darkGreen, block.index(), block.length()))
             );
 
+            if (!source.hasNext()) break;
+
             var peek = source.peek();
             char ch = peek.ch();
 
