@@ -108,15 +108,15 @@ public class TextEditorModel implements EditorModel {
     public TextEditorModel(Session session, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx) {
         this(session.hasPath() ? Content.of(session.path()) : Content.of(), fm, syntax, scroll, ctx);
         if (session.lineWidth() > 0) wrap(session.lineWidth());
-        scrollAt(session.topLine()); // TODO init decorate
+        scrollAt(session.topLine());
         carets.getFirst().at(session.caretRow(), session.caretCol());
     }
 
     @Override
     public void draw(Draw draw) {
         screenLayout.applyScreenScroll(scroll);
-        draw.clear();
         calcScreenLayout();
+        draw.clear();
         drawSelection(draw);
         drawText(draw);
         drawMap(draw);
@@ -141,6 +141,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void scrollAt(int line) {
+        // TODO init decorate
         screenLayout.scrollAt(line);
     }
 
@@ -155,7 +156,7 @@ public class TextEditorModel implements EditorModel {
             }
             if (delta > 0) scrollNext(d); else scrollPrev(d);
         } else {
-            screenLayout.scrollAt(screenLayout.rowToFirstLine(row));
+            scrollAt(screenLayout.rowToFirstLine(row));
         }
         Caret c = carets.getFirst();
         c.at(row, 0);
@@ -171,9 +172,9 @@ public class TextEditorModel implements EditorModel {
         Caret c = carets.getFirst();
         int line = screenLayout.rowToLine(c.row(), c.col());
         if (line - screenLayout.topLine() < 0) {
-            screenLayout.scrollAt(line);
+            scrollAt(line);
         } else if (line - (screenLayout.topLine() + screenLayout.screenLineSize() - 3) > 0) {
-            screenLayout.scrollAt(line - screenLayout.screenLineSize() + 3);
+            scrollAt(line - screenLayout.screenLineSize() + 3);
         }
     }
 

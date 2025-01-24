@@ -38,7 +38,7 @@ class BasicScreenLayout implements ScreenLayout {
     private double xShift = 0;
     /** The maximum size of x-axis. */
     private double xMax = 0;
-    /** The line number at the top of the screen. */
+    /** The line number at the top of the screen(not a row number). */
     private int topLine = 0;
     /** The screen buffer of text. */
     private final List<Text> buffer = new ArrayList<>();

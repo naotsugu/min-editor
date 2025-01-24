@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ public class JavaSyntax implements Syntax {
         return,transient,catch,extends,int,short,try,char,final,interface,static,void,class,finally,long,
         strictfp,volatile,const,float,native,super,while,var,record,sealed,with,yield,to,transitive,uses
         """);
+
     /** The block comment. */
     private final BlockType blockComment = range("/*", "*/");
     /** The text block. */
