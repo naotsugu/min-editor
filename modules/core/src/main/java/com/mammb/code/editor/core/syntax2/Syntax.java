@@ -38,11 +38,12 @@ public interface Syntax {
      */
     List<Style.StyleSpan> apply(int row, String text);
 
+    BlockScopes blockScopes();
 
     default boolean isBlockScoped() {
-        return true;
+        var blockScopes = blockScopes();
+        return blockScopes != null && !blockScopes.isEmpty();
     }
-
 
     static Syntax of(String name) {
         if (name == null) name = "";
@@ -56,6 +57,6 @@ public interface Syntax {
         @Override public List<Style.StyleSpan> apply(int row, String text) {
             return List.of();
         }
-        @Override public boolean isBlockScoped() { return false; }
+        @Override public BlockScopes blockScopes() { return null; }
     }
 }

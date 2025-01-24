@@ -54,4 +54,9 @@ public class MarkdownSyntax implements Syntax {
 
         return spans;
     }
+
+    @Override
+    public BlockScopes blockScopes() {
+        return blockScopes;
+    }
 }

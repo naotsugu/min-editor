@@ -16,7 +16,7 @@
 package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.model.TextEditorModel;
-import com.mammb.code.editor.core.syntax.Syntax;
+import com.mammb.code.editor.core.syntax2.Syntax;
 import java.nio.file.Path;
 import java.util.Optional;
 
@@ -43,13 +43,14 @@ public interface EditorModel {
             ctx);
     }
 
-    static EditorModel of(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx) {
+    static EditorModel of(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
         return new TextEditorModel(
             session,
             fm,
             Syntax.of(session.hasPath() ? extension(session.path()) : ""),
             scroll,
-            ctx);
+            ctx,
+            width, height);
     }
 
 

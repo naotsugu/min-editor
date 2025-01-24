@@ -33,6 +33,10 @@ public class BlockScopes {
         types.addAll(List.of(blockTypes));
     }
 
+    public boolean isEmpty() {
+        return types.isEmpty();
+    }
+
     public void put(Iterator<LexerSource> sources) {
 
         if (!sources.hasNext()) return;

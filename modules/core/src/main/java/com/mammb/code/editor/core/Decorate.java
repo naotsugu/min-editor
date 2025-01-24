@@ -15,12 +15,14 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.syntax.Syntax;
+import com.mammb.code.editor.core.syntax2.LexerSource;
+import com.mammb.code.editor.core.syntax2.Syntax;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Text;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +44,7 @@ public interface Decorate {
     void clear();
     Set<Integer> highlightsRows();
     boolean isBlockScoped();
+    void warmApply(int row, int len, Content content);
 
     /**
      * Create a new {@link Decorate}.
@@ -76,6 +79,23 @@ public interface Decorate {
             return (text instanceof SubText sub)
                     ? apply(sub)
                     : apply(text.row(), text.value());
+        }
+
+        @Override
+        public void warmApply(int row, int len, Content content) {
+            if (syntax.isBlockScoped() && len > 0) {
+                syntax.blockScopes().put(new Iterator<>() {
+                    int index = row;
+                    @Override
+                    public boolean hasNext() {
+                        return index < (row + len);
+                    }
+                    @Override
+                    public LexerSource next() {
+                        return LexerSource.of(index, content.getText(index++));
+                    }
+                });
+            }
         }
 
         @Override

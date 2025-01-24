@@ -35,7 +35,7 @@ import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
-import com.mammb.code.editor.core.syntax.Syntax;
+import com.mammb.code.editor.core.syntax2.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.text.StyledText;
@@ -105,9 +105,10 @@ public class TextEditorModel implements EditorModel {
      * @param scroll the screen scroll
      * @param ctx the context
      */
-    public TextEditorModel(Session session, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx) {
+    public TextEditorModel(Session session, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx, double width, double height) {
         this(session.hasPath() ? Content.of(session.path()) : Content.of(), fm, syntax, scroll, ctx);
         if (session.lineWidth() > 0) wrap(session.lineWidth());
+        setSize(width, height);
         scrollAt(session.topLine());
         carets.getFirst().at(session.caretRow(), session.caretCol());
     }
@@ -120,7 +121,7 @@ public class TextEditorModel implements EditorModel {
         drawSelection(draw);
         drawText(draw);
         drawMap(draw);
-        if (caretVisible) drawCaret(draw);
+        drawCaret(draw);
         drawLeftGarter(draw);
     }
 
@@ -141,8 +142,9 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void scrollAt(int line) {
-        // TODO init decorate
+        int before = screenLayout.topRow();
         screenLayout.scrollAt(line);
+        decorate.warmApply(before, screenLayout.topRow() - before, content);
     }
 
     void moveTo(int row) {
@@ -748,6 +750,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void drawCaret(Draw draw) {
+        if (!caretVisible) return;
         for (Caret c : carets.carets()) {
             Point p = c.flushedPoint();
             screenLayout.locationOn(p.row(), p.col()).ifPresent(loc -> {

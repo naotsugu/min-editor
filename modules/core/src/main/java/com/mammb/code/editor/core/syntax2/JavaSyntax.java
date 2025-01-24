@@ -101,4 +101,9 @@ public class JavaSyntax implements Syntax {
         return spans;
     }
 
+    @Override
+    public BlockScopes blockScopes() {
+        return blockScopes;
+    }
+
 }

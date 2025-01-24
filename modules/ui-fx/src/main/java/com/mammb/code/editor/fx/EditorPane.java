@@ -409,7 +409,7 @@ public class EditorPane extends StackPane {
 
         model = openInBackground
             ? EditorModel.of(Content.readOnlyPartOf(session.path()), draw.fontMetrics(), screenScroll(), context)
-            : EditorModel.of(session, draw.fontMetrics(), screenScroll(), context);
+            : EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
         model.setSize(getWidth(), getHeight());
         filePathProperty.setValue(session.path());
 

@@ -45,6 +45,7 @@ public interface ScreenLayout extends LineLayout {
     int screenLineSize();
     int screenColSize();
     int topLine();
+    int topRow();
     double xShift();
     void applyScreenScroll(ScreenScroll screenScroll);
 

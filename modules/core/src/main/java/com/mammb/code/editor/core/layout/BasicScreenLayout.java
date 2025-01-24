@@ -55,8 +55,9 @@ class BasicScreenLayout implements ScreenLayout {
 
     @Override
     public void setScreenSize(double width, double height) {
-        this.screenWidth = width;
-        this.screenHeight = height;
+        if (screenWidth == width && screenHeight == height) return;
+        screenWidth = width;
+        screenHeight = height;
         fillBuffer();
     }
 
@@ -261,6 +262,11 @@ class BasicScreenLayout implements ScreenLayout {
     @Override
     public int topLine() {
         return topLine;
+    }
+
+    @Override
+    public int topRow() {
+        return buffer.isEmpty() ? 0 : buffer.getFirst().row();
     }
 
     @Override
