@@ -38,7 +38,7 @@ public interface Syntax {
      */
     List<Style.StyleSpan> apply(int row, String text);
 
-    BlockScopes blockScopes();
+    default BlockScopes blockScopes() { return null; };
 
     default boolean isBlockScoped() {
         var blockScopes = blockScopes();
@@ -49,6 +49,9 @@ public interface Syntax {
         if (name == null) name = "";
         return switch (name.toLowerCase()) {
             case "java" -> new JavaSyntax();
+            case "md" -> new MarkdownSyntax();
+            case "kotlin", "kt", "kts" -> new KotlinSyntax();
+            case "js", "json" -> new JsSyntax();
             default -> new PassThrough(name);
         };
     }
@@ -57,6 +60,5 @@ public interface Syntax {
         @Override public List<Style.StyleSpan> apply(int row, String text) {
             return List.of();
         }
-        @Override public BlockScopes blockScopes() { return null; }
     }
 }

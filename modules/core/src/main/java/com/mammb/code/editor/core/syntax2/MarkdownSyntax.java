@@ -49,6 +49,30 @@ public class MarkdownSyntax implements Syntax {
         var source = LexerSource.of(row, text);
 
         while (source.hasNext()) {
+
+            var block = blockScopes.read(source);
+            if (block.isPresent()) {
+                if (block.get().type() == fence && block.get().token() instanceof BlockToken.BlockTokenWith<?> token) {
+                    System.out.println(token.with());
+                    return ((Syntax) token.with()).apply(row, text);
+                }
+            }
+            if (!source.hasNext()) break;
+
+            var peek = source.peek();
+            char ch = peek.ch();
+
+            if (ch == '#' && peek.index() == 0) {
+                Style style;
+                if (source.match("#####"))     style = Palette.darkPale;
+                else if (source.match("####")) style = Palette.darkPale;
+                else if (source.match("###"))  style = Palette.darkPale;
+                else if (source.match("##"))   style = Palette.darkPale;
+                else style = Palette.darkOrange;
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(style, s.index(), s.length()));
+            }
+
             source.commitPeek();
         }
 

@@ -18,7 +18,9 @@ package com.mammb.code.editor.core.syntax2;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * The block scopes.
@@ -30,7 +32,7 @@ public class BlockScopes {
     private final List<BlockType> types = new ArrayList<>();
 
     public BlockScopes(BlockType... blockTypes) {
-        types.addAll(List.of(blockTypes));
+        types.addAll(Stream.of(blockTypes).filter(Objects::nonNull).toList());
     }
 
     public boolean isEmpty() {
