@@ -76,9 +76,12 @@ public interface Decorate {
 
         @Override
         public List<StyleSpan> apply(Text text) {
-            return (text instanceof SubText sub)
-                    ? apply(sub)
-                    : apply(text.row(), text.value());
+            if (text instanceof SubText sub) {
+                text = sub.parent();
+            }
+            List<StyleSpan> spans = highlights.getOrDefault(text.row(), new ArrayList<>());
+            spans.addAll(syntax.apply(text.row(), text.value()));
+            return spans;
         }
 
         @Override
@@ -116,28 +119,6 @@ public interface Decorate {
         @Override
         public boolean isBlockScoped() {
             return syntax.isBlockScoped();
-        }
-
-        private List<StyleSpan> apply(SubText sub) {
-            List<StyleSpan> spans = new ArrayList<>();
-            for (StyleSpan span : apply(sub.row(), sub.parent().value())) {
-                if (span.offset() + span.length() <= sub.fromIndex() ||
-                    sub.toIndex() <= span.offset()) {
-                    continue;
-                }
-                spans.add(new StyleSpan(
-                    span.style(),
-                    Math.max(0, span.offset() - sub.fromIndex()),
-                    span.length()
-                ));
-            }
-            return spans;
-        }
-
-        private List<StyleSpan> apply(int row, String text) {
-            List<StyleSpan> spans = highlights.getOrDefault(row, new ArrayList<>());
-            spans.addAll(syntax.apply(row, text));
-            return spans;
         }
 
     }

@@ -693,10 +693,17 @@ public class TextEditorModel implements EditorModel {
 
     private void drawText(Draw draw) {
         double x, y = 0;
+        double prevRow = -1;
+        List<StyleSpan> spans = List.of();
         for (Text text : screenLayout.texts()) {
             x = 0;
-            // TODO
-            for (StyledText st : StyledText.of(text, decorate.apply(text))) {
+            if (text.row() != prevRow) {
+                // update the spans only if the row is different from the previous one
+                // reuse the previous style for the same row
+                spans = decorate.apply(text);
+                prevRow = text.row();
+            }
+            for (StyledText st : StyledText.of(text, spans)) {
                 double px = x + marginLeft - scroll.xVal();
                 double py = y + marginTop;
                 draw.text(st, px, py, st.width(), st.styles());

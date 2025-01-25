@@ -42,7 +42,7 @@ public interface StyledText extends Text {
      * @return the style text list
      */
     static List<StyledText> of(Text text, List<StyleSpan> spans) {
-        return new Builder(text).putAll(spans).build();
+        return new Builder(text).putAll(spans).buildLine();
     }
 
     /**
@@ -85,9 +85,9 @@ public interface StyledText extends Text {
 
         public List<StyledText> buildLine() {
             if (text instanceof SubText sub) {
-                return apply(sub, sub.fromIndex(), sub.toIndex() - sub.fromIndex());
+                return apply(sub, sub.fromIndex(), sub.toIndex());
             } else {
-                return apply(text, 0, text.length());
+                return build();
             }
         }
 
