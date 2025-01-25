@@ -39,6 +39,7 @@ import com.mammb.code.editor.core.syntax2.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.text.StyledText;
+import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Symbols;
 import com.mammb.code.editor.core.text.Text;
 import java.io.IOException;

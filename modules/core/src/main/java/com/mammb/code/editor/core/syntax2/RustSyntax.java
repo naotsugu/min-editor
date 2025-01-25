@@ -24,18 +24,28 @@ import static com.mammb.code.editor.core.syntax2.BlockType.range;
  */
 public class RustSyntax extends BasicSyntax {
 
-    public RustSyntax() {
-        super("rust", """
+    /** The keywords. */
+    private static final Trie keywords = Trie.of("""
             as,break,const,continue,crate,else,enum,extern,false,fn,for,if,impl,in,
             let,loop,match,mod,move,mut,pub,ref,return,self,Self,static,struct,super,
             trait,true,type,unsafe,use,where,while,async,await,dyn,try,
-            abstract,become,box,do,final,macro,override,priv,typeof,unsized,virtual,yield""",
+            abstract,become,box,do,final,macro,override,priv,typeof,unsized,virtual,yield""");
+
+    /** The blockComment. */
+    private static final BlockType blockComment = range("/*", "*/");
+
+    /** The text block. */
+    private static final BlockType textBlock = neutral("\"\"\"");
+
+    public RustSyntax() {
+        super("rust",
+            keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            neutral("\"\"\""), // textBlock
+            textBlock,         // textBlock
             "//",              // lineComment
-            range("/*", "*/"), // blockComment
+            blockComment,      // blockComment
             ';'                // statementEnd
         );
     }

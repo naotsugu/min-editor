@@ -24,18 +24,28 @@ import static com.mammb.code.editor.core.syntax2.BlockType.range;
  */
 public class JavaSyntax extends BasicSyntax {
 
-    public JavaSyntax() {
-        super("java", """
+    /** The keywords. */
+    private static final Trie keywords = Trie.of("""
             abstract,continue,for,new,switch,assert,default,goto,package,synchronized,boolean,do,if,private,
             this,break,double,implements,protected,throw,byte,else,import,public,throws,case,enum,instanceof,
             return,transient,catch,extends,int,short,try,char,final,interface,static,void,class,finally,long,
-            strictfp,volatile,const,float,native,super,while,var,record,sealed,with,yield,to,transitive,uses""",
+            strictfp,volatile,const,float,native,super,while,var,record,sealed,with,yield,to,transitive,uses""");
+
+    /** The blockComment. */
+    private static final BlockType blockComment = range("/*", "*/");
+
+    /** The text block. */
+    private static final BlockType textBlock = neutral("\"\"\"");
+
+    public JavaSyntax() {
+        super("java",
+            keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            neutral("\"\"\""), // textBlock
+            textBlock,         // textBlock
             "//",              // lineComment
-            range("/*", "*/"), // blockComment
+            blockComment,      // blockComment
             ';'                // statementEnd
         );
     }

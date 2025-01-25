@@ -18,33 +18,33 @@ package com.mammb.code.editor.core.syntax2;
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The javascript syntax.
+ * The sql syntax.
  * @author Naotsugu Kobayashi
  */
-public class JsSyntax extends BasicSyntax {
+public class SqlSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-            abstract,arguments,await,boolean,break,byte,case,catch,char,class,const,continue,
-            debugger,default,delete,do,double,else,enum,eval,export,extends,false,final,finally,
-            float,for,function,goto,if,implements,import,in,instanceof,int,interface,let,long,
-            native,new,null,package,private,protected,public,return,short,static,super,switch,
-            synchronized,this,throw,throws,transient,true,try,typeof,var,void,volatile,while,
-            with,yield""");
+        add,all,alter,and,any,as,asc,backup,between,by,case,check,column,constraint,create,
+        database,default,delete,desc,distinct,drop,exec,exists,foreign,from,full,group,
+        having,in,index,insert,into,is,join,key,left,like,limit,not,null,or,order,outer,
+        primary,procedure,replace,right,rownum,select,set,table,top,truncate,union,unique,
+        update,values,view,where""");
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
 
-    public JsSyntax() {
-        super("javascript",
-            keywords,     // keywords
-            '\\',         // escapeChar
-            '\'',         // charLiteral
-            '"',          // stringLiteral
-            null,         // textBlock
-            "//",         // lineComment
-            blockComment, // blockComment
-            ';'           // statementEnd
+    public SqlSyntax() {
+        super("sql",
+            keywords,          // keywords
+            '\\',              // escapeChar
+            '\'',              // charLiteral
+            '"',               // stringLiteral
+            null,              // textBlock
+            "--",              // lineComment
+            blockComment,      // blockComment
+            ';'                // statementEnd
         );
     }
 }
+

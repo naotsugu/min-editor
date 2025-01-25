@@ -52,6 +52,9 @@ public interface Syntax {
             case "md" -> new MarkdownSyntax();
             case "kotlin", "kt", "kts" -> new KotlinSyntax();
             case "js", "json" -> new JsSyntax();
+            case "rs" -> new RustSyntax();
+            case "sql" -> new SqlSyntax();
+            case "py" -> new PythonSyntax();
             default -> new PassThrough(name);
         };
     }

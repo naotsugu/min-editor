@@ -45,7 +45,7 @@ public class BasicSyntax implements Syntax {
 
     public BasicSyntax(
             String name,
-            String keywords,
+            Trie keywords,
             char escapeChar,
             char charLiteral,
             char stringLiteral,
@@ -54,7 +54,7 @@ public class BasicSyntax implements Syntax {
             BlockType blockComment,
             char statementEnd) {
         this.name = name;
-        this.keywords = Trie.of(keywords);
+        this.keywords = keywords;
         this.escapeChar = escapeChar;
         this.charLiteral = charLiteral;
         this.stringLiteral = stringLiteral;

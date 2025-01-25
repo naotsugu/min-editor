@@ -16,35 +16,33 @@
 package com.mammb.code.editor.core.syntax2;
 
 import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
-import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The kotlin syntax.
+ * The python syntax.
  * @author Naotsugu Kobayashi
  */
-public class KotlinSyntax extends BasicSyntax {
+public class PythonSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-            as,as?,break,class,continue,do,else,false,for,fun,if,in,!in,interface,is,!is,null,
-            object,package,return,super,this,throw,true,try,typealias,typeof,val,var,when,while,
-            by,catch,constructor,delegate,dynamic,field,file,finally,get,import,init,param,
-            property,receiver,set,setparam,value,where,it""");
+        False,await,else,import,pass,None,break,except,in,raise,True,class,finally,is,return,
+        and,continue,for,lambda,try,as,def,from,nonlocal,while,assert,del,global,not,with,
+        async,elif,if,or,yield
+        match, case""");
 
     /** The blockComment. */
-    private static final BlockType blockComment = range("/*", "*/");
+    private static final BlockType blockComment = neutral("\"\"\"");
+    /** The blockComment2. */
+    private static final BlockType blockComment2 = neutral("'''");
 
-    /** The text block. */
-    private static final BlockType textBlock = neutral("\"\"\"");
-
-    public KotlinSyntax() {
-        super("kotlin",
+    public PythonSyntax() {
+        super("python",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            textBlock,         // textBlock
-            "//",              // lineComment
+            blockComment2,     // textBlock
+            "#",               // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd
         );

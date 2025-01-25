@@ -61,7 +61,7 @@ public interface StyledText extends Text {
     class Builder {
         private final Text text;
         private final Set<Integer> bounds = new HashSet<>();
-        private final List<Style.StyleSpan> spans = new ArrayList<>();
+        private final List<StyleSpan> spans = new ArrayList<>();
 
         private Builder(Text text) {
             this.text = text;
@@ -79,12 +79,16 @@ public interface StyledText extends Text {
             return this;
         }
 
-        public Builder put(Style style, int offset, int length) {
-            return put(new StyleSpan(style, offset, length));
-        }
-
         public List<StyledText> build() {
             return apply(text, 0, text.length());
+        }
+
+        public List<StyledText> buildLine() {
+            if (text instanceof SubText sub) {
+                return apply(sub, sub.fromIndex(), sub.toIndex() - sub.fromIndex());
+            } else {
+                return apply(text, 0, text.length());
+            }
         }
 
         private List<StyledText> apply(Text text, int from, int to) {
