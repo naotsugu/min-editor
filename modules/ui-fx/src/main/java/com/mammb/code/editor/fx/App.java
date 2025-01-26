@@ -47,18 +47,28 @@ public class App extends Application {
         stage.setTitle(Version.appName);
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
-        setupSyncConfigProperty(stage, scene, ctx);
+        syncConfigProperty(stage, scene, ctx);
         stage.show();
 
     }
 
-    private void setupSyncConfigProperty(Stage stage, Scene scene, AppContext ctx) {
+    /**
+     * Restores the window position and size from the config.
+     * @param stage the stage
+     * @param scene the scene
+     * @param ctx the application context
+     */
+    private void syncConfigProperty(Stage stage, Scene scene, AppContext ctx) {
         scene.heightProperty().addListener((_, _, h) -> ctx.config().windowHeight(h.doubleValue()));
         scene.widthProperty().addListener((_, _, w) -> ctx.config().windowWidth(w.doubleValue()));
         stage.xProperty().addListener((_, _, x) -> ctx.config().windowPositionX(x.doubleValue()));
         stage.yProperty().addListener((_, _, y) -> ctx.config().windowPositionY(y.doubleValue()));
     }
 
+    /**
+     * Get the content path specified as a command line parameter.
+     * @return the content path or {@code null}
+     */
     private Path paramPath() {
         Parameters params = getParameters();
         if (params.getRaw().isEmpty()) return null;

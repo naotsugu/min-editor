@@ -16,11 +16,13 @@
 package com.mammb.code.editor.core.syntax2;
 
 import com.mammb.code.editor.core.text.Style;
+import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
+import static com.mammb.code.editor.core.syntax2.LexerSources.readInlineBlock;
 
 /**
  * The Markdown syntax.
@@ -39,21 +41,21 @@ public class MarkdownSyntax implements Syntax {
     }
 
     @Override
-    public List<Style.StyleSpan> apply(int row, String text) {
+    public List<StyleSpan> apply(int row, String text) {
 
         if (text == null || text.isBlank()) {
             return Collections.emptyList();
         }
 
-        var spans = new ArrayList<Style.StyleSpan>();
+        var spans = new ArrayList<StyleSpan>();
         var source = LexerSource.of(row, text);
 
         while (source.hasNext()) {
 
             var block = blockScopes.read(source);
             if (block.isPresent()) {
-                if (block.get().type() == fence && block.get().token() instanceof BlockToken.BlockTokenWith<?> token) {
-                    System.out.println(token.with());
+                if (block.get().type() == fence &&
+                    block.get().token() instanceof BlockToken.BlockTokenWith<?> token) {
                     return ((Syntax) token.with()).apply(row, text);
                 }
             }
@@ -62,7 +64,11 @@ public class MarkdownSyntax implements Syntax {
             var peek = source.peek();
             char ch = peek.ch();
 
-            if (ch == '#' && peek.index() == 0) {
+            if (ch == '`') {
+                readInlineBlock(source, '`', '\\', Palette.darkGreen).ifPresent(spans::add);
+            } else if (ch == '*') {
+                spans.add(new Style.StyleSpan(Palette.darkOrange, peek.index(), 1));
+            } else if (ch == '#' && peek.index() == 0) {
                 Style style;
                 if (source.match("#####"))     style = Palette.darkPale;
                 else if (source.match("####")) style = Palette.darkPale;

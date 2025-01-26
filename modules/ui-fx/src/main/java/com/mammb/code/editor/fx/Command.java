@@ -58,13 +58,19 @@ public sealed interface Command {
     record Today() implements Command {}
     record Now() implements Command {}
 
+    record DecToHex() implements Command {}
+    record DecToBin() implements Command {}
+    record HexToBin() implements Command {}
+    record HexToDec() implements Command {}
+    record BinToHex() implements Command {}
+    record BinToDec() implements Command {}
+
     record Backward() implements Command {}
     record Forward() implements Command {}
     record ZoomIn() implements Command {}
     record ZoomOut() implements Command {}
     record Help() implements Command {}
 
-    // TODO convert dec to hex to bin to ..
     // TODO find next, find prev
 
     record FindAll(String str) implements Command, RequireArgs1<String> { }

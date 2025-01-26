@@ -39,7 +39,6 @@ import com.mammb.code.editor.core.syntax2.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.text.StyledText;
-import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Symbols;
 import com.mammb.code.editor.core.text.Text;
 import java.io.IOException;
@@ -333,7 +332,7 @@ public class TextEditorModel implements EditorModel {
             int caretLine = screenLayout.rowToLine(c.row(), c.col());
             double caretX = screenLayout.xOnLayout(caretLine, c.col());
             if (clickLine == caretLine) return;
-            var stream = (clickLine < caretLine)
+            IntStream stream = (clickLine < caretLine)
                     ? IntStream.rangeClosed(clickLine, caretLine - 1)
                     : IntStream.rangeClosed(caretLine + 1, clickLine);
             carets.add(stream
