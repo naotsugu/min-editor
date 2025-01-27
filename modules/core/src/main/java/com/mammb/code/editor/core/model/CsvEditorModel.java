@@ -15,16 +15,16 @@
  */
 package com.mammb.code.editor.core.model;
 
+import java.nio.file.Path;
+import java.util.Optional;
+import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.FloatOn;
 import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
-import com.mammb.code.editor.core.Action;
-import com.mammb.code.editor.core.Loc;
-import java.nio.file.Path;
-import java.util.Optional;
 
 /**
  * The csv editor model.

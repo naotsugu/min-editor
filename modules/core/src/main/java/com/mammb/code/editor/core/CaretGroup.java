@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.Point.Range;
 import java.util.ArrayList;
 import java.util.List;
+import com.mammb.code.editor.core.Point.Range;
 
 /**
  * The caret group.

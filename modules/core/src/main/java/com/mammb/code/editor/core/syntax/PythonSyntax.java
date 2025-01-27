@@ -15,10 +15,10 @@
  */
 package com.mammb.code.editor.core.syntax;
 
-import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.mammb.code.editor.core.text.Style.StyleSpan;
 
 /**
  * The python syntax.

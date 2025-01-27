@@ -10,6 +10,16 @@ Minimal text editor, **under development**.
 ![screenshot1](docs/images/screenshot-01.png)
 
 
+## Features
+
+* Syntax highlighting
+* Line wrapping
+* Multiple tab panes
+* Multiple carets and selections
+* Handles huge documents
+* Various editing commands (to open command pallet: `⌘-P` or `Ctrl-P`)
+
+
 ## Installing
 
 Download the latest [min-editor release](https://github.com/naotsugu/min-editor/releases) and unzip.
@@ -71,4 +81,10 @@ Therefore, to update a submodule, do the following.
 
 ```shell
 git submodule update --remote --merge
+```
+
+To format the code, execute the following command.
+
+```shell
+./gradlew rewriteRun
 ```

@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Context;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import com.mammb.code.editor.core.Context;
 
 /**
  * The application context.

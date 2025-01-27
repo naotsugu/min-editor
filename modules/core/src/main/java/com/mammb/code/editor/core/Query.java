@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.model.QueryRecords.*;
 import java.nio.file.Path;
+import com.mammb.code.editor.core.model.QueryRecords.*;
 
 /**
  * The Editor model query.

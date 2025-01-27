@@ -15,10 +15,10 @@
  */
 package com.mammb.code.editor.core.syntax;
 
-import com.mammb.code.editor.core.text.Style;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import com.mammb.code.editor.core.text.Style;
 
 /**
  * The lexer source.

@@ -15,14 +15,14 @@
  */
 package com.mammb.code.editor.core.layout;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.text.RowText;
 import com.mammb.code.editor.core.text.Text;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.IntStream;
 
 /**
  * The RowLayout.

@@ -15,13 +15,13 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Action;
+import java.util.function.Predicate;
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import java.util.function.Predicate;
+import com.mammb.code.editor.core.Action;
 
 import static javafx.scene.input.KeyCode.*;
 

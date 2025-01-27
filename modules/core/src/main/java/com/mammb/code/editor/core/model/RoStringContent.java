@@ -15,11 +15,6 @@
  */
 package com.mammb.code.editor.core.model;
 
-import com.mammb.code.editor.core.Content;
-import com.mammb.code.editor.core.Point;
-import com.mammb.code.editor.core.Query;
-import com.mammb.code.editor.core.model.QueryRecords.*;
-import com.mammb.code.piecetable.DocumentStat;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,6 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
+import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Query;
+import com.mammb.code.editor.core.model.QueryRecords.*;
+import com.mammb.code.piecetable.DocumentStat;
 
 /**
  * The read only string content.

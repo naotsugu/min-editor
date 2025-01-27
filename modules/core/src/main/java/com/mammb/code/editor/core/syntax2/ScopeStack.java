@@ -21,8 +21,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import com.mammb.code.editor.core.syntax2.BlockToken.Open;
 import com.mammb.code.editor.core.syntax2.BlockToken.Close;
+import com.mammb.code.editor.core.syntax2.BlockToken.Open;
 
 /**
  * The scope stack.

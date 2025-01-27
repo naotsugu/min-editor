@@ -15,13 +15,13 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Action;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
+import com.mammb.code.editor.core.Action;
 
 import static java.util.function.Predicate.not;
 
@@ -35,48 +35,79 @@ public sealed interface Command {
     System.Logger log = System.getLogger(Command.class.getName());
 
     interface Hidden { }
+
     interface RequireArgs { }
+
     interface RequireArgs1<T> extends RequireArgs { }
 
     record ActionCommand(Action action) implements Command {}
+
     record OpenChoose() implements Command {}
+
     record Save() implements Command {}
+
     record SaveAs() implements Command {}
+
     record New() implements Command {}
+
     record TabClose() implements Command {}
+
     record Config() implements Command {}
+
     record Palette(Class<? extends Command> initial) implements Command, Hidden {}
+
     record Empty() implements Command, Hidden {}
 
     record ToLowerCase() implements Command {}
+
     record ToUpperCase() implements Command {}
+
     record Sort() implements Command {}
+
     record Unique() implements Command {}
+
     record Calc() implements Command {}
+
     record Pwd() implements Command {}
+
     record Pwf() implements Command {}
+
     record Today() implements Command {}
+
     record Now() implements Command {}
 
     record DecToHex() implements Command {}
+
     record DecToBin() implements Command {}
+
     record HexToBin() implements Command {}
+
     record HexToDec() implements Command {}
+
     record BinToHex() implements Command {}
+
     record BinToDec() implements Command {}
 
     record Backward() implements Command {}
+
     record Forward() implements Command {}
+
     record ZoomIn() implements Command {}
+
     record ZoomOut() implements Command {}
+
     record Help() implements Command {}
 
     // TODO find next, find prev
 
     record FindAll(String str) implements Command, RequireArgs1<String> { }
+
     record GoTo(Integer rowNumber) implements Command, RequireArgs1<Integer> { }
+
     record Filter(String str) implements Command, RequireArgs1<String> { }
+
     record WrapLine(Integer width) implements Command, RequireArgs1<Integer> { }
+
     record Open(String path) implements Command, RequireArgs1<String> { }
 
     static String promptText(Class<? extends Command> clazz) {

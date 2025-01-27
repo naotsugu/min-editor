@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Theme;
+import java.util.Objects;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -30,7 +30,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import java.util.Objects;
+import com.mammb.code.editor.core.Theme;
 
 /**
  * The float bar.

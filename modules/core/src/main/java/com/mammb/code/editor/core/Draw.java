@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.core;
 
+import java.util.List;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Text;
-import java.util.List;
 
 /// The Draw.
 /// @author Naotsugu Kobayashi

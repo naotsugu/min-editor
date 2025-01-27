@@ -15,21 +15,21 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.text.Style;
-import com.mammb.code.editor.core.Draw;
-import com.mammb.code.editor.core.FontMetrics;
-import com.mammb.code.editor.core.Theme;
-import com.mammb.code.editor.core.text.SubText;
-import com.mammb.code.editor.core.text.Text;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import com.mammb.code.editor.core.Draw;
+import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.Theme;
+import com.mammb.code.editor.core.text.Style;
+import com.mammb.code.editor.core.text.SubText;
+import com.mammb.code.editor.core.text.Text;
 
 /**
  * The draw.

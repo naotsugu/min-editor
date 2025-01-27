@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Clipboard;
-import javafx.scene.input.DataFormat;
 import java.util.Map;
+import javafx.scene.input.DataFormat;
+import com.mammb.code.editor.core.Clipboard;
 
 /**
  * The FxClipboard.

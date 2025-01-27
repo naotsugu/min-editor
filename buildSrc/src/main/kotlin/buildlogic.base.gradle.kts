@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    id("org.openrewrite.rewrite")
 }
 
 repositories {
@@ -40,4 +41,14 @@ tasks.withType<Javadoc>().configureEach {
         addBooleanOption("-enable-preview", true)
         addStringOption("-release", "23")
     }
+}
+
+rewrite {
+    isExportDatatables = true
+    configFile = project.rootProject.file("rewrite.yml")
+    exclusion(
+        "modules/piecetable/*",
+    )
+    activeRecipe("com.mammb.Format")
+    activeStyle("com.mammb.Style")
 }

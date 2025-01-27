@@ -15,12 +15,6 @@
  */
 package com.mammb.code.editor.core.layout;
 
-import com.mammb.code.editor.core.Content;
-import com.mammb.code.editor.core.FontMetrics;
-import com.mammb.code.editor.core.Loc;
-import com.mammb.code.editor.core.text.RowText;
-import com.mammb.code.editor.core.text.SubText;
-import com.mammb.code.editor.core.text.Text;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,6 +23,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
+import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.Loc;
+import com.mammb.code.editor.core.text.RowText;
+import com.mammb.code.editor.core.text.SubText;
+import com.mammb.code.editor.core.text.Text;
 
 /**
  * The WrapLayout.

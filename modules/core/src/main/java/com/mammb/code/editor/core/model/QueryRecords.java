@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.core.model;
 
+import java.nio.file.Path;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
-import java.nio.file.Path;
 
 /**
  * The query records.
@@ -25,10 +25,15 @@ import java.nio.file.Path;
  */
 public interface QueryRecords {
     record RowEndingSymbol() implements Query<String> { }
+
     record CharsetSymbol() implements Query<String> { }
+
     record Modified() implements Query<Boolean> {}
+
     record Bom() implements Query<byte[]> {}
+
     record CaretPoint() implements Query<Point> {}
+
     record ContentPath() implements Query<Path> {}
 
     record WidthAsCharacters() implements Query<Integer> {}

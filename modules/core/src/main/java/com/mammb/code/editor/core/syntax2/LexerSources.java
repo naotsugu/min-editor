@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.core.syntax2;
 
+import java.util.Optional;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
-import java.util.Optional;
 
 /**
  * The lexer sources.

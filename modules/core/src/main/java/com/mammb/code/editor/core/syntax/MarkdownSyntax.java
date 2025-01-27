@@ -15,13 +15,13 @@
  */
 package com.mammb.code.editor.core.syntax;
 
-import com.mammb.code.editor.core.syntax.BlockScopes.BlockType;
-import com.mammb.code.editor.core.text.Style;
-import com.mammb.code.editor.core.syntax.LexerSource.Indexed;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import com.mammb.code.editor.core.syntax.BlockScopes.BlockType;
+import com.mammb.code.editor.core.syntax.LexerSource.Indexed;
+import com.mammb.code.editor.core.text.Style;
 
 /**
  * The Markdown syntax.

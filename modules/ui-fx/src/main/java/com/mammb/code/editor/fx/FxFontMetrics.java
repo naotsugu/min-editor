@@ -15,6 +15,10 @@
  */
 package com.mammb.code.editor.fx;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import javafx.scene.text.Font;
 import com.mammb.code.editor.core.FontMetrics;
 import com.sun.javafx.font.CharToGlyphMapper;
 import com.sun.javafx.font.FontResource;
@@ -23,10 +27,6 @@ import com.sun.javafx.font.PGFont;
 import com.sun.javafx.geom.transform.BaseTransform;
 import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.tk.Toolkit;
-import javafx.scene.text.Font;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The fontMetrics.

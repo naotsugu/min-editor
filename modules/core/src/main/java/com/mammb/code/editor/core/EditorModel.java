@@ -15,10 +15,10 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.model.TextEditorModel;
-import com.mammb.code.editor.core.syntax2.Syntax;
 import java.nio.file.Path;
 import java.util.Optional;
+import com.mammb.code.editor.core.model.TextEditorModel;
+import com.mammb.code.editor.core.syntax2.Syntax;
 
 /**
  * The facade of editor.

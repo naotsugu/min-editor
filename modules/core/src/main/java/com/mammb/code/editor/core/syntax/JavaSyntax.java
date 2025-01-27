@@ -15,12 +15,12 @@
  */
 package com.mammb.code.editor.core.syntax;
 
-import com.mammb.code.editor.core.text.Style.StyleSpan;
-import com.mammb.code.editor.core.syntax.BlockScopes.BlockType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import com.mammb.code.editor.core.syntax.BlockScopes.BlockType;
+import com.mammb.code.editor.core.text.Style.StyleSpan;
 
 /**
  * The Java syntax.

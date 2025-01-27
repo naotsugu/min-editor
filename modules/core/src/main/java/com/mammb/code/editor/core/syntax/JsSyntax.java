@@ -15,11 +15,11 @@
  */
 package com.mammb.code.editor.core.syntax;
 
-import com.mammb.code.editor.core.text.Style;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import com.mammb.code.editor.core.text.Style;
 
 /**
  * The javascript syntax.

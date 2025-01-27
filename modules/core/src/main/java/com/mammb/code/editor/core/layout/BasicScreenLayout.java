@@ -15,14 +15,14 @@
  */
 package com.mammb.code.editor.core.layout;
 
-import com.mammb.code.editor.core.FontMetrics;
-import com.mammb.code.editor.core.Loc;
-import com.mammb.code.editor.core.ScreenScroll;
-import com.mammb.code.editor.core.text.Text;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.Loc;
+import com.mammb.code.editor.core.ScreenScroll;
+import com.mammb.code.editor.core.text.Text;
 
 /**
  * The basic screen layout.

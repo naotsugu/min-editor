@@ -15,11 +15,11 @@
  */
 package com.mammb.code.editor.core.syntax2;
 
-import com.mammb.code.editor.core.text.Style.StyleSpan;
-import com.mammb.code.editor.core.text.Style;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.mammb.code.editor.core.text.Style;
+import com.mammb.code.editor.core.text.Style.StyleSpan;
 
 import static com.mammb.code.editor.core.syntax2.LexerSources.readInlineBlock;
 import static com.mammb.code.editor.core.syntax2.LexerSources.readNumberLiteral;

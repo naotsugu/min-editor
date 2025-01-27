@@ -15,9 +15,9 @@
  */
 package com.mammb.code.editor.fx;
 
+import java.nio.file.Path;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import java.nio.file.Path;
 
 /**
  * The application main pane.

@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.bootstrap;
 
-import com.mammb.code.editor.fx.AppLauncher;
 import java.util.Locale;
+import com.mammb.code.editor.fx.AppLauncher;
 
 /**
  * The application entry point.

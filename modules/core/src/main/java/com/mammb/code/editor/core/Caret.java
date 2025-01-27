@@ -15,17 +15,17 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.Point.Range;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import com.mammb.code.editor.core.Point.Range;
 
 /**
  * The Caret.
  * @author Naotsugu Kobayashi
  */
-public interface Caret extends Comparable<Caret>{
+public interface Caret extends Comparable<Caret> {
 
     /**
      * Get the caret point.

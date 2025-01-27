@@ -15,13 +15,13 @@
  */
 package com.mammb.code.editor.core.text;
 
-import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import com.mammb.code.editor.core.text.Style.StyleSpan;
 
 /**
  * The styled text.
