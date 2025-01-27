@@ -141,30 +141,66 @@ public class AppContext implements Context {
             return Double.parseDouble(map.getOrDefault("fontSize", 15).toString());
         }
 
+        /**
+         * Get the window width.
+         * @return the window width
+         */
         public double windowWidth() {
             return Double.parseDouble(map.getOrDefault("app.windowWidth", 640).toString());
         }
+
+        /**
+         * Set the window width.
+         * @param val the window width
+         */
         public void windowWidth(double val) {
             map.put("app.windowWidth", val);
         }
 
+        /**
+         * Get the window height.
+         * @return the window height
+         */
         public double windowHeight() {
             return Double.parseDouble(map.getOrDefault("app.windowHeight", 480.0).toString());
         }
+
+        /**
+         * Set the window height.
+         * @param val the window height
+         */
         public void windowHeight(double val) {
             map.put("app.windowHeight", val);
         }
 
+        /**
+         * Get the window position x.
+         * @return the window position x
+         */
         public double windowPositionX() {
             return Double.parseDouble(map.getOrDefault("app.windowPositionX", -1).toString());
         }
+
+        /**
+         * Set the window position x.
+         * @param val the window position x
+         */
         public void windowPositionX(double val) {
             map.put("app.windowPositionX", val);
         }
 
+        /**
+         * Get the window position y.
+         * @return the window position y
+         */
         public double windowPositionY() {
             return Double.parseDouble(map.getOrDefault("app.windowPositionY", -1).toString());
         }
+
+        /**
+         * Set the window position y.
+         * @param val the window position y
+         */
         public void windowPositionY(double val) {
             map.put("app.windowPositionY", val);
         }

@@ -29,6 +29,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.StageStyle;
@@ -55,14 +56,12 @@ public class CommandPalette extends Dialog<Command> {
     /** The default prompt text. */
     private static final String PROMPT = " <enter command> ";
 
+    /** The container of command palette. */
     private final HBox box;
     private final Label commandLabel;
+    /** Auto Complete TextField */
     private final AcTextField textField;
     private Class<? extends Command> cmdType;
-
-    public CommandPalette(Node node) {
-        this(node, null);
-    }
 
     public CommandPalette(Node node, Class<? extends Command> init) {
         super();
@@ -75,7 +74,7 @@ public class CommandPalette extends Dialog<Command> {
         initStyle(StageStyle.TRANSPARENT);
 
         var bounds = node.localToScreen(node.getBoundsInLocal());
-        var width = Math.max(bounds.getWidth() * 2 / 3, 300);
+        var width = Math.max(bounds.getWidth() * 2 / 3, 450);
         setOnShowing(_ -> {
             setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
             setY(bounds.getMinY() + bounds.getHeight() * 1 / 5);
@@ -203,12 +202,16 @@ public class CommandPalette extends Dialog<Command> {
             SequencedMap<String, CustomMenuItem> keywordMappedItems = new LinkedHashMap<>();
             for (var entry : Command.values().entrySet()) {
                 var text = new Text(entry.getKey());
-                text.setFill(Color.GRAY);
-                TextFlow menuText = new TextFlow(text);
+                text.setFill(Color.GRAY.brighter());
+                var note = new Text("  " +  Command.noteText(entry.getValue()));
+                note.setFont(Font.font(13));
+                note.setFill(Color.GRAY.darker());
+                TextFlow menuText = new TextFlow(text, note);
+
                 // TODO displaying description and shortcut labels
                 menuText.setPrefWidth(AcTextField.this.getWidth());
                 CustomMenuItem item = new CustomMenuItem(menuText, true);
-                item.setOnAction(e -> commandPalette.selectCommand(entry.getValue()));
+                item.setOnAction(_ -> commandPalette.selectCommand(entry.getValue()));
                 keywordMappedItems.put(entry.getKey(), item);
             }
             return keywordMappedItems;

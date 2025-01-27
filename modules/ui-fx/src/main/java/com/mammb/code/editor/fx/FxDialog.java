@@ -49,7 +49,7 @@ public class FxDialog extends Dialog<ButtonType> {
      * @return the about dialog
      */
     public static FxDialog about(Window owner) {
-        return new FxDialog(owner, "About", Version.appName, ButtonType.CLOSE);
+        return new FxDialog(owner, "About", Version.appName + " " + Version.val, ButtonType.CLOSE);
     }
 
     /**

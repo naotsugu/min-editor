@@ -18,6 +18,7 @@ package com.mammb.code.editor.fx;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public sealed interface Command {
 
     interface RequireArgs1<T> extends RequireArgs { }
 
-    record ActionCommand(Action action) implements Command {}
+    record ActionCommand(Action action) implements Command, Hidden {}
 
     record OpenChoose() implements Command {}
 
@@ -96,8 +97,6 @@ public sealed interface Command {
 
     record ZoomOut() implements Command {}
 
-    record Help() implements Command {}
-
     // TODO find next, find prev
 
     record FindAll(String str) implements Command, RequireArgs1<String> { }
@@ -109,6 +108,8 @@ public sealed interface Command {
     record WrapLine(Integer width) implements Command, RequireArgs1<Integer> { }
 
     record Open(String path) implements Command, RequireArgs1<String> { }
+
+    record Help() implements Command {}
 
     static String promptText(Class<? extends Command> clazz) {
         if (FindAll.class.isAssignableFrom(clazz)) {
@@ -126,12 +127,53 @@ public sealed interface Command {
         return "";
     }
 
-    static Map<String, Class<? extends Command>> values() {
+    static String noteText(Class<? extends Command> clazz) {
+        return switch (clazz) {
+            case Class<?> c when c == OpenChoose.class -> "open file selection dialog";
+            case Class<?> c when c == Save.class -> "save the current file";
+            case Class<?> c when c == SaveAs.class -> "save under a different name";
+            case Class<?> c when c == New.class -> "open new tab";
+            case Class<?> c when c == TabClose.class -> "close current tab";
+            case Class<?> c when c == Config.class -> "open current config";
+            case Class<?> c when c == ToLowerCase.class -> "converts the selected text to lower case";
+            case Class<?> c when c == ToUpperCase.class -> "converts the selected text to upper case";
+            case Class<?> c when c == Sort.class -> "sort the selected lines";
+            case Class<?> c when c == Unique.class -> "unique the selected lines";
+            case Class<?> c when c == Calc.class -> "calculates the selected expression";
+            case Class<?> c when c == Pwd.class -> "print working directory path";
+            case Class<?> c when c == Pwf.class -> "print working file path";
+            case Class<?> c when c == Today.class -> "insert current date";
+            case Class<?> c when c == Now.class -> "insert current time";
+            case Class<?> c when c == DecToHex.class -> "converts the selected decimal to hexadecimal";
+            case Class<?> c when c == DecToBin.class -> "converts the selected decimal to binary";
+            case Class<?> c when c == HexToBin.class -> "converts the selected hexadecimal to binary";
+            case Class<?> c when c == HexToDec.class -> "converts the selected hexadecimal to decimal";
+            case Class<?> c when c == BinToHex.class -> "converts the selected binary to hexadecimal";
+            case Class<?> c when c == BinToDec.class -> "converts the selected binary to a decimal number";
+            case Class<?> c when c == Backward.class -> "history back on tab";
+            case Class<?> c when c == Forward.class -> "history forward on tab";
+            case Class<?> c when c == ZoomIn.class -> "enlarge the font size";
+            case Class<?> c when c == ZoomOut.class -> "reduce the font size";
+            case Class<?> c when c == FindAll.class -> "searches for the specified text";
+            case Class<?> c when c == GoTo.class -> "go to the specified number of row";
+            case Class<?> c when c == Filter.class -> "not implemented yet";
+            case Class<?> c when c == WrapLine.class -> "wraps a line with a specified number of characters";
+            case Class<?> c when c == Open.class -> "opens the file at the specified path";
+            case Class<?> c when c == Help.class -> "show help dialog";
+            case null, default -> "";
+        };
+    }
+
+        static Map<String, Class<? extends Command>> values() {
         @SuppressWarnings("unchecked")
         var permitted = (Class<? extends Command>[]) Command.class.getPermittedSubclasses();
         return Arrays.stream(permitted)
             .filter(not(Hidden.class::isAssignableFrom))
-            .collect(Collectors.toMap(Class::getSimpleName, UnaryOperator.identity(), (_, e2) -> e2));
+            .collect(Collectors.toMap(
+                Class::getSimpleName,
+                UnaryOperator.identity(),
+                (_, e2) -> e2,
+                LinkedHashMap::new));
     }
 
     static Command newInstance(Class<? extends Command> clazz, String... args) {
