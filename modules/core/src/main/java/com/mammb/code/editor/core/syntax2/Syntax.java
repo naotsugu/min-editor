@@ -38,15 +38,38 @@ public interface Syntax {
      */
     List<Style.StyleSpan> apply(int row, String text);
 
+    /**
+     * Get the {@link BlockScopes).
+     * @return the {@link BlockScopes)
+     */
     default BlockScopes blockScopes() { return null; };
 
-    default boolean isBlockScoped() {
+    /**
+     * Gets whether the block scope has.
+     * @return {@code true}, if the block scope has
+     */
+    default boolean hasBlockScopes() {
         var blockScopes = blockScopes();
         return blockScopes != null && !blockScopes.isEmpty();
     }
 
+    /**
+     * Get the syntax for a given name.
+     * @param name the name
+     * @return the syntax
+     */
     static Syntax of(String name) {
-        if (name == null) name = "";
+
+        if (name == null) {
+            name = "";
+        }
+
+        record PassThrough(String name) implements Syntax {
+            @Override public List<Style.StyleSpan> apply(int row, String text) {
+                return List.of();
+            }
+        }
+
         return switch (name.toLowerCase()) {
             case "java" -> new JavaSyntax();
             case "md" -> new MarkdownSyntax();
@@ -61,9 +84,4 @@ public interface Syntax {
         };
     }
 
-    record PassThrough(String name) implements Syntax {
-        @Override public List<Style.StyleSpan> apply(int row, String text) {
-            return List.of();
-        }
-    }
 }

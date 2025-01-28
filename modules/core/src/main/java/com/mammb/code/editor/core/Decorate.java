@@ -86,7 +86,7 @@ public interface Decorate {
 
         @Override
         public void warmApply(int row, int len, Content content) {
-            if (syntax.isBlockScoped() && len > 0) {
+            if (syntax.hasBlockScopes() && len > 0) {
                 syntax.blockScopes().put(new Iterator<>() {
                     int index = row;
                     @Override
@@ -118,7 +118,7 @@ public interface Decorate {
 
         @Override
         public boolean isBlockScoped() {
-            return syntax.isBlockScoped();
+            return syntax.hasBlockScopes();
         }
 
     }
