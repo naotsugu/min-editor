@@ -37,6 +37,9 @@ public class KotlinSyntax extends BasicSyntax {
     /** The text block. */
     private static final BlockType textBlock = neutral("\"\"\"");
 
+    /**
+     * Constructor.
+     */
     public KotlinSyntax() {
         super("kotlin",
             keywords,          // keywords

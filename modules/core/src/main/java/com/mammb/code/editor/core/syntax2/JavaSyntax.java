@@ -37,6 +37,9 @@ public class JavaSyntax extends BasicSyntax {
     /** The text block. */
     private static final BlockType textBlock = neutral("\"\"\"");
 
+    /**
+     * Constructor.
+     */
     public JavaSyntax() {
         super("java",
             keywords,          // keywords

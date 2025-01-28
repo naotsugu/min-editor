@@ -37,6 +37,9 @@ public class RustSyntax extends BasicSyntax {
     /** The text block. */
     private static final BlockType textBlock = neutral("\"\"\"");
 
+    /**
+     * Constructor.
+     */
     public RustSyntax() {
         super("rust",
             keywords,          // keywords

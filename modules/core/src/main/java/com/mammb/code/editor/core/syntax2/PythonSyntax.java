@@ -35,6 +35,9 @@ public class PythonSyntax extends BasicSyntax {
     /** The blockComment2. */
     private static final BlockType blockComment2 = neutral("'''");
 
+    /**
+     * Constructor.
+     */
     public PythonSyntax() {
         super("python",
             keywords,          // keywords

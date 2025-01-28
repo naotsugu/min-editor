@@ -18,18 +18,26 @@ package com.mammb.code.editor.core.syntax2;
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The sql syntax.
+ * The cpp syntax.
  * @author Naotsugu Kobayashi
  */
-public class SqlSyntax extends BasicSyntax {
+public class CppSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-        add,all,alter,and,any,as,asc,backup,between,by,case,check,column,constraint,create,
-        database,default,delete,desc,distinct,drop,exec,exists,foreign,from,full,group,
-        having,in,index,insert,into,is,join,key,left,like,limit,not,null,or,order,outer,
-        primary,procedure,replace,right,rownum,select,set,table,top,truncate,union,unique,
-        update,values,view,where""", false);
+        alignas,alignof,and,and_eq,asm,auto,bitand,bitor,bool,
+        break,case,catch,char,char8_t,char16_t,char32_t,class,
+        compl,concept,const,consteval,constexpr,constinit,const_cast,
+        continue,co_await,co_return,co_yield,decltype,default,
+        delete,do,double,dynamic_cast,else,enum,explicit,export,
+        extern,false,final,float,for,friend,goto,if,inline,int,
+        long,mutable,namespace,new,noexcept,not,not_eq,nullptr,
+        operator,or,or_eq,private,protected,public,register,
+        reinterpret_cast,requires,return,short,signed,sizeof,
+        static,static_assert,static_cast,struct,switch,template,
+        this,thread_local,throw,true,try,typedef,typeid,typename,
+        union,unsigned,using,virtual,void,volatile,wchar_t,while,
+        xor,xor_eq""");
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
@@ -37,17 +45,16 @@ public class SqlSyntax extends BasicSyntax {
     /**
      * Constructor.
      */
-    public SqlSyntax() {
-        super("sql",
+    public CppSyntax() {
+        super("cpp",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
             null,              // textBlock
-            "--",              // lineComment
+            "//",              // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd
         );
     }
 }
-

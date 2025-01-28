@@ -15,39 +15,42 @@
  */
 package com.mammb.code.editor.core.syntax2;
 
+import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The javascript syntax.
+ * The go syntax.
  * @author Naotsugu Kobayashi
  */
-public class JsSyntax extends BasicSyntax {
+public class GoSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-            abstract,arguments,await,boolean,break,byte,case,catch,char,class,const,continue,
-            debugger,default,delete,do,double,else,enum,eval,export,extends,false,final,finally,
-            float,for,function,goto,if,implements,import,in,instanceof,int,interface,let,long,
-            native,new,null,package,private,protected,public,return,short,static,super,switch,
-            synchronized,this,throw,throws,transient,true,try,typeof,var,void,volatile,while,
-            with,yield""");
+        break,default,func,interface,select,case,defer,go,map,struct,
+        chan,else,goto,package,switch,const,fallthrough,if,range,type,
+        continue,for,import,return,var,
+        bool,int8,int16,int32,int64,uint8,uint16,uint32,uint64,
+        float32,float64,complex64,complex128,byte,rune,uint,int,uintptr,string""");
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
 
+    /** The text block. */
+    private static final BlockType textBlock = neutral("`");
+
     /**
      * Constructor.
      */
-    public JsSyntax() {
-        super("javascript",
-            keywords,     // keywords
-            '\\',         // escapeChar
-            '\'',         // charLiteral
-            '"',          // stringLiteral
-            null,         // textBlock
-            "//",         // lineComment
-            blockComment, // blockComment
-            ';'           // statementEnd
+    public GoSyntax() {
+        super("go",
+            keywords,          // keywords
+            '\\',              // escapeChar
+            '\'',              // charLiteral
+            '"',               // stringLiteral
+            textBlock,         // textBlock
+            "//",              // lineComment
+            blockComment,      // blockComment
+            ';'                // statementEnd
         );
     }
 }

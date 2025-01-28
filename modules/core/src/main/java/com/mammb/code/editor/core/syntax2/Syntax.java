@@ -55,6 +55,8 @@ public interface Syntax {
             case "rs" -> new RustSyntax();
             case "sql" -> new SqlSyntax();
             case "py" -> new PythonSyntax();
+            case "cpp", "c" -> new CppSyntax();
+            case "go" -> new GoSyntax();
             default -> new PassThrough(name);
         };
     }
