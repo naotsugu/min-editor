@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.mammb.code.editor.fx;
 
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -31,7 +32,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.StageStyle;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -201,16 +201,34 @@ public class CommandPalette extends Dialog<Command> {
         private SequencedMap<String, CustomMenuItem> commandTypeItems() {
             SequencedMap<String, CustomMenuItem> keywordMappedItems = new LinkedHashMap<>();
             for (var entry : Command.values().entrySet()) {
+
                 var text = new Text(entry.getKey());
                 text.setFill(Color.GRAY.brighter());
                 var note = new Text("  " +  Command.noteText(entry.getValue()));
                 note.setFont(Font.font(13));
                 note.setFill(Color.GRAY.darker());
-                TextFlow menuText = new TextFlow(text, note);
+                var noteBox = new HBox(note);
+                noteBox.setSpacing(0.0);
 
-                // TODO displaying description and shortcut labels
-                menuText.setPrefWidth(AcTextField.this.getWidth());
-                CustomMenuItem item = new CustomMenuItem(menuText, true);
+                var shortcutText = Command.shortcutText(entry.getValue());
+                var shortcut = new Label(shortcutText);
+                if (!shortcutText.isBlank()) {
+                    shortcut.setStyle("""
+                        -fx-text-fill: gray;
+                        -fx-font-size: 0.85em;
+                        -fx-padding: 0.0em 0.1em;
+                        -fx-border-style: solid;
+                        -fx-border-color: gray;
+                        -fx-border-radius: 3;
+                    """);
+                }
+
+                HBox box = new HBox(text, noteBox, shortcut);
+                box.setAlignment(Pos.CENTER_LEFT);
+                HBox.setHgrow(noteBox, Priority.ALWAYS);
+                box.setPrefWidth(AcTextField.this.getWidth());
+
+                CustomMenuItem item = new CustomMenuItem(box, true);
                 item.setOnAction(_ -> commandPalette.selectCommand(entry.getValue()));
                 keywordMappedItems.put(entry.getKey(), item);
             }
