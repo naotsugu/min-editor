@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import com.mammb.code.editor.core.Action;
 
 import static java.util.function.Predicate.not;
+import static javafx.scene.input.KeyCode.F1;
 
 /**
  * The application command.
@@ -112,19 +113,13 @@ public sealed interface Command {
     record Help() implements Command {}
 
     static String promptText(Class<? extends Command> clazz) {
-        if (FindAll.class.isAssignableFrom(clazz)) {
-            return "enter a string to search";
-        }
-        if (GoTo.class.isAssignableFrom(clazz)) {
-            return "enter a line number";
-        }
-        if (Filter.class.isAssignableFrom(clazz)) {
-            return "enter a regexp string to filter";
-        }
-        if (WrapLine.class.isAssignableFrom(clazz)) {
-            return "enter a wrap width(number of characters)";
-        }
-        return "";
+        return switch (clazz) {
+            case Class<?> c when c == FindAll.class -> "enter a string to search";
+            case Class<?> c when c == GoTo.class -> "enter a line number";
+            case Class<?> c when c == Filter.class -> "enter a regexp string to filter";
+            case Class<?> c when c == WrapLine.class -> "enter a wrap width(number of characters)";
+            case null, default -> "";
+        };
     }
 
     static String noteText(Class<? extends Command> clazz) {
@@ -164,7 +159,26 @@ public sealed interface Command {
         };
     }
 
-        static Map<String, Class<? extends Command>> values() {
+    static String shortcutText(Class<? extends Command> clazz) {
+        var shortcut = System.getProperty("os.name").toLowerCase().contains("mac") ? "⌘" : "Ctrl";
+        return switch (clazz) {
+            case Class<?> c when c == OpenChoose.class -> shortcut + " O";
+            case Class<?> c when c == Save.class -> shortcut + " S";
+            case Class<?> c when c == SaveAs.class -> shortcut + " Shift S";
+            case Class<?> c when c == New.class -> shortcut + " N";
+            case Class<?> c when c == TabClose.class -> shortcut + " W";
+            case Class<?> c when c == FindAll.class -> shortcut + " F";
+            case Class<?> c when c == Config.class -> shortcut + " ,";
+            case Class<?> c when c == ZoomIn.class -> shortcut + " +";
+            case Class<?> c when c == ZoomOut.class -> shortcut + " -";
+            case Class<?> c when c == Forward.class -> shortcut + " ]";
+            case Class<?> c when c == Backward.class -> shortcut + " [";
+            case Class<?> c when c == Help.class -> "F1";
+            case null, default -> "";
+        };
+    }
+
+    static Map<String, Class<? extends Command>> values() {
         @SuppressWarnings("unchecked")
         var permitted = (Class<? extends Command>[]) Command.class.getPermittedSubclasses();
         return Arrays.stream(permitted)

@@ -29,7 +29,7 @@ public class SqlSyntax extends BasicSyntax {
         database,default,delete,desc,distinct,drop,exec,exists,foreign,from,full,group,
         having,in,index,insert,into,is,join,key,left,like,limit,not,null,or,order,outer,
         primary,procedure,replace,right,rownum,select,set,table,top,truncate,union,unique,
-        update,values,view,where""");
+        update,values,view,where""", false);
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
