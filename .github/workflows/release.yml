@@ -12,11 +12,13 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            asset_name: min-editor-linux-amd64
+            asset_name: min-editor-linux-x64
           - os: macOS-latest
-            asset_name: min-editor-macos-amd64
+            asset_name: min-editor-macos-aarch64
+          - os: macOS-13
+            asset_name: min-editor-macos-x64
           - os: windows-latest
-            asset_name: min-editor-windows-amd64
+            asset_name: min-editor-windows-x64
       fail-fast: false
     name: ${{ matrix.os }}
     steps:

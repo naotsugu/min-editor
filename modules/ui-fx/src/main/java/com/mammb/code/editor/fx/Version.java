@@ -25,5 +25,5 @@ public interface Version {
     String appName = "min-editor";
 
     /** The version value. */
-    String val = "0.0.9";
+    String val = "0.0.10";
 }
