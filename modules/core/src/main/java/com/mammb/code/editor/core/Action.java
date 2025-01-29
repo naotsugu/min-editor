@@ -1,5 +1,5 @@
 /*
- * Copyright 2022-2024 the original author or authors.
+ * Copyright 2022-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,12 @@ public sealed interface Action
      */
     long occurredAt();
 
+    /**
+     * Gets whether the action is empty or not.
+     * @return {@code true}, if this action is empty
+     */
     default boolean isEmpty() {
-        return false;
+        return this instanceof Empty;
     }
 
     interface WithAttr<T> {

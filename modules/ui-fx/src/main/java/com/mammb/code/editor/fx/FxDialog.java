@@ -49,6 +49,7 @@ public class FxDialog extends Dialog<ButtonType> {
      * @return the about dialog
      */
     public static FxDialog about(Window owner) {
+        // TODO add link to help documents
         return new FxDialog(owner, "About", Version.appName + " " + Version.val, ButtonType.CLOSE);
     }
 

@@ -16,7 +16,7 @@
 package com.mammb.code.editor.core;
 
 /**
- * The float.
+ * The float on.
  * @author Naotsugu Kobayashi
  */
 public sealed interface FloatOn {

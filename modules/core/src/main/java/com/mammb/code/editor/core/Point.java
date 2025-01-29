@@ -91,9 +91,17 @@ public interface Point extends Comparable<Point> {
      * @param end the end point
      */
     record Range(Point start, Point end) implements Comparable<Range> {
+        /**
+         * Get the min point.
+         * @return the min point
+         */
         public Point min() {
             return start.compareTo(end) < 0 ? start : end;
         }
+        /**
+         * Get the max point.
+         * @return the max point
+         */
         public Point max() {
             return start.compareTo(end) > 0 ? start : end;
         }

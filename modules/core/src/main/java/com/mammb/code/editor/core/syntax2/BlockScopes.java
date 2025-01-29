@@ -68,8 +68,10 @@ public class BlockScopes {
             return Optional.empty();
         }
 
-        scopes.clear(source.row());
         int index = source.index();
+        if (index == 0) {
+            scopes.clear(source.row());
+        }
 
         var maybeBlockOpen = scopes.current();
         if (maybeBlockOpen.isEmpty() && readOpen(source).isPresent()) {
@@ -103,7 +105,8 @@ public class BlockScopes {
         while (source.hasNext()) {
             var peek = source.peek();
             if (peek.ch() == type.close().charAt(0) && source.match(type.close())) {
-                int col = source.next(type.close().length()).index();
+                source.next(type.close().length());
+                int col = source.index();
                 scopes.put(source.row(), col, BlockToken.close(type));
                 return;
             }

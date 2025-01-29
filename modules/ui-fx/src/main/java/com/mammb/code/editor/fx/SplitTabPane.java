@@ -51,7 +51,8 @@ import static java.lang.System.Logger.Level.ERROR;
 
 /**
  * The SplitTabPane.
- * It is implemented at the prototype level.
+ * <p>
+ * It is an ad hoc implementation and will be re-implemented
  * @author Naotsugu Kobayashi
  */
 public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane> {

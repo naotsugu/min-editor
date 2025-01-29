@@ -43,6 +43,16 @@ public interface EditorModel {
             ctx);
     }
 
+    /**
+     * Create a new {@link EditorModel} from session.
+     * @param session the session
+     * @param fm the font metrics
+     * @param scroll the screen scroll
+     * @param ctx the context
+     * @param width the window width
+     * @param height the window height
+     * @return a new {@link EditorModel}
+     */
     static EditorModel of(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
         return new TextEditorModel(
             session,

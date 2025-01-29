@@ -27,9 +27,7 @@ import com.mammb.code.editor.core.Clipboard;
  */
 public interface ActionRecords {
 
-    record Empty(long occurredAt) implements Action {
-        @Override public boolean isEmpty() { return true; }
-    }
+    record Empty(long occurredAt) implements Action { }
 
     record Input(String attr, long occurredAt) implements Action, WithAttr<String>, Repeatable { }
 

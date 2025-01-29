@@ -25,72 +25,60 @@ import java.util.stream.Collectors;
  */
 public interface EditingFunctions {
 
-    /**
-     * logger.
-     */
+    /** logger. */
     System.Logger log = System.getLogger(EditingFunctions.class.getName());
 
-    /**
-     * Pass through function.
-     */
+    /** Pass through function. */
     Function<String, String> passThrough = text -> text;
 
-    /**
-     * To lower case function.
-     */
+    /** To lower case function. */
     Function<String, String> toLower = String::toLowerCase;
-    /**
-     * To upper case function.
-     */
+    /** To upper case function. */
     Function<String, String> toUpper = String::toUpperCase;
 
-    /**
-     * Indent function.
-     */
+    /** Indent function. */
     Function<String, String> indent = text -> Arrays.stream(text.split("(?<=\\n)"))
         .map(s -> " ".repeat(4) + s)
         .collect(Collectors.joining());
-    /**
-     * Un indent function.
-     */
+    /** Un indent function. */
     Function<String, String> unindent = text -> Arrays.stream(text.split("(?<=\\n)"))
         .map(s -> s.replaceFirst("^ {4}?|^\t", ""))
         .collect(Collectors.joining());
 
-    /**
-     * Sort function.
-     */
+    /** Sort function. */
     Function<String, String> sort = text -> Arrays.stream(text.split("(?<=\\n)"))
         .sorted().collect(Collectors.joining());
 
-    /**
-     * Unique function.
-     */
+    /** Unique function. */
     Function<String, String> unique = text -> Arrays.stream(text.split("(?<=\\n)"))
         .distinct().collect(Collectors.joining());
 
-    /**
-     * Calc function.
-     */
+    /** Calc function. */
     Function<String, String> toCalc = text -> {
         // if it contains an equal sign, delete the rest
         int eq = text.indexOf('=');
         String formula = (eq > 1) ? text.substring(eq) : text;
 
         try {
-            String s = text.contains(" ") ? " " : "";
-            return "%s%s=%s%s".formatted(text, s, s, Calculator.calc(text));
+            String s = formula.contains(" ") ? " " : "";
+            return "%s%s=%s%s".formatted(formula, s, s, Calculator.calc(formula));
         } catch (Exception ignore) {
             log.log(System.Logger.Level.WARNING, ignore);
         }
         return text;
     };
 
+    /** decToHex function. */
     Function<String, String> decToHex = text -> hex(text, 10);
+    /** decToBin function. */
     Function<String, String> decToBin = text -> bin(text, 10);
+    /** hexToBin function. */
     Function<String, String> hexToBin = text -> bin(text.toLowerCase().startsWith("0x") ? text.substring(2) : text, 16);
+    /** hexToDec function. */
     Function<String, String> hexToDec = text -> dec(text.toLowerCase().startsWith("0x") ? text.substring(2) : text, 16);
+    /** binToHex function. */
     Function<String, String> binToHex = text -> hex(text.replaceAll(" ", ""), 2);
+    /** binToDec function. */
     Function<String, String> binToDec = text -> dec(text.replaceAll(" ", ""), 2);
 
     private static String bin(String text, int radix) {

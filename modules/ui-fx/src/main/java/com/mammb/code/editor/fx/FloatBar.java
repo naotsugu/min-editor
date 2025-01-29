@@ -34,6 +34,7 @@ import com.mammb.code.editor.core.Theme;
 
 /**
  * The float bar.
+ * Information bar located in the lower right corner.
  * @author Naotsugu Kobayashi
  */
 public class FloatBar extends HBox {
