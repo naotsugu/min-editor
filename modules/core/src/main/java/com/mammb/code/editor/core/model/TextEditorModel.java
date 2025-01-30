@@ -486,6 +486,7 @@ public class TextEditorModel implements EditorModel {
         } else {
             for (Caret c : carets.carets()) {
                 int tabSize = screenLayout.tabSize();
+                // TODO tab
                 var pos = content.insert(c.point(), " ".repeat(tabSize - c.col() % tabSize));
                 screenLayout.refreshBuffer(c.row(), pos.row() + 1);
                 c.at(pos);

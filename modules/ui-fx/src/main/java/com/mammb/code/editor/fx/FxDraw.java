@@ -16,6 +16,7 @@
 package com.mammb.code.editor.fx;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,22 +198,21 @@ public class FxDraw implements Draw {
     }
 
     private String formatTab(Text source) {
-        int col = (source instanceof SubText sub) ? sub.fromIndex() : 0;
-        int tabSize = fontMetrics.getTabSize();
         var tabs = new ArrayList<String>();
-        var text = source.value();
-        for (int i = 0; i < text.length(); i++) {
-            int index = text.indexOf("\t", i);
+        var str = source.value();
+        var advances = source.advances();
+        for (int i = 0; i < str.length(); i++) {
+            int index = str.indexOf("\t", i);
             if (index < 0) {
                 break;
             }
-            tabs.add(" ".repeat(tabSize - ((col + index) % tabSize)));
+            tabs.add(" ".repeat((int) (advances[index] / fontMetrics.standardCharWidth())));
             i = index;
         }
         for (String tab : tabs) {
-            text = text.replaceFirst("\t", tab);
+            str = str.replaceFirst("\t", tab);
         }
-        return text;
+        return str;
     }
 
 }

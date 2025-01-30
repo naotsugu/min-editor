@@ -38,14 +38,18 @@ public interface RowText extends LinedText {
     static RowText of(int row, String text, FontMetrics fm) {
         double width = 0;
         double[] advances = new double[text.length()];
-        for (int i = 0; i < text.length(); i++) {
+        for (int i = 0, tabShift = 0; i < text.length(); i++, tabShift++) {
             char ch1 = text.charAt(i);
             if (Character.isHighSurrogate(ch1)) {
                 width += advances[i] = fm.getAdvance(ch1, text.charAt(i + 1));
                 i++;
             } else if (ch1 == '\t') {
                 int tabSize = fm.getTabSize();
-                width += advances[i] = fm.standardCharWidth() * ((tabSize - i) % tabSize);
+                int sp = (tabShift < tabSize)
+                    ? tabSize - tabShift
+                    : tabSize - (tabShift % tabSize);
+                tabShift += (sp - 1);
+                width += advances[i] = fm.standardCharWidth() * sp;
             } else if (Character.isISOControl(ch1)) {
                 i++;
             } else {
