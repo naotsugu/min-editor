@@ -508,7 +508,8 @@ public class TextEditorModel implements EditorModel {
     void pasteFromClipboard(Clipboard clipboard) {
         var text = clipboard.getString();
         if (text.isEmpty()) return;
-        input(text.replaceAll("[\\x00-\\x09\\x0b-\\x0c\\x0e-\\x1f\\x7f]", ""));
+        // allow HT, LF, CR, SP
+        input(text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f]", ""));
     }
 
     void copyToClipboard(Clipboard clipboard) {

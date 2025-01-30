@@ -38,6 +38,16 @@ The easiest way to allow an app from an unidentified developer to run on macOS i
 
 After that, the app will be saved as a safe app to open, and you can double-click to use it in the future as you can with any registered apps.
 
+If the first one doesn't work, you can try to remove the quarantine attribute from the application. This will allow you to open the application without seeing the security warning.
+
+1. Open a Terminal window.
+2. Type the following command
+
+```shell
+sudo xattr -r -d com.apple.quarantine /Applications/min-editor.app
+```
+
+
 ## Uninstalling
 
 Delete executable files and configuration files.
