@@ -80,6 +80,7 @@ public interface Syntax {
             case "py" -> new PythonSyntax();
             case "cpp", "c" -> new CppSyntax();
             case "go" -> new GoSyntax();
+            case "ts", "tsx" -> new TsSyntax();
             default -> new PassThrough(name);
         };
     }

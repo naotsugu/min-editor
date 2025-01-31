@@ -263,6 +263,9 @@ public interface Caret extends Comparable<Caret> {
         }
     }
 
+    /**
+     * The implementation of Point as mutable.
+     */
     class PointMut implements Point {
 
         private int row, col;
