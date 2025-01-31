@@ -48,16 +48,44 @@ public interface CaretGroup {
      * @return the caret list
      */
     List<Caret> carets();
+
+    /**
+     * Get the marked range list.
+     * @return the marked range list
+     */
     List<Range> marked();
 
     /**
      * Get the caret points as range.
+     * The range has starting and ending range for text selection.
      * @return the caret points as range
      */
     List<Range> ranges();
+
+    /**
+     * Get if there is a marked caret.
+     * A marked caret is one that has a starting point for text selection
+     * @return {@code true}, if there is a marked caret
+     */
     boolean hasMarked();
+
+    /**
+     * Add the caret at the specified position.
+     * This operation deletes the existing caret position.
+     * @param points the specified position
+     */
     void at(List<Point> points);
+
+    /**
+     * Add the caret at the specified position.
+     * @param points the specified position
+     */
     void add(List<Point> points);
+
+    /**
+     * Adds or removes a caret at the specified point.
+     * @param point the specified point
+     */
     void toggle(Point point);
 
     /**
@@ -157,7 +185,10 @@ public interface CaretGroup {
         }
 
         void normalize() {
-            if (carets.size() <= 1) return;
+            if (carets.size() <= 1) {
+                return;
+            }
+
             List<Caret> merged = new ArrayList<>();
             for (Caret caret : carets.stream().sorted().toList()) {
                 if (merged.isEmpty()) {
@@ -170,6 +201,10 @@ public interface CaretGroup {
             }
             carets.clear();
             carets.addAll(merged);
+
+            if (carets.isEmpty()) {
+                carets.add(Caret.of());
+            }
         }
 
     }
