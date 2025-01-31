@@ -16,15 +16,24 @@
 package com.mammb.code.editor.core.model;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import com.mammb.code.editor.core.Action;
+import com.mammb.code.editor.core.CaretGroup;
+import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.FloatOn;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.Query;
+import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Session;
+import com.mammb.code.editor.core.text.RowText;
+import com.mammb.code.editor.core.text.Text;
 
 /**
  * The csv editor model.
@@ -32,74 +41,91 @@ import com.mammb.code.editor.core.Session;
  */
 public class CsvEditorModel implements EditorModel {
 
+    /** The content. */
+    private final Content content;
+    /** The font metrics. */
+    private FontMetrics fm;
+    /** The screen scroll. */
+    private final ScreenScroll scroll;
+    /** The carets. */
+    private final CaretGroup carets = CaretGroup.of();
+    /** The buffer of text. */
+    private final List<Text> buffer = new ArrayList<>();
+    /** The screen width. */
+    private double screenWidth = 0;
+    /** The screen height. */
+    private double screenHeight = 0;
+    /** The row number at the top of the screen. */
+    private int topRow = 0;
+    /** The x-axis screen scroll size. */
+    private double xShift = 0;
+
+    public CsvEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
+        this.content = content;
+        this.fm = fm;
+        this.scroll = scroll;
+    }
+
+
     @Override
     public void draw(Draw draw) {
-
     }
 
     @Override
     public void setSize(double width, double height) {
-
+        if (screenWidth != width || screenHeight != height) {
+            screenWidth = width;
+            screenHeight = height;
+            fillBuffer();
+        }
     }
 
     @Override
     public void scrollNext(int delta) {
-
     }
 
     @Override
     public void scrollPrev(int delta) {
-
     }
 
     @Override
     public void scrollAt(int line) {
-
     }
 
     @Override
     public void scrollX(double x) {
-
     }
 
     @Override
     public void scrollToCaretY() {
-
     }
 
     @Override
     public void scrollToCaretX() {
-
     }
 
     @Override
     public void mousePressed(double x, double y) {
-
     }
 
     @Override
     public void click(double x, double y, boolean withSelect) {
-
     }
 
     @Override
     public void ctrlClick(double x, double y) {
-
     }
 
     @Override
     public void clickDouble(double x, double y) {
-
     }
 
     @Override
     public void clickTriple(double x, double y) {
-
     }
 
     @Override
     public void moveDragged(double x, double y) {
-
     }
 
     @Override
@@ -109,7 +135,6 @@ public class CsvEditorModel implements EditorModel {
 
     @Override
     public void setCaretVisible(boolean visible) {
-
     }
 
     @Override
@@ -119,12 +144,10 @@ public class CsvEditorModel implements EditorModel {
 
     @Override
     public void save(Path path) {
-
     }
 
     @Override
     public void updateFonts(FontMetrics fontMetrics) {
-
     }
 
     @Override
@@ -138,7 +161,6 @@ public class CsvEditorModel implements EditorModel {
 
     @Override
     public void imeOff() {
-
     }
 
     @Override
@@ -148,7 +170,6 @@ public class CsvEditorModel implements EditorModel {
 
     @Override
     public void imeComposed(String text) {
-
     }
 
     @Override
@@ -158,11 +179,22 @@ public class CsvEditorModel implements EditorModel {
 
     @Override
     public void apply(Action action) {
-
     }
 
     @Override
     public <R> R query(Query<R> query) {
         return null;
     }
+
+    private void fillBuffer() {
+        buffer.clear();
+        IntStream.rangeClosed(topRow, topRow + screenLineSize())
+            .mapToObj(row -> RowText.of(row, content.getText(row), fm))
+            .forEach(buffer::addLast);
+    }
+
+    private int screenLineSize() {
+        return (int) Math.ceil(Math.max(0, screenHeight) / fm.getLineHeight());
+    }
+
 }
