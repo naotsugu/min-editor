@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,11 @@ import com.mammb.code.editor.core.Point.Range;
 
 /**
  * The Caret.
+ * Represents a caret on the content.
+ * <p>
+ * Treats the starting point of a text selection as a mark.
+ * Treats the caret as floating during mouse dragging
+ * The caret position is treated as a flush during the IME conversion process.
  * @author Naotsugu Kobayashi
  */
 public interface Caret extends Comparable<Caret> {
@@ -85,14 +90,27 @@ public interface Caret extends Comparable<Caret> {
         }
     }
 
+    /**
+     * Create a new {@link Caret}.
+     * @return a new {@link Caret}.
+     */
     static Caret of() {
         return new CaretImpl();
     }
 
+    /**
+     * Create a new {@link Caret} by specifying its position on the content.
+     * @param row the number of row
+     * @param col the number of column
+     * @return a new {@link Caret}.
+     */
     static Caret of(int row, int col) {
         return new CaretImpl(row, col);
     }
 
+    /**
+     * The implementation of {@link Caret}.
+     */
     class CaretImpl implements Caret {
 
         private final PointMut point;
@@ -101,12 +119,12 @@ public interface Caret extends Comparable<Caret> {
         private boolean floating;
         private Point flush;
 
-        public CaretImpl(int row, int col) {
-            this.point = new PointMut(row, col);
-        }
-
         public CaretImpl() {
             this.point = new PointMut(0, 0);
+        }
+
+        public CaretImpl(int row, int col) {
+            this.point = new PointMut(row, col);
         }
 
         @Override
