@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,10 @@ public interface CaretGroup {
      */
     Caret getFirst();
 
+    /**
+     * Get unique processed caret.
+     * @return the caret unique one
+     */
     Caret unique();
 
     /**
@@ -38,6 +42,11 @@ public interface CaretGroup {
      * @return the caret points
      */
     List<Point> points();
+
+    /**
+     * Get the caret list.
+     * @return the caret list
+     */
     List<Caret> carets();
     List<Range> marked();
 
@@ -65,10 +74,18 @@ public interface CaretGroup {
         return new CaretGroupImpl();
     }
 
+    /**
+     * The implementation of {@link CaretGroup}.
+     */
     class CaretGroupImpl implements CaretGroup {
+
+        /** The carets. */
         private final List<Caret> carets = new ArrayList<>();
 
-        public CaretGroupImpl() {
+        /**
+         * Constructor.
+         */
+        CaretGroupImpl() {
             carets.add(Caret.of());
         }
 

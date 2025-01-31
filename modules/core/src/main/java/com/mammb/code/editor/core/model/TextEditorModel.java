@@ -484,10 +484,18 @@ public class TextEditorModel implements EditorModel {
         if (carets.hasMarked()) {
             replace(sc ? EditingFunctions.unindent : EditingFunctions.indent, true);
         } else {
-            for (Caret c : carets.carets()) {
-                int tabSize = screenLayout.tabSize();
-                // TODO tab
-                var pos = content.insert(c.point(), " ".repeat(tabSize - c.col() % tabSize));
+            int ts = screenLayout.tabSize();
+            for (Caret c : carets.carets().stream().sorted().toList()) {
+                var text = content.getText(c.row());
+                int shift = 0;
+                for (int i = 0; i < c.col(); i++, shift++) {
+                    if (text.charAt(i) == '\t') {
+                        int sp = (shift < ts) ? ts - shift : ts - (shift % ts);
+                        shift += (sp - 1);
+                    }
+                }
+                var pos = content.insert(c.point(),
+                    " ".repeat((shift < ts) ? ts - shift : ts - (shift % ts)));
                 screenLayout.refreshBuffer(c.row(), pos.row() + 1);
                 c.at(pos);
             }

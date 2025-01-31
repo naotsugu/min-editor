@@ -44,10 +44,10 @@ public interface RowText extends LinedText {
                 width += advances[i] = fm.getAdvance(ch1, text.charAt(i + 1));
                 i++;
             } else if (ch1 == '\t') {
-                int tabSize = fm.getTabSize();
-                int sp = (tabShift < tabSize)
-                    ? tabSize - tabShift
-                    : tabSize - (tabShift % tabSize);
+                int ts = fm.getTabSize();
+                int sp = (tabShift < ts)
+                    ? ts - tabShift
+                    : ts - (tabShift % ts);
                 tabShift += (sp - 1);
                 width += advances[i] = fm.standardCharWidth() * sp;
             } else if (Character.isISOControl(ch1)) {
