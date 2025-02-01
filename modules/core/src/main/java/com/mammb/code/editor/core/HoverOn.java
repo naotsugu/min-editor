@@ -16,14 +16,19 @@
 package com.mammb.code.editor.core;
 
 /**
- * The float on.
+ * The hover on.
  * @author Naotsugu Kobayashi
  */
-public sealed interface FloatOn {
+public sealed interface HoverOn {
 
+    /** The garter region. */
     GarterRegion garterRegion = new GarterRegion();
+    /** The editor region. */
     EditRegion editRegion = new EditRegion();
 
-    record GarterRegion() implements FloatOn { }
-    record EditRegion() implements FloatOn { }
+    /** The garter region. */
+    record GarterRegion() implements HoverOn { }
+    /** The editor region. */
+    record EditRegion() implements HoverOn { }
+
 }

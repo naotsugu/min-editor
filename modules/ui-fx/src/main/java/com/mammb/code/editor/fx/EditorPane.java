@@ -18,7 +18,7 @@ package com.mammb.code.editor.fx;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
-import com.mammb.code.editor.core.FloatOn;
+import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
@@ -191,7 +191,7 @@ public class EditorPane extends StackPane {
 
     private void handleMouseMoved(MouseEvent e) {
         switch (model.floatLoc(e.getX(), e.getY())) {
-            case FloatOn.GarterRegion _ -> canvas.setCursor(Cursor.DEFAULT);
+            case HoverOn.GarterRegion _ -> canvas.setCursor(Cursor.DEFAULT);
             case null, default -> canvas.setCursor(Cursor.TEXT);
         }
     }

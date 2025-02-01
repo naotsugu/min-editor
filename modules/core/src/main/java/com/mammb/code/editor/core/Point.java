@@ -42,7 +42,9 @@ public interface Point extends Comparable<Point> {
      * @return the new caret point
      */
     static Point of(int row, int col) {
+
         record PointRecord(int row, int col) implements Point {
+
             @Override
             public boolean equals(Object object) {
                 if (!(object instanceof Point that)) return false;
@@ -54,6 +56,7 @@ public interface Point extends Comparable<Point> {
                 return Objects.hash(row, col);
             }
         }
+
         return new PointRecord(row, col);
     }
 
@@ -91,6 +94,7 @@ public interface Point extends Comparable<Point> {
      * @param end the end point
      */
     record Range(Point start, Point end) implements Comparable<Range> {
+
         /**
          * Get the min point.
          * @return the min point
@@ -98,6 +102,7 @@ public interface Point extends Comparable<Point> {
         public Point min() {
             return start.compareTo(end) < 0 ? start : end;
         }
+
         /**
          * Get the max point.
          * @return the max point
@@ -105,12 +110,24 @@ public interface Point extends Comparable<Point> {
         public Point max() {
             return start.compareTo(end) > 0 ? start : end;
         }
+
+        /**
+         * Get whether the specified point is included in this range.
+         * @param point the specified point
+         * @return {@code true}, if the specified point is included in this range
+         */
         public boolean contains(Point point) {
             return min().compareTo(point) <= 0 && max().compareTo(point) >= 0;
         }
+
+        /**
+         * Get whether this range starts and ends in the ascending direction
+         * @return {@code true}, if this range starts and ends in the ascending direction
+         */
         public boolean isAsc() {
             return start.compareTo(end) >= 0;
         }
+
         @Override
         public int compareTo(Range o) {
             return min().compareTo(o.min());

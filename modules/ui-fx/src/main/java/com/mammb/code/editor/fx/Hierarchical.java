@@ -15,6 +15,17 @@
  */
 package com.mammb.code.editor.fx;
 
+/**
+ * The Hierarchical.
+ * @param <E> the type of element
+ * @author Naotsugu Kobayashi
+ */
 public interface Hierarchical<E> {
+
+    /**
+     * Set the parent.
+     * @param parent the parent
+     */
     void setParent(E parent);
+
 }

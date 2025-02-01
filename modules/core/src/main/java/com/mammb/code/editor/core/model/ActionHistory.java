@@ -83,6 +83,12 @@ public class ActionHistory {
         return Collections.emptyList();
     }
 
+    /**
+     * Get whether the specified action list is equal or not.
+     * @param l the left hands
+     * @param r the right hands
+     * @return {@code true}, if the specified action list is equal
+     */
     private boolean equals(List<Action> l, List<Action> r) {
         if (l.size() != r.size()) {
             return false;

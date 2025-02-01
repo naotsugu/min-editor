@@ -30,19 +30,35 @@ import static com.mammb.code.editor.core.syntax2.LexerSources.readNumberLiteral;
  */
 public class BasicSyntax implements Syntax {
 
+    /** The name. */
     private final String name;
+    /** The keywords. */
     private final Trie keywords;
+    /** The escape character. */
     private final char escapeChar;
+    /** The character literal. */
     private final char charLiteral;
+    /** The string literal. */
     private final char stringLiteral;
-    private final BlockType textBlock;
+    /** The line comment. */
     private final String lineComment;
-    private final BlockType blockComment;
+    /** The statement end. */
     private final char statementEnd;
-
     /** The block scopes. */
     private final BlockScopes blockScopes;
 
+    /**
+     * Constructor.
+     * @param name the name
+     * @param keywords the keywords
+     * @param escapeChar the escape character
+     * @param charLiteral the character literal
+     * @param stringLiteral the string literal
+     * @param textBlock the text block
+     * @param lineComment the line comment
+     * @param blockComment the block comment
+     * @param statementEnd the statement end
+     */
     public BasicSyntax(
             String name,
             Trie keywords,
@@ -58,11 +74,8 @@ public class BasicSyntax implements Syntax {
         this.escapeChar = escapeChar;
         this.charLiteral = charLiteral;
         this.stringLiteral = stringLiteral;
-        this.textBlock = textBlock;
         this.lineComment = lineComment;
-        this.blockComment = blockComment;
         this.statementEnd = statementEnd;
-
         this.blockScopes = new BlockScopes(blockComment, textBlock);
     }
 

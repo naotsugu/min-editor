@@ -26,7 +26,7 @@ import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
-import com.mammb.code.editor.core.FloatOn;
+import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.Query;
@@ -60,6 +60,13 @@ public class CsvEditorModel implements EditorModel {
     /** The x-axis screen scroll size. */
     private double xShift = 0;
 
+    /**
+     * Constructor.
+     * @param content the content
+     * @param fm the font metrics
+     * @param scroll the screen scroll
+     * @param ctx the context
+     */
     public CsvEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
         this.content = content;
         this.fm = fm;
@@ -129,7 +136,7 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public FloatOn floatLoc(double x, double y) {
+    public HoverOn floatLoc(double x, double y) {
         return null;
     }
 

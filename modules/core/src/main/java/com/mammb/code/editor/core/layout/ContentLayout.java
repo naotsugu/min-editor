@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,20 @@ import com.mammb.code.editor.core.text.Text;
  */
 interface ContentLayout extends LineLayout {
 
+    @Override
+    RowText rowTextAt(int row);
+
+    /**
+     * Refresh the specified number of line.
+     * @param line the specified number of line
+     */
     void refresh(int line);
+
+    /**
+     * Refresh the range with the specified number of row.
+     * @param startRow the row number of start
+     * @param endRow the row number of end
+     */
     void refreshAt(int startRow, int endRow);
 
     /**
@@ -37,8 +50,22 @@ interface ContentLayout extends LineLayout {
      * @return the text list
      */
     List<Text> texts(int startLine, int endLine);
+
+    /**
+     * Get the {@link RowText} belonging to the specified number of line.
+     * @param line the specified number of line
+     * @return the {@link RowText}
+     */
     RowText rowText(int line);
-    @Override RowText rowTextAt(int row);
+
+    /**
+     * Get the location.
+     * @param row the number of row
+     * @param col the number of column
+     * @param rangeLineStart the limitation of line
+     * @param rangeLineEnd the limitation of line
+     * @return the location
+     */
     Optional<Loc> loc(int row, int col, int rangeLineStart, int rangeLineEnd);
 
 }

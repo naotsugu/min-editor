@@ -78,7 +78,7 @@ public interface EditorModel {
     void clickDouble(double x, double y);
     void clickTriple(double x, double y);
     void moveDragged(double x, double y);
-    FloatOn floatLoc(double x, double y);
+    HoverOn floatLoc(double x, double y);
     void setCaretVisible(boolean visible);
 
     Optional<Path> path();
@@ -97,8 +97,16 @@ public interface EditorModel {
     boolean isImeOn();
     void imeComposed(String text);
 
+    /**
+     * Get the session.
+     * @return the session
+     */
     Session getSession();
 
+    /**
+     * Apply the action.
+     * @param action the action
+     */
     void apply(Action action);
 
     /**

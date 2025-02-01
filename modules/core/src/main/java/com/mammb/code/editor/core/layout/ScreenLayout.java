@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,14 +48,25 @@ public interface ScreenLayout extends LineLayout {
     int topRow();
     double xShift();
     void applyScreenScroll(ScreenScroll screenScroll);
-
     void updateFontMetrics(FontMetrics fontMetrics);
 
+    /**
+     * Create a new {@link ScreenLayout}.
+     * @param content the content
+     * @param fm the font metrics
+     * @return a new {@link ScreenLayout}
+     */
     static ScreenLayout of(Content content, FontMetrics fm) {
         ContentLayout layout = new RowLayout(content, fm);
         return new BasicScreenLayout(layout);
     }
 
+    /**
+     * Create a new line wrapped {@link ScreenLayout}.
+     * @param content the content
+     * @param fm the font metrics
+     * @return a new {@link ScreenLayout}
+     */
     static ScreenLayout wrapOf(Content content, FontMetrics fm) {
         ContentLayout layout = new WrapLayout(content, fm);
         return new BasicScreenLayout(layout);

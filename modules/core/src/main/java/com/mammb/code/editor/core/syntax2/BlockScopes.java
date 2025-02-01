@@ -28,17 +28,31 @@ import java.util.stream.Stream;
  */
 public class BlockScopes {
 
+    /** The scope stacks. */
     private final ScopeStack scopes = new ScopeStack();
+    /** The block types. */
     private final List<BlockType> types = new ArrayList<>();
 
+    /**
+     * Constructor.
+     * @param blockTypes
+     */
     public BlockScopes(BlockType... blockTypes) {
         types.addAll(Stream.of(blockTypes).filter(Objects::nonNull).toList());
     }
 
+    /**
+     * Get whether this block types is empty or not.
+     * @return {@code true}, if this block types is empty
+     */
     public boolean isEmpty() {
         return types.isEmpty();
     }
 
+    /**
+     * Put the source texts.
+     * @param sources the source texts
+     */
     public void put(Iterator<LexerSource> sources) {
 
         if (!sources.hasNext()) return;
@@ -62,6 +76,11 @@ public class BlockScopes {
         }
     }
 
+    /**
+     * Read the lexer source.
+     * @param source the lexer source
+     * @return the block span
+     */
     public Optional<BlockSpan> read(LexerSource source) {
 
         if (!source.hasNext()) {
@@ -89,7 +108,7 @@ public class BlockScopes {
     }
 
 
-    public record BlockSpan(BlockToken token, int index, int length) {
+    record BlockSpan(BlockToken token, int index, int length) {
         public BlockType type() { return token.type(); }
         public <T> T with() {
             if (token instanceof BlockToken.BlockTokenWith<?> a) {

@@ -35,12 +35,18 @@ public interface LinedText extends Text {
      */
     static LinedText of(int line, Text text) {
         record LinedTextRecord(int line, Text peer) implements LinedText {
-            @Override public int row() { return peer.row(); }
-            @Override public String value() { return peer.value(); }
-            @Override public double[] advances() { return peer.advances(); }
-            @Override public double width() { return peer.width(); }
-            @Override public double height() { return peer.height(); }
-            @Override public int line() { return line; }
+            @Override
+            public int row() { return peer.row(); }
+            @Override
+            public String value() { return peer.value(); }
+            @Override
+            public double[] advances() { return peer.advances(); }
+            @Override
+            public double width() { return peer.width(); }
+            @Override
+            public double height() { return peer.height(); }
+            @Override
+            public int line() { return line; }
         }
         return new LinedTextRecord(line, text);
     }

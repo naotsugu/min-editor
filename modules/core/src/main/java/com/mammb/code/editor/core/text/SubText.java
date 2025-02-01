@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,73 +24,74 @@ import java.util.List;
  * @author Naotsugu Kobayashi
  */
 public interface SubText extends Text {
+
+    /**
+     * Get the index of from.
+     * @return the index of from
+     */
     int fromIndex();
+
+    /**
+     * Get the to index.
+     * @return the to index.
+     */
     int toIndex();
+
+    /**
+     * Get the parent text.
+     * @return the parent text
+     */
     Text parent();
 
+    /**
+     * Get the text of a given line of text wrapped with the specified width.
+     * @param rowText the original text
+     * @param width the specified width
+     * @return the line wrapped text
+     */
     static List<SubText> of(RowText rowText, double width) {
+
         if (width <= 0) {
-            return List.of(new SubTextRecord(rowText, 0, rowText.length(), rowText.width(), null));
+            return List.of(new SubTextRecord(rowText, 0, rowText.length(), rowText.width()));
         }
+
         double w = 0;
         int fromIndex = 0;
-        SubText prev = null;
         List<SubText> subs = new ArrayList<>();
         double[] advances = rowText.advances();
         for (int i = 0; i < rowText.length(); i++) {
             double advance = advances[i];
             if (advance <= 0) continue;
             if (w + advance > width) {
-                var sub = new SubTextRecord(rowText, fromIndex, i, w, prev);
-                if (!subs.isEmpty()) {
-                    ((SubTextRecord) subs.getLast()).next = sub;
-                }
+                var sub = new SubTextRecord(rowText, fromIndex, i, w);
                 subs.add(sub);
-                prev = sub;
                 w = 0;
                 fromIndex = i;
             }
             w += advance;
         }
-        var sub = new SubTextRecord(rowText, fromIndex, rowText.length(), w, prev);
-        if (!subs.isEmpty()) {
-            ((SubTextRecord) subs.getLast()).next = sub;
-        }
+        var sub = new SubTextRecord(rowText, fromIndex, rowText.length(), w);
         subs.add(sub);
         return subs;
     }
 
-    class SubTextRecord implements SubText {
-        private final RowText parent;
-        private final int fromIndex;
-        private final int toIndex;
-        private final double width;
-        private final SubText prev;
-        private SubText next;
-
-        public SubTextRecord(RowText parent, int fromIndex, int toIndex, double width, SubText prev) {
-            this.parent = parent;
-            this.fromIndex = fromIndex;
-            this.toIndex = toIndex;
-            this.width = width;
-            this.prev = prev;
+    record SubTextRecord(RowText parent, int fromIndex, int toIndex, double width) implements SubText {
+        @Override
+        public int row() {
+            return parent.row();
         }
-
         @Override
-        public int row() { return parent.row(); }
+        public String value() {
+            return parent.value().substring(fromIndex, toIndex);
+        }
         @Override
-        public String value() { return parent.value().substring(fromIndex, toIndex); }
+        public double[] advances() {
+            return Arrays.copyOfRange(parent.advances(), fromIndex, toIndex);
+        }
         @Override
-        public double[] advances() { return Arrays.copyOfRange(parent.advances(), fromIndex, toIndex); }
-        @Override
-        public double width() { return width; }
-        @Override
-        public double height() { return parent.height(); }
-        @Override
-        public int fromIndex() { return fromIndex; }
-        @Override
-        public int toIndex() { return toIndex; }
-        @Override
-        public Text parent() { return parent; }
+        public double height() {
+            return parent.height();
+        }
     }
+
 }

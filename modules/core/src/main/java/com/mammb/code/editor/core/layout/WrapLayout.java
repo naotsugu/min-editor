@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,16 +103,6 @@ public class WrapLayout implements ContentLayout {
             }
         }
         lines.addAll(start, newLines);
-    }
-
-    private List<SubRange> subRanges(int row) {
-        List<SubRange> list = new ArrayList<>();
-        List<SubText> subTexts = subTextsAt(row);
-        for (int i = 0; i < subTexts.size(); i++) {
-            SubText subText = subTexts.get(i);
-            list.add(new SubRange(row, i, subTexts.size(), subText.fromIndex(), subText.toIndex()));
-        }
-        return list;
     }
 
     @Override
@@ -253,6 +243,34 @@ public class WrapLayout implements ContentLayout {
         return Optional.empty();
     }
 
+    /**
+     * Get the content.
+     * @return the content
+     */
+    Content getContent() {
+        return content;
+    }
+
+    /**
+     * Get the font metrics.
+     * @return the font metrics
+     */
+    FontMetrics getFm() {
+        return fm;
+    }
+
+
+    private List<SubRange> subRanges(int row) {
+        List<SubRange> list = new ArrayList<>();
+        List<SubText> subTexts = subTextsAt(row);
+        for (int i = 0; i < subTexts.size(); i++) {
+            SubText subText = subTexts.get(i);
+            list.add(new SubRange(row, i, subTexts.size(), subText.fromIndex(), subText.toIndex()));
+        }
+        return list;
+    }
+
+
     static class SubRange implements Comparable<SubRange> {
         private int row, subLine, subLines, fromIndex, toIndex;
         public SubRange(int row, int subLine, int subLines, int fromIndex, int toIndex) {
@@ -297,22 +315,6 @@ public class WrapLayout implements ContentLayout {
                     .thenComparing(SubRange::subLine)
                     .compare(this, that);
         }
-    }
-
-    /**
-     * Get the content.
-     * @return the content
-     */
-    Content getContent() {
-        return content;
-    }
-
-    /**
-     * Get the font metrics.
-     * @return the font metrics
-     */
-    FontMetrics getFm() {
-        return fm;
     }
 
 }

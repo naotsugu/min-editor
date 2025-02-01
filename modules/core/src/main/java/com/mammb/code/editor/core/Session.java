@@ -65,7 +65,6 @@ public interface Session {
      */
     int caretCol();
 
-
     /**
      * Get the timestamp of this session in milliseconds.
      * @return the timestamp of this session in milliseconds
@@ -74,10 +73,6 @@ public interface Session {
 
     default boolean hasPath() {
         return path() != null;
-    }
-
-    default boolean existsFile() {
-        return Files.exists(path());
     }
 
     static Session of(Path path) {

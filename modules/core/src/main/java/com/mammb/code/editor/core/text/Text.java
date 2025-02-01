@@ -110,7 +110,7 @@ public interface Text {
     }
 
     /**
-     * Gets whether the character at the specified index is Low Surrogate or not.
+     * Get whether the character at the specified index is Low Surrogate or not.
      * @param index the specified index
      * @return {@code true} if the character at the specified index is Low Surrogate
      */
@@ -118,23 +118,45 @@ public interface Text {
         return Character.isLowSurrogate(value().charAt(index));
     }
 
+    /**
+     * Get the index moved to the right of the specified index.
+     * Surrogate pair consideration.
+     * @param index the base index
+     * @return the index moved to the right
+     */
     default int indexRight(int index) {
         if (isEmpty() || index == value().length()) return index;
         index += isHighSurrogate(index) ? 2 : 1;
         return (index > textLength()) ? -1 : index;
     }
 
+    /**
+     * Get the index moved to the left of the specified index.
+     * Surrogate pair consideration.
+     * @param index the base index
+     * @return the index moved to the left
+     */
     default int indexLeft(int index) {
         if (index <= 0) return 0;
         index -= isLowSurrogate(index - 1) ? 2 : 1;
         return index;
     }
 
+    /**
+     * Get the width of the string up to the specified index.
+     * @param index the specified index
+     * @return the width
+     */
     default double widthTo(int index) {
         double[] ad = advances();
         return Arrays.stream(ad, 0, Math.min(index, ad.length)).sum();
     }
 
+    /**
+     * Get the index corresponding to the specified width.
+     * @param width the specified width
+     * @return the index
+     */
     default int indexTo(double width) {
         double[] ad = advances();
         double w = 0;
@@ -145,10 +167,18 @@ public interface Text {
         return Math.min(ad.length, textLength());
     }
 
+    /**
+     * Get whether this text is empty or not.
+     * @return {@code true} if, and only if, {@link #length()} is {@code 0}.
+     */
     default boolean isEmpty() {
         return value().isEmpty();
     }
 
+    /**
+     * Get the word-separated text list.
+     * @return the word-separated text list
+     */
     default List<Text> words() {
         List<Text> ret = new ArrayList<>();
         var text = value();

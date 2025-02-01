@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,17 +24,20 @@ import com.mammb.code.editor.core.Query;
  * @author Naotsugu Kobayashi
  */
 public interface QueryRecords {
+
+    /** query of row ending symbol. */
     record RowEndingSymbol() implements Query<String> { }
-
+    /** query of charset symbol. */
     record CharsetSymbol() implements Query<String> { }
+    /** query of modified. */
+    record Modified() implements Query<Boolean> { }
+    /** query of bom. */
+    record Bom() implements Query<byte[]> { }
+    /** query of caret point. */
+    record CaretPoint() implements Query<Point> { }
+    /** query of content path. */
+    record ContentPath() implements Query<Path> { }
+    /** query of width as characters. */
+    record WidthAsCharacters() implements Query<Integer> { }
 
-    record Modified() implements Query<Boolean> {}
-
-    record Bom() implements Query<byte[]> {}
-
-    record CaretPoint() implements Query<Point> {}
-
-    record ContentPath() implements Query<Path> {}
-
-    record WidthAsCharacters() implements Query<Integer> {}
 }

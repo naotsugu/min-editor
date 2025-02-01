@@ -53,20 +53,72 @@ public interface Caret extends Comparable<Caret> {
      */
     void at(int row, int col, double vPos);
 
-
+    /**
+     * Set the caret at the specified position and also sets it floating.
+     * @param row the number of row
+     * @param col the number of column
+     */
     void floatAt(int row, int col);
+
+    /**
+     * Set the caret at the specified position and also sets it flush.
+     * @param row the number of row
+     * @param col the number of column
+     */
     void imeFlushAt(int row, int col);
     void markTo(int markRow, int markCol, int row, int col);
     boolean hasImeFlush();
+
+    /**
+     * Mark the current caret position.
+     */
     void mark();
+
+    /**
+     * Get the marked point.
+     * @return the marked point
+     */
     Point markedPoint();
+
+    /**
+     * Get the flushed point.
+     * @return the flushed point
+     */
     Point flushedPoint();
+
     boolean marge(Caret other);
+
+    /**
+     * Clear marked point.
+     */
     void clearMark();
+
+    /**
+     * Clear floating.
+     */
     void clearFloat();
+
+    /**
+     * Clear ime flush.
+     */
     void clearImeFlush();
+
+    /**
+     * Get whether it is marked or not.
+     * @return {@code true}, if it is marked
+     */
     boolean isMarked();
+
+    /**
+     * Get whether it is floating or not.
+     * @return {@code true}, if it is floating
+     */
     boolean isFloating();
+
+    /**
+     * Get the caret virtual position.
+     * @return the caret virtual position
+     */
     double vPos();
 
     default Range markedRange() {
