@@ -38,8 +38,22 @@ public interface Caret extends Comparable<Caret> {
      */
     Point point();
 
+    /**
+     * Set the caret position.
+     * @param row the number of row
+     * @param col the number of column
+     */
     void at(int row, int col);
+
+    /**
+     * Set the caret position with virtual position.
+     * @param row the number of row
+     * @param col the number of column
+     * @param vPos virtual x-coordinate position of the caret
+     */
     void at(int row, int col, double vPos);
+
+
     void floatAt(int row, int col);
     void imeFlushAt(int row, int col);
     void markTo(int markRow, int markCol, int row, int col);
