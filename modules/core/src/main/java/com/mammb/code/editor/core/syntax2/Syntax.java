@@ -82,6 +82,7 @@ public interface Syntax {
             case "go" -> new GoSyntax();
             case "ts", "tsx" -> new TsSyntax();
             case "html", "htm", "xhtml" -> new HtmlSyntax();
+            case "yaml", "yml" -> new YamlSyntax();
             default -> new PassThrough(name);
         };
     }
