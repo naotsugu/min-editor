@@ -83,6 +83,7 @@ public interface Syntax {
             case "ts", "tsx" -> new TsSyntax();
             case "html", "htm", "xhtml" -> new HtmlSyntax();
             case "yaml", "yml" -> new YamlSyntax();
+            case "toml" -> new TomlSyntax();
             default -> new PassThrough(name);
         };
     }

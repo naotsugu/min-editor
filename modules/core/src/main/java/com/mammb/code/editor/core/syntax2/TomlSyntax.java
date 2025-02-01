@@ -21,16 +21,17 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.mammb.code.editor.core.syntax2.LexerSources.readInlineBlock;
+import static com.mammb.code.editor.core.syntax2.LexerSources.readNumberLiteral;
 
 /**
- * The yaml syntax.
+ * The toml syntax.
  * @author Naotsugu Kobayashi
  */
-public class YamlSyntax implements Syntax {
+public class TomlSyntax implements Syntax {
 
     @Override
     public String name() {
-        return "yaml";
+        return "toml";
     }
 
     @Override
@@ -54,10 +55,13 @@ public class YamlSyntax implements Syntax {
             } else if (peek.ch() == '"') {
                 readInlineBlock(source, '"', '\\', Palette.darkGreen).ifPresent(spans::add);
 
-            } else if (Character.isAlphabetic(peek.ch())) {
+            } else if (Character.isDigit(peek.ch())) {
+                readNumberLiteral(source, Palette.darkPale).ifPresent(spans::add);
+
+            } else if (peek.ch() == '[' && peek.index() == 0) {
                 var s = source.nextUntilWs();
-                if (s.text().endsWith(":")) {
-                    spans.add(new Style.StyleSpan(Palette.darkOrange, s.index(), s.length() - 1));
+                if (s.text().endsWith("]")) {
+                    spans.add(new Style.StyleSpan(Palette.darkOrange, s.index(), s.length()));
                 }
             }
 
@@ -68,3 +72,4 @@ public class YamlSyntax implements Syntax {
 
     }
 }
+
