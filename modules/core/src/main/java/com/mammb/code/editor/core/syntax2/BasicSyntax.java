@@ -110,8 +110,7 @@ public class BasicSyntax implements Syntax {
             } else if (Character.isAlphabetic(ch)) {
                 var s = source.nextUntil(Character::isUnicodeIdentifierPart);
                 if (keywords.match(s.text())) {
-                    var span = new Style.StyleSpan(Palette.darkOrange, s.index(), s.length());
-                    spans.add(span);
+                    spans.add(new Style.StyleSpan(Palette.darkOrange, s.index(), s.length()));
                 }
             }
 

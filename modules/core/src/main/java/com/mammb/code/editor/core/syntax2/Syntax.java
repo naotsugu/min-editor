@@ -81,6 +81,7 @@ public interface Syntax {
             case "cpp", "c" -> new CppSyntax();
             case "go" -> new GoSyntax();
             case "ts", "tsx" -> new TsSyntax();
+            case "html", "htm", "xhtml" -> new HtmlSyntax();
             default -> new PassThrough(name);
         };
     }
