@@ -632,14 +632,14 @@ public class TextEditorModel implements EditorModel {
         if (isImeOn() || action.isEmpty()) return;
 
         switch (action) {
-            case Input a     -> input(a.attr());
-            case Delete _    -> delete();
-            case Backspace _ -> backspace();
-            case Undo _      -> undo();
-            case Redo _      -> redo();
-            case Home a      -> moveCaretHome(a.withSelect());
-            case End a       -> moveCaretEnd(a.withSelect());
-            case Tab a       -> inputTab(a.withSelect());
+            case Input a      -> input(a.attr());
+            case Delete _     -> delete();
+            case Backspace _  -> backspace();
+            case Undo _       -> undo();
+            case Redo _       -> redo();
+            case Home a       -> moveCaretHome(a.withSelect());
+            case End a        -> moveCaretEnd(a.withSelect());
+            case Tab a        -> inputTab(a.withSelect());
             case CaretRight a -> moveCaretRight(a.withSelect());
             case CaretLeft a  -> moveCaretLeft(a.withSelect());
             case CaretUp a    -> moveCaretUp(a.withSelect());
@@ -829,7 +829,9 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void refreshPointsRange(List<Point> points) {
-        if (points == null || points.isEmpty()) return;
+        if (points == null || points.isEmpty()) {
+            return;
+        }
         screenLayout.refreshBuffer(
             Collections.min(points).row(),
             Collections.max(points).row() + 1);
