@@ -152,18 +152,38 @@ public interface Content {
 
     <R> R query(Query<R> query);
 
+    /**
+     * Create a new {@link Content}.
+     * @return a new {@link Content}
+     */
     static Content of() {
         return new TextEditContent();
     }
 
+    /**
+     * Create a new {@link Content} from the specified path.
+     * @param path the specified path
+     * @return a new {@link Content}
+     */
     static Content of(Path path) {
         return new TextEditContent(path);
     }
 
+    /**
+     * Create a new {@link Content} from the specified path with the coll back.
+     * @param path the specified path
+     * @param traverseCallback  the coll back function
+     * @return a new {@link Content}
+     */
     static Content of(Path path, Function<byte[], Boolean> traverseCallback) {
         return new TextEditContent(path, traverseCallback);
     }
 
+    /**
+     * Create a new partial {@link Content}.
+     * @param path the specified path
+     * @return a new partial {@link Content}
+     */
     static Content readOnlyPartOf(Path path) {
         return new RoStringContent(path);
     }

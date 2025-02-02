@@ -19,47 +19,65 @@ import java.util.List;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Text;
 
-/// The Draw.
-/// @author Naotsugu Kobayashi
+/**
+ * The Draw.
+ * @author Naotsugu Kobayashi
+ */
 public interface Draw {
 
-    /// Clear canvas.
+    /**
+     * Clear canvas.
+     */
     void clear();
 
-    /// Draw the text.
-    /// @param text
-    /// @param x the position x
-    /// @param y the position y
-    /// @param w the width
-    /// @param styles the styles
+    /**
+     * Draw the text.
+     * @param text the text
+     * @param x the position x
+     * @param y the position y
+     * @param w the width
+     * @param styles the styles
+     */
     void text(Text text, double x, double y, double w, List<Style> styles);
 
-    /// Draw the text.
-    /// @param x the position x
-    /// @param y the position y
-    /// @param w the width
-    /// @param h the height
+    /**
+     * Draw the rectangle.
+     * @param x the position x
+     * @param y the position y
+     * @param w the width
+     * @param h the height
+     */
     void rect(double x, double y, double w, double h);
 
-    /// Draw the caret.
-    /// @param x the position x
-    /// @param y the position y
+    /**
+     * Draw the caret.
+     * @param x the position x
+     * @param y the position y
+     */
     void caret(double x, double y);
 
     void select(double x1, double y1, double x2, double y2, double l, double r);
+
     void underline(double x1, double y1, double x2, double y2);
+
     void hLine(double x, double y, double w);
 
-    /// Update font size.
-    /// @param sizeDelta the font size delta
+    /**
+     * Update font size.
+     * @param sizeDelta the font size delta
+     */
     void increaseFontSize(double sizeDelta);
 
-    /// Get the FontMetrics.
-    /// @return
+    /**
+     * Get the {@link FontMetrics}.
+     * @return the {@link FontMetrics}
+     */
     FontMetrics fontMetrics();
 
-    /// Draw the line.
-    /// @param lines
+    /**
+     * Draw the lines.
+     * @param lines the lines
+     */
     void line(Line... lines);
 
     record Line(double x1, double y1, double x2, double y2, String color) {}

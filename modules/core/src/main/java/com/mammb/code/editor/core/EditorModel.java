@@ -65,7 +65,14 @@ public interface EditorModel {
 
 
     void draw(Draw draw);
+
+    /**
+     * Set the size of editor.
+     * @param width the width
+     * @param height the height
+     */
     void setSize(double width, double height);
+
     void scrollNext(int delta);
     void scrollPrev(int delta);
     void scrollAt(int line);

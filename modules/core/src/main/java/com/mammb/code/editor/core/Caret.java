@@ -66,7 +66,20 @@ public interface Caret extends Comparable<Caret> {
      * @param col the number of column
      */
     void imeFlushAt(int row, int col);
+
+    /**
+     * Marks the specified position.
+     * @param markRow the row number from which the mark originates
+     * @param markCol the column number from which the mark originates
+     * @param row the row number where the mark ends
+     * @param col the column number where the mark ends
+     */
     void markTo(int markRow, int markCol, int row, int col);
+
+    /**
+     * Get whether it has ime flush.
+     * @return {@code true}, if it has ime flush
+     */
     boolean hasImeFlush();
 
     /**
@@ -86,6 +99,11 @@ public interface Caret extends Comparable<Caret> {
      */
     Point flushedPoint();
 
+    /**
+     * Merge this caret with the specified caret.
+     * @param other the other caret
+     * @return {@code true}, if this caret and the specified caret can be merged
+     */
     boolean marge(Caret other);
 
     /**
@@ -121,33 +139,79 @@ public interface Caret extends Comparable<Caret> {
      */
     double vPos();
 
+    /**
+     * Get the range of this caret marked.
+     * @return the range of this caret marked
+     */
     default Range markedRange() {
         return isMarked() ? new Range(markedPoint(), Point.of(point())) : null;
     }
+
+    /**
+     * Get the range of this caret.
+     * @return the range of this caret
+     */
     default Range range() {
         return isMarked() ? markedRange() : new Range(point(), point());
     }
+
+    /**
+     * Get the selection direction for this caret.
+     * @return the selection direction
+     */
     default int direction() {
         return !isMarked() ? 0 : point().compareTo(markedPoint());
     }
+
+    /**
+     * Get the number of row.
+     * @return the number of row
+     */
     default int row() {
         return point().row();
     }
+
+    /**
+     * Get the number of column.
+     * @return the number of column
+     */
     default int col() {
         return point().col();
     }
+
+    /**
+     * Set the caret position.
+     * @param point the caret position
+     */
     default void at(Point point) {
         at(point.row(), point.col());
     }
+
+    /**
+     * Set the caret at the specified position and also sets it flush.
+     * @param point the caret position
+     */
     default void imeFlushAt(Point point) {
         imeFlushAt(point.row(), point.col());
     }
+
+    /**
+     * Marks the specified position.
+     * @param m the point from which the mark originates
+     * @param p the point where the mark ends
+     */
     default void markTo(Point m, Point p) {
         markTo(m.row(), m.col(), p.row(), p.col());
     }
+
+    /**
+     * Get whether this caret is located at the origin.
+     * @return {@code true}, if this caret is located at the origin
+     */
     default boolean isZero() {
         return point().isZero();
     }
+
     default void markIf(boolean withSelect) {
         if (!withSelect) {
             clearMark();

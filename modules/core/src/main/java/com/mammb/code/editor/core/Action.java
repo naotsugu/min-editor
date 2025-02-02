@@ -42,9 +42,17 @@ public sealed interface Action
         return this instanceof Empty;
     }
 
+    /**
+     * Interface to be attributed.
+     * @param <T> the type of attribute
+     */
     interface WithAttr<T> {
         T attr();
     }
+
+    /**
+     * Marker interface representing repeatability.
+     */
     interface Repeatable { }
 
     interface WithSelect {

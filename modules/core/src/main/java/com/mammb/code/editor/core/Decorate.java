@@ -40,10 +40,26 @@ public interface Decorate {
      */
     List<StyleSpan> apply(Text text);
 
+    /**
+     * Add a highlight on the specified row.
+     * @param row the number of row
+     * @param span the style span
+     */
     void addHighlights(int row, StyleSpan span);
+
+    /**
+     * Clear the decoration.
+     */
     void clear();
+
+    /**
+     * Get the highlighted row.
+     * @return the highlighted row
+     */
     Set<Integer> highlightsRows();
+
     boolean isBlockScoped();
+
     void warmApply(int row, int len, Content content);
 
     /**
