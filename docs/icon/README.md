@@ -7,14 +7,13 @@ Get the png2icons from [this](https://github.com/idesis-gmbh/png2icons/releases)
 
 Grant execution privileges.
 
-```
+```shell
 chmod 755 icons
 ```
 
-
 Generate icon files.
 
-```
+```shell
 ./png2icons icon.png icon -icns
 ./png2icons icon.png icon -ico
 ```
@@ -24,4 +23,8 @@ Generate icon files.
 | macos   | icon.icns |
 | linux   | icon.png  |
 | windows | icon.ico  |
+
+```shell
+cp icon.png ../../modules/ui-fx/src/main/resources/icon.png
+```
 

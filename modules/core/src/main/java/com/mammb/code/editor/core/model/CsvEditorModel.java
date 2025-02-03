@@ -65,9 +65,8 @@ public class CsvEditorModel implements EditorModel {
      * @param content the content
      * @param fm the font metrics
      * @param scroll the screen scroll
-     * @param ctx the context
      */
-    public CsvEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
+    public CsvEditorModel(Content content, FontMetrics fm, ScreenScroll scroll) {
         this.content = content;
         this.fm = fm;
         this.scroll = scroll;

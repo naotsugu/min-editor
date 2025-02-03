@@ -517,8 +517,9 @@ public class TextEditorModel implements EditorModel {
     void pasteFromClipboard(Clipboard clipboard) {
         var text = clipboard.getString();
         if (text.isEmpty()) return;
-        // allow HT, LF, CR, SP
-        input(text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f]", ""));
+        // U+2028: LINE_SEPARATOR(Zl category)
+        // U+2029: PARAGRAPH_SEPARATOR(Zp category)
+        input(text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f\\u2028\\u2029]", ""));
     }
 
     void copyToClipboard(Clipboard clipboard) {
