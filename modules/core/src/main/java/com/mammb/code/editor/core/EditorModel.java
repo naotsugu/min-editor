@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,10 @@ public interface EditorModel {
             width, height);
     }
 
-
+    /**
+     * Draw.
+     * @param draw draw
+     */
     void draw(Draw draw);
 
     /**
@@ -73,8 +76,18 @@ public interface EditorModel {
      */
     void setSize(double width, double height);
 
+    /**
+     * Scroll next.
+     * @param delta scroll delta
+     */
     void scrollNext(int delta);
+
+    /**
+     * Scroll previous.
+     * @param delta scroll delta
+     */
     void scrollPrev(int delta);
+
     void scrollAt(int line);
     void scrollX(double x);
     void scrollToCaretY();
@@ -96,6 +109,10 @@ public interface EditorModel {
      */
     void save(Path path);
 
+    /**
+     * Update fFonts.
+     * @param fontMetrics the {@link FontMetrics}
+     */
     void updateFonts(FontMetrics fontMetrics);
 
     void imeOn();
