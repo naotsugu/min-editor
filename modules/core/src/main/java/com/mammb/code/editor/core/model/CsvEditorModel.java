@@ -135,7 +135,7 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public HoverOn floatLoc(double x, double y) {
+    public HoverOn hoverOn(double x, double y) {
         return null;
     }
 

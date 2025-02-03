@@ -385,7 +385,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public HoverOn floatLoc(double x, double y) {
+    public HoverOn hoverOn(double x, double y) {
         return (x < marginLeft) ? HoverOn.garterRegion : HoverOn.editRegion;
     }
 
@@ -775,8 +775,9 @@ public class TextEditorModel implements EditorModel {
                 draw.caret(loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop);
                 if (c.hasImeFlush()) {
                     screenLayout.locationOn(c.point().row(), c.point().col()).ifPresent(org ->
-                        draw.underline(org.x() + marginLeft - scroll.xVal(), org.y() + marginTop,
-                            loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop));
+                        draw.underline(org.x() + marginLeft - scroll.xVal(),
+                                       loc.x() + marginLeft - scroll.xVal(),
+                                       loc.y() + marginTop));
                 }
             });
         }

@@ -140,11 +140,11 @@ public class FxDraw implements Draw {
     }
 
     @Override
-    public void underline(double x1, double y1, double x2, double y2) {
+    public void underline(double x1, double x2, double y) {
         double height = fontMetrics().getAscent();
         gc.setStroke(Color.LIGHTGRAY);
         gc.setLineWidth(1);
-        gc.strokeLine(x1, y1 + height, x2, y2 + height);
+        gc.strokeLine(x1, y + height, x2, y + height);
     }
 
     @Override
@@ -197,6 +197,11 @@ public class FxDraw implements Draw {
         return colors.computeIfAbsent(name, Color::web);
     }
 
+    /**
+     * Format tabs.
+     * @param source the source text
+     * @return the formatted text
+     */
     private String formatTab(Text source) {
         var tabs = new ArrayList<String>();
         var str = source.value();

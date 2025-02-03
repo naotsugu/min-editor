@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,10 +56,31 @@ public interface Draw {
      */
     void caret(double x, double y);
 
+    /**
+     * Draw the selection.
+     * @param x1 the position x1
+     * @param y1 the position y1
+     * @param x2 the position x2
+     * @param y2 the position y2
+     * @param l the left position
+     * @param r the right position
+     */
     void select(double x1, double y1, double x2, double y2, double l, double r);
 
-    void underline(double x1, double y1, double x2, double y2);
+    /**
+     * Draw the underline.
+     * @param x1 the position x1
+     * @param x2 the position x2
+     * @param y the position y
+     */
+    void underline(double x1, double x2, double y);
 
+    /**
+     * Draw the horizontal line.
+     * @param x the position x
+     * @param y the position y
+     * @param w the width
+     */
     void hLine(double x, double y, double w);
 
     /**
@@ -80,6 +101,7 @@ public interface Draw {
      */
     void line(Line... lines);
 
+    /** Line record. */
     record Line(double x1, double y1, double x2, double y2, String color) {}
 
 }

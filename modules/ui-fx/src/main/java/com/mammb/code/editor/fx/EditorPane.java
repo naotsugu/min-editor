@@ -190,7 +190,7 @@ public class EditorPane extends StackPane {
     }
 
     private void handleMouseMoved(MouseEvent e) {
-        switch (model.floatLoc(e.getX(), e.getY())) {
+        switch (model.hoverOn(e.getX(), e.getY())) {
             case HoverOn.GarterRegion _ -> canvas.setCursor(Cursor.DEFAULT);
             case null, default -> canvas.setCursor(Cursor.TEXT);
         }

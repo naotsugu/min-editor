@@ -88,17 +88,73 @@ public interface EditorModel {
      */
     void scrollPrev(int delta);
 
+    /**
+     * Scroll to the specified line.
+     * @param line the specified line
+     */
     void scrollAt(int line);
+
+    /**
+     * Scroll to the specified position x.
+     * @param x the specified position x
+     */
     void scrollX(double x);
+
+    /**
+     * Scroll to the caret position y.
+     */
     void scrollToCaretY();
+
+    /**
+     * Scroll to the caret position x.
+     */
     void scrollToCaretX();
+
+    /**
+     * Mouse pressed at the specified position.
+     * @param x the specified position x
+     * @param y the specified position y
+     */
     void mousePressed(double x, double y);
+
+    /**
+     * Mouse clicked at the specified position.
+     * @param x the specified position x
+     * @param y the specified position y
+     * @param withSelect with select
+     */
     void click(double x, double y, boolean withSelect);
+
+    /**
+     * Mouse clicked with control at the specified position.
+     * @param x the specified position x
+     * @param y the specified position y
+     */
     void ctrlClick(double x, double y);
+
+    /**
+     * Mouse double-clicked at the specified position.
+     * @param x the specified position x
+     * @param y the specified position y
+     */
     void clickDouble(double x, double y);
+
+    /**
+     * Mouse triple-clicked at the specified position.
+     * @param x the specified position x
+     * @param y the specified position y
+     */
     void clickTriple(double x, double y);
+
+    /**
+     * Mouse dragged at the specified position.
+     * @param x the specified position x
+     * @param y the specified position y
+     */
     void moveDragged(double x, double y);
-    HoverOn floatLoc(double x, double y);
+
+    HoverOn hoverOn(double x, double y);
+
     void setCaretVisible(boolean visible);
 
     Optional<Path> path();
