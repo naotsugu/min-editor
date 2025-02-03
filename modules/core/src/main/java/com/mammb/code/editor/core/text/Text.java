@@ -133,19 +133,24 @@ public interface Text {
         return (index > textLength()) ? -1 : index;
     }
 
+    /**
+     * Get the index moved to the right bound of the specified index.
+     * @param index the base index
+     * @return the index moved to the right bound
+     */
     default int indexRightBound(int index) {
         if (isEmpty() || index == value().length()) return index;
         for (int i = index; i < value().length(); ) {
-            int charType = Character.getType(value().charAt(i));
+            int charType = Character.getType(Character.toLowerCase(value().charAt(i)));
             int nextIndex = indexRight(i);
             if (nextIndex <= i) {
-                return i;
+                return nextIndex;
             }
-            int nextType = Character.getType(value().charAt(nextIndex));
+            i = nextIndex;
+            int nextType = Character.getType(Character.toLowerCase(value().charAt(i)));
             if (charType != nextType) {
                 return i;
             }
-            i = nextIndex;
         }
         return index;
     }
@@ -162,19 +167,23 @@ public interface Text {
         return index;
     }
 
+    /**
+     * Get the index moved to the left bound of the specified index.
+     * @param index the base index
+     * @return the index moved to the left bound
+     */
     default int indexLeftBound(int index) {
         if (index <= 0) return 0;
         for (int i = index; i >= 0; ) {
-            int charType = Character.getType(value().charAt(i));
-            int nextIndex = indexLeft(i);
-            if (nextIndex == 0) {
-                return 0;
+            int charType = Character.getType(Character.toLowerCase(value().charAt(i - 1)));
+            i = indexLeft(i);
+            if (i == 0) {
+                return i;
             }
-            int nextType = Character.getType(value().charAt(nextIndex));
+            int nextType = Character.getType(Character.toLowerCase(value().charAt(i - 1)));
             if (charType != nextType) {
                 return i;
             }
-            i = nextIndex;
         }
         return index;
     }

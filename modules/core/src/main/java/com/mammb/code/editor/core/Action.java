@@ -122,11 +122,11 @@ public sealed interface Action
     static Action tab(boolean withSelect) {
         return new Tab(withSelect, System.currentTimeMillis());
     }
-    static Action caretRight(boolean withSelect) {
-        return new CaretRight(withSelect, System.currentTimeMillis());
+    static Action caretRight(boolean withSelect, boolean withShortcut) {
+        return new CaretRight(withSelect, withShortcut, System.currentTimeMillis());
     }
-    static Action caretLeft(boolean withSelect) {
-        return new CaretLeft(withSelect, System.currentTimeMillis());
+    static Action caretLeft(boolean withSelect, boolean withShortcut) {
+        return new CaretLeft(withSelect, withShortcut, System.currentTimeMillis());
     }
     static Action caretUp(boolean withSelect) {
         return new CaretUp(withSelect, System.currentTimeMillis());

@@ -199,12 +199,12 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void moveCaretRight(boolean withSelect) {
+    void moveCaretRight(boolean withSelect, boolean withShortcut) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             var text = screenLayout.rowTextAt(c.row());
             if (text == null) continue;
-            int nextCol = text.indexRight(c.col());
+            int nextCol = withShortcut ? text.indexRightBound(c.col()) : text.indexRight(c.col());
             if (nextCol <= 0) {
                 int nextRow = Math.min(screenLayout.rowSize() - 1, c.row() + 1);
                 c.at(nextRow, 0);
@@ -215,7 +215,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    void moveCaretLeft(boolean withSelect) {
+    void moveCaretLeft(boolean withSelect, boolean withShortcut) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             if (c.isZero()) continue;
@@ -224,7 +224,7 @@ public class TextEditorModel implements EditorModel {
                 c.at(c.row() - 1, text.textLength());
             } else {
                 var text = screenLayout.rowTextAt(c.row());
-                int next = text.indexLeft(c.col());
+                int next = withShortcut ? text.indexLeftBound(c.col()) : text.indexLeft(c.col());
                 c.at(c.row(), next);
             }
         }
@@ -641,8 +641,8 @@ public class TextEditorModel implements EditorModel {
             case Home a       -> moveCaretHome(a.withSelect());
             case End a        -> moveCaretEnd(a.withSelect());
             case Tab a        -> inputTab(a.withSelect());
-            case CaretRight a -> moveCaretRight(a.withSelect());
-            case CaretLeft a  -> moveCaretLeft(a.withSelect());
+            case CaretRight a -> moveCaretRight(a.withSelect(), a.withShortcut());
+            case CaretLeft a  -> moveCaretLeft(a.withSelect(), a.withShortcut());
             case CaretUp a    -> moveCaretUp(a.withSelect());
             case CaretDown a  -> moveCaretDown(a.withSelect());
             case PageUp a     -> moveCaretPageUp(a.withSelect());

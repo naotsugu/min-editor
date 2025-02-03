@@ -34,8 +34,8 @@ public class CommandKeys {
     public static Command of(KeyEvent e) {
         e.consume();
 
-        if (e.getCode() == RIGHT) return of(Action.caretRight(e.isShiftDown()));
-        else if (e.getCode() == LEFT) return of(Action.caretLeft(e.isShiftDown()));
+        if (e.getCode() == RIGHT) return of(Action.caretRight(e.isShiftDown(), e.isShortcutDown()));
+        else if (e.getCode() == LEFT) return of(Action.caretLeft(e.isShiftDown(), e.isShortcutDown()));
         else if (e.getCode() == UP) return of(Action.caretUp(e.isShiftDown()));
         else if (e.getCode() == DOWN) return of(Action.caretDown(e.isShiftDown()));
         else if (e.getCode() == HOME || SC_HOME.match(e)) return of(Action.home(e.isShiftDown()));
