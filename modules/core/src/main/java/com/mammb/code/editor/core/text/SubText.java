@@ -75,6 +75,9 @@ public interface SubText extends Text {
         return subs;
     }
 
+    /**
+     * implementation of {@link SubText}.
+     */
     record SubTextRecord(RowText parent, int fromIndex, int toIndex, double width) implements SubText {
         @Override
         public int row() {

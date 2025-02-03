@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,6 +97,7 @@ public interface Text {
      * @return {@code true} if the character at the specified index is Surrogate
      */
     default boolean isSurrogate(int index) {
+        if (0 > index || index >= value().length()) return false;
         return Character.isSurrogate(value().charAt(index));
     }
 
@@ -106,6 +107,7 @@ public interface Text {
      * @return {@code true} if the character at the specified index is High Surrogate
      */
     default boolean isHighSurrogate(int index) {
+        if (0 > index || index >= value().length()) return false;
         return Character.isHighSurrogate(value().charAt(index));
     }
 
@@ -115,6 +117,7 @@ public interface Text {
      * @return {@code true} if the character at the specified index is Low Surrogate
      */
     default boolean isLowSurrogate(int index) {
+        if (0 > index || index >= value().length()) return false;
         return Character.isLowSurrogate(value().charAt(index));
     }
 
@@ -130,6 +133,23 @@ public interface Text {
         return (index > textLength()) ? -1 : index;
     }
 
+    default int indexRightBound(int index) {
+        if (isEmpty() || index == value().length()) return index;
+        for (int i = index; i < value().length(); ) {
+            int charType = Character.getType(value().charAt(i));
+            int nextIndex = indexRight(i);
+            if (nextIndex <= i) {
+                return i;
+            }
+            int nextType = Character.getType(value().charAt(nextIndex));
+            if (charType != nextType) {
+                return i;
+            }
+            i = nextIndex;
+        }
+        return index;
+    }
+
     /**
      * Get the index moved to the left of the specified index.
      * Surrogate pair consideration.
@@ -139,6 +159,23 @@ public interface Text {
     default int indexLeft(int index) {
         if (index <= 0) return 0;
         index -= isLowSurrogate(index - 1) ? 2 : 1;
+        return index;
+    }
+
+    default int indexLeftBound(int index) {
+        if (index <= 0) return 0;
+        for (int i = index; i >= 0; ) {
+            int charType = Character.getType(value().charAt(i));
+            int nextIndex = indexLeft(i);
+            if (nextIndex == 0) {
+                return 0;
+            }
+            int nextType = Character.getType(value().charAt(nextIndex));
+            if (charType != nextType) {
+                return i;
+            }
+            i = nextIndex;
+        }
         return index;
     }
 
@@ -188,11 +225,17 @@ public interface Text {
         for (int end = boundary.next();
              end != BreakIterator.DONE;
              start = end, end = boundary.next()) {
-            ret.add(Text.of(
+            // dot splitting in addition to BreakIterator
+            var bounded = text.substring(start, end);
+            int stack = 0;
+            for (String str : bounded.splitWithDelimiters("\\.", -1)) {
+                ret.add(Text.of(
                     row(),
-                    text.substring(start, end),
-                    Arrays.copyOfRange(advances(), start, end),
+                    str,
+                    Arrays.copyOfRange(advances(), start + stack, start + stack + str.length()),
                     height()));
+                stack += str.length();
+            }
         }
         return ret;
     }
