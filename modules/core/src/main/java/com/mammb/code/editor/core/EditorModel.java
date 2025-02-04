@@ -153,8 +153,18 @@ public interface EditorModel {
      */
     void moveDragged(double x, double y);
 
+    /**
+     * Get the hover region of the editor pain.
+     * @param x the specified position x
+     * @param y the specified position y
+     * @return the hover region
+     */
     HoverOn hoverOn(double x, double y);
 
+    /**
+     * Set the visibility of the caret.
+     * @param visible the visibility of the caret
+     */
     void setCaretVisible(boolean visible);
 
     Optional<Path> path();
@@ -171,10 +181,32 @@ public interface EditorModel {
      */
     void updateFonts(FontMetrics fontMetrics);
 
+    /**
+     * Set the ime on.
+     */
     void imeOn();
+
+    /**
+     * Get the ime area
+     * @return
+     */
     Optional<Loc> imeLoc();
+
+    /**
+     * Set the ime off.
+     */
     void imeOff();
+
+    /**
+     * Get whether the ime is on or not
+     * @return {@code true}, if the ime is on
+     */
     boolean isImeOn();
+
+    /**
+     * Set text composed by the ime.
+     * @param text composed text
+     */
     void imeComposed(String text);
 
     /**
