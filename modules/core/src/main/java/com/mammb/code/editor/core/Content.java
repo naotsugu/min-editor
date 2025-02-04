@@ -148,8 +148,27 @@ public interface Content {
      */
     void clearFlush();
 
+    /**
+     * Find all.
+     * @param text the text to search
+     * @return the search results
+     */
     List<Point> findAll(String text);
 
+    /**
+     * Find next.
+     * @param base
+     * @param text the text to search
+     * @return the search result
+     */
+    Optional<Point> findNext(Point base, String text);
+
+    /**
+     * Execute the query.
+     * @param query the query
+     * @return the query result
+     * @param <R> the type of result
+     */
     <R> R query(Query<R> query);
 
     /**

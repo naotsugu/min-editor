@@ -29,7 +29,13 @@ import com.mammb.code.editor.core.text.Text;
  */
 public interface ScreenLayout extends LineLayout {
 
+    /**
+     * Set the screen size.
+     * @param width the width
+     * @param height the height
+     */
     void setScreenSize(double width, double height);
+
     void scrollNext(int lineDelta);
     void scrollPrev(int lineDelta);
     void scrollAt(int line);

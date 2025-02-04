@@ -39,6 +39,7 @@ public interface Context {
         // TODO config font
         // TODO config color
         String fontName();
+
         double fontSize();
         void fontSize(double fontSize);
 

@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -165,7 +166,25 @@ public class RoStringContent implements Content {
 
     @Override
     public List<Point> findAll(String text) {
-        return List.of();
+        List<Point> ret = new ArrayList<>();
+        for (int row = 0; row < stringList.size(); row++) {
+            String rowText = stringList.get(row);
+            for (int col = 0; col < rowText.length(); col++) {
+                int index = rowText.indexOf(text, col);
+                if (index < 0) {
+                    break;
+                }
+                ret.add(Point.of(row, index));
+                col = (index + text.length() - 1);
+            }
+        }
+        return ret;
+    }
+
+    @Override
+    public Optional<Point> findNext(Point base, String text) {
+        // TODO
+        return Optional.empty();
     }
 
     @Override
