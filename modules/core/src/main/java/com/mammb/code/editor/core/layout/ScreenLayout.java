@@ -36,24 +36,122 @@ public interface ScreenLayout extends LineLayout {
      */
     void setScreenSize(double width, double height);
 
+    /**
+     * Scroll next.
+     * @param lineDelta scroll delta
+     */
     void scrollNext(int lineDelta);
+
+    /**
+     * Scroll previous.
+     * @param lineDelta scroll delta
+     */
     void scrollPrev(int lineDelta);
+
+    /**
+     * Scroll to the specified line.
+     * @param line the specified line
+     */
     void scrollAt(int line);
+
+    /**
+     * Scroll horizontally.
+     * @param x the scroll amount
+     */
     void scrollX(double x);
+
+    /**
+     * Clear the buffer for the specified line range.
+     * @param startRow the start row
+     * @param endRow the end row (include)
+     */
     void refreshBuffer(int startRow, int endRow);
+
+    /**
+     * Get the text list on the screen.
+     * @return the text list on the screen
+     */
     List<Text> texts();
+
+    /**
+     * Get the list of line numbers on the screen.
+     * @return the list of line numbers on the screen
+     */
     List<Text> lineNumbers();
+
+    /**
+     * Get the width of a line number.
+     * @return the width of a line number
+     */
     double lineNumberWidth();
+
+    /**
+     * Get the coordinates of the specified position.
+     * @param row the row number
+     * @param col the column number
+     * @return the location
+     */
     Optional<Loc> locationOn(int row, int col);
+
+    /**
+     * Get the line number at the y-coordinate location.
+     * @param y the y-coordinate location
+     * @return the line number
+     */
     int yToLineOnScreen(double y);
+
+    /**
+     * Get the screen width.
+     * @return the screen width
+     */
     double screenWidth();
+
+    /**
+     * Get the screen height.
+     * @return the screen height
+     */
     double screenHeight();
+
+    /**
+     * Get the number of lines on the screen.
+     * @return the number of lines on the screen
+     */
     int screenLineSize();
+
+    /**
+     * Get the number of columns on the screen.
+     * @return the number of columns on the screen
+     */
     int screenColSize();
+
+    /**
+     * Get the number of line at the top of the screen.
+     * @return the number of line at the top of the screen
+     */
     int topLine();
+
+    /**
+     * Get the number of row at the top of the screen.
+     * @return the number of row at the top of the screen
+     */
     int topRow();
+
+    /**
+     * Get the horizontal scroll position.
+     * @return the horizontal scroll position
+     */
     double xShift();
+
+    /**
+     * Apply the screen scroll.
+     * @param screenScroll the screen scroll
+     */
     void applyScreenScroll(ScreenScroll screenScroll);
+
+    /**
+     * Update the {@link FontMetrics}.
+     * @param fontMetrics the {@link FontMetrics}
+     */
     void updateFontMetrics(FontMetrics fontMetrics);
 
     /**
