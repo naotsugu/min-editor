@@ -110,7 +110,7 @@ public class WrapLayout implements ContentLayout {
         if (line >= lines.size()) {
             return SubText.of(RowText.of(lines.getLast().row + 1, "", fm), 0).getLast();
         }
-        SubRange range = lines.get(line);
+        SubRange range = subRange(line);
         List<SubText> subs = subTextsAt(range.row());
         return subs.get(range.subLine());
     }
@@ -124,8 +124,8 @@ public class WrapLayout implements ContentLayout {
             startLine = endLine;
             endLine = tmp;
         }
-        SubRange startRange = lines.get(Math.clamp(startLine, 0, lines.size() - 1));
-        SubRange endRange   = lines.get(Math.clamp(endLine - 1, 0, lines.size() - 1));
+        SubRange startRange = subRange(startLine);
+        SubRange endRange   = subRange(endLine - 1);
 
         return IntStream.rangeClosed(startRange.row(), endRange.row()).mapToObj(i -> {
             var subs = subTextsAt(i);
@@ -142,7 +142,7 @@ public class WrapLayout implements ContentLayout {
 
     @Override
     public RowText rowText(int line) {
-        return rowTextAt(lines.get(line).row());
+        return rowTextAt(subRange(line).row());
     }
 
     @Override
@@ -161,7 +161,7 @@ public class WrapLayout implements ContentLayout {
 
     @Override
     public int xToCol(int line, double x) {
-        return text(line).indexTo(x) + lines.get(line).fromIndex();
+        return text(line).indexTo(x) + subRange(line).fromIndex();
     }
 
     @Override
@@ -172,7 +172,7 @@ public class WrapLayout implements ContentLayout {
 
     @Override
     public int homeColOnRow(int line) {
-        return lines.get(line).fromIndex();
+        return subRange(line).fromIndex();
     }
 
     @Override
@@ -210,21 +210,22 @@ public class WrapLayout implements ContentLayout {
     @Override
     public int rowToLastLine(int row) {
         int first = rowToFirstLine(row);
-        return first + lines.get(first).subLines - 1;
+        return first + subRange(first).subLines - 1;
     }
 
     @Override
     public int lineToRow(int line) {
         if (line <= 0) return 0;
-        var sub = lines.get(line);
+        var sub = subRange(line);
         return (sub == null) ? content.rows() : sub.row();
     }
 
     @Override
     public int rowToLine(int row, int col) {
         int line = rowToFirstLine(row);
-        for (int i = 0; i < lines.get(line).subLines; i++) {
-            if (lines.get(line + i).contains(row, col)) {
+        int subLines = subRange(line).subLines;
+        for (int i = 0; i < subLines; i++) {
+            if (subRange(line + i).contains(row, col)) {
                 return line + i;
             }
         }
@@ -235,8 +236,7 @@ public class WrapLayout implements ContentLayout {
     public Optional<Loc> loc(int row, int col, int rangeLineStart, int rangeLineEnd) {
         for (int i = rangeLineStart; i < rangeLineEnd; i++) {
             // TODO optimize
-            SubRange sub = lines.get(Math.clamp(i, 0, lines.size() - 1));
-            if (sub.contains(row, col)) {
+            if (subRange(i).contains(row, col)) {
                 return Optional.of(new Loc(xOnLayout(i, col), yOnLayout(i)));
             }
         }
@@ -259,6 +259,9 @@ public class WrapLayout implements ContentLayout {
         return fm;
     }
 
+    private SubRange subRange(int line) {
+        return lines.get(Math.clamp(line, 0, lines.size() - 1));
+    }
 
     private List<SubRange> subRanges(int row) {
         List<SubRange> list = new ArrayList<>();
