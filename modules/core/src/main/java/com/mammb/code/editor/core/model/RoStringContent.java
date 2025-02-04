@@ -183,7 +183,14 @@ public class RoStringContent implements Content {
 
     @Override
     public Optional<Point> findNext(Point base, String text) {
-        // TODO
+        for (int row = base.row(); row < stringList.size(); row++) {
+            String rowText = stringList.get(row);
+            int col = (row == base.row()) ? base.col() : 0;
+            int index = rowText.indexOf(text, col);
+            if (index >= 0) {
+                return Optional.of(Point.of(row, index));
+            }
+        }
         return Optional.empty();
     }
 
