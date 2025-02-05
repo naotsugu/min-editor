@@ -26,7 +26,7 @@ import com.mammb.code.editor.core.model.ActionRecords.*;
 public sealed interface Action
     permits Backspace, CaretDown, CaretLeft, CaretRight, CaretUp, Copy, Cut, Delete, Empty,
     End, Escape, Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll,
-    Tab, Undo, WrapLine, Goto, FindAll, Repeat {
+    Tab, Undo, WrapLine, Goto, FindAll, FindNext, FindPrev, Repeat {
 
     /**
      * Get occurred at.
@@ -103,6 +103,12 @@ public sealed interface Action
     }
     static Action findAll(String str) {
         return new FindAll(str, System.currentTimeMillis());
+    }
+    static Action findNext(String str) {
+        return new FindNext(str, System.currentTimeMillis());
+    }
+    static Action findPrev(String str) {
+        return new FindPrev(str, System.currentTimeMillis());
     }
     static Action copy(Clipboard clipboard) {
         return new Copy(clipboard, System.currentTimeMillis());

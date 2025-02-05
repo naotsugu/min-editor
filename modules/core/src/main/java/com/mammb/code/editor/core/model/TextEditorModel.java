@@ -517,6 +517,7 @@ public class TextEditorModel implements EditorModel {
     void pasteFromClipboard(Clipboard clipboard) {
         var text = clipboard.getString();
         if (text.isEmpty()) return;
+        // allow HT, LF, CR, SP
         // U+2028: LINE_SEPARATOR(Zl category)
         // U+2029: PARAGRAPH_SEPARATOR(Zp category)
         input(text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f\\u2028\\u2029]", ""));
@@ -609,6 +610,14 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
+    void findNext(String text) {
+        // TODO
+    }
+
+    void findPrev(String text) {
+        // TODO
+    }
+
     @Override
     public Session getSession() {
         return new Session.SessionRecord(
@@ -654,6 +663,8 @@ public class TextEditorModel implements EditorModel {
             case WrapLine a   -> wrap(a.attr());
             case Goto a       -> moveTo(a.attr());
             case FindAll a    -> findAll(a.attr());
+            case FindNext a   -> findNext(a.attr());
+            case FindPrev a   -> findPrev(a.attr());
             case Escape _     -> escape();
             case Repeat _     -> actionHistory.repetition().forEach(this::apply);
             case Replace a    -> replace(a.attr(), true);

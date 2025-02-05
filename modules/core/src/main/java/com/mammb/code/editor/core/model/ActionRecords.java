@@ -55,6 +55,10 @@ public interface ActionRecords {
 
     record FindAll(String attr, long occurredAt) implements Action, WithAttr<String> { }
 
+    record FindNext(String attr, long occurredAt) implements Action, WithAttr<String> { }
+
+    record FindPrev(String attr, long occurredAt) implements Action, WithAttr<String> { }
+
     record Copy(Clipboard attr, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }
 
     record Cut(Clipboard attr, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }
