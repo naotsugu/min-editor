@@ -195,6 +195,19 @@ public class RoStringContent implements Content {
     }
 
     @Override
+    public Optional<Point> findPrev(Point base, String text) {
+        for (int row = base.row(); row >= 0; row--) {
+            String rowText = stringList.get(row);
+            int col = (row == base.row()) ? base.col() : rowText.length();
+            int index = rowText.substring(0, col).lastIndexOf(text);
+            if (index >= 0) {
+                return Optional.of(Point.of(row, index));
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {

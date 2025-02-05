@@ -157,11 +157,19 @@ public interface Content {
 
     /**
      * Find next.
-     * @param base
+     * @param base the base point
      * @param text the text to search
      * @return the search result
      */
     Optional<Point> findNext(Point base, String text);
+
+    /**
+     * Find previous.
+     * @param base the base point
+     * @param text the text to search
+     * @return the search result
+     */
+    Optional<Point> findPrev(Point base, String text);
 
     /**
      * Execute the query.

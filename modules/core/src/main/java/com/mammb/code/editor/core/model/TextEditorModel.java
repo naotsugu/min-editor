@@ -612,10 +612,12 @@ public class TextEditorModel implements EditorModel {
 
     void findNext(String text) {
         // TODO
+        content.findNext(carets.getFirst().point(), text);
     }
 
     void findPrev(String text) {
         // TODO
+        content.findPrev(carets.getFirst().point(), text);
     }
 
     @Override

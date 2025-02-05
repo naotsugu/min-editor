@@ -222,6 +222,12 @@ public class TextEditContent implements Content {
     }
 
     @Override
+    public Optional<Point> findPrev(Point base, String text) {
+        // TODO
+        return Optional.empty();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
