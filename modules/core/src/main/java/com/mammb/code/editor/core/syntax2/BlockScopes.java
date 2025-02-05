@@ -108,7 +108,7 @@ public class BlockScopes {
     }
 
 
-    record BlockSpan(BlockToken token, int index, int length) {
+    public record BlockSpan(BlockToken token, int index, int length) {
         public BlockType type() { return token.type(); }
         public <T> T with() {
             if (token instanceof BlockToken.BlockTokenWith<?> a) {

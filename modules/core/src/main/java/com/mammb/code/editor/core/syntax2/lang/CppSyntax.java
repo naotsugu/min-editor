@@ -13,40 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
 
-import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
+import com.mammb.code.editor.core.syntax2.BlockType;
+import com.mammb.code.editor.core.syntax2.Trie;
+
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The rust syntax.
+ * The cpp syntax.
  * @author Naotsugu Kobayashi
  */
-public class RustSyntax extends BasicSyntax {
+public class CppSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-            as,break,const,continue,crate,else,enum,extern,false,fn,for,if,impl,in,
-            let,loop,match,mod,move,mut,pub,ref,return,self,Self,static,struct,super,
-            trait,true,type,unsafe,use,where,while,async,await,dyn,try,
-            abstract,become,box,do,final,macro,override,priv,typeof,unsized,virtual,yield""");
+        alignas,alignof,and,and_eq,asm,auto,bitand,bitor,bool,
+        break,case,catch,char,char8_t,char16_t,char32_t,class,
+        compl,concept,const,consteval,constexpr,constinit,const_cast,
+        continue,co_await,co_return,co_yield,decltype,default,
+        delete,do,double,dynamic_cast,else,enum,explicit,export,
+        extern,false,final,float,for,friend,goto,if,inline,int,
+        long,mutable,namespace,new,noexcept,not,not_eq,nullptr,
+        operator,or,or_eq,private,protected,public,register,
+        reinterpret_cast,requires,return,short,signed,sizeof,
+        static,static_assert,static_cast,struct,switch,template,
+        this,thread_local,throw,true,try,typedef,typeid,typename,
+        union,unsigned,using,virtual,void,volatile,wchar_t,while,
+        xor,xor_eq""");
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
 
-    /** The text block. */
-    private static final BlockType textBlock = neutral("\"\"\"");
-
     /**
      * Constructor.
      */
-    public RustSyntax() {
-        super("rust",
+    public CppSyntax() {
+        super("cpp",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            textBlock,         // textBlock
+            null,              // textBlock
             "//",              // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd

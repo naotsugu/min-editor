@@ -13,31 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
 
+import com.mammb.code.editor.core.syntax2.LexerSource;
+import com.mammb.code.editor.core.syntax2.Palette;
+import com.mammb.code.editor.core.syntax2.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.mammb.code.editor.core.syntax2.BlockType.range;
 import static com.mammb.code.editor.core.syntax2.LexerSources.readInlineBlock;
+import static com.mammb.code.editor.core.syntax2.LexerSources.readNumberLiteral;
 
 /**
- * The basic syntax.
+ * The toml syntax.
  * @author Naotsugu Kobayashi
  */
-public class HtmlSyntax implements Syntax {
-
-    /** The blockComment. */
-    private static final BlockType blockComment = range("<!--", "-->");
-    /** The block scopes. */
-    private final BlockScopes blockScopes = new BlockScopes(blockComment);
-
+public class TomlSyntax implements Syntax {
 
     @Override
     public String name() {
-        return "html";
+        return "toml";
     }
 
     @Override
@@ -52,41 +49,30 @@ public class HtmlSyntax implements Syntax {
 
         while (source.hasNext()) {
 
-            blockScopes.read(source).ifPresent(block ->
-                spans.add(new Style.StyleSpan(Palette.gray, block.index(), block.length()))
-            );
-            if (!source.hasNext()) break;
-
             var peek = source.peek();
 
-            if (peek.ch() == '<') {
+            if (peek.ch() == '#') {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.gray, s.index(), s.length()));
 
-                int n = source.match("</") ? 2 : 1;
-                source.next(n);
-                spans.add(new Style.StyleSpan(Palette.darkPale, peek.index(), n));
-
-                var s = source.nextUntil(Character::isUnicodeIdentifierPart);
-                if (!s.text().isEmpty()) {
-                    spans.add(new Style.StyleSpan(Palette.darkOrange, s.index(), s.length()));
-                }
-
-            } else if (peek.ch() == '>') {
-                spans.add(new Style.StyleSpan(Palette.darkPale, peek.index(), 1));
             } else if (peek.ch() == '"') {
                 readInlineBlock(source, '"', '\\', Palette.darkGreen).ifPresent(spans::add);
-            } else if (peek.ch() == '\'') {
-                readInlineBlock(source, '\'', '\\', Palette.darkGreen).ifPresent(spans::add);
+
+            } else if (Character.isDigit(peek.ch())) {
+                readNumberLiteral(source, Palette.darkPale).ifPresent(spans::add);
+
+            } else if (peek.ch() == '[' && peek.index() == 0) {
+                var s = source.nextUntilWs();
+                if (s.text().endsWith("]")) {
+                    spans.add(new Style.StyleSpan(Palette.darkOrange, s.index(), s.length()));
+                }
             }
 
             source.commitPeek();
         }
 
         return spans;
-    }
 
-    @Override
-    public BlockScopes blockScopes() {
-        return blockScopes;
     }
-
 }
+

@@ -16,6 +16,19 @@
 package com.mammb.code.editor.core.syntax2;
 
 import java.util.List;
+import com.mammb.code.editor.core.syntax2.lang.CppSyntax;
+import com.mammb.code.editor.core.syntax2.lang.GoSyntax;
+import com.mammb.code.editor.core.syntax2.lang.HtmlSyntax;
+import com.mammb.code.editor.core.syntax2.lang.JavaSyntax;
+import com.mammb.code.editor.core.syntax2.lang.JsSyntax;
+import com.mammb.code.editor.core.syntax2.lang.KotlinSyntax;
+import com.mammb.code.editor.core.syntax2.lang.MarkdownSyntax;
+import com.mammb.code.editor.core.syntax2.lang.PythonSyntax;
+import com.mammb.code.editor.core.syntax2.lang.RustSyntax;
+import com.mammb.code.editor.core.syntax2.lang.SqlSyntax;
+import com.mammb.code.editor.core.syntax2.lang.TomlSyntax;
+import com.mammb.code.editor.core.syntax2.lang.TsSyntax;
+import com.mammb.code.editor.core.syntax2.lang.YamlSyntax;
 import com.mammb.code.editor.core.text.Style;
 
 /**

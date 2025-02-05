@@ -23,9 +23,9 @@ import com.mammb.code.editor.core.text.Style.StyleSpan;
  * The lexer sources.
  * @author Naotsugu Kobayashi
  */
-class LexerSources {
+public class LexerSources {
 
-    static Optional<StyleSpan> readInlineBlock(LexerSource source, char ch, char escape, Style style) {
+    public static Optional<StyleSpan> readInlineBlock(LexerSource source, char ch, char escape, Style style) {
         var open = source.rollbackPeek().peek();
         char prev = source.next().ch();
         while (source.hasNext()) {
@@ -39,7 +39,7 @@ class LexerSources {
         return Optional.empty();
     }
 
-    static Optional<StyleSpan> readNumberLiteral(LexerSource source, Style style) {
+    public static Optional<StyleSpan> readNumberLiteral(LexerSource source, Style style) {
         var open = source.rollbackPeek().peek();
         while (source.hasNext()) {
             var s = source.peek();

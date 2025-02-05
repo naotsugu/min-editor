@@ -13,41 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
+
+import com.mammb.code.editor.core.syntax2.BlockType;
+import com.mammb.code.editor.core.syntax2.Trie;
 
 import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The go syntax.
+ * The type script syntax.
  * @author Naotsugu Kobayashi
  */
-public class GoSyntax extends BasicSyntax {
+public class TsSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-        break,default,func,interface,select,case,defer,go,map,struct,
-        chan,else,goto,package,switch,const,fallthrough,if,range,type,
-        continue,for,import,return,var,
-        bool,int8,int16,int32,int64,uint8,uint16,uint32,uint64,
-        float32,float64,complex64,complex128,byte,rune,uint,int,uintptr,string""");
+        break,case,catch,class,const,continue,debugger,default,delete,
+        do,else,enum,export,extends,false,finally,for,function,if,
+        import,in,instanceof,new,null,return,super,switch,this,throw,
+        true,try,typeof,var,void,while,with,
+        as,implements,interface,let,package,private,protected,public,
+        static,yield,
+        any,boolean,constructor,declare,get,module,require,number,
+        set,string,symbol,type,from,of""");
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
 
     /** The text block. */
-    private static final BlockType textBlock = neutral("`");
+    private static final BlockType templateLiteral = neutral("`");
 
     /**
      * Constructor.
      */
-    public GoSyntax() {
-        super("go",
+    public TsSyntax() {
+        super("typescript",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            textBlock,         // textBlock
+            templateLiteral,   // textBlock
             "//",              // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd

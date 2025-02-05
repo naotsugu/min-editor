@@ -13,45 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
 
+import com.mammb.code.editor.core.syntax2.BlockType;
+import com.mammb.code.editor.core.syntax2.Trie;
+
+import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The cpp syntax.
+ * The kotlin syntax.
  * @author Naotsugu Kobayashi
  */
-public class CppSyntax extends BasicSyntax {
+public class KotlinSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-        alignas,alignof,and,and_eq,asm,auto,bitand,bitor,bool,
-        break,case,catch,char,char8_t,char16_t,char32_t,class,
-        compl,concept,const,consteval,constexpr,constinit,const_cast,
-        continue,co_await,co_return,co_yield,decltype,default,
-        delete,do,double,dynamic_cast,else,enum,explicit,export,
-        extern,false,final,float,for,friend,goto,if,inline,int,
-        long,mutable,namespace,new,noexcept,not,not_eq,nullptr,
-        operator,or,or_eq,private,protected,public,register,
-        reinterpret_cast,requires,return,short,signed,sizeof,
-        static,static_assert,static_cast,struct,switch,template,
-        this,thread_local,throw,true,try,typedef,typeid,typename,
-        union,unsigned,using,virtual,void,volatile,wchar_t,while,
-        xor,xor_eq""");
+            as,as?,break,class,continue,do,else,false,for,fun,if,in,!in,interface,is,!is,null,
+            object,package,return,super,this,throw,true,try,typealias,typeof,val,var,when,while,
+            by,catch,constructor,delegate,dynamic,field,file,finally,get,import,init,param,
+            property,receiver,set,setparam,value,where,it""");
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
 
+    /** The text block. */
+    private static final BlockType textBlock = neutral("\"\"\"");
+
     /**
      * Constructor.
      */
-    public CppSyntax() {
-        super("cpp",
+    public KotlinSyntax() {
+        super("kotlin",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            null,              // textBlock
+            textBlock,         // textBlock
             "//",              // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd

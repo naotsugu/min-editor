@@ -13,44 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
+
+import com.mammb.code.editor.core.syntax2.BlockType;
+import com.mammb.code.editor.core.syntax2.Trie;
 
 import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The type script syntax.
+ * The java syntax.
  * @author Naotsugu Kobayashi
  */
-public class TsSyntax extends BasicSyntax {
+public class JavaSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-        break,case,catch,class,const,continue,debugger,default,delete,
-        do,else,enum,export,extends,false,finally,for,function,if,
-        import,in,instanceof,new,null,return,super,switch,this,throw,
-        true,try,typeof,var,void,while,with,
-        as,implements,interface,let,package,private,protected,public,
-        static,yield,
-        any,boolean,constructor,declare,get,module,require,number,
-        set,string,symbol,type,from,of""");
+            abstract,continue,for,new,switch,assert,default,goto,package,synchronized,boolean,do,if,private,
+            this,break,double,implements,protected,throw,byte,else,import,public,throws,case,enum,instanceof,
+            return,transient,catch,extends,int,short,try,char,final,interface,static,void,class,finally,long,
+            strictfp,volatile,const,float,native,super,while,var,record,sealed,with,yield,to,transitive,uses""");
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
 
     /** The text block. */
-    private static final BlockType templateLiteral = neutral("`");
+    private static final BlockType textBlock = neutral("\"\"\"");
 
     /**
      * Constructor.
      */
-    public TsSyntax() {
-        super("typescript",
+    public JavaSyntax() {
+        super("java",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            templateLiteral,   // textBlock
+            textBlock,         // textBlock
             "//",              // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd

@@ -13,39 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
+
+import com.mammb.code.editor.core.syntax2.BlockType;
+import com.mammb.code.editor.core.syntax2.Trie;
 
 import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
+import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The python syntax.
+ * The rust syntax.
  * @author Naotsugu Kobayashi
  */
-public class PythonSyntax extends BasicSyntax {
+public class RustSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-        False,await,else,import,pass,None,break,except,in,raise,True,class,finally,is,return,
-        and,continue,for,lambda,try,as,def,from,nonlocal,while,assert,del,global,not,with,
-        async,elif,if,or,yield
-        match, case""");
+            as,break,const,continue,crate,else,enum,extern,false,fn,for,if,impl,in,
+            let,loop,match,mod,move,mut,pub,ref,return,self,Self,static,struct,super,
+            trait,true,type,unsafe,use,where,while,async,await,dyn,try,
+            abstract,become,box,do,final,macro,override,priv,typeof,unsized,virtual,yield""");
 
     /** The blockComment. */
-    private static final BlockType blockComment = neutral("\"\"\"");
-    /** The blockComment2. */
-    private static final BlockType blockComment2 = neutral("'''");
+    private static final BlockType blockComment = range("/*", "*/");
+
+    /** The text block. */
+    private static final BlockType textBlock = neutral("\"\"\"");
 
     /**
      * Constructor.
      */
-    public PythonSyntax() {
-        super("python",
+    public RustSyntax() {
+        super("rust",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            blockComment2,     // textBlock
-            "#",               // lineComment
+            textBlock,         // textBlock
+            "//",              // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd
         );

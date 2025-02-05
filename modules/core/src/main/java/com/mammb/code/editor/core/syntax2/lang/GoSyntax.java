@@ -13,41 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
 
+import com.mammb.code.editor.core.syntax2.BlockType;
+import com.mammb.code.editor.core.syntax2.Trie;
+
+import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The sql syntax.
+ * The go syntax.
  * @author Naotsugu Kobayashi
  */
-public class SqlSyntax extends BasicSyntax {
+public class GoSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-        add,all,alter,and,any,as,asc,backup,between,by,case,check,column,constraint,create,
-        database,default,delete,desc,distinct,drop,exec,exists,foreign,from,full,group,
-        having,in,index,insert,into,is,join,key,left,like,limit,not,null,or,order,outer,
-        primary,procedure,replace,right,rownum,select,set,table,top,truncate,union,unique,
-        update,values,view,where""", false);
+        break,default,func,interface,select,case,defer,go,map,struct,
+        chan,else,goto,package,switch,const,fallthrough,if,range,type,
+        continue,for,import,return,var,
+        bool,int8,int16,int32,int64,uint8,uint16,uint32,uint64,
+        float32,float64,complex64,complex128,byte,rune,uint,int,uintptr,string""");
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
 
+    /** The text block. */
+    private static final BlockType textBlock = neutral("`");
+
     /**
      * Constructor.
      */
-    public SqlSyntax() {
-        super("sql",
+    public GoSyntax() {
+        super("go",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            null,              // textBlock
-            "--",              // lineComment
+            textBlock,         // textBlock
+            "//",              // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd
         );
     }
 }
-

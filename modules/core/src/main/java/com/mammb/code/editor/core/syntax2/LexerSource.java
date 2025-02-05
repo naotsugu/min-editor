@@ -144,14 +144,14 @@ public class LexerSource {
         private Indexed(int index, char ch, int parentLength) {
             this(index, String.valueOf(ch), parentLength);
         }
-        char ch() {
+        public char ch() {
             return length() == 0 ? 0 : text.charAt(0);
         }
-        int lastIndex() {
+        public int lastIndex() {
             return index + text.length() - 1;
         }
-        int length() { return text.length(); }
-        boolean isFirst() { return index == 0; }
-        boolean isLast() { return index == parentLength - 1; }
+        public int length() { return text.length(); }
+        public boolean isFirst() { return index == 0; }
+        public boolean isLast() { return index == parentLength - 1; }
     }
 }

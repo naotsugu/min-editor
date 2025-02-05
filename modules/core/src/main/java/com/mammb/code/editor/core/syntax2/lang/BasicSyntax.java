@@ -13,11 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import com.mammb.code.editor.core.syntax2.BlockScopes;
+import com.mammb.code.editor.core.syntax2.BlockType;
+import com.mammb.code.editor.core.syntax2.LexerSource;
+import com.mammb.code.editor.core.syntax2.Palette;
+import com.mammb.code.editor.core.syntax2.Syntax;
+import com.mammb.code.editor.core.syntax2.Trie;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 

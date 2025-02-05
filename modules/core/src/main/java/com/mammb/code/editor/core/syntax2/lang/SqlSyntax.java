@@ -13,43 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax2;
+package com.mammb.code.editor.core.syntax2.lang;
 
-import static com.mammb.code.editor.core.syntax2.BlockType.neutral;
+import com.mammb.code.editor.core.syntax2.BlockType;
+import com.mammb.code.editor.core.syntax2.Trie;
+
 import static com.mammb.code.editor.core.syntax2.BlockType.range;
 
 /**
- * The java syntax.
+ * The sql syntax.
  * @author Naotsugu Kobayashi
  */
-public class JavaSyntax extends BasicSyntax {
+public class SqlSyntax extends BasicSyntax {
 
     /** The keywords. */
     private static final Trie keywords = Trie.of("""
-            abstract,continue,for,new,switch,assert,default,goto,package,synchronized,boolean,do,if,private,
-            this,break,double,implements,protected,throw,byte,else,import,public,throws,case,enum,instanceof,
-            return,transient,catch,extends,int,short,try,char,final,interface,static,void,class,finally,long,
-            strictfp,volatile,const,float,native,super,while,var,record,sealed,with,yield,to,transitive,uses""");
+        add,all,alter,and,any,as,asc,backup,between,by,case,check,column,constraint,create,
+        database,default,delete,desc,distinct,drop,exec,exists,foreign,from,full,group,
+        having,in,index,insert,into,is,join,key,left,like,limit,not,null,or,order,outer,
+        primary,procedure,replace,right,rownum,select,set,table,top,truncate,union,unique,
+        update,values,view,where""", false);
 
     /** The blockComment. */
     private static final BlockType blockComment = range("/*", "*/");
 
-    /** The text block. */
-    private static final BlockType textBlock = neutral("\"\"\"");
-
     /**
      * Constructor.
      */
-    public JavaSyntax() {
-        super("java",
+    public SqlSyntax() {
+        super("sql",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral
             '"',               // stringLiteral
-            textBlock,         // textBlock
-            "//",              // lineComment
+            null,              // textBlock
+            "--",              // lineComment
             blockComment,      // blockComment
             ';'                // statementEnd
         );
     }
 }
+
