@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,10 @@ public class ActionHistory {
                 actions.getLast().occurredAt() + 3_000 < action.occurredAt()) {
                 actions.clear();
             }
+            if (actions.size() > 100) {
+                // delete too much history.
+                actions.subList(0, actions.size() - 100).clear();
+            }
             return actions.add(action);
 
         } else {
@@ -67,11 +71,10 @@ public class ActionHistory {
             return List.of(actions.getFirst());
         }
 
-        int mid = actions.size() / 2;
-        for (int i = mid; mid > 1; mid--) {
-            int index = actions.size() - i;
-            List<Action> l = actions.subList(index - i, i);
+        int mid = (int) Math.ceil(actions.size() / 2.0);
+        for (int i = mid; i < actions.size(); i++) {
             List<Action> r = actions.subList(i, actions.size());
+            List<Action> l = actions.subList(i - r.size(), i);
             if (equals(l, r)) {
                 List<Action> list = new ArrayList<>(r);
                 actions.clear();
@@ -79,7 +82,6 @@ public class ActionHistory {
                 return list;
             }
         }
-
         return Collections.emptyList();
     }
 
