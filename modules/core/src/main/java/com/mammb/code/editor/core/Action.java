@@ -134,11 +134,11 @@ public sealed interface Action
     static Action caretLeft(boolean withSelect, boolean withShortcut) {
         return new CaretLeft(withSelect, withShortcut, System.currentTimeMillis());
     }
-    static Action caretUp(boolean withSelect) {
-        return new CaretUp(withSelect, System.currentTimeMillis());
+    static Action caretUp(boolean withSelect, boolean withShortcut) {
+        return new CaretUp(withSelect, withShortcut, System.currentTimeMillis());
     }
-    static Action caretDown(boolean withSelect) {
-        return new CaretDown(withSelect, System.currentTimeMillis());
+    static Action caretDown(boolean withSelect, boolean withShortcut) {
+        return new CaretDown(withSelect, withShortcut, System.currentTimeMillis());
     }
     static Action pageUp(boolean withSelect) {
         return new PageUp(withSelect, System.currentTimeMillis());

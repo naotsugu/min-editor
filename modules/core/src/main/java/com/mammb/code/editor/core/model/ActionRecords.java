@@ -75,9 +75,9 @@ public interface ActionRecords {
 
     record CaretLeft(boolean withSelect, boolean withShortcut, long occurredAt) implements Action, WithSelect, Repeatable { }
 
-    record CaretUp(boolean withSelect, long occurredAt) implements Action, WithSelect, Repeatable { }
+    record CaretUp(boolean withSelect, boolean withShortcut, long occurredAt) implements Action, WithSelect, Repeatable { }
 
-    record CaretDown(boolean withSelect, long occurredAt) implements Action, WithSelect, Repeatable { }
+    record CaretDown(boolean withSelect, boolean withShortcut, long occurredAt) implements Action, WithSelect, Repeatable { }
 
     record PageUp(boolean withSelect, long occurredAt) implements Action, WithSelect, Repeatable { }
 

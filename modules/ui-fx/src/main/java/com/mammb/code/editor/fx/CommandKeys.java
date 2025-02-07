@@ -36,8 +36,8 @@ public class CommandKeys {
 
         if (e.getCode() == RIGHT) return of(Action.caretRight(e.isShiftDown(), e.isShortcutDown()));
         else if (e.getCode() == LEFT) return of(Action.caretLeft(e.isShiftDown(), e.isShortcutDown()));
-        else if (e.getCode() == UP) return of(Action.caretUp(e.isShiftDown()));
-        else if (e.getCode() == DOWN) return of(Action.caretDown(e.isShiftDown()));
+        else if (e.getCode() == UP) return of(Action.caretUp(e.isShiftDown(), e.isShortcutDown()));
+        else if (e.getCode() == DOWN) return of(Action.caretDown(e.isShiftDown(), e.isShortcutDown()));
         else if (e.getCode() == HOME || SC_HOME.match(e)) return of(Action.home(e.isShiftDown()));
         else if (e.getCode() == END || SC_END.match(e)) return of(Action.end(e.isShiftDown()));
         else if (e.getCode() == PAGE_UP) return of(Action.pageUp(e.isShiftDown()));
