@@ -382,6 +382,8 @@ public class TextEditorModel implements EditorModel {
         Caret c = carets.getFirst();
         c.floatAt(row, col);
         c.markIf(true);
+        scrollToCaretY();
+        scrollToCaretX();
     }
 
     @Override
