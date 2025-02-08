@@ -608,7 +608,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     void findAll(FindSpec spec) {
-        for (Point point : content.findAll(spec.pattern())) {
+        for (Point point : content.findAll(spec)) {
             decorate.addHighlights(point.row(), new StyleSpan(
                     new Style.BgColor("#FDD835"),
                     point.col(),

@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.*;
@@ -165,28 +166,30 @@ public class RoStringContent implements Content {
     }
 
     @Override
-    public List<Point> findAll(String text) {
+    public List<Point> findAll(FindSpec findSpec) {
+        // TODO case-sensitive regexp
         List<Point> ret = new ArrayList<>();
         for (int row = 0; row < stringList.size(); row++) {
             String rowText = stringList.get(row);
             for (int col = 0; col < rowText.length(); col++) {
-                int index = rowText.indexOf(text, col);
+                int index = rowText.indexOf(findSpec.pattern(), col);
                 if (index < 0) {
                     break;
                 }
                 ret.add(Point.of(row, index));
-                col = (index + text.length() - 1);
+                col = (index + findSpec.pattern().length() - 1);
             }
         }
         return ret;
     }
 
     @Override
-    public Optional<Point> findNext(Point base, String text) {
+    public Optional<Point> findNext(Point base, FindSpec findSpec) {
+        // TODO case-sensitive regexp
         for (int row = base.row(); row < stringList.size(); row++) {
             String rowText = stringList.get(row);
             int col = (row == base.row()) ? base.col() : 0;
-            int index = rowText.indexOf(text, col);
+            int index = rowText.indexOf(findSpec.pattern(), col);
             if (index >= 0) {
                 return Optional.of(Point.of(row, index));
             }
@@ -195,11 +198,12 @@ public class RoStringContent implements Content {
     }
 
     @Override
-    public Optional<Point> findPrev(Point base, String text) {
+    public Optional<Point> findPrev(Point base, FindSpec findSpec) {
+        // TODO case-sensitive regexp
         for (int row = base.row(); row >= 0; row--) {
             String rowText = stringList.get(row);
             int col = (row == base.row()) ? base.col() : rowText.length();
-            int index = rowText.substring(0, col).lastIndexOf(text);
+            int index = rowText.substring(0, col).lastIndexOf(findSpec.pattern());
             if (index >= 0) {
                 return Optional.of(Point.of(row, index));
             }

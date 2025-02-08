@@ -150,26 +150,26 @@ public interface Content {
 
     /**
      * Find all.
-     * @param text the text to search
+     * @param findSpec the find spec
      * @return the search results
      */
-    List<Point> findAll(String text);
+    List<Point> findAll(FindSpec findSpec);
 
     /**
      * Find next.
      * @param base the base point
-     * @param text the text to search
+     * @param findSpec the findSpec
      * @return the search result
      */
-    Optional<Point> findNext(Point base, String text);
+    Optional<Point> findNext(Point base, FindSpec findSpec);
 
     /**
      * Find previous.
      * @param base the base point
-     * @param text the text to search
+     * @param findSpec the findSpec
      * @return the search result
      */
-    Optional<Point> findPrev(Point base, String text);
+    Optional<Point> findPrev(Point base, FindSpec findSpec);
 
     /**
      * Execute the query.

@@ -23,7 +23,7 @@ import java.util.Objects;
  */
 public record FindSpec(String pattern, PatternType patternType) {
 
-    enum PatternType { CASE_INSENSITIVE, CASE_SENSITIVE, REGEXP, EMPTY }
+    public enum PatternType { CASE_INSENSITIVE, CASE_SENSITIVE, REGEXP, EMPTY }
 
     public static final FindSpec EMPTY = new FindSpec("", PatternType.EMPTY);
 

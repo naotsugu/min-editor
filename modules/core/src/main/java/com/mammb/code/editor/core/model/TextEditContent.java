@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
@@ -23,6 +24,7 @@ import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
+import com.mammb.code.piecetable.Findable;
 import com.mammb.code.piecetable.Pos;
 import com.mammb.code.piecetable.TextEdit;
 import java.nio.file.Path;
@@ -208,23 +210,36 @@ public class TextEditContent implements Content {
     }
 
     @Override
-    public List<Point> findAll(String text) {
-        var founds = edit.findAll(text);
+    public List<Point> findAll(FindSpec findSpec) {
+        List<Findable.Found> founds = switch (findSpec.patternType()) {
+            case CASE_INSENSITIVE -> edit.findAll(findSpec.pattern(), false);
+            case CASE_SENSITIVE -> edit.findAll(findSpec.pattern(), true);
+            case REGEXP -> edit.findAll(findSpec.pattern());
+            case EMPTY -> List.of();
+        };
         return founds.stream()
             .map(found -> Point.of(found.row(), found.col()))
             .toList();
     }
 
     @Override
-    public Optional<Point> findNext(Point base, String text) {
-        // TODO
-        return Optional.empty();
+    public Optional<Point> findNext(Point base, FindSpec findSpec) {
+        return find(base, true, findSpec);
     }
 
     @Override
-    public Optional<Point> findPrev(Point base, String text) {
-        // TODO
-        return Optional.empty();
+    public Optional<Point> findPrev(Point base, FindSpec findSpec) {
+        return find(base, false, findSpec);
+    }
+
+    private Optional<Point> find(Point base, boolean forward, FindSpec findSpec) {
+        Optional<Findable.Found> found = switch (findSpec.patternType()) {
+            case CASE_INSENSITIVE -> edit.find(findSpec.pattern(), base.row(), base.col(), forward, false);
+            case CASE_SENSITIVE -> edit.find(findSpec.pattern(), base.row(), base.col(), forward, true);
+            case REGEXP -> edit.find(findSpec.pattern(), base.row(), base.col(), forward);
+            case EMPTY -> Optional.empty();
+        };
+        return found.map(f -> Point.of(f.row(), f.col()));
     }
 
     @Override
