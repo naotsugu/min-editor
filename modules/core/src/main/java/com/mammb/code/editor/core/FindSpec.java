@@ -19,12 +19,16 @@ import java.util.Objects;
 
 /**
  * The find specification.
+ * @param pattern the pattern string
+ * @param patternType the pattern type
  * @author Naotsugu Kobayashi
  */
 public record FindSpec(String pattern, PatternType patternType) {
 
+    /** The pattern type. */
     public enum PatternType { CASE_INSENSITIVE, CASE_SENSITIVE, REGEXP, EMPTY }
 
+    /** The empty find spec. */
     public static final FindSpec EMPTY = new FindSpec("", PatternType.EMPTY);
 
     public FindSpec {
@@ -32,23 +36,31 @@ public record FindSpec(String pattern, PatternType patternType) {
         Objects.requireNonNull(patternType);
     }
 
-    static FindSpec of(String pattern) {
-        return new FindSpec(pattern, PatternType.CASE_INSENSITIVE);
-    }
-
+    /**
+     * Create a new {@link FindSpec}.
+     * @param pattern the pattern string
+     * @param caseSensitive case-sensitive?
+     * @return a new {@link FindSpec}
+     */
     static FindSpec of(String pattern, boolean caseSensitive) {
         return new FindSpec(pattern, caseSensitive ? PatternType.CASE_SENSITIVE : PatternType.CASE_INSENSITIVE);
     }
 
-    static FindSpec regexpOf(String pattern) {
-        return new FindSpec(pattern, PatternType.REGEXP);
+    /**
+     * Create a new {@link FindSpec}.
+     * @param regex the regex
+     * @return a new {@link FindSpec}
+     */
+    static FindSpec regexpOf(String regex) {
+        return new FindSpec(regex, PatternType.REGEXP);
     }
 
-    static FindSpec caseSensOf(String pattern) {
-        return new FindSpec(pattern, PatternType.CASE_SENSITIVE);
-    }
-
+    /**
+     * Get whether this spec is empty or not.
+     * @return {@code true}, if this spec is empty
+     */
     public boolean isEmpty() {
         return patternType == PatternType.EMPTY || pattern.isEmpty();
     }
+
 }
