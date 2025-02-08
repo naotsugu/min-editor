@@ -173,18 +173,29 @@ public class TextEditorModel implements EditorModel {
         screenLayout.scrollX(x);
     }
 
-    @Override
+    /**
+     * Scroll to the caret position y.
+     */
     public void scrollToCaretY() {
+        scrollToCaretY(0);
+    }
+
+    public void scrollToCaretY(int gap) {
         Caret c = carets.getFirst();
         int line = screenLayout.rowToLine(c.row(), c.col());
         if (line - screenLayout.topLine() < 0) {
-            scrollAt(line);
+            int nLine = Math.max(0, line - gap);
+            scrollAt(nLine);
         } else if (line - (screenLayout.topLine() + screenLayout.screenLineSize() - 3) > 0) {
-            scrollAt(line - screenLayout.screenLineSize() + 3);
+            int nLine = line - screenLayout.screenLineSize() + 3 + gap;
+            scrollAt(Math.clamp(nLine, 0, screenLayout.lineSize() - screenLayout.screenLineSize() + 3));
+
         }
     }
 
-    @Override
+    /**
+     * Scroll to the caret position x.
+     */
     public void scrollToCaretX() {
         Caret c = carets.getFirst();
         int line = screenLayout.rowToLine(c.row(), c.col());
@@ -618,11 +629,29 @@ public class TextEditorModel implements EditorModel {
     }
 
     void findNext(FindSpec spec) {
-        // TODO
+        if (spec.isEmpty()) {
+            spec = findSpec;
+        } else {
+            findSpec = spec;
+        }
+        Caret c = carets.unique();
+        var point = c.isMarked() ? Collections.max(List.of(c.point(), c.markedPoint())) : c.point();
+        content.findNext(point, spec).ifPresent(p ->
+            c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
+        scrollToCaretY(screenLayout.screenLineSize() / 2);
     }
 
     void findPrev(FindSpec spec) {
-        // TODO
+        if (spec.isEmpty()) {
+            spec = findSpec;
+        } else {
+            findSpec = spec;
+        }
+        Caret c = carets.unique();
+        var point = c.isMarked() ? Collections.min(List.of(c.point(), c.markedPoint())) : c.point();
+        content.findPrev(point, spec).ifPresent(p ->
+            c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
+        scrollToCaretY(screenLayout.screenLineSize() / 2);
     }
 
     @Override

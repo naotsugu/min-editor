@@ -104,16 +104,6 @@ public interface EditorModel {
     void scrollX(double x);
 
     /**
-     * Scroll to the caret position y.
-     */
-    void scrollToCaretY();
-
-    /**
-     * Scroll to the caret position x.
-     */
-    void scrollToCaretX();
-
-    /**
      * Mouse pressed at the specified position.
      * @param x the specified position x
      * @param y the specified position y

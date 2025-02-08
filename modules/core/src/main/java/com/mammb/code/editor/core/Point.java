@@ -89,6 +89,27 @@ public interface Point extends Comparable<Point> {
     }
 
     /**
+     * Point and length.
+     */
+    interface PointLen extends Point {
+        /**
+         * Get the length.
+         * @return the length
+         */
+        int len();
+        /**
+         * Create a new point len.
+         * @param row the number of row
+         * @param col the number of column
+         * @return the new caret point
+         */
+        static PointLen of(int row, int col, int len) {
+            record PointLenRecord(int row, int col, int len) implements PointLen { }
+            return new PointLenRecord(row, col, len);
+        }
+    }
+
+    /**
      * The range of points.
      * @param start the start point
      * @param end the end point

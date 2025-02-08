@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Point.PointLen;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
 import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
@@ -210,7 +211,7 @@ public class TextEditContent implements Content {
     }
 
     @Override
-    public List<Point> findAll(FindSpec findSpec) {
+    public List<PointLen> findAll(FindSpec findSpec) {
         List<Findable.Found> founds = switch (findSpec.patternType()) {
             case CASE_INSENSITIVE -> edit.findAll(findSpec.pattern(), false);
             case CASE_SENSITIVE -> edit.findAll(findSpec.pattern(), true);
@@ -218,28 +219,28 @@ public class TextEditContent implements Content {
             case EMPTY -> List.of();
         };
         return founds.stream()
-            .map(found -> Point.of(found.row(), found.col()))
+            .map(f -> PointLen.of(f.row(), f.col(), f.len()))
             .toList();
     }
 
     @Override
-    public Optional<Point> findNext(Point base, FindSpec findSpec) {
+    public Optional<PointLen> findNext(Point base, FindSpec findSpec) {
         return find(base, true, findSpec);
     }
 
     @Override
-    public Optional<Point> findPrev(Point base, FindSpec findSpec) {
+    public Optional<PointLen> findPrev(Point base, FindSpec findSpec) {
         return find(base, false, findSpec);
     }
 
-    private Optional<Point> find(Point base, boolean forward, FindSpec findSpec) {
+    private Optional<PointLen> find(Point base, boolean forward, FindSpec findSpec) {
         Optional<Findable.Found> found = switch (findSpec.patternType()) {
             case CASE_INSENSITIVE -> edit.find(findSpec.pattern(), base.row(), base.col(), forward, false);
             case CASE_SENSITIVE -> edit.find(findSpec.pattern(), base.row(), base.col(), forward, true);
             case REGEXP -> edit.find(findSpec.pattern(), base.row(), base.col(), forward);
             case EMPTY -> Optional.empty();
         };
-        return found.map(f -> Point.of(f.row(), f.col()));
+        return found.map(f -> PointLen.of(f.row(), f.col(), f.len()));
     }
 
     @Override

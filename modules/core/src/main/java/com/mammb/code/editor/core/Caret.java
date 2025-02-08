@@ -389,7 +389,7 @@ public interface Caret extends Comparable<Caret> {
 
         @Override
         public Point flushedPoint() {
-            return hasImeFlush() ? flush :  point;
+            return hasImeFlush() ? flush : point;
         }
     }
 

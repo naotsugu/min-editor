@@ -48,4 +48,7 @@ public record FindSpec(String pattern, PatternType patternType) {
         return new FindSpec(pattern, PatternType.CASE_SENSITIVE);
     }
 
+    public boolean isEmpty() {
+        return patternType == PatternType.EMPTY || pattern.isEmpty();
+    }
 }

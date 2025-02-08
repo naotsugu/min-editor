@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Point.PointLen;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.*;
 import com.mammb.code.piecetable.DocumentStat;
@@ -166,9 +167,9 @@ public class RoStringContent implements Content {
     }
 
     @Override
-    public List<Point> findAll(FindSpec findSpec) {
+    public List<PointLen> findAll(FindSpec findSpec) {
         // TODO case-sensitive regexp
-        List<Point> ret = new ArrayList<>();
+        List<PointLen> ret = new ArrayList<>();
         for (int row = 0; row < stringList.size(); row++) {
             String rowText = stringList.get(row);
             for (int col = 0; col < rowText.length(); col++) {
@@ -176,7 +177,7 @@ public class RoStringContent implements Content {
                 if (index < 0) {
                     break;
                 }
-                ret.add(Point.of(row, index));
+                ret.add(PointLen.of(row, index, findSpec.pattern().length()));
                 col = (index + findSpec.pattern().length() - 1);
             }
         }
@@ -184,28 +185,28 @@ public class RoStringContent implements Content {
     }
 
     @Override
-    public Optional<Point> findNext(Point base, FindSpec findSpec) {
+    public Optional<PointLen> findNext(Point base, FindSpec findSpec) {
         // TODO case-sensitive regexp
         for (int row = base.row(); row < stringList.size(); row++) {
             String rowText = stringList.get(row);
             int col = (row == base.row()) ? base.col() : 0;
             int index = rowText.indexOf(findSpec.pattern(), col);
             if (index >= 0) {
-                return Optional.of(Point.of(row, index));
+                return Optional.of(PointLen.of(row, index, findSpec.pattern().length()));
             }
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<Point> findPrev(Point base, FindSpec findSpec) {
+    public Optional<PointLen> findPrev(Point base, FindSpec findSpec) {
         // TODO case-sensitive regexp
         for (int row = base.row(); row >= 0; row--) {
             String rowText = stringList.get(row);
             int col = (row == base.row()) ? base.col() : rowText.length();
             int index = rowText.substring(0, col).lastIndexOf(findSpec.pattern());
             if (index >= 0) {
-                return Optional.of(Point.of(row, index));
+                return Optional.of(PointLen.of(row, index, findSpec.pattern().length()));
             }
         }
         return Optional.empty();

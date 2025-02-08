@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Point.Range;
+import com.mammb.code.editor.core.Point.PointLen;
 import com.mammb.code.editor.core.model.RoStringContent;
 import com.mammb.code.editor.core.model.TextEditContent;
 
@@ -153,7 +154,7 @@ public interface Content {
      * @param findSpec the find spec
      * @return the search results
      */
-    List<Point> findAll(FindSpec findSpec);
+    List<PointLen> findAll(FindSpec findSpec);
 
     /**
      * Find next.
@@ -161,7 +162,7 @@ public interface Content {
      * @param findSpec the findSpec
      * @return the search result
      */
-    Optional<Point> findNext(Point base, FindSpec findSpec);
+    Optional<PointLen> findNext(Point base, FindSpec findSpec);
 
     /**
      * Find previous.
@@ -169,7 +170,7 @@ public interface Content {
      * @param findSpec the findSpec
      * @return the search result
      */
-    Optional<Point> findPrev(Point base, FindSpec findSpec);
+    Optional<PointLen> findPrev(Point base, FindSpec findSpec);
 
     /**
      * Execute the query.

@@ -103,14 +103,6 @@ public class CsvEditorModel implements EditorModel {
     }
 
     @Override
-    public void scrollToCaretY() {
-    }
-
-    @Override
-    public void scrollToCaretX() {
-    }
-
-    @Override
     public void mousePressed(double x, double y) {
     }
 
