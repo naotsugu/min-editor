@@ -148,7 +148,7 @@ public class CommandPalette extends Dialog<Command> {
         if (cmdType == null) {
             setResult(new Command.Empty());
         } else {
-            if (Command.RequireArgs1.class.isAssignableFrom(cmdType)) {
+            if (Command.RequireArgs.class.isAssignableFrom(cmdType)) {
                 setResult(Command.newInstance(cmdType, textField.getText().trim()));
             } else {
                 setResult(Command.newInstance(cmdType));

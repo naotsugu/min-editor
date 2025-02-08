@@ -20,6 +20,7 @@ import java.util.function.Function;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Action.*;
 import com.mammb.code.editor.core.Clipboard;
+import com.mammb.code.editor.core.FindSpec;
 
 /**
  * The ActionRecords.
@@ -53,11 +54,11 @@ public interface ActionRecords {
 
     record Goto(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
 
-    record FindAll(String attr, long occurredAt) implements Action, WithAttr<String> { }
+    record FindAll(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }
 
-    record FindNext(String attr, long occurredAt) implements Action, WithAttr<String> { }
+    record FindNext(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }
 
-    record FindPrev(String attr, long occurredAt) implements Action, WithAttr<String> { }
+    record FindPrev(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }
 
     record Copy(Clipboard attr, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }
 

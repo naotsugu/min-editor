@@ -306,7 +306,12 @@ public class EditorPane extends StackPane {
             case Palette cmd       -> showCommandPalette(cmd.initial());
             case Open cmd          -> open(cmd.path());
             case Config _          -> newEdit().open(Session.of(context.config().path()));
-            case FindAll cmd       -> model.apply(Action.findAll(cmd.str()));
+            case FindNext cmd      -> model.apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
+            case FindPrev cmd      -> model.apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
+            case FindAll cmd       -> model.apply(Action.findAll(cmd.str(), cmd.caseSensitive()));
+            case FindNextRegex cmd -> model.apply(Action.findNextRegex(cmd.str()));
+            case FindPrevRegex cmd -> model.apply(Action.findPrevRegex(cmd.str()));
+            case FindAllRegex cmd  -> model.apply(Action.findAllRegex(cmd.str()));
             case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd      -> model.apply(Action.wrapLine(cmd.width()));
             case ToLowerCase _     -> model.apply(Action.replace(EditingFunctions.toLower, true));

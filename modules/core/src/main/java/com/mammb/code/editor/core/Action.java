@@ -26,7 +26,9 @@ import com.mammb.code.editor.core.model.ActionRecords.*;
 public sealed interface Action
     permits Backspace, CaretDown, CaretLeft, CaretRight, CaretUp, Copy, Cut, Delete, Empty,
     End, Escape, Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll,
-    Tab, Undo, WrapLine, Goto, FindAll, FindNext, FindPrev, Repeat {
+    Tab, Undo, WrapLine, Goto,
+    FindAll, FindNext, FindPrev,
+    Repeat {
 
     /**
      * Get occurred at.
@@ -101,14 +103,29 @@ public sealed interface Action
     static Action goTo(int row) {
         return new Goto(row, System.currentTimeMillis());
     }
-    static Action findAll(String str) {
-        return new FindAll(str, System.currentTimeMillis());
+    static Action findAll(String str, boolean caseSensitive) {
+        return new FindAll(FindSpec.of(str, caseSensitive), System.currentTimeMillis());
     }
-    static Action findNext(String str) {
-        return new FindNext(str, System.currentTimeMillis());
+    static Action findNext(String str, boolean caseSensitive) {
+        return new FindNext(FindSpec.of(str, caseSensitive), System.currentTimeMillis());
     }
-    static Action findPrev(String str) {
-        return new FindPrev(str, System.currentTimeMillis());
+    static Action findPrev(String str, boolean caseSensitive) {
+        return new FindPrev(FindSpec.of(str, caseSensitive), System.currentTimeMillis());
+    }
+    static Action findNext() {
+        return new FindNext(FindSpec.EMPTY, System.currentTimeMillis());
+    }
+    static Action findPrev() {
+        return new FindPrev(FindSpec.EMPTY, System.currentTimeMillis());
+    }
+    static Action findAllRegex(String str) {
+        return new FindAll(FindSpec.regexpOf(str), System.currentTimeMillis());
+    }
+    static Action findNextRegex(String str) {
+        return new FindNext(FindSpec.regexpOf(str), System.currentTimeMillis());
+    }
+    static Action findPrevRegex(String str) {
+        return new FindPrev(FindSpec.regexpOf(str), System.currentTimeMillis());
     }
     static Action copy(Clipboard clipboard) {
         return new Copy(clipboard, System.currentTimeMillis());

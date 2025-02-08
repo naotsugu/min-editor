@@ -23,6 +23,7 @@ import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Point;
@@ -44,6 +45,7 @@ import com.mammb.code.editor.core.text.Text;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -80,6 +82,8 @@ public class TextEditorModel implements EditorModel {
     private final Context ctx;
     /** The action history. */
     private final ActionHistory actionHistory = new ActionHistory();
+    /** The find spec. */
+    private FindSpec findSpec = FindSpec.EMPTY;
 
     /**
      * Constructor.
@@ -603,37 +607,29 @@ public class TextEditorModel implements EditorModel {
         c.imeFlushAt(pos);
     }
 
-    void findAll(String text) {
-        for (Point point : content.findAll(text)) {
+    void findAll(FindSpec spec) {
+        for (Point point : content.findAll(spec.pattern())) {
             decorate.addHighlights(point.row(), new StyleSpan(
                     new Style.BgColor("#FDD835"),
                     point.col(),
-                    text.length())
+                    spec.pattern().length())
             );
         }
     }
 
-    void findNext(String text) {
+    void findNext(FindSpec spec) {
         // TODO
-        content.findNext(carets.getFirst().point(), text);
     }
 
-    void findPrev(String text) {
+    void findPrev(FindSpec spec) {
         // TODO
-        content.findPrev(carets.getFirst().point(), text);
     }
 
     @Override
     public Session getSession() {
         return new Session.SessionRecord(
             content.path().orElse(null),
-            content.path().map(p -> {
-                try {
-                    return Files.getLastModifiedTime(p);
-                } catch (IOException e) {
-                    return null;
-                }
-            }).orElse(null),
+            content.path().map(TextEditorModel::lastModifiedTime).orElse(null),
             screenLayout.topLine(),
             screenLayout.lineWidth(),
             carets.getFirst().row(),
@@ -674,7 +670,7 @@ public class TextEditorModel implements EditorModel {
             case Repeat _     -> actionHistory.repetition().forEach(this::apply);
             case Replace a    -> replace(a.attr(), true);
             case Save a       -> save(a.attr());
-            case Empty a      -> { }
+            case Empty _      -> { }
         }
         switch (action) {
             case Escape _ -> {}
@@ -854,6 +850,13 @@ public class TextEditorModel implements EditorModel {
             Collections.min(points).row(),
             Collections.max(points).row() + 1);
         carets.at(points);
+    }
+
+    private static FileTime lastModifiedTime(Path path) {
+        try {
+            return Files.getLastModifiedTime(path);
+        } catch (IOException ignore) { }
+        return null;
     }
 
 }

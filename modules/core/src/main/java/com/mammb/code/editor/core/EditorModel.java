@@ -15,7 +15,10 @@
  */
 package com.mammb.code.editor.core;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.Optional;
 import com.mammb.code.editor.core.model.TextEditorModel;
 import com.mammb.code.editor.core.syntax2.Syntax;

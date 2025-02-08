@@ -20,6 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import com.mammb.code.editor.core.Action;
@@ -41,6 +42,8 @@ public sealed interface Command {
     interface RequireArgs { }
 
     interface RequireArgs1<T> extends RequireArgs { }
+
+    interface RequireArgs2<T1, T2> extends RequireArgs { }
 
     record ActionCommand(Action action) implements Command, Hidden {}
 
@@ -98,9 +101,17 @@ public sealed interface Command {
 
     record ZoomOut() implements Command {}
 
-    // TODO find next, find prev
+    record FindNext(String str, Boolean caseSensitive) implements Command, RequireArgs2<String, Boolean> { }
 
-    record FindAll(String str) implements Command, RequireArgs1<String> { }
+    record FindPrev(String str, Boolean caseSensitive) implements Command, RequireArgs2<String, Boolean> { }
+
+    record FindAll(String str, Boolean caseSensitive) implements Command, RequireArgs2<String, Boolean> { }
+
+    record FindNextRegex(String str) implements Command, RequireArgs1<String> { }
+
+    record FindPrevRegex(String str) implements Command, RequireArgs1<String> { }
+
+    record FindAllRegex(String str) implements Command, RequireArgs1<String> { }
 
     record GoTo(Integer rowNumber) implements Command, RequireArgs1<Integer> { }
 
@@ -114,10 +125,15 @@ public sealed interface Command {
 
     static String promptText(Class<? extends Command> clazz) {
         return switch (clazz) {
-            case Class<?> c when c == FindAll.class -> "enter a string to search";
-            case Class<?> c when c == GoTo.class -> "enter a line number";
-            case Class<?> c when c == Filter.class -> "enter a regexp string to filter";
-            case Class<?> c when c == WrapLine.class -> "enter a wrap width(number of characters)";
+            case Class<?> c when c == FindNext.class -> "[string to search] [`true` if case insensitive]";
+            case Class<?> c when c == FindPrev.class -> "[string to search] [`true` if case insensitive]";
+            case Class<?> c when c == FindNextRegex.class -> "[regex to search]";
+            case Class<?> c when c == FindPrevRegex.class -> "[regex to search]";
+            case Class<?> c when c == FindAll.class -> "[string to search}";
+            case Class<?> c when c == FindAllRegex.class -> "[regex to search]";
+            case Class<?> c when c == GoTo.class -> "[line number]";
+            case Class<?> c when c == Filter.class -> "[regexp string to filter]";
+            case Class<?> c when c == WrapLine.class -> "[wrap width(number of characters)]";
             case null, default -> "";
         };
     }
@@ -149,7 +165,12 @@ public sealed interface Command {
             case Class<?> c when c == Forward.class -> "history forward on tab";
             case Class<?> c when c == ZoomIn.class -> "enlarge the font size";
             case Class<?> c when c == ZoomOut.class -> "reduce the font size";
+            case Class<?> c when c == FindNext.class -> "searches for the next occurrence";
+            case Class<?> c when c == FindPrev.class -> "searches for the previous occurrence";
             case Class<?> c when c == FindAll.class -> "searches for the specified text";
+            case Class<?> c when c == FindNextRegex.class -> "searches for the next occurrence";
+            case Class<?> c when c == FindPrevRegex.class -> "searches for the previous occurrence";
+            case Class<?> c when c == FindAllRegex.class -> "searches for the specified regex";
             case Class<?> c when c == GoTo.class -> "go to the specified number of row";
             case Class<?> c when c == Filter.class -> "not implemented yet";
             case Class<?> c when c == WrapLine.class -> "wraps a line with a specified number of characters";
@@ -167,6 +188,10 @@ public sealed interface Command {
             case Class<?> c when c == SaveAs.class -> shortcut + " Shift S";
             case Class<?> c when c == New.class -> shortcut + " N";
             case Class<?> c when c == TabClose.class -> shortcut + " W";
+            case Class<?> c when c == FindNext.class -> "F3";
+            case Class<?> c when c == FindPrev.class -> shortcut + " F3";
+            case Class<?> c when c == FindNextRegex.class -> "F3";
+            case Class<?> c when c == FindPrevRegex.class -> shortcut + " F3";
             case Class<?> c when c == FindAll.class -> shortcut + " F";
             case Class<?> c when c == Config.class -> shortcut + " ,";
             case Class<?> c when c == ZoomIn.class -> shortcut + " +";
@@ -191,34 +216,75 @@ public sealed interface Command {
     }
 
     static Command newInstance(Class<? extends Command> clazz, String... args) {
-        if (!RequireArgs.class.isAssignableFrom(clazz)) {
-            try {
+        try {
+            if (!RequireArgs.class.isAssignableFrom(clazz)) {
                 return clazz.getDeclaredConstructor().newInstance();
-            } catch (Exception ignore) {
-                log.log(System.Logger.Level.ERROR, ignore);
-            }
-            return new Empty();
-        }
 
-        if (RequireArgs1.class.isAssignableFrom(clazz) && args.length > 0) {
-            try {
-                Class<?> argType = Arrays.stream(clazz.getGenericInterfaces())
-                    .filter(ParameterizedType.class::isInstance)
-                    .map(ParameterizedType.class::cast)
-                    .map(type -> type.getActualTypeArguments()[0])
-                    .filter(Class.class::isInstance)
-                    .map(Class.class::cast)
-                    .findFirst().get();
-                Object argObj = String.class.isAssignableFrom(argType)
-                    ? args[0]
-                    : argType.getMethod("valueOf", String.class).invoke(null, args[0]);
-                Constructor<? extends Command> constructor = clazz.getConstructor(argType);
-                return constructor.newInstance(argType.cast(argObj));
-            } catch (Exception ignore) {
-                log.log(System.Logger.Level.ERROR, ignore);
+            } else if (RequireArgs1.class.isAssignableFrom(clazz)) {
+                Class<?> argType = argType(clazz, 0);
+                return clazz.getConstructor(argType).newInstance(argType.cast(argObj(argType, args, 0)));
+
+            } else if (RequireArgs2.class.isAssignableFrom(clazz)) {
+                Class<?>[] argTypes = new Class<?>[] { argType(clazz, 0), argType(clazz, 1) };
+                return clazz.getConstructor(argTypes).newInstance(
+                    argTypes[0].cast(argObj(argTypes[0], args, 0)),
+                    argTypes[1].cast(argObj(argTypes[1], args, 1)));
             }
+
+        } catch (Exception ignore) {
+            log.log(System.Logger.Level.ERROR, ignore);
         }
         return new Empty();
+    }
+
+    private static Class<?> argType(Class<? extends Command> clazz, int index) {
+        return Arrays.stream(clazz.getGenericInterfaces())
+            .filter(ParameterizedType.class::isInstance)
+            .map(ParameterizedType.class::cast)
+            .map(type -> type.getActualTypeArguments()[index])
+            .filter(Class.class::isInstance)
+            .map(Class.class::cast)
+            .findFirst().get();
+    }
+
+    private static Object argObj(Class<?> argType, String[] args, int index) {
+        if (args.length - 1 < index) {
+            if (Boolean.class.isAssignableFrom(argType)) {
+                return Boolean.FALSE;
+            }
+            return null;
+        }
+        try {
+            return String.class.isAssignableFrom(argType)
+                ? args[index]
+                : Boolean.class.isAssignableFrom(argType)
+                    ? toBoolean(args, index)
+                    : argType.getMethod("valueOf", String.class).invoke(null, args[index]);
+        } catch (Exception ignore) {
+            log.log(System.Logger.Level.WARNING, ignore);
+        }
+        return null;
+    }
+
+    private static int toInt(String[] args, int index) {
+        try {
+            return Integer.parseInt(args[index]);
+        } catch (Exception ignore) {
+            return 0;
+        }
+    }
+
+    private static boolean toBoolean(String[] args, int index) {
+        if (args.length - 1 < index || args[index] == null) {
+            return false;
+        }
+        String arg = args[index].toLowerCase();
+        return Objects.equals(arg, "t") ||
+            Objects.equals(arg, "true") ||
+            Objects.equals(arg, "on") ||
+            Objects.equals(arg, "yes") ||
+            Objects.equals(arg, "y") ||
+            Objects.equals(arg, "1");
     }
 
 }
