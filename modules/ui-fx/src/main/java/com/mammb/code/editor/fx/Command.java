@@ -248,25 +248,25 @@ public sealed interface Command {
     }
 
     private static Object argObj(Class<?> argType, String[] args, int index) {
-        if (args.length - 1 < index) {
-            if (Boolean.class.isAssignableFrom(argType)) {
-                return Boolean.FALSE;
-            }
-            return null;
+        return switch (argType) {
+            case Class<?> c when c == String.class -> toString(args, index);
+            case Class<?> c when c == Boolean.class -> toBoolean(args, index);
+            case Class<?> c when c == Integer.class -> toInt(args, index);
+            case null, default -> null;
+        };
+    }
+
+    private static String toString(String[] args, int index) {
+        if (args.length - 1 < index || args[index] == null) {
+            return "";
         }
-        try {
-            return String.class.isAssignableFrom(argType)
-                ? args[index]
-                : Boolean.class.isAssignableFrom(argType)
-                    ? toBoolean(args, index)
-                    : argType.getMethod("valueOf", String.class).invoke(null, args[index]);
-        } catch (Exception ignore) {
-            log.log(System.Logger.Level.WARNING, ignore);
-        }
-        return null;
+        return args[index];
     }
 
     private static int toInt(String[] args, int index) {
+        if (args.length - 1 < index || args[index] == null) {
+            return 0;
+        }
         try {
             return Integer.parseInt(args[index]);
         } catch (Exception ignore) {
