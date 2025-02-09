@@ -25,18 +25,21 @@ public interface Theme {
             "#292929",
             "#C8D7E6",
             "#214283AA",
+            "#FDD835",
             "#303030"
     );
 
     String baseColor();
     String fgColor();
     String paleHighlightColor();
+    String cautionColor();
     String uiBaseColor();
 
     record ThemeRecord(
             String baseColor,
             String fgColor,
             String paleHighlightColor,
+            String cautionColor,
             String uiBaseColor
     ) implements Theme { }
 

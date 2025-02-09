@@ -623,12 +623,13 @@ public class TextEditorModel implements EditorModel {
             findSpec = spec;
         }
         Caret c = carets.getFirst();
+        Style style = new Style.BgColor(Theme.dark.cautionColor());
         content.findAll(findSpec).forEach(p -> {
             if (!c.isMarked()) {
                 c.markTo(p.row(), p.col(), p.row(), p.col() + p.len());
                 scrollToCaretY(screenLayout.screenLineSize() / 2);
             }
-            decorate.addHighlights(p.row(), new StyleSpan(new Style.BgColor("#FDD835"), p.col(), p.len()));
+            decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len()));
         });
     }
 
