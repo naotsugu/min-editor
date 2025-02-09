@@ -619,9 +619,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     void findAll(FindSpec spec) {
-        if (!spec.isEmpty()) {
-            findSpec = spec;
-        }
+        if (!spec.isEmpty()) findSpec = spec;
         Caret c = carets.getFirst();
         Style style = new Style.BgColor(Theme.dark.cautionColor());
         content.findAll(findSpec).forEach(p -> {
@@ -634,9 +632,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     void findNext(FindSpec spec) {
-        if (!spec.isEmpty()) {
-            findSpec = spec;
-        }
+        if (!spec.isEmpty()) findSpec = spec;
         Caret c = carets.unique();
         var point = c.isMarked() ? Collections.max(List.of(c.point(), c.markedPoint())) : c.point();
         content.findNext(point, findSpec).ifPresent(p ->
@@ -645,16 +641,13 @@ public class TextEditorModel implements EditorModel {
     }
 
     void findPrev(FindSpec spec) {
-        if (!spec.isEmpty()) {
-            findSpec = spec;
-        }
+        if (!spec.isEmpty()) findSpec = spec;
         Caret c = carets.unique();
         var point = c.isMarked() ? Collections.min(List.of(c.point(), c.markedPoint())) : c.point();
         content.findPrev(point, findSpec).ifPresent(p ->
             c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
         scrollToCaretY(screenLayout.screenLineSize() / 2);
     }
-
 
     @Override
     public Session getSession() {
