@@ -619,40 +619,41 @@ public class TextEditorModel implements EditorModel {
     }
 
     void findAll(FindSpec spec) {
-        for (Point point : content.findAll(spec)) {
-            decorate.addHighlights(point.row(), new StyleSpan(
-                    new Style.BgColor("#FDD835"),
-                    point.col(),
-                    spec.pattern().length())
-            );
+        if (!spec.isEmpty()) {
+            findSpec = spec;
         }
+        Caret c = carets.getFirst();
+        content.findAll(findSpec).forEach(p -> {
+            if (!c.isMarked()) {
+                c.markTo(p.row(), p.col(), p.row(), p.col() + p.len());
+                scrollToCaretY(screenLayout.screenLineSize() / 2);
+            }
+            decorate.addHighlights(p.row(), new StyleSpan(new Style.BgColor("#FDD835"), p.col(), p.len()));
+        });
     }
 
     void findNext(FindSpec spec) {
-        if (spec.isEmpty()) {
-            spec = findSpec;
-        } else {
+        if (!spec.isEmpty()) {
             findSpec = spec;
         }
         Caret c = carets.unique();
         var point = c.isMarked() ? Collections.max(List.of(c.point(), c.markedPoint())) : c.point();
-        content.findNext(point, spec).ifPresent(p ->
+        content.findNext(point, findSpec).ifPresent(p ->
             c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
         scrollToCaretY(screenLayout.screenLineSize() / 2);
     }
 
     void findPrev(FindSpec spec) {
-        if (spec.isEmpty()) {
-            spec = findSpec;
-        } else {
+        if (!spec.isEmpty()) {
             findSpec = spec;
         }
         Caret c = carets.unique();
         var point = c.isMarked() ? Collections.min(List.of(c.point(), c.markedPoint())) : c.point();
-        content.findPrev(point, spec).ifPresent(p ->
+        content.findPrev(point, findSpec).ifPresent(p ->
             c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
         scrollToCaretY(screenLayout.screenLineSize() / 2);
     }
+
 
     @Override
     public Session getSession() {
