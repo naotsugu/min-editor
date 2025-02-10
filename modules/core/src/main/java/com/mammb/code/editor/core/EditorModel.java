@@ -15,13 +15,9 @@
  */
 package com.mammb.code.editor.core;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileTime;
 import java.util.Optional;
 import com.mammb.code.editor.core.model.TextEditorModel;
-import com.mammb.code.editor.core.syntax2.Syntax;
 
 /**
  * The facade of editor.
@@ -41,7 +37,6 @@ public interface EditorModel {
         return new TextEditorModel(
             content,
             fm,
-            Syntax.of(content.path().map(EditorModel::extension).orElse("")),
             scroll,
             ctx);
     }
@@ -60,7 +55,6 @@ public interface EditorModel {
         return new TextEditorModel(
             session,
             fm,
-            Syntax.of(session.hasPath() ? extension(session.path()) : ""),
             scroll,
             ctx,
             width, height);
@@ -180,8 +174,8 @@ public interface EditorModel {
     void imeOn();
 
     /**
-     * Get the ime area
-     * @return
+     * Get the ime area.
+     * @return the ime area
      */
     Optional<Loc> imeLoc();
 
@@ -221,17 +215,5 @@ public interface EditorModel {
      * @return the result of query
      */
     <R> R query(Query<R> query);
-
-    /**
-     * Get the extension string.
-     * @param path the path
-     * @return the extension string
-     */
-    private static String extension(Path path) {
-        return Optional.of(path.getFileName().toString())
-                .filter(f -> f.contains("."))
-                .map(f -> f.substring(f.lastIndexOf(".") + 1))
-                .orElse("");
-    }
 
 }

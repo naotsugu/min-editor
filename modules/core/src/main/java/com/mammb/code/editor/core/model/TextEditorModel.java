@@ -89,14 +89,13 @@ public class TextEditorModel implements EditorModel {
      * Constructor.
      * @param content the content
      * @param fm the font metrics
-     * @param syntax the syntax
      * @param scroll the screen scroll
      * @param ctx the context
      */
-    public TextEditorModel(Content content, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx) {
+    public TextEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
         this.content = content;
         this.screenLayout = ScreenLayout.of(content, fm);
-        this.decorate = Decorate.of(syntax);
+        this.decorate = Decorate.of(Syntax.of(content.path().orElse(null)));
         this.scroll = scroll;
         this.ctx = ctx;
     }
@@ -105,12 +104,11 @@ public class TextEditorModel implements EditorModel {
      * Constructor.
      * @param session the session
      * @param fm the font metrics
-     * @param syntax the syntax
      * @param scroll the screen scroll
      * @param ctx the context
      */
-    public TextEditorModel(Session session, FontMetrics fm, Syntax syntax, ScreenScroll scroll, Context ctx, double width, double height) {
-        this(session.hasPath() ? Content.of(session.path()) : Content.of(), fm, syntax, scroll, ctx);
+    public TextEditorModel(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
+        this(session.hasPath() ? Content.of(session.path()) : Content.of(), fm, scroll, ctx);
         if (session.lineWidth() > 0) wrap(session.lineWidth());
         setSize(width, height);
         scrollAt(session.topLine());

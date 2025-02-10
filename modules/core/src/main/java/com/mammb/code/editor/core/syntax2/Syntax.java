@@ -15,7 +15,9 @@
  */
 package com.mammb.code.editor.core.syntax2;
 
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import com.mammb.code.editor.core.syntax2.lang.CppSyntax;
 import com.mammb.code.editor.core.syntax2.lang.GoSyntax;
 import com.mammb.code.editor.core.syntax2.lang.HtmlSyntax;
@@ -67,6 +69,15 @@ public interface Syntax {
     }
 
     /**
+     * Get the syntax for a given path.
+     * @param path the path
+     * @return the syntax
+     */
+    static Syntax of(Path path) {
+        return of(extension(path));
+    }
+
+    /**
      * Get the syntax for a given name.
      * @param name the name
      * @return the syntax
@@ -99,6 +110,20 @@ public interface Syntax {
             case "toml" -> new TomlSyntax();
             default -> new PassThrough(name);
         };
+    }
+
+    /**
+     * Get the extension string.
+     * @param path the path
+     * @return the extension string
+     */
+    private static String extension(Path path) {
+        return Optional.ofNullable(path)
+            .map(Path::getFileName)
+            .map(Path::toString)
+            .filter(f -> f.contains("."))
+            .map(f -> f.substring(f.lastIndexOf(".") + 1))
+            .orElse("");
     }
 
 }
