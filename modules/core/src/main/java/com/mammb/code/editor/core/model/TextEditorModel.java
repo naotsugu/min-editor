@@ -74,14 +74,14 @@ public class TextEditorModel implements EditorModel {
     private final ScreenLayout screenLayout;
     /** The carets. */
     private final CaretGroup carets = CaretGroup.of();
-    /** decorate. */
-    private final Decorate decorate;
     /** The screen scroll. */
     private final ScreenScroll scroll;
     /** The context. */
     private final Context ctx;
     /** The action history. */
     private final ActionHistory actionHistory = new ActionHistory();
+    /** decorate. */
+    private Decorate decorate;
     /** The find spec. */
     private FindSpec findSpec = FindSpec.EMPTY;
 
@@ -559,7 +559,11 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void save(Path path) {
+        Path oldPath = content.path().orElse(null);
         content.save(path);
+        if (!Objects.equals(path, oldPath)) {
+            decorate = Decorate.of(Syntax.of(path));
+        }
     }
 
     void escape() {
