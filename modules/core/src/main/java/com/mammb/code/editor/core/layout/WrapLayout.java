@@ -89,7 +89,7 @@ public class WrapLayout implements ContentLayout {
         int start = rowToFirstLine(startRow);
         int end   = rowToFirstLine(endRow);
         lines.subList(start, end).clear();
-        List<SubRange> newLines = IntStream.range(startRow, endRow)
+        List<SubRange> newLines = IntStream.rangeClosed(startRow, endRow)
                 .mapToObj(this::subRanges)
                 .flatMap(Collection::stream)
                 .toList();
