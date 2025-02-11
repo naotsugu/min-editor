@@ -87,7 +87,7 @@ public class WrapLayout implements ContentLayout {
     @Override
     public void refreshAt(int startRow, int endRow) {
         int start = rowToFirstLine(startRow);
-        int end   = rowToFirstLine(endRow);
+        int end   = rowToFirstLine(endRow + 1);
         lines.subList(start, end).clear();
         List<SubRange> newLines = IntStream.rangeClosed(startRow, endRow)
                 .mapToObj(this::subRanges)

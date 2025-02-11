@@ -418,7 +418,7 @@ public class TextEditorModel implements EditorModel {
                 selectionReplace(c, text);
             } else {
                 var pos = content.insert(c.point(), text);
-                screenLayout.refreshBuffer(c.row(), pos.row() + 1);
+                screenLayout.refreshBuffer(c.row(), pos.row());
                 c.at(pos);
             }
         } else {
@@ -439,7 +439,7 @@ public class TextEditorModel implements EditorModel {
                 selectionReplace(c, "");
             } else {
                 var del = content.delete(c.point());
-                screenLayout.refreshBuffer(c.row(), c.row() + 1);
+                screenLayout.refreshBuffer(c.row(), c.row());
             }
         } else {
             if (carets.hasMarked()) {
@@ -459,7 +459,7 @@ public class TextEditorModel implements EditorModel {
                 selectionReplace(c, "");
             } else {
                 var pos = content.backspace(c.point());
-                screenLayout.refreshBuffer(pos.row(), c.row() + 1);
+                screenLayout.refreshBuffer(pos.row(), c.row());
                 c.at(pos);
             }
         } else {
@@ -493,7 +493,7 @@ public class TextEditorModel implements EditorModel {
         }
         screenLayout.refreshBuffer(
             rangeMin.min().row(),
-            rangeMax.max().row() + 1);
+            rangeMax.max().row());
     }
 
     void inputTab(boolean sc) {
@@ -512,7 +512,7 @@ public class TextEditorModel implements EditorModel {
                 }
                 var pos = content.insert(c.point(),
                     " ".repeat((shift < ts) ? ts - shift : ts - (shift % ts)));
-                screenLayout.refreshBuffer(c.row(), pos.row() + 1);
+                screenLayout.refreshBuffer(c.row(), pos.row());
                 c.at(pos);
             }
         }
@@ -616,7 +616,7 @@ public class TextEditorModel implements EditorModel {
         Caret c = carets.getFirst();
         content.clearFlush();
         var pos = content.insertFlush(c.point(), text);
-        screenLayout.refreshBuffer(c.row(), pos.row() + 1);
+        screenLayout.refreshBuffer(c.row(), pos.row());
         c.imeFlushAt(pos);
     }
 
@@ -862,7 +862,7 @@ public class TextEditorModel implements EditorModel {
         assert caret.isMarked();
         var range = caret.markedRange();
         var pos = content.replace(range.min(), range.max(), text);
-        screenLayout.refreshBuffer(range.min().row(), range.max().row() + 1);
+        screenLayout.refreshBuffer(range.min().row(), range.max().row());
         caret.clearMark();
         caret.at(pos);
         return pos;
@@ -874,7 +874,7 @@ public class TextEditorModel implements EditorModel {
         }
         screenLayout.refreshBuffer(
             Collections.min(points).row(),
-            Collections.max(points).row() + 1);
+            Collections.max(points).row());
         carets.at(points);
     }
 
