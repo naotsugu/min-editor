@@ -15,9 +15,11 @@
  */
 package com.mammb.code.editor.fx;
 
+import javafx.application.Application;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.Hyperlink;
 import javafx.stage.Window;
 
 /**
@@ -49,8 +51,12 @@ public class FxDialog extends Dialog<ButtonType> {
      * @return the about dialog
      */
     public static FxDialog about(Window owner) {
+        FxDialog dialog = new FxDialog(owner, "About", Version.appName + " " + Version.val, ButtonType.CLOSE);
         // TODO add link to help documents
-        return new FxDialog(owner, "About", Version.appName + " " + Version.val, ButtonType.CLOSE);
+        // Hyperlink link = new Hyperlink("Keyboard Shortcut");
+        // dialog.getDialogPane().setContent(link);
+        // link.setOnAction(event -> getHostServices().showDocument("https://github.com/naotsugu/min-editor/blob/main/docs/keyboard-shortcut.md"));
+        return dialog;
     }
 
     /**

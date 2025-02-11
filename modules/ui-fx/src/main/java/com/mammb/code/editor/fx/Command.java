@@ -67,6 +67,10 @@ public sealed interface Command {
 
     record ToUpperCase() implements Command {}
 
+    record IndentParen() implements Command {}
+
+    record IndentCurlyBrace() implements Command {}
+
     record Sort() implements Command {}
 
     record Unique() implements Command {}
@@ -148,6 +152,8 @@ public sealed interface Command {
             case Class<?> c when c == Config.class -> "open current config";
             case Class<?> c when c == ToLowerCase.class -> "converts the selected text to lower case";
             case Class<?> c when c == ToUpperCase.class -> "converts the selected text to upper case";
+            case Class<?> c when c == IndentParen.class -> "indent by paren";
+            case Class<?> c when c == IndentCurlyBrace.class -> "indent by curly brace";
             case Class<?> c when c == Sort.class -> "sort the selected lines";
             case Class<?> c when c == Unique.class -> "unique the selected lines";
             case Class<?> c when c == Calc.class -> "calculates the selected expression";
@@ -252,6 +258,7 @@ public sealed interface Command {
             case Class<?> c when c == String.class -> toString(args, index);
             case Class<?> c when c == Boolean.class -> toBoolean(args, index);
             case Class<?> c when c == Integer.class -> toInt(args, index);
+            case Class<?> c when c == Character.class -> toChar(args, index);
             case null, default -> null;
         };
     }
@@ -261,6 +268,13 @@ public sealed interface Command {
             return "";
         }
         return args[index];
+    }
+
+    private static char toChar(String[] args, int index) {
+        if (args.length - 1 < index || args[index] == null) {
+            return 0;
+        }
+        return args[index].charAt(0);
     }
 
     private static int toInt(String[] args, int index) {

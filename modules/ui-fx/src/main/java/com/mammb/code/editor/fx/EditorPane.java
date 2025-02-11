@@ -297,45 +297,47 @@ public class EditorPane extends StackPane {
 
     private void execute(Command command) {
         switch (command) {
-            case ActionCommand cmd -> model.apply(cmd.action());
-            case OpenChoose _      -> openWithChooser();
-            case Save _            -> save();
-            case SaveAs _          -> saveAs();
-            case New _             -> newEdit();
-            case TabClose _        -> { if (closeListener != null) closeListener.accept(this); }
-            case Palette cmd       -> showCommandPalette(cmd.initial());
-            case Open cmd          -> open(cmd.path());
-            case Config _          -> newEdit().open(Session.of(context.config().path()));
-            case FindNext cmd      -> model.apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
-            case FindPrev cmd      -> model.apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
-            case FindAll cmd       -> model.apply(Action.findAll(cmd.str(), cmd.caseSensitive()));
-            case FindNextRegex cmd -> model.apply(Action.findNextRegex(cmd.str()));
-            case FindPrevRegex cmd -> model.apply(Action.findPrevRegex(cmd.str()));
-            case FindAllRegex cmd  -> model.apply(Action.findAllRegex(cmd.str()));
-            case GoTo cmd          -> model.apply(Action.goTo(cmd.rowNumber() - 1));
-            case WrapLine cmd      -> model.apply(Action.wrapLine(cmd.width()));
-            case ToLowerCase _     -> model.apply(Action.replace(EditingFunctions.toLower, true));
-            case ToUpperCase _     -> model.apply(Action.replace(EditingFunctions.toUpper, true));
-            case Calc _            -> model.apply(Action.replace(EditingFunctions.toCalc, false));
-            case Sort _            -> model.apply(Action.replace(EditingFunctions.sort, false));
-            case Unique _          -> model.apply(Action.replace(EditingFunctions.unique, false));
-            case DecToHex _        -> model.apply(Action.replace(EditingFunctions.decToHex, true));
-            case DecToBin _        -> model.apply(Action.replace(EditingFunctions.decToBin, true));
-            case HexToBin _        -> model.apply(Action.replace(EditingFunctions.hexToBin, true));
-            case HexToDec _        -> model.apply(Action.replace(EditingFunctions.hexToDec, true));
-            case BinToHex _        -> model.apply(Action.replace(EditingFunctions.binToHex, true));
-            case BinToDec _        -> model.apply(Action.replace(EditingFunctions.binToDec, true));
-            case Pwd _             -> inputText(() -> model.query(Query.contentPath).getParent());
-            case Pwf _             -> inputText(() -> model.query(Query.contentPath));
-            case Now _             -> inputText(LocalDateTime::now);
-            case Today _           -> inputText(LocalDate::now);
-            case Forward _         -> sessionHistory.forward().ifPresent(this::open);
-            case Backward _        -> sessionHistory.backward().ifPresent(this::open);
-            case ZoomIn _          -> zoom( 1);
-            case ZoomOut _         -> zoom(-1);
-            case Help _            -> FxDialog.about(getScene().getWindow()).showAndWait();
-            case Filter cmd        -> { } // TODO impl
-            case Empty _           -> { }
+            case ActionCommand cmd  -> model.apply(cmd.action());
+            case OpenChoose _       -> openWithChooser();
+            case Save _             -> save();
+            case SaveAs _           -> saveAs();
+            case New _              -> newEdit();
+            case TabClose _         -> { if (closeListener != null) closeListener.accept(this); }
+            case Palette cmd        -> showCommandPalette(cmd.initial());
+            case Open cmd           -> open(cmd.path());
+            case Config _           -> newEdit().open(Session.of(context.config().path()));
+            case FindNext cmd       -> model.apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
+            case FindPrev cmd       -> model.apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
+            case FindAll cmd        -> model.apply(Action.findAll(cmd.str(), cmd.caseSensitive()));
+            case FindNextRegex cmd  -> model.apply(Action.findNextRegex(cmd.str()));
+            case FindPrevRegex cmd  -> model.apply(Action.findPrevRegex(cmd.str()));
+            case FindAllRegex cmd   -> model.apply(Action.findAllRegex(cmd.str()));
+            case GoTo cmd           -> model.apply(Action.goTo(cmd.rowNumber() - 1));
+            case WrapLine cmd       -> model.apply(Action.wrapLine(cmd.width()));
+            case ToLowerCase _      -> model.apply(Action.replace(EditingFunctions.toLower, true));
+            case ToUpperCase _      -> model.apply(Action.replace(EditingFunctions.toUpper, true));
+            case IndentParen _      -> model.apply(Action.replace(EditingFunctions.toIndentParen, false));
+            case IndentCurlyBrace _ -> model.apply(Action.replace(EditingFunctions.toIndentCurlyBrace, false));
+            case Calc _             -> model.apply(Action.replace(EditingFunctions.toCalc, false));
+            case Sort _             -> model.apply(Action.replace(EditingFunctions.sort, false));
+            case Unique _           -> model.apply(Action.replace(EditingFunctions.unique, false));
+            case DecToHex _         -> model.apply(Action.replace(EditingFunctions.decToHex, true));
+            case DecToBin _         -> model.apply(Action.replace(EditingFunctions.decToBin, true));
+            case HexToBin _         -> model.apply(Action.replace(EditingFunctions.hexToBin, true));
+            case HexToDec _         -> model.apply(Action.replace(EditingFunctions.hexToDec, true));
+            case BinToHex _         -> model.apply(Action.replace(EditingFunctions.binToHex, true));
+            case BinToDec _         -> model.apply(Action.replace(EditingFunctions.binToDec, true));
+            case Pwd _              -> inputText(() -> model.query(Query.contentPath).getParent());
+            case Pwf _              -> inputText(() -> model.query(Query.contentPath));
+            case Now _              -> inputText(LocalDateTime::now);
+            case Today _            -> inputText(LocalDate::now);
+            case Forward _          -> sessionHistory.forward().ifPresent(this::open);
+            case Backward _         -> sessionHistory.backward().ifPresent(this::open);
+            case ZoomIn _           -> zoom( 1);
+            case ZoomOut _          -> zoom(-1);
+            case Help _             -> FxDialog.about(getScene().getWindow()).showAndWait();
+            case Filter cmd         -> { } // TODO impl
+            case Empty _            -> { }
         }
         draw();
     }
