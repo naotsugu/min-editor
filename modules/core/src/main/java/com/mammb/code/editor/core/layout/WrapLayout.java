@@ -86,23 +86,19 @@ public class WrapLayout implements ContentLayout {
 
     @Override
     public void refreshAt(int startRow, int endRow) {
-        int start = rowToFirstLine(startRow);
-        int end   = rowToFirstLine(endRow + 1);
-        lines.subList(start, end).clear();
-        List<SubRange> newLines = IntStream.rangeClosed(startRow, endRow)
-                .mapToObj(this::subRanges)
-                .flatMap(Collection::stream)
-                .toList();
-        var next = (start >= lines.size()) ? null : lines.get(start);
-        int n = (next == null || newLines.isEmpty())
-                ? 0
-                : (newLines.getLast().row() + 1) - next.row();
-        if (n != 0) {
-            for (int i = start; i < lines.size(); i++) {
-                lines.get(i).plusRow(n);
+        int increasedRows = content.rows() - lines.getLast().row();
+        int fromLine = rowToFirstLine(startRow);
+        lines.subList(fromLine, rowToFirstLine(endRow + 1)).clear();
+        List<SubRange> renew = IntStream.rangeClosed(startRow, endRow + increasedRows)
+            .mapToObj(this::subRanges)
+            .flatMap(Collection::stream)
+            .toList();
+        if (increasedRows != 0) {
+            for (int i = fromLine; i < lines.size(); i++) {
+                lines.get(i).plusRow(increasedRows);
             }
         }
-        lines.addAll(start, newLines);
+        lines.addAll(fromLine, renew);
     }
 
     @Override
