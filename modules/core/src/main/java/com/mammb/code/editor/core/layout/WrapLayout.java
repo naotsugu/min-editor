@@ -86,7 +86,7 @@ public class WrapLayout implements ContentLayout {
 
     @Override
     public void refreshAt(int startRow, int endRow) {
-        int increasedRows = content.rows() - lines.getLast().row();
+        int increasedRows = (content.rows() - 1) - lines.getLast().row();
         int fromLine = rowToFirstLine(startRow);
         lines.subList(fromLine, rowToFirstLine(endRow + 1)).clear();
         List<SubRange> renew = IntStream.rangeClosed(startRow, endRow + increasedRows)
