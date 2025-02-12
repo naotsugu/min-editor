@@ -700,7 +700,11 @@ public class TextEditorModel implements EditorModel {
         }
         switch (action) {
             case Escape _ -> {}
-            default -> scrollToCaretY();
+            case CaretUp _, CaretDown _, PageUp _, PageDown _ -> scrollToCaretY();
+            default -> {
+                scrollToCaretY();
+                scrollToCaretX();
+            }
         }
         actionHistory.offer(action);
     }
