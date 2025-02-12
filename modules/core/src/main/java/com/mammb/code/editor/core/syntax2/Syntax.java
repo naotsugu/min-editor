@@ -21,6 +21,7 @@ import java.util.Optional;
 import com.mammb.code.editor.core.syntax2.lang.CppSyntax;
 import com.mammb.code.editor.core.syntax2.lang.GoSyntax;
 import com.mammb.code.editor.core.syntax2.lang.HtmlSyntax;
+import com.mammb.code.editor.core.syntax2.lang.IniSyntax;
 import com.mammb.code.editor.core.syntax2.lang.JavaSyntax;
 import com.mammb.code.editor.core.syntax2.lang.JsSyntax;
 import com.mammb.code.editor.core.syntax2.lang.KotlinSyntax;
@@ -108,6 +109,7 @@ public interface Syntax {
             case "html", "htm", "xhtml" -> new HtmlSyntax();
             case "yaml", "yml" -> new YamlSyntax();
             case "toml" -> new TomlSyntax();
+            case "ini" -> new IniSyntax();
             default -> new PassThrough(name);
         };
     }

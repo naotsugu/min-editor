@@ -67,6 +67,10 @@ public class FloatBar extends HBox {
         layout(vScroll, hScroll);
     }
 
+    /**
+     * Set the float bar information texts.
+     * @param strings information texts
+     */
     public void setText(String... strings) {
         String joined = String.join(" ", strings);
         if (Objects.equals(text.getText(), joined)) {
