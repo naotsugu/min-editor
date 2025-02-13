@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.text;
 
 import com.mammb.code.editor.core.FontMetrics;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * The ColsText.
@@ -24,68 +25,85 @@ import java.util.Arrays;
  */
 public class ColsText implements RowText {
 
-    /** The number of row. */
-    private final int row;
-    /** The text value. */
-    private final String value;
-    /** The advances. */
-    private final double[] advances;
-    /** The width. */
-    private final double width;
-    /** The height. */
-    private final double height;
+    /** The peer row text. */
+    private final RowText peer;
+    /** The column lengths. */
+    private final int[] colLengths;
 
-    private double[] partitionWidths;
-    private final int[] colsLength;
-
-
+    /**
+     * Constructor.
+     * @param row the number of row
+     * @param text the text value
+     * @param fm the font metrics
+     * @param separater the separater
+     */
     public ColsText(int row, String text, FontMetrics fm, String separater) {
-
-        this.row = row;
-        this.value = text;
-        this.height = fm.getLineHeight();
-        this.advances = new double[text.length()];
-        this.colsLength = Arrays.stream(text.split(separater))
+        this.peer = RowText.of(row, text, fm, false);
+        this.colLengths = Arrays.stream(text.split(separater))
             .mapToInt(String::length).toArray();
+    }
 
-        double w = 0;
-        for (int i = 0; i < text.length(); i++) {
-            char ch1 = text.charAt(i);
-            if (Character.isHighSurrogate(ch1)) {
-                w += advances[i] = fm.getAdvance(ch1, text.charAt(i + 1));
-                i++;
-            } else if (Character.isISOControl(ch1)) {
-                i++;
-            } else {
-                w += advances[i] = fm.getAdvance(ch1);
-            }
+    /**
+     * Create the csv row text.
+     * @param row the number of row
+     * @param text the text value
+     * @param fm the font metrics
+     * @return the csv row text
+     */
+    public static ColsText csvOf(int row, String text, FontMetrics fm) {
+        return new ColsText(row, text, fm, ",");
+    }
+
+    /**
+     * Create the tsv row text.
+     * @param row the number of row
+     * @param text the text value
+     * @param fm the font metrics
+     * @return the tsv row text
+     */
+    public static ColsText tsvOf(int row, String text, FontMetrics fm) {
+        return new ColsText(row, text, fm, "\t");
+    }
+
+    /**
+     * Fix column width.
+     * @param colsWidth the column width list
+     */
+    public void fixCols(List<Double> colsWidth) {
+        double[] advances = peer.advances();
+        int offset = 0;
+        for (int i = 0; i < colsWidth.size() || i < colLengths.length; i++) {
+            int offsetTo = offset + colLengths[i];
+            double cellWidth = colsWidth.get(i);
+            double peerWidth = Arrays.stream(advances, offset, offsetTo).sum();
+            advances[offsetTo] = Math.max(cellWidth - peerWidth, 0);
+            offset = offsetTo + 1;
         }
-        this.width = w;
     }
 
     @Override
     public int row() {
-        return row;
+        return peer.row();
     }
 
     @Override
     public String value() {
-        return value;
+        return peer.value();
     }
 
     @Override
     public double[] advances() {
-        return advances;
+        return peer.advances();
     }
 
     @Override
     public double width() {
-        return width;
+        return Arrays.stream(peer.advances()).sum();
     }
 
     @Override
     public double height() {
-        return height;
+        return peer.height();
     }
 
 }

@@ -36,6 +36,18 @@ public interface RowText extends LinedText {
      * @return a new {@link RowText}
      */
     static RowText of(int row, String text, FontMetrics fm) {
+        return of(row, text, fm, true);
+    }
+
+    /**
+     * Create a new {@link RowText}.
+     * @param row the row number
+     * @param text the text
+     * @param fm the font metrics
+     * @param handleTab handle tab
+     * @return a new {@link RowText}
+     */
+    static RowText of(int row, String text, FontMetrics fm, boolean handleTab) {
         double width = 0;
         double[] advances = new double[text.length()];
         for (int i = 0, tabShift = 0; i < text.length(); i++, tabShift++) {
@@ -43,7 +55,7 @@ public interface RowText extends LinedText {
             if (Character.isHighSurrogate(ch1)) {
                 width += advances[i] = fm.getAdvance(ch1, text.charAt(i + 1));
                 i++;
-            } else if (ch1 == '\t') {
+            } else if (handleTab && ch1 == '\t') {
                 int ts = fm.getTabSize();
                 int sp = (tabShift < ts)
                     ? ts - tabShift
