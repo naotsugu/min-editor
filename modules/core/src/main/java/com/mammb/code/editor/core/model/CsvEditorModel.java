@@ -53,7 +53,7 @@ public class CsvEditorModel implements EditorModel {
     /** The screen buffer of text. */
     private final List<ColsText> buffer = new ArrayList<>();
     /** The screen column width list. */
-    private final List<Double> colsWidth = new ArrayList<>();
+    private final List<Double> colWidths = new ArrayList<>();
     /** The screen width. */
     private double screenWidth = 0;
     /** The screen height. */
@@ -189,9 +189,22 @@ public class CsvEditorModel implements EditorModel {
 
     private void fillBuffer() {
         buffer.clear();
-        IntStream.rangeClosed(topRow, topRow + screenLineSize())
-            .mapToObj(row -> ColsText.csvOf(row, content.getText(row), fm))
-            .forEach(buffer::addLast);
+        colWidths.clear();
+        for (int i = topRow; i <= topRow + screenLineSize(); i++) {
+            var colsText = ColsText.csvOf(i, content.getText(i), fm);
+            buffer.add(colsText);
+
+            double[] rawWidths = colsText.rawWidths();
+            for (int c = 0; c < rawWidths.length; c++) {
+                if (c >= colWidths.size() - 1) {
+                    colWidths.add(0.0);
+                }
+                if (rawWidths[c] > colWidths.get(c)) {
+                    colWidths.set(c, rawWidths[c]);
+                }
+            }
+        }
+        buffer.forEach(text -> text.fixCols(colWidths));
     }
 
     private int screenLineSize() {
