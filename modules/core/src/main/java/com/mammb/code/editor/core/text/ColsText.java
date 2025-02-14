@@ -27,6 +27,8 @@ public class ColsText implements RowText {
 
     /** The peer row text. */
     private final RowText peer;
+    /** The raw widths. */
+    private final double[] rawWidths;
     /** The column lengths. */
     private final int[] colLengths;
 
@@ -37,10 +39,20 @@ public class ColsText implements RowText {
      * @param fm the font metrics
      * @param separater the separater
      */
-    public ColsText(int row, String text, FontMetrics fm, String separater) {
-        this.peer = RowText.of(row, text, fm, false);
-        this.colLengths = Arrays.stream(text.split(separater))
+    private ColsText(int row, String text, FontMetrics fm, String separater) {
+
+        peer = RowText.of(row, text, fm, false);
+        colLengths = Arrays.stream(text.split(separater))
             .mapToInt(String::length).toArray();
+
+        double[] advances = peer.advances();
+        rawWidths = new double[colLengths.length];
+        int offset = 0;
+        for (int i = 0; i < colLengths.length; i++) {
+            int offsetTo = offset + colLengths[i];
+            rawWidths[i] = Arrays.stream(advances, offset, offsetTo).sum();
+            offset = offsetTo + 1;
+        }
     }
 
     /**
@@ -73,11 +85,9 @@ public class ColsText implements RowText {
         double[] advances = peer.advances();
         int offset = 0;
         for (int i = 0; i < colsWidth.size() || i < colLengths.length; i++) {
-            int offsetTo = offset + colLengths[i];
-            double cellWidth = colsWidth.get(i);
-            double peerWidth = Arrays.stream(advances, offset, offsetTo).sum();
-            advances[offsetTo] = Math.max(cellWidth - peerWidth, 0);
-            offset = offsetTo + 1;
+            offset += (colLengths[i] + 1);
+            double width = colsWidth.get(i) - rawWidths[i];
+            advances[offset] = Math.max(width, 0);
         }
     }
 
@@ -104,6 +114,14 @@ public class ColsText implements RowText {
     @Override
     public double height() {
         return peer.height();
+    }
+
+    /**
+     * Get the raw widths.
+     * @return the raw widths
+     */
+    public double[] rawWidths() {
+        return rawWidths;
     }
 
 }

@@ -32,6 +32,7 @@ import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Session;
+import com.mammb.code.editor.core.text.ColsText;
 import com.mammb.code.editor.core.text.RowText;
 import com.mammb.code.editor.core.text.Text;
 
@@ -49,8 +50,10 @@ public class CsvEditorModel implements EditorModel {
     private final ScreenScroll scroll;
     /** The carets. */
     private final CaretGroup carets = CaretGroup.of();
-    /** The buffer of text. */
-    private final List<Text> buffer = new ArrayList<>();
+    /** The screen buffer of text. */
+    private final List<ColsText> buffer = new ArrayList<>();
+    /** The screen column width list. */
+    private final List<Double> colsWidth = new ArrayList<>();
     /** The screen width. */
     private double screenWidth = 0;
     /** The screen height. */
@@ -187,7 +190,7 @@ public class CsvEditorModel implements EditorModel {
     private void fillBuffer() {
         buffer.clear();
         IntStream.rangeClosed(topRow, topRow + screenLineSize())
-            .mapToObj(row -> RowText.of(row, content.getText(row), fm))
+            .mapToObj(row -> ColsText.csvOf(row, content.getText(row), fm))
             .forEach(buffer::addLast);
     }
 
