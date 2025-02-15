@@ -49,7 +49,7 @@ interface ContentLayout extends LineLayout {
      * @param endLine the exclusive end line
      * @return the text list
      */
-    List<Text> texts(int startLine, int endLine);
+    List<? extends Text> texts(int startLine, int endLine);
 
     /**
      * Get the {@link RowText} belonging to the specified number of line.
