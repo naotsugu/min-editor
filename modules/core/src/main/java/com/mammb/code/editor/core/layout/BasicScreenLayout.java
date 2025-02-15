@@ -79,7 +79,7 @@ class BasicScreenLayout implements ScreenLayout {
         int screenLineSize = screenLineSize();
         if (Math.abs(delta) < screenLineSize) {
             topLine = line;
-            List<Text> texts;
+            List<? extends Text> texts;
             if (delta > 0) {
                 // scroll next
                 buffer.subList(0, delta).clear();

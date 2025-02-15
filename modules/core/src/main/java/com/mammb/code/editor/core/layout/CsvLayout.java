@@ -17,21 +17,14 @@ package com.mammb.code.editor.core.layout;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.FontMetrics;
-import com.mammb.code.editor.core.Loc;
 import java.util.List;
-import java.util.Optional;
 import com.mammb.code.editor.core.text.ColsText;
 
 /**
  * The CSV Layout.
  * @author Naotsugu Kobayashi
  */
-public class CsvLayout implements ContentLayout {
-
-    /** The content. */
-    private final Content content;
-    /** The font metrics. */
-    private FontMetrics fm;
+public class CsvLayout extends RowLayout {
 
     /**
      * Constructor.
@@ -39,43 +32,7 @@ public class CsvLayout implements ContentLayout {
      * @param fm the font metrics
      */
     public CsvLayout(Content content, FontMetrics fm) {
-        this.content = content;
-        this.fm = fm;
-    }
-
-    @Override
-    public int rowToFirstLine(int row) {
-        return Math.clamp(row, 0, lineSize());
-    }
-
-    @Override
-    public int rowToLastLine(int row) {
-        return Math.clamp(row, 0, lineSize());
-    }
-
-    @Override
-    public int rowToLine(int row, int col) {
-        return Math.clamp(row, 0, lineSize());
-    }
-
-    @Override
-    public int lineToRow(int line) {
-        return Math.clamp(line, 0, content.rows());
-    }
-
-    @Override
-    public int lineSize() {
-        return content.rows();
-    }
-
-    @Override
-    public int rowSize() {
-        return content.rows();
-    }
-
-    @Override
-    public ColsText text(int line) {
-        return rowText(line);
+        super(content, fm);
     }
 
     @Override
@@ -84,67 +41,13 @@ public class CsvLayout implements ContentLayout {
     }
 
     @Override
-    public double lineHeight() {
-        return fm.getLineHeight();
-    }
-
-    @Override
-    public void setLineWidth(int width) {
-        // nothing to do
-    }
-
-    @Override
-    public int lineWidth() {
-        return 0;
-    }
-
-    @Override
-    public int homeColOnRow(int line) {
-        return 0;
-    }
-
-    @Override
-    public int xToCol(int line, double x) {
-        return text(line).indexTo(x);
-    }
-
-    @Override
-    public double standardCharWidth() {
-        return fm.standardCharWidth();
-    }
-
-    @Override
-    public int tabSize() {
-        return fm.getTabSize();
-    }
-
-    @Override
-    public void updateFontMetrics(FontMetrics fontMetrics) {
-        fm = fontMetrics;
-    }
-
-    @Override
-    public void refresh(int line) {
-        // nothing to do
-    }
-
-    @Override
-    public void refreshAt(int startRow, int endRow) {
-        // nothing to do
-    }
-
-    @Override
-    public List<ColsText> texts(int startLine, int endLine) {
-        return List.of(); // TODO
+    public List<? extends ColsText> texts(int startLine, int endLine) {
+        return texts(startLine, endLine);
     }
 
     @Override
     public ColsText rowText(int line) {
-        return null; // TODO
+        return rowTextAt(line);
     }
 
-    @Override
-    public Optional<Loc> loc(int row, int col, int rangeLineStart, int rangeLineEnd) {
-        return Optional.empty(); // TODO
-    }
 }

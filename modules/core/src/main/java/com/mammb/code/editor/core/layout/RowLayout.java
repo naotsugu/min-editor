@@ -71,7 +71,7 @@ public class RowLayout implements ContentLayout {
     }
 
     @Override
-    public List<RowText> texts(int startLine, int endLine) {
+    public List<? extends RowText> texts(int startLine, int endLine) {
         return IntStream.range(
                 Math.clamp(startLine, 0, content.rows()),
                 Math.clamp(endLine,   0, content.rows() + 1)
