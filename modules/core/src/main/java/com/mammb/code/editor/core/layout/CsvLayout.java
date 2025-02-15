@@ -17,7 +17,9 @@ package com.mammb.code.editor.core.layout;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.FontMetrics;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import com.mammb.code.editor.core.text.ColsText;
 
 /**
@@ -25,6 +27,9 @@ import com.mammb.code.editor.core.text.ColsText;
  * @author Naotsugu Kobayashi
  */
 public class CsvLayout extends RowLayout {
+
+    /** The screen column width list. */
+    private final List<Double> colWidths = new ArrayList<>();
 
     /**
      * Constructor.
@@ -37,12 +42,28 @@ public class CsvLayout extends RowLayout {
 
     @Override
     public ColsText rowTextAt(int row) {
-        return null; // TODO
+
+        var text = ColsText.csvOf(row, getContent().getText(row), getFm());
+
+        double[] rawWidths = text.rawWidths();
+        for (int c = 0; c < rawWidths.length; c++) {
+            if (c >= colWidths.size() - 1) {
+                colWidths.add(0.0);
+            }
+            if (rawWidths[c] > colWidths.get(c)) {
+                colWidths.set(c, rawWidths[c]);
+            }
+        }
+        text.fixCols(colWidths);
+        return text;
     }
 
     @Override
     public List<? extends ColsText> texts(int startLine, int endLine) {
-        return texts(startLine, endLine);
+        return IntStream.range(
+            Math.clamp(startLine, 0, rowSize()),
+            Math.clamp(endLine,   0, rowSize() + 1)
+        ).mapToObj(this::rowText).toList();
     }
 
     @Override
