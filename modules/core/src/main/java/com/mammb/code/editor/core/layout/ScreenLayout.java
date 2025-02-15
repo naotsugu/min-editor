@@ -161,8 +161,17 @@ public interface ScreenLayout extends LineLayout {
      * @return a new {@link ScreenLayout}
      */
     static ScreenLayout of(Content content, FontMetrics fm) {
-        ContentLayout layout = new RowLayout(content, fm);
-        return new BasicScreenLayout(layout);
+        return new BasicScreenLayout(new RowLayout(content, fm));
+    }
+
+    /**
+     * Create a new {@link ScreenLayout}.
+     * @param content the content
+     * @param fm the font metrics
+     * @return a new {@link ScreenLayout}
+     */
+    static ScreenLayout csvOf(Content content, FontMetrics fm) {
+        return new BasicScreenLayout(new CsvLayout(content, fm));
     }
 
     /**
@@ -172,8 +181,7 @@ public interface ScreenLayout extends LineLayout {
      * @return a new {@link ScreenLayout}
      */
     static ScreenLayout wrapOf(Content content, FontMetrics fm) {
-        ContentLayout layout = new WrapLayout(content, fm);
-        return new BasicScreenLayout(layout);
+        return new BasicScreenLayout(new WrapLayout(content, fm));
     }
 
 }

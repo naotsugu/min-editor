@@ -31,6 +31,8 @@ public class ColsText implements RowText {
     private final double[] rawWidths;
     /** The column lengths. */
     private final int[] colLengths;
+    /** The margin. */
+    private final double margin;
 
     /**
      * Constructor.
@@ -42,6 +44,7 @@ public class ColsText implements RowText {
     private ColsText(int row, String text, FontMetrics fm, String separater) {
 
         peer = RowText.of(row, text, fm, false);
+        margin = fm.standardCharWidth() * 2;
         colLengths = Arrays.stream(text.split(separater))
             .mapToInt(String::length).toArray();
 
@@ -83,11 +86,13 @@ public class ColsText implements RowText {
      */
     public void fixCols(List<Double> colsWidth) {
         double[] advances = peer.advances();
+        if (advances.length == 0) return;
         int offset = 0;
         for (int i = 0; i < colsWidth.size() || i < colLengths.length; i++) {
-            offset += (colLengths[i] + 1);
+            offset += colLengths[i];
+            if (offset >= advances.length) break;
             double width = colsWidth.get(i) - rawWidths[i];
-            advances[offset] = Math.max(width, 0);
+            advances[offset++] = Math.max(width, 0) + margin;
         }
     }
 
