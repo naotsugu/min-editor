@@ -34,7 +34,7 @@ import com.mammb.code.editor.core.text.Text;
  * The WrapLayout.
  * @author Naotsugu Kobayashi
  */
-public class WrapLayout implements ContentLayout {
+class WrapLayout implements ContentLayout {
 
     /** The width of screen(number of characters per line). */
     private int lineWidth = 0;

@@ -312,8 +312,14 @@ class BasicScreenLayout implements ScreenLayout {
         fillBuffer();
     }
 
-    public void updateContentLayout(ContentLayout contentLayout) {
-        layout = contentLayout;
+    @Override
+    public void toggleLayout() {
+        // TODO
+        if (layout instanceof RowLayout rowLayout) {
+            layout = new CsvLayout(rowLayout.getContent(), rowLayout.getFm());
+        } else {
+            setLineWidth(0);
+        }
         fillBuffer();
     }
 

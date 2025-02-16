@@ -52,6 +52,8 @@ public interface ActionRecords {
 
     record WrapLine(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
 
+    record ToggleLayout(long occurredAt) implements Action { }
+
     record Goto(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
 
     record FindAll(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }

@@ -174,7 +174,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretY(0);
     }
 
-    public void scrollToCaretY(int gap) {
+    private void scrollToCaretY(int gap) {
         Caret c = carets.getFirst();
         int line = screenLayout.rowToLine(c.row(), c.col());
         if (line - screenLayout.topLine() < 0) {
@@ -208,7 +208,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void moveCaretRight(boolean withSelect, boolean withShortcut) {
+    private void moveCaretRight(boolean withSelect, boolean withShortcut) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             var text = screenLayout.rowTextAt(c.row());
@@ -224,7 +224,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    void moveCaretLeft(boolean withSelect, boolean withShortcut) {
+    private void moveCaretLeft(boolean withSelect, boolean withShortcut) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             if (c.isZero()) continue;
@@ -240,7 +240,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    void moveCaretDown(boolean withSelect, boolean withShortcut) {
+    private void moveCaretDown(boolean withSelect, boolean withShortcut) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -254,7 +254,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void moveCaretUp(boolean withSelect, boolean withShortcut) {
+    private void moveCaretUp(boolean withSelect, boolean withShortcut) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -267,7 +267,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void moveCaretHome(boolean withSelect) {
+    private void moveCaretHome(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -276,7 +276,7 @@ public class TextEditorModel implements EditorModel {
         screenLayout.scrollX(0);
     }
 
-    void moveCaretEnd(boolean withSelect) {
+    private void moveCaretEnd(boolean withSelect) {
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -285,7 +285,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    void moveCaretPageUp(boolean withSelect) {
+    private void moveCaretPageUp(boolean withSelect) {
         int n = screenLayout.screenLineSize() - 1;
         scrollPrev(n);
         if (withSelect && carets.size() > 1) carets.unique();
@@ -298,7 +298,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void moveCaretPageDown(boolean withSelect) {
+    private void moveCaretPageDown(boolean withSelect) {
         int n = screenLayout.screenLineSize() - 1;
         scrollNext(n);
         if (withSelect && carets.size() > 1) carets.unique();
@@ -311,7 +311,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    public void selectAll() {
+    private void selectAll() {
         Caret c = carets.unique();
         c.at(0, 0);
         c.mark();
@@ -406,7 +406,7 @@ public class TextEditorModel implements EditorModel {
         this.caretVisible = visible;
     }
 
-    void input(String text) {
+    private void input(String text) {
         preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
@@ -427,7 +427,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void delete() {
+    private void delete() {
         preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
@@ -447,7 +447,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void backspace() {
+    private void backspace() {
         preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
@@ -468,7 +468,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void replace(Function<String, String> fun, boolean keepSelection) {
+    private void replace(Function<String, String> fun, boolean keepSelection) {
         preEditing();
         List<Range> ranges = content.replace(carets.ranges(), fun);
         Range rangeMin = Collections.min(ranges);
@@ -492,7 +492,7 @@ public class TextEditorModel implements EditorModel {
             rangeMax.max().row());
     }
 
-    void inputTab(boolean sc) {
+    private void inputTab(boolean sc) {
         if (carets.hasMarked()) {
             replace(sc ? EditingFunctions.unindent : EditingFunctions.indent, true);
         } else {
@@ -514,19 +514,19 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void undo() {
+    private void undo() {
         preEditing();
         List<Point> points = content.undo();
         refreshPointsRange(points);
     }
 
-    void redo() {
+    private void redo() {
         preEditing();
         List<Point> points = content.redo();
         refreshPointsRange(points);
     }
 
-    void pasteFromClipboard(Clipboard clipboard) {
+    private void pasteFromClipboard(Clipboard clipboard) {
         var text = clipboard.getString();
         if (text.isEmpty()) return;
         // allow HT, LF, CR, SP
@@ -535,7 +535,7 @@ public class TextEditorModel implements EditorModel {
         input(text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f\\u2028\\u2029]", ""));
     }
 
-    void copyToClipboard(Clipboard clipboard) {
+    private void copyToClipboard(Clipboard clipboard) {
         String copy = carets.marked().stream()
                 .map(range -> content.getText(range.min(), range.max()))
                 .collect(Collectors.joining(System.lineSeparator()));
@@ -543,7 +543,7 @@ public class TextEditorModel implements EditorModel {
         clipboard.setPlainText(copy);
     }
 
-    void cutToClipboard(Clipboard clipboard) {
+    private void cutToClipboard(Clipboard clipboard) {
         copyToClipboard(clipboard);
         replace(_ -> "", false);
     }
@@ -562,7 +562,7 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    void escape() {
+    private void escape() {
         carets.unique().clearMark();
         decorate.clear();
     }
@@ -570,10 +570,14 @@ public class TextEditorModel implements EditorModel {
     /**
      * Set the width of line wrap characters.
      */
-    void wrap(int width) {
+    private void wrap(int width) {
         carets.unique().at(0, 0);
         decorate.clear();
         screenLayout.setLineWidth(width);
+    }
+
+    private void toggleLayout() {
+        screenLayout.toggleLayout();
     }
 
     @Override
@@ -616,7 +620,7 @@ public class TextEditorModel implements EditorModel {
         c.imeFlushAt(pos);
     }
 
-    void findAll(FindSpec spec) {
+    private void findAll(FindSpec spec) {
         if (!spec.isEmpty()) findSpec = spec;
         Caret c = carets.getFirst();
         Style style = new Style.BgColor(Theme.dark.cautionColor());
@@ -629,7 +633,7 @@ public class TextEditorModel implements EditorModel {
         });
     }
 
-    void findNext(FindSpec spec) {
+    private void findNext(FindSpec spec) {
         if (!spec.isEmpty()) findSpec = spec;
         Caret c = carets.unique();
         var point = c.isMarked() ? Collections.max(List.of(c.point(), c.markedPoint())) : c.point();
@@ -638,7 +642,7 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretY(screenLayout.screenLineSize() / 2);
     }
 
-    void findPrev(FindSpec spec) {
+    private void findPrev(FindSpec spec) {
         if (!spec.isEmpty()) findSpec = spec;
         Caret c = carets.unique();
         var point = c.isMarked() ? Collections.min(List.of(c.point(), c.markedPoint())) : c.point();
@@ -665,34 +669,35 @@ public class TextEditorModel implements EditorModel {
         if (isImeOn() || action.isEmpty()) return;
 
         switch (action) {
-            case Input a      -> input(a.attr());
-            case Delete _     -> delete();
-            case Backspace _  -> backspace();
-            case Undo _       -> undo();
-            case Redo _       -> redo();
-            case Home a       -> moveCaretHome(a.withSelect());
-            case End a        -> moveCaretEnd(a.withSelect());
-            case Tab a        -> inputTab(a.withSelect());
-            case CaretRight a -> moveCaretRight(a.withSelect(), a.withShortcut());
-            case CaretLeft a  -> moveCaretLeft(a.withSelect(), a.withShortcut());
-            case CaretUp a    -> moveCaretUp(a.withSelect(), a.withShortcut());
-            case CaretDown a  -> moveCaretDown(a.withSelect(), a.withShortcut());
-            case PageUp a     -> moveCaretPageUp(a.withSelect());
-            case PageDown a   -> moveCaretPageDown(a.withSelect());
-            case Copy a       -> copyToClipboard(a.attr());
-            case Cut a        -> cutToClipboard(a.attr());
-            case Paste a      -> pasteFromClipboard(a.attr());
-            case SelectAll _  -> selectAll();
-            case WrapLine a   -> wrap(a.attr());
-            case Goto a       -> moveTo(a.attr());
-            case FindAll a    -> findAll(a.attr());
-            case FindNext a   -> findNext(a.attr());
-            case FindPrev a   -> findPrev(a.attr());
-            case Escape _     -> escape();
-            case Repeat _     -> actionHistory.repetition().forEach(this::apply);
-            case Replace a    -> replace(a.attr(), true);
-            case Save a       -> save(a.attr());
-            case Empty _      -> { }
+            case Input a        -> input(a.attr());
+            case Delete _       -> delete();
+            case Backspace _    -> backspace();
+            case Undo _         -> undo();
+            case Redo _         -> redo();
+            case Home a         -> moveCaretHome(a.withSelect());
+            case End a          -> moveCaretEnd(a.withSelect());
+            case Tab a          -> inputTab(a.withSelect());
+            case CaretRight a   -> moveCaretRight(a.withSelect(), a.withShortcut());
+            case CaretLeft a    -> moveCaretLeft(a.withSelect(), a.withShortcut());
+            case CaretUp a      -> moveCaretUp(a.withSelect(), a.withShortcut());
+            case CaretDown a    -> moveCaretDown(a.withSelect(), a.withShortcut());
+            case PageUp a       -> moveCaretPageUp(a.withSelect());
+            case PageDown a     -> moveCaretPageDown(a.withSelect());
+            case Copy a         -> copyToClipboard(a.attr());
+            case Cut a          -> cutToClipboard(a.attr());
+            case Paste a        -> pasteFromClipboard(a.attr());
+            case SelectAll _    -> selectAll();
+            case WrapLine a     -> wrap(a.attr());
+            case ToggleLayout _ -> toggleLayout();
+            case Goto a         -> moveTo(a.attr());
+            case FindAll a      -> findAll(a.attr());
+            case FindNext a     -> findNext(a.attr());
+            case FindPrev a     -> findPrev(a.attr());
+            case Escape _       -> escape();
+            case Repeat _       -> actionHistory.repetition().forEach(this::apply);
+            case Replace a      -> replace(a.attr(), true);
+            case Save a         -> save(a.attr());
+            case Empty _        -> { }
         }
         switch (action) {
             case Escape _ -> {}

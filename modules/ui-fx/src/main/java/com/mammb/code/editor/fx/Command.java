@@ -61,8 +61,6 @@ public sealed interface Command {
 
     record Palette(Class<? extends Command> initial) implements Command, Hidden {}
 
-    record Empty() implements Command, Hidden {}
-
     record ToLowerCase() implements Command {}
 
     record ToUpperCase() implements Command {}
@@ -123,9 +121,13 @@ public sealed interface Command {
 
     record WrapLine(Integer width) implements Command, RequireArgs1<Integer> { }
 
+    record ToggleLayout() implements Command { }
+
     record Open(String path) implements Command, RequireArgs1<String> { }
 
     record Help() implements Command {}
+
+    record Empty() implements Command, Hidden {}
 
     static String promptText(Class<? extends Command> clazz) {
         return switch (clazz) {
@@ -180,6 +182,7 @@ public sealed interface Command {
             case Class<?> c when c == GoTo.class -> "go to the specified number of row";
             case Class<?> c when c == Filter.class -> "not implemented yet";
             case Class<?> c when c == WrapLine.class -> "wraps a line with a specified number of characters";
+            case Class<?> c when c == ToggleLayout.class -> "toggle context layout";
             case Class<?> c when c == Open.class -> "opens the file at the specified path";
             case Class<?> c when c == Help.class -> "show help dialog";
             case null, default -> "";

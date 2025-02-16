@@ -28,7 +28,7 @@ import com.mammb.code.editor.core.text.Text;
  * The RowLayout.
  * @author Naotsugu Kobayashi
  */
-public class RowLayout implements ContentLayout {
+class RowLayout implements ContentLayout {
 
     /** The content. */
     private final Content content;

@@ -314,6 +314,7 @@ public class EditorPane extends StackPane {
             case FindAllRegex cmd   -> model.apply(Action.findAllRegex(cmd.str()));
             case GoTo cmd           -> model.apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd       -> model.apply(Action.wrapLine(cmd.width()));
+            case ToggleLayout _     -> model.apply(Action.toggleLayout());
             case ToLowerCase _      -> model.apply(Action.replace(EditingFunctions.toLower, true));
             case ToUpperCase _      -> model.apply(Action.replace(EditingFunctions.toUpper, true));
             case IndentParen _      -> model.apply(Action.replace(EditingFunctions.toIndentParen, false));

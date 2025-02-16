@@ -154,6 +154,8 @@ public interface ScreenLayout extends LineLayout {
      */
     void updateFontMetrics(FontMetrics fontMetrics);
 
+    void toggleLayout();
+
     /**
      * Create a new {@link ScreenLayout}.
      * @param content the content

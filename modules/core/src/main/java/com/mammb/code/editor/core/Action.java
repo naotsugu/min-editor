@@ -26,7 +26,7 @@ import com.mammb.code.editor.core.model.ActionRecords.*;
 public sealed interface Action
     permits Backspace, CaretDown, CaretLeft, CaretRight, CaretUp, Copy, Cut, Delete, Empty,
     End, Escape, Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll,
-    Tab, Undo, WrapLine, Goto,
+    Tab, Undo, WrapLine, ToggleLayout, Goto,
     FindAll, FindNext, FindPrev,
     Repeat {
 
@@ -99,6 +99,9 @@ public sealed interface Action
     }
     static Action wrapLine(int width) {
         return new WrapLine(width, System.currentTimeMillis());
+    }
+    static Action toggleLayout() {
+        return new ToggleLayout(System.currentTimeMillis());
     }
     static Action goTo(int row) {
         return new Goto(row, System.currentTimeMillis());
