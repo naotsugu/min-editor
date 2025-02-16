@@ -312,6 +312,11 @@ class BasicScreenLayout implements ScreenLayout {
         fillBuffer();
     }
 
+    public void updateContentLayout(ContentLayout contentLayout) {
+        layout = contentLayout;
+        fillBuffer();
+    }
+
     private void fillBuffer() {
         buffer.clear();
         buffer.addAll(layout.texts(topLine, topLine + screenLineSize()));

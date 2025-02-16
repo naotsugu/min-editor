@@ -31,6 +31,7 @@ import com.mammb.code.editor.core.syntax2.lang.RustSyntax;
 import com.mammb.code.editor.core.syntax2.lang.SqlSyntax;
 import com.mammb.code.editor.core.syntax2.lang.TomlSyntax;
 import com.mammb.code.editor.core.syntax2.lang.TsSyntax;
+import com.mammb.code.editor.core.syntax2.lang.CsvSyntax;
 import com.mammb.code.editor.core.syntax2.lang.YamlSyntax;
 import com.mammb.code.editor.core.text.Style;
 
@@ -110,6 +111,7 @@ public interface Syntax {
             case "yaml", "yml" -> new YamlSyntax();
             case "toml" -> new TomlSyntax();
             case "ini" -> new IniSyntax();
+            case "csv" -> new CsvSyntax();
             default -> new PassThrough(name);
         };
     }
