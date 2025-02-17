@@ -154,7 +154,11 @@ public interface ScreenLayout extends LineLayout {
      */
     void updateFontMetrics(FontMetrics fontMetrics);
 
-    void toggleLayout();
+    /**
+     * Toggle layout.
+     * @param layoutName the name of layout
+     */
+    void toggleLayout(String layoutName);
 
     /**
      * Create a new {@link ScreenLayout}.

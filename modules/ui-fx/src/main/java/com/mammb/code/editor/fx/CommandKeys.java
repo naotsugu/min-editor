@@ -54,7 +54,7 @@ public class CommandKeys {
         else if (SC_X.match(e)) return of(Action.cut(FxClipboard.instance));
         else if (SC_Z.match(e)) return of(Action.undo());
         else if (SC_Y.match(e) || SC_SZ.match(e)) return of(Action.redo());
-        else if (SC_L.match(e)) return of(Action.wrapLine());
+        else if (SC_L.match(e)) return of(Action.toggleLayout());
         else if (SC_A.match(e)) return of(Action.selectAll());
         else if (SC_DOT.match(e)) return of(Action.repeat());
         else if (SC_O.match(e)) return new Command.OpenChoose();

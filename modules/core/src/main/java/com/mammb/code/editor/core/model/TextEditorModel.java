@@ -168,6 +168,14 @@ public class TextEditorModel implements EditorModel {
     }
 
     /**
+     * Scroll to the caret position.
+     */
+    public void scrollToCaret() {
+        scrollToCaretY();
+        scrollToCaretX();
+    }
+
+    /**
      * Scroll to the caret position y.
      */
     public void scrollToCaretY() {
@@ -392,8 +400,7 @@ public class TextEditorModel implements EditorModel {
         Caret c = carets.getFirst();
         c.floatAt(row, col);
         c.markIf(true);
-        scrollToCaretY();
-        scrollToCaretX();
+        scrollToCaret();
     }
 
     @Override
@@ -571,13 +578,18 @@ public class TextEditorModel implements EditorModel {
      * Set the width of line wrap characters.
      */
     private void wrap(int width) {
-        carets.unique().at(0, 0);
         decorate.clear();
         screenLayout.setLineWidth(width);
+        scrollToCaret();
     }
 
+    /**
+     * Toggle layout.
+     */
     private void toggleLayout() {
-        screenLayout.toggleLayout();
+        decorate.clear();
+        screenLayout.toggleLayout(decorate.syntaxName());
+        scrollToCaret();
     }
 
     @Override
@@ -702,10 +714,7 @@ public class TextEditorModel implements EditorModel {
         switch (action) {
             case Escape _ -> {}
             case CaretUp _, CaretDown _, PageUp _, PageDown _ -> scrollToCaretY();
-            default -> {
-                scrollToCaretY();
-                scrollToCaretX();
-            }
+            default -> scrollToCaret();
         }
         actionHistory.offer(action);
     }

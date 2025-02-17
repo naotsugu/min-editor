@@ -17,6 +17,8 @@ package com.mammb.code.editor.core.layout;
 
 import java.util.List;
 import java.util.Optional;
+import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.text.RowText;
 import com.mammb.code.editor.core.text.Text;
@@ -67,5 +69,17 @@ interface ContentLayout extends LineLayout {
      * @return the location
      */
     Optional<Loc> loc(int row, int col, int rangeLineStart, int rangeLineEnd);
+
+    /**
+     * Get the content.
+     * @return the content
+     */
+    Content content();
+
+    /**
+     * Get the font metrics.
+     * @return the font metrics
+     */
+    FontMetrics fontMetrics();
 
 }

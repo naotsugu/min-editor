@@ -7,7 +7,7 @@
 | `Ctrl` + `→`           | Move the caret to the right word      |
 | `Ctrl` + `←`           | Move the caret to the left word       |
 | `Ctrl` + `p`           | Open the command pallet               |
-| `Ctrl` + `l`           | Toggle line wrap                      |
+| `Ctrl` + `l`           | Toggle layout                         |
 | `Ctrl` + `s`           | Save current file                     |
 | `Ctrl` + `Shift` + 1s` | Save as                               |
 | `F3`                   | Find next(with previous criteria)     |

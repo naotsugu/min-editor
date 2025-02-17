@@ -61,8 +61,8 @@ public interface EditorModel {
     }
 
     /**
-     * Draw.
-     * @param draw draw
+     * Paint the editor screen.
+     * @param draw the draw
      */
     void paint(Draw draw);
 

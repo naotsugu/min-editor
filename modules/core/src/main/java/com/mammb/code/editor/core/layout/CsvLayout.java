@@ -43,7 +43,7 @@ public class CsvLayout extends RowLayout {
     @Override
     public ColsText rowTextAt(int row) {
 
-        var text = ColsText.csvOf(row, getContent().getText(row), getFm());
+        var text = ColsText.csvOf(row, content().getText(row), fontMetrics());
 
         double[] rawWidths = text.rawWidths();
         for (int c = 0; c < rawWidths.length; c++) {

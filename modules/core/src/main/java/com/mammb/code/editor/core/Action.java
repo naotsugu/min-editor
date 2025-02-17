@@ -94,9 +94,6 @@ public sealed interface Action
     static Action save(Path path) {
         return new Save(path, System.currentTimeMillis());
     }
-    static Action wrapLine() {
-        return new WrapLine(0, System.currentTimeMillis());
-    }
     static Action wrapLine(int width) {
         return new WrapLine(width, System.currentTimeMillis());
     }

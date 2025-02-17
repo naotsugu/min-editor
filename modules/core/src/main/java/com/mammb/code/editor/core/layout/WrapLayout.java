@@ -239,19 +239,13 @@ class WrapLayout implements ContentLayout {
         return Optional.empty();
     }
 
-    /**
-     * Get the content.
-     * @return the content
-     */
-    Content getContent() {
+    @Override
+    public Content content() {
         return content;
     }
 
-    /**
-     * Get the font metrics.
-     * @return the font metrics
-     */
-    FontMetrics getFm() {
+    @Override
+    public FontMetrics fontMetrics() {
         return fm;
     }
 

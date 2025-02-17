@@ -283,19 +283,33 @@ class BasicScreenLayout implements ScreenLayout {
 
     @Override
     public void setLineWidth(int width) {
-        if (layout instanceof RowLayout rowLayout) {
-            if (layout.rowSize() > 50_000) {
-                return; // large files are not allowed to wrap.
-            }
-            layout = new WrapLayout(rowLayout.getContent(), rowLayout.getFm());
-            layout.setLineWidth((width <= 0)
-                ? (int) Math.floor((screenWidth - 16 /* margin right */) / layout.standardCharWidth())
-                : width);
-        } else if (layout instanceof WrapLayout wrapLayout) {
-            if (width <= 0) {
-                layout = new RowLayout(wrapLayout.getContent(), wrapLayout.getFm());
+        if (width <= 0) {
+            toggleLayout("");
+            return;
+        }
+        if (!(layout instanceof WrapLayout)) {
+            if (layout.rowSize() > 50_000) return; // large files are not allowed to wrap.
+            layout = new WrapLayout(layout.content(), layout.fontMetrics());
+        }
+        layout.setLineWidth(width);
+        fillBuffer();
+    }
+
+    @Override
+    public void toggleLayout(String layoutName) {
+        if ("csv".equals(layoutName)) {
+            if (layout instanceof CsvLayout) {
+                layout = new RowLayout(layout.content(), layout.fontMetrics());
             } else {
-                layout.setLineWidth(width);
+                layout = new CsvLayout(layout.content(), layout.fontMetrics());
+            }
+        } else {
+            if (layout instanceof RowLayout) {
+                if (layout.rowSize() > 50_000) return; // large files are not allowed to wrap.
+                layout = new WrapLayout(layout.content(), layout.fontMetrics());
+                layout.setLineWidth((int) Math.floor((screenWidth - 16 /* margin right */) / layout.standardCharWidth()));
+            } else {
+                layout = new RowLayout(layout.content(), layout.fontMetrics());
             }
         }
         fillBuffer();
@@ -309,17 +323,6 @@ class BasicScreenLayout implements ScreenLayout {
     @Override
     public void updateFontMetrics(FontMetrics fontMetrics) {
         layout.updateFontMetrics(fontMetrics);
-        fillBuffer();
-    }
-
-    @Override
-    public void toggleLayout() {
-        // TODO
-        if (layout instanceof RowLayout rowLayout) {
-            layout = new CsvLayout(rowLayout.getContent(), rowLayout.getFm());
-        } else {
-            setLineWidth(0);
-        }
         fillBuffer();
     }
 
