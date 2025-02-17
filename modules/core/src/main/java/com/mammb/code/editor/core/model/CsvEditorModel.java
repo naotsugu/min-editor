@@ -77,7 +77,7 @@ public class CsvEditorModel implements EditorModel {
 
 
     @Override
-    public void draw(Draw draw) {
+    public void paint(Draw draw) {
     }
 
     @Override

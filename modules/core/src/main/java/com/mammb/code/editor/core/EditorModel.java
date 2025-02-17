@@ -64,7 +64,7 @@ public interface EditorModel {
      * Draw.
      * @param draw draw
      */
-    void draw(Draw draw);
+    void paint(Draw draw);
 
     /**
      * Set the size of editor.

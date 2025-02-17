@@ -112,7 +112,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public void draw(Draw draw) {
+    public void paint(Draw draw) {
         screenLayout.applyScreenScroll(scroll);
         calcScreenLayout();
         draw.clear();

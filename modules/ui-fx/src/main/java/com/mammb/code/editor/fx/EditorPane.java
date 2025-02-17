@@ -221,7 +221,7 @@ public class EditorPane extends StackPane {
     private void handleMouseDragged(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY) {
             model.moveDragged(e.getX(), e.getY());
-            model.draw(draw);
+            model.paint(draw);
         }
     }
 
@@ -287,7 +287,7 @@ public class EditorPane extends StackPane {
             model.imeComposed(e.getComposed().stream()
                     .map(InputMethodTextRun::getText)
                     .collect(Collectors.joining()));
-            model.draw(draw);
+            model.paint(draw);
         } else {
             model.imeComposed("");
             model.imeOff();
@@ -374,7 +374,7 @@ public class EditorPane extends StackPane {
     }
 
     private void draw() {
-        model.draw(draw);
+        model.paint(draw);
         Point p = model.query(Query.caretPoint);
         floatBar.setText(
             p.row() + 1 + ":" + p.col(),
