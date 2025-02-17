@@ -76,6 +76,14 @@ public class CsvLayout extends RowLayout {
         return rowTextAt(line);
     }
 
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void clearDirty() {
+        dirty = false;
+    }
+
     public List<? extends ColsText> textsInternal(int startRow, int endRow) {
         return IntStream.range(
             Math.clamp(startRow, 0, rowSize()),
