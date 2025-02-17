@@ -63,6 +63,12 @@ public interface Decorate {
     void warmApply(int row, int len, Content content);
 
     /**
+     * Get the syntax name.
+     * @return
+     */
+    String syntaxName();
+
+    /**
      * Create a new {@link Decorate}.
      * @param syntax the syntax
      * @return a new {@link Decorate}
@@ -115,6 +121,11 @@ public interface Decorate {
                     }
                 });
             }
+        }
+
+        @Override
+        public String syntaxName() {
+            return syntax.name();
         }
 
         @Override
