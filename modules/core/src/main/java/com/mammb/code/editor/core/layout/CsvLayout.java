@@ -30,6 +30,8 @@ public class CsvLayout extends RowLayout {
 
     /** The screen column width list. */
     private final List<Double> colWidths = new ArrayList<>();
+    /** dirty?. */
+    private boolean dirty = false;
 
     /**
      * Constructor.
@@ -52,6 +54,7 @@ public class CsvLayout extends RowLayout {
             }
             if (rawWidths[c] > colWidths.get(c)) {
                 colWidths.set(c, rawWidths[c]);
+                dirty = true;
             }
         }
         text.fixCols(colWidths);
@@ -60,15 +63,24 @@ public class CsvLayout extends RowLayout {
 
     @Override
     public List<? extends ColsText> texts(int startLine, int endLine) {
-        return IntStream.range(
-            Math.clamp(startLine, 0, rowSize()),
-            Math.clamp(endLine,   0, rowSize() + 1)
-        ).mapToObj(this::rowText).toList();
+        var texts = textsInternal(startLine, endLine);
+        if (dirty) {
+            texts = textsInternal(startLine, endLine);
+            dirty = false;
+        }
+        return texts;
     }
 
     @Override
     public ColsText rowText(int line) {
         return rowTextAt(line);
+    }
+
+    public List<? extends ColsText> textsInternal(int startRow, int endRow) {
+        return IntStream.range(
+            Math.clamp(startRow, 0, rowSize()),
+            Math.clamp(endRow,   0, rowSize() + 1)
+        ).mapToObj(this::rowText).toList();
     }
 
 }
