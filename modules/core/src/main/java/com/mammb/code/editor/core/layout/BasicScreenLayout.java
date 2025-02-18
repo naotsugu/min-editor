@@ -288,6 +288,7 @@ class BasicScreenLayout implements ScreenLayout {
             return;
         }
         if (!(layout instanceof WrapLayout)) {
+            // TODO reduce duplicate codes
             if (layout.rowSize() > 50_000) return; // large files are not allowed to wrap.
             layout = new WrapLayout(layout.content(), layout.fontMetrics());
         }

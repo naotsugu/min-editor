@@ -161,6 +161,14 @@ public interface ScreenLayout extends LineLayout {
     void toggleLayout(String layoutName);
 
     /**
+     * Get the number of half lines on the screen.
+     * @return the number of half lines on the screen
+     */
+    default int screenLineHalfSize() {
+        return screenLineSize() / 2;
+    }
+
+    /**
      * Create a new {@link ScreenLayout}.
      * @param content the content
      * @param fm the font metrics

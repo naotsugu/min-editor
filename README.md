@@ -17,6 +17,7 @@ Minimal text editor, **under development**.
 * Multiple tab panes
 * Multiple carets and selections
 * Handles huge documents
+* CSV/TSV layout mode
 * Various editing commands (to open command pallet: `⌘-P` or `Ctrl-P`)
 
 

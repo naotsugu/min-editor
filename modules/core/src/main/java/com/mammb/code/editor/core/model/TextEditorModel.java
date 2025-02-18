@@ -639,7 +639,7 @@ public class TextEditorModel implements EditorModel {
         content.findAll(findSpec).forEach(p -> {
             if (!c.isMarked()) {
                 c.markTo(p.row(), p.col(), p.row(), p.col() + p.len());
-                scrollToCaretY(screenLayout.screenLineSize() / 2);
+                scrollToCaretY(screenLayout.screenLineHalfSize());
             }
             decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len()));
         });
@@ -651,7 +651,7 @@ public class TextEditorModel implements EditorModel {
         var point = c.isMarked() ? Collections.max(List.of(c.point(), c.markedPoint())) : c.point();
         content.findNext(point, findSpec).ifPresent(p ->
             c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
-        scrollToCaretY(screenLayout.screenLineSize() / 2);
+        scrollToCaretY(screenLayout.screenLineHalfSize());
     }
 
     private void findPrev(FindSpec spec) {
@@ -660,7 +660,7 @@ public class TextEditorModel implements EditorModel {
         var point = c.isMarked() ? Collections.min(List.of(c.point(), c.markedPoint())) : c.point();
         content.findPrev(point, findSpec).ifPresent(p ->
             c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
-        scrollToCaretY(screenLayout.screenLineSize() / 2);
+        scrollToCaretY(screenLayout.screenLineHalfSize());
     }
 
     @Override

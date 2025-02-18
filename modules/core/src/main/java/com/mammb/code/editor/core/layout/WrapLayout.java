@@ -18,9 +18,7 @@ package com.mammb.code.editor.core.layout;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import com.mammb.code.editor.core.Content;
@@ -104,7 +102,7 @@ class WrapLayout implements ContentLayout {
     @Override
     public SubText text(int line) {
         if (line >= lines.size()) {
-            return SubText.of(RowText.of(lines.getLast().row + 1, "", fm), 0).getLast();
+            return SubText.of(RowText.of(lines.getLast().row() + 1, "", fm), 0).getLast();
         }
         SubRange range = subRange(line);
         List<SubText> subs = subTextsAt(range.row());
@@ -206,7 +204,7 @@ class WrapLayout implements ContentLayout {
     @Override
     public int rowToLastLine(int row) {
         int first = rowToFirstLine(row);
-        return first + subRange(first).subLines - 1;
+        return first + subRange(first).subLines() - 1;
     }
 
     @Override
@@ -219,7 +217,7 @@ class WrapLayout implements ContentLayout {
     @Override
     public int rowToLine(int row, int col) {
         int line = rowToFirstLine(row);
-        int subLines = subRange(line).subLines;
+        int subLines = subRange(line).subLines();
         for (int i = 0; i < subLines; i++) {
             if (subRange(line + i).contains(row, col)) {
                 return line + i;
@@ -261,53 +259,6 @@ class WrapLayout implements ContentLayout {
             list.add(new SubRange(row, i, subTexts.size(), subText.fromIndex(), subText.toIndex()));
         }
         return list;
-    }
-
-
-    static class SubRange implements Comparable<SubRange> {
-        private int row, subLine, subLines, fromIndex, toIndex;
-        public SubRange(int row, int subLine, int subLines, int fromIndex, int toIndex) {
-            this.row = row;
-            this.subLine = subLine;
-            this.subLines = subLines;
-            this.fromIndex = fromIndex;
-            this.toIndex = toIndex;
-        }
-        public void plusRow(int n) { row += n; }
-        public int row() { return row; }
-        public int subLine() { return  subLine; }
-        public int subLines() { return subLines; }
-        public int fromIndex() { return fromIndex; }
-        public int toIndex() { return toIndex; }
-        public int length() { return toIndex - fromIndex; }
-        boolean contains(int row, int col) {
-            return this.row == row && (
-                (this.fromIndex <= col && col < this.toIndex) ||
-                (col == 0 && fromIndex == 0 && toIndex == 0) ||
-                (col == this.toIndex && subLine == subLines - 1)
-            );
-        }
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            SubRange subRange = (SubRange) o;
-            return row == subRange.row &&
-                    subLine == subRange.subLine &&
-                    subLines == subRange.subLines &&
-                    fromIndex == subRange.fromIndex &&
-                    toIndex == subRange.toIndex;
-        }
-        @Override
-        public int hashCode() {
-            return Objects.hash(row, subLine, subLines, fromIndex, toIndex);
-        }
-        @Override
-        public int compareTo(SubRange that) {
-            return Comparator.comparing(SubRange::row)
-                    .thenComparing(SubRange::subLine)
-                    .compare(this, that);
-        }
     }
 
 }
