@@ -31,7 +31,7 @@ public class TsvSyntax implements Syntax {
 
     @Override
     public String name() {
-        return "csv";
+        return "tsv";
     }
 
     @Override

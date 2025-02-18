@@ -297,11 +297,13 @@ class BasicScreenLayout implements ScreenLayout {
 
     @Override
     public void toggleLayout(String layoutName) {
-        if ("csv".equals(layoutName)) {
+        if ("csv".equals(layoutName) || "tsv".equals(layoutName)) {
             if (layout instanceof CsvLayout) {
                 layout = new RowLayout(layout.content(), layout.fontMetrics());
             } else {
-                layout = new CsvLayout(layout.content(), layout.fontMetrics());
+                layout = "tsv".equals(layoutName)
+                    ? CsvLayout.tsvOf(layout.content(), layout.fontMetrics())
+                    : CsvLayout.csvOf(layout.content(), layout.fontMetrics());
             }
         } else {
             if (layout instanceof RowLayout) {

@@ -170,24 +170,4 @@ public interface ScreenLayout extends LineLayout {
         return new BasicScreenLayout(new RowLayout(content, fm));
     }
 
-    /**
-     * Create a new {@link ScreenLayout}.
-     * @param content the content
-     * @param fm the font metrics
-     * @return a new {@link ScreenLayout}
-     */
-    static ScreenLayout csvOf(Content content, FontMetrics fm) {
-        return new BasicScreenLayout(new CsvLayout(content, fm));
-    }
-
-    /**
-     * Create a new line wrapped {@link ScreenLayout}.
-     * @param content the content
-     * @param fm the font metrics
-     * @return a new {@link ScreenLayout}
-     */
-    static ScreenLayout wrapOf(Content content, FontMetrics fm) {
-        return new BasicScreenLayout(new WrapLayout(content, fm));
-    }
-
 }

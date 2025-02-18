@@ -41,13 +41,13 @@ public class ColsText implements RowText {
      * @param row the number of row
      * @param text the text value
      * @param fm the font metrics
-     * @param separater the separater
+     * @param separator the separator
      */
-    private ColsText(int row, String text, FontMetrics fm, String separater) {
+    public ColsText(int row, String text, FontMetrics fm, String separator) {
         peer = RowText.of(row, text, fm, false);
         advances = Arrays.copyOf(peer.advances(), peer.advances().length);
         margin = fm.standardCharWidth() * 2;
-        colLengths = Arrays.stream(text.split(separater))
+        colLengths = Arrays.stream(text.split(separator))
             .mapToInt(String::length).toArray();
 
         double[] advances = peer.advances();
@@ -58,28 +58,6 @@ public class ColsText implements RowText {
             rawWidths[i] = Arrays.stream(advances, offset, offsetTo).sum();
             offset = offsetTo + 1;
         }
-    }
-
-    /**
-     * Create the csv row text.
-     * @param row the number of row
-     * @param text the text value
-     * @param fm the font metrics
-     * @return the csv row text
-     */
-    public static ColsText csvOf(int row, String text, FontMetrics fm) {
-        return new ColsText(row, text, fm, ",");
-    }
-
-    /**
-     * Create the tsv row text.
-     * @param row the number of row
-     * @param text the text value
-     * @param fm the font metrics
-     * @return the tsv row text
-     */
-    public static ColsText tsvOf(int row, String text, FontMetrics fm) {
-        return new ColsText(row, text, fm, "\t");
     }
 
     /**

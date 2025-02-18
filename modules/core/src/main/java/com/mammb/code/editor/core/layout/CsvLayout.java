@@ -30,6 +30,8 @@ public class CsvLayout extends RowLayout {
 
     /** The screen column width list. */
     private final List<Double> colWidths = new ArrayList<>();
+    /** The separator. */
+    private final String separator;
     /** dirty?. */
     private boolean dirty = false;
 
@@ -38,14 +40,35 @@ public class CsvLayout extends RowLayout {
      * @param content the content
      * @param fm the font metrics
      */
-    public CsvLayout(Content content, FontMetrics fm) {
+    private CsvLayout(Content content, FontMetrics fm, String separator) {
         super(content, fm);
+        this.separator = separator;
+    }
+
+    /**
+     * Create a new {@link CsvLayout}.
+     * @param content the content
+     * @param fm the font metrics
+     * @return a new {@link CsvLayout}
+     */
+    public static CsvLayout csvOf(Content content, FontMetrics fm) {
+        return new CsvLayout(content, fm, ",");
+    }
+
+    /**
+     * Create a new {@link CsvLayout} with tab separator mode.
+     * @param content the content
+     * @param fm the font metrics
+     * @return a new {@link CsvLayout}
+     */
+    public static CsvLayout tsvOf(Content content, FontMetrics fm) {
+        return new CsvLayout(content, fm, "\t");
     }
 
     @Override
     public ColsText rowTextAt(int row) {
 
-        var text = ColsText.csvOf(row, content().getText(row), fontMetrics());
+        var text = new ColsText(row, content().getText(row), fontMetrics(), ",");
 
         double[] rawWidths = text.rawWidths();
         for (int c = 0; c < rawWidths.length; c++) {
@@ -80,6 +103,9 @@ public class CsvLayout extends RowLayout {
         return dirty;
     }
 
+    /**
+     * Clear dirty.
+     */
     public void clearDirty() {
         dirty = false;
     }
