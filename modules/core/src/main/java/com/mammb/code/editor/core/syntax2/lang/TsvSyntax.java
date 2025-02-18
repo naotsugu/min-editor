@@ -24,10 +24,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The csv editor model.
+ * The tsv editor model.
  * @author Naotsugu Kobayashi
  */
-public class CsvSyntax implements Syntax {
+public class TsvSyntax implements Syntax {
 
     @Override
     public String name() {
@@ -41,7 +41,6 @@ public class CsvSyntax implements Syntax {
             return Collections.emptyList();
         }
 
-        boolean inQuote = false;
         var spans = new ArrayList<Style.StyleSpan>();
         var source = LexerSource.of(row, text);
 
@@ -49,16 +48,14 @@ public class CsvSyntax implements Syntax {
 
             var peek = source.peek();
 
-            if (peek.ch() == '"') {
-                inQuote = !inQuote;
-            } else if (peek.ch() == ',' && !inQuote) {
+            if (peek.ch() == '\t') {
                 spans.add(new Style.StyleSpan(Palette.gray, peek.index(), 1));
             }
-
             source.commitPeek();
         }
 
         return spans;
+
     }
 
 }
