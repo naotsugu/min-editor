@@ -9,7 +9,7 @@
 | `Ctrl` + `p`           | Open the command pallet               |
 | `Ctrl` + `l`           | Toggle layout                         |
 | `Ctrl` + `s`           | Save current file                     |
-| `Ctrl` + `Shift` + 1s` | Save as                               |
+| `Ctrl` + `Shift` + `s` | Save as                               |
 | `F3`                   | Find next(with previous criteria)     |
 | `Ctrl` + `F3`          | Find previous(with previous criteria) |
 | `Ctrl` + `+`           | Zoom in                               |
