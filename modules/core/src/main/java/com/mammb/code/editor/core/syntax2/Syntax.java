@@ -91,8 +91,10 @@ public interface Syntax {
             name = "";
         }
 
+        // the pass through syntax
         record PassThrough(String name) implements Syntax {
-            @Override public List<Style.StyleSpan> apply(int row, String text) {
+            @Override
+            public List<Style.StyleSpan> apply(int row, String text) {
                 return List.of();
             }
         }

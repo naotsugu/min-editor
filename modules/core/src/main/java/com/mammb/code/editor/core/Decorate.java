@@ -64,7 +64,7 @@ public interface Decorate {
 
     /**
      * Get the syntax name.
-     * @return
+     * @return the syntax name
      */
     String syntaxName();
 
@@ -92,7 +92,7 @@ public interface Decorate {
          * Constructor.
          * @param syntax the syntax
          */
-        public DecorateImpl(Syntax syntax) {
+        private DecorateImpl(Syntax syntax) {
             this.syntax = syntax;
         }
 

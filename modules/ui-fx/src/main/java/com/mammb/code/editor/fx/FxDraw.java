@@ -69,7 +69,7 @@ public class FxDraw implements Draw {
         if (bgColor.isPresent()) {
             var bg = bgColor.get();
             gc.setFill(bgColor.get());
-            gc.fillRect(x, y, w, fontMetrics.getLineHeight());
+            gc.fillRect(x + 0.5, y + 0.5, w - 1, fontMetrics.getLineHeight() - 1);
             Color textColor = (bg.getBrightness() > 0.5)
                     ? textColor(styles).darker()
                     : textColor(styles).brighter();
@@ -113,9 +113,10 @@ public class FxDraw implements Draw {
     @Override
     public void select(double x1, double y1, double x2, double y2, double l, double r) {
         double lineHeight = fontMetrics().getLineHeight();
-        gc.setFill(color(Theme.dark.paleHighlightColor()));
+        gc.setFill(color(Theme.dark.paleHighlightColor() + "AA"));
         if (y1 == y2) {
             gc.fillRect(Math.min(x1, x2), y1, Math.abs(x2 - x1), lineHeight);
+            gc.strokeRect(Math.min(x1, x2) - 0.5, y1 - 0.5, Math.abs(x2 - x1) + 1, lineHeight + 1);
             return;
         }
         //                    0:(x1, y1)
@@ -137,6 +138,7 @@ public class FxDraw implements Draw {
         x[6] = l;  y[6]= y1 + lineHeight;
         x[7] = x1; y[7]= y1 + lineHeight;
         gc.fillPolygon(x, y, 8);
+        gc.strokePolygon(x, y, 8);
     }
 
     @Override
