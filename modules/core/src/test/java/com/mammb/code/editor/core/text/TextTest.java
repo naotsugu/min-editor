@@ -86,9 +86,9 @@ class TextTest {
     @Test
     void indexRight() {
         var text = Text.of(0, "a𠀋b", new double[] { 0 }, 1);
-        assertEquals(1, text.indexRight(0));
-        assertEquals(3, text.indexRight(1));
-        assertEquals(4, text.indexRight(3));
+        assertEquals( 1, text.indexRight(0));
+        assertEquals( 3, text.indexRight(1));
+        assertEquals( 4, text.indexRight(3));
         assertEquals(-1, text.indexRight(4));
     }
 

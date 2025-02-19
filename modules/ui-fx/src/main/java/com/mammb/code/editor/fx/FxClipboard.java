@@ -23,21 +23,29 @@ import com.mammb.code.editor.core.Clipboard;
  * The FxClipboard.
  * @author Naotsugu Kobayashi
  */
-public class FxClipboard implements Clipboard {
+public final class FxClipboard implements Clipboard {
 
     /** The fx clipboard instance. */
     static final Clipboard instance = new FxClipboard();
 
+    private FxClipboard() { }
+
     @Override
     public void setPlainText(String text) {
-        javafx.scene.input.Clipboard.getSystemClipboard()
-                .setContent(Map.of(DataFormat.PLAIN_TEXT, text));
+        var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+        clipboard.setContent(Map.of(DataFormat.PLAIN_TEXT, text));
     }
 
     @Override
     public String getString() {
         var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
         return clipboard.hasString() ? clipboard.getString() : "";
+    }
+
+    @Override
+    public String getHtml() {
+        var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+        return clipboard.hasHtml() ? clipboard.getHtml() : "";
     }
 
 }

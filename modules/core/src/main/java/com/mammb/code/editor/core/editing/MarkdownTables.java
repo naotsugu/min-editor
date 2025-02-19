@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core;
+package com.mammb.code.editor.core.editing;
 
 /**
- * The Clipboard.
+ * The MarkdownTables.
  * @author Naotsugu Kobayashi
  */
-public interface Clipboard {
+public class MarkdownTables {
 
-    /**
-     * Put the string to the clipboard.
-     * @param text the string
-     */
-    void setPlainText(String text);
-
-    /**
-     * Get the string from the clipboard.
-     * @return the string
-     */
-    String getString();
-
-    /**
-     * Get the html string from the clipboard.
-     * @return the html string
-     */
-    String getHtml();
+    public static String fromHtml(String html) {
+        return html;
+    }
 
 }
