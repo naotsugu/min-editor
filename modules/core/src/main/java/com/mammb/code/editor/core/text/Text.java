@@ -125,10 +125,10 @@ public interface Text {
      * Get the index moved to the right of the specified index.
      * Surrogate pair consideration.
      * @param index the base index
-     * @return the index moved to the right
+     * @return the index moved to the right, {@code -1} if the specified index is at the end of a line
      */
     default int indexRight(int index) {
-        if (isEmpty() || index == value().length()) return index;
+        if (isEmpty() || index == value().length()) return -1;
         index += isHighSurrogate(index) ? 2 : 1;
         return (index > textLength()) ? -1 : index;
     }
@@ -139,7 +139,7 @@ public interface Text {
      * @return the index moved to the right bound
      */
     default int indexRightBound(int index) {
-        if (isEmpty() || index == value().length()) return index;
+        if (isEmpty() || index == value().length()) return -1;
         for (int i = index; i < value().length(); ) {
             int charType = Character.getType(Character.toLowerCase(value().charAt(i)));
             int nextIndex = indexRight(i);
