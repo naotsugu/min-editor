@@ -15,14 +15,90 @@
  */
 package com.mammb.code.editor.core.editing;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * The MarkdownTables.
  * @author Naotsugu Kobayashi
  */
 public class MarkdownTables {
 
+    private static final Pattern tablePattern   = Pattern.compile("<table.*?>(.*?)</table>");
+    private static final Pattern captionPattern = Pattern.compile("<caption.*?>(.*?)</caption>");
+    private static final Pattern recordPattern  = Pattern.compile("<tr.*?>(.*?)</tr>");
+    private static final Pattern colPattern     = Pattern.compile("<t[hd ].*?>(.*?)</t[hd]>");
+
+    /**
+     * Convert HTML tables to markdown tables.
+     * @param html source html text
+     * @return markdown text
+     */
     public static String fromHtml(String html) {
-        return html;
+
+        html = html.replaceAll("\\R", "");
+
+        var sb = new StringBuilder(html.length());
+        int index = 0;
+
+        Matcher m = tablePattern.matcher(html);
+        while (m.find()) {
+
+            if (m.start() > index) {
+                sb.append(html.substring(index, m.start()));
+                sb.append('\n');
+            }
+            index = m.end();
+
+            var table = m.group(1);
+            if (table.isEmpty()) continue;
+            sb.append(handleCaption(table));
+            sb.append('\n');
+            sb.append(handleTable(m.group(1)));
+        }
+        return sb.toString().replaceAll("<.*?>", "");
+    }
+
+    // -- private helper ------------------------------------------------------
+
+    private static CharSequence handleCaption(String table) {
+        var sb = new StringBuilder();
+        Matcher m = captionPattern.matcher(table);
+        while (m.find()) {
+            sb.append(m.group(1).trim());
+            sb.append('\n');
+        }
+        return sb;
+    }
+
+    private static CharSequence handleTable(String table) {
+        var sb = new StringBuilder();
+        Matcher m = recordPattern.matcher(table);
+        while (m.find()) {
+            var row = handleRow(m.group(1));
+            if (row.isEmpty()) continue;
+            boolean header = sb.isEmpty();
+            sb.append(row);
+            sb.append('\n');
+            if (header) {
+                sb.append(row.toString().replaceAll("[^\\|]", "+"));
+                sb.append('\n');
+            }
+        }
+        return sb;
+    }
+
+    private static CharSequence handleRow(String row) {
+        var sb = new StringBuilder();
+        Matcher m = colPattern.matcher(row);
+        while (m.find()) {
+            sb.append("|");
+            sb.append(m.group(1).trim());
+        }
+        if (!sb.isEmpty()) {
+            sb.append("|");
+        }
+        return sb;
     }
 
 }
