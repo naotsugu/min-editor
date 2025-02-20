@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax;
+package com.mammb.code.editor.core.syntax2;
 
 import org.junit.jupiter.api.Test;
 
@@ -93,10 +93,7 @@ class TrieTest {
     @Test
     void testPartialMatch() {
 
-        var trie = new Trie();
-        trie.put("public");
-        trie.put("private");
-        trie.put("protected");
+        var trie = Trie.of("public private protected");
 
         assertEquals(true, trie.startsWith("public"));
         assertEquals(true, trie.startsWith("private"));
