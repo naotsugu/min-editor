@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2025 the original author or authors.
+ * Copyright 2022-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,9 @@
  */
 package com.mammb.code.editor.core.syntax;
 
-import com.mammb.code.editor.core.text.Style;
-import com.mammb.code.editor.core.text.Style.TextColor;
-
 /**
- * The palette.
+ * The with.
  * @author Naotsugu Kobayashi
  */
-public interface Palette {
-
-    TextColor gray = new Style.TextColor("#888888");
-    TextColor darkGreen = new Style.TextColor("#6A8759");
-    TextColor darkOrange = new Style.TextColor("#CC7832");
-    TextColor darkPale = new Style.TextColor("#6897BB");
-
+public interface With<T> {
 }

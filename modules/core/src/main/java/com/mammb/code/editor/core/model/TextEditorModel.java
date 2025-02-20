@@ -36,7 +36,7 @@ import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
-import com.mammb.code.editor.core.syntax2.Syntax;
+import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.io.IOException;

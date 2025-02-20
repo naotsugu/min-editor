@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2022-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,14 @@
 package com.mammb.code.editor.core.syntax;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
-import com.mammb.code.editor.core.text.Style;
 
 /**
  * The lexer source.
  * @author Naotsugu Kobayashi
  */
 public class LexerSource {
+
     private int row;
     private String text;
     private int index = 0;
@@ -35,25 +34,67 @@ public class LexerSource {
         this.text = text;
     }
 
+    /**
+     * Create a new {@link LexerSource}.
+     * @param row the number of row
+     * @param source the source text
+     * @return a new {@link LexerSource}
+     */
     public static LexerSource of(int row, String source) {
         return new LexerSource(row, source);
     }
 
-    public int row() { return row; }
-    public String text() { return text; }
-    public int length() { return text.length(); }
+    /**
+     * Get the number of row.
+     * @return the number of row
+     */
+    public int row() {
+        return row;
+    }
+
+    /**
+     * Get the source text.
+     * @return the source text
+     */
+    public String text() {
+        return text;
+    }
+
+    /**
+     * Get the source text length.
+     * @return the source text length
+     */
+    public int length() {
+        return text.length();
+    }
+
+    /**
+     * Get the current index.
+     * @return the current index
+     */
+    public int index() {
+        return index;
+    }
 
     public boolean hasNext() {
         return index < text.length();
     }
 
-    public boolean match(char ch) {
-        return text.charAt(index) == ch;
+    public Indexed peek() {
+        var ret = new Indexed(index + peek, text.charAt(index + peek), text.length());
+        peek++;
+        return ret;
     }
 
-    public boolean match(CharSequence cs) {
-        return index + cs.length() < text.length() &&
-                Objects.equals(text.substring(index, index + cs.length()), cs.toString());
+    public LexerSource commitPeek() {
+        index += peek;
+        peek = 0;
+        return this;
+    }
+
+    public LexerSource rollbackPeek() {
+        peek = 0;
+        return this;
     }
 
     public Indexed next() {
@@ -64,44 +105,16 @@ public class LexerSource {
     }
 
     public Indexed next(int n) {
-        var ret = new Indexed(index, text.substring(index, index + n), text.length());
-        index += n;
+        int endIndex = Math.min(index + n, text.length());
+        var ret = new Indexed(index, text.substring(index, endIndex), text.length());
+        index = endIndex;
         peek = 0;
         return ret;
     }
 
-    public Indexed nextRemaining() {
-        var ret = new Indexed(index, text.substring(index), text.length());
-        index = text.length();
-        peek = 0;
-        return ret;
-    }
-
-    public Optional<Indexed> nextMatch(String until) {
-        int n = text.substring(index).indexOf(until);
-        if (n < 0) {
-            index = text.length();
-            peek = 0;
-            return Optional.empty();
-        }
-        var ret = new Indexed(index + n, until, text.length());
-        index = ret.index + until.length();
-        peek = 0;
-        return Optional.of(ret);
-    }
-
-    public Indexed peek() {
-        var ret = new Indexed(index + peek, text.charAt(index + peek), text.length());
-        peek++;
-        return ret;
-    }
-
-    public Indexed nextAlphabetic() {
-        return nextUntil(Character::isAlphabetic);
-    }
-
-    public Indexed nextIdentifierPart() {
-        return nextUntil(Character::isUnicodeIdentifierPart);
+    public Indexed nextUntilWs() {
+        String split = text.substring(index).split("\\s", 2)[0];
+        return next(split.length());
     }
 
     public Indexed nextUntil(Predicate<Character> predicate) {
@@ -115,68 +128,30 @@ public class LexerSource {
         return ret;
     }
 
-    public LexerSource rollbackPeek() {
+    public Indexed nextRemaining() {
+        var ret = new Indexed(index, text.substring(index), text.length());
+        index = text.length();
         peek = 0;
-        return this;
+        return ret;
     }
 
-    public LexerSource commitPeek() {
-        index += peek;
-        peek = 0;
-        return this;
+    public boolean match(CharSequence cs) {
+        return index + cs.length() <= text.length() &&
+            Objects.equals(text.substring(index, index + cs.length()), cs.toString());
     }
 
-    public record Indexed(int index, String string, int parentLength) {
+    public record Indexed(int index, String text, int parentLength) {
         private Indexed(int index, char ch, int parentLength) {
             this(index, String.valueOf(ch), parentLength);
         }
-        char ch() {
-            return length() == 0 ? 0 : string.charAt(0);
+        public char ch() {
+            return length() == 0 ? 0 : text.charAt(0);
         }
-        int lastIndex() {
-            return index + string.length() - 1;
+        public int lastIndex() {
+            return index + text.length() - 1;
         }
-        int length() { return string.length(); }
-        boolean isFirst() { return index == 0; }
-        boolean isLast() { return index == parentLength - 1; }
+        public int length() { return text.length(); }
+        public boolean isFirst() { return index == 0; }
+        public boolean isLast() { return index == parentLength - 1; }
     }
-
-
-    Style.StyleSpan readNumberLiteral(Style style) {
-        var open = rollbackPeek().peek();
-        while (hasNext()) {
-            var s = peek();
-            if (!(Character.isDigit(s.ch()) || s.ch() == '.' || s.ch() == 'e' || s.ch() == 'E' || s.ch() == '_')) {
-                return new Style.StyleSpan(style, open.index(), s.index() - open.index());
-            }
-            commitPeek();
-        }
-        return null;
-    }
-
-    Style.StyleSpan readInlineBlock(char ch, char escape, Style style) {
-        var open = rollbackPeek().peek();
-        char prev = next().ch();
-        while (hasNext()) {
-            var s = next();
-            if (prev != escape && s.ch() == ch) {
-                return new Style.StyleSpan(style, open.index(), s.index() - open.index() + 1);
-            }
-            prev = s.ch();
-        }
-        return null;
-    }
-
-    Style.StyleSpan readBlockClose(BlockScopes scopes, BlockScopes.Range blockType, Style style) {
-        var open = rollbackPeek().peek();
-        var close = nextMatch(blockType.close());
-        if (close.isPresent()) {
-            var s = close.get();
-            scopes.putClose(row(), s.lastIndex(), blockType);
-            return new Style.StyleSpan(style, open.index(), s.index() + s.length() - open.index());
-        } else {
-            return new Style.StyleSpan(style, open.index(), length() - open.index());
-        }
-    }
-
 }

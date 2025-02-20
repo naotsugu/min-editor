@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2022-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package com.mammb.code.editor.core.syntax;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.TreeMap;
-import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * The block scopes.
@@ -28,113 +28,140 @@ import java.util.function.Function;
  */
 public class BlockScopes {
 
-    private final TreeMap<Anchor, Token> scopes = new TreeMap<>();
+    /** The scope stacks. */
+    private final ScopeStack scopes = new ScopeStack();
+    /** The block types. */
+    private final List<BlockType> types = new ArrayList<>();
 
-    public void clear(int row) {
-        scopes.subMap(new Anchor(row, 0), new Anchor(row, Integer.MAX_VALUE)).clear();
+    /**
+     * Constructor.
+     * @param blockTypes
+     */
+    public BlockScopes(BlockType... blockTypes) {
+        types.addAll(Stream.of(blockTypes).filter(Objects::nonNull).toList());
     }
 
-    public void putOpen(int row, int col, Range type) {
-        scopes.put(new Anchor(row, col), new StartToken(type));
+    /**
+     * Get whether this block types is empty or not.
+     * @return {@code true}, if this block types is empty
+     */
+    public boolean isEmpty() {
+        return types.isEmpty();
     }
 
-    public void putClose(int row, int col, Range type) {
-        scopes.put(new Anchor(row, col), new EndToken(type));
-    }
+    /**
+     * Put the source texts.
+     * @param sources the source texts
+     */
+    public void put(Iterator<LexerSource> sources) {
 
-    public void putNeutral(int row, int col, Neutral type) {
-        scopes.put(new Anchor(row, col), new OpenToken(type));
-    }
+        if (!sources.hasNext()) return;
 
-    public Optional<BlockType> inScope(int row, int col) {
-        Deque<Token> neutralStack = new ArrayDeque<>();
-        Deque<Token> rangeStack = new ArrayDeque<>();
-        for (var e : scopes.headMap(new Anchor(row, col)).entrySet()) {
-            switch (e.getValue()) {
-                case StartToken t -> rangeStack.push(t);
-                case EndToken t -> {
-                    if (rangeStack.peek() instanceof StartToken startToken &&
-                            Objects.equals(t.type(), startToken.type())) {
-                        rangeStack.pop();
-                    }
-                }
-                case OpenToken t  -> {
-                    if (!neutralStack.isEmpty() &&
-                            Objects.equals(t.type(), neutralStack.peek().type())) {
-                        neutralStack.pop();
-                    } else {
-                        neutralStack.push(t);
-                    }
-                }
+        LexerSource source = sources.next();
+        scopes.clear(source.row());
+
+        for (;;) {
+
+            var maybeBlockOpen = scopes.current();
+            if (maybeBlockOpen.isPresent()) {
+                readUntilClose(maybeBlockOpen.get().type(), source);
+            } else {
+                readUntilOpen(source);
+            }
+
+            if (!source.hasNext()) {
+                if (!sources.hasNext()) break;
+                source = sources.next();
             }
         }
-        if (!rangeStack.isEmpty()) {
-            return Optional.of(rangeStack.peek().type());
+    }
+
+    /**
+     * Read the lexer source.
+     * @param source the lexer source
+     * @return the block span
+     */
+    public Optional<BlockSpan> read(LexerSource source) {
+
+        if (!source.hasNext()) {
+            return Optional.empty();
         }
-        if (!neutralStack.isEmpty()) {
-            return Optional.of(neutralStack.peek().type());
+
+        int index = source.index();
+        if (index == 0) {
+            scopes.clear(source.row());
+        }
+
+        var maybeBlockOpen = scopes.current();
+        if (maybeBlockOpen.isEmpty() && readOpen(source).isPresent()) {
+            maybeBlockOpen = scopes.current();
+        }
+
+        if (maybeBlockOpen.isPresent()) {
+            BlockToken token = maybeBlockOpen.get();
+            readUntilClose(token.type(), source);
+            return Optional.of(new BlockSpan(token, index, source.index() - index));
+        }
+
+        source.rollbackPeek();
+        return Optional.empty();
+    }
+
+
+    public record BlockSpan(BlockToken token, int index, int length) {
+        public BlockType type() { return token.type(); }
+        public <T> T with() {
+            if (token instanceof BlockToken.BlockTokenWith<?> a) {
+                @SuppressWarnings("unchecked")
+                T ret = (T) a.with();
+                return ret;
+            }
+            return null;
+        }
+    }
+
+    private void readUntilClose(BlockType type, LexerSource source) {
+        while (source.hasNext()) {
+            var peek = source.peek();
+            if (peek.ch() == type.close().charAt(0) && source.match(type.close())) {
+                source.next(type.close().length());
+                int col = source.index();
+                scopes.put(source.row(), col, BlockToken.close(type));
+                return;
+            }
+            source.commitPeek();
+        }
+    }
+
+    private void readUntilOpen(LexerSource source) {
+        while (source.hasNext()) {
+            readOpen(source);
+            source.commitPeek();
+        }
+    }
+
+    private Optional<BlockToken> readOpen(LexerSource source) {
+        var peek = source.peek();
+
+        Optional<BlockType> blockType = matches(peek.ch()).stream()
+            .filter(type -> source.match(type.open()))
+            .findFirst();
+
+        if (blockType.isPresent()) {
+            BlockType type = blockType.get();
+            int col = source.index();
+            source.next(type.open().length());
+            BlockToken token = (type instanceof BlockType.BlockTypeWith<?> t)
+                ? BlockToken.open(t, source.nextUntilWs().text())
+                : BlockToken.open(type);
+            scopes.put(source.row(), col, token);
+            return Optional.of(token);
         }
         return Optional.empty();
     }
 
-    record Anchor(int row, int col) implements Comparable<Anchor> {
-        @Override
-        public int compareTo(Anchor that) {
-            int c = Integer.compare(this.row, that.row);
-            return c == 0 ? Integer.compare(this.col, that.col) : c;
-        }
-    }
-
-    private sealed interface Token { BlockType type(); }
-    private record OpenToken(Neutral type) implements Token { }
-    private record StartToken(Range type) implements Token { }
-    private record EndToken(Range type) implements Token { }
-
-
-    public interface BlockType {
-        String open();
-        String close();
-        static Neutral neutral(String open) {
-            record NeutralRecord(String open) implements Neutral { }
-            return new NeutralRecord(open);
-        }
-        static NeutralAttributed neutral(String open, Syntax syntax) {
-            return new NeutralRecord(open, syntax);
-        }
-        static Range range(String open, String close) {
-            record RangeRecord(String open, String close) implements Range { }
-            return new RangeRecord(open, close);
-        }
-    }
-    public interface Neutral extends BlockType {
-        default String close() { return open(); }
-    }
-    public interface NeutralAttributed extends Neutral {
-        Object attribute();
-    }
-    public interface Range extends BlockType { }
-
-    private static class NeutralRecord implements NeutralAttributed {
-        private final String open;
-        private final Object attribute;
-        public NeutralRecord(String open, Syntax syntax) {
-            this(open, (Object) syntax);
-        }
-        private NeutralRecord(String open, Object attribute) {
-            this.open = open;
-            this.attribute = attribute;
-        }
-        @Override public String open() { return open; }
-        @Override public Object attribute() { return attribute; }
-        @Override public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            NeutralRecord that = (NeutralRecord) o;
-            return Objects.equals(open, that.open);
-        }
-        @Override public int hashCode() {
-            return Objects.hashCode(open);
-        }
+    private List<BlockType> matches(char ch) {
+        return types.stream().filter(type -> type.open().charAt(0) == ch).toList();
     }
 
 }

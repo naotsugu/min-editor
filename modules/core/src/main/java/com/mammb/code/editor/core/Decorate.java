@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.syntax2.LexerSource;
-import com.mammb.code.editor.core.syntax2.Syntax;
+import com.mammb.code.editor.core.syntax.LexerSource;
+import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Text;

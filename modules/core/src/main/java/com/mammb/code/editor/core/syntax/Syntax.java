@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,26 @@
  */
 package com.mammb.code.editor.core.syntax;
 
+import java.nio.file.Path;
 import java.util.List;
-import com.mammb.code.editor.core.text.Style.StyleSpan;
+import java.util.Optional;
+import com.mammb.code.editor.core.syntax.lang.CppSyntax;
+import com.mammb.code.editor.core.syntax.lang.GoSyntax;
+import com.mammb.code.editor.core.syntax.lang.HtmlSyntax;
+import com.mammb.code.editor.core.syntax.lang.IniSyntax;
+import com.mammb.code.editor.core.syntax.lang.JavaSyntax;
+import com.mammb.code.editor.core.syntax.lang.JsSyntax;
+import com.mammb.code.editor.core.syntax.lang.KotlinSyntax;
+import com.mammb.code.editor.core.syntax.lang.MarkdownSyntax;
+import com.mammb.code.editor.core.syntax.lang.PythonSyntax;
+import com.mammb.code.editor.core.syntax.lang.RustSyntax;
+import com.mammb.code.editor.core.syntax.lang.SqlSyntax;
+import com.mammb.code.editor.core.syntax.lang.TomlSyntax;
+import com.mammb.code.editor.core.syntax.lang.TsSyntax;
+import com.mammb.code.editor.core.syntax.lang.CsvSyntax;
+import com.mammb.code.editor.core.syntax.lang.TsvSyntax;
+import com.mammb.code.editor.core.syntax.lang.YamlSyntax;
+import com.mammb.code.editor.core.text.Style;
 
 /**
  * The syntax.
@@ -36,68 +54,84 @@ public interface Syntax {
      * @param text the row text
      * @return the list of StyleSpan
      */
-    List<StyleSpan> apply(int row, String text);
+    List<Style.StyleSpan> apply(int row, String text);
 
+    /**
+     * Get the {@link BlockScopes).
+     * @return the {@link BlockScopes)
+     */
+    default BlockScopes blockScopes() { return null; };
 
-    default boolean isBlockScoped() {
-        return true;
+    /**
+     * Gets whether the block scope has.
+     * @return {@code true}, if the block scope has
+     */
+    default boolean hasBlockScopes() {
+        var blockScopes = blockScopes();
+        return blockScopes != null && !blockScopes.isEmpty();
     }
 
+    /**
+     * Get the syntax for a given path.
+     * @param path the path
+     * @return the syntax
+     */
+    static Syntax of(Path path) {
+        return of(extension(path));
+    }
 
+    /**
+     * Get the syntax for a given name.
+     * @param name the name
+     * @return the syntax
+     */
     static Syntax of(String name) {
-        if (name == null) name = "";
+
+        if (name == null) {
+            name = "";
+        }
+
+        // the pass through syntax
+        record PassThrough(String name) implements Syntax {
+            @Override
+            public List<Style.StyleSpan> apply(int row, String text) {
+                return List.of();
+            }
+        }
+
         return switch (name.toLowerCase()) {
             case "java" -> new JavaSyntax();
             case "md" -> new MarkdownSyntax();
+            case "kotlin", "kt", "kts" -> new KotlinSyntax();
+            case "js", "json" -> new JsSyntax();
+            case "rs" -> new RustSyntax();
             case "sql" -> new SqlSyntax();
             case "py" -> new PythonSyntax();
-            case "js", "json" -> new JsSyntax();
-            case "kotlin", "kt", "kts" -> new KotlinSyntax();
+            case "cpp", "c" -> new CppSyntax();
+            case "go" -> new GoSyntax();
+            case "ts", "tsx" -> new TsSyntax();
+            case "html", "htm", "xhtml" -> new HtmlSyntax();
+            case "yaml", "yml" -> new YamlSyntax();
+            case "toml" -> new TomlSyntax();
+            case "ini" -> new IniSyntax();
+            case "csv" -> new CsvSyntax();
+            case "tsv" -> new TsvSyntax();
             default -> new PassThrough(name);
         };
     }
 
-    record PassThrough(String name) implements Syntax {
-        @Override public List<StyleSpan> apply(int row, String text) {
-            return List.of();
-        }
-        @Override public boolean isBlockScoped() { return false; }
-    }
-
     /**
-     * Determines if the character (Unicode code point) is permissible
-     * as the first character in an identifier.
-     * <p>
-     * Letter L :
-     *   lowercase Ll
-     *   modifier Lm,
-     *   titlecase Lt,
-     *   uppercase Lu,
-     *   other Lo.
-     * </p>
-     * @param cp the character (Unicode code point) to be tested
-     * @return {@code true}, if the character may start an identifier
+     * Get the extension string.
+     * @param path the path
+     * @return the extension string
      */
-    static boolean isXidStart(int cp) {
-        int type = Character.getType(cp);
-        return (type == Character.UPPERCASE_LETTER || type == Character.LOWERCASE_LETTER ||
-                type == Character.TITLECASE_LETTER || type == Character.MODIFIER_LETTER ||
-                type == Character.OTHER_LETTER || type == Character.LETTER_NUMBER);
-    }
-
-    /**
-     * Determines if the specified character may be part of a rust identifier
-     * as other than the first character.
-     * @param cp the character to be tested
-     * @return {@code true}, if the character may be part of a rust identifier
-     */
-    static boolean isXidContinue(int cp) {
-        int type = Character.getType(cp);
-        return (type == Character.UPPERCASE_LETTER || type == Character.LOWERCASE_LETTER ||
-                type == Character.TITLECASE_LETTER || type == Character.MODIFIER_LETTER ||
-                type == Character.OTHER_LETTER ||  type == Character.LETTER_NUMBER ||
-                type == Character.NON_SPACING_MARK ||  type == Character.COMBINING_SPACING_MARK ||
-                type == Character.DECIMAL_DIGIT_NUMBER || type == Character.CONNECTOR_PUNCTUATION);
+    private static String extension(Path path) {
+        return Optional.ofNullable(path)
+            .map(Path::getFileName)
+            .map(Path::toString)
+            .filter(f -> f.contains("."))
+            .map(f -> f.substring(f.lastIndexOf(".") + 1))
+            .orElse("");
     }
 
 }

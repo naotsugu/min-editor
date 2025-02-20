@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,13 +28,31 @@ public class Trie {
 
     /** The root node. */
     private final TrieNode root;
+    /** case-sensitive?. */
+    private final boolean caseSensitive;
 
-    public Trie() {
-        root = new TrieNode(null);
+    private Trie(boolean caseSensitive) {
+        this.root = new TrieNode(null);
+        this.caseSensitive = caseSensitive;
     }
 
+    /**
+     * Create a new {@link Trie}.
+     * @param wordSequence the word sequence
+     * @return a new {@link Trie}
+     */
     public static Trie of(String wordSequence) {
-        Trie trie = new Trie();
+        return of(wordSequence, true);
+    }
+
+    /**
+     * Create a new {@link Trie}.
+     * @param wordSequence the word sequence
+     * @param caseSensitive case-sensitive?
+     * @return a new {@link Trie}
+     */
+    public static Trie of(String wordSequence, boolean caseSensitive) {
+        Trie trie = new Trie(caseSensitive);
         Stream.of(wordSequence.split("[,\\s]")).forEach(trie::put);
         return trie;
     }
@@ -44,6 +62,7 @@ public class Trie {
      * @param word the word
      */
     public void put(String word) {
+        if (!caseSensitive) word = word.toLowerCase();
         TrieNode node = root;
         for (int i = 0; i < word.length();) {
             int cp = word.codePointAt(i);
@@ -58,6 +77,7 @@ public class Trie {
      * @param word the word
      */
     public void remove(String word) {
+        if (!caseSensitive) word = word.toLowerCase();
         TrieNode node = searchPrefix(word);
         if (node == null || !node.isEndOfWord()) {
             return;
@@ -72,7 +92,7 @@ public class Trie {
      * @return {@code true}, if the specified word matches
      */
     public boolean match(String word) {
-        TrieNode node = searchPrefix(word);
+        TrieNode node = searchPrefix(caseSensitive ? word : word.toLowerCase());
         return node != null && node.isEndOfWord();
     }
 
@@ -82,7 +102,7 @@ public class Trie {
      * @return {@code true}, if the specified word left-hand matches
      */
     public boolean startsWith(String prefix) {
-        return searchPrefix(prefix) != null;
+        return searchPrefix(caseSensitive ? prefix : prefix.toLowerCase()) != null;
     }
 
     /**
@@ -91,6 +111,7 @@ public class Trie {
      * @return the specified word
      */
     public List<String> suggestion(String word) {
+        if (!caseSensitive) word = word.toLowerCase();
         TrieNode node = root;
         for (int i = 0; i < word.length();) {
             int cp = word.codePointAt(i);
@@ -170,10 +191,10 @@ public class Trie {
                 return null;
             }
             return parent.children.entrySet().stream()
-                    .filter(e -> e.getValue() == this)
-                    .findFirst()
-                    .map(Map.Entry::getKey)
-                    .orElse(null);
+                .filter(e -> e.getValue() == this)
+                .findFirst()
+                .map(Map.Entry::getKey)
+                .orElse(null);
         }
 
         List<String> childKeys() {
