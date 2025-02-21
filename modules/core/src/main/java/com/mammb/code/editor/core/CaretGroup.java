@@ -83,6 +83,14 @@ public interface CaretGroup {
     void add(List<Point> points);
 
     /**
+     * Add the caret at the specified position.
+     * @param row the row
+     * @param col the col
+     * @return the caret
+     */
+    Caret add(int row, int col);
+
+    /**
      * Adds or removes a caret at the specified point.
      * @param point the specified point
      */
@@ -170,6 +178,13 @@ public interface CaretGroup {
         public void add(List<Point> points) {
             points.forEach(p -> carets.add(Caret.of(p.row(), p.col())));
             normalize();
+        }
+
+        @Override
+        public Caret add(int row, int col) {
+            var c = Caret.of(row, col);
+            carets.add(c);
+            return c;
         }
 
         @Override

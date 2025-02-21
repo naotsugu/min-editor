@@ -27,7 +27,7 @@ public sealed interface Action
     permits Backspace, CaretDown, CaretLeft, CaretRight, CaretUp, Copy, Cut, Delete, Empty,
     End, Escape, Home, Input, PageDown, PageUp, Paste, Redo, Replace, Save, SelectAll,
     Tab, Undo, WrapLine, ToggleLayout, Goto,
-    FindAll, FindNext, FindPrev,
+    FindNext, FindPrev, FindAll, Select,
     Repeat {
 
     /**
@@ -120,6 +120,9 @@ public sealed interface Action
     }
     static Action findAllRegex(String str) {
         return new FindAll(FindSpec.regexpOf(str), System.currentTimeMillis());
+    }
+    static Action selectAllRegex(String str) {
+        return new Select(FindSpec.regexpOf(str), System.currentTimeMillis());
     }
     static Action findNextRegex(String str) {
         return new FindNext(FindSpec.regexpOf(str), System.currentTimeMillis());

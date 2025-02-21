@@ -312,6 +312,7 @@ public class EditorPane extends StackPane {
             case FindNextRegex cmd  -> model.apply(Action.findNextRegex(cmd.str()));
             case FindPrevRegex cmd  -> model.apply(Action.findPrevRegex(cmd.str()));
             case FindAllRegex cmd   -> model.apply(Action.findAllRegex(cmd.str()));
+            case SelectAllRegex cmd -> model.apply(Action.selectAllRegex(cmd.str()));
             case GoTo cmd           -> model.apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd       -> model.apply(Action.wrapLine(cmd.width()));
             case ToggleLayout _     -> model.apply(Action.toggleLayout());

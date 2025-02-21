@@ -56,11 +56,13 @@ public interface ActionRecords {
 
     record Goto(Integer attr, long occurredAt) implements Action, WithAttr<Integer> { }
 
-    record FindAll(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }
-
     record FindNext(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }
 
     record FindPrev(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }
+
+    record FindAll(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }
+
+    record Select(FindSpec attr, long occurredAt) implements Action, WithAttr<FindSpec> { }
 
     record Copy(Clipboard attr, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }
 

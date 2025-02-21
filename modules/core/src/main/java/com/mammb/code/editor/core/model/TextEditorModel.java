@@ -639,19 +639,6 @@ public class TextEditorModel implements EditorModel {
         c.imeFlushAt(pos);
     }
 
-    private void findAll(FindSpec spec) {
-        if (!spec.isEmpty()) findSpec = spec;
-        Caret c = carets.getFirst();
-        Style style = new Style.BgColor(Theme.dark.cautionColor());
-        content.findAll(findSpec).forEach(p -> {
-            if (!c.isMarked()) {
-                c.markTo(p.row(), p.col(), p.row(), p.col() + p.len());
-                scrollToCaretY(screenLayout.screenLineHalfSize());
-            }
-            decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len()));
-        });
-    }
-
     private void findNext(FindSpec spec) {
         if (!spec.isEmpty()) findSpec = spec;
         Caret c = carets.unique();
@@ -668,6 +655,37 @@ public class TextEditorModel implements EditorModel {
         content.findPrev(point, findSpec).ifPresent(p ->
             c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
         scrollToCaretY(screenLayout.screenLineHalfSize());
+    }
+
+    private void findAll(FindSpec spec) {
+        if (!spec.isEmpty()) findSpec = spec;
+        Caret c = carets.getFirst();
+        Style style = new Style.BgColor(Theme.dark.cautionColor());
+        content.findAll(findSpec).forEach(p -> {
+            if (!c.isMarked()) {
+                c.markTo(p.row(), p.col(), p.row(), p.col() + p.len());
+                scrollToCaretY(screenLayout.screenLineHalfSize());
+            }
+            decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len()));
+        });
+    }
+
+    private void select(FindSpec spec) {
+        boolean find = false;
+        for (Point.PointLen pl : content.findAll(spec)) {
+            if (!find) {
+                var c = carets.unique();
+                c.markTo(pl.row(), pl.col(), pl.row(), pl.col() + pl.len());
+                find = true;
+            } else {
+                var c = carets.add(pl.row(), pl.col());
+                c.mark();
+                c.at(pl.row(), pl.col() + pl.len());
+            }
+        }
+        if (find) {
+            scrollToCaretY(screenLayout.screenLineHalfSize());
+        }
     }
 
     @Override
@@ -709,9 +727,10 @@ public class TextEditorModel implements EditorModel {
             case WrapLine a     -> wrap(a.attr());
             case ToggleLayout _ -> toggleLayout();
             case Goto a         -> moveTo(a.attr());
-            case FindAll a      -> findAll(a.attr());
             case FindNext a     -> findNext(a.attr());
             case FindPrev a     -> findPrev(a.attr());
+            case FindAll a      -> findAll(a.attr());
+            case Select a       -> select(a.attr());
             case Escape _       -> escape();
             case Repeat _       -> actionHistory.repetition().forEach(this::apply);
             case Replace a      -> replace(a.attr(), true);
