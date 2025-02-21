@@ -116,6 +116,7 @@ public interface Syntax {
             case "ini" -> new IniSyntax();
             case "csv" -> new CsvSyntax();
             case "tsv" -> new TsvSyntax();
+            case "txt" -> new PassThrough("text");
             default -> new PassThrough(name);
         };
     }
