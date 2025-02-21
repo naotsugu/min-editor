@@ -32,10 +32,9 @@ public class StackIndents {
      * @param cs the input char sequence
      * @param s the start character
      * @param e the end character
-     * @param lineSeparator the line separator
      * @return the indentted text
      */
-    public static CharSequence indentify(CharSequence cs, char s, char e, String lineSeparator) {
+    public static CharSequence indentify(CharSequence cs, char s, char e) {
 
         Deque<Character> stack = new ArrayDeque<>();
         final StringBuilder sb = new StringBuilder(cs.length());
@@ -51,13 +50,13 @@ public class StackIndents {
 
             if (ch == s) {
                 sb.append(ch);
-                sb.append(lineSeparator);
+                sb.append('\n');
                 stack.push(s);
                 i += skipWhitespace(cs, i);
             } else if (ch == e) {
                 if (stack.peek() == s) {
                     stack.pop();
-                    sb.append(lineSeparator);
+                    sb.append('\n');
                     sb.append(INDENT.repeat(stack.size()));
                     sb.append(ch);
                     i += skipWhitespace(cs, i);

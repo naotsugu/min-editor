@@ -146,9 +146,9 @@ public class EditorPane extends StackPane {
         hScroll.valueProperty().addListener(this::handleHorizontalScroll);
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethodTextChanged);
-        canvas.focusedProperty().addListener((_, _, n) -> {
+        canvas.focusedProperty().addListener((ob, _, n) -> {
             model.setCaretVisible(n);
-            draw();
+            draw(); // TODO only caret draw
         });
         if (path != null) filePathProperty.setValue(path);
     }

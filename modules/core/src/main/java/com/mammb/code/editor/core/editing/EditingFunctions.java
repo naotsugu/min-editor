@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.core.editing;
 
-import com.mammb.code.editor.core.Action;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -38,9 +37,9 @@ public interface EditingFunctions {
     Function<String, String> toUpper = String::toUpperCase;
 
     /** To indent paren. */
-    Function<String, String> toIndentParen = text -> StackIndents.indentify(text, '(', ')', "\n").toString();
+    Function<String, String> toIndentParen = text -> StackIndents.indentify(text, '(', ')').toString();
     /** To indent curly brace. */
-    Function<String, String> toIndentCurlyBrace = text -> StackIndents.indentify(text, '{', '}', "\n").toString();
+    Function<String, String> toIndentCurlyBrace = text -> StackIndents.indentify(text, '{', '}').toString();
 
     /** Indent function. */
     Function<String, String> indent = text -> Arrays.stream(text.split("(?<=\\n)"))
