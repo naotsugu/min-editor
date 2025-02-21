@@ -344,6 +344,7 @@ public interface Caret extends Comparable<Caret> {
 
         @Override
         public void at(int row, int col) {
+            if (row < 0 || col < 0) throw new IllegalArgumentException("row: " + row + " col:" + col);
             point.at(row, col);
             vPos = -1;
             flush = null;
@@ -363,6 +364,7 @@ public interface Caret extends Comparable<Caret> {
 
         @Override
         public void imeFlushAt(int row, int col) {
+            if (row < 0 || col < 0) throw new IllegalArgumentException("row: " + row + " col:" + col);
             flush = Point.of(row, col);
         }
 
@@ -401,11 +403,13 @@ public interface Caret extends Comparable<Caret> {
         private int row, col;
 
         PointMut(int row, int col) {
+            if (row < 0 || col < 0) throw new IllegalArgumentException("row: " + row + " col:" + col);
             this.row = row;
             this.col = col;
         }
 
         void at(int row, int col) {
+            if (row < 0 || col < 0) throw new IllegalArgumentException("row: " + row + " col:" + col);
             this.row = row;
             this.col = col;
         }
