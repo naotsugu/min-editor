@@ -121,7 +121,10 @@ public sealed interface Action
     static Action findAllRegex(String str) {
         return new FindAll(FindSpec.regexpOf(str), System.currentTimeMillis());
     }
-    static Action selectAllRegex(String str) {
+    static Action select(String str, boolean caseSensitive) {
+        return new Select(FindSpec.of(str, caseSensitive), System.currentTimeMillis());
+    }
+    static Action selectRegex(String str) {
         return new Select(FindSpec.regexpOf(str), System.currentTimeMillis());
     }
     static Action findNextRegex(String str) {

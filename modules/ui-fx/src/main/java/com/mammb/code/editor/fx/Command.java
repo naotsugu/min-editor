@@ -113,7 +113,9 @@ public sealed interface Command {
 
     record FindAllRegex(String str) implements Command, RequireArgs1<String> { }
 
-    record SelectAllRegex(String str) implements Command, RequireArgs1<String> { }
+    record Select(String str, Boolean caseSensitive) implements Command, RequireArgs2<String, Boolean> { }
+
+    record SelectRegex(String str) implements Command, RequireArgs1<String> { }
 
     record GoTo(Integer rowNumber) implements Command, RequireArgs1<Integer> { }
 
@@ -137,7 +139,8 @@ public sealed interface Command {
             case Class<?> c when c == FindPrevRegex.class -> "[regex to search]";
             case Class<?> c when c == FindAll.class -> "[string to search] [`true` if case insensitive]";
             case Class<?> c when c == FindAllRegex.class -> "[regex to search]";
-            case Class<?> c when c == SelectAllRegex.class -> "[regex to select]";
+            case Class<?> c when c == Select.class -> "[string to search] [`true` if case insensitive]";
+            case Class<?> c when c == SelectRegex.class -> "[regex to select]";
             case Class<?> c when c == GoTo.class -> "[line number]";
             case Class<?> c when c == Filter.class -> "[regexp string to filter]";
             case Class<?> c when c == WrapLine.class -> "[wrap width(number of characters)]";
@@ -180,7 +183,8 @@ public sealed interface Command {
             case Class<?> c when c == FindNextRegex.class -> "searches for the next occurrence";
             case Class<?> c when c == FindPrevRegex.class -> "searches for the previous occurrence";
             case Class<?> c when c == FindAllRegex.class -> "searches for the specified regex";
-            case Class<?> c when c == SelectAllRegex.class -> "selects for the specified regex";
+            case Class<?> c when c == Select.class -> "selects for the specified text";
+            case Class<?> c when c == SelectRegex.class -> "selects for the specified regex";
             case Class<?> c when c == GoTo.class -> "go to the specified number of row";
             case Class<?> c when c == Filter.class -> "not implemented yet";
             case Class<?> c when c == WrapLine.class -> "wraps a line with a specified number of characters";
