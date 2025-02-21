@@ -78,13 +78,13 @@ class MarkdownTablesTest {
             Table 1
             Front-end web developer course 2021
 
-            |Person|Most interest in|Age|
-            |++++++|++++++++++++++++|+++|
-            |Chris|HTML tables|22|
-            |Dennis|Web accessibility|45|
-            |Sarah|JavaScript frameworks|29|
-            |Karen|Web performance|36|
-            |Average age|33|
+            | Person | Most interest in | Age |
+            | +++ | +++ | +++ |
+            | Chris | HTML tables | 22 |
+            | Dennis | Web accessibility | 45 |
+            | Sarah | JavaScript frameworks | 29 |
+            | Karen | Web performance | 36 |
+            | Average age | 33 |
             """, md);
     }
 }

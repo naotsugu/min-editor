@@ -534,12 +534,19 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void pasteFromClipboard(Clipboard clipboard) {
+        if (Objects.equals(decorate.syntaxName(), "md")) {
+            var html = clipboard.getHtml();
+            if (html.contains("<table") && html.contains("</table>")) {
+                var mdTable = EditingFunctions.markdownTable.apply(html);
+                if (!mdTable.isEmpty()) {
+                    input(mdTable);
+                    return;
+                }
+            }
+        }
         var text = clipboard.getString();
         if (text.isEmpty()) return;
-        // allow HT, LF, CR, SP
-        // U+2028: LINE_SEPARATOR(Zl category)
-        // U+2029: PARAGRAPH_SEPARATOR(Zp category)
-        input(text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f\\u2028\\u2029]", ""));
+        input(EditingFunctions.sanitize.apply(text));
     }
 
     private void copyToClipboard(Clipboard clipboard) {

@@ -31,6 +31,14 @@ public interface EditingFunctions {
     /** Pass through function. */
     Function<String, String> passThrough = text -> text;
 
+    /**
+     * Sanitize function.
+     * allow HT, LF, CR, SP
+     * U+2028: LINE_SEPARATOR(Zl category)
+     * U+2029: PARAGRAPH_SEPARATOR(Zp category)
+     */
+    Function<String, String> sanitize = text -> text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f\\u2028\\u2029]", "");
+
     /** To lower case function. */
     Function<String, String> toLower = String::toLowerCase;
     /** To upper case function. */
@@ -85,6 +93,9 @@ public interface EditingFunctions {
     Function<String, String> binToHex = text -> hex(text.replaceAll(" ", ""), 2);
     /** binToDec function. */
     Function<String, String> binToDec = text -> dec(text.replaceAll(" ", ""), 2);
+
+    /** markdown table. */
+    Function<String, String> markdownTable = MarkdownTables::fromHtml;
 
     private static String bin(String text, int radix) {
         try {

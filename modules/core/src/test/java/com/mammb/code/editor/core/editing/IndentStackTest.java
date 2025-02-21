@@ -28,7 +28,7 @@ class IndentStackTest {
     @Test
     void indentify() {
         var text = "SELECT column1, column2 FROM table WHERE ((column1 = 'value') AND (column2 = 'value')) GROUP BY column1;";
-        var formatted = StackIndents.indentify(text, '(', ')', "\n");
+        var formatted = StackIndents.indentify(text, '(', ')');
         assertEquals("""
             SELECT column1, column2 FROM table WHERE (
                 (

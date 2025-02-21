@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
  */
 public class MarkdownTables {
 
+    // TODO case insensitive
     private static final Pattern tablePattern   = Pattern.compile("<table.*?>(.*?)</table>");
     private static final Pattern captionPattern = Pattern.compile("<caption.*?>(.*?)</caption>");
     private static final Pattern recordPattern  = Pattern.compile("<tr.*?>(.*?)</tr>");
@@ -81,7 +82,7 @@ public class MarkdownTables {
             sb.append(row);
             sb.append('\n');
             if (header) {
-                sb.append(row.toString().replaceAll("[^\\|]", "+"));
+                sb.append(row.toString().replaceAll("[^\\|]+", " +++ "));
                 sb.append('\n');
             }
         }
@@ -92,8 +93,9 @@ public class MarkdownTables {
         var sb = new StringBuilder();
         Matcher m = colPattern.matcher(row);
         while (m.find()) {
-            sb.append("|");
+            sb.append("| ");
             sb.append(m.group(1).trim());
+            sb.append(" ");
         }
         if (!sb.isEmpty()) {
             sb.append("|");
