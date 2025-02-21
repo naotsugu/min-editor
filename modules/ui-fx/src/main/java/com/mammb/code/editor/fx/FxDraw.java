@@ -117,6 +117,7 @@ public class FxDraw implements Draw {
         if (y1 == y2) {
             gc.fillRect(Math.min(x1, x2), y1, Math.abs(x2 - x1), lineHeight);
             gc.setLineWidth(0.5);
+            gc.setStroke(color(Theme.dark.faintColor()));
             gc.strokeRect(Math.min(x1, x2) - 0.25, y1 - 0.25, Math.abs(x2 - x1) + 0.5, lineHeight + 0.5);
             return;
         }
@@ -140,6 +141,7 @@ public class FxDraw implements Draw {
         x[7] = x1; y[7]= y1 + lineHeight;
         gc.fillPolygon(x, y, 8);
         gc.setLineWidth(0.5);
+        gc.setStroke(color(Theme.dark.faintColor()));
         gc.strokePolygon(x, y, 8);
     }
 

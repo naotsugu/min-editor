@@ -102,13 +102,13 @@ public class Paints {
                                 px + st.width() + screenLayout.standardCharWidth() * 0.2,
                                 py,
                                 screenLayout.standardCharWidth() * 0.8,
-                                screenLayout.lineHeight() * 0.8, "#80808088"));
+                                screenLayout.lineHeight() * 0.8, Theme.dark.faintColor()));
                         } else if (st.isEndWithLf()) {
                             draw.line(Symbols.lineFeed(
                                 px + st.width() + screenLayout.standardCharWidth() * 0.2,
                                 py,
                                 screenLayout.standardCharWidth() * 0.8,
-                                screenLayout.lineHeight() * 0.8, "#80808088"));
+                                screenLayout.lineHeight() * 0.8, Theme.dark.faintColor()));
                         }
                         for (int i = 0; i < st.value().length(); i++) {
                             i = st.value().indexOf('　', i);
@@ -117,7 +117,7 @@ public class Paints {
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - screenLayout.lineHeight() * 0.1,
                                 st.advances()[i],
-                                screenLayout.lineHeight(), "#80808088"));
+                                screenLayout.lineHeight(), Theme.dark.faintColor()));
                         }
                         for (int i = 0; i < st.value().length(); i++) {
                             i = st.value().indexOf('\t', i);
@@ -126,7 +126,7 @@ public class Paints {
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - screenLayout.lineHeight() * 0.1,
                                 screenLayout.standardCharWidth(),
-                                screenLayout.lineHeight(), "#80808088"));
+                                screenLayout.lineHeight(), Theme.dark.faintColor()));
                         }
                     }
                 }
