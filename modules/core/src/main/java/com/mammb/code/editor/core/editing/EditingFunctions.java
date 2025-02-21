@@ -67,19 +67,7 @@ public interface EditingFunctions {
         .distinct().collect(Collectors.joining());
 
     /** Calc function. */
-    Function<String, String> toCalc = text -> {
-        // if it contains an equal sign, delete the rest
-        int eq = text.indexOf('=');
-        String formula = (eq > 1) ? text.substring(eq) : text;
-
-        try {
-            String s = formula.contains(" ") ? " " : "";
-            return "%s%s=%s%s".formatted(formula, s, s, Calculator.calc(formula));
-        } catch (Exception ignore) {
-            log.log(System.Logger.Level.WARNING, ignore);
-        }
-        return text;
-    };
+    Function<String, String> toCalc = text -> calc(text);
 
     /** decToHex function. */
     Function<String, String> decToHex = text -> hex(text, 10);
@@ -96,6 +84,22 @@ public interface EditingFunctions {
 
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
+
+    // -- helper --------------------------------------------------------------
+
+    private static String calc(String text) {
+        // if it contains an equal sign, delete the rest
+        int eq = text.indexOf('=');
+        String formula = (eq > 1) ? text.substring(eq) : text;
+
+        try {
+            String s = formula.contains(" ") ? " " : "";
+            return "%s%s=%s%s".formatted(formula, s, s, Calculator.calc(formula));
+        } catch (Exception ignore) {
+            log.log(System.Logger.Level.WARNING, ignore);
+        }
+        return text;
+    }
 
     private static String bin(String text, int radix) {
         try {

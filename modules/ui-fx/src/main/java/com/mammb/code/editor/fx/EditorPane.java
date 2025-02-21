@@ -148,7 +148,7 @@ public class EditorPane extends StackPane {
         canvas.setOnInputMethodTextChanged(this::handleInputMethodTextChanged);
         canvas.focusedProperty().addListener((ob, _, n) -> {
             model.setCaretVisible(n);
-            draw(); // TODO only caret draw
+            paint(); // TODO only caret draw
         });
         if (path != null) filePathProperty.setValue(path);
     }
@@ -166,7 +166,7 @@ public class EditorPane extends StackPane {
         canvas.setWidth(n.getWidth());
         canvas.setHeight(n.getHeight());
         model.setSize(n.getWidth(), n.getHeight());
-        draw();
+        paint();
     }
 
     private void handleScroll(ScrollEvent e) {
@@ -180,7 +180,7 @@ public class EditorPane extends StackPane {
                     model.scrollPrev((int) Math.min(5, e.getDeltaY()));
                 }
             }
-            draw();
+            paint();
         }
     }
 
@@ -214,7 +214,7 @@ public class EditorPane extends StackPane {
                 case 2 -> model.clickDouble(e.getX(), e.getY());
                 case 3 -> model.clickTriple(e.getX(), e.getY());
             }
-            draw();
+            paint();
         }
     }
 
@@ -248,7 +248,7 @@ public class EditorPane extends StackPane {
                 e.setDropCompleted(true);
                 e.consume();
                 open(Session.of(path.get()));
-                draw();
+                paint();
                 return;
             }
             var dir = board.getFiles().stream().map(File::toPath)
@@ -270,12 +270,12 @@ public class EditorPane extends StackPane {
 
     private void handleVerticalScroll(ObservableValue<? extends Number> ob, Number o, Number n) {
         model.scrollAt(n.intValue());
-        draw();
+        paint();
     }
 
     private void handleHorizontalScroll(ObservableValue<? extends Number> ob, Number o, Number n) {
         model.scrollX(n.doubleValue());
-        draw();
+        paint();
     }
 
     private void handleInputMethodTextChanged(InputMethodEvent e) {
@@ -292,7 +292,7 @@ public class EditorPane extends StackPane {
             model.imeComposed("");
             model.imeOff();
         }
-        draw();
+        paint();
     }
 
     private void execute(Command command) {
@@ -342,7 +342,7 @@ public class EditorPane extends StackPane {
             case Filter cmd         -> { } // TODO impl
             case Empty _            -> { }
         }
-        draw();
+        paint();
     }
 
     private void inputText(Supplier<Object> supplier) {
@@ -375,7 +375,7 @@ public class EditorPane extends StackPane {
         };
     }
 
-    private void draw() {
+    private void paint() {
         model.paint(draw);
         Point p = model.query(Query.caretPoint);
         floatBar.setText(

@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * Calculator.
  * @author Naotsugu Kobayashi
  */
-public class Calculator {
+class Calculator {
 
     /**
      * Calculate the given formula.

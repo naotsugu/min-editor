@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
  * The MarkdownTables.
  * @author Naotsugu Kobayashi
  */
-public class MarkdownTables {
+class MarkdownTables {
 
     // TODO case insensitive
     private static final Pattern tablePattern   = Pattern.compile("<table.*?>(.*?)</table>");
@@ -35,7 +35,7 @@ public class MarkdownTables {
      * @param html source html text
      * @return markdown text
      */
-    public static String fromHtml(String html) {
+    static String fromHtml(String html) {
 
         html = html.replaceAll("\\R", "");
 

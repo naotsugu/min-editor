@@ -22,7 +22,7 @@ import java.util.Deque;
  * The stack indents.
  * @author Naotsugu Kobayashi
  */
-public class StackIndents {
+class StackIndents {
 
     /** The indent unit. */
     private static final String INDENT = "    ";
@@ -34,7 +34,7 @@ public class StackIndents {
      * @param e the end character
      * @return the indentted text
      */
-    public static CharSequence indentify(CharSequence cs, char s, char e) {
+    static CharSequence indentify(CharSequence cs, char s, char e) {
 
         Deque<Character> stack = new ArrayDeque<>();
         final StringBuilder sb = new StringBuilder(cs.length());
