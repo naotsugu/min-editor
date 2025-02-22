@@ -143,7 +143,7 @@ public interface Text {
         for (int i = index; i < value().length(); ) {
             int charType = Character.getType(Character.toLowerCase(value().charAt(i)));
             int nextIndex = indexRight(i);
-            if (nextIndex <= i) {
+            if (nextIndex <= i || nextIndex >= value().length()) {
                 return nextIndex;
             }
             i = nextIndex;

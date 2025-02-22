@@ -141,6 +141,7 @@ class BasicScreenLayout implements ScreenLayout {
                 break;
             }
             if (text.row() == prev) {
+                // if the row was wrapped
                 ret.add(Text.of(text.row(), "", new double[0], text.height()));
             } else {
                 String num = String.valueOf(text.row() + 1);

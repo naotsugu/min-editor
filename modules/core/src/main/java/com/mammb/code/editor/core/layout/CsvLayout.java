@@ -68,7 +68,7 @@ public class CsvLayout extends RowLayout {
     @Override
     public ColsText rowTextAt(int row) {
 
-        var text = new ColsText(row, content().getText(row), fontMetrics(), ",");
+        var text = new ColsText(row, content().getText(row), fontMetrics(), separator);
 
         double[] rawWidths = text.rawWidths();
         for (int c = 0; c < rawWidths.length; c++) {
@@ -99,6 +99,10 @@ public class CsvLayout extends RowLayout {
         return rowTextAt(line);
     }
 
+    /**
+     * Get whether dirty.
+     * @return dirty?
+     */
     public boolean isDirty() {
         return dirty;
     }
@@ -110,7 +114,7 @@ public class CsvLayout extends RowLayout {
         dirty = false;
     }
 
-    public List<? extends ColsText> textsInternal(int startRow, int endRow) {
+    private List<? extends ColsText> textsInternal(int startRow, int endRow) {
         return IntStream.range(
             Math.clamp(startRow, 0, rowSize()),
             Math.clamp(endRow,   0, rowSize() + 1)

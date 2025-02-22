@@ -17,6 +17,8 @@ package com.mammb.code.editor.core.text;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -94,7 +96,13 @@ class TextTest {
 
     @Test
     void indexRightBound() {
-        // TODO
+        var text = Text.of(0, "aa.bb", new double[] { 0 }, 1);
+        assertEquals( 2, text.indexRightBound(0));
+        assertEquals( 2, text.indexRightBound(1));
+        assertEquals( 3, text.indexRightBound(2));
+        assertEquals( 5, text.indexRightBound(3));
+        assertEquals( 5, text.indexRightBound(4));
+        assertEquals(-1, text.indexRightBound(5));
     }
 
     @Test
@@ -108,7 +116,13 @@ class TextTest {
 
     @Test
     void indexLeftBound() {
-        // TODO
+        var text = Text.of(0, "aa.bb", new double[] { 0 }, 1);
+        assertEquals(3, text.indexLeftBound(5));
+        assertEquals(3, text.indexLeftBound(4));
+        assertEquals(2, text.indexLeftBound(3));
+        assertEquals(0, text.indexLeftBound(2));
+        assertEquals(0, text.indexLeftBound(1));
+        assertEquals(0, text.indexLeftBound(0));
     }
 
     @Test
@@ -124,7 +138,6 @@ class TextTest {
     @Test
     void indexTo() {
         var text = Text.of(0, "abc", new double[] { 1, 2, 3 }, 1);
-        // | |  |   |
         assertEquals(0, text.indexTo(0));
         assertEquals(1, text.indexTo(1));
         assertEquals(1, text.indexTo(2));
@@ -144,7 +157,14 @@ class TextTest {
 
     @Test
     void words() {
-        // TODO
+        var text = Text.of(0, "ab c.d", new double[] { 1, 1, 1, 1, 1, 1 }, 1);
+        var texts = text.words();
+        assertEquals(5, texts.size());
+        assertEquals("ab", texts.get(0).value());
+        assertEquals(" ", texts.get(1).value());
+        assertEquals("c", texts.get(2).value());
+        assertEquals(".", texts.get(3).value());
+        assertEquals("d", texts.get(4).value());
     }
 
 }
