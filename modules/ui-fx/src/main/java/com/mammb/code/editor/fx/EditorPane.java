@@ -241,8 +241,9 @@ public class EditorPane extends StackPane {
     private void handleDragDropped(DragEvent e) {
         Dragboard board = e.getDragboard();
         if (board.hasFiles()) {
-            var path = board.getFiles().stream().map(File::toPath)
-                    .filter(Files::isReadable).filter(Files::isRegularFile).findFirst();
+            var paths = board.getFiles().stream().map(File::toPath).toList();
+            var path = paths.stream().filter(Files::isReadable)
+                .filter(Files::isRegularFile).findFirst();
             if (path.isPresent()) {
                 if (!canDiscard()) return;
                 e.setDropCompleted(true);
@@ -251,17 +252,12 @@ public class EditorPane extends StackPane {
                 paint();
                 return;
             }
-            var dir = board.getFiles().stream().map(File::toPath)
-                .filter(Files::isReadable).filter(Files::isDirectory).findFirst();
-            if (dir.isPresent()) {
+            var list = EditingFunctions.list.apply(paths);
+            if (!list.isEmpty()) {
                 e.setDropCompleted(true);
                 e.consume();
-                try (var stream = Files.list(dir.get())) {
-                    // TODO replace as EditingFunctions
-                    String list = stream.map(Path::toAbsolutePath)
-                        .map(Path::toString).collect(Collectors.joining("\n"));
-                    inputText(() -> list.isEmpty() ? dir.get().toAbsolutePath().toString() : list);
-                } catch (IOException ignore) {  }
+                inputText(() -> list);
+                paint();
                 return;
             }
         }

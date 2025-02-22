@@ -15,7 +15,11 @@
  */
 package com.mammb.code.editor.core.editing;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -67,7 +71,7 @@ public interface EditingFunctions {
         .distinct().collect(Collectors.joining());
 
     /** Calc function. */
-    Function<String, String> toCalc = text -> calc(text);
+    Function<String, String> toCalc = EditingFunctions::calc;
 
     /** decToHex function. */
     Function<String, String> decToHex = text -> hex(text, 10);
@@ -85,7 +89,27 @@ public interface EditingFunctions {
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
 
+    Function<List<Path>, String> list = EditingFunctions::list;
+
     // -- helper --------------------------------------------------------------
+
+    private static String list(List<Path> paths) {
+        var sb = new StringBuilder();
+        for (Path path : paths) {
+            if (!Files.exists(path)) continue;
+            if (Files.isDirectory(path) && Files.isReadable(path)) {
+                try (var stream = Files.list(path)) {
+                    String list = stream.map(Path::toAbsolutePath)
+                        .map(Path::toString).collect(Collectors.joining("\n"));
+                    sb.append(list);
+                } catch (IOException ignore) {  }
+            } else {
+                sb.append(path.toAbsolutePath());
+                sb.append('\n');
+            }
+        }
+        return sb.toString();
+    }
 
     private static String calc(String text) {
         // if it contains an equal sign, delete the rest
