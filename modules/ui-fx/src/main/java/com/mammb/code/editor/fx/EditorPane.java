@@ -374,7 +374,9 @@ public class EditorPane extends StackPane {
     private void paint() {
         model.paint(draw);
         Point p = model.query(Query.caretPoint);
+        int foundCounts = model.query(Query.foundCounts);
         floatBar.setText(
+            foundCounts > 0 ? Integer.toString(foundCounts) + " found" : "",
             p.row() + 1 + ":" + p.col(),
             model.query(Query.rowEndingSymbol),
             model.query(Query.charsetSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));

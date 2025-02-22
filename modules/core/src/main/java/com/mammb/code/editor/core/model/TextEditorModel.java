@@ -751,6 +751,7 @@ public class TextEditorModel implements EditorModel {
         return switch (query) {
             case QueryRecords.CaretPoint _ -> (R) carets.getFirst().point();
             case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
+            case QueryRecords.FoundCounts _ -> (R) Integer.valueOf(decorate.highlightCounts());
             case null -> null;
             default -> content.query(query);
         };

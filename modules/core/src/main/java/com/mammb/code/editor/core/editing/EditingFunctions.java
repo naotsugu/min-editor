@@ -89,27 +89,10 @@ public interface EditingFunctions {
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
 
+    /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
 
     // -- helper --------------------------------------------------------------
-
-    private static String list(List<Path> paths) {
-        var sb = new StringBuilder();
-        for (Path path : paths) {
-            if (!Files.exists(path)) continue;
-            if (Files.isDirectory(path) && Files.isReadable(path)) {
-                try (var stream = Files.list(path)) {
-                    String list = stream.map(Path::toAbsolutePath)
-                        .map(Path::toString).collect(Collectors.joining("\n"));
-                    sb.append(list);
-                } catch (IOException ignore) {  }
-            } else {
-                sb.append(path.toAbsolutePath());
-                sb.append('\n');
-            }
-        }
-        return sb.toString();
-    }
 
     private static String calc(String text) {
         // if it contains an equal sign, delete the rest
@@ -154,6 +137,24 @@ public interface EditingFunctions {
         } catch (Exception ignore) {
             return text;
         }
+    }
+
+    private static String list(List<Path> paths) {
+        var sb = new StringBuilder();
+        for (Path path : paths) {
+            if (!Files.exists(path)) continue;
+            if (Files.isDirectory(path) && Files.isReadable(path)) {
+                try (var stream = Files.list(path)) {
+                    String list = stream.map(Path::toAbsolutePath)
+                        .map(Path::toString).collect(Collectors.joining("\n"));
+                    sb.append(list);
+                } catch (IOException ignore) {  }
+            } else {
+                sb.append(path.toAbsolutePath());
+                sb.append('\n');
+            }
+        }
+        return sb.toString();
     }
 
 }

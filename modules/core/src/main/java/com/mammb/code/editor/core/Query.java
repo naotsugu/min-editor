@@ -33,5 +33,6 @@ public interface Query<R> {
     Query<Path> contentPath = new ContentPath();
 
     Query<Integer> widthAsCharacters = new WidthAsCharacters();
+    Query<Integer> foundCounts = new FoundCounts();
 
 }

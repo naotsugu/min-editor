@@ -155,15 +155,14 @@ public class FxDraw implements Draw {
 
     @Override
     public void hLine(double x, double y, double w) {
-        gc.setStroke(Color.ORANGE);
+        gc.setStroke(color(Theme.dark.cautionColor()));
         gc.setLineWidth(2);
         gc.strokeLine(x, y, x + w, y);
     }
 
     @Override
     public void rect(double x, double y, double w, double h) {
-        Color color = color(Theme.dark.uiBaseColor());
-        gc.setFill(color);
+        gc.setFill(color(Theme.dark.uiBaseColor()));
         gc.fillRect(x, y, w, h);
     }
 

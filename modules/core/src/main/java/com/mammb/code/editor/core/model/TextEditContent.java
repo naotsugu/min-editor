@@ -248,7 +248,7 @@ public class TextEditContent implements Content {
     public <R> R query(Query<R> query) {
         return switch (query) {
             case RowEndingSymbol _ -> (R) edit.rowEnding().toString();
-            case CharsetSymbol _   -> (R) edit.charset().displayName();
+            case CharsetSymbol _   -> (R) charsetName();
             case Modified _        -> (R) (Boolean) isModified();
             case Bom _             -> (R) edit.bom();
             case ContentPath _     -> (R) edit.path();
@@ -265,6 +265,14 @@ public class TextEditContent implements Content {
             return false;
         }
         return modified;
+    }
+
+    private String charsetName() {
+        var name = edit.charset().displayName();
+        return switch (name) {
+            case "Windows-31J" -> "SJIS";
+            default -> name;
+        };
     }
 
 }

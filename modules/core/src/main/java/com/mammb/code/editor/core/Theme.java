@@ -22,17 +22,23 @@ package com.mammb.code.editor.core;
 public interface Theme {
 
     Theme dark = new ThemeRecord(
-            "#292929",
-            "#C8D7E6",
-            "#214283",
-            "#FDD835",
-            "#80808088",
-            "#303030"
+            "#292929",   // baseColor
+            "#C8D7E6",   // fgColor
+            "#214283",   // paleHighlightColor
+            "#FDE047",   // cautionColor
+            "#80808088", // faintColor
+            "#303030"    // uiBaseColor
     );
 
     String baseColor();
     String fgColor();
     String paleHighlightColor();
+
+    /**
+     * Get the caution color string.
+     * Typically, highlighting the searched string color.
+     * @return the caution color string
+     */
     String cautionColor();
     String faintColor();
     String uiBaseColor();

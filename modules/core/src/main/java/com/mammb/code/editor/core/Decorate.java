@@ -58,6 +58,12 @@ public interface Decorate {
      */
     Set<Integer> highlightsRows();
 
+    /**
+     * Get the highlight counts.
+     * @return the highlight counts
+     */
+    int highlightCounts();
+
     boolean isBlockScoped();
 
     void warmApply(int row, int len, Content content);
@@ -141,6 +147,11 @@ public interface Decorate {
         @Override
         public Set<Integer> highlightsRows() {
             return highlights.keySet();
+        }
+
+        @Override
+        public int highlightCounts() {
+            return highlights.size();
         }
 
         @Override
