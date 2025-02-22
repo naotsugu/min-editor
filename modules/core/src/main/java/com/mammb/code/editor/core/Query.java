@@ -34,5 +34,6 @@ public interface Query<R> {
 
     Query<Integer> widthAsCharacters = new WidthAsCharacters();
     Query<Integer> foundCounts = new FoundCounts();
+    Query<Integer> selectedCounts = new SelectedCounts();
 
 }

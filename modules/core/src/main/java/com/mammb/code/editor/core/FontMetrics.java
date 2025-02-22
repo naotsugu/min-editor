@@ -99,7 +99,9 @@ public interface FontMetrics {
      * @param str the string
      * @return advance of string
      */
-    float getAdvance(String str);
+    default float getAdvance(String str) {
+        return (float) str.codePoints().mapToDouble(this::getAdvance).sum();
+    }
 
     /**
      * Get the total advance.
@@ -107,11 +109,15 @@ public interface FontMetrics {
      * @param low the low surrogate char
      * @return advance of char
      */
-    float getAdvance(char high, char low);
+    default float getAdvance(char high, char low) {
+        return getAdvance(Character.toCodePoint(high, low));
+    }
 
     /**
      * Get the tab size.
      * @return the tab size
      */
-    int getTabSize();
+    default int getTabSize() {
+        return 4;
+    }
 }

@@ -40,6 +40,7 @@ public class AppPane extends BorderPane {
         setCenter(container);
         stage.setOnCloseRequest(e -> {
             e.consume();
+            // TODO stash
             var notExistsUnsaved = container.close();
             if (notExistsUnsaved) {
                 stage.close();

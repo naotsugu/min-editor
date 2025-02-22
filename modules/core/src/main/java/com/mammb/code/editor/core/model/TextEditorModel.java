@@ -752,6 +752,7 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.CaretPoint _ -> (R) carets.getFirst().point();
             case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
             case QueryRecords.FoundCounts _ -> (R) Integer.valueOf(decorate.highlightCounts());
+            case QueryRecords.SelectedCounts _ -> (R) selectedCounts();
             case null -> null;
             default -> content.query(query);
         };
@@ -797,6 +798,22 @@ public class TextEditorModel implements EditorModel {
             Collections.min(points).row(),
             Collections.max(points).row());
         carets.at(points);
+    }
+
+    private Integer selectedCounts() {
+        if (carets.size() > 1) {
+            return carets.size();
+        } else {
+            var c = carets.getFirst();
+            if (c.isMarked()) {
+                var p = c.point();
+                var m = c.markedPoint();
+                if (p.row() == m.row()) {
+                    return Math.abs(p.col() - m.col());
+                }
+            }
+        }
+        return 0;
     }
 
     private static FileTime lastModifiedTime(Path path) {

@@ -122,19 +122,4 @@ public class FxFontMetrics implements FontMetrics {
                 cp -> resource.getAdvance(mapper.charToGlyph(cp), strike.getSize()));
     }
 
-    @Override
-    public float getAdvance(String str) {
-        return (float) str.codePoints().mapToDouble(this::getAdvance).sum();
-    }
-
-    @Override
-    public float getAdvance(char high, char low) {
-        return getAdvance(Character.toCodePoint(high, low));
-    }
-
-    @Override
-    public int getTabSize() {
-        return 4;
-    }
-
 }
