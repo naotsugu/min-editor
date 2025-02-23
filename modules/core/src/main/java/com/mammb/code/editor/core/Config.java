@@ -16,37 +16,28 @@
 package com.mammb.code.editor.core;
 
 /**
- * The Context.
+ * The configuration.
  * @author Naotsugu Kobayashi
  */
-public interface Context {
+public interface Config {
 
-    /**
-     * Get the config.
-     * @return the config
-     */
-    Config config();
+    String fontName();
 
-    /**
-     * Get the os name.
-     * @return the os name
-     */
-    String osName();
+    double fontSize();
 
-    // TODO recent file with session
+    void fontSize(double fontSize);
 
+    String fontNameWin();
 
+    double fontSizeWin();
 
-    default boolean isWindows() {
-        return osName().toLowerCase().contains("windows");
-    }
+    String fontNameMac();
 
-    default boolean isMacOs() {
-        return osName().toLowerCase().contains("mac");
-    }
+    double fontSizeMac();
 
-    default boolean isLinux() {
-        return osName().toLowerCase().contains("mac");
-    }
+    String fontNameLinux();
+
+    double fontSizeLinux();
+
 
 }

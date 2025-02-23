@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
 
 /**
@@ -52,7 +53,7 @@ public class AppContext implements Context {
     /**
      * The application configuration.
      */
-    public static class AppConfig implements Context.Config {
+    public static class AppConfig implements Config {
 
         /** The config map. */
         private static final Map<String, Object> map = new ConcurrentHashMap<>();
