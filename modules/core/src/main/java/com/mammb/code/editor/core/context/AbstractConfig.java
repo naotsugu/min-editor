@@ -57,6 +57,11 @@ public abstract class AbstractConfig implements Config {
     }
 
     @Override
+    public Path path() {
+        return propsPath;
+    }
+
+    @Override
     public double fontSize() {
         var defaultValue = switch (Context.platform) {
             case "mac" -> "14";
@@ -68,12 +73,20 @@ public abstract class AbstractConfig implements Config {
     @Override
     public void load() {
         try {
+
+            Files.createDirectories(propsPath.getParent());
+            if (!Files.exists(propsPath)) {
+                Files.createFile(propsPath);
+                return;
+            }
+
             for (String line : Files.readAllLines(propsPath)) {
                 var str = line.trim();
                 if (str.startsWith("#") || str.startsWith("!") || !str.contains("=")) continue;
                 var kv = str.split("=", 2);
                 props.put(kv[0], kv[1]);
             }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -113,12 +126,18 @@ public abstract class AbstractConfig implements Config {
         }
     }
 
+    protected String get(String key, String defaultValue) {
+        return props.getOrDefault(key, defaultValue).toString();
+    }
+    protected void put(String key, Object value) {
+        props.put(key, value.toString());
+    }
 
     /**
      * Get the configuration directory for platform.
      * @return the configuration directory
      */
-    protected Path configRoot() {
+    protected static Path configRoot() {
         Path home = Path.of(System.getProperty("user.home"));
         return switch (Context.platform) {
             case "windows" -> home.resolve("AppData", "Local");

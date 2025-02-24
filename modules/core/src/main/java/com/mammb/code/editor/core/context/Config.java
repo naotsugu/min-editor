@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.core.context;
 
+import java.nio.file.Path;
+
 /**
  * The configuration.
  * @author Naotsugu Kobayashi
@@ -33,8 +35,20 @@ public interface Config {
      */
     double fontSize();
 
+    /**
+     * Get the config path.
+     * @return the config path
+     */
+    Path path();
+
+    /**
+     * Load the config.
+     */
     void load();
 
+    /**
+     * Save the config.
+     */
     void save();
 
 }

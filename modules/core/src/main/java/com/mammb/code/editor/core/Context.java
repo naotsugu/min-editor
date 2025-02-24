@@ -36,17 +36,4 @@ public interface Context {
     // TODO recent file with session
 
 
-
-    default boolean isWindows() {
-        return osName().toLowerCase().contains("windows");
-    }
-
-    default boolean isMacOs() {
-        return osName().toLowerCase().contains("mac");
-    }
-
-    default boolean isLinux() {
-        return osName().toLowerCase().contains("mac");
-    }
-
 }

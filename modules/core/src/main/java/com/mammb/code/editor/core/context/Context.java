@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor.core.context;
 
-import com.mammb.code.editor.core.Config;
-
 /**
  * The configuration.
  * @author Naotsugu Kobayashi
