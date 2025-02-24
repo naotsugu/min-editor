@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,177 @@
  */
 package com.mammb.code.editor.core;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * The configuration.
  * @author Naotsugu Kobayashi
  */
 public interface Config {
 
+    /**
+     * Get the font name.
+     * @return the font name
+     */
     String fontName();
 
+    /**
+     * The font size.
+     * @return the font size
+     */
     double fontSize();
 
-    void fontSize(double fontSize);
+    /**
+     * Get the config path.
+     * @return the config path
+     */
+    Path path();
 
-    String fontNameWin();
+    /**
+     * Load the config.
+     */
+    void load();
 
-    double fontSizeWin();
+    /**
+     * Save the config.
+     */
+    void save();
 
-    String fontNameMac();
+    /**
+     * AbstractConfig.
+     */
+    abstract class AbstractConfig implements Config {
 
-    double fontSizeMac();
+        /** The logger. */
+        private static final System.Logger log = System.getLogger(AbstractConfig.class.getName());
 
-    String fontNameLinux();
+        /** The props map. */
+        private final Map<String, Object> props = new ConcurrentHashMap<>();
 
-    double fontSizeLinux();
+        /** The path of props. */
+        private final Path propsPath;
 
+        /**
+         * Constructor.
+         * @param path the path of props
+         */
+        protected AbstractConfig(Path path) {
+            this.propsPath = path;
+        }
+
+        @Override
+        public String fontName() {
+            var defaultValue = switch (Context.platform) {
+                case "windows" -> "MS Gothic"; // BIZ UDGothic Consolas
+                case "mac" -> "Menlo"; // Monaco
+                default -> "monospace";
+            };
+            return props.getOrDefault("fontName", defaultValue).toString();
+        }
+
+        @Override
+        public Path path() {
+            return propsPath;
+        }
+
+        @Override
+        public double fontSize() {
+            var defaultValue = switch (Context.platform) {
+                case "mac" -> "14";
+                default -> "15";
+            };
+            return Double.parseDouble(props.getOrDefault("fontSize", defaultValue).toString());
+        }
+
+        @Override
+        public void load() {
+            try {
+
+                Files.createDirectories(propsPath.getParent());
+                if (!Files.exists(propsPath)) {
+                    Files.createFile(propsPath);
+                    return;
+                }
+
+                for (String line : Files.readAllLines(propsPath)) {
+                    var str = line.trim();
+                    if (str.startsWith("#") || str.startsWith("!") || !str.contains("=")) continue;
+                    var kv = str.split("=", 2);
+                    props.put(kv[0], kv[1]);
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void save() {
+            try {
+
+                List<String> merged = new ArrayList<>();
+
+                for (String line : Files.readAllLines(propsPath)) {
+                    var str = line.trim();
+                    if (str.startsWith("#") || str.startsWith("!") || !str.contains("=")) {
+                        merged.add(line);
+                        continue;
+                    }
+                    var kv = str.split("=", 2);
+                    if (props.containsKey(kv[0])) {
+                        var v = props.remove(kv[0]);
+                        merged.add(kv[0] + "=" + v);
+                    }
+                }
+
+                for (var entry : props.entrySet()) {
+                    merged.add(entry.getKey() + "=" + entry.getValue());
+                }
+
+                Files.write(propsPath, merged);
+
+            } catch (IOException ignore) {
+                log.log(System.Logger.Level.ERROR, ignore);
+            }
+        }
+
+        public void clear() {
+            try {
+                Files.delete(propsPath);
+                log.log(System.Logger.Level.INFO, "deleted config file.");
+            } catch (IOException ignore) {
+                log.log(System.Logger.Level.ERROR, ignore);
+            }
+        }
+
+        protected String get(String key, String defaultValue) {
+            return props.getOrDefault(key, defaultValue).toString();
+        }
+
+        protected void put(String key, Object value) {
+            props.put(key, value.toString());
+        }
+
+        /**
+         * Get the configuration directory for platform.
+         * @return the configuration directory
+         */
+        protected static Path configRoot() {
+            Path home = Path.of(System.getProperty("user.home"));
+            return switch (Context.platform) {
+                case "windows" -> home.resolve("AppData", "Local");
+                case "mac" -> home.resolve("Library", "Application Support");
+                case "linux" -> home.resolve(".config");
+                default -> home;
+            };
+        }
+
+    }
 
 }

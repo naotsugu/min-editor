@@ -21,7 +21,6 @@
 module code.editor.core {
     requires com.mammb.code.piecetable;
     exports com.mammb.code.editor.core;
-    exports com.mammb.code.editor.core.context;
     exports com.mammb.code.editor.core.text;
     exports com.mammb.code.editor.core.syntax;
     exports com.mammb.code.editor.core.editing;

@@ -18,7 +18,6 @@ package com.mammb.code.editor.core;
 import java.nio.file.Path;
 import java.util.Optional;
 import com.mammb.code.editor.core.model.TextEditorModel;
-import com.mammb.code.editor.core.context.Context;
 
 /**
  * The facade of editor.

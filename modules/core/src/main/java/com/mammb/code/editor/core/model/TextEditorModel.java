@@ -19,7 +19,7 @@ import com.mammb.code.editor.core.Caret;
 import com.mammb.code.editor.core.CaretGroup;
 import com.mammb.code.editor.core.Clipboard;
 import com.mammb.code.editor.core.Content;
-import com.mammb.code.editor.core.context.Context;
+import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;

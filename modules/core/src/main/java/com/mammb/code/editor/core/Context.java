@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,13 @@
 package com.mammb.code.editor.core;
 
 /**
- * The Context.
+ * The configuration.
  * @author Naotsugu Kobayashi
  */
 public interface Context {
+
+    /** The os name. */
+    String platform = platform();
 
     /**
      * Get the config.
@@ -27,13 +30,12 @@ public interface Context {
      */
     Config config();
 
-    /**
-     * Get the os name.
-     * @return the os name
-     */
-    String osName();
-
-    // TODO recent file with session
-
+    private static String platform() {
+        var osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("windows")) return "windows";
+        if (osName.contains("mac")) return "mac";
+        if (osName.contains("linux")) return "linux";
+        return "unknown";
+    }
 
 }

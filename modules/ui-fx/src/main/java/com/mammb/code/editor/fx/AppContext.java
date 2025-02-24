@@ -15,8 +15,8 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.context.Context;
-import com.mammb.code.editor.core.context.AbstractConfig;
+import com.mammb.code.editor.core.Config;
+import com.mammb.code.editor.core.Context;
 
 /**
  * The application context.
@@ -33,7 +33,7 @@ public class AppContext implements Context {
     }
 
 
-    public static class AppConfig extends AbstractConfig {
+    public static class AppConfig extends Config.AbstractConfig {
 
         AppConfig() {
             super(AbstractConfig.configRoot()
