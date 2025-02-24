@@ -33,5 +33,8 @@ public interface Config {
      */
     double fontSize();
 
+    void load();
+
+    void save();
 
 }
