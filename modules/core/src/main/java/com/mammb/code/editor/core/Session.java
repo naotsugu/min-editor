@@ -71,6 +71,10 @@ public interface Session {
      */
     long timestamp();
 
+    /**
+     * Get whether the path has.
+     * @return {@code true} if the path has
+     */
     default boolean hasPath() {
         return path() != null;
     }
@@ -79,7 +83,9 @@ public interface Session {
         if (path != null && Files.exists(path)) {
             try {
                 return new SessionRecord(path, Files.getLastModifiedTime(path), 0, 0, 0, 0, System.currentTimeMillis());
-            } catch (Exception e) { throw new RuntimeException(e); }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         } else {
             return new SessionRecord(null, null, 0, 0, 0, 0, System.currentTimeMillis());
         }
