@@ -237,7 +237,7 @@ public interface Text {
             // dot splitting in addition to BreakIterator
             var bounded = text.substring(start, end);
             int stack = 0;
-            for (String str : bounded.splitWithDelimiters("\\.", -1)) {
+            for (String str : bounded.splitWithDelimiters("\\.|,", -1)) {
                 ret.add(Text.of(
                     row(),
                     str,
