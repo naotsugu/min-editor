@@ -401,7 +401,7 @@ public class EditorPane extends StackPane {
         open(Session.of(file.toPath()));
     }
 
-    private void open(String pathString) {
+    void open(String pathString) {
         if (!canDiscard()) return;
         var path = Path.of(pathString);
         if (!Files.exists(path) || !Files.isReadable(path)) return;

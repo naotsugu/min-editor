@@ -361,11 +361,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             // TODO if dropped outside window, open a new window
             var db = e.getDragboard();
             if (db.hasFiles() && dropPoint(this, e) == DropPoint.HEADER) {
-                var path = db.getFiles().stream().map(File::toPath)
-                        .filter(Files::isReadable).filter(Files::isRegularFile)
-                        .findFirst().orElse(null);
-                EditorPane editorPane = new EditorPane(path, parent.context);
-                add(editorPane);
+                addNewEdit().open(db.getFiles().stream().map(File::toString).findFirst().orElse(null));
                 e.setDropCompleted(false);
                 return;
             }
