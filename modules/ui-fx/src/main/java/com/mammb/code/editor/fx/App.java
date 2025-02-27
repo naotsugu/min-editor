@@ -4,9 +4,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      https://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -94,13 +94,13 @@ public class App extends Application {
           -fx-mark-color: -fx-light-text-color;
           -fx-mark-highlight-color: derive(-fx-mark-color,20%);
           -fx-background-color:app-back;
-          -fx-default-button: #365880;
+          -fx-default-button: #2F65CA;
         }
         .text-input, .label {
           -fx-font: 14px "Consolas";
         }
         .button {
-          -fx-background-color: /* -fx-shadow-highlight-color, */ -fx-outer-border, -fx-inner-border, -fx-body-color;
+          -fx-background-color: /*-fx-shadow-highlight-color,  -fx-outer-border, -fx-inner-border, */ -fx-body-color;
         }
 
         .app-command-palette-dialog-pane > .button-bar > .container {
