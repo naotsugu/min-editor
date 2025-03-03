@@ -24,41 +24,40 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The csv syntax.
+ * The diff syntax.
  * @author Naotsugu Kobayashi
  */
-public class CsvSyntax implements Syntax {
+public class DiffSyntax implements Syntax {
 
     @Override
     public String name() {
-        return "csv";
+        return "diff";
     }
 
     @Override
     public List<Style.StyleSpan> apply(int row, String text) {
-
         if (text == null || text.isBlank()) {
             return Collections.emptyList();
         }
 
-        boolean inQuote = false;
         var spans = new ArrayList<Style.StyleSpan>();
         var source = LexerSource.of(row, text);
 
         while (source.hasNext()) {
-
             var peek = source.peek();
+            if (peek.ch() == '-' && peek.index() == 0) {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.lightRed, s.index(), s.length()));
 
-            if (peek.ch() == '"') {
-                inQuote = !inQuote;
-            } else if (peek.ch() == ',' && !inQuote) {
-                spans.add(new Style.StyleSpan(Palette.gray, peek.index(), 1));
+            } else if (peek.ch() == '+' && peek.index() == 0) {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.lightGreen, s.index(), s.length()));
+
             }
-
             source.commitPeek();
         }
 
         return spans;
-    }
 
+    }
 }

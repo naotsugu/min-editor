@@ -29,4 +29,8 @@ public interface Palette {
     TextColor darkOrange = new Style.TextColor("#CC7832");
     TextColor darkPale = new Style.TextColor("#6897BB");
 
+    TextColor darkRed = new Style.TextColor("#B91C1C");    // Tailwind RED 700
+    TextColor lightRed = new Style.TextColor("#FECACA");   // Tailwind RED 300
+    TextColor lightGreen = new Style.TextColor("#86EFAC"); // Tailwind GREEN 300
+
 }

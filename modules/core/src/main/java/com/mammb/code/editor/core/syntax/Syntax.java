@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import com.mammb.code.editor.core.syntax.lang.CppSyntax;
+import com.mammb.code.editor.core.syntax.lang.DiffSyntax;
 import com.mammb.code.editor.core.syntax.lang.GoSyntax;
 import com.mammb.code.editor.core.syntax.lang.HtmlSyntax;
 import com.mammb.code.editor.core.syntax.lang.IniSyntax;
@@ -116,6 +117,7 @@ public interface Syntax {
             case "ini" -> new IniSyntax();
             case "csv" -> new CsvSyntax();
             case "tsv" -> new TsvSyntax();
+            case "diff" -> new DiffSyntax();
             case "txt" -> new PassThrough("text");
             default -> new PassThrough(name);
         };
