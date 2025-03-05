@@ -83,7 +83,7 @@ class MarkdownTables {
             sb.append(row);
             sb.append('\n');
             if (header) {
-                sb.append(row.toString().replaceAll("[^\\|]+", " +++ "));
+                sb.append(row.toString().replaceAll("[^\\|]+", " --- "));
                 sb.append('\n');
             }
         }

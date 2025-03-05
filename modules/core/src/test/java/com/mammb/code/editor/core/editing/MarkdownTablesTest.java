@@ -79,7 +79,7 @@ class MarkdownTablesTest {
             Front-end web developer course 2021
 
             | Person | Most interest in | Age |
-            | +++ | +++ | +++ |
+            | --- | --- | --- |
             | Chris | HTML tables | 22 |
             | Dennis | Web accessibility | 45 |
             | Sarah | JavaScript frameworks | 29 |
