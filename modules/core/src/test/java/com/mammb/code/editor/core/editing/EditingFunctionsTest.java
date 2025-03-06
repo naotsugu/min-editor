@@ -79,4 +79,19 @@ class EditingFunctionsTest {
         assertEquals("1000", EditingFunctions.binToDec.apply("0011 1110 1000"));
     }
 
+    @Test
+    void lfToCrLf() {
+        assertEquals("\r\n", EditingFunctions.lfToCrLf.apply("\n"));
+        assertEquals("\r\n", EditingFunctions.lfToCrLf.apply("\r\n"));
+        assertEquals("\r\n\r\n", EditingFunctions.lfToCrLf.apply("\n\n"));
+        assertEquals("a\r\nb\r\n", EditingFunctions.lfToCrLf.apply("a\nb\n"));
+    }
+
+    @Test
+    void crLfToLf() {
+        assertEquals("\n", EditingFunctions.crLfToLf.apply("\r\n"));
+        assertEquals("\n\n", EditingFunctions.crLfToLf.apply("\n\r\n"));
+        assertEquals("\n\n", EditingFunctions.crLfToLf.apply("\n\r\n"));
+        assertEquals("a\nb\n", EditingFunctions.crLfToLf.apply("a\r\nb\r\n"));
+    }
 }

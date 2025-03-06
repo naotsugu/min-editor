@@ -86,6 +86,11 @@ public interface EditingFunctions {
     /** binToDec function. */
     Function<String, String> binToDec = text -> dec(text.replaceAll(" ", ""), 2);
 
+    /** binToDec function. */
+    Function<String, String> lfToCrLf = text -> text.replaceAll("(?<!\r)\n", "\r\n");
+    /** binToDec function. */
+    Function<String, String> crLfToLf = text -> text.replaceAll("\r\n", "\n");
+
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
 
