@@ -335,7 +335,7 @@ public class EditorPane extends StackPane {
             case Backward _         -> sessionHistory.backward().ifPresent(this::open);
             case ZoomIn _           -> zoom( 1);
             case ZoomOut _          -> zoom(-1);
-            case Help _             -> FxDialog.about(getScene().getWindow()).showAndWait();
+            case Help _             -> FxDialog.about(getScene().getWindow(), context).showAndWait();
             case Filter cmd         -> { } // TODO impl
             case Empty _            -> { }
         }

@@ -16,11 +16,16 @@
 package com.mammb.code.editor.fx;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Window;
+import java.io.IOException;
 
 /**
  * The BasicDialog.
@@ -50,12 +55,16 @@ public class FxDialog extends Dialog<ButtonType> {
      * @param owner the owner of dialog
      * @return the about dialog
      */
-    public static FxDialog about(Window owner) {
+    public static FxDialog about(Window owner, AppContext ctx) {
         FxDialog dialog = new FxDialog(owner, "About", Version.appName + " " + Version.val, ButtonType.CLOSE);
-        // TODO add link to help documents
-        // Hyperlink link = new Hyperlink("Keyboard Shortcut");
-        // dialog.getDialogPane().setContent(link);
-        // link.setOnAction(event -> getHostServices().showDocument("https://github.com/naotsugu/min-editor/blob/main/docs/keyboard-shortcut.md"));
+        var label = new Label(Version.appName + " " + Version.val);
+        label.setPrefWidth(300);
+        var link = new Hyperlink("Keyboard Shortcut");
+        link.setOnAction(event ->
+            ctx.getApp().getHostServices().showDocument("https://github.com/naotsugu/min-editor/blob/main/docs/keyboard-shortcut.md"));
+        var box = new VBox(label, link);
+        box.setAlignment(Pos.BASELINE_LEFT);
+        dialog.getDialogPane().setContent(box);
         return dialog;
     }
 

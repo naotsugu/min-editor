@@ -17,6 +17,7 @@ package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
+import javafx.application.Application;
 
 /**
  * The application context.
@@ -27,11 +28,20 @@ public class AppContext implements Context {
     /** The configuration instance. */
     private AppConfig appConfig = new AppConfig();
 
+    private final Application app;
+
+    public AppContext(Application app) {
+        this.app = app;
+    }
+
     @Override
     public AppConfig config() {
         return appConfig;
     }
 
+    public Application getApp() {
+        return app;
+    }
 
     public static class AppConfig extends Config.AbstractConfig {
 

@@ -35,7 +35,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
-        var ctx = new AppContext();
+        var ctx = new AppContext(this);
         if (ctx.config().windowPositionX() >= 0 && ctx.config().windowPositionY() >= 0) {
             stage.setX(ctx.config().windowPositionX());
             stage.setY(ctx.config().windowPositionY());
@@ -176,6 +176,14 @@ public class App extends Application {
         .tooltip {
           -fx-font: 13px "Consolas";
         }
+
+        .hyperlink,
+        .hyperlink:hover,
+        .hyperlink:hover:visited {
+            -fx-text-fill: -fx-light-text-color;
+            -fx-underline: true;
+        }
+
         """
         .replaceAll("app-base", Theme.dark.baseColor()) // TODO theme vs config
         .replaceAll("app-text", Theme.dark.fgColor())
