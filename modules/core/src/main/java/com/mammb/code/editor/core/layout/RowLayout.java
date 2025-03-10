@@ -130,22 +130,22 @@ class RowLayout implements ContentLayout {
 
     @Override
     public int rowToFirstLine(int row) {
-        return Math.clamp(row, 0, lineSize());
+        return Math.clamp(row, 0, lineSize() - 1);
     }
 
     @Override
     public int rowToLastLine(int row) {
-        return Math.clamp(row, 0, lineSize());
+        return Math.clamp(row, 0, lineSize() - 1);
     }
 
     @Override
     public int lineToRow(int line) {
-        return Math.clamp(line, 0, content.rows());
+        return Math.clamp(line, 0, content.rows() - 1);
     }
 
     @Override
     public int rowToLine(int row, int col) {
-        return Math.clamp(row, 0, lineSize());
+        return Math.clamp(row, 0, lineSize() - 1);
     }
 
     @Override

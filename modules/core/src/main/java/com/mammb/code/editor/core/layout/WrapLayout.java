@@ -198,7 +198,7 @@ class WrapLayout implements ContentLayout {
     public int rowToFirstLine(int row) {
         if (row <= 0) return 0;
         int line = Collections.binarySearch(lines, new SubRange(row, 0, 0, 0, 0));
-        return (line < 0) ? lines.size() : line;
+        return (line < 0) ? lines.size() - 1 : line;
     }
 
     @Override
@@ -211,7 +211,7 @@ class WrapLayout implements ContentLayout {
     public int lineToRow(int line) {
         if (line <= 0) return 0;
         var sub = subRange(line);
-        return (sub == null) ? content.rows() : sub.row();
+        return (sub == null) ? content.rows() - 1 : sub.row();
     }
 
     @Override
@@ -223,7 +223,7 @@ class WrapLayout implements ContentLayout {
                 return line + i;
             }
         }
-        return lines.size();
+        return lines.size() - 1;
     }
 
     @Override
