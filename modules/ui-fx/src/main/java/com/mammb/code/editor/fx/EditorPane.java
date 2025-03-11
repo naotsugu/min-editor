@@ -443,7 +443,6 @@ public class EditorPane extends StackPane {
             task.setOnSucceeded(_ -> {
                 model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll(), context);
                 model.setSize(getWidth(), getHeight());
-                System.gc();
             });
             floatBar.handleProgress(task);
             new Thread(task).start();
