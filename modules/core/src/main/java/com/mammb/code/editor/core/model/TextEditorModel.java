@@ -253,7 +253,7 @@ public class TextEditorModel implements EditorModel {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
             int max = screenLayout.lineSize() - 1;
-            if (line >= max) continue;
+            if (line > max) continue;
             double x = (c.vPos() < 0)
                     ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
