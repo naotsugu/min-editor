@@ -48,4 +48,10 @@ public final class FxClipboard implements Clipboard {
         return clipboard.hasHtml() ? clipboard.getHtml() : "";
     }
 
+    @Override
+    public boolean hasContents() {
+        var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+        return clipboard.hasString();
+    }
+
 }

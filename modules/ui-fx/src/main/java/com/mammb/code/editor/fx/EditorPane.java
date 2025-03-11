@@ -42,6 +42,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollBar;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.InputMethodEvent;
@@ -141,7 +142,7 @@ public class EditorPane extends StackPane {
         setOnDragDetected(this::handleDragDetect);
         setOnDragOver(this::handleDragOver);
         setOnDragDropped(this::handleDragDropped);
-        // TODO context menu
+        setOnContextMenuRequested(this::handleContextMenuRequested);
 
         vScroll.valueProperty().addListener(this::handleVerticalScroll);
         hScroll.valueProperty().addListener(this::handleHorizontalScroll);
@@ -160,6 +161,11 @@ public class EditorPane extends StackPane {
 
     public void focus() {
         canvas.requestFocus();
+    }
+
+    private void handleContextMenuRequested(ContextMenuEvent e) {
+        var cm = new AppContextMenu(this);
+        cm.show(getScene().getWindow(), e.getScreenX(), e.getScreenY());
     }
 
     private void handleLayoutBoundsChanged(
@@ -292,7 +298,7 @@ public class EditorPane extends StackPane {
         paint();
     }
 
-    private void execute(Command command) {
+    void execute(Command command) {
         switch (command) {
             case ActionCommand cmd  -> model.apply(cmd.action());
             case OpenChoose _       -> openWithChooser();
@@ -547,6 +553,10 @@ public class EditorPane extends StackPane {
 
     void setCloseListener(Consumer<EditorPane> closeListener) {
         this.closeListener = closeListener;
+    }
+
+    <R> R query(Query<R> query) {
+        return model.query(query);
     }
 
 }

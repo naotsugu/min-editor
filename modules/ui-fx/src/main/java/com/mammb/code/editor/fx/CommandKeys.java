@@ -94,29 +94,29 @@ public class CommandKeys {
         return new Command.ActionCommand(action);
     }
 
-    private static final KeyCombination SC_A = new KeyCharacterCombination("a", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_C = new KeyCharacterCombination("c", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_V = new KeyCharacterCombination("v", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_X = new KeyCharacterCombination("x", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_Z = new KeyCharacterCombination("z", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_Y = new KeyCharacterCombination("y", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_SZ= new KeyCharacterCombination("z", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN);
-    private static final KeyCombination SC_END  = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_HOME = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_N = new KeyCharacterCombination("n", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_O = new KeyCharacterCombination("o", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_S = new KeyCharacterCombination("s", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_SA= new KeyCharacterCombination("s", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN);
-    private static final KeyCombination SC_F = new KeyCharacterCombination("f", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_P = new KeyCharacterCombination("p", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_W = new KeyCharacterCombination("w", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_L = new KeyCharacterCombination("l", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_DOT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_COMMA = new KeyCharacterCombination(",", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_PLUS = new KeyCharacterCombination("+", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_MINUS = new KeyCharacterCombination("-", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_FW = new KeyCharacterCombination("]", KeyCombination.SHORTCUT_DOWN);
-    private static final KeyCombination SC_BW = new KeyCharacterCombination("[", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_A = new KeyCharacterCombination("a", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_C = new KeyCharacterCombination("c", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_V = new KeyCharacterCombination("v", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_X = new KeyCharacterCombination("x", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_Z = new KeyCharacterCombination("z", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_Y = new KeyCharacterCombination("y", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_SZ= new KeyCharacterCombination("z", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN);
+    static final KeyCombination SC_END  = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_HOME = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_N = new KeyCharacterCombination("n", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_O = new KeyCharacterCombination("o", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_S = new KeyCharacterCombination("s", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_SA= new KeyCharacterCombination("s", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN);
+    static final KeyCombination SC_F = new KeyCharacterCombination("f", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_P = new KeyCharacterCombination("p", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_W = new KeyCharacterCombination("w", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_L = new KeyCharacterCombination("l", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_DOT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_COMMA = new KeyCharacterCombination(",", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_PLUS = new KeyCharacterCombination("+", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_MINUS = new KeyCharacterCombination("-", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_FW = new KeyCharacterCombination("]", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_BW = new KeyCharacterCombination("[", KeyCombination.SHORTCUT_DOWN);
 
 
     private static final Predicate<KeyEvent> controlKeysFilter = e ->

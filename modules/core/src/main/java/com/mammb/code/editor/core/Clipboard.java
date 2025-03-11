@@ -39,4 +39,10 @@ public interface Clipboard {
      */
     String getHtml();
 
+    /**
+     * Get whether the clipboard has content.
+     * @return {@code true}, if the clipboard has content
+     */
+    boolean hasContents();
+
 }
