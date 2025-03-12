@@ -91,7 +91,7 @@ public class TextEditorModel implements EditorModel {
     public TextEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
         this.content = content;
         this.screenLayout = ScreenLayout.of(content, fm);
-        this.decorate = Decorate.of(Syntax.of(content.path().orElse(null)));
+        this.decorate = Decorate.of(content.path().map(Syntax::of).orElse(Syntax.of("md"))); // default syntax is md
         this.scroll = scroll;
         this.ctx = ctx;
     }
