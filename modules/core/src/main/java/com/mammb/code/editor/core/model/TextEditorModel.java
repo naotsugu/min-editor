@@ -323,7 +323,7 @@ public class TextEditorModel implements EditorModel {
         Caret c = carets.unique();
         c.at(0, 0);
         c.mark();
-        c.at(screenLayout.rowSize(), screenLayout.endColOnRow(screenLayout.lineSize()));
+        c.at(screenLayout.rowSize() - 1, screenLayout.endColOnRow(screenLayout.lineSize() - 1));
     }
 
     @Override

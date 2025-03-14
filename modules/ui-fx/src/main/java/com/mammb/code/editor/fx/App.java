@@ -146,7 +146,7 @@ public class App extends Application {
         }
         .app-tab-pane-active > .tab-pane > .tab-header-area > .headers-region > .tab:selected {
           -fx-background-color: derive(-fx-box-border, 30%);
-          -fx-border-color: silver transparent transparent transparent;
+          -fx-border-color: app-text transparent transparent transparent;
         }
         .tab-pane > .tab-header-area > .headers-region > .tab:selected {
           /* -fx-color: -fx-hover-base; */
