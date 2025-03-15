@@ -29,6 +29,7 @@ import com.mammb.code.editor.core.syntax.lang.KotlinSyntax;
 import com.mammb.code.editor.core.syntax.lang.MarkdownSyntax;
 import com.mammb.code.editor.core.syntax.lang.PythonSyntax;
 import com.mammb.code.editor.core.syntax.lang.RustSyntax;
+import com.mammb.code.editor.core.syntax.lang.ShellSyntax;
 import com.mammb.code.editor.core.syntax.lang.SqlSyntax;
 import com.mammb.code.editor.core.syntax.lang.TomlSyntax;
 import com.mammb.code.editor.core.syntax.lang.TsSyntax;
@@ -61,7 +62,7 @@ public interface Syntax {
      * Get the {@link BlockScopes).
      * @return the {@link BlockScopes)
      */
-    default BlockScopes blockScopes() { return null; };
+    default BlockScopes blockScopes() { return null; }
 
     /**
      * Gets whether the block scope has.
@@ -119,6 +120,7 @@ public interface Syntax {
             case "tsv" -> new TsvSyntax();
             case "diff" -> new DiffSyntax();
             case "txt" -> new PassThrough("text");
+            case "shell", "sh", "bash" -> new ShellSyntax();
             default -> new PassThrough(name);
         };
     }
