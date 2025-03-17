@@ -203,7 +203,10 @@ public class Paints {
                 String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
                     ? Theme.dark.fgColor()
                     : Theme.dark.fgColor() + "66";
-                draw.text(num, marginLeft - 16 - num.width(), y + marginTop, num.width(),
+                draw.text(num,
+                    marginLeft - 12 - num.width(),
+                    y + marginTop,
+                    num.width(),
                     List.of(new Style.TextColor(colorString)));
             }
             prevValue = num.value();

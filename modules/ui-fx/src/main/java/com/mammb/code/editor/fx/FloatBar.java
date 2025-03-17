@@ -49,7 +49,7 @@ public class FloatBar extends HBox {
     public FloatBar(ScrollBar vScroll, ScrollBar hScroll) {
 
         setManaged(false);
-        setAlignment(Pos.BASELINE_CENTER);
+        setAlignment(Pos.BOTTOM_CENTER);
         setBackground(new Background(new BackgroundFill(
             Color.web(Theme.dark.baseColor()),
             new CornerRadii(2),
@@ -99,7 +99,7 @@ public class FloatBar extends HBox {
 
     private void layoutSize() {
         setWidth(text.getLayoutBounds().getWidth() + 16 + (getChildren().size() - 1) * 100);
-        setHeight(text.getLayoutBounds().getHeight());
+        setHeight(text.getLayoutBounds().getHeight() + 4);
     }
 
     private void layout(ScrollBar vScroll, ScrollBar hScroll) {
