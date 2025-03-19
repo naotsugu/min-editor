@@ -247,6 +247,10 @@ class WrapLayout implements ContentLayout {
         return fm;
     }
 
+    List<SubRange> lines() {
+        return lines;
+    }
+
     private SubRange subRange(int line) {
         return lines.get(Math.clamp(line, 0, lines.size() - 1));
     }

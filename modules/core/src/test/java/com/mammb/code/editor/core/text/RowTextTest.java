@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.core.text;
 
-import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.FontMetricsTestImpl;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +28,7 @@ class RowTextTest {
 
     @Test
     void of() {
-        var text = RowText.of(0, "aあb", new FontMetricsImpl());
+        var text = RowText.of(0, "aあb", new FontMetricsTestImpl());
         assertEquals(0, text.row());
         assertEquals(4, text.width());
         assertArrayEquals(new double[] { 1, 2, 1 }, text.advances());
@@ -36,36 +36,23 @@ class RowTextTest {
 
     @Test
     void ofWithTab() {
-        var text = RowText.of(0, "\ta", new FontMetricsImpl());
+        var text = RowText.of(0, "\ta", new FontMetricsTestImpl());
         assertArrayEquals(new double[] { 4, 1 }, text.advances());
 
-        text = RowText.of(0, "a\t", new FontMetricsImpl());
+        text = RowText.of(0, "a\t", new FontMetricsTestImpl());
         assertArrayEquals(new double[] { 1, 3 }, text.advances());
 
-        text = RowText.of(0, "aa\t", new FontMetricsImpl());
+        text = RowText.of(0, "aa\t", new FontMetricsTestImpl());
         assertArrayEquals(new double[] { 1, 1, 2 }, text.advances());
 
-        text = RowText.of(0, "aaa\t", new FontMetricsImpl());
+        text = RowText.of(0, "aaa\t", new FontMetricsTestImpl());
         assertArrayEquals(new double[] { 1, 1, 1, 1 }, text.advances());
 
-        text = RowText.of(0, "aaaa\t", new FontMetricsImpl());
+        text = RowText.of(0, "aaaa\t", new FontMetricsTestImpl());
         assertArrayEquals(new double[] { 1, 1, 1, 1, 4 }, text.advances());
 
-        text = RowText.of(0, "aa\ta\t", new FontMetricsImpl());
+        text = RowText.of(0, "aa\ta\t", new FontMetricsTestImpl());
         assertArrayEquals(new double[] { 1, 1, 2, 1, 3 }, text.advances());
-    }
-
-    private static class FontMetricsImpl implements FontMetrics {
-        @Override public float getMaxAscent() { return 0; }
-        @Override public float getAscent() { return 0; }
-        @Override public float getXheight() { return 0; }
-        @Override public int getBaseline() { return 0; }
-        @Override public float getDescent() { return 0; }
-        @Override public float getMaxDescent() { return 0; }
-        @Override public float getLeading() { return 0; }
-        @Override public float getLineHeight() { return 2; }
-        @Override public double standardCharWidth() { return 1; }
-        @Override public float getAdvance(int codePoint) { return codePoint < 1024 ? 1 : 2; }
     }
 
 }

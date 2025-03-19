@@ -45,8 +45,9 @@ class RoStringContentTest {
     void stringListSingle() {
         String text = "abc\n";
         var target = content(text, 2);
-        assertEquals(1, target.rows());
+        assertEquals(2, target.rows());
         assertEquals("abc\n", target.getText(0));
+        assertEquals("", target.getText(1));
     }
 
     @Test
@@ -62,9 +63,10 @@ class RoStringContentTest {
     void stringListLimit() {
         String text = "abc\ndef\nghi";
         var target = content(text, 2);
-        assertEquals(2, target.rows());
+        assertEquals(3, target.rows());
         assertEquals("abc\n", target.getText(0));
         assertEquals("def\n", target.getText(1));
+        assertEquals("", target.getText(2));
     }
 
     @Test

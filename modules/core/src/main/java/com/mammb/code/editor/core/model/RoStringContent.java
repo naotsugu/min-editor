@@ -85,7 +85,7 @@ public class RoStringContent implements Content {
         if (!sb.isEmpty()) {
             stringList.add(sb.toString());
         }
-        if (stringList.isEmpty()) {
+        if (stringList.isEmpty() || stringList.getLast().endsWith("\n")) {
             stringList.add("");
         }
     }
