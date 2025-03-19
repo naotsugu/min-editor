@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import com.mammb.code.editor.core.Content;
@@ -62,17 +63,30 @@ public class RoStringContent implements Content {
      */
     public RoStringContent(Path path, int rowLimit) {
         this.path = path;
+        this.stat = DocumentStat.of(path, rowLimit);
+        this.stringList = new ArrayList<>();
 
-        stat = DocumentStat.of(path, rowLimit);
-        String rowEnding = stat.rowEnding().str();
-
-        try (Stream<String> stream = Files.lines(path, stat.charset())) {
-            stringList = stream
-                .map(s -> s + rowEnding)
-                .limit(rowLimit)
-                .toList();
+        StringBuilder sb = new StringBuilder();
+        try (var reader = Files.newBufferedReader(path, stat.charset())) {
+            int c;
+            while ((c = reader.read()) > 0) {
+                sb.append((char) c);
+                if (c == '\n') {
+                    stringList.add(sb.toString());
+                    sb.setLength(0);
+                    if (stringList.size() >= rowLimit) {
+                        break;
+                    }
+                }
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        if (!sb.isEmpty()) {
+            stringList.add(sb.toString());
+        }
+        if (stringList.isEmpty()) {
+            stringList.add("");
         }
     }
 
