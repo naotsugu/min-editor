@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.layout;
 
 import java.util.Comparator;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * The SubRange.
@@ -139,6 +140,17 @@ public class SubRange implements Comparable<SubRange> {
         return Comparator.comparing(SubRange::row)
             .thenComparing(SubRange::subLine)
             .compare(this, that);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", SubRange.class.getSimpleName() + "[", "]")
+            .add("row=" + row)
+            .add("subLine=" + subLine)
+            .add("subLines=" + subLines)
+            .add("fromIndex=" + fromIndex)
+            .add("toIndex=" + toIndex)
+            .toString();
     }
 
 }
