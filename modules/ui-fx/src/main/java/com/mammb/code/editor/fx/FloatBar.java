@@ -84,6 +84,7 @@ public class FloatBar extends HBox {
 
     public void handleProgress(Task<?> task) {
         ProgressBar progressBar = new ProgressBar(0);
+        progressBar.setPrefHeight(text.getLayoutBounds().getHeight() - 4);
         progressBar.progressProperty().bind(task.progressProperty());
         EventHandler<WorkerStateEvent> h = e -> {
             getChildren().remove(progressBar);

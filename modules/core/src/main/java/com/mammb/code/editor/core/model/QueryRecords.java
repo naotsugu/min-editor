@@ -43,5 +43,9 @@ public interface QueryRecords {
     record FoundCounts() implements Query<Integer> { }
     /** The query of selected count. */
     record SelectedCounts() implements Query<Integer> { }
+    /** The query of line size. */
+    record LineSize() implements Query<Integer> { }
+    /** The query of row size. */
+    record RowSize() implements Query<Integer> { }
 
 }

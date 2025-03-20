@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,6 +74,9 @@ import java.util.stream.Collectors;
  * @author Naotsugu Kobayashi
  */
 public class EditorPane extends StackPane {
+
+    /** The logger. */
+    private static final System.Logger log = System.getLogger(EditorPane.class.getName());
 
     /** The context. */
     private final AppContext context;
@@ -435,13 +438,13 @@ public class EditorPane extends StackPane {
             : EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
         model.setSize(getWidth(), getHeight());
         filePathProperty.setValue(session.path());
-
         if (openInBackground) {
+            long start = System.currentTimeMillis();
             Task<Content> task = new Task<>() {
                 private final AtomicLong total = new AtomicLong(0);
                 @Override protected Content call() {
                     return Content.of(session.path(), bytes -> {
-                        updateProgress(total.addAndGet(bytes.length), size);
+                        updateProgress(total.addAndGet(bytes), size);
                         return !isCancelled();
                     });
                 }
@@ -449,6 +452,8 @@ public class EditorPane extends StackPane {
             task.setOnSucceeded(_ -> {
                 model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll(), context);
                 model.setSize(getWidth(), getHeight());
+                log.log(System.Logger.Level.INFO, "opened %,d rows in %,d ms"
+                    .formatted(model.query(Query.rowSize), System.currentTimeMillis() - start));
             });
             floatBar.handleProgress(task);
             new Thread(task).start();

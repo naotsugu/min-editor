@@ -203,7 +203,7 @@ public interface Content {
      * @param traverseCallback  the coll back function
      * @return a new {@link Content}
      */
-    static Content of(Path path, Function<byte[], Boolean> traverseCallback) {
+    static Content of(Path path, Function<Long, Boolean> traverseCallback) {
         return new TextEditContent(path, traverseCallback);
     }
 

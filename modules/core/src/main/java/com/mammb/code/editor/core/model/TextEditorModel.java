@@ -755,6 +755,8 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
             case QueryRecords.FoundCounts _ -> (R) Integer.valueOf(decorate.highlightCounts());
             case QueryRecords.SelectedCounts _ -> (R) selectedCounts();
+            case QueryRecords.LineSize _ -> (R) Integer.valueOf(screenLayout.lineSize());
+            case QueryRecords.RowSize _ -> (R) Integer.valueOf(screenLayout.rowSize());
             case null -> null;
             default -> content.query(query);
         };
