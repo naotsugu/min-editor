@@ -223,8 +223,10 @@ public class TextEditorModel implements EditorModel {
             if (text == null) continue;
             int nextCol = withShortcut ? text.indexRightBound(c.col()) : text.indexRight(c.col());
             if (nextCol <= 0) {
-                int nextRow = Math.min(screenLayout.rowSize() - 1, c.row() + 1);
-                c.at(nextRow, 0);
+                if (c.row() != screenLayout.rowSize() - 1) {
+                    int nextRow = Math.min(screenLayout.rowSize() - 1, c.row() + 1);
+                    c.at(nextRow, 0);
+                }
             } else {
                 c.at(c.row(), nextCol);
             }
