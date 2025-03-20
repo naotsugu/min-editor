@@ -40,6 +40,18 @@ class WrapLayoutTest {
     private static Path dir;
 
     @Test
+    void refreshAt() {
+        String text = "abc".repeat(10); // 30 char
+        var target = new WrapLayout(content(text), new FontMetricsTestImpl());
+        target.setLineWidth(20);
+        target.refreshAt(0, 10);
+        List<SubRange> lines = target.lines();
+        assertEquals(2, lines.size());
+        assertEquals(new SubRange(0, 0, 2, 0, 20), lines.get(0));
+        assertEquals(new SubRange(0, 1, 2, 20, 30), lines.get(1));
+    }
+
+    @Test
     void lineWidth() {
 
         String text = "abc".repeat(10);
@@ -66,6 +78,17 @@ class WrapLayoutTest {
 
     @Test
     void rowToFirstLine() {
+        String text = "abc".repeat(10); // 30 char
+        var target = new WrapLayout(content(text), new FontMetricsTestImpl());
+        target.setLineWidth(20);
+        // abcabcabcabcabcabcab  row:0  line:0
+        // cabcabcabc            row:0  line:1
+        assertEquals(0, target.rowToFirstLine(0));
+        assertEquals(0, target.rowToFirstLine(1));
+    }
+
+    @Test
+    void rowToFirstLineMulti() {
         String text = "abc".repeat(10) + "\n" + "123".repeat(10) + "\n";
         var target = new WrapLayout(content(text), new FontMetricsTestImpl());
         target.setLineWidth(20);
@@ -77,6 +100,17 @@ class WrapLayoutTest {
 
     @Test
     void rowToLastLine() {
+        String text = "abc".repeat(10); // 30 char
+        var target = new WrapLayout(content(text), new FontMetricsTestImpl());
+        target.setLineWidth(20);
+        // abcabcabcabcabcabcab  row:0  line:0
+        // cabcabcabc            row:0  line:1
+        assertEquals(1, target.rowToLastLine(0));
+        assertEquals(1, target.rowToLastLine(1));
+    }
+
+    @Test
+    void rowToLastLineMulti() {
         String text = "abc".repeat(10) + "\n" + "123".repeat(10) + "\n";
         var target = new WrapLayout(content(text), new FontMetricsTestImpl());
         target.setLineWidth(20);

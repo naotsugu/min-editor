@@ -84,10 +84,12 @@ class WrapLayout implements ContentLayout {
 
     @Override
     public void refreshAt(int startRow, int endRow) {
+        int start = Math.max(0, startRow);
+        int end   = Math.min(endRow, content.rows() - 1);
         int increasedRows = (content.rows() - 1) - lines.getLast().row();
-        int fromLine = rowToFirstLine(startRow);
-        lines.subList(fromLine, rowToLastLine(endRow) + 1).clear();
-        List<SubRange> renew = IntStream.rangeClosed(startRow, endRow + increasedRows)
+        int fromLine = rowToFirstLine(start);
+        lines.subList(fromLine, rowToLastLine(end) + 1).clear();
+        List<SubRange> renew = IntStream.rangeClosed(start, end + increasedRows)
             .mapToObj(this::subRanges)
             .flatMap(Collection::stream)
             .toList();
@@ -197,12 +199,16 @@ class WrapLayout implements ContentLayout {
     @Override
     public int rowToFirstLine(int row) {
         if (row <= 0) return 0;
+        row = Math.min(row, content.rows() - 1);
         int line = Collections.binarySearch(lines, new SubRange(row, 0, 0, 0, 0));
-        return (line < 0) ? lines.size() - 1 : line;
+        return (line < 0)
+            ? lines.size() - 1 - lines.getLast().subLine()
+            : line;
     }
 
     @Override
     public int rowToLastLine(int row) {
+        row = Math.min(row, content.rows() - 1);
         int first = rowToFirstLine(row);
         return first + subRange(first).subLines() - 1;
     }
