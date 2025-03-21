@@ -85,25 +85,31 @@ class WrapLayout implements ContentLayout {
     @Override
     public void refreshAt(int startRow, int endRow) {
 
-        int fluctuations = (content.rows() - 1) - lines.getLast().row();
-        if (fluctuations == 0) {
+        int fromIndex = Collections.binarySearch(lines, new SubRange(startRow, 0, 0, 0, 0));
+        int toIndex = Collections.binarySearch(lines, new SubRange(endRow, 0, 0, 0, 0));
+        toIndex = toIndex < 0 ? lines.size() - 1 : toIndex;
 
-            int fromIndex = Collections.binarySearch(lines, new SubRange(startRow, 0, 0, 0, 0));
-            int toIndex = Collections.binarySearch(lines, new SubRange(endRow, 0, 0, 0, 0));
-            toIndex = toIndex < 0 ? lines.size() - 1 : toIndex;
+        List<SubRange> renew = IntStream.rangeClosed(
+                Math.clamp(startRow, 0, content.rows() - 1),
+                Math.clamp(endRow, 0, content.rows() - 1))
+            .mapToObj(this::subRanges)
+            .flatMap(Collection::stream)
+            .toList();
+        lines.subList(fromIndex, toIndex + 1).clear();
+        lines.addAll(fromIndex, renew);
 
-            List<SubRange> renew = IntStream.rangeClosed(
-                    Math.clamp(startRow, 0, content.rows() - 1),
-                    Math.clamp(endRow, 0, content.rows() - 1))
-                .mapToObj(this::subRanges)
-                .flatMap(Collection::stream)
-                .toList();
-            lines.subList(fromIndex, toIndex + 1).clear();
-            lines.addAll(fromIndex, renew);
-
-        } else {
-            refresh(rowToFirstLine(startRow));
+        if ((lines.size() - 1) > fromIndex + renew.size()) {
+            // fix up the shifted row number
+            int oldRow = lines.get(fromIndex + renew.size()).row();
+            int newRow = renew.getLast().row() + 1;
+            int diff = newRow - oldRow;
+            if (diff != 0) {
+                for (int i = fromIndex + renew.size(); i < lines.size(); i++) {
+                    lines.get(i).plusRow(diff);
+                }
+            }
         }
+
     }
 
     @Override
