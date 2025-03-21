@@ -114,8 +114,11 @@ public class App extends Application {
           -fx-background-color: derive(-fx-box-border,30%)
         }
         .scroll-bar .thumb {
-          -fx-background-color :-fx-inner-border;
+          -fx-background-color :derive(app-text, -50%);
           -fx-background-insets : 1.0, 0.0, 0.0;
+        }
+        .scroll-bar .thumb:hover {
+          -fx-background-color :derive(app-text, -30%);
         }
         .scroll-bar .increment-button,
         .scroll-bar .decrement-button {
@@ -146,7 +149,7 @@ public class App extends Application {
         }
         .app-tab-pane-active > .tab-pane > .tab-header-area > .headers-region > .tab:selected {
           -fx-background-color: derive(-fx-box-border, 30%);
-          -fx-border-color: app-text transparent transparent transparent;
+          -fx-border-color: derive(app-text, -30%) transparent transparent transparent;
         }
         .tab-pane > .tab-header-area > .headers-region > .tab:selected {
           /* -fx-color: -fx-hover-base; */
