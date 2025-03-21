@@ -25,7 +25,11 @@ dependencies {
 application {
     mainClass = "com.mammb.code.editor.bootstrap.Main"
     mainModule = "code.editor.bootstrap"
-    applicationDefaultJvmArgs = listOf("-Xms64m", "--enable-preview", "-XX:G1PeriodicGCInterval=5000")
+    applicationDefaultJvmArgs = listOf(
+        "-Xms64m",
+        "--enable-preview",
+        "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m")
+        //"-XX:G1PeriodicGCInterval=5000")
     if (providers.systemProperty("debug").isPresent) {
         applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"))
     }
