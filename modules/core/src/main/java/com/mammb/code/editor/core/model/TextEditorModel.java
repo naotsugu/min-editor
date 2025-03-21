@@ -786,8 +786,8 @@ public class TextEditorModel implements EditorModel {
 
     private Point selectionReplace(Caret caret, String text) {
         assert caret.isMarked();
-        var range = caret.markedRange();
-        var pos = content.replace(range.min(), range.max(), text);
+        Range range = caret.markedRange();
+        Point pos = content.replace(range.min(), range.max(), text);
         screenLayout.refreshBuffer(range.min().row(), range.max().row());
         caret.clearMark();
         caret.at(pos);
