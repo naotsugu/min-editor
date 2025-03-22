@@ -100,7 +100,10 @@ public class App extends Application {
           -fx-font: 14px "Consolas";
         }
         .button {
-          -fx-background-color: /*-fx-shadow-highlight-color,  -fx-outer-border, -fx-inner-border, */ -fx-body-color;
+          -fx-background-color: -fx-body-color;
+        }
+        .button:hover {
+          -fx-text-fill: white;
         }
 
         .app-command-palette-dialog-pane > .button-bar > .container {
