@@ -127,6 +127,32 @@ public class WrapLayoutRefreshAtTest {
         assertEquals(new SubRange(2, 1, 2, 10, 14), lines.get(5));
     }
 
+    @Test
+    void refreshAtAfterReplaceEdit() {
+
+        String line0 = "a".repeat(11) + "\n";
+        String line1 = "b".repeat(12) + "\n";
+        String line2 = "c".repeat(13) + "\n";
+        String line3 = "d".repeat(15);
+
+        Content content = content(line0 + line1 + line2 + line3);
+        var target = new WrapLayout(content, new FontMetricsTestImpl());
+        target.setLineWidth(10);
+        assertEquals(8, target.lineSize());
+
+        content.replace(Point.of(1, 0), Point.of(2, 10), "xxx");
+
+        target.refreshAt(1, 2);
+        List<SubRange> lines = target.lines();
+        assertEquals(5, lines.size());
+        assertEquals(new SubRange(0, 0, 2, 0, 10), lines.get(0));
+        assertEquals(new SubRange(0, 1, 2, 10, 12), lines.get(1));
+        assertEquals(new SubRange(1, 0, 1, 0, 7), lines.get(2));
+        assertEquals(new SubRange(2, 0, 2, 0, 10), lines.get(3));
+        assertEquals(new SubRange(2, 1, 2, 10, 15), lines.get(4));
+
+    }
+
     private Content content(String text) {
         Path path = dir.resolve(UUID.randomUUID() + ".txt");
         try (var writer = Files.newBufferedWriter(path)) {
