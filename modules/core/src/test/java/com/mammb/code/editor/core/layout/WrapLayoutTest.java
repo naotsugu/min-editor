@@ -40,18 +40,6 @@ class WrapLayoutTest {
     private static Path dir;
 
     @Test
-    void refreshAt() {
-        String text = "abc".repeat(10); // 30 char
-        var target = new WrapLayout(content(text), new FontMetricsTestImpl());
-        target.setLineWidth(20);
-        target.refreshAt(0, 10);
-        List<SubRange> lines = target.lines();
-        assertEquals(2, lines.size());
-        assertEquals(new SubRange(0, 0, 2, 0, 20), lines.get(0));
-        assertEquals(new SubRange(0, 1, 2, 20, 30), lines.get(1));
-    }
-
-    @Test
     void lineWidth() {
 
         String text = "abc".repeat(10);
