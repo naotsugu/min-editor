@@ -151,7 +151,7 @@ public class EditorPane extends StackPane {
         hScroll.valueProperty().addListener(this::handleHorizontalScroll);
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethodTextChanged);
-        canvas.focusedProperty().addListener((ob, _, n) -> {
+        canvas.focusedProperty().addListener((_, _, n) -> {
             model.setCaretVisible(n);
             paint(); // TODO only caret draw
         });
@@ -205,6 +205,7 @@ public class EditorPane extends StackPane {
             case null, default -> canvas.setCursor(Cursor.TEXT);
         }
     }
+
     private void handleMousePressed(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY) {
             model.mousePressed(e.getX(), e.getY());
