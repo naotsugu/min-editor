@@ -333,7 +333,12 @@ class BasicScreenLayout implements ScreenLayout {
         fillBuffer();
     }
 
+    /**
+     * Fill buffer.
+     */
     private void fillBuffer() {
+        topLine = Math.clamp(topLine, 0, layout.lineSize() - 1);
+        xMax = 0;
         buffer.clear();
         buffer.addAll(layout.texts(topLine, topLine + screenLineSize()));
         buffer.stream().mapToDouble(Text::width)
