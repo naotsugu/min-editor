@@ -251,7 +251,7 @@ public class TextEditContent implements Content {
             case CharsetSymbol _   -> (R) charsetName();
             case Modified _        -> (R) (Boolean) isModified();
             case Bom _             -> (R) edit.bom();
-            case ContentPath _     -> (R) edit.path();
+            case ContentPath _     -> (R) Optional.ofNullable(edit.path());
             default                -> null;
         };
     }

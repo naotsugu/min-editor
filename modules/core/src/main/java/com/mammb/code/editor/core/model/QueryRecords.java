@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.model;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 
@@ -36,7 +37,7 @@ public interface QueryRecords {
     /** The query of caret point. */
     record CaretPoint() implements Query<Point> { }
     /** The query of content path. */
-    record ContentPath() implements Query<Path> { }
+    record ContentPath() implements Query<Optional<Path>> { }
     /** The query of width as characters. */
     record WidthAsCharacters() implements Query<Integer> { }
     /** The query of founded count. */

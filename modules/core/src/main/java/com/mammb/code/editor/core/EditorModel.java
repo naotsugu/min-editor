@@ -154,8 +154,6 @@ public interface EditorModel {
      */
     void setCaretVisible(boolean visible);
 
-    Optional<Path> path();
-
     /**
      * Save the target content to a file.
      * @param path the path of file

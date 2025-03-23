@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import java.nio.file.Path;
+import java.util.Optional;
 import com.mammb.code.editor.core.model.QueryRecords.*;
 
 /**
@@ -30,7 +31,7 @@ public interface Query<R> {
     Query<Boolean> modified = new Modified();
     Query<byte[]> bom = new Bom();
     Query<Point> caretPoint = new CaretPoint();
-    Query<Path> contentPath = new ContentPath();
+    Query<Optional<Path>> contentPath = new ContentPath();
 
     Query<Integer> widthAsCharacters = new WidthAsCharacters();
     Query<Integer> foundCounts = new FoundCounts();

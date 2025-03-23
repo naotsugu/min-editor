@@ -336,8 +336,8 @@ public class EditorPane extends StackPane {
             case HexToDec _         -> model.apply(Action.replace(EditingFunctions.hexToDec, true));
             case BinToHex _         -> model.apply(Action.replace(EditingFunctions.binToHex, true));
             case BinToDec _         -> model.apply(Action.replace(EditingFunctions.binToDec, true));
-            case Pwd _              -> inputText(() -> model.query(Query.contentPath).getParent());
-            case Pwf _              -> inputText(() -> model.query(Query.contentPath));
+            case Pwd _              -> inputText(() -> model.query(Query.contentPath).map(Path::getParent).orElse(null));
+            case Pwf _              -> inputText(() -> model.query(Query.contentPath).orElse(null));
             case Now _              -> inputText(LocalDateTime::now);
             case Today _            -> inputText(LocalDate::now);
             case Forward _          -> sessionHistory.forward().ifPresent(this::open);
@@ -353,7 +353,9 @@ public class EditorPane extends StackPane {
 
     private void inputText(Supplier<Object> supplier) {
         try {
-            model.apply(Action.input(supplier.get().toString()));
+            Object obj = supplier.get();
+            if (obj == null) return;
+            model.apply(Action.input(obj.toString()));
         } catch (Exception ignore) { }
     }
 
@@ -399,9 +401,9 @@ public class EditorPane extends StackPane {
         if (!canDiscard()) return;
         FileChooser fc = new FileChooser();
         fc.setTitle("Select file...");
-        if (model.path().isPresent()) {
+        if (model.query(Query.contentPath).isPresent()) {
             fc.setInitialDirectory(
-                    model.path().get().toAbsolutePath().getParent().toFile());
+                model.query(Query.contentPath).get().toAbsolutePath().getParent().toFile());
         } else {
             fc.setInitialDirectory(Path.of(System.getProperty("user.home")).toFile());
         }
@@ -478,8 +480,8 @@ public class EditorPane extends StackPane {
 
     private void save() {
         // TODO saving large files runs in the background
-        if (model.path().isPresent()) {
-            model.save(model.path().get());
+        if (model.query(Query.contentPath).isPresent()) {
+            model.save(model.query(Query.contentPath).get());
         } else {
             saveAs();
         }
@@ -488,8 +490,8 @@ public class EditorPane extends StackPane {
     private void saveAs() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Save As...");
-        fc.setInitialDirectory(model.path().isPresent()
-                ? model.path().get().toAbsolutePath().getParent().toFile()
+        fc.setInitialDirectory(model.query(Query.contentPath).isPresent()
+                ? model.query(Query.contentPath).get().toAbsolutePath().getParent().toFile()
                 : Path.of(System.getProperty("user.home")).toFile());
         File file = fc.showSaveDialog(getScene().getWindow());
         if (file == null) return;
