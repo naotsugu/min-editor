@@ -427,8 +427,7 @@ public class EditorPane extends StackPane {
 
     private void open(Session session) {
 
-        final long size = fileSize(session.path());
-        boolean openInBackground = size > 2_000_000;
+        boolean openInBackground = fileSize(session.path()) > 2_000_000;
 
         // save previous session
         sessionHistory.push(model.getSession());
@@ -439,25 +438,32 @@ public class EditorPane extends StackPane {
         model.setSize(getWidth(), getHeight());
         filePathProperty.setValue(session.path());
         if (openInBackground) {
-            long start = System.currentTimeMillis();
-            Task<Content> task = new Task<>() {
-                private final AtomicLong total = new AtomicLong(0);
-                @Override protected Content call() {
-                    return Content.of(session.path(), bytes -> {
-                        updateProgress(total.addAndGet(bytes), size);
-                        return !isCancelled();
-                    });
-                }
-            };
-            task.setOnSucceeded(_ -> {
-                model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll(), context);
-                model.setSize(getWidth(), getHeight());
-                log.log(System.Logger.Level.INFO, "opened %,d rows in %,d ms"
-                    .formatted(model.query(Query.rowSize), System.currentTimeMillis() - start));
-            });
+            Task<Content> task = buildOpenTask(session);
             floatBar.handleProgress(task);
             new Thread(task).start();
         }
+    }
+
+    private Task<Content> buildOpenTask(Session session) {
+        final long size = fileSize(session.path());
+        final long start = System.currentTimeMillis();
+        Task<Content> task = new Task<>() {
+            private final AtomicLong total = new AtomicLong(0);
+            @Override
+            protected Content call() {
+                return Content.of(session.path(), bytes -> {
+                    updateProgress(total.addAndGet(bytes), size);
+                    return !isCancelled();
+                });
+            }
+        };
+        task.setOnSucceeded(_ -> {
+            model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll(), context);
+            model.setSize(getWidth(), getHeight());
+            log.log(System.Logger.Level.INFO, "opened %,d rows in %,d ms"
+                .formatted(model.query(Query.rowSize), System.currentTimeMillis() - start));
+        });
+        return task;
     }
 
 
