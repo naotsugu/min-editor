@@ -466,7 +466,6 @@ public class EditorPane extends StackPane {
         return task;
     }
 
-
     boolean canDiscard() {
         boolean canDiscard = true;
         if (model.query(Query.modified)) {
