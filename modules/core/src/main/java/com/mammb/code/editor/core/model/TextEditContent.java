@@ -68,7 +68,7 @@ public class TextEditContent implements Content {
      * @param traverseCallback the traverseCallback
      */
     public TextEditContent(Path path, Function<Long, Boolean> traverseCallback) {
-        this.edit = TextEdit.of(path, traverseCallback::apply);
+        this.edit = TextEdit.of(path, progress -> traverseCallback.apply((long) progress.workDone()));
     }
 
     @Override

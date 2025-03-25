@@ -451,11 +451,10 @@ public class EditorPane extends StackPane {
         final long size = fileSize(session.path());
         final long start = System.currentTimeMillis();
         Task<Content> task = new Task<>() {
-            private final AtomicLong total = new AtomicLong(0);
             @Override
             protected Content call() {
-                return Content.of(session.path(), bytes -> {
-                    updateProgress(total.addAndGet(bytes), size);
+                return Content.of(session.path(), workDone -> {
+                    updateProgress(workDone, size);
                     return !isCancelled();
                 });
             }

@@ -200,7 +200,7 @@ public interface Content {
     /**
      * Create a new {@link Content} from the specified path with the coll back.
      * @param path the specified path
-     * @param traverseCallback  the coll back function
+     * @param traverseCallback the coll back function
      * @return a new {@link Content}
      */
     static Content of(Path path, Function<Long, Boolean> traverseCallback) {
