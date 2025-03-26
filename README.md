@@ -59,7 +59,7 @@ The configuration files for each platform exist in the following
 |---------|-------------------------------------------|
 | max os  | `~/Library/Application Support/min-editor/` |
 | linux   | `~/.config/min-editor/`                     |
-| windows | `~/AppData/Roaming/min-editor/`             |
+| windows | `~/AppData/Local/min-editor/`             |
 
 
 ## Building
