@@ -95,7 +95,7 @@ class WrapLayout implements ContentLayout {
 
         List<SubRange> renew = IntStream.rangeClosed(
                 Math.clamp(startRow, 0, content.rows() - 1),
-                Math.clamp(endRow, 0, content.rows() - 1) + fluctuations)
+                Math.clamp(endRow + fluctuations, 0, content.rows() - 1))
             .mapToObj(this::subRanges)
             .flatMap(Collection::stream)
             .toList();
