@@ -41,7 +41,7 @@ public class WrapLayoutRefreshAtTest {
     void refreshAt() {
         String text = "abc".repeat(10); // 30 char
         var target = new WrapLayout(content(text), new FontMetricsTestImpl());
-        target.setLineWidth(20);
+        target.setCharsInLine(20);
         target.refreshAt(0, 10);
         List<SubRange> lines = target.lines();
         assertEquals(2, lines.size());
@@ -57,7 +57,7 @@ public class WrapLayoutRefreshAtTest {
         String line2 = "c".repeat(14);
         Content content = content(line0 + line1 + line2);
         var target = new WrapLayout(content, new FontMetricsTestImpl());
-        target.setLineWidth(10);
+        target.setCharsInLine(10);
         assertEquals(6, target.lineSize());
 
         content.replace(Point.of(1, 0), Point.of(1, 10), "");
@@ -84,7 +84,7 @@ public class WrapLayoutRefreshAtTest {
         String line2 = "c".repeat(14);
         Content content = content(line0 + line1 + line2);
         var target = new WrapLayout(content, new FontMetricsTestImpl());
-        target.setLineWidth(10);
+        target.setCharsInLine(10);
         assertEquals(6, target.lineSize());
 
         content.replace(Point.of(1, 0), Point.of(1, line1.length()), "");
@@ -107,7 +107,7 @@ public class WrapLayoutRefreshAtTest {
         String line1 = "c".repeat(14);
         Content content = content(line0 + line1);
         var target = new WrapLayout(content, new FontMetricsTestImpl());
-        target.setLineWidth(10);
+        target.setCharsInLine(10);
         assertEquals(4, target.lineSize());
 
         String line = "b".repeat(12) + "\n";
@@ -137,7 +137,7 @@ public class WrapLayoutRefreshAtTest {
 
         Content content = content(line0 + line1 + line2 + line3);
         var target = new WrapLayout(content, new FontMetricsTestImpl());
-        target.setLineWidth(10);
+        target.setCharsInLine(10);
         assertEquals(8, target.lineSize());
 
         content.replace(Point.of(1, 0), Point.of(2, 10), "xxx");

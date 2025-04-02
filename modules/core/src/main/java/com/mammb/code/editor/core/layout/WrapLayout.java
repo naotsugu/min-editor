@@ -34,8 +34,8 @@ import com.mammb.code.editor.core.text.Text;
  */
 class WrapLayout implements ContentLayout {
 
-    /** The width of screen(number of characters per line). */
-    private int lineWidth = 0;
+    /** The number of characters in a line(width of screen). */
+    private int charsInLine = 0;
     /** The content. */
     private final Content content;
     /** The font metrics. */
@@ -54,14 +54,14 @@ class WrapLayout implements ContentLayout {
     }
 
     @Override
-    public void setLineWidth(int width) {
-        this.lineWidth = width;
+    public void setCharsInLine(int n) {
+        this.charsInLine = n;
         refresh(0);
     }
 
     @Override
-    public int lineWidth() {
-        return lineWidth;
+    public int charsInLine() {
+        return charsInLine;
     }
 
     @Override
@@ -107,7 +107,6 @@ class WrapLayout implements ContentLayout {
                 lines.get(i).plusRow(fluctuations);
             }
         }
-
     }
 
     @Override
@@ -156,7 +155,7 @@ class WrapLayout implements ContentLayout {
     }
 
     private List<SubText> subTextsAt(int row) {
-        return SubText.of(rowTextAt(row), lineWidth * fm.standardCharWidth());
+        return SubText.of(rowTextAt(row), charsInLine * fm.standardCharWidth());
     }
 
     @Override

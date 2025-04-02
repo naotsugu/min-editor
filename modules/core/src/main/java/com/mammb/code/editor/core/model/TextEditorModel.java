@@ -538,7 +538,7 @@ public class TextEditorModel implements EditorModel {
     private void pasteFromClipboard(Clipboard clipboard) {
         if (Objects.equals(decorate.syntaxName(), "md")) {
             var html = clipboard.getHtml();
-            if (html.contains("<table") && html.contains("</table>")) {
+            if (html != null && html.contains("<table") && html.contains("</table>")) {
                 var mdTable = EditingFunctions.markdownTable.apply(html);
                 if (!mdTable.isEmpty()) {
                     input(mdTable);
@@ -583,7 +583,7 @@ public class TextEditorModel implements EditorModel {
      */
     private void wrap(int width) {
         decorate.clear();
-        screenLayout.setLineWidth(width);
+        screenLayout.setCharsInLine(width);
         scrollToCaret();
     }
 
@@ -691,7 +691,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(TextEditorModel::lastModifiedTime).orElse(null),
             screenLayout.topLine(),
-            screenLayout.lineWidth(),
+            screenLayout.charsInLine(),
             carets.getFirst().row(),
             carets.getFirst().col(),
             System.currentTimeMillis());

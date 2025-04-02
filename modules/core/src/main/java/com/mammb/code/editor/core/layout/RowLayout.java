@@ -46,12 +46,12 @@ class RowLayout implements ContentLayout {
     }
 
     @Override
-    public void setLineWidth(int width) {
+    public void setCharsInLine(int n) {
         // nothing to do
     }
 
     @Override
-    public int lineWidth() {
+    public int charsInLine() {
         return 0;
     }
 

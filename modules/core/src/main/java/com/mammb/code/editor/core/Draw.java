@@ -70,10 +70,12 @@ public interface Draw {
     /**
      * Draw the underline.
      * @param x1 the position x1
+     * @param y1 the position y1
      * @param x2 the position x2
-     * @param y the position y
+     * @param y2 the position y2
+     * @param wrapWidth the wrap width
      */
-    void underline(double x1, double x2, double y);
+    void underline(double x1, double y1, double x2, double y2, double wrapWidth);
 
     /**
      * Draw the horizontal line.

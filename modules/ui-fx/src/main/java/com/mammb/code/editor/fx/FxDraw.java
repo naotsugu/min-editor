@@ -146,11 +146,20 @@ public class FxDraw implements Draw {
     }
 
     @Override
-    public void underline(double x1, double x2, double y) {
+    public void underline(double x1, double y1, double x2, double y2, double wrapWidth) {
         double height = fontMetrics().getAscent();
         gc.setStroke(Color.LIGHTGRAY);
         gc.setLineWidth(1);
-        gc.strokeLine(x1, y + height, x2, y + height);
+        if (y1 == y2) {
+            gc.strokeLine(x1, y1 + height, x2, y1 + height);
+        } else {
+            // if line wrapped
+            for (double y = y1; y <= y2; y += fontMetrics.getLineHeight()) {
+                double xs = (y == y1) ? x1 : 0;
+                double xe = (y == y2) ? x2 : wrapWidth;
+                gc.strokeLine(xs, y + height, xe, y + height);
+            }
+        }
     }
 
     @Override

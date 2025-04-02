@@ -16,13 +16,11 @@
 package com.mammb.code.editor.core.layout;
 
 import com.mammb.code.editor.core.Content;
-import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.FontMetricsTestImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -40,23 +38,23 @@ class WrapLayoutTest {
     private static Path dir;
 
     @Test
-    void lineWidth() {
+    void charsInLine() {
 
         String text = "abc".repeat(10);
         var target = new WrapLayout(content(text), new FontMetricsTestImpl());
 
-        target.setLineWidth(0);
+        target.setCharsInLine(0);
         List<SubRange> lines = target.lines();
         assertEquals(1, lines.size());
         assertEquals(new SubRange(0, 0, 1, 0, 30), lines.get(0));
 
-        target.setLineWidth(20);
+        target.setCharsInLine(20);
         lines = target.lines();
         assertEquals(2, lines.size());
         assertEquals(new SubRange(0, 0, 2, 0, 20), lines.get(0));
         assertEquals(new SubRange(0, 1, 2, 20, 30), lines.get(1));
 
-        target.setLineWidth(10);
+        target.setCharsInLine(10);
         lines = target.lines();
         assertEquals(3, lines.size());
         assertEquals(new SubRange(0, 0, 3, 0, 10), lines.get(0));
@@ -68,7 +66,7 @@ class WrapLayoutTest {
     void rowToFirstLine() {
         String text = "abc".repeat(10); // 30 char
         var target = new WrapLayout(content(text), new FontMetricsTestImpl());
-        target.setLineWidth(20);
+        target.setCharsInLine(20);
         // abcabcabcabcabcabcab  row:0  line:0
         // cabcabcabc            row:0  line:1
         assertEquals(0, target.rowToFirstLine(0));
@@ -79,7 +77,7 @@ class WrapLayoutTest {
     void rowToFirstLineMulti() {
         String text = "abc".repeat(10) + "\n" + "123".repeat(10) + "\n";
         var target = new WrapLayout(content(text), new FontMetricsTestImpl());
-        target.setLineWidth(20);
+        target.setCharsInLine(20);
 
         assertEquals(0, target.rowToFirstLine(0));
         assertEquals(2, target.rowToFirstLine(1));
@@ -90,7 +88,7 @@ class WrapLayoutTest {
     void rowToLastLine() {
         String text = "abc".repeat(10); // 30 char
         var target = new WrapLayout(content(text), new FontMetricsTestImpl());
-        target.setLineWidth(20);
+        target.setCharsInLine(20);
         // abcabcabcabcabcabcab  row:0  line:0
         // cabcabcabc            row:0  line:1
         assertEquals(1, target.rowToLastLine(0));
@@ -101,7 +99,7 @@ class WrapLayoutTest {
     void rowToLastLineMulti() {
         String text = "abc".repeat(10) + "\n" + "123".repeat(10) + "\n";
         var target = new WrapLayout(content(text), new FontMetricsTestImpl());
-        target.setLineWidth(20);
+        target.setCharsInLine(20);
 
         assertEquals(1, target.rowToLastLine(0));
         assertEquals(3, target.rowToLastLine(1));

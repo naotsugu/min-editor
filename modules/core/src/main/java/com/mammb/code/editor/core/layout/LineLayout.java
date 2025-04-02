@@ -86,16 +86,24 @@ public interface LineLayout {
     double lineHeight();
 
     /**
-     * Set the width of line wrap characters.
-     * @param width the number of characters per line
+     * Get the line width.
+     * @return the line width, {@code 0} if no wrapped
      */
-    void setLineWidth(int width);
+    default double lineWidth() {
+        return charsInLine() * standardCharWidth();
+    }
 
     /**
-     * Get the width of line wrap characters.
-     * @return the width of line wrap characters
+     * Set the number of characters in a line.
+     * @param n the number of characters in a line
      */
-    int lineWidth();
+    void setCharsInLine(int n);
+
+    /**
+     * Get the number of characters in a line.
+     * @return the number of characters in a line, {@code 0} if no wrapped
+     */
+    int charsInLine();
 
     /**
      * Get the first column of the specified number of line.

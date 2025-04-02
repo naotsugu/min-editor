@@ -174,9 +174,12 @@ public class Paints {
                 draw.caret(loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop);
                 if (c.hasImeFlush()) {
                     screenLayout.locationOn(c.point().row(), c.point().col()).ifPresent(org ->
-                        draw.underline(org.x() + marginLeft - scroll.xVal(),
+                        draw.underline(
+                            org.x() + marginLeft - scroll.xVal(),
+                            org.y() + marginTop,
                             loc.x() + marginLeft - scroll.xVal(),
-                            loc.y() + marginTop));
+                            loc.y() + marginTop,
+                            screenLayout.lineWidth() + marginLeft));
                 }
             });
         }
