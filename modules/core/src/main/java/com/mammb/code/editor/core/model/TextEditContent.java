@@ -25,13 +25,14 @@ import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
-import com.mammb.code.piecetable.Findable;
+import com.mammb.code.piecetable.DocumentSearch;
 import com.mammb.code.piecetable.Pos;
 import com.mammb.code.piecetable.TextEdit;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 /**
@@ -212,35 +213,56 @@ public class TextEditContent implements Content {
 
     @Override
     public List<PointLen> findAll(FindSpec findSpec) {
-        List<Findable.Found> founds = switch (findSpec.patternType()) {
-            case CASE_INSENSITIVE -> edit.findAll(findSpec.pattern(), false);
-            case CASE_SENSITIVE -> edit.findAll(findSpec.pattern(), true);
-            case REGEXP -> edit.findAll(findSpec.pattern());
-            case EMPTY -> List.of();
-        };
-        return founds.stream()
-            .map(f -> PointLen.of(f.row(), f.col(), f.len()))
-            .toList();
+        if (findSpec.isEmpty()) return List.of();
+        List<PointLen> list = new ArrayList<>();
+        edit.search().run(spec(findSpec, true), new Pos(0, 0), progress -> {
+            list.addAll(
+                progress.partial().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).toList()
+            );
+            return true;
+        });
+        return list;
     }
 
     @Override
     public Optional<PointLen> findNext(Point base, FindSpec findSpec) {
-        return find(base, true, findSpec);
+        AtomicReference<PointLen> ref = new AtomicReference<>();
+        edit.search().run(spec(findSpec, true), new Pos(base.row(), base.col()), progress -> {
+            var ret = progress.partial().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).findFirst();
+            if (ret.isEmpty()) {
+                return true;
+            } else {
+                ref.set(ret.get());
+                return false;
+            }
+        });
+        return Optional.ofNullable(ref.get());
     }
 
     @Override
     public Optional<PointLen> findPrev(Point base, FindSpec findSpec) {
-        return find(base, false, findSpec);
+        AtomicReference<PointLen> ref = new AtomicReference<>();
+        edit.search().run(spec(findSpec, false), new Pos(base.row(), base.col()), progress -> {
+            var ret = progress.partial().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).findFirst();
+            if (ret.isEmpty()) {
+                return true;
+            } else {
+                ref.set(ret.get());
+                return false;
+            }
+        });
+        return Optional.ofNullable(ref.get());
     }
 
-    private Optional<PointLen> find(Point base, boolean forward, FindSpec findSpec) {
-        Optional<Findable.Found> found = switch (findSpec.patternType()) {
-            case CASE_INSENSITIVE -> edit.find(findSpec.pattern(), base.row(), base.col(), forward, false);
-            case CASE_SENSITIVE -> edit.find(findSpec.pattern(), base.row(), base.col(), forward, true);
-            case REGEXP -> edit.find(findSpec.pattern(), base.row(), base.col(), forward);
-            case EMPTY -> Optional.empty();
-        };
-        return found.map(f -> PointLen.of(f.row(), f.col(), f.len()));
+    private DocumentSearch.Spec spec(FindSpec findSpec, boolean forward) {
+        return new DocumentSearch.Spec(
+            findSpec.pattern(),
+            switch (findSpec.patternType()) {
+                case CASE_INSENSITIVE -> DocumentSearch.PatternCase.CASE_INSENSITIVE;
+                case REGEXP -> DocumentSearch.PatternCase.REGEX;
+                default -> DocumentSearch.PatternCase.LITERAL;
+            },
+            forward ? DocumentSearch.Direction.FORWARD : DocumentSearch.Direction.BACKWARD);
     }
 
     @Override
