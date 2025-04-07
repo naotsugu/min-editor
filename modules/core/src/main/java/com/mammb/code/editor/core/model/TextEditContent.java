@@ -215,42 +215,38 @@ public class TextEditContent implements Content {
     public List<PointLen> findAll(FindSpec findSpec) {
         if (findSpec.isEmpty()) return List.of();
         List<PointLen> list = new ArrayList<>();
-        edit.search().run(spec(findSpec, true), new Pos(0, 0), progress -> {
-            list.addAll(
-                progress.partial().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).toList()
-            );
-            return true;
-        });
+        edit.search().run(spec(findSpec, true), new Pos(0, 0), progress -> list.addAll(
+                progress.partial().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).toList()));
         return list;
     }
 
     @Override
     public Optional<PointLen> findNext(Point base, FindSpec findSpec) {
         AtomicReference<PointLen> ref = new AtomicReference<>();
-        edit.search().run(spec(findSpec, true), new Pos(base.row(), base.col()), progress -> {
-            var ret = progress.partial().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).findFirst();
-            if (ret.isEmpty()) {
-                return true;
-            } else {
-                ref.set(ret.get());
-                return false;
-            }
-        });
+        var search = edit.search();
+        search.run(spec(findSpec, true), new Pos(base.row(), base.col()), progress ->
+            progress.partial().stream()
+                .map(p -> PointLen.of(p.row(), p.col(), p.len()))
+                .findFirst().ifPresent(c -> {
+                    ref.set(c);
+                    search.cancel();
+                })
+        );
         return Optional.ofNullable(ref.get());
     }
 
     @Override
     public Optional<PointLen> findPrev(Point base, FindSpec findSpec) {
         AtomicReference<PointLen> ref = new AtomicReference<>();
-        edit.search().run(spec(findSpec, false), new Pos(base.row(), base.col()), progress -> {
-            var ret = progress.partial().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).findFirst();
-            if (ret.isEmpty()) {
-                return true;
-            } else {
-                ref.set(ret.get());
-                return false;
-            }
-        });
+        var search = edit.search();
+        search.run(spec(findSpec, false), new Pos(base.row(), base.col()), progress ->
+            progress.partial().stream()
+                .map(p -> PointLen.of(p.row(), p.col(), p.len()))
+                .findFirst().ifPresent(c -> {
+                    ref.set(c);
+                    search.cancel();
+                })
+        );
         return Optional.ofNullable(ref.get());
     }
 
