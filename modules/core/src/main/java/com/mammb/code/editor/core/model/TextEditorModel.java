@@ -191,7 +191,6 @@ public class TextEditorModel implements EditorModel {
         } else if (line - (screenLayout.topLine() + screenLayout.screenLineSize() - 3) > 0) {
             int nLine = line - screenLayout.screenLineSize() + 3 + gap;
             scrollAt(Math.clamp(nLine, 0, screenLayout.lineSize() - screenLayout.screenLineSize() + 3));
-
         }
     }
 

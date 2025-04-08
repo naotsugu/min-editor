@@ -74,8 +74,6 @@ class BasicScreenLayout implements ScreenLayout {
     @Override
     public void scrollAt(int line) {
 
-        if (lineSize() < screenLineSize() / 2) return;
-
         line = Math.clamp(line, 0, lineSize() - 1);
         int delta = line - topLine;
         if (delta == 0) return;
