@@ -443,7 +443,9 @@ public class EditorPane extends StackPane {
         if (openInBackground) {
             Task<Content> task = buildOpenTask(session);
             floatBar.handleProgress(task);
-            new Thread(task).start();
+            var thread = new Thread(task);
+            thread.setDaemon(true);
+            thread.start();
         }
     }
 
