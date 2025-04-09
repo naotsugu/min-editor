@@ -38,5 +38,6 @@ public interface Query<R> {
     Query<Integer> selectedCounts = new SelectedCounts();
     Query<Integer> lineSize = new LineSize();
     Query<Integer> rowSize = new RowSize();
+    Query<Long> size = new Size();
 
 }

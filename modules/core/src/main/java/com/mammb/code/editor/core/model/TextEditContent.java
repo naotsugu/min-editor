@@ -25,6 +25,7 @@ import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
+import com.mammb.code.editor.core.model.QueryRecords.Size;
 import com.mammb.code.piecetable.DocumentSearch;
 import com.mammb.code.piecetable.Pos;
 import com.mammb.code.piecetable.TextEdit;
@@ -270,6 +271,7 @@ public class TextEditContent implements Content {
             case Modified _        -> (R) (Boolean) isModified();
             case Bom _             -> (R) edit.bom();
             case ContentPath _     -> (R) Optional.ofNullable(edit.path());
+            case Size _            -> (R) Long.valueOf(edit.rawSize());
             default                -> null;
         };
     }

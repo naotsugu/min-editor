@@ -48,5 +48,7 @@ public interface QueryRecords {
     record LineSize() implements Query<Integer> { }
     /** The query of row size. */
     record RowSize() implements Query<Integer> { }
+    /** The query of content size. */
+    record Size() implements Query<Long> { }
 
 }

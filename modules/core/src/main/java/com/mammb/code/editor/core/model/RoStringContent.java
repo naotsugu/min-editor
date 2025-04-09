@@ -21,9 +21,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 import java.util.function.Function;
-import java.util.stream.Stream;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.Point;
@@ -234,6 +232,7 @@ public class RoStringContent implements Content {
             case CharsetSymbol q -> (R) stat.charset().toString();
             case Modified q -> (R) Boolean.FALSE;
             case Bom q -> (R) stat.bom();
+            case Size _ -> (R) Long.valueOf(stringList.stream().mapToLong(s -> s.getBytes().length).sum());
             default -> null;
         };
     }

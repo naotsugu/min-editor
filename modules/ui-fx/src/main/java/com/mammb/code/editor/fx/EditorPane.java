@@ -63,7 +63,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -77,6 +76,8 @@ public class EditorPane extends StackPane {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(EditorPane.class.getName());
+    /** The threshold. */
+    private static final long BACKGROUND_THRESHOLD = 2_000_000;
 
     /** The context. */
     private final AppContext context;
@@ -313,15 +314,15 @@ public class EditorPane extends StackPane {
             case Palette cmd        -> showCommandPalette(cmd.initial());
             case Open cmd           -> open(cmd.path());
             case Config _           -> newEdit().open(Session.of(context.config().path()));
-            case FindNext cmd       -> model.apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
-            case FindPrev cmd       -> model.apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
-            case FindAll cmd        -> model.apply(Action.findAll(cmd.str(), cmd.caseSensitive()));
-            case FindNextRegex cmd  -> model.apply(Action.findNextRegex(cmd.str()));
-            case FindPrevRegex cmd  -> model.apply(Action.findPrevRegex(cmd.str()));
-            case FindAllRegex cmd   -> model.apply(Action.findAllRegex(cmd.str()));
-            case Select cmd         -> model.apply(Action.select(cmd.str(), cmd.caseSensitive()));
-            case SelectRegex cmd    -> model.apply(Action.selectRegex(cmd.str()));
-            case GoTo cmd           -> model.apply(Action.goTo(cmd.rowNumber() - 1));
+            case FindNext cmd       -> apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
+            case FindPrev cmd       -> apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
+            case FindAll cmd        -> apply(Action.findAll(cmd.str(), cmd.caseSensitive()));
+            case FindNextRegex cmd  -> apply(Action.findNextRegex(cmd.str()));
+            case FindPrevRegex cmd  -> apply(Action.findPrevRegex(cmd.str()));
+            case FindAllRegex cmd   -> apply(Action.findAllRegex(cmd.str()));
+            case Select cmd         -> apply(Action.select(cmd.str(), cmd.caseSensitive()));
+            case SelectRegex cmd    -> apply(Action.selectRegex(cmd.str()));
+            case GoTo cmd           -> apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd       -> model.apply(Action.wrapLine(cmd.width()));
             case ToggleLayout _     -> model.apply(Action.toggleLayout());
             case ToLowerCase _      -> model.apply(Action.replace(EditingFunctions.toLower, true));
@@ -350,6 +351,25 @@ public class EditorPane extends StackPane {
             case Empty _            -> { }
         }
         paint();
+    }
+
+    private void apply(Action action) {
+        if (model.query(Query.size) < BACKGROUND_THRESHOLD) {
+            model.apply(action);
+            return;
+        }
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                model.apply(action);
+                return null;
+            }
+        };
+        task.setOnSucceeded(_ -> paint());
+        floatBar.handleProgress(task);
+        var thread = new Thread(task);
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private void inputText(Supplier<Object> supplier) {
@@ -430,7 +450,7 @@ public class EditorPane extends StackPane {
 
     private void open(Session session) {
 
-        boolean openInBackground = fileSize(session.path()) > 2_000_000;
+        boolean openInBackground = fileSize(session.path()) > BACKGROUND_THRESHOLD;
 
         // save previous session
         sessionHistory.push(model.getSession());
