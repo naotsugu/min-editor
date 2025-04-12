@@ -217,39 +217,21 @@ public class TextEditContent implements Content {
     public List<PointLen> findAll(FindSpec findSpec) {
         if (findSpec.isEmpty()) return List.of();
         List<PointLen> list = new ArrayList<>();
-        edit.search().run(spec(findSpec, true), new Pos(0, 0), progress -> list.addAll(
-                progress.partial().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).toList()));
+        edit.search().all(spec(findSpec, true), new Pos(0, 0), seg -> list.addAll(
+            seg.value().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).toList()));
         return list;
     }
 
     @Override
     public Optional<PointLen> findNext(Point base, FindSpec findSpec) {
-        AtomicReference<PointLen> ref = new AtomicReference<>();
-        var search = edit.search();
-        search.run(spec(findSpec, true), new Pos(base.row(), base.col()), progress ->
-            progress.partial().stream()
-                .map(p -> PointLen.of(p.row(), p.col(), p.len()))
-                .findFirst().ifPresent(c -> {
-                    ref.set(c);
-                    search.cancel();
-                })
-        );
-        return Optional.ofNullable(ref.get());
+        return edit.search().next(spec(findSpec, true), new Pos(base.row(), base.col()))
+            .map(p -> PointLen.of(p.row(), p.col(), p.len()));
     }
 
     @Override
     public Optional<PointLen> findPrev(Point base, FindSpec findSpec) {
-        AtomicReference<PointLen> ref = new AtomicReference<>();
-        var search = edit.search();
-        search.run(spec(findSpec, false), new Pos(base.row(), base.col()), progress ->
-            progress.partial().stream()
-                .map(p -> PointLen.of(p.row(), p.col(), p.len()))
-                .findFirst().ifPresent(c -> {
-                    ref.set(c);
-                    search.cancel();
-                })
-        );
-        return Optional.ofNullable(ref.get());
+        return edit.search().next(spec(findSpec, false), new Pos(base.row(), base.col()))
+            .map(p -> PointLen.of(p.row(), p.col(), p.len()));
     }
 
     private DocumentSearch.Spec spec(FindSpec findSpec, boolean forward) {
