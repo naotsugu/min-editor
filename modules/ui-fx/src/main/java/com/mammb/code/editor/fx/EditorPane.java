@@ -63,6 +63,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -472,13 +473,11 @@ public class EditorPane extends StackPane {
     private Task<Content> buildOpenTask(Session session) {
         final long size = fileSize(session.path());
         final long start = System.currentTimeMillis();
+        AtomicLong workDone = new AtomicLong();
         Task<Content> task = new Task<>() {
             @Override
             protected Content call() {
-                return Content.of(session.path(), workDone -> {
-                    updateProgress(workDone, size);
-                    return !isCancelled();
-                });
+                return Content.of(session.path(), n -> updateProgress(workDone.addAndGet(n), size));
             }
         };
         task.setOnSucceeded(_ -> {

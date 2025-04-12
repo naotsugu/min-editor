@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -67,10 +68,10 @@ public class TextEditContent implements Content {
     /**
      * Constructor.
      * @param path the path of content
-     * @param traverseCallback the traverseCallback
+     * @param consumer the progress callback
      */
-    public TextEditContent(Path path, Function<Long, Boolean> traverseCallback) {
-        this.edit = TextEdit.of(path, progress -> traverseCallback.apply((long) progress.workDone()));
+    public TextEditContent(Path path, Consumer<Long> consumer) {
+        this.edit = TextEdit.of(path, seg -> consumer.accept(seg.fraction()));
     }
 
     @Override

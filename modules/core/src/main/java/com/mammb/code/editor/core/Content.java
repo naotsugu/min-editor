@@ -18,6 +18,7 @@ package com.mammb.code.editor.core;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.Point.PointLen;
@@ -200,11 +201,11 @@ public interface Content {
     /**
      * Create a new {@link Content} from the specified path with the coll back.
      * @param path the specified path
-     * @param traverseCallback the coll back function
+     * @param consumer the progress callback
      * @return a new {@link Content}
      */
-    static Content of(Path path, Function<Long, Boolean> traverseCallback) {
-        return new TextEditContent(path, traverseCallback);
+    static Content of(Path path, Consumer<Long> consumer) {
+        return new TextEditContent(path, consumer);
     }
 
     /**
