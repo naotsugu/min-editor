@@ -28,6 +28,7 @@ import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.Size;
 import com.mammb.code.piecetable.DocumentSearch;
 import com.mammb.code.piecetable.Pos;
+import com.mammb.code.piecetable.SearchContext;
 import com.mammb.code.piecetable.TextEdit;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -217,32 +218,32 @@ public class TextEditContent implements Content {
     public List<PointLen> findAll(FindSpec findSpec) {
         if (findSpec.isEmpty()) return List.of();
         List<PointLen> list = new ArrayList<>();
-        edit.search().all(spec(findSpec, true), new Pos(0, 0), seg -> list.addAll(
+        edit.search().findAll(spec(findSpec, true), seg -> list.addAll(
             seg.value().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).toList()));
         return list;
     }
 
     @Override
     public Optional<PointLen> findNext(Point base, FindSpec findSpec) {
-        return edit.search().next(spec(findSpec, true), new Pos(base.row(), base.col()))
+        return edit.search().findNext(spec(findSpec, true), new Pos(base.row(), base.col()))
             .map(p -> PointLen.of(p.row(), p.col(), p.len()));
     }
 
     @Override
     public Optional<PointLen> findPrev(Point base, FindSpec findSpec) {
-        return edit.search().next(spec(findSpec, false), new Pos(base.row(), base.col()))
+        return edit.search().findNext(spec(findSpec, false), new Pos(base.row(), base.col()))
             .map(p -> PointLen.of(p.row(), p.col(), p.len()));
     }
 
-    private DocumentSearch.Spec spec(FindSpec findSpec, boolean forward) {
-        return new DocumentSearch.Spec(
+    private SearchContext.Spec spec(FindSpec findSpec, boolean forward) {
+        return new SearchContext.Spec(
             findSpec.pattern(),
             switch (findSpec.patternType()) {
-                case CASE_INSENSITIVE -> DocumentSearch.PatternCase.CASE_INSENSITIVE;
-                case REGEXP -> DocumentSearch.PatternCase.REGEX;
-                default -> DocumentSearch.PatternCase.LITERAL;
+                case CASE_INSENSITIVE -> SearchContext.PatternCase.CASE_INSENSITIVE;
+                case REGEXP -> SearchContext.PatternCase.REGEX;
+                default -> SearchContext.PatternCase.LITERAL;
             },
-            forward ? DocumentSearch.Direction.FORWARD : DocumentSearch.Direction.BACKWARD);
+            forward ? SearchContext.Direction.FORWARD : SearchContext.Direction.BACKWARD);
     }
 
     @Override
