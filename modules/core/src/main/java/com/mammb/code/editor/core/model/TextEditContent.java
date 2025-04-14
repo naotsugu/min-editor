@@ -26,7 +26,6 @@ import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.Size;
-import com.mammb.code.piecetable.DocumentSearch;
 import com.mammb.code.piecetable.Pos;
 import com.mammb.code.piecetable.SearchContext;
 import com.mammb.code.piecetable.TextEdit;
@@ -34,7 +33,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
