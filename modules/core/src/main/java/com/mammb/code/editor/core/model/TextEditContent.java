@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Point.PointLen;
@@ -210,6 +211,11 @@ public class TextEditContent implements Content {
     @Override
     public void clearFlush() {
         flushes.clear();
+    }
+
+    @Override
+    public Find find() {
+        return null;
     }
 
     @Override

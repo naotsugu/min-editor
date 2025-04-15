@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Point.PointLen;
@@ -149,6 +150,11 @@ public class RoStringContent implements Content {
 
     @Override
     public void clearFlush() {
+    }
+
+    @Override
+    public Find find() {
+        return null;
     }
 
     @Override

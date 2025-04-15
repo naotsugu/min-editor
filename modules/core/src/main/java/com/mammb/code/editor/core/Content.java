@@ -151,6 +151,12 @@ public interface Content {
     void clearFlush();
 
     /**
+     * Get the find.
+     * @return the find
+     */
+    Find find();
+
+    /**
      * Find all.
      * @param findSpec the find spec
      * @return the search results
