@@ -435,6 +435,7 @@ public class TextEditorModel implements EditorModel {
                 refreshPointsRange(points);
             }
         }
+        postEditing();
     }
 
     private void delete() {
@@ -455,6 +456,7 @@ public class TextEditorModel implements EditorModel {
                 refreshPointsRange(points);
             }
         }
+        postEditing();
     }
 
     private void backspace() {
@@ -476,6 +478,7 @@ public class TextEditorModel implements EditorModel {
                 refreshPointsRange(points);
             }
         }
+        postEditing();
     }
 
     private void replace(Function<String, String> fun, boolean keepSelection) {
@@ -500,6 +503,7 @@ public class TextEditorModel implements EditorModel {
         screenLayout.refreshBuffer(
             rangeMin.min().row(),
             rangeMax.max().row());
+        postEditing();
     }
 
     private void inputTab(boolean sc) {
@@ -528,12 +532,14 @@ public class TextEditorModel implements EditorModel {
         preEditing();
         List<Point> points = content.undo();
         refreshPointsRange(points);
+        postEditing();
     }
 
     private void redo() {
         preEditing();
         List<Point> points = content.redo();
         refreshPointsRange(points);
+        postEditing();
     }
 
     private void pasteFromClipboard(Clipboard clipboard) {
@@ -577,13 +583,13 @@ public class TextEditorModel implements EditorModel {
     private void escape() {
         carets.unique().clearMark();
         decorate.clear();
+        find.clear();
     }
 
     /**
      * Set the width of line wrap characters.
      */
     private void wrap(int width) {
-        decorate.clear();
         screenLayout.setCharsInLine(width);
         scrollToCaret();
     }
@@ -592,7 +598,6 @@ public class TextEditorModel implements EditorModel {
      * Toggle layout.
      */
     private void toggleLayout() {
-        decorate.clear();
         screenLayout.toggleLayout(decorate.syntaxName());
         scrollToCaret();
     }
@@ -759,6 +764,13 @@ public class TextEditorModel implements EditorModel {
 
     private void preEditing() {
         decorate.clear();
+    }
+
+    private void postEditing() {
+        Style style = new Style.BgColor(Theme.dark.cautionColor());
+        find.founds().forEach(p -> {
+            decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len()));
+        });
     }
 
     /**
