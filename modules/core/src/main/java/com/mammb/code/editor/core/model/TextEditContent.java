@@ -215,39 +215,7 @@ public class TextEditContent implements Content {
 
     @Override
     public Find find() {
-        return null;
-    }
-
-    @Override
-    public List<PointLen> findAll(FindSpec findSpec) {
-        if (findSpec.isEmpty()) return List.of();
-        List<PointLen> list = new ArrayList<>();
-        edit.search().findAll(spec(findSpec, true), seg -> list.addAll(
-            seg.value().stream().map(p -> PointLen.of(p.row(), p.col(), p.len())).toList()));
-        return list;
-    }
-
-    @Override
-    public Optional<PointLen> findNext(Point base, FindSpec findSpec) {
-        return edit.search().findNext(spec(findSpec, true), new Pos(base.row(), base.col()))
-            .map(p -> PointLen.of(p.row(), p.col(), p.len()));
-    }
-
-    @Override
-    public Optional<PointLen> findPrev(Point base, FindSpec findSpec) {
-        return edit.search().findNext(spec(findSpec, false), new Pos(base.row(), base.col()))
-            .map(p -> PointLen.of(p.row(), p.col(), p.len()));
-    }
-
-    private SearchContext.Spec spec(FindSpec findSpec, boolean forward) {
-        return new SearchContext.Spec(
-            findSpec.pattern(),
-            switch (findSpec.patternType()) {
-                case CASE_INSENSITIVE -> SearchContext.PatternCase.CASE_INSENSITIVE;
-                case REGEXP -> SearchContext.PatternCase.REGEX;
-                default -> SearchContext.PatternCase.LITERAL;
-            },
-            forward ? SearchContext.Direction.FORWARD : SearchContext.Direction.BACKWARD);
+        return new FindImpl(edit.search());
     }
 
     @Override

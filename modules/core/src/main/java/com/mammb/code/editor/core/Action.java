@@ -104,34 +104,34 @@ public sealed interface Action
         return new Goto(row, System.currentTimeMillis());
     }
     static Action findAll(String str, boolean caseSensitive) {
-        return new FindAll(FindSpec.of(str, caseSensitive), System.currentTimeMillis());
+        return new FindAll(Find.specOf(str, caseSensitive), System.currentTimeMillis());
     }
     static Action findNext(String str, boolean caseSensitive) {
-        return new FindNext(FindSpec.of(str, caseSensitive), System.currentTimeMillis());
+        return new FindNext(Find.specOf(str, caseSensitive), System.currentTimeMillis());
     }
     static Action findPrev(String str, boolean caseSensitive) {
-        return new FindPrev(FindSpec.of(str, caseSensitive), System.currentTimeMillis());
+        return new FindPrev(Find.specOf(str, caseSensitive), System.currentTimeMillis());
     }
     static Action findNext() {
-        return new FindNext(FindSpec.EMPTY, System.currentTimeMillis());
+        return new FindNext(Find.emptySpecOf(), System.currentTimeMillis());
     }
     static Action findPrev() {
-        return new FindPrev(FindSpec.EMPTY, System.currentTimeMillis());
+        return new FindPrev(Find.emptySpecOf(), System.currentTimeMillis());
     }
     static Action findAllRegex(String str) {
-        return new FindAll(FindSpec.regexpOf(str), System.currentTimeMillis());
+        return new FindAll(Find.regexSpecOf(str), System.currentTimeMillis());
     }
     static Action select(String str, boolean caseSensitive) {
-        return new Select(FindSpec.of(str, caseSensitive), System.currentTimeMillis());
+        return new Select(Find.specOf(str, caseSensitive), System.currentTimeMillis());
     }
     static Action selectRegex(String str) {
-        return new Select(FindSpec.regexpOf(str), System.currentTimeMillis());
+        return new Select(Find.regexSpecOf(str), System.currentTimeMillis());
     }
     static Action findNextRegex(String str) {
-        return new FindNext(FindSpec.regexpOf(str), System.currentTimeMillis());
+        return new FindNext(Find.regexSpecOf(str), System.currentTimeMillis());
     }
     static Action findPrevRegex(String str) {
-        return new FindPrev(FindSpec.regexpOf(str), System.currentTimeMillis());
+        return new FindPrev(Find.regexSpecOf(str), System.currentTimeMillis());
     }
     static Action copy(Clipboard clipboard) {
         return new Copy(clipboard, System.currentTimeMillis());

@@ -157,29 +157,6 @@ public interface Content {
     Find find();
 
     /**
-     * Find all.
-     * @param findSpec the find spec
-     * @return the search results
-     */
-    List<PointLen> findAll(FindSpec findSpec);
-
-    /**
-     * Find next.
-     * @param base the base point
-     * @param findSpec the findSpec
-     * @return the search result
-     */
-    Optional<PointLen> findNext(Point base, FindSpec findSpec);
-
-    /**
-     * Find previous.
-     * @param base the base point
-     * @param findSpec the findSpec
-     * @return the search result
-     */
-    Optional<PointLen> findPrev(Point base, FindSpec findSpec);
-
-    /**
      * Execute the query.
      * @param query the query
      * @return the query result

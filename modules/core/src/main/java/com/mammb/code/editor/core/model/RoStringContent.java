@@ -154,7 +154,7 @@ public class RoStringContent implements Content {
 
     @Override
     public Find find() {
-        return null;
+        return Find.empty();
     }
 
     @Override
@@ -185,59 +185,13 @@ public class RoStringContent implements Content {
     }
 
     @Override
-    public List<PointLen> findAll(FindSpec findSpec) {
-        // TODO case-sensitive regexp
-        List<PointLen> ret = new ArrayList<>();
-        for (int row = 0; row < stringList.size(); row++) {
-            String rowText = stringList.get(row);
-            for (int col = 0; col < rowText.length(); col++) {
-                int index = rowText.indexOf(findSpec.pattern(), col);
-                if (index < 0) {
-                    break;
-                }
-                ret.add(PointLen.of(row, index, findSpec.pattern().length()));
-                col = (index + findSpec.pattern().length() - 1);
-            }
-        }
-        return ret;
-    }
-
-    @Override
-    public Optional<PointLen> findNext(Point base, FindSpec findSpec) {
-        // TODO case-sensitive regexp
-        for (int row = base.row(); row < stringList.size(); row++) {
-            String rowText = stringList.get(row);
-            int col = (row == base.row()) ? base.col() : 0;
-            int index = rowText.indexOf(findSpec.pattern(), col);
-            if (index >= 0) {
-                return Optional.of(PointLen.of(row, index, findSpec.pattern().length()));
-            }
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<PointLen> findPrev(Point base, FindSpec findSpec) {
-        // TODO case-sensitive regexp
-        for (int row = base.row(); row >= 0; row--) {
-            String rowText = stringList.get(row);
-            int col = (row == base.row()) ? base.col() : rowText.length();
-            int index = rowText.substring(0, col).lastIndexOf(findSpec.pattern());
-            if (index >= 0) {
-                return Optional.of(PointLen.of(row, index, findSpec.pattern().length()));
-            }
-        }
-        return Optional.empty();
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
-            case RowEndingSymbol q -> (R) stat.rowEnding().toString();
-            case CharsetSymbol q -> (R) stat.charset().toString();
-            case Modified q -> (R) Boolean.FALSE;
-            case Bom q -> (R) stat.bom();
+            case RowEndingSymbol _ -> (R) stat.rowEnding().toString();
+            case CharsetSymbol _ -> (R) stat.charset().toString();
+            case Modified _ -> (R) Boolean.FALSE;
+            case Bom _ -> (R) stat.bom();
             case Size _ -> (R) Long.valueOf(stringList.stream().mapToLong(s -> s.getBytes().length).sum());
             default -> null;
         };

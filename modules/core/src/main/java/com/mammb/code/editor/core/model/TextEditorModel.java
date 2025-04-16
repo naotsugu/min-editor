@@ -23,6 +23,7 @@ import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.FontMetrics;
@@ -74,12 +75,12 @@ public class TextEditorModel implements EditorModel {
     private final ScreenScroll scroll;
     /** The context. */
     private final Context ctx;
+    /** The find. */
+    private final Find find;
     /** The action history. */
     private final ActionHistory actionHistory = new ActionHistory();
     /** The decorate. */
     private Decorate decorate;
-    /** The find spec. */
-    private FindSpec findSpec = FindSpec.EMPTY;
 
     /**
      * Constructor.
@@ -94,6 +95,7 @@ public class TextEditorModel implements EditorModel {
         this.decorate = Decorate.of(content.path().map(Syntax::of).orElse(Syntax.of("md"))); // default syntax is md
         this.scroll = scroll;
         this.ctx = ctx;
+        this.find = content.find();
     }
 
     /**
@@ -635,29 +637,26 @@ public class TextEditorModel implements EditorModel {
         c.imeFlushAt(pos);
     }
 
-    private void findNext(FindSpec spec) {
-        if (!spec.isEmpty()) findSpec = spec;
+    private void findNext(Find.Spec spec) {
         Caret c = carets.unique();
         var point = c.isMarked() ? Collections.max(List.of(c.point(), c.markedPoint())) : c.point();
-        content.findNext(point, findSpec).ifPresent(p ->
-            c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
+        var found = spec.isEmpty() ? find.next(point) : find.nextOne(point, spec);
+        found.ifPresent(p -> c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
         scrollToCaretY(screenLayout.screenLineHalfSize());
     }
 
-    private void findPrev(FindSpec spec) {
-        if (!spec.isEmpty()) findSpec = spec;
+    private void findPrev(Find.Spec spec) {
         Caret c = carets.unique();
         var point = c.isMarked() ? Collections.min(List.of(c.point(), c.markedPoint())) : c.point();
-        content.findPrev(point, findSpec).ifPresent(p ->
-            c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
+        var found = spec.isEmpty() ? find.prev(point) : find.prevOne(point, spec);
+        found.ifPresent(p -> c.markTo(p.row(), p.col(), p.row(), p.col() + p.len()));
         scrollToCaretY(screenLayout.screenLineHalfSize());
     }
 
-    private void findAll(FindSpec spec) {
-        if (!spec.isEmpty()) findSpec = spec;
+    private void findAll(Find.Spec spec) {
         Caret c = carets.getFirst();
         Style style = new Style.BgColor(Theme.dark.cautionColor());
-        content.findAll(findSpec).forEach(p -> {
+        find.all(spec).forEach(p -> {
             if (!c.isMarked()) {
                 c.markTo(p.row(), p.col(), p.row(), p.col() + p.len());
                 scrollToCaretY(screenLayout.screenLineHalfSize());
@@ -666,20 +665,20 @@ public class TextEditorModel implements EditorModel {
         });
     }
 
-    private void select(FindSpec spec) {
-        boolean find = false;
-        for (Point.PointLen pl : content.findAll(spec)) {
-            if (!find) {
+    private void select(Find.Spec spec) {
+        boolean finded = false;
+        for (Point.PointLen pl : find.all(spec)) {
+            if (!finded) {
                 var c = carets.unique();
                 c.markTo(pl.row(), pl.col(), pl.row(), pl.col() + pl.len());
-                find = true;
+                finded = true;
             } else {
                 var c = carets.add(pl.row(), pl.col());
                 c.mark();
                 c.at(pl.row(), pl.col() + pl.len());
             }
         }
-        if (find) {
+        if (finded) {
             scrollToCaretY(screenLayout.screenLineHalfSize());
         }
     }
