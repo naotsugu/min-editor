@@ -49,7 +49,7 @@ public class MarkdownSyntax implements Syntax {
     @Override
     public List<StyleSpan> apply(int row, String text) {
 
-        if (text == null || text.isBlank()) {
+        if (text == null) {
             return Collections.emptyList();
         }
 
@@ -59,6 +59,7 @@ public class MarkdownSyntax implements Syntax {
         while (source.hasNext()) {
 
             var block = blockScopes.read(source);
+
             if (block.isPresent()) {
                 if (block.get().type() == fence &&
                     block.get().token() instanceof BlockToken.BlockTokenWith<?> token) {

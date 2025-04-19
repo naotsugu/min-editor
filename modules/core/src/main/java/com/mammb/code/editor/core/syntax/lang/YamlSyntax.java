@@ -39,7 +39,7 @@ public class YamlSyntax implements Syntax {
     @Override
     public List<Style.StyleSpan> apply(int row, String text) {
 
-        if (text == null || text.isBlank()) {
+        if (text == null) {
             return Collections.emptyList();
         }
 

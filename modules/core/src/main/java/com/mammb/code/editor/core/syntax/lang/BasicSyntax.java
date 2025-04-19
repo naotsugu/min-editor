@@ -93,7 +93,7 @@ public class BasicSyntax implements Syntax {
     @Override
     public List<StyleSpan> apply(int row, String text) {
 
-        if (text == null || text.isBlank()) {
+        if (text == null) {
             return Collections.emptyList();
         }
 
