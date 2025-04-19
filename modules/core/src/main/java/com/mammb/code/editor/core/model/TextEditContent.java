@@ -246,7 +246,7 @@ public class TextEditContent implements Content {
     private String charsetName() {
         var name = edit.charset().displayName();
         return switch (name) {
-            case "Windows-31J" -> "SJIS";
+            case "windows-31j" -> "SJIS";
             default -> name;
         };
     }
