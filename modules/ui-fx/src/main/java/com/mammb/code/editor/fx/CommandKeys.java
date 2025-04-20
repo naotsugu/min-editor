@@ -50,7 +50,8 @@ public class CommandKeys {
         else if (e.getCode() == F3) return (e.isShiftDown() || e.isShortcutDown()) ? of(Action.findPrev()) : of(Action.findNext());
 
         else if (SC_C.match(e)) return of(Action.copy(FxClipboard.instance));
-        else if (SC_V.match(e)) return of(Action.paste(FxClipboard.instance));
+        else if (SC_V.match(e)) return of(Action.paste(FxClipboard.instance, false));
+        else if (SC_SV.match(e)) return of(Action.paste(FxClipboard.instance, true));
         else if (SC_X.match(e)) return of(Action.cut(FxClipboard.instance));
         else if (SC_Z.match(e)) return of(Action.undo());
         else if (SC_Y.match(e) || SC_SZ.match(e)) return of(Action.redo());
@@ -97,6 +98,7 @@ public class CommandKeys {
     static final KeyCombination SC_A = new KeyCharacterCombination("a", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_C = new KeyCharacterCombination("c", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_V = new KeyCharacterCombination("v", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_SV = new KeyCharacterCombination("v", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN);
     static final KeyCombination SC_X = new KeyCharacterCombination("x", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_Z = new KeyCharacterCombination("z", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_Y = new KeyCharacterCombination("y", KeyCombination.SHORTCUT_DOWN);

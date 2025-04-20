@@ -542,8 +542,8 @@ public class TextEditorModel implements EditorModel {
         postEditing();
     }
 
-    private void pasteFromClipboard(Clipboard clipboard) {
-        if (Objects.equals(decorate.syntaxName(), "md")) {
+    private void pasteFromClipboard(Clipboard clipboard, boolean withOpt) {
+        if (!withOpt && Objects.equals(decorate.syntaxName(), "md")) {
             var html = clipboard.getHtml();
             if (html != null && html.contains("<table") && html.contains("</table>")) {
                 var mdTable = EditingFunctions.markdownTable.apply(html);
@@ -554,7 +554,8 @@ public class TextEditorModel implements EditorModel {
             }
         }
         var text = clipboard.getString();
-        if (text.isEmpty()) return;
+        text = (text == null || text.isEmpty()) ? clipboard.getHtml() : text;
+        if (text == null || text.isEmpty()) return;
         input(EditingFunctions.sanitize.apply(text));
     }
 
@@ -722,7 +723,7 @@ public class TextEditorModel implements EditorModel {
             case PageDown a     -> moveCaretPageDown(a.withSelect());
             case Copy a         -> copyToClipboard(a.attr());
             case Cut a          -> cutToClipboard(a.attr());
-            case Paste a        -> pasteFromClipboard(a.attr());
+            case Paste a        -> pasteFromClipboard(a.attr(), a.withOpt());
             case SelectAll _    -> selectAll();
             case WrapLine a     -> wrap(a.attr());
             case ToggleLayout _ -> toggleLayout();

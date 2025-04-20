@@ -26,34 +26,52 @@ import javafx.scene.control.MenuItem;
  */
 public class AppContextMenu extends ContextMenu {
 
+    /** The target {@link EditorPane}. */
     private final EditorPane editorPane;
 
+    /**
+     * Constructor.
+     * @param editorPane the target {@link EditorPane}
+     */
     public AppContextMenu(EditorPane editorPane) {
         super();
         this.editorPane = editorPane;
         build();
     }
 
+    /**
+     * Build the menu items.
+     */
     private void build() {
 
-        boolean selected = editorPane.query(Query.selectedCounts) > 0;
+        boolean textSelected = editorPane.query(Query.selectedCounts) > 0;
+        String style = "-fx-font: normal 11pt System;";
 
         var cut = new MenuItem("Cut");
-        //cut.setAccelerator(CommandKeys.SC_X);
+        cut.setStyle(style);
+        cut.setAccelerator(CommandKeys.SC_X);
         cut.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.cut(FxClipboard.instance))));
-        cut.setDisable(!selected);
+        cut.setDisable(!textSelected);
 
         var copy = new MenuItem("Copy");
-        //copy.setAccelerator(CommandKeys.SC_C);
+        copy.setStyle(style);
+        copy.setAccelerator(CommandKeys.SC_C);
         copy.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.copy(FxClipboard.instance))));
-        copy.setDisable(!selected);
+        copy.setDisable(!textSelected);
 
         var paste = new MenuItem("Paste");
-        //paste.setAccelerator(CommandKeys.SC_V);
-        paste.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance))));
+        paste.setStyle(style);
+        paste.setAccelerator(CommandKeys.SC_V);
+        paste.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, false))));
         paste.setDisable(!FxClipboard.instance.hasContents());
 
-        getItems().addAll(cut, copy, paste);
+        var pasteAs = new MenuItem("Paste as plain text");
+        pasteAs.setStyle(style);
+        pasteAs.setAccelerator(CommandKeys.SC_SV);
+        pasteAs.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, true))));
+        pasteAs.setDisable(!FxClipboard.instance.hasContents());
+
+        getItems().addAll(cut, copy, paste, pasteAs);
     }
 
 }

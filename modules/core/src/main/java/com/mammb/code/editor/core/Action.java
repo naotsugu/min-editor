@@ -139,8 +139,8 @@ public sealed interface Action
     static Action cut(Clipboard clipboard) {
         return new Cut(clipboard, System.currentTimeMillis());
     }
-    static Action paste(Clipboard clipboard) {
-        return new Paste(clipboard, System.currentTimeMillis());
+    static Action paste(Clipboard clipboard, boolean withOpt) {
+        return new Paste(clipboard, withOpt, System.currentTimeMillis());
     }
     static Action home(boolean withSelect) {
         return new Home(withSelect, System.currentTimeMillis());

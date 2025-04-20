@@ -68,7 +68,7 @@ public interface ActionRecords {
 
     record Cut(Clipboard attr, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }
 
-    record Paste(Clipboard attr, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }
+    record Paste(Clipboard attr, boolean withOpt, long occurredAt) implements Action, WithAttr<Clipboard>, Repeatable { }
 
     record Home(boolean withSelect, long occurredAt) implements Action, WithSelect, Repeatable { }
 
