@@ -45,7 +45,7 @@ public class AppContextMenu extends ContextMenu {
     private void build() {
 
         boolean textSelected = editorPane.query(Query.selectedCounts) > 0;
-        String style = "-fx-font: normal 11pt System;";
+        String style = "-fx-font: normal 10pt System;";
 
         var cut = new MenuItem("Cut");
         cut.setStyle(style);
