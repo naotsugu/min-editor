@@ -446,7 +446,8 @@ public class TextEditorModel implements EditorModel {
                 selectionReplace(c, "");
             } else {
                 var del = content.delete(c.point());
-                screenLayout.refreshBuffer(c.row(), c.row());
+                screenLayout.refreshBuffer(c.row(),
+                    c.row() + (int) del.chars().mapToLong(d -> d == '\n' ? 1 : 0).sum());
             }
         } else {
             if (carets.hasMarked()) {
