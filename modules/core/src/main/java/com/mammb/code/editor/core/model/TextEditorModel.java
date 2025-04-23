@@ -532,14 +532,16 @@ public class TextEditorModel implements EditorModel {
     private void undo() {
         preEditing();
         List<Point> points = content.undo();
-        refreshPointsRange(points);
+        screenLayout.refreshBuffer();
+        carets.at(points);
         postEditing();
     }
 
     private void redo() {
         preEditing();
         List<Point> points = content.redo();
-        refreshPointsRange(points);
+        screenLayout.refreshBuffer();
+        carets.at(points);
         postEditing();
     }
 

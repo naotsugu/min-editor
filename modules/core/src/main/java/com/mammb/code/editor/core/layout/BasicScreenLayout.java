@@ -119,6 +119,12 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
+    public void refreshBuffer() {
+        layout.refresh(0);
+        fillBuffer();// TODO optimize
+    }
+
+    @Override
     public List<Text> texts() {
         return buffer;
     }

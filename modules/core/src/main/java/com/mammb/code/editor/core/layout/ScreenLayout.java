@@ -61,11 +61,16 @@ public interface ScreenLayout extends LineLayout {
     void scrollX(double x);
 
     /**
-     * Clear the buffer for the specified line range.
+     * Refresh the buffer for the specified line range.
      * @param startRow the start row
      * @param endRow the end row (include)
      */
     void refreshBuffer(int startRow, int endRow);
+
+    /**
+     * Refresh the buffer.
+     */
+    void refreshBuffer();
 
     /**
      * Get the text list on the screen.
