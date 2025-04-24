@@ -195,7 +195,7 @@ public interface Text {
      */
     default double widthTo(int index) {
         double[] ad = advances();
-        return Arrays.stream(ad, 0, Math.min(index, ad.length)).sum();
+        return Arrays.stream(ad, 0, Math.clamp(index, 0, ad.length)).sum();
     }
 
     /**
