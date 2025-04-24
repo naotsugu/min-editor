@@ -100,16 +100,26 @@ public interface EditingFunctions {
     // -- helper --------------------------------------------------------------
 
     private static String calc(String text) {
-        // if it contains an equal sign, delete the rest
-        int eq = text.indexOf('=');
-        String formula = (eq > 1) ? text.substring(0, eq) : text;
-        try {
-            String s = formula.contains(" ") ? " " : "";
-            return "%s%s=%s%s".formatted(formula, s, s, Calculator.calc(formula));
-        } catch (Exception ignore) {
-            log.log(System.Logger.Level.WARNING, ignore);
+
+        var sb = new StringBuilder();
+        for (String line : text.split("(?<=\\R)")) {
+
+            String[] split = line.splitWithDelimiters("\\R", 2);
+            String tail = split.length > 1 ? split[1] : "";
+
+            // if it contains an equal sign, delete the rest
+            int eq = split[0].indexOf('=');
+            String formula = (eq > 1) ? split[0].substring(0, eq) : split[0];
+            try {
+                String s = formula.contains(" ") ? " " : "";
+                String r = "%s%s=%s%s".formatted(formula, s, s, Calculator.calc(formula));
+                sb.append(r).append(tail);
+            } catch (Exception ignore) {
+                log.log(System.Logger.Level.WARNING, ignore);
+                sb.append(line);
+            }
         }
-        return text;
+        return sb.toString();
     }
 
     private static String bin(String text, int radix) {

@@ -67,7 +67,11 @@ class Calculator {
         for (String token : rpn) {
             stack.push(switch (token) {
                 case "+" -> new BigDecimal(stack.pop()).add(new BigDecimal(stack.pop())).toPlainString();
-                case "-" -> new BigDecimal(stack.pop()).subtract(new BigDecimal(stack.pop())).toPlainString();
+                case "-" -> {
+                    var str1 = stack.pop();
+                    var str2 = stack.pop();
+                    yield new BigDecimal(str2).subtract(new BigDecimal(str1)).toPlainString();
+                }
                 case "*" -> new BigDecimal(stack.pop()).multiply(new BigDecimal(stack.pop())).toPlainString();
                 case "^" -> new BigDecimal(stack.pop()).pow(Integer.parseInt(stack.pop())).toPlainString();
                 case "/" -> {
@@ -94,7 +98,7 @@ class Calculator {
      */
     private enum Operator {
         ADD("+", false, 0),
-        SUB("-", true,  0),
+        SUB("-", true, 0),
         DIV("/", false, 5),
         MUL("*", false, 5),
         POW("^", true, 10);
