@@ -58,9 +58,11 @@ public class CommandPalette extends Dialog<Command> {
 
     /** The container of command palette. */
     private final HBox box;
+    /** The command label. */
     private final Label commandLabel;
     /** Auto Complete TextField */
     private final AcTextField textField;
+    /** The command type. */
     private Class<? extends Command> cmdType;
 
     public CommandPalette(Node node, Class<? extends Command> init) {
