@@ -120,7 +120,6 @@ public class CommandPalette extends Dialog<Command> {
             }
         });
 
-
         // init box
         box.setPrefWidth(width);
         box.setStyle("""

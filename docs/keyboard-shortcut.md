@@ -55,8 +55,8 @@
 
 ## Misc
 
-| shortcut     | description                             |
-|--------------|-----------------------------------------|
-| `Ctrl` + `p`           | Open the command pallet               |
-| `Ctrl` + `,`           | Open config                           |
-| `F1`                   | Help                                  |
+| shortcut                     | description                             |
+|------------------------------|-----------------------------------------|
+| `Ctrl` + `p` or `Ctrl` + `r` | Open the command pallet               |
+| `Ctrl` + `,`                 | Open config                           |
+| `F1`                         | Help                                  |
