@@ -37,6 +37,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SequencedMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -92,6 +94,7 @@ public class CommandPalette extends Dialog<Command> {
             """);
 
         // init text field
+        var textEmpty = new AtomicBoolean();
         textField.setOnKeyPressed(e -> {
             if (e.getCode() == ESCAPE) {
                 setResult(new Command.Empty());
@@ -100,13 +103,23 @@ public class CommandPalette extends Dialog<Command> {
             } else if (e.getCode() == ENTER && cmdType != null) {
                 fireCommand();
                 e.consume();
-            } else if (e.getCode() == BACK_SPACE && textField.getText().isEmpty()) {
-                cmdType = null;
-                initCommandLabel();
+            } else if (e.getCode() == BACK_SPACE) {
+                // when the KeyPressed event occurs, the text has already been changed,
+                // so will be processed the next time the event occurs via textEmpty
+                if (textField.getText().isEmpty()) {
+                    if (textEmpty.get()) {
+                        cmdType = null;
+                        initCommandLabel();
+                    }
+                    textEmpty.set(true);
+                } else {
+                    textEmpty.set(false);
+                }
             } else if (e.getCode() == DOWN) {
                 textField.popup.requestFocus();
             }
         });
+
 
         // init box
         box.setPrefWidth(width);
