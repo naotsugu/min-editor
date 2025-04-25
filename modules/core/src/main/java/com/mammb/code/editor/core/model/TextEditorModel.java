@@ -738,7 +738,7 @@ public class TextEditorModel implements EditorModel {
             case Select a       -> select(a.attr());
             case Escape _       -> escape();
             case Repeat _       -> actionHistory.repetition().forEach(this::apply);
-            case Replace a      -> replace(a.attr(), true);
+            case Replace a      -> replace(a.attr(), a.keepSelect());
             case Save a         -> save(a.attr());
             case Empty _        -> { }
         }
@@ -760,6 +760,8 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.SelectedCounts _    -> (R) selectedCounts();
             case QueryRecords.LineSize _          -> (R) Integer.valueOf(screenLayout.lineSize());
             case QueryRecords.RowSize _           -> (R) Integer.valueOf(screenLayout.rowSize());
+            case QueryRecords.SelectedText _      -> (R) carets.marked().stream().findFirst()
+                                                               .map(range -> content.getText(range.min(), range.max())).orElse("");
             case null -> null;
             default -> content.query(query);
         };
@@ -821,6 +823,7 @@ public class TextEditorModel implements EditorModel {
             if (c.isMarked()) {
                 var p = c.point();
                 var m = c.markedPoint();
+                // TODO count characters seriously
                 if (p.row() == m.row()) {
                     return Math.abs(p.col() - m.col());
                 }

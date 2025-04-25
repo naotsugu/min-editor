@@ -540,7 +540,9 @@ public class EditorPane extends StackPane {
     }
 
     private void showCommandPalette(Class<? extends Command> clazz) {
-        new CommandPalette(this, clazz).showAndWait().ifPresent(this::execute);
+        new CommandPalette(this, clazz, model.query(Query.selectedText))
+            .showAndWait()
+            .ifPresent(this::execute);
     }
 
     private InputMethodRequests inputMethodRequests() {

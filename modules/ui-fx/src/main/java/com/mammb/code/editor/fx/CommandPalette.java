@@ -67,12 +67,13 @@ public class CommandPalette extends Dialog<Command> {
     /** The command type. */
     private Class<? extends Command> cmdType;
 
-    public CommandPalette(Node node, Class<? extends Command> init) {
+    public CommandPalette(Node node, Class<? extends Command> init, String initText) {
         super();
         this.box = new HBox();
         this.commandLabel = new Label();
         this.cmdType = init;
         this.textField = new AcTextField(this);
+        this.textField.setText(initText);
 
         initOwner(node.getScene().getWindow());
         initStyle(StageStyle.TRANSPARENT);

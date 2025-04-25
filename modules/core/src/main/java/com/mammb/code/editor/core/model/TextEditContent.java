@@ -132,10 +132,12 @@ public class TextEditContent implements Content {
 
         modified = true;
 
-        var requests = ranges.stream().map(r -> new TextEdit.Replace(
-            Pos.of(r.start().row(), r.start().col()),
-            Pos.of(r.end().row(), r.end().col()),
-            fun::apply)).toList();
+        var requests = ranges.stream()
+            .map(r -> new TextEdit.Replace(
+                Pos.of(r.start().row(), r.start().col()),
+                Pos.of(r.end().row(), r.end().col()),
+                fun::apply))
+            .toList();
 
         return edit.replace(requests).stream()
             .map(r -> new Point.Range(

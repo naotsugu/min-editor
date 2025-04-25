@@ -39,5 +39,6 @@ public interface Query<R> {
     Query<Integer> lineSize = new LineSize();
     Query<Integer> rowSize = new RowSize();
     Query<Long> size = new Size();
+    Query<String> selectedText = new SelectedText();
 
 }
