@@ -687,6 +687,7 @@ public class TextEditorModel implements EditorModel {
                 c.at(pl.row(), pl.col() + pl.len());
             }
         }
+        find.clear();
         if (finded) {
             scrollToCaretY(screenLayout.screenLineHalfSize());
         }
