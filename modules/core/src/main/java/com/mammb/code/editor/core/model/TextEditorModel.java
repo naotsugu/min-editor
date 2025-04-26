@@ -323,10 +323,8 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void selectAll() {
-        Caret c = carets.unique();
-        c.at(0, 0);
-        c.mark();
-        c.at(screenLayout.rowSize() - 1, screenLayout.endColOnRow(screenLayout.lineSize() - 1));
+        carets.unique().markTo(0, 0,
+            screenLayout.rowSize() - 1, screenLayout.endColOnRow(screenLayout.lineSize() - 1));
     }
 
     @Override
@@ -340,9 +338,13 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void click(double x, double y, boolean withSelect) {
-        Caret c = carets.unique();
         int line = screenLayout.yToLineOnScreen(y - marginTop);
-        c.at(screenLayout.lineToRow(line), screenLayout.xToMidCol(line, x - marginLeft + screenLayout.xShift()));
+        int row = screenLayout.lineToRow(line);
+        if (x < marginLeft) {
+            carets.unique().markTo(row, 0, row, screenLayout.endColOnRowAt(row));
+        } else {
+            carets.unique().at(row, screenLayout.xToMidCol(line, x - marginLeft + screenLayout.xShift()));
+        }
     }
 
     @Override
@@ -760,6 +762,7 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.SelectedCounts _    -> (R) selectedCounts();
             case QueryRecords.LineSize _          -> (R) Integer.valueOf(screenLayout.lineSize());
             case QueryRecords.RowSize _           -> (R) Integer.valueOf(screenLayout.rowSize());
+            case QueryRecords.HasSelected _       -> (R) Boolean.valueOf(carets.hasMarked());
             case QueryRecords.SelectedText _      -> (R) carets.marked().stream().findFirst()
                                                                .map(range -> content.getText(range.min(), range.max())).orElse("");
             case null -> null;

@@ -50,6 +50,8 @@ public interface QueryRecords {
     record RowSize() implements Query<Integer> { }
     /** The query of content size. */
     record Size() implements Query<Long> { }
+    /** The query of has selected. */
+    record HasSelected() implements Query<Boolean> { }
     /** The query of selected text. */
     record SelectedText() implements Query<String> { }
 

@@ -115,12 +115,33 @@ public interface LineLayout {
 
     /**
      * Get the end column of the specified number of line.
-     * Always line length if not line wrapped
+     * Always line length, if not line wrapped
+     * <p>
+     *  row  line
+     *   0    0    |*|*|*|*|*|    -> 5
+     *        1    |*|*|          -> 2
+     *   1    2    |*|*|*| | |    -> 3
+     * </p>
      * @param line the specified number of line
      * @return the end column
      */
     default int endColOnRow(int line) {
         return homeColOnRow(line) + text(line).textLength();
+    }
+
+    /**
+     * Get the end column of the specified number of row.
+     * <p>
+     *  row
+     *   0  |*|*|*|*|*|
+     *      |*|*|          -> 7
+     *   1  |*|*|*| | |    -> 3
+     * </p>
+     * @param row the specified number of row
+     * @return the end column
+     */
+    default int endColOnRowAt(int row) {
+        return rowTextAt(row).textLength();
     }
 
     /**
