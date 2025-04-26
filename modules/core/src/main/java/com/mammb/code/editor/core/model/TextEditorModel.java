@@ -819,20 +819,11 @@ public class TextEditorModel implements EditorModel {
     }
 
     private Integer selectedCounts() {
-        if (carets.size() > 1) {
-            return carets.size();
-        } else {
-            var c = carets.getFirst();
-            if (c.isMarked()) {
-                var p = c.point();
-                var m = c.markedPoint();
-                // TODO count characters seriously
-                if (p.row() == m.row()) {
-                    return Math.abs(p.col() - m.col());
-                }
-            }
-        }
-        return 0;
+        return carets.marked().stream().findFirst()
+            .filter(range -> range.max().row() - range.min().row() < 100) // limit 100 rows
+            .map(range -> content.getText(range.min(), range.max()))
+            .map(text -> text.codePointCount(0, text.length()))
+            .orElse(0);
     }
 
     private static FileTime lastModifiedTime(Path path) {
