@@ -67,13 +67,13 @@ public class CommandPalette extends Dialog<Command> {
     /** The command type. */
     private Class<? extends Command> cmdType;
 
+
     public CommandPalette(Node node, Class<? extends Command> init, String initText) {
         super();
         this.box = new HBox();
         this.commandLabel = new Label();
         this.cmdType = init;
-        this.textField = new AcTextField(this);
-        this.textField.setText(initText);
+        this.textField = new AcTextField(this, !initText.isEmpty());
 
         initOwner(node.getScene().getWindow());
         initStyle(StageStyle.TRANSPARENT);
@@ -139,8 +139,19 @@ public class CommandPalette extends Dialog<Command> {
         pane.getStyleClass().add("app-command-palette-dialog-pane");
 
         initCommandLabel();
+        initText(initText);
     }
 
+    private void initText(String initText) {
+        switch (cmdType) {
+            case Class<?> c when
+                c == Command.FindNext.class ||
+                c == Command.FindPrev.class ||
+                c == Command.FindAll.class ||
+                c == Command.Select.class -> textField.setText(initText);
+            case null, default -> { }
+        }
+    }
 
     private void selectCommand(Class<? extends Command> commandClass) {
         cmdType = commandClass;
@@ -179,12 +190,14 @@ public class CommandPalette extends Dialog<Command> {
     static class AcTextField extends TextField {
         final CommandPalette commandPalette;
         final ContextMenu popup;
+        final boolean hasSelect;
         SequencedMap<String, CustomMenuItem> items;
 
-        public AcTextField(CommandPalette commandPalette) {
+        public AcTextField(CommandPalette commandPalette, boolean hasSelect) {
             super();
             this.commandPalette = commandPalette;
             this.popup = new ContextMenu();
+            this.hasSelect = hasSelect;
 
             setStyle("""
             -fx-background-color: derive(-fx-control-inner-background,10%);
@@ -205,6 +218,7 @@ public class CommandPalette extends Dialog<Command> {
                 populatePopup(text);
             }
         }
+
         private void handleTextFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
             if (focused) {
                 popup.hide();
@@ -245,6 +259,9 @@ public class CommandPalette extends Dialog<Command> {
 
                 CustomMenuItem item = new CustomMenuItem(box, true);
                 item.setOnAction(_ -> commandPalette.selectCommand(entry.getValue()));
+                if (Command.RequireSelection.class.isAssignableFrom(entry.getValue())) {
+                    item.setDisable(!hasSelect);
+                }
                 keywordMappedItems.put(entry.getKey(), item);
             }
             return keywordMappedItems;
@@ -265,6 +282,7 @@ public class CommandPalette extends Dialog<Command> {
                 focusFirstItem();
             }
         }
+
         void focusFirstItem() {
             if (popup.getSkin() == null) {
                 return;

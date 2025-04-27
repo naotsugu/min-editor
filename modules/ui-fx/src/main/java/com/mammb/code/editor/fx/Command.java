@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import com.mammb.code.editor.core.Action;
 
+import static java.lang.System.Logger.Level.ERROR;
 import static java.util.function.Predicate.not;
 
 /**
@@ -43,6 +44,8 @@ public sealed interface Command {
 
     interface RequireArgs2<T1, T2> extends RequireArgs { }
 
+    interface RequireSelection { }
+
     record ActionCommand(Action action) implements Command, Hidden {}
 
     record OpenChoose() implements Command {}
@@ -59,19 +62,19 @@ public sealed interface Command {
 
     record Palette(Class<? extends Command> initial) implements Command, Hidden {}
 
-    record ToLowerCase() implements Command {}
+    record ToLowerCase() implements Command, RequireSelection {}
 
-    record ToUpperCase() implements Command {}
+    record ToUpperCase() implements Command, RequireSelection {}
 
-    record IndentParen() implements Command {}
+    record IndentParen() implements Command, RequireSelection {}
 
-    record IndentCurlyBrace() implements Command {}
+    record IndentCurlyBrace() implements Command, RequireSelection {}
 
-    record Sort() implements Command {}
+    record Sort() implements Command, RequireSelection {}
 
-    record Unique() implements Command {}
+    record Unique() implements Command, RequireSelection {}
 
-    record Calc() implements Command {}
+    record Calc() implements Command, RequireSelection {}
 
     record Pwd() implements Command {}
 
@@ -81,17 +84,17 @@ public sealed interface Command {
 
     record Now() implements Command {}
 
-    record DecToHex() implements Command {}
+    record DecToHex() implements Command, RequireSelection {}
 
-    record DecToBin() implements Command {}
+    record DecToBin() implements Command, RequireSelection {}
 
-    record HexToBin() implements Command {}
+    record HexToBin() implements Command, RequireSelection {}
 
-    record HexToDec() implements Command {}
+    record HexToDec() implements Command, RequireSelection {}
 
-    record BinToHex() implements Command {}
+    record BinToHex() implements Command, RequireSelection {}
 
-    record BinToDec() implements Command {}
+    record BinToDec() implements Command, RequireSelection {}
 
     record Backward() implements Command {}
 
@@ -247,7 +250,7 @@ public sealed interface Command {
             }
 
         } catch (Exception ignore) {
-            log.log(System.Logger.Level.ERROR, ignore);
+            log.log(ERROR, ignore);
         }
         return new Empty();
     }
