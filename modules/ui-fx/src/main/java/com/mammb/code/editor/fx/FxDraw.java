@@ -164,7 +164,7 @@ public class FxDraw implements Draw {
 
     @Override
     public void hLine(double x, double y, double w) {
-        gc.setStroke(color(Theme.dark.cautionColor()));
+        gc.setStroke(color(Theme.dark.cautionColor().substring(0, 7)));
         gc.setLineWidth(2);
         gc.strokeLine(x, y, x + w, y);
     }
