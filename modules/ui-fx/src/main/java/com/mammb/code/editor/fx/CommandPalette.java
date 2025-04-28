@@ -175,7 +175,7 @@ public class CommandPalette extends Dialog<Command> {
             setResult(new Command.Empty());
         } else {
             if (Command.RequireArgs.class.isAssignableFrom(cmdType)) {
-                setResult(Command.newInstance(cmdType, textField.getText().trim()));
+                setResult(Command.newInstance(cmdType, textField.getText()));
             } else {
                 setResult(Command.newInstance(cmdType));
             }

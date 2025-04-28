@@ -63,6 +63,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -519,6 +520,13 @@ public class EditorPane extends StackPane {
         Path path = file.toPath();
         model.save(path);
         filePathProperty.setValue(path);
+    }
+
+    void saveTemporary() {
+        String baseName = UUID.randomUUID() + model.query(Query.contentPath)
+            .map(Path::getFileName).map(Path::toString).orElse("");
+        var path = context.config().path().resolve("tmp", baseName);
+        model.save(path);
     }
 
     private EditorPane newEdit() {

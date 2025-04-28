@@ -55,7 +55,7 @@ public class Paints {
             Loc l2 = screenLayout.locationOn(r.max().row(), r.max().col()).orElse(null);
             if (l1 == null && l2 == null &&
                 (screenLayout.rowToLine(r.min().row(), r.min().col()) > screenLayout.topLine() ||
-                    screenLayout.rowToLine(r.max().row(), r.max().col()) < screenLayout.topLine())) break;
+                    screenLayout.rowToLine(r.max().row(), r.max().col()) < screenLayout.topLine())) continue;
             if (l1 == null) l1 = new Loc(0, 0);
             if (l2 == null) l2 = new Loc(screenLayout.screenWidth(), screenLayout.screenHeight());
             draw.select(
