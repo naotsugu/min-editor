@@ -42,7 +42,7 @@ public class JsSyntax extends BasicSyntax {
      * Constructor.
      */
     public JsSyntax() {
-        super("javascript",
+        super("js",
             keywords,     // keywords
             '\\',         // escapeChar
             '\'',         // charLiteral

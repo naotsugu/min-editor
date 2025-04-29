@@ -522,13 +522,6 @@ public class EditorPane extends StackPane {
         filePathProperty.setValue(path);
     }
 
-    void saveTemporary() {
-        String baseName = UUID.randomUUID() + model.query(Query.contentPath)
-            .map(Path::getFileName).map(Path::toString).orElse("");
-        var path = context.config().path().resolve("tmp", baseName);
-        model.save(path);
-    }
-
     private EditorPane newEdit() {
         var handler = newOpenHandler;
         if (handler != null) {

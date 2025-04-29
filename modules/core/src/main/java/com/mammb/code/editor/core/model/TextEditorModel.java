@@ -92,7 +92,7 @@ public class TextEditorModel implements EditorModel {
     public TextEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
         this.content = content;
         this.screenLayout = ScreenLayout.of(content, fm);
-        this.decorate = Decorate.of(content.path().map(Syntax::of).orElse(Syntax.of("md"))); // default syntax is md
+        this.decorate = Decorate.of(content.path().map(Syntax::of).orElse(Syntax.of("markdown"))); // default syntax is md
         this.scroll = scroll;
         this.ctx = ctx;
         this.find = content.find();
@@ -548,7 +548,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void pasteFromClipboard(Clipboard clipboard, boolean withOpt) {
-        if (!withOpt && Objects.equals(decorate.syntaxName(), "md")) {
+        if (!withOpt && Objects.equals(decorate.syntaxName(), "markdown")) {
             var html = clipboard.getHtml();
             if (html != null && html.contains("<table") && html.contains("</table>")) {
                 var mdTable = EditingFunctions.markdownTable.apply(html);
@@ -579,13 +579,18 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void save(Path path) {
-        Path oldPath = content.path().orElse(null);
+        boolean syntaxChanged = !Objects.equals(
+            Syntax.syntaxName(content.path().orElse(null)),
+            decorate.syntaxName());
         content.save(path);
-        if (!Objects.equals(path, oldPath)) {
+        if (syntaxChanged) {
             decorate = Decorate.of(Syntax.of(path));
         }
     }
 
+    /**
+     * Clear current state.
+     */
     private void escape() {
         carets.unique().clearMark();
         decorate.clear();

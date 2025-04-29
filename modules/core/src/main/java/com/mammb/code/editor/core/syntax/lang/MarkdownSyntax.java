@@ -43,7 +43,7 @@ public class MarkdownSyntax implements Syntax {
 
     @Override
     public String name() {
-        return "md";
+        return "markdown";
     }
 
     @Override

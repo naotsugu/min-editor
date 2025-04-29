@@ -48,7 +48,7 @@ public class TsSyntax extends BasicSyntax {
      * Constructor.
      */
     public TsSyntax() {
-        super("typescript",
+        super("ts",
             keywords,          // keywords
             '\\',              // escapeChar
             '\'',              // charLiteral

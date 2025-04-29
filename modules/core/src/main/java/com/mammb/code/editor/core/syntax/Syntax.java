@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.syntax;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import com.mammb.code.editor.core.syntax.lang.CppSyntax;
 import com.mammb.code.editor.core.syntax.lang.DiffSyntax;
@@ -79,7 +80,7 @@ public interface Syntax {
      * @return the syntax
      */
     static Syntax of(Path path) {
-        return of(extension(path));
+        return of(syntaxName(path));
     }
 
     /**
@@ -89,10 +90,6 @@ public interface Syntax {
      */
     static Syntax of(String name) {
 
-        if (name == null) {
-            name = "";
-        }
-
         // the pass through syntax
         record PassThrough(String name) implements Syntax {
             @Override
@@ -101,28 +98,37 @@ public interface Syntax {
             }
         }
 
-        return switch (name.toLowerCase()) {
+        return switch (name) {
             case "java" -> new JavaSyntax();
-            case "md" -> new MarkdownSyntax();
-            case "kotlin", "kt", "kts" -> new KotlinSyntax();
-            case "js", "json" -> new JsSyntax();
-            case "rs" -> new RustSyntax();
+            case "markdown" -> new MarkdownSyntax();
+            case "kotlin" -> new KotlinSyntax();
+            case "js" -> new JsSyntax();
+            case "rust" -> new RustSyntax();
             case "sql" -> new SqlSyntax();
-            case "py" -> new PythonSyntax();
-            case "cpp", "c" -> new CppSyntax();
+            case "python" -> new PythonSyntax();
+            case "cpp" -> new CppSyntax();
             case "go" -> new GoSyntax();
-            case "ts", "tsx" -> new TsSyntax();
-            case "html", "htm", "xhtml" -> new HtmlSyntax();
-            case "yaml", "yml" -> new YamlSyntax();
+            case "ts" -> new TsSyntax();
+            case "html" -> new HtmlSyntax();
+            case "yaml" -> new YamlSyntax();
             case "toml" -> new TomlSyntax();
             case "ini" -> new IniSyntax();
             case "csv" -> new CsvSyntax();
             case "tsv" -> new TsvSyntax();
             case "diff" -> new DiffSyntax();
-            case "txt" -> new PassThrough("text");
-            case "shell", "sh", "bash" -> new ShellSyntax();
-            default -> new PassThrough(name);
+            case "text" -> new PassThrough("text");
+            case "shell" -> new ShellSyntax();
+            case null, default -> new PassThrough(name);
         };
+    }
+
+    /**
+     * Get the syntax name by the specified path.
+     * @param path the specified path
+     * @return the syntax name
+     */
+    static String syntaxName(Path path) {
+        return syntaxName(extension(path));
     }
 
     /**
@@ -137,6 +143,29 @@ public interface Syntax {
             .filter(f -> f.contains("."))
             .map(f -> f.substring(f.lastIndexOf(".") + 1))
             .orElse("");
+    }
+
+    /**
+     * Get the syntax name from the extension.
+     * @param extension the extension
+     * @return the syntax name
+     */
+    private static String syntaxName(String extension) {
+        extension = (extension == null) ? "" : extension.toLowerCase();
+        return switch (extension) {
+            case "md" -> "markdown";
+            case "kotlin", "kt", "kts" -> "kotlin";
+            case "js", "json" -> "js";
+            case "rs" -> "rust";
+            case "py" -> "python";
+            case "cpp", "c" -> "cpp";
+            case "ts", "tsx" -> "ts";
+            case "html", "htm", "xhtml" -> "html";
+            case "yaml", "yml" -> "yaml";
+            case "txt" -> "text";
+            case "shell", "sh", "bash" -> "shell";
+            default -> extension;
+        };
     }
 
 }
