@@ -79,6 +79,11 @@ public interface Session {
         return path() != null;
     }
 
+    /**
+     * Create a new {@link Session}.
+     * @param path the path
+     * @return a new {@link Session}
+     */
     static Session of(Path path) {
         if (path != null && Files.exists(path)) {
             try {
@@ -118,9 +123,9 @@ public interface Session {
      */
     class SessionHistory {
 
-        /** The backward queue. */
+        /** The backward session queue. */
         private final Deque<Session> left = new ArrayDeque<>();
-        /** The forward queue. */
+        /** The forward session queue. */
         private final Deque<Session> right = new ArrayDeque<>();
 
         private Deque<Session> select;
