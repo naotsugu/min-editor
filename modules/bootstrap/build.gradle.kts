@@ -28,7 +28,9 @@ application {
     applicationDefaultJvmArgs = listOf(
         "-Xms64m",
         "--enable-preview",
-        "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m")
+        "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m",
+        "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
+        "--sun-misc-unsafe-memory-access=allow")  // sun.misc.Unsafe::allocateMemory will be removed in a future release
         //"-XX:G1PeriodicGCInterval=5000")
     if (providers.systemProperty("debug").isPresent) {
         applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"))

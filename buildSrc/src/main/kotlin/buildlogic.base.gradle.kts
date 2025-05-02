@@ -18,7 +18,7 @@ tasks.named<Test>("test") {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(23))
+        languageVersion.set(JavaLanguageVersion.of(24))
     }
 }
 
@@ -39,7 +39,7 @@ tasks.withType<Javadoc>().configureEach {
     options {
         this as StandardJavadocDocletOptions
         addBooleanOption("-enable-preview", true)
-        addStringOption("-release", "23")
+        addStringOption("-release", "24")
     }
 }
 
