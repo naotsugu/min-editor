@@ -245,6 +245,10 @@ public class TextEditContent implements Content {
         return modified;
     }
 
+    /**
+     * Get the charset name.
+     * @return the charset name
+     */
     private String charsetName() {
         var name = edit.charset().displayName();
         return switch (name) {

@@ -341,7 +341,10 @@ public class TextEditorModel implements EditorModel {
         int line = screenLayout.yToLineOnScreen(y - marginTop);
         int row = screenLayout.lineToRow(line);
         if (x < marginLeft) {
-            carets.unique().markTo(row, 0, row, screenLayout.endColOnRowAt(row));
+            if (carets.carets().stream().noneMatch(Caret::isFloating)) {
+                // select line
+                carets.unique().markTo(row, 0, row, screenLayout.endColOnRowAt(row));
+            }
         } else {
             carets.unique().at(row, screenLayout.xToMidCol(line, x - marginLeft + screenLayout.xShift()));
         }
