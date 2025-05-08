@@ -197,7 +197,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             setOnDragExited(this::handleDragExited);
             setOnDragDone(this::handleDragDone);
             add(node);
-            Platform.runLater(() -> {
+            runLater(() -> {
                 // double-click in the tab area to open a new tab
                 Node headerArea = tabPane.lookup(".tab-header-area");
                 headerArea.setOnMouseClicked(e -> {
@@ -391,22 +391,22 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     case RIGHT -> {
                         from.tabPane.getTabs().remove(dragged);
                         var dndTabPane = parent.addRight((EditorPane) dragged.getContent());
-                        ensureFocus(dndTabPane);
+                        runLater(dndTabPane::focus);
                     }
                     case LEFT -> {
                         from.tabPane.getTabs().remove(dragged);
                         var dndTabPane = parent.addLeft((EditorPane) dragged.getContent());
-                        ensureFocus(dndTabPane);
+                        runLater(dndTabPane::focus);
                     }
                     case TOP -> {
                         from.tabPane.getTabs().remove(dragged);
                         var dndTabPane = parent.addTop((EditorPane) dragged.getContent());
-                        ensureFocus(dndTabPane);
+                        runLater(dndTabPane::focus);
                     }
                     case BOTTOM -> {
                         from.tabPane.getTabs().remove(dragged);
                         var dndTabPane = parent.addBottom((EditorPane) dragged.getContent());
-                        ensureFocus(dndTabPane);
+                        runLater(dndTabPane::focus);
                     }
                 }
             } else {
@@ -422,22 +422,22 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     case RIGHT -> {
                         dragged.getTabPane().getTabs().remove(dragged);
                         var dndTabPane = parent.addRight((EditorPane) dragged.getContent());
-                        ensureFocus(dndTabPane);
+                        runLater(dndTabPane::focus);
                     }
                     case LEFT -> {
                         dragged.getTabPane().getTabs().remove(dragged);
                         var dndTabPane = parent.addLeft((EditorPane) dragged.getContent());
-                        ensureFocus(dndTabPane);
+                        runLater(dndTabPane::focus);
                     }
                     case TOP -> {
                         dragged.getTabPane().getTabs().remove(dragged);
                         var dndTabPane = parent.addTop((EditorPane) dragged.getContent());
-                        ensureFocus(dndTabPane);
+                        runLater(dndTabPane::focus);
                     }
                     case BOTTOM -> {
                         dragged.getTabPane().getTabs().remove(dragged);
                         var dndTabPane = parent.addBottom((EditorPane) dragged.getContent());
-                        ensureFocus(dndTabPane);
+                        runLater(dndTabPane::focus);
                     }
                 }
                 if (unplug) {
@@ -531,15 +531,14 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
     }
 
-    private static void ensureFocus(DndTabPane dndTabPane) {
+    private static void runLater(Runnable runnable) {
         new Thread(new Task<Void>() {
             @Override
             protected Void call() {
                 try {
                     Thread.sleep(17);
-                } catch (InterruptedException ignore) {
-                }
-                Platform.runLater(dndTabPane::focus);
+                } catch (InterruptedException ignore) {  }
+                Platform.runLater(runnable);
                 return null;
             }
         }).start();
