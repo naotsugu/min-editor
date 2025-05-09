@@ -708,6 +708,7 @@ public class TextEditorModel implements EditorModel {
         return new Session.SessionRecord(
             content.path().orElse(null),
             content.path().map(TextEditorModel::lastModifiedTime).orElse(null),
+            null,
             screenLayout.topLine(),
             screenLayout.charsInLine(),
             carets.getFirst().row(),

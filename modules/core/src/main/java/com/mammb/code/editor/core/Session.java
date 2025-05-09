@@ -42,6 +42,12 @@ public interface Session {
     FileTime lastModifiedTime();
 
     /**
+     * Get the alt path.
+     * @return the alt path
+     */
+    Path altPath();
+
+    /**
      * The line number at the top of the screen.
      * @return line number at the top of the screen
      */
@@ -87,12 +93,12 @@ public interface Session {
     static Session of(Path path) {
         if (path != null && Files.exists(path)) {
             try {
-                return new SessionRecord(path, Files.getLastModifiedTime(path), 0, 0, 0, 0, System.currentTimeMillis());
+                return new SessionRecord(path, Files.getLastModifiedTime(path), null, 0, 0, 0, 0, System.currentTimeMillis());
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else {
-            return new SessionRecord(null, null, 0, 0, 0, 0, System.currentTimeMillis());
+            return new SessionRecord(null, null, null, 0, 0, 0, 0, System.currentTimeMillis());
         }
     }
 
@@ -110,12 +116,12 @@ public interface Session {
     record SessionRecord(
         Path path,
         FileTime lastModifiedTime,
+        Path altPath,
         int topLine,
         int lineWidth,
         int caretRow,
         int caretCol,
         long timestamp) implements Session {
-
     }
 
     /**
