@@ -598,6 +598,7 @@ public class TextEditorModel implements EditorModel {
         carets.unique().clearMark();
         decorate.clear();
         find.clear();
+        screenLayout.refreshBuffer();
     }
 
     /**

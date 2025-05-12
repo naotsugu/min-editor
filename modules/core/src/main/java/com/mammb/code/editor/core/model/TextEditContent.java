@@ -122,6 +122,7 @@ public class TextEditContent implements Content {
 
     @Override
     public Point replace(Point start, Point end, String text) {
+        modified = true;
         String txt = edit.rowEnding().unify(text).toString();
         var pos = edit.replace(start.row(), start.col(), end.row(), end.col(), _ -> txt);
         return Point.of(pos.row(), pos.col());
