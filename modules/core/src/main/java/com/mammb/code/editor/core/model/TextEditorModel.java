@@ -489,9 +489,10 @@ public class TextEditorModel implements EditorModel {
 
     private void replace(Function<String, String> fun, boolean keepSelection) {
         preEditing();
-        List<Range> ranges = content.replace(carets.ranges(), fun);
-        Range rangeMin = Collections.min(ranges);
-        Range rangeMax = Collections.max(ranges);
+        List<Range> caretRanges = carets.ranges();
+        List<Range> ranges = content.replace(caretRanges, fun);
+        Range rangeMin = Collections.min(caretRanges);
+        Range rangeMax = Collections.max(caretRanges);
         if (keepSelection) {
             List<Caret> caretList = carets.carets();
             for (int i = 0; i < caretList.size(); i++) {
