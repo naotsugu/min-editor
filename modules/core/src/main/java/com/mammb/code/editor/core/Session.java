@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,17 @@
  */
 package com.mammb.code.editor.core;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 /**
  * The Session.
@@ -83,6 +87,44 @@ public interface Session {
      */
     default boolean hasPath() {
         return path() != null;
+    }
+
+    default String asString() {
+        return new StringJoiner(File.pathSeparator, "[", "]")
+            .add("path=" + ((path() == null) ? "" : path()))
+            .add("lastModifiedTime=" + ((lastModifiedTime() == null) ? "" : lastModifiedTime().toMillis()))
+            .add("altPath=" + ((altPath() == null) ? "" : altPath()))
+            .add("topLine=" + topLine())
+            .add("lineWidth=" + lineWidth())
+            .add("caretRow=" + caretRow())
+            .add("caretCol=" + caretCol())
+            .add("timestamp=" + timestamp())
+            .toString();
+    }
+
+    /**
+     * Create a new {@link Session} from the source string.
+     * @param string the source string
+     * @return a new {@link Session}
+     */
+    static Session of(String string) {
+        if (string == null || string.length() <= 2) return null;
+        Map<String, String> map = new HashMap<>();
+        for (String entry : string.substring(1, string.length() - 1).split(File.pathSeparator)) {
+            var split = entry.split("=", 2);
+            if (split.length > 1) {
+                map.put(split[0], split[1]);
+            }
+        }
+        return new SessionRecord(
+            map.containsKey("path") ? Path.of(map.get("path")) : null,
+            map.containsKey("lastModifiedTime") ? FileTime.fromMillis(Long.parseLong(map.get("lastModifiedTime"))) : null,
+            map.containsKey("altPath") ? Path.of(map.get("altPath")) : null,
+            Integer.parseInt(map.getOrDefault("topLine", "0")),
+            Integer.parseInt(map.getOrDefault("lineWidth", "0")),
+            Integer.parseInt(map.getOrDefault("caretRow", "0")),
+            Integer.parseInt(map.getOrDefault("caretCol", "0")),
+            Long.parseLong(map.getOrDefault("timestamp", "0")));
     }
 
     /**
