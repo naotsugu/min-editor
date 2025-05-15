@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,13 @@ package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
+import com.mammb.code.editor.core.Session;
 import javafx.application.Application;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * The application context.
@@ -116,6 +122,24 @@ public class AppContext implements Context {
             put("app.windowPositionY", val);
         }
 
+        /**
+         * Get the session list.
+         * @return the session list
+         */
+        public List<Session> sessions() {
+            return Arrays.stream(get("app.sessions", "").split(File.pathSeparator.repeat(2)))
+                .filter(Predicate.not(String::isBlank))
+                .map(Session::of).toList();
+        }
+
+        /**
+         * Set the session list.
+         * @param sessions the session list
+         */
+        public void sessions(List<Session> sessions) {
+            put("app.sessions", sessions.stream().map(Session::asString)
+                .collect(Collectors.joining(File.pathSeparator.repeat(2))));
+        }
     }
 
 }
