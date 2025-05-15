@@ -89,6 +89,10 @@ public interface Session {
         return path() != null;
     }
 
+    /**
+     * Get the session as string.
+     * @return session string
+     */
     default String asString() {
         return new StringJoiner(File.pathSeparator, "[", "]")
             .add("path=" + ((path() == null) ? "" : path()))
