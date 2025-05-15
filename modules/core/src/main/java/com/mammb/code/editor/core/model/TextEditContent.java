@@ -206,6 +206,11 @@ public class TextEditContent implements Content {
     }
 
     @Override
+    public void write(Path path) {
+        edit.write(path);
+    }
+
+    @Override
     public Point insertFlush(Point point, String text) {
         flushes.add(new Point.PointText(point, text));
         return Point.of(point.row(), point.col() + text.length());

@@ -142,6 +142,10 @@ public class RoStringContent implements Content {
     }
 
     @Override
+    public void write(Path path) {
+    }
+
+    @Override
     public Point insertFlush(Point point, String text) {
         return point;
     }

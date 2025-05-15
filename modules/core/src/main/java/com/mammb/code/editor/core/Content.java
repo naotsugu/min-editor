@@ -138,6 +138,13 @@ public interface Content {
     void save(Path path);
 
     /**
+     * Writes the contents to the specified path.
+     * This method is intended for backup path creation and other uses.
+     * @param path the specified path
+     */
+    void write(Path path);
+
+    /**
      * Insert the text being edited with IME.
      * @param point the point at insertion
      * @param text the text being edited with IME
