@@ -21,7 +21,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Point.Range;
-import com.mammb.code.editor.core.Point.PointLen;
 import com.mammb.code.editor.core.model.RoStringContent;
 import com.mammb.code.editor.core.model.TextEditContent;
 
@@ -153,7 +152,7 @@ public interface Content {
     Point insertFlush(Point point, String text);
 
     /**
-     * Clear the flushes(text being edited with IME).
+     * Clear the flushes (text being edited with IME).
      */
     void clearFlush();
 

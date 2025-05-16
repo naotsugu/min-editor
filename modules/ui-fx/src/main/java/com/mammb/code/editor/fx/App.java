@@ -27,7 +27,8 @@ import javafx.stage.Stage;
 import com.mammb.code.editor.core.Theme;
 
 /**
- * The application.
+ * The App class serves as the entry point for the JavaFX application.
+ * It initializes and configures the primary stage, scene, and application context.
  * @author Naotsugu Kobayashi
  */
 public class App extends Application {
@@ -82,7 +83,7 @@ public class App extends Application {
     }
 
     /** The app css. */
-    private static String css = String.join(",", "data:text/css;base64",
+    private static final String css = String.join(",", "data:text/css;base64",
         Base64.getEncoder().encodeToString("""
         .root {
           -fx-base:app-base;

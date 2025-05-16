@@ -20,7 +20,7 @@ import java.util.Optional;
 import com.mammb.code.editor.core.model.TextEditorModel;
 
 /**
- * The facade of editor.
+ * The facade of an editor.
  * @author Naotsugu Kobayashi
  */
 public interface EditorModel {
@@ -67,7 +67,7 @@ public interface EditorModel {
     void paint(Draw draw);
 
     /**
-     * Set the size of editor.
+     * Set the size of the editor.
      * @param width the width
      * @param height the height
      */
@@ -156,7 +156,7 @@ public interface EditorModel {
 
     /**
      * Save the target content to a file.
-     * @param path the path of file
+     * @param path the path of a file
      */
     void save(Path path);
 
@@ -210,7 +210,7 @@ public interface EditorModel {
      * Get the result of the query.
      * @param <R> the type of result
      * @param query the query
-     * @return the result of query
+     * @return the result of a query
      */
     <R> R query(Query<R> query);
 

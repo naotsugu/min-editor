@@ -40,30 +40,30 @@ public interface Caret extends Comparable<Caret> {
 
     /**
      * Set the caret position.
-     * @param row the number of row
-     * @param col the number of column
+     * @param row the number of rows
+     * @param col the number of columns
      */
     void at(int row, int col);
 
     /**
-     * Set the caret position with virtual position.
-     * @param row the number of row
-     * @param col the number of column
+     * Set the caret position with a virtual position.
+     * @param row the number of rows
+     * @param col the number of columns
      * @param vPos virtual x-coordinate position of the caret
      */
     void at(int row, int col, double vPos);
 
     /**
      * Set the caret at the specified position and also sets it floating.
-     * @param row the number of row
-     * @param col the number of column
+     * @param row the number of rows
+     * @param col the number of columns
      */
     void floatAt(int row, int col);
 
     /**
      * Set the caret at the specified position and also sets it flush.
-     * @param row the number of row
-     * @param col the number of column
+     * @param row the number of rows
+     * @param col the number of columns
      */
     void imeFlushAt(int row, int col);
 
@@ -164,16 +164,16 @@ public interface Caret extends Comparable<Caret> {
     }
 
     /**
-     * Get the number of row.
-     * @return the number of row
+     * Get the number of rows.
+     * @return the number of rows
      */
     default int row() {
         return point().row();
     }
 
     /**
-     * Get the number of column.
-     * @return the number of column
+     * Get the number of columns.
+     * @return the number of columns
      */
     default int col() {
         return point().col();
@@ -230,8 +230,8 @@ public interface Caret extends Comparable<Caret> {
 
     /**
      * Create a new {@link Caret} by specifying its position on the content.
-     * @param row the number of row
-     * @param col the number of column
+     * @param row the number of rows
+     * @param col the number of columns
      * @return a new {@link Caret}.
      */
     static Caret of(int row, int col) {
