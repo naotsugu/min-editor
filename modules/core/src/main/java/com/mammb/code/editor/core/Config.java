@@ -58,6 +58,22 @@ public interface Config {
     void save();
 
     /**
+     * Get the stash path.
+     * @return the stash path
+     */
+    default Path stashPath() {
+        Path dir = path().resolve("stash");
+        if (!dir.toFile().exists()) {
+            try {
+                Files.createDirectories(dir);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return dir;
+    }
+
+    /**
      * AbstractConfig.
      */
     abstract class AbstractConfig implements Config {

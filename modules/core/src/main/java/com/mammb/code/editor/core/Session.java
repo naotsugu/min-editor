@@ -137,15 +137,40 @@ public interface Session {
      * @return a new {@link Session}
      */
     static Session of(Path path) {
-        if (path != null && Files.exists(path)) {
-            try {
-                return new SessionRecord(path, Files.getLastModifiedTime(path), null, 0, 0, 0, 0, System.currentTimeMillis());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            return new SessionRecord(null, null, null, 0, 0, 0, 0, System.currentTimeMillis());
+        try {
+            boolean pathExists = (path != null && Files.exists(path));
+            return new SessionRecord(
+                pathExists ? path : null,
+                pathExists ? Files.getLastModifiedTime(path) : null,
+                null,
+                0, 0, 0, 0,
+                System.currentTimeMillis());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Create a new {@link Session}.
+     * @param path the path
+     * @param lastModifiedTime the last modified time
+     * @param topLine the line number at the top of the screen
+     * @param lineWidth the width of line wrap characters
+     * @param caretRow the row index at the caret
+     * @param caretCol the column index at the caret
+     * @return a new {@link Session}
+     */
+    static Session of(Path path, FileTime lastModifiedTime, Path altPath,
+        int topLine, int lineWidth, int caretRow, int caretCol) {
+        return new SessionRecord(
+            path,
+            lastModifiedTime,
+            altPath,
+            topLine,
+            lineWidth,
+            caretRow,
+            caretCol,
+            System.currentTimeMillis());
     }
 
     /**

@@ -48,6 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -592,6 +593,21 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
+    @Override
+    public Session stash() {
+        Optional<Path> path = content.path();
+        Path stashPath = ctx.config().stashPath().resolve(
+            String.join("_", UUID.randomUUID().toString(),
+            path.map(value -> value.getFileName().toString()).orElse("untitled")));
+        content.write(stashPath);
+        return Session.of(
+            content.path().orElse(null),
+            content.path().map(TextEditorModel::lastModifiedTime).orElse(null),
+            stashPath,
+            screenLayout.topLine(), screenLayout.charsInLine(),
+            carets.getFirst().row(), carets.getFirst().col());
+    }
+
     /**
      * Clear current state.
      */
@@ -707,15 +723,12 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session getSession() {
-        return new Session.SessionRecord(
+        return Session.of(
             content.path().orElse(null),
             content.path().map(TextEditorModel::lastModifiedTime).orElse(null),
             null,
-            screenLayout.topLine(),
-            screenLayout.charsInLine(),
-            carets.getFirst().row(),
-            carets.getFirst().col(),
-            System.currentTimeMillis());
+            screenLayout.topLine(), screenLayout.charsInLine(),
+            carets.getFirst().row(), carets.getFirst().col());
     }
 
     @Override

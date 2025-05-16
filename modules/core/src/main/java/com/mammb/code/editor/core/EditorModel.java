@@ -161,6 +161,13 @@ public interface EditorModel {
     void save(Path path);
 
     /**
+     * Saves the current state of the editor and returns it as a {@link Session} object.
+     * This method allows the editor's state to be preserved and restored later.
+     * @return the current state of the editor as a {@link Session}
+     */
+    Session stash();
+
+    /**
      * Update fFonts.
      * @param fontMetrics the {@link FontMetrics}
      */
