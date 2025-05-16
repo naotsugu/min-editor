@@ -20,7 +20,9 @@ import java.util.Optional;
 import com.mammb.code.editor.core.model.TextEditorModel;
 
 /**
- * The facade of an editor.
+ * Represents a model for an editor, defining behaviors and attributes
+ * required to manage and interact with the content displayed in an editor.
+ *
  * @author Naotsugu Kobayashi
  */
 public interface EditorModel {

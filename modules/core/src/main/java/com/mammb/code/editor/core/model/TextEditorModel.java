@@ -55,7 +55,18 @@ import java.util.stream.IntStream;
 import com.mammb.code.editor.core.model.ActionRecords.*;
 
 /**
- * The text editor model.
+ * The TextEditorModel represents the core functionality and state of a text editor.
+ * This class implements the editor's behavior for painting, input handling, caret
+ * movements, text manipulation, scrolling, and more.
+ *
+ * It provides methods to interact with the visible content, manage user actions,
+ * and store or retrieve editor sessions. The TextEditorModel handles the layout
+ * of content on the editor screen and supports interaction features like text
+ * selection, scrolling, clipboard operations, and input methods.
+ *
+ * Fields include various aspects of the editor state such as the screen layout,
+ * scrolling positions, carets, content, and user action history.
+ *
  * @author Naotsugu Kobayashi
  */
 public class TextEditorModel implements EditorModel {

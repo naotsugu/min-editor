@@ -28,7 +28,9 @@ import java.util.Optional;
 import java.util.StringJoiner;
 
 /**
- * The Session.
+ * Represents a session containing information such as file paths,
+ * modification times, caret positions, and other metadata.
+ *
  * @author Naotsugu Kobayashi
  */
 public interface Session {
@@ -64,7 +66,7 @@ public interface Session {
     int lineWidth();
 
     /**
-     * Get the row index at the caret(zero-origin).
+     * Get the row index at the caret (zero-origin).
      * @return the row index at the caret
      */
     int caretRow();
@@ -90,7 +92,7 @@ public interface Session {
     }
 
     /**
-     * Get the session as string.
+     * Get the session as a string.
      * @return session string
      */
     default String asString() {
