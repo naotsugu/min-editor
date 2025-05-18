@@ -55,11 +55,11 @@ Delete executable files and configuration files.
 
 The configuration files for each platform exist in the following
 
-| platform | location                                  |
-|---------|-------------------------------------------|
-| max os  | `~/Library/Application Support/min-editor/` |
-| linux   | `~/.config/min-editor/`                     |
-| windows | `~/AppData/Local/min-editor/`             |
+| platform | location                                    |
+|----------|---------------------------------------------|
+| max os   | `~/Library/Application Support/min-editor/` |
+| linux    | `~/.config/min-editor/`                     |
+| windows  | `~/AppData/Local/min-editor/`               |
 
 
 ## Building

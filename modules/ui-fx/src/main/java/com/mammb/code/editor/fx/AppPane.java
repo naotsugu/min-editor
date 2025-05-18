@@ -41,7 +41,7 @@ public class AppPane extends BorderPane {
         stage.setOnCloseRequest(e -> {
             e.consume();
             // TODO stash
-            var notExistsUnsaved = container.close();
+            var notExistsUnsaved = container.closeAll();
             if (notExistsUnsaved) {
                 stage.close();
             }

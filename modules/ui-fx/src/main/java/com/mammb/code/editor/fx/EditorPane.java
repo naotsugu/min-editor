@@ -63,6 +63,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -498,6 +499,13 @@ public class EditorPane extends StackPane {
             canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;
         }
         return canDiscard;
+    }
+
+    Optional<Session> stash() {
+        if (model.query(Query.contentPath).isPresent() && !canDiscard()) {
+            return Optional.empty();
+        }
+        return Optional.of(model.stash());
     }
 
     private void save() {

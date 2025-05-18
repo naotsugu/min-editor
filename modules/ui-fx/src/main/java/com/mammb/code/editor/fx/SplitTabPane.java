@@ -41,7 +41,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.io.File;
 import java.lang.System.Logger;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -78,7 +77,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         add(node);
     }
 
-    public boolean close() {
+    public boolean closeAll() {
         for (Tab tab : contents) {
             // check unsaved tabs
             if (tab.getContent() instanceof  EditorPane editorPane) {

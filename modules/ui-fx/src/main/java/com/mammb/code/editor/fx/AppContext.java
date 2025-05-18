@@ -49,6 +49,9 @@ public class AppContext implements Context {
         return app;
     }
 
+    /**
+     * The application config.
+     */
     public static class AppConfig extends Config.AbstractConfig {
 
         AppConfig() {
@@ -108,7 +111,7 @@ public class AppContext implements Context {
 
         /**
          * Get the window position y.
-         * @return the window position y
+         * @return the window positions y
          */
         public double windowPositionY() {
             return Double.parseDouble(get("app.windowPositionY", "-1"));
@@ -116,7 +119,7 @@ public class AppContext implements Context {
 
         /**
          * Set the window position y.
-         * @param val the window position y
+         * @param val the window positions y
          */
         public void windowPositionY(double val) {
             put("app.windowPositionY", val);

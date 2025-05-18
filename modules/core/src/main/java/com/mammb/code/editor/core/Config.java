@@ -24,7 +24,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * The configuration.
+ * The application configuration.
+ * Represents a configuration interface for managing properties and file paths.
  * @author Naotsugu Kobayashi
  */
 public interface Config {
