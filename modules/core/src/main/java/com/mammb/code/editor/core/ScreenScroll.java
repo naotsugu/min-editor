@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,37 @@
 package com.mammb.code.editor.core;
 
 /**
- * The ScreenScroll.
+ * Represents an interface for handling screen scrolling operations.
+ * Provides methods for adjusting vertical and horizontal scroll
+ * positions, as well as retrieving horizontal scroll values.
  * @author Naotsugu Kobayashi
  */
 public interface ScreenScroll {
+
+    /**
+     * Adjusts vertical scroll position within defined limits.
+     *
+     * @param min the minimum value of the scroll range
+     * @param max the maximum value of the scroll range
+     * @param val the current value or position in the scroll range
+     * @param len the length or extent of the scrollable content
+     */
     void vertical(int min, int max, int val, int len);
+
+    /**
+     * Adjusts horizontal scroll position within defined limits.
+     *
+     * @param min the minimum value of the scroll range
+     * @param max the maximum value of the scroll range
+     * @param val the current value or position in the scroll range
+     * @param len the length or extent of the scrollable content
+     */
     void horizontal(double min, double max, double val, double len);
+
+    /**
+     * Retrieves the horizontal scroll value or position on the x-axis.
+     *
+     * @return the current horizontal scroll value or position on the x-axis
+     */
     double xVal();
 }

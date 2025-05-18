@@ -78,15 +78,18 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     public boolean closeAll() {
-        for (Tab tab : contents) {
+        record TabAndPane(Tab tab, TabPane tabPane, EditorPane pane) {
+            void select() { if (tabPane != null) tabPane.getSelectionModel().select(tab); }
+        }
+        var tabs = contents.stream()
+            .filter(tab -> tab.getContent() instanceof EditorPane)
+            .map(tab -> new TabAndPane(tab, tab.getTabPane(), (EditorPane) tab.getContent()))
+            .toList();
+        for (TabAndPane tabAndPane : tabs) {
             // check unsaved tabs
-            if (tab.getContent() instanceof  EditorPane editorPane) {
-                TabPane tabPane = tab.getTabPane();
-                if (tabPane != null)
-                    tabPane.getSelectionModel().select(tab);
-                if (!editorPane.canDiscard()) {
-                    return false;
-                }
+            tabAndPane.select();
+            if (!tabAndPane.pane.canDiscard()) {
+                return false;
             }
         }
         return true;

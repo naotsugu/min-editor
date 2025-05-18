@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,21 +24,21 @@ import java.util.Objects;
 public interface Point extends Comparable<Point> {
 
     /**
-     * Get the number of row.
-     * @return the number of row
+     * Get the number of rows.
+     * @return the number of rows
      */
     int row();
 
     /**
-     * Get the number of column.
-     * @return the number of column
+     * Get the number of columns.
+     * @return the number of columns
      */
     int col();
 
     /**
      * Create a new caret point.
-     * @param row the number of row
-     * @param col the number of column
+     * @param row the number of rows
+     * @param col the number of columns
      * @return the new caret point
      */
     static Point of(int row, int col) {
@@ -64,7 +64,7 @@ public interface Point extends Comparable<Point> {
      * Create a new caret point from the other point.
      * @param p the other point
      * @return a new caret point
-     * @param <E> the type of other point
+     * @param <E> the type of another point
      */
     static <E extends Point> Point of(E p) {
         return of(p.row(), p.col());
@@ -99,8 +99,8 @@ public interface Point extends Comparable<Point> {
         int len();
         /**
          * Create a new point len.
-         * @param row the number of row
-         * @param col the number of column
+         * @param row the number of rows
+         * @param col the number of columns
          * @return the new caret point
          */
         static PointLen of(int row, int col, int len) {
@@ -156,7 +156,7 @@ public interface Point extends Comparable<Point> {
     }
 
     /**
-     * The text with point.
+     * The text with a point.
      * @param point the point
      * @param text the text
      */
