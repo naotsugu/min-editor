@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The find.
+ * Implementation of the {@link Find} interface that provides search functionalities
+ * for locating {@link PointLen} instances based on various criteria and operations.
+ *
  * @author Naotsugu Kobayashi
  */
 public class FindImpl implements Find {

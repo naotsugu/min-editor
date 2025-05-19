@@ -502,8 +502,12 @@ public class EditorPane extends StackPane {
     }
 
     Optional<Session> stash() {
-        if (model.query(Query.contentPath).isPresent() && !canDiscard()) {
-            return Optional.empty();
+        if (model.query(Query.contentPath).isPresent()) {
+            if (canDiscard()) {
+                return Optional.of(model.getSession());
+            } else {
+                return Optional.empty();
+            }
         }
         return Optional.of(model.stash());
     }

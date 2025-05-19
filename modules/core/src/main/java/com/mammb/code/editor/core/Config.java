@@ -63,7 +63,7 @@ public interface Config {
      * @return the stash path
      */
     default Path stashPath() {
-        Path dir = path().resolve("stash");
+        Path dir = path().getParent().resolve("stash");
         if (!dir.toFile().exists()) {
             try {
                 Files.createDirectories(dir);
@@ -190,7 +190,7 @@ public interface Config {
         }
 
         /**
-         * Get the configuration directory for platform.
+         * Get the configuration directory for a platform.
          * @return the configuration directory
          */
         protected static Path configRoot() {

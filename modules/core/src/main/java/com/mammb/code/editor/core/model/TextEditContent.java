@@ -38,7 +38,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * The text edit content.
+ * A class representing the content being edited in a text editing context.
+ * It provides methods to manipulate the text content, perform undo/redo operations,
+ * manage insertion and deletion of text, and handle content flushes during text editing.
  * @author Naotsugu Kobayashi
  */
 public class TextEditContent implements Content {

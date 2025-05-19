@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.fx;
 
+import com.mammb.code.editor.core.Query;
+import com.mammb.code.editor.core.Session;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -44,7 +46,9 @@ import java.lang.System.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static java.lang.System.Logger.Level.ERROR;
 
@@ -78,20 +82,29 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     public boolean closeAll() {
+
         record TabAndPane(Tab tab, TabPane tabPane, EditorPane pane) {
             void select() { if (tabPane != null) tabPane.getSelectionModel().select(tab); }
         }
+
         var tabs = contents.stream()
             .filter(tab -> tab.getContent() instanceof EditorPane)
             .map(tab -> new TabAndPane(tab, tab.getTabPane(), (EditorPane) tab.getContent()))
             .toList();
+
         for (TabAndPane tabAndPane : tabs) {
-            // check unsaved tabs
-            tabAndPane.select();
-            if (!tabAndPane.pane.canDiscard()) {
-                return false;
-            }
+            // if (tabAndPane.pane().query(Query.contentPath).isPresent()) {
+                tabAndPane.select();
+                if (!tabAndPane.pane.canDiscard()) {
+                    return false;
+                }
+            // }
         }
+//        context.config().sessions(
+//            tabs.stream().map(tab -> tab.pane().stash())
+//                .filter(Optional::isPresent)
+//                .map(Optional::get)
+//                .toList());
         return true;
     }
 
