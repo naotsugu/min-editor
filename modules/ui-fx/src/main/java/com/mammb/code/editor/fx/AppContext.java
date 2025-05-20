@@ -34,6 +34,7 @@ public class AppContext implements Context {
     /** The configuration instance. */
     private AppConfig appConfig = new AppConfig();
 
+    /** The application. */
     private final Application app;
 
     public AppContext(Application app) {
