@@ -44,6 +44,7 @@ import javafx.scene.shape.Rectangle;
 import java.io.File;
 import java.lang.System.Logger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -76,9 +77,9 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         getChildren().add(pane);
     }
 
-    public SplitTabPane(EditorPane node) {
-        this(node.context());
-        add(node);
+    public SplitTabPane(AppContext ctx, EditorPane... panes) {
+        this(ctx);
+        Arrays.stream(panes).forEach(this::add);
     }
 
     public boolean closeAll() {

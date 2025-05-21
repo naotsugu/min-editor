@@ -112,11 +112,11 @@ public class EditorPane extends StackPane {
      * @param ctx the application context
      */
     public EditorPane(AppContext ctx) {
-        this((Path) null, ctx);
+        this(ctx, (Path) null);
     }
 
-    public EditorPane(Session session, AppContext ctx) {
-        this((Path) null, ctx);
+    public EditorPane(AppContext ctx, Session session) {
+        this(ctx, (Path) null);
         if (session == null) return;
         if (session.hasPath()) {
             open(session);
@@ -127,10 +127,10 @@ public class EditorPane extends StackPane {
 
     /**
      * Constructor.
-     * @param path the path of content
      * @param ctx the application context
+     * @param path the path of content
      */
-    public EditorPane(Path path, AppContext ctx) {
+    public EditorPane(AppContext ctx, Path path) {
 
         context = ctx;
 
