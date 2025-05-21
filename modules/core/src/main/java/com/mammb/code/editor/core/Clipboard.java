@@ -34,8 +34,8 @@ public interface Clipboard {
     String getString();
 
     /**
-     * Get the html string from the clipboard.
-     * @return the html string
+     * Get the HTML string from the clipboard.
+     * @return the HTML string
      */
     String getHtml();
 

@@ -30,7 +30,7 @@ import com.mammb.code.editor.core.model.QueryRecords.*;
 import com.mammb.code.piecetable.DocumentStat;
 
 /**
- * The read only string content.
+ * The read-only string content.
  * This content is intended to provide a temporary content implementation,
  * such as when loading large files.
  *

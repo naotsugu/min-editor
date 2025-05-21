@@ -84,11 +84,19 @@ public interface Session {
     long timestamp();
 
     /**
-     * Get whether the path has.
-     * @return {@code true} if the path has
+     * Determines if the current session has an associated path.
+     * @return {@code true} if the path is not {@code null}, otherwise {@code false}
      */
     default boolean hasPath() {
         return path() != null;
+    }
+
+    /**
+     * Determines if there is an alternate path.
+     * @return {@code true} if the alternate path is not {@code null}, otherwise {@code false}
+     */
+    default boolean hasAltPath() {
+        return altPath() != null;
     }
 
     /**

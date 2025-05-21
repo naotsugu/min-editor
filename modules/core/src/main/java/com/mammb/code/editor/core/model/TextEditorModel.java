@@ -71,6 +71,9 @@ import com.mammb.code.editor.core.model.ActionRecords.*;
  */
 public class TextEditorModel implements EditorModel {
 
+    /** logger. */
+    private static final System.Logger log = System.getLogger(TextEditorModel.class.getName());
+
     /** The margin top. */
     private final double marginTop = 5;
     /** The margin left(garter width). */
@@ -118,11 +121,32 @@ public class TextEditorModel implements EditorModel {
      * @param ctx the context
      */
     public TextEditorModel(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
-        this(session.hasPath() ? Content.of(session.path()) : Content.of(), fm, scroll, ctx);
+        this(contentOf(session), fm, scroll, ctx);
         if (session.lineWidth() > 0) wrap(session.lineWidth());
         setSize(width, height);
         scrollAt(session.topLine());
         carets.getFirst().at(session.caretRow(), session.caretCol());
+    }
+
+    /**
+     * Creates a {@link Content} instance based on the given session's paths.
+     * The method checks if the session has a primary or alternative path and
+     * loads the content accordingly. If no valid path is available or an error
+     * occurs while reading, an empty {@link Content} is returned.
+     * @param session the session from which to retrieve content details
+     * @return the content created from the session paths or an empty content if no valid path is found
+     */
+    private static Content contentOf(Session session) {
+        if (session.hasPath()) {
+            return Content.of(session.path());
+        } else if (session.hasAltPath()) {
+            try {
+                return Content.of(Files.readAllBytes(session.altPath()));
+            } catch (IOException ignore) {
+                log.log(System.Logger.Level.WARNING, "Failed to read altPath: " + session.altPath());
+            }
+        }
+        return Content.of();
     }
 
     @Override
