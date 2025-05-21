@@ -120,8 +120,8 @@ public class EditorPane extends StackPane {
         if (session == null) return;
         if (session.hasPath()) {
             open(session);
-        } else if (session.altPath() != null) {
-            // TODO
+        } else if (session.hasAltPath()) {
+            model = EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
         }
     }
 

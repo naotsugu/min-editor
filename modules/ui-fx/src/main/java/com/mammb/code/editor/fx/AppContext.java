@@ -20,6 +20,8 @@ import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Session;
 import javafx.application.Application;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -54,6 +56,9 @@ public class AppContext implements Context {
      * The application config.
      */
     public static class AppConfig extends Config.AbstractConfig {
+
+        /** The logger. */
+        private static final System.Logger log = System.getLogger(AppConfig.class.getName());
 
         AppConfig() {
             super(AbstractConfig.configRoot()
@@ -144,6 +149,21 @@ public class AppContext implements Context {
             put("app.sessions", sessions.stream().map(Session::asString)
                 .collect(Collectors.joining(File.pathSeparator.repeat(2))));
         }
-    }
 
+        /**
+         * Clear sessions.
+         */
+        public void clearSessions() {
+            put("app.sessions", "");
+            try {
+                File[] files = stashPath().toFile().listFiles(File::isFile);
+                if (files == null) return;
+                for (File file : files) {
+                    Files.deleteIfExists(file.toPath());
+                }
+            } catch (IOException ignore) {
+                log.log(System.Logger.Level.WARNING, ignore.getMessage());
+            }
+        }
+    }
 }

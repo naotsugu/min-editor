@@ -101,6 +101,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 }
             // }
         }
+        context.config().clearSessions();
 //        context.config().sessions(
 //            tabs.stream().map(tab -> tab.pane().stash())
 //                .filter(Optional::isPresent)
