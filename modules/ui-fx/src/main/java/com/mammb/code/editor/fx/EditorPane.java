@@ -122,6 +122,7 @@ public class EditorPane extends StackPane {
             open(session);
         } else if (session.hasAltPath()) {
             model = EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
+            model.setSize(getWidth(), getHeight());
         }
     }
 

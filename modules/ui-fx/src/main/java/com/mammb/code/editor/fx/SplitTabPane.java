@@ -79,7 +79,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
     public SplitTabPane(AppContext ctx, EditorPane... panes) {
         this(ctx);
-        Arrays.stream(panes).forEach(this::add);
+        DndTabPane dndTabPane = add(panes[0]);
+        Arrays.stream(panes).skip(1).forEach(dndTabPane::add);
     }
 
     public boolean closeAll() {
@@ -94,19 +95,19 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             .toList();
 
         for (TabAndPane tabAndPane : tabs) {
-            // if (tabAndPane.pane().query(Query.contentPath).isPresent()) {
+            if (tabAndPane.pane().query(Query.contentPath).isPresent()) {
                 tabAndPane.select();
                 if (!tabAndPane.pane.canDiscard()) {
                     return false;
                 }
-            // }
+            }
         }
         context.config().clearSessions();
-//        context.config().sessions(
-//            tabs.stream().map(tab -> tab.pane().stash())
-//                .filter(Optional::isPresent)
-//                .map(Optional::get)
-//                .toList());
+        context.config().sessions(
+            tabs.stream().map(tab -> tab.pane().stash())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList());
         return true;
     }
 
@@ -217,9 +218,11 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             runLater(() -> {
                 // double-click in the tab area to open a new tab
                 Node headerArea = tabPane.lookup(".tab-header-area");
-                headerArea.setOnMouseClicked(e -> {
-                    if (e.getClickCount() == 2) addNewEdit();
-                });
+                if (headerArea != null) {
+                    headerArea.setOnMouseClicked(e -> {
+                        if (e.getClickCount() == 2) addNewEdit();
+                    });
+                }
             });
         }
         void add(EditorPane node) {

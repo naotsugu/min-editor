@@ -131,14 +131,20 @@ public interface Session {
             }
         }
         return new SessionRecord(
-            map.containsKey("path") ? Path.of(map.get("path")) : null,
-            map.containsKey("lastModifiedTime") ? FileTime.fromMillis(Long.parseLong(map.get("lastModifiedTime"))) : null,
-            map.containsKey("altPath") ? Path.of(map.get("altPath")) : null,
+            existsValue(map, "path") ? Path.of(map.get("path")) : null,
+            existsValue(map, "lastModifiedTime") ? FileTime.fromMillis(Long.parseLong(map.get("lastModifiedTime"))) : null,
+            existsValue(map, "altPath") ? Path.of(map.get("altPath")) : null,
             Integer.parseInt(map.getOrDefault("topLine", "0")),
             Integer.parseInt(map.getOrDefault("lineWidth", "0")),
             Integer.parseInt(map.getOrDefault("caretRow", "0")),
             Integer.parseInt(map.getOrDefault("caretCol", "0")),
             Long.parseLong(map.getOrDefault("timestamp", "0")));
+    }
+
+    private static boolean existsValue(Map<String, String> map, String key) {
+        if (!map.containsKey(key)) return false;
+        var val = map.get(key);
+        return val != null && !val.isBlank();
     }
 
     /**

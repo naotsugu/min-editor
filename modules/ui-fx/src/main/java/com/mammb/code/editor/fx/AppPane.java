@@ -35,8 +35,15 @@ public class AppPane extends BorderPane {
      * @param ctx the application context
      */
     public AppPane(Stage stage, Path path, AppContext ctx) {
-        var editorPane = new EditorPane(ctx, path);
-        container = new SplitTabPane(ctx, editorPane);
+
+        var sessions = ctx.config().sessions();
+        if (path != null || sessions.isEmpty()) {
+            container = new SplitTabPane(ctx, new EditorPane(ctx, path));
+        } else {
+            container = new SplitTabPane(ctx,
+                sessions.stream().map(s -> new EditorPane(ctx, s)).toArray(EditorPane[]::new));
+        }
+
         setCenter(container);
         stage.setOnCloseRequest(e -> {
             e.consume();
