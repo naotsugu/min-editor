@@ -53,27 +53,40 @@ public class TextEditContent implements Content {
     private boolean modified;
 
     /**
-     * Constructor.
+     * Default constructor for the TextEditContent class.
+     * Initializes a new instance with default settings.
+     * Creates a new, empty TextEdit instance for managing text editing operations.
      */
     public TextEditContent() {
         this.edit = TextEdit.of();
     }
 
     /**
-     * Constructor.
-     * @param path the path of content
+     * Constructs a new TextEditContent instance using the specified path.
+     * Initializes the editor with the content from the given file path.
+     * @param path the path to the file whose content will initialize the editor
      */
     public TextEditContent(Path path) {
         this.edit = TextEdit.of(path);
     }
 
     /**
-     * Constructor.
-     * @param path the path of content
-     * @param consumer the progress callback
+     * Constructs a new TextEditContent instance using the specified file path and a consumer.
+     * This constructor initializes the text editor with content from the given file path
+     * and uses the provided consumer to process segment fractions during text editing operations.
+     * @param path the file path to initialize the content of the editor
+     * @param consumer the consumer that accepts segment fraction values for processing
      */
     public TextEditContent(Path path, Consumer<Long> consumer) {
         this.edit = TextEdit.of(path, seg -> consumer.accept(seg.fraction()));
+    }
+
+    /**
+     * Constructor to create a new TextEditContent instance from a byte array.
+     * @param bytes the byte array representing the content
+     */
+    public TextEditContent(byte[] bytes) {
+        this.edit = TextEdit.of(bytes);
     }
 
     @Override

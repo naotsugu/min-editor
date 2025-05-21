@@ -198,6 +198,15 @@ public interface Content {
     }
 
     /**
+     * Creates a new {@link Content} from the specified byte array.
+     * @param bytes the byte array representing the content data
+     * @return a new {@link Content} instance initialized with the provided bytes
+     */
+    static Content of(byte[] bytes) {
+        return new TextEditContent(bytes);
+    }
+
+    /**
      * Create a new partial {@link Content}.
      * @param path the specified path
      * @return a new partial {@link Content}
