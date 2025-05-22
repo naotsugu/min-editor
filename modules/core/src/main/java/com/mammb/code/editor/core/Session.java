@@ -117,6 +117,14 @@ public interface Session {
     }
 
     /**
+     * Creates an empty {@code Session} instance with default values.
+     * @return a new {@code Session} instance with all fields initialized to default values
+     */
+    static Session empty() {
+        return new SessionRecord(null, null, null, 0, 0, 0, 0, System.currentTimeMillis());
+    }
+
+    /**
      * Create a new {@link Session} from the source string.
      * @param string the source string
      * @return a new {@link Session}
@@ -139,12 +147,6 @@ public interface Session {
             Integer.parseInt(map.getOrDefault("caretRow", "0")),
             Integer.parseInt(map.getOrDefault("caretCol", "0")),
             Long.parseLong(map.getOrDefault("timestamp", "0")));
-    }
-
-    private static boolean existsValue(Map<String, String> map, String key) {
-        if (!map.containsKey(key)) return false;
-        var val = map.get(key);
-        return val != null && !val.isBlank();
     }
 
     /**
@@ -187,6 +189,12 @@ public interface Session {
             caretRow,
             caretCol,
             System.currentTimeMillis());
+    }
+
+    private static boolean existsValue(Map<String, String> map, String key) {
+        if (!map.containsKey(key)) return false;
+        var val = map.get(key);
+        return val != null && !val.isBlank();
     }
 
     /**
