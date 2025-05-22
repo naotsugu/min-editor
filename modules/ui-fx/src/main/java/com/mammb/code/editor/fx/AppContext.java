@@ -138,7 +138,7 @@ public class AppContext implements Context {
         public List<Session> sessions() {
             return Arrays.stream(get("app.sessions", "").split(File.pathSeparator.repeat(2)))
                 .filter(Predicate.not(String::isBlank))
-                .map(Session::of).toList();
+                .map(Session::valueOf).toList();
         }
 
         /**

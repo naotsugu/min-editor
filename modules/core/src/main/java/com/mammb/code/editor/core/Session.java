@@ -129,7 +129,7 @@ public interface Session {
      * @param string the source string
      * @return a new {@link Session}
      */
-    static Session of(String string) {
+    static Session valueOf(String string) {
         if (string == null || string.length() <= 2) return null;
         Map<String, String> map = new HashMap<>();
         for (String entry : string.substring(1, string.length() - 1).split(File.pathSeparator)) {

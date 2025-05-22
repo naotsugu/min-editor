@@ -38,7 +38,7 @@ class SessionTest {
         assertEquals(path, session.path());
 
         var string = session.asString();
-        session = Session.of(string);
+        session = Session.valueOf(string);
         assertEquals(path, session.path());
         assertEquals(string, session.asString());
     }
