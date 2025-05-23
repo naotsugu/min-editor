@@ -66,7 +66,7 @@ public interface FontMetrics {
 
     /**
      * The amount of space between lines of text in this font. This is the
-     * amount of space between he maxDecent of one line and the maxAscent
+     * amount of space between the maxDecent of one line and the maxAscent
      * of the next. This number is included in the lineHeight.
      * @return the leading
      */

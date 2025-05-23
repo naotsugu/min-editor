@@ -39,17 +39,17 @@ public interface LineLayout {
     int rowToLastLine(int row);
 
     /**
-     * Get the number of line from the specified caret position.
-     * @param row the number of row
-     * @param col the number of col
-     * @return the number of line
+     * Get the number of lines from the specified caret position.
+     * @param row the number of rows
+     * @param col the number of cols
+     * @return the number of lines
      */
     int rowToLine(int row, int col);
 
     /**
-     * Get the number of row for the specified number of line.
-     * @param line the specified number of line
-     * @return the number of row
+     * Get the number of rows for the specified number of lines.
+     * @param line the specified number of lines
+     * @return the number of rows
      */
     int lineToRow(int line);
 
@@ -106,15 +106,15 @@ public interface LineLayout {
     int charsInLine();
 
     /**
-     * Get the first column of the specified number of line.
+     * Get the first column of the specified number of lines.
      * Always zero if not line wrapped
-     * @param line the specified number of line
+     * @param line the specified number of lines
      * @return the first column
      */
     int homeColOnRow(int line);
 
     /**
-     * Get the end column of the specified number of line.
+     * Get the end column of the specified number of lines.
      * Always line length, if not line wrapped
      * <p>
      *  row  line
@@ -122,7 +122,7 @@ public interface LineLayout {
      *        1    |*|*|          -> 2
      *   1    2    |*|*|*| | |    -> 3
      * </p>
-     * @param line the specified number of line
+     * @param line the specified number of lines
      * @return the end column
      */
     default int endColOnRow(int line) {
@@ -130,14 +130,14 @@ public interface LineLayout {
     }
 
     /**
-     * Get the end column of the specified number of row.
+     * Get the end column of the specified number of rows.
      * <p>
      *  row
      *   0  |*|*|*|*|*|
      *      |*|*|          -> 7
      *   1  |*|*|*| | |    -> 3
      * </p>
-     * @param row the specified number of row
+     * @param row the specified number of rows
      * @return the end column
      */
     default int endColOnRowAt(int row) {
@@ -145,10 +145,10 @@ public interface LineLayout {
     }
 
     /**
-     * Get the number of column at the specified x-coordinate of the specified line.
+     * Get the number of columns at the specified x-coordinate of the specified line.
      * @param line the specified line
      * @param x the specified x-coordinate
-     * @return the number of column
+     * @return the number of columns
      */
     int xToCol(int line, double x);
 
@@ -173,7 +173,7 @@ public interface LineLayout {
     /**
      * Get the x-coordinate of the specified position.
      * Threshold is the center coordinates of the character.
-     * @param line the number of line
+     * @param line the number of lines
      * @param x the x-coordinate
      * @return the x-coordinate
      */
@@ -183,8 +183,8 @@ public interface LineLayout {
 
     /**
      * Get the x-coordinate of the specified position.
-     * @param line the number of line
-     * @param col the number of column
+     * @param line the number of lines
+     * @param col the number of columns
      * @return the x-coordinate
      */
     default double xOnLayout(int line, int col) {

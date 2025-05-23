@@ -27,8 +27,8 @@ import java.util.List;
 public interface Text {
 
     /**
-     * Get the number of row.
-     * @return the number of row
+     * Get the number of rows.
+     * @return the number of rows
      */
     int row();
 
@@ -251,7 +251,7 @@ public interface Text {
 
     /**
      * Create a new Text instance.
-     * @param row the number of row
+     * @param row the number of rows
      * @param value the text value
      * @param advances the advances
      * @param height the height

@@ -34,7 +34,7 @@ public interface ScreenScroll {
     void vertical(int min, int max, int val, int len);
 
     /**
-     * Adjusts horizontal scroll position within defined limits.
+     * Adjusts the horizontal scroll position within defined limits.
      *
      * @param min the minimum value of the scroll range
      * @param max the maximum value of the scroll range

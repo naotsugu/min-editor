@@ -27,6 +27,7 @@ import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Session.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.fx.Command.*;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -64,7 +65,6 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -118,12 +118,15 @@ public class EditorPane extends StackPane {
     public EditorPane(AppContext ctx, Session session) {
         this(ctx, (Path) null);
         if (session == null) return;
-        if (session.hasPath()) {
-            open(session);
-        } else if (session.hasAltPath()) {
-            model = EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
-            model.setSize(getWidth(), getHeight());
-        }
+        Platform.runLater(() -> {
+            // execute after sizing
+            if (session.hasPath()) {
+                open(session);
+            } else if (session.hasAltPath()) {
+                model = EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
+            }
+            paint();
+        });
     }
 
     /**
@@ -375,7 +378,7 @@ public class EditorPane extends StackPane {
         }
         Task<Void> task = new Task<>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() {
                 model.apply(action);
                 return null;
             }
@@ -602,10 +605,6 @@ public class EditorPane extends StackPane {
             return Files.size(path);
         } catch (Exception ignore) { }
         return 0;
-    }
-
-    AppContext context() {
-        return context;
     }
 
     public ReadOnlyObjectProperty<Path> filePathProperty() {

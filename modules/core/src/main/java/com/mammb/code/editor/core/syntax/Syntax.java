@@ -53,7 +53,7 @@ public interface Syntax {
 
     /**
      * Apply syntax highlights
-     * @param row the number of row
+     * @param row the number of rows
      * @param text the row text
      * @return the list of StyleSpan
      */

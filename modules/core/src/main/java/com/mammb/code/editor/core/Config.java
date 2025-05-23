@@ -82,7 +82,7 @@ public interface Config {
         /** The logger. */
         private static final System.Logger log = System.getLogger(AbstractConfig.class.getName());
 
-        /** The props map. */
+        /** The prop map. */
         private final Map<String, Object> props = new ConcurrentHashMap<>();
 
         /** The path of props. */

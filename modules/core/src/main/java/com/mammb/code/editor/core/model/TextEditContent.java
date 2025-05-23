@@ -47,7 +47,7 @@ public class TextEditContent implements Content {
 
     /** The text edit. */
     private final TextEdit edit;
-    /** The flushes(text being edited with IME). */
+    /** The flushes (text being edited with IME). */
     private final List<Point.PointText> flushes = new ArrayList<>();
     /** Whether it has been modified or not. */
     private boolean modified;

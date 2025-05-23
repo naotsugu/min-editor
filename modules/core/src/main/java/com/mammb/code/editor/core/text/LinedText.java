@@ -22,14 +22,14 @@ package com.mammb.code.editor.core.text;
 public interface LinedText extends Text {
 
     /**
-     * Get the number of line.
-     * @return the number of line
+     * Get the number of lines.
+     * @return the number of lines
      */
     int line();
 
     /**
      * Create a new {@link LinedText}.
-     * @param line the number of line
+     * @param line the number of lines
      * @param text the text
      * @return a new {@link LinedText}
      */

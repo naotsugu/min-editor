@@ -33,15 +33,15 @@ interface ContentLayout extends LineLayout {
     RowText rowTextAt(int row);
 
     /**
-     * Refresh the specified number of line.
-     * @param line the specified number of line
+     * Refresh the specified number of lines.
+     * @param line the specified number of lines
      */
     void refresh(int line);
 
     /**
-     * Refresh the range with the specified number of row.
+     * Refresh the range with the specified number of rows.
      * @param startRow the row number of start
-     * @param endRow the row number of end
+     * @param endRow the row number of the end
      */
     void refreshAt(int startRow, int endRow);
 
@@ -54,16 +54,16 @@ interface ContentLayout extends LineLayout {
     List<? extends Text> texts(int startLine, int endLine);
 
     /**
-     * Get the {@link RowText} belonging to the specified number of line.
-     * @param line the specified number of line
+     * Get the {@link RowText} belonging to the specified number of lines.
+     * @param line the specified number of lines
      * @return the {@link RowText}
      */
     RowText rowText(int line);
 
     /**
      * Get the location.
-     * @param row the number of row
-     * @param col the number of column
+     * @param row the number of rows
+     * @param col the number of columns
      * @param rangeLineStart the limitation of line
      * @param rangeLineEnd the limitation of line
      * @return the location

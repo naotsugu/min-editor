@@ -42,8 +42,8 @@ public class BlockScopes {
     }
 
     /**
-     * Get whether this block types is empty or not.
-     * @return {@code true}, if this block types is empty
+     * Get whether this block type is empty or not.
+     * @return {@code true}, if this block type is empty
      */
     public boolean isEmpty() {
         return types.isEmpty();

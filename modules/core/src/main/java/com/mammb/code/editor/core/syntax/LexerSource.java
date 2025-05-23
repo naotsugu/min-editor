@@ -36,7 +36,7 @@ public class LexerSource {
 
     /**
      * Create a new {@link LexerSource}.
-     * @param row the number of row
+     * @param row the number of rows
      * @param source the source text
      * @return a new {@link LexerSource}
      */
@@ -45,8 +45,8 @@ public class LexerSource {
     }
 
     /**
-     * Get the number of row.
-     * @return the number of row
+     * Get the number of rows.
+     * @return the number of rows
      */
     public int row() {
         return row;

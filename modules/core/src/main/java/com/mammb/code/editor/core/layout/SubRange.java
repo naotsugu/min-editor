@@ -25,7 +25,7 @@ import java.util.StringJoiner;
  */
 public class SubRange implements Comparable<SubRange> {
 
-    /** The number of row. */
+    /** The number of rows. */
     private int row;
     /** The line number of the split row. */
     private final int subLine;
@@ -38,7 +38,7 @@ public class SubRange implements Comparable<SubRange> {
 
     /**
      * Constructor.
-     * @param row the number of row
+     * @param row the number of rows
      * @param subLine the line number of the split row
      * @param subLines the number of split lines
      * @param fromIndex the starting index on the row of this line
@@ -57,8 +57,8 @@ public class SubRange implements Comparable<SubRange> {
     }
 
     /**
-     * Get the number of row.
-     * @return the number of row
+     * Get the number of rows.
+     * @return the number of rows
      */
     public int row() {
         return row;

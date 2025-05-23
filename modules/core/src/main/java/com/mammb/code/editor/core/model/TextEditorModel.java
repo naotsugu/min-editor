@@ -738,12 +738,12 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void select(Find.Spec spec) {
-        boolean finded = false;
+        boolean found = false;
         for (Point.PointLen pl : find.all(spec)) {
-            if (!finded) {
+            if (!found) {
                 var c = carets.unique();
                 c.markTo(pl.row(), pl.col(), pl.row(), pl.col() + pl.len());
-                finded = true;
+                found = true;
             } else {
                 var c = carets.add(pl.row(), pl.col());
                 c.mark();
@@ -751,7 +751,7 @@ public class TextEditorModel implements EditorModel {
             }
         }
         find.clear();
-        if (finded) {
+        if (found) {
             scrollToCaretY(screenLayout.screenLineHalfSize());
         }
     }

@@ -38,7 +38,7 @@ public class ColsText implements RowText {
 
     /**
      * Constructor.
-     * @param row the number of row
+     * @param row the number of rows
      * @param text the text value
      * @param fm the font metrics
      * @param separator the separator

@@ -26,9 +26,9 @@ import com.mammb.code.editor.core.Query;
  */
 public interface QueryRecords {
 
-    /** The query of row ending symbol. */
+    /** The query of a row ending symbol. */
     record RowEndingSymbol() implements Query<String> { }
-    /** The query of charset symbol. */
+    /** The query of a charset symbol. */
     record CharsetSymbol() implements Query<String> { }
     /** The query of modified. */
     record Modified() implements Query<Boolean> { }
@@ -36,13 +36,13 @@ public interface QueryRecords {
     record Bom() implements Query<byte[]> { }
     /** The query of caret point. */
     record CaretPoint() implements Query<Point> { }
-    /** The query of content path. */
+    /** The query of a content path. */
     record ContentPath() implements Query<Optional<Path>> { }
     /** The query of width as characters. */
     record WidthAsCharacters() implements Query<Integer> { }
     /** The query of founded count. */
     record FoundCounts() implements Query<Integer> { }
-    /** The query of selected count. */
+    /** The query of the selected count. */
     record SelectedCounts() implements Query<Integer> { }
     /** The query of line size. */
     record LineSize() implements Query<Integer> { }

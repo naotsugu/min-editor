@@ -42,7 +42,7 @@ public interface Decorate {
 
     /**
      * Add a highlight on the specified row.
-     * @param row the number of row
+     * @param row the number of rows
      * @param span the style span
      */
     void addHighlights(int row, StyleSpan span);

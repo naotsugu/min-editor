@@ -130,14 +130,14 @@ public interface ScreenLayout extends LineLayout {
     int screenColSize();
 
     /**
-     * Get the number of line at the top of the screen.
-     * @return the number of line at the top of the screen
+     * Get the number of lines at the top of the screen.
+     * @return the number of lines at the top of the screen
      */
     int topLine();
 
     /**
-     * Get the number of row at the top of the screen.
-     * @return the number of row at the top of the screen
+     * Get the number of rows at the top of the screen.
+     * @return the number of rows at the top of the screen
      */
     int topRow();
 
@@ -166,8 +166,8 @@ public interface ScreenLayout extends LineLayout {
     void toggleLayout(String layoutName);
 
     /**
-     * Get the number of half lines on the screen.
-     * @return the number of half lines on the screen
+     * Get the number of half-lines on the screen.
+     * @return the number of half-lines on the screen
      */
     default int screenLineHalfSize() {
         return screenLineSize() / 2;
