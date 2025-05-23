@@ -361,6 +361,7 @@ public class EditorPane extends StackPane {
             case ZoomIn _           -> zoom( 1);
             case ZoomOut _          -> zoom(-1);
             case Help _             -> FxDialog.about(getScene().getWindow(), context).showAndWait();
+            case Clone _            -> { } // TODO impl
             case Filter cmd         -> { } // TODO impl
             case Empty _            -> { }
         }
@@ -520,7 +521,11 @@ public class EditorPane extends StackPane {
                 return Optional.empty();
             }
         }
-        return Optional.of(model.stash());
+        if (model.query(Query.size) > 0) {
+            return Optional.of(model.stash());
+        } else {
+            return Optional.empty();
+        }
     }
 
     private void save() {
