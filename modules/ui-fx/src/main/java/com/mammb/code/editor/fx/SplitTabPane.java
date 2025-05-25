@@ -494,7 +494,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private TabPane getTabPane() { return tabPane; }
     }
 
-    enum DropPoint { HEADER, TOP, RIGHT, BOTTOM, LEFT, ANY; }
+    enum DropPoint { HEADER, TOP, RIGHT, BOTTOM, LEFT, ANY }
 
     private static DropPoint dropPoint(Node node, DragEvent e) {
         Bounds paneBounds = node.localToScreen(node.getBoundsInLocal());

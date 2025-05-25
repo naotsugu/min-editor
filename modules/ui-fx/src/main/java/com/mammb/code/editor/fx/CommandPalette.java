@@ -58,7 +58,7 @@ public class CommandPalette extends Dialog<Command> {
     /** The default prompt text. */
     private static final String PROMPT = " <enter command> ";
 
-    /** The container of command palette. */
+    /** The container of the command palette. */
     private final HBox box;
     /** The command label. */
     private final Label commandLabel;

@@ -49,7 +49,7 @@ public class FxDialog extends Dialog<ButtonType> {
 
     /**
      * Create the about dialog.
-     * @param owner the owner of dialog
+     * @param owner the owner of the dialog
      * @return the about dialog
      */
     public static FxDialog about(Window owner, AppContext ctx) {
@@ -67,7 +67,7 @@ public class FxDialog extends Dialog<ButtonType> {
 
     /**
      * Create the confirmation dialog.
-     * @param owner the owner of dialog
+     * @param owner the owner of the dialog
      * @param text the text
      * @return the confirmation dialog
      */
