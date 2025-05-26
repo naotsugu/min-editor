@@ -629,6 +629,11 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
+    public void close() {
+        content.close();
+    }
+
+    @Override
     public Session stash() {
         Optional<Path> path = content.path();
         Path stashPath = ctx.config().stashPath().resolve(

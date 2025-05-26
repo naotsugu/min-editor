@@ -226,6 +226,11 @@ public class TextEditContent implements Content {
     }
 
     @Override
+    public void close() {
+        edit.close();
+    }
+
+    @Override
     public Point insertFlush(Point point, String text) {
         flushes.add(new Point.PointText(point, text));
         return Point.of(point.row(), point.col() + text.length());

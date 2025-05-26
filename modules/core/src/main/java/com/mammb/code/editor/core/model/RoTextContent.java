@@ -154,6 +154,11 @@ public class RoTextContent implements Content {
     }
 
     @Override
+    public void close() {
+        pear.close();
+    }
+
+    @Override
     public Point insertFlush(Point point, String text) {
         return point;
     }

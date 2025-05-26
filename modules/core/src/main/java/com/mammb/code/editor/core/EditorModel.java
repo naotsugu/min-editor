@@ -163,6 +163,11 @@ public interface EditorModel {
     void save(Path path);
 
     /**
+     * Closes the editor and releases any associated resources.
+     */
+    void close();
+
+    /**
      * Saves the current state of the editor and returns it as a {@link Session} object.
      * This method allows the editor's state to be preserved and restored later.
      * @return the current state of the editor as a {@link Session}

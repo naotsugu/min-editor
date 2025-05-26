@@ -108,6 +108,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList());
+        tabs.forEach(tab -> tab.pane.closeModel());
         return true;
     }
 
@@ -300,6 +301,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                         e.consume();
                     }
                     parent.contents.remove(tab);
+                    editorPane.closeModel();
                 } else {
                     log.log(ERROR, "An unexpected node configuration has been detected.");
                 }

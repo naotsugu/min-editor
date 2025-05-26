@@ -477,6 +477,7 @@ public class EditorPane extends StackPane {
         // save previous session
         sessionHistory.push(model.getSession());
 
+        closeModel();
         model = openInBackground
             ? EditorModel.of(Content.readOnlyPartOf(session.path()), draw.fontMetrics(), screenScroll(), context)
             : EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
@@ -533,6 +534,11 @@ public class EditorPane extends StackPane {
         } else {
             return Optional.empty();
         }
+    }
+
+    void closeModel() {
+        EditorModel m = model;
+        if (m != null) model.close();
     }
 
     private void save() {

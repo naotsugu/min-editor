@@ -144,6 +144,11 @@ public interface Content {
     void write(Path path);
 
     /**
+     * Closes the content and releases associated resources.
+     */
+    void close();
+
+    /**
      * Insert the text being edited with IME.
      * @param point the point at insertion
      * @param text the text being edited with IME
