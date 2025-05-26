@@ -217,6 +217,10 @@ public class EditorPane extends StackPane {
         model.updateFonts(draw.fontMetrics());
     }
 
+    private void duplicate() {
+
+    }
+
     private void handleMouseMoved(MouseEvent e) {
         switch (model.hoverOn(e.getX(), e.getY())) {
             case HoverOn.GarterRegion _ -> canvas.setCursor(Cursor.DEFAULT);
@@ -364,7 +368,7 @@ public class EditorPane extends StackPane {
             case ZoomIn _           -> zoom( 1);
             case ZoomOut _          -> zoom(-1);
             case Help _             -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Clone _            -> { } // TODO impl
+            case Clone _            -> duplicate();
             case Filter cmd         -> { } // TODO impl
             case Empty _            -> { }
         }
