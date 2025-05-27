@@ -168,6 +168,10 @@ public interface Session {
         }
     }
 
+    static Session altOf(Path path) {
+        return new SessionRecord(null, null, path, 0, 0, 0, 0, System.currentTimeMillis());
+    }
+
     /**
      * Create a new {@link Session}.
      * @param path the path

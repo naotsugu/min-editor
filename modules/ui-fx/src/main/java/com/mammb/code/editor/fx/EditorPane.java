@@ -39,6 +39,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ButtonType;
@@ -217,8 +218,27 @@ public class EditorPane extends StackPane {
         model.updateFonts(draw.fontMetrics());
     }
 
-    private void duplicate() {
+    private EditorPane duplicate() {
+        return stash().map(session -> {
+            // TODO
+            var ep = new EditorPane(context);
+            ep.model = EditorModel.of(session,
+                ep.draw.fontMetrics(), ep.screenScroll(), context, ep.getWidth(), ep.getHeight());
+            ep.filePathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
+            return ep;
+        }).orElse(null);
+    }
 
+    private void openRight(EditorPane editorPane) {
+        if (editorPane == null) return;
+        Node node = getParent();
+        for (;;) {
+            if (node == null) return;
+            if (node instanceof SplitTabPane.DndTabPane) break;
+            node = node.getParent();
+        }
+        var dndTabPane = (SplitTabPane.DndTabPane) node;
+        dndTabPane.parent().addRight(editorPane);
     }
 
     private void handleMouseMoved(MouseEvent e) {
@@ -368,7 +388,7 @@ public class EditorPane extends StackPane {
             case ZoomIn _           -> zoom( 1);
             case ZoomOut _          -> zoom(-1);
             case Help _             -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Clone _            -> duplicate();
+            case Duplicate _        -> openRight(duplicate());
             case Filter cmd         -> { } // TODO impl
             case Empty _            -> { }
         }

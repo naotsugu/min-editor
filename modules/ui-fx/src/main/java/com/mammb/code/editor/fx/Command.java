@@ -130,7 +130,7 @@ public sealed interface Command {
 
     record Open(String path) implements Command, RequireArgs1<String> { }
 
-    record Clone() implements Command {}
+    record Duplicate() implements Command {}
 
     record Help() implements Command {}
 
@@ -195,7 +195,7 @@ public sealed interface Command {
             case Class<?> c when c == WrapLine.class -> "wraps a line with a specified number of characters";
             case Class<?> c when c == ToggleLayout.class -> "toggle context layout";
             case Class<?> c when c == Open.class -> "opens the file at the specified path";
-            case Class<?> c when c == Clone.class -> "clone content as read-only";
+            case Class<?> c when c == Duplicate.class -> "duplicate content as read-only";
             case Class<?> c when c == Help.class -> "show help dialog";
             case null, default -> "";
         };

@@ -142,7 +142,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         pane.getItems()
                 .forEach(i -> ((Hierarchical) i).setParent(this));
     }
-    private DndTabPane addRight(EditorPane node) {
+    DndTabPane addRight(EditorPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
         } else {
@@ -396,7 +396,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             marker.setVisible(false);
             DndTabPane from = (DndTabPane) dragged.getTabPane().getParent();
             if (from == this) {
-                // drop to self Pane
+                // drop to self-pane
                 if (from.tabPane.getTabs().size() <= 1) {
                     e.setDropCompleted(true);
                     return;
@@ -493,6 +493,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
         @Override
         public void setParent(SplitTabPane parent) { this.parent = parent; }
+        SplitTabPane parent() { return parent; }
         private TabPane getTabPane() { return tabPane; }
     }
 
