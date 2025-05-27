@@ -26,7 +26,7 @@ application {
     mainClass = "com.mammb.code.editor.bootstrap.Main"
     mainModule = "code.editor.bootstrap"
     applicationDefaultJvmArgs = listOf(
-        "-Xms64m",
+        "-Xms32m",
         "--enable-preview",
         "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m",
         "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCompactObjectHeaders", // Remove if JDK 25 "-XX:+UnlockExperimentalVMOptions"

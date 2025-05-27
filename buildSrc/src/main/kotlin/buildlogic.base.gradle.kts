@@ -18,7 +18,8 @@ tasks.named<Test>("test") {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(24))
+        languageVersion = JavaLanguageVersion.of(24)
+        vendor = JvmVendorSpec.AMAZON // see https://github.com/beryx/badass-jlink-plugin/issues/299
     }
 }
 
