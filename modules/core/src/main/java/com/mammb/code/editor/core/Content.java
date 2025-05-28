@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.model.RoStringContent;
+import com.mammb.code.editor.core.model.RoTextContent;
 import com.mammb.code.editor.core.model.TextEditContent;
 
 /**
@@ -212,12 +213,21 @@ public interface Content {
     }
 
     /**
-     * Create a new partial {@link Content}.
+     * Create a new read-only {@link Content} from the specified path.
      * @param path the specified path
-     * @return a new partial {@link Content}
+     * @return a new read-only {@link Content}
      */
-    static Content readOnlyPartOf(Path path) {
-        return new RoStringContent(path);
+    static Content readonlyOf(Path path) {
+        return RoTextContent.of(path);
+    }
+
+    /**
+     * Create a new read-only partial {@link Content} from the specified path.
+     * @param path the specified path
+     * @return a new read-only partial {@link Content}
+     */
+    static Content readonlyPartOf(Path path) {
+        return RoTextContent.of(path, 5_000);
     }
 
 }

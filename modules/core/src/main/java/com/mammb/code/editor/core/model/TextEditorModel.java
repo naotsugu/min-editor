@@ -130,9 +130,6 @@ public class TextEditorModel implements EditorModel {
 
     /**
      * Creates a {@link Content} instance based on the given session's paths.
-     * The method checks if the session has a primary or alternative path and
-     * loads the content accordingly. If no valid path is available or an error
-     * occurs while reading, an empty {@link Content} is returned.
      * @param session the session from which to retrieve content details
      * @return the content created from the session paths or an empty content if no valid path is found
      */
