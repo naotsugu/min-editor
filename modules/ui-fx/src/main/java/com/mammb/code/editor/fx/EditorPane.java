@@ -124,7 +124,7 @@ public class EditorPane extends StackPane {
             if (session.hasPath()) {
                 open(session);
             } else if (session.hasAltPath()) {
-                model = EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
+                model = EditorModel.of(session, draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context, getWidth(), getHeight());
             }
             paint();
         });
@@ -147,7 +147,7 @@ public class EditorPane extends StackPane {
         Font font = Font.font(context.config().fontName(), context.config().fontSize());
         draw = new FxDraw(canvas.getGraphicsContext2D(), font);
         model = EditorModel.of((path == null) ? Content.of() : Content.of(path),
-            draw.fontMetrics(), screenScroll(), context);
+            draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context);
         vScroll.setOrientation(Orientation.VERTICAL);
         hScroll.setOrientation(Orientation.HORIZONTAL);
         StackPane.setAlignment(vScroll, Pos.TOP_RIGHT);
@@ -171,7 +171,7 @@ public class EditorPane extends StackPane {
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethodTextChanged);
         canvas.focusedProperty().addListener((_, _, n) -> {
-            model.setCaretVisible(n);
+            model().setCaretVisible(n);
             paint(); // TODO only caret draw
         });
         if (path != null) filePathProperty.setValue(path);
@@ -194,7 +194,7 @@ public class EditorPane extends StackPane {
             ObservableValue<? extends Bounds> ob, Bounds o, Bounds n) {
         canvas.setWidth(n.getWidth());
         canvas.setHeight(n.getHeight());
-        model.setSize(n.getWidth(), n.getHeight());
+        model().setSize(n.getWidth(), n.getHeight());
         paint();
     }
 
@@ -204,9 +204,9 @@ public class EditorPane extends StackPane {
                 zoom(e.getDeltaY());
             } else {
                 if (e.getDeltaY() < 0) {
-                    model.scrollNext((int) Math.min(5, -e.getDeltaY()));
+                    model().scrollNext((int) Math.min(5, -e.getDeltaY()));
                 } else {
-                    model.scrollPrev((int) Math.min(5, e.getDeltaY()));
+                    model().scrollPrev((int) Math.min(5, e.getDeltaY()));
                 }
             }
             paint();
@@ -215,7 +215,7 @@ public class EditorPane extends StackPane {
 
     private void zoom(double n) {
         draw.increaseFontSize(Math.clamp(n, -1, 1));
-        model.updateFonts(draw.fontMetrics());
+        model().updateFonts(draw.fontMetrics());
     }
 
     private EditorPane duplicate() {
@@ -223,7 +223,7 @@ public class EditorPane extends StackPane {
             // TODO
             var ep = new EditorPane(context);
             ep.model = EditorModel.of(session,
-                ep.draw.fontMetrics(), ep.screenScroll(), context, ep.getWidth(), ep.getHeight());
+                ep.draw.fontMetrics(), new FxScreenScroll(ep.vScroll, ep.hScroll), context, ep.getWidth(), ep.getHeight());
             ep.filePathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
             return ep;
         }).orElse(null);
@@ -242,7 +242,7 @@ public class EditorPane extends StackPane {
     }
 
     private void handleMouseMoved(MouseEvent e) {
-        switch (model.hoverOn(e.getX(), e.getY())) {
+        switch (model().hoverOn(e.getX(), e.getY())) {
             case HoverOn.GarterRegion _ -> canvas.setCursor(Cursor.DEFAULT);
             case null, default -> canvas.setCursor(Cursor.TEXT);
         }
@@ -250,7 +250,7 @@ public class EditorPane extends StackPane {
 
     private void handleMousePressed(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY) {
-            model.mousePressed(e.getX(), e.getY());
+            model().mousePressed(e.getX(), e.getY());
         }
     }
 
@@ -259,13 +259,13 @@ public class EditorPane extends StackPane {
             switch (e.getClickCount()) {
                 case 1 -> {
                     if (e.isShortcutDown()) {
-                        model.ctrlClick(e.getX(), e.getY());
+                        model().ctrlClick(e.getX(), e.getY());
                     } else {
-                        model.click(e.getX(), e.getY(), false);
+                        model().click(e.getX(), e.getY(), false);
                     }
                 }
-                case 2 -> model.clickDouble(e.getX(), e.getY());
-                case 3 -> model.clickTriple(e.getX(), e.getY());
+                case 2 -> model().clickDouble(e.getX(), e.getY());
+                case 3 -> model().clickTriple(e.getX(), e.getY());
             }
             paint();
         }
@@ -273,8 +273,8 @@ public class EditorPane extends StackPane {
 
     private void handleMouseDragged(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY) {
-            model.moveDragged(e.getX(), e.getY());
-            model.paint(draw);
+            model().moveDragged(e.getX(), e.getY());
+            model().paint(draw);
         }
     }
 
@@ -318,35 +318,35 @@ public class EditorPane extends StackPane {
     }
 
     private void handleVerticalScroll(ObservableValue<? extends Number> ob, Number o, Number n) {
-        model.scrollAt(n.intValue());
+        model().scrollAt(n.intValue());
         paint();
     }
 
     private void handleHorizontalScroll(ObservableValue<? extends Number> ob, Number o, Number n) {
-        model.scrollX(n.doubleValue());
+        model().scrollX(n.doubleValue());
         paint();
     }
 
     private void handleInputMethodTextChanged(InputMethodEvent e) {
         if (!e.getCommitted().isEmpty()) {
-            model.imeOff();
+            model().imeOff();
             execute(CommandKeys.of(Action.input(e.getCommitted())));
         } else if (!e.getComposed().isEmpty()) {
-            if (!model.isImeOn()) model.imeOn();
-            model.imeComposed(e.getComposed().stream()
+            if (!model().isImeOn()) model().imeOn();
+            model().imeComposed(e.getComposed().stream()
                     .map(InputMethodTextRun::getText)
                     .collect(Collectors.joining()));
-            model.paint(draw);
+            model().paint(draw);
         } else {
-            model.imeComposed("");
-            model.imeOff();
+            model().imeComposed("");
+            model().imeOff();
         }
         paint();
     }
 
     void execute(Command command) {
         switch (command) {
-            case ActionCommand cmd  -> model.apply(cmd.action());
+            case ActionCommand cmd  -> model().apply(cmd.action());
             case OpenChoose _       -> openWithChooser();
             case Save _             -> save();
             case SaveAs _           -> saveAs();
@@ -364,23 +364,23 @@ public class EditorPane extends StackPane {
             case Select cmd         -> apply(Action.select(cmd.str(), cmd.caseSensitive()));
             case SelectRegex cmd    -> apply(Action.selectRegex(cmd.str()));
             case GoTo cmd           -> apply(Action.goTo(cmd.rowNumber() - 1));
-            case WrapLine cmd       -> model.apply(Action.wrapLine(cmd.width()));
-            case ToggleLayout _     -> model.apply(Action.toggleLayout());
-            case ToLowerCase _      -> model.apply(Action.replace(EditingFunctions.toLower, true));
-            case ToUpperCase _      -> model.apply(Action.replace(EditingFunctions.toUpper, true));
-            case IndentParen _      -> model.apply(Action.replace(EditingFunctions.toIndentParen, false));
-            case IndentCurlyBrace _ -> model.apply(Action.replace(EditingFunctions.toIndentCurlyBrace, false));
-            case Calc _             -> model.apply(Action.replace(EditingFunctions.toCalc, false));
-            case Sort _             -> model.apply(Action.replace(EditingFunctions.sort, false));
-            case Unique _           -> model.apply(Action.replace(EditingFunctions.unique, false));
-            case DecToHex _         -> model.apply(Action.replace(EditingFunctions.decToHex, true));
-            case DecToBin _         -> model.apply(Action.replace(EditingFunctions.decToBin, true));
-            case HexToBin _         -> model.apply(Action.replace(EditingFunctions.hexToBin, true));
-            case HexToDec _         -> model.apply(Action.replace(EditingFunctions.hexToDec, true));
-            case BinToHex _         -> model.apply(Action.replace(EditingFunctions.binToHex, true));
-            case BinToDec _         -> model.apply(Action.replace(EditingFunctions.binToDec, true));
-            case Pwd _              -> inputText(() -> model.query(Query.contentPath).map(Path::getParent).orElse(null));
-            case Pwf _              -> inputText(() -> model.query(Query.contentPath).orElse(null));
+            case WrapLine cmd       -> model().apply(Action.wrapLine(cmd.width()));
+            case ToggleLayout _     -> model().apply(Action.toggleLayout());
+            case ToLowerCase _      -> model().apply(Action.replace(EditingFunctions.toLower, true));
+            case ToUpperCase _      -> model().apply(Action.replace(EditingFunctions.toUpper, true));
+            case IndentParen _      -> model().apply(Action.replace(EditingFunctions.toIndentParen, false));
+            case IndentCurlyBrace _ -> model().apply(Action.replace(EditingFunctions.toIndentCurlyBrace, false));
+            case Calc _             -> model().apply(Action.replace(EditingFunctions.toCalc, false));
+            case Sort _             -> model().apply(Action.replace(EditingFunctions.sort, false));
+            case Unique _           -> model().apply(Action.replace(EditingFunctions.unique, false));
+            case DecToHex _         -> model().apply(Action.replace(EditingFunctions.decToHex, true));
+            case DecToBin _         -> model().apply(Action.replace(EditingFunctions.decToBin, true));
+            case HexToBin _         -> model().apply(Action.replace(EditingFunctions.hexToBin, true));
+            case HexToDec _         -> model().apply(Action.replace(EditingFunctions.hexToDec, true));
+            case BinToHex _         -> model().apply(Action.replace(EditingFunctions.binToHex, true));
+            case BinToDec _         -> model().apply(Action.replace(EditingFunctions.binToDec, true));
+            case Pwd _              -> inputText(() -> model().query(Query.contentPath).map(Path::getParent).orElse(null));
+            case Pwf _              -> inputText(() -> model().query(Query.contentPath).orElse(null));
             case Now _              -> inputText(LocalDateTime::now);
             case Today _            -> inputText(LocalDate::now);
             case Forward _          -> sessionHistory.forward().ifPresent(this::open);
@@ -396,14 +396,14 @@ public class EditorPane extends StackPane {
     }
 
     private void apply(Action action) {
-        if (model.query(Query.size) < BACKGROUND_THRESHOLD) {
-            model.apply(action);
+        if (model().query(Query.size) < BACKGROUND_THRESHOLD) {
+            model().apply(action);
             return;
         }
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
-                model.apply(action);
+                model().apply(action);
                 return null;
             }
         };
@@ -418,55 +418,31 @@ public class EditorPane extends StackPane {
         try {
             Object obj = supplier.get();
             if (obj == null) return;
-            model.apply(Action.input(obj.toString()));
+            model().apply(Action.input(obj.toString()));
         } catch (Exception ignore) { }
     }
 
-    private ScreenScroll screenScroll() {
-        return new ScreenScroll() {
-            @Override
-            public void vertical(int min, int max, int val, int len) {
-                vScroll.setMin(min);
-                vScroll.setMax(max);
-                vScroll.setValue(val);
-                vScroll.setVisibleAmount(len);
-            }
-            @Override
-            public void horizontal(double min, double max, double val, double len) {
-                hScroll.setMin(min);
-                hScroll.setMax(max);
-                hScroll.setValue(val);
-                hScroll.setVisibleAmount(len);
-                hScroll.setVisible(max > len);
-            }
-            @Override
-            public double xVal() {
-                return hScroll.getValue();
-            }
-        };
-    }
-
     private void paint() {
-        model.paint(draw);
-        Point p = model.query(Query.caretPoint);
-        int selectedCounts = model.query(Query.selectedCounts);
-        int foundCounts = model.query(Query.foundCounts);
+        model().paint(draw);
+        Point p = model().query(Query.caretPoint);
+        int selectedCounts = model().query(Query.selectedCounts);
+        int foundCounts = model().query(Query.foundCounts);
         floatBar.setText(
             selectedCounts > 0 ? selectedCounts + " selected" : "",
             foundCounts > 0 ? foundCounts + " found" : "",
             p.row() + 1 + ":" + p.col(),
-            model.query(Query.rowEndingSymbol),
-            model.query(Query.charsetSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
-        modifiedProperty.setValue(model.query(Query.modified));
+            model().query(Query.rowEndingSymbol),
+            model().query(Query.charsetSymbol) + ((model().query(Query.bom).length > 0) ? "(BOM)" : ""));
+        modifiedProperty.setValue(model().query(Query.modified));
     }
 
     private void openWithChooser() {
         if (!canDiscard()) return;
         FileChooser fc = new FileChooser();
         fc.setTitle("Select file...");
-        if (model.query(Query.contentPath).isPresent()) {
+        if (model().query(Query.contentPath).isPresent()) {
             fc.setInitialDirectory(
-                model.query(Query.contentPath).get().toAbsolutePath().getParent().toFile());
+                model().query(Query.contentPath).get().toAbsolutePath().getParent().toFile());
         } else {
             fc.setInitialDirectory(Path.of(System.getProperty("user.home")).toFile());
         }
@@ -499,8 +475,8 @@ public class EditorPane extends StackPane {
 
         closeModel();
         model = openInBackground
-            ? EditorModel.of(Content.readOnlyPartOf(session.path()), draw.fontMetrics(), screenScroll(), context)
-            : EditorModel.of(session, draw.fontMetrics(), screenScroll(), context, getWidth(), getHeight());
+            ? EditorModel.of(Content.readonlyPartOf(session.path()), draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context)
+            : EditorModel.of(session, draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context, getWidth(), getHeight());
         model.setSize(getWidth(), getHeight());
         filePathProperty.setValue(session.path());
         if (openInBackground) {
@@ -523,7 +499,7 @@ public class EditorPane extends StackPane {
             }
         };
         task.setOnSucceeded(_ -> {
-            model = EditorModel.of(task.getValue(), draw.fontMetrics(), screenScroll(), context);
+            model = EditorModel.of(task.getValue(), draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context);
             model.setSize(getWidth(), getHeight());
             log.log(System.Logger.Level.INFO, "opened %,d rows in %,d ms"
                 .formatted(model.query(Query.rowSize), System.currentTimeMillis() - start));
@@ -533,7 +509,7 @@ public class EditorPane extends StackPane {
 
     boolean canDiscard() {
         boolean canDiscard = true;
-        if (model.query(Query.modified)) {
+        if (model().query(Query.modified)) {
             var ret = FxDialog.confirmation(getScene().getWindow(),
                     "Are you sure you want to discard your changes?").showAndWait();
             canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;
@@ -542,29 +518,29 @@ public class EditorPane extends StackPane {
     }
 
     Optional<Session> stash() {
-        if (model.query(Query.contentPath).isPresent()) {
+        if (model().query(Query.contentPath).isPresent()) {
             if (canDiscard()) {
-                return Optional.of(model.getSession());
+                return Optional.of(model().getSession());
             } else {
                 return Optional.empty();
             }
         }
-        if (model.query(Query.size) > 0) {
-            return Optional.of(model.stash());
+        if (model().query(Query.size) > 0) {
+            return Optional.of(model().stash());
         } else {
             return Optional.empty();
         }
     }
 
     void closeModel() {
-        EditorModel m = model;
-        if (m != null) model.close();
+        EditorModel m = model();
+        if (m != null) m.close();
     }
 
     private void save() {
         // TODO saving large files runs in the background
-        if (model.query(Query.contentPath).isPresent()) {
-            model.save(model.query(Query.contentPath).get());
+        if (model().query(Query.contentPath).isPresent()) {
+            model().save(model().query(Query.contentPath).get());
         } else {
             saveAs();
         }
@@ -574,12 +550,12 @@ public class EditorPane extends StackPane {
         FileChooser fc = new FileChooser();
         fc.setTitle("Save As...");
         fc.setInitialDirectory(model.query(Query.contentPath).isPresent()
-                ? model.query(Query.contentPath).get().toAbsolutePath().getParent().toFile()
+                ? model().query(Query.contentPath).get().toAbsolutePath().getParent().toFile()
                 : Path.of(System.getProperty("user.home")).toFile());
         File file = fc.showSaveDialog(getScene().getWindow());
         if (file == null) return;
         Path path = file.toPath();
-        model.save(path);
+        model().save(path);
         filePathProperty.setValue(path);
     }
 
@@ -602,7 +578,7 @@ public class EditorPane extends StackPane {
     }
 
     private void showCommandPalette(Class<? extends Command> clazz) {
-        new CommandPalette(this, clazz, model.query(Query.selectedText))
+        new CommandPalette(this, clazz, model().query(Query.selectedText))
             .showAndWait()
             .ifPresent(this::execute);
     }
@@ -611,13 +587,13 @@ public class EditorPane extends StackPane {
         return new InputMethodRequests() {
             @Override
             public Point2D getTextLocation(int i) {
-                return model.imeLoc()
+                return model().imeLoc()
                         .map(loc -> canvas.localToScreen(loc.x(), loc.y()))
                         .orElse(null);
             }
             @Override
             public void cancelLatestCommittedText() {
-                model.imeOff();
+                model().imeOff();
             }
             @Override
             public int getLocationOffset(int x, int y) {
@@ -649,7 +625,9 @@ public class EditorPane extends StackPane {
     }
 
     <R> R query(Query<R> query) {
-        return model.query(query);
+        return model().query(query);
     }
+
+    private EditorModel model() { return model; }
 
 }
