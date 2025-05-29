@@ -135,7 +135,7 @@ public class EditorPane extends StackPane {
      * @param ctx the application context
      * @param path the path of content
      */
-    public EditorPane(AppContext ctx, Path path) {
+    private EditorPane(AppContext ctx, Path path) {
 
         context = ctx;
 

@@ -15,7 +15,10 @@
  */
 package com.mammb.code.editor.fx;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import com.mammb.code.editor.core.Session;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
@@ -25,9 +28,6 @@ import javafx.stage.Stage;
  */
 public class AppPane extends BorderPane {
 
-    /** The split tab pane. */
-    private final SplitTabPane container;
-
     /**
      * Constructor.
      * @param stage the stage
@@ -36,13 +36,19 @@ public class AppPane extends BorderPane {
      */
     public AppPane(Stage stage, Path path, AppContext ctx) {
 
-        var sessions = ctx.config().sessions();
-        if (path != null || sessions.isEmpty()) {
-            container = new SplitTabPane(ctx, new EditorPane(ctx, path));
-        } else {
-            container = new SplitTabPane(ctx,
-                sessions.stream().map(s -> new EditorPane(ctx, s)).toArray(EditorPane[]::new));
+        // restore sessions
+        var sessions = new ArrayList<>(ctx.config().sessions());
+        if (path != null && Files.exists(path)) {
+            // add a command line args path as the session
+            sessions.add(Session.of(path));
         }
+        if (sessions.isEmpty()) {
+            // fill the session if empty
+            sessions.add(Session.empty());
+        }
+
+        var panes = sessions.stream().map(s -> new EditorPane(ctx, s)).toArray(EditorPane[]::new);
+        var container = new SplitTabPane(ctx, panes);
 
         setCenter(container);
         stage.setOnCloseRequest(e -> {
