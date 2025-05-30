@@ -200,4 +200,10 @@ public interface LineLayout {
         return line * lineHeight();
     }
 
+    /**
+     * Get the font metrics.
+     * @return the font metrics
+     */
+    FontMetrics fontMetrics();
+
 }

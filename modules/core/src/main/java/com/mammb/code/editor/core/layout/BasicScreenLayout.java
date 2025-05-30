@@ -188,6 +188,11 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
+    public FontMetrics fontMetrics() {
+        return layout.fontMetrics();
+    }
+
+    @Override
     public double standardCharWidth() {
         return layout.standardCharWidth();
     }

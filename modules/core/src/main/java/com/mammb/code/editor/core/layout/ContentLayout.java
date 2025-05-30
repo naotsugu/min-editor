@@ -76,10 +76,4 @@ interface ContentLayout extends LineLayout {
      */
     Content content();
 
-    /**
-     * Get the font metrics.
-     * @return the font metrics
-     */
-    FontMetrics fontMetrics();
-
 }
