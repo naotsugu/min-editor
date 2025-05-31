@@ -17,6 +17,7 @@ package com.mammb.code.editor.core;
 
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.function.Consumer;
 import com.mammb.code.editor.core.model.TextEditorModel;
 
 /**
@@ -204,16 +205,12 @@ public interface EditorModel {
         return new TextEditorModel(Content.of(), fm, scroll, ctx);
     }
 
-    /**
-     * Create a new {@link EditorModel}.
-     * @param content the content
-     * @param fm the font metrics
-     * @param scroll the screen scroll
-     * @param ctx the context
-     * @return a new {@link EditorModel}
-     */
-    static EditorModel of(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
-        return new TextEditorModel(content, fm, scroll, ctx);
+    static EditorModel placeholderOf(Path path, FontMetrics fm, ScreenScroll scroll, Context ctx) {
+        return new TextEditorModel(Content.readonlyPartOf(path), fm, scroll, ctx);
+    }
+
+    static EditorModel of(Path path, FontMetrics fm, ScreenScroll scroll, Context ctx, Consumer<Long> consumer) {
+        return new TextEditorModel(Content.of(path, consumer), fm, scroll, ctx);
     }
 
     /**

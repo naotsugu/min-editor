@@ -457,12 +457,12 @@ public class EditorPane extends StackPane {
 
         closeModel();
         model = openInBackground
-            ? EditorModel.of(Content.readonlyPartOf(session.path()), draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context)
+            ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context)
             : EditorModel.of(session, draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context, getWidth(), getHeight());
         model.setSize(getWidth(), getHeight());
         filePathProperty.setValue(session.path());
         if (openInBackground) {
-            Task<Content> task = buildOpenTask(session);
+            Task<EditorModel> task = buildOpenTask(session);
             floatBar.handleProgress(task);
             var thread = new Thread(task);
             thread.setDaemon(true);
@@ -470,18 +470,20 @@ public class EditorPane extends StackPane {
         }
     }
 
-    private Task<Content> buildOpenTask(Session session) {
+    private Task<EditorModel> buildOpenTask(Session session) {
         final long size = Files.size(session.path());
         final long start = System.currentTimeMillis();
         AtomicLong workDone = new AtomicLong();
-        Task<Content> task = new Task<>() {
+        Task<EditorModel> task = new Task<>() {
             @Override
-            protected Content call() {
-                return Content.of(session.path(), n -> updateProgress(workDone.addAndGet(n), size));
+            protected EditorModel call() {
+                return EditorModel.of(session.path(),
+                    draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context,
+                    n -> updateProgress(workDone.addAndGet(n), size));
             }
         };
         task.setOnSucceeded(_ -> {
-            model = EditorModel.of(task.getValue(), draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context);
+            model = task.getValue();
             model.setSize(getWidth(), getHeight());
             log.log(System.Logger.Level.INFO, "opened %,d rows in %,d ms"
                 .formatted(model.query(Query.rowSize), System.currentTimeMillis() - start));
