@@ -224,12 +224,7 @@ public interface EditorModel {
      * @return a new {@link EditorModel}
      */
     static EditorModel of(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
-        return new TextEditorModel(
-            session,
-            fm,
-            scroll,
-            ctx,
-            width, height);
+        return new TextEditorModel(session, fm, scroll, ctx, width, height);
     }
 
 }

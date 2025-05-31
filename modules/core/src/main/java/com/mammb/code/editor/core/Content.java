@@ -230,4 +230,18 @@ public interface Content {
         return RoTextContent.of(path, 5_000);
     }
 
+    /**
+     * Creates a {@link Content} instance based on the given session's paths.
+     * @param session the session from which to retrieve content details
+     * @return the content created from the session paths or an empty content if no valid path is found
+     */
+    static Content of(Session session) {
+        Content content = session.hasPath()
+            ? Content.of(session.path())
+            : session.hasAltPath()
+            ? Content.of(Files.readAllBytes(session.altPath()))
+            : Content.of();
+        return session.readonly() ? new RoTextContent(content) : content;
+    }
+
 }

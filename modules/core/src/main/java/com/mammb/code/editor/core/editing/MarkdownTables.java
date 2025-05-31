@@ -18,17 +18,18 @@ package com.mammb.code.editor.core.editing;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+
 /**
  * The MarkdownTables.
  * @author Naotsugu Kobayashi
  */
 class MarkdownTables {
 
-    // TODO case insensitive
-    private static final Pattern tablePattern   = Pattern.compile("<table.*?>(.*?)</table>");
-    private static final Pattern captionPattern = Pattern.compile("<caption.*?>(.*?)</caption>");
-    private static final Pattern recordPattern  = Pattern.compile("<tr.*?>(.*?)</tr>");
-    private static final Pattern colPattern     = Pattern.compile("<t[hd ].*?>(.*?)</t[hd]>");
+    private static final Pattern tablePattern   = Pattern.compile("<table.*?>(.*?)</table>", CASE_INSENSITIVE);
+    private static final Pattern captionPattern = Pattern.compile("<caption.*?>(.*?)</caption>", CASE_INSENSITIVE);
+    private static final Pattern recordPattern  = Pattern.compile("<tr.*?>(.*?)</tr>", CASE_INSENSITIVE);
+    private static final Pattern colPattern     = Pattern.compile("<t[hd ].*?>(.*?)</t[hd]>", CASE_INSENSITIVE);
 
     /**
      * Convert HTML tables to markdown tables.
@@ -46,7 +47,7 @@ class MarkdownTables {
         while (m.find()) {
 
             if (m.start() > index) {
-                sb.append(html.substring(index, m.start()));
+                sb.append(html, index, m.start());
                 sb.append('\n');
             }
             index = m.end();

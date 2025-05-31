@@ -205,12 +205,12 @@ public class EditorPane extends StackPane {
 
     private EditorPane duplicate() {
         return stash().map(session -> {
-            // TODO
-            var ep = new EditorPane(context);
-            ep.model = EditorModel.of(session,
-                ep.draw.fontMetrics(), new FxScreenScroll(ep.vScroll, ep.hScroll), context, ep.getWidth(), ep.getHeight());
-            ep.filePathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
-            return ep;
+            var dup = new EditorPane(context);
+            dup.model = EditorModel.of(session.asReadonly(),
+                dup.draw.fontMetrics(), new FxScreenScroll(dup.vScroll, dup.hScroll), context,
+                dup.getWidth(), dup.getHeight());
+            dup.filePathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
+            return dup;
         }).orElse(null);
     }
 

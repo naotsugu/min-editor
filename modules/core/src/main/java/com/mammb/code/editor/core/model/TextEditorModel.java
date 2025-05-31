@@ -141,25 +141,22 @@ public class TextEditorModel implements EditorModel {
      * @param ctx the context
      */
     public TextEditorModel(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
-        this(contentOf(session), fm, scroll, ctx);
+        this(Content.of(session), fm, scroll, ctx);
         if (session.lineWidth() > 0) wrap(session.lineWidth());
         setSize(width, height);
         scrollAt(session.topLine());
         carets.getFirst().at(session.caretRow(), session.caretCol());
     }
 
-    /**
-     * Creates a {@link Content} instance based on the given session's paths.
-     * @param session the session from which to retrieve content details
-     * @return the content created from the session paths or an empty content if no valid path is found
-     */
-    private static Content contentOf(Session session) {
-        if (session.hasPath()) {
-            return Content.of(session.path());
-        } else if (session.hasAltPath()) {
-            return Content.of(Files.readAllBytes(session.altPath()));
-        }
-        return Content.of();
+    public TextEditorModel with(Session session) {
+        var model = new TextEditorModel(Content.of(session), screenLayout.fontMetrics(), scroll, ctx);
+        if (session.lineWidth() > 0) {
+                model.wrap(session.lineWidth());
+            }
+        model.screenLayout.setScreenSize(screenLayout.screenWidth(), screenLayout.screenHeight());
+        model.scrollAt(session.topLine());
+        model.carets.getFirst().at(session.caretRow(), session.caretCol());
+        return model;
     }
 
     @Override
@@ -602,6 +599,7 @@ public class TextEditorModel implements EditorModel {
 
     private void pasteFromClipboard(Clipboard clipboard, boolean withOpt) {
         if (!withOpt && Objects.equals(decorate.syntaxName(), "markdown")) {
+            // TODO
             var html = clipboard.getHtml();
             if (html != null && html.contains("<table") && html.contains("</table>")) {
                 var mdTable = EditingFunctions.markdownTable.apply(html);
@@ -657,6 +655,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             stashPath,
+            content instanceof RoTextContent || content instanceof RoStringContent,
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
     }
@@ -780,6 +779,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             null,
+            content instanceof RoTextContent || content instanceof RoStringContent,
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
     }
