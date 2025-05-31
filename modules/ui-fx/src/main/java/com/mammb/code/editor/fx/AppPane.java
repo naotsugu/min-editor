@@ -47,7 +47,9 @@ public class AppPane extends BorderPane {
             sessions.add(Session.empty());
         }
 
-        var panes = sessions.stream().map(s -> new EditorPane(ctx, s)).toArray(EditorPane[]::new);
+        var panes = sessions.stream()
+            .map(session -> new EditorPane(ctx).bindLater(session))
+            .toArray(EditorPane[]::new);
         var container = new SplitTabPane(ctx, panes);
 
         setCenter(container);

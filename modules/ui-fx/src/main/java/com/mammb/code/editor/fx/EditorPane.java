@@ -18,6 +18,7 @@ package com.mammb.code.editor.fx;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
@@ -59,8 +60,6 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -112,29 +111,6 @@ public class EditorPane extends StackPane {
      * @param ctx the application context
      */
     public EditorPane(AppContext ctx) {
-        this(ctx, (Path) null);
-    }
-
-    public EditorPane(AppContext ctx, Session session) {
-        this(ctx, (Path) null);
-        if (session == null) return;
-        Platform.runLater(() -> {
-            // execute after sizing
-            if (session.hasPath()) {
-                open(session);
-            } else if (session.hasAltPath()) {
-                model = EditorModel.of(session, draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context, getWidth(), getHeight());
-            }
-            paint();
-        });
-    }
-
-    /**
-     * Constructor.
-     * @param ctx the application context
-     * @param path the path of content
-     */
-    private EditorPane(AppContext ctx, Path path) {
 
         context = ctx;
 
@@ -145,8 +121,7 @@ public class EditorPane extends StackPane {
 
         Font font = Font.font(context.config().fontName(), context.config().fontSize());
         draw = new FxDraw(canvas.getGraphicsContext2D(), font);
-        model = EditorModel.of((path == null) ? Content.of() : Content.of(path),
-            draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context);
+        model = EditorModel.of(Content.of(), draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context);
         vScroll.setOrientation(Orientation.VERTICAL);
         hScroll.setOrientation(Orientation.HORIZONTAL);
         StackPane.setAlignment(vScroll, Pos.TOP_RIGHT);
@@ -173,7 +148,18 @@ public class EditorPane extends StackPane {
             model().setCaretVisible(n);
             paint(); // TODO only caret draw
         });
-        if (path != null) filePathProperty.setValue(path);
+    }
+
+    public EditorPane bindLater(Session session) {
+        Platform.runLater(() -> {
+            if (session.hasPath()) {
+                open(session);
+            } else if (session.hasAltPath()) {
+                model = EditorModel.of(session, draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context, getWidth(), getHeight());
+            }
+            paint();
+        });
+        return this;
     }
 
     public void setNewOpenHandler(Function<Path, EditorPane> newOpenHandler) {
@@ -294,8 +280,7 @@ public class EditorPane extends StackPane {
         Dragboard board = e.getDragboard();
         if (board.hasFiles()) {
             var paths = board.getFiles().stream().map(File::toPath).toList();
-            var path = paths.stream().filter(Files::isReadable)
-                .filter(Files::isRegularFile).findFirst();
+            var path = paths.stream().filter(Files::isReadableFile).findFirst();
             if (path.isPresent()) {
                 if (!canDiscard()) return;
                 e.setDropCompleted(true);
@@ -453,21 +438,19 @@ public class EditorPane extends StackPane {
     void open(String pathString) {
         if (!canDiscard()) return;
         var path = Path.of(pathString);
-        if (!Files.exists(path) || !Files.isReadable(path)) return;
-        if (Files.isRegularFile(path)) {
+        if (Files.isReadableFile(path)) {
             open(Session.of(path));
-        } else if (Files.isDirectory(path)) {
-            try (var stream = Files.list(path)) {
-                String list = stream.map(Path::toAbsolutePath)
-                    .map(Path::toString).collect(Collectors.joining("\n"));
-                newEdit().inputText(() -> list.isEmpty() ? path.toAbsolutePath().toString() : list);
-            } catch (IOException ignore) {  }
+        } else if (Files.isReadableDirectory(path)) {
+            String list = String.join("\n", Files.listAbsolutePath(path));
+            newEdit().inputText(() -> list.isEmpty() ? path.toAbsolutePath().toString() : list);
+        } else {
+            newEdit().inputText(() -> pathString);
         }
     }
 
     private void open(Session session) {
 
-        boolean openInBackground = fileSize(session.path()) > BACKGROUND_THRESHOLD;
+        boolean openInBackground = Files.size(session.path()) > BACKGROUND_THRESHOLD;
 
         // save previous session
         sessionHistory.push(model.getSession());
@@ -488,7 +471,7 @@ public class EditorPane extends StackPane {
     }
 
     private Task<Content> buildOpenTask(Session session) {
-        final long size = fileSize(session.path());
+        final long size = Files.size(session.path());
         final long start = System.currentTimeMillis();
         AtomicLong workDone = new AtomicLong();
         Task<Content> task = new Task<>() {
@@ -603,13 +586,6 @@ public class EditorPane extends StackPane {
                 return "";
             }
         };
-    }
-
-    private long fileSize(Path path) {
-        try {
-            return Files.size(path);
-        } catch (Exception ignore) { }
-        return 0;
     }
 
     public ReadOnlyObjectProperty<Path> filePathProperty() {

@@ -23,8 +23,8 @@ import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Find;
-import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Point;
@@ -41,7 +41,6 @@ import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Collections;
@@ -158,11 +157,7 @@ public class TextEditorModel implements EditorModel {
         if (session.hasPath()) {
             return Content.of(session.path());
         } else if (session.hasAltPath()) {
-            try {
-                return Content.of(Files.readAllBytes(session.altPath()));
-            } catch (IOException ignore) {
-                log.log(System.Logger.Level.WARNING, "Failed to read altPath: " + session.altPath());
-            }
+            return Content.of(Files.readAllBytes(session.altPath()));
         }
         return Content.of();
     }
@@ -660,7 +655,7 @@ public class TextEditorModel implements EditorModel {
         content.write(stashPath);
         return Session.of(
             content.path().orElse(null),
-            content.path().map(TextEditorModel::lastModifiedTime).orElse(null),
+            content.path().map(Files::lastModifiedTime).orElse(null),
             stashPath,
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
@@ -783,7 +778,7 @@ public class TextEditorModel implements EditorModel {
     public Session getSession() {
         return Session.of(
             content.path().orElse(null),
-            content.path().map(TextEditorModel::lastModifiedTime).orElse(null),
+            content.path().map(Files::lastModifiedTime).orElse(null),
             null,
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
@@ -906,13 +901,6 @@ public class TextEditorModel implements EditorModel {
             .map(range -> content.getText(range.min(), range.max()))
             .map(text -> text.codePointCount(0, text.length()))
             .orElse(0);
-    }
-
-    private static FileTime lastModifiedTime(Path path) {
-        try {
-            return Files.getLastModifiedTime(path);
-        } catch (IOException ignore) { }
-        return null;
     }
 
 }
