@@ -100,17 +100,38 @@ public class TextEditorModel implements EditorModel {
     /**
      * Constructor.
      * @param content the content
+     * @param screenLayout the screen layout
+     * @param scroll the screen scroll
+     * @param ctx the context
+     * @param find the find
+     * @param decorate the decorate
+     */
+    private TextEditorModel(
+            Content content,
+            ScreenLayout screenLayout,
+            ScreenScroll scroll,
+            Context ctx,
+            Find find,
+            Decorate decorate) {
+        this.content = content;
+        this.screenLayout = screenLayout;
+        this.scroll = scroll;
+        this.ctx = ctx;
+        this.find = find;
+        this.decorate = decorate;
+    }
+
+    /**
+     * Constructor.
+     * @param content the content
      * @param fm the font metrics
      * @param scroll the screen scroll
      * @param ctx the context
      */
     public TextEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
-        this.content = content;
-        this.screenLayout = ScreenLayout.of(content, fm);
-        this.decorate = Decorate.of(content.path().map(Syntax::of).orElse(Syntax.of("markdown"))); // default syntax is md
-        this.scroll = scroll;
-        this.ctx = ctx;
-        this.find = content.find();
+        this(content, ScreenLayout.of(content, fm), scroll, ctx, content.find(),
+            Decorate.of(content.path().map(Syntax::of).orElse(Syntax.of()))
+        );
     }
 
     /**

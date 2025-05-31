@@ -21,7 +21,6 @@ import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
-import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Session.SessionHistory;

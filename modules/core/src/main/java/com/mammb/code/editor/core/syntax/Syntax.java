@@ -75,6 +75,15 @@ public interface Syntax {
     }
 
     /**
+     * Get the default syntax.
+     * Default syntax is markdown.
+     * @return the syntax
+     */
+    static Syntax of() {
+        return of("markdown");
+    }
+
+    /**
      * Get the syntax for a given path.
      * @param path the path
      * @return the syntax
