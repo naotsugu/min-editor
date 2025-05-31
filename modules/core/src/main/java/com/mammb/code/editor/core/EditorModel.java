@@ -28,41 +28,6 @@ import com.mammb.code.editor.core.model.TextEditorModel;
 public interface EditorModel {
 
     /**
-     * Create a new {@link EditorModel}.
-     * @param content the content
-     * @param fm the font metrics
-     * @param scroll the screen scroll
-     * @param ctx the context
-     * @return a new {@link EditorModel}
-     */
-    static EditorModel of(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
-        return new TextEditorModel(
-            content,
-            fm,
-            scroll,
-            ctx);
-    }
-
-    /**
-     * Create a new {@link EditorModel} from session.
-     * @param session the session
-     * @param fm the font metrics
-     * @param scroll the screen scroll
-     * @param ctx the context
-     * @param width the window width
-     * @param height the window height
-     * @return a new {@link EditorModel}
-     */
-    static EditorModel of(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
-        return new TextEditorModel(
-            session,
-            fm,
-            scroll,
-            ctx,
-            width, height);
-    }
-
-    /**
      * Paint the editor screen.
      * @param draw the draw
      */
@@ -227,5 +192,47 @@ public interface EditorModel {
      * @return the result of a query
      */
     <R> R query(Query<R> query);
+
+    /**
+     * Create a new {@link EditorModel}.
+     * @param fm the font metrics
+     * @param scroll the screen scroll
+     * @param ctx the context
+     * @return a new {@link EditorModel}
+     */
+    static EditorModel of(FontMetrics fm, ScreenScroll scroll, Context ctx) {
+        return new TextEditorModel(Content.of(), fm, scroll, ctx);
+    }
+
+    /**
+     * Create a new {@link EditorModel}.
+     * @param content the content
+     * @param fm the font metrics
+     * @param scroll the screen scroll
+     * @param ctx the context
+     * @return a new {@link EditorModel}
+     */
+    static EditorModel of(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
+        return new TextEditorModel(content, fm, scroll, ctx);
+    }
+
+    /**
+     * Create a new {@link EditorModel} from session.
+     * @param session the session
+     * @param fm the font metrics
+     * @param scroll the screen scroll
+     * @param ctx the context
+     * @param width the window width
+     * @param height the window height
+     * @return a new {@link EditorModel}
+     */
+    static EditorModel of(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
+        return new TextEditorModel(
+            session,
+            fm,
+            scroll,
+            ctx,
+            width, height);
+    }
 
 }

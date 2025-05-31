@@ -121,7 +121,7 @@ public class EditorPane extends StackPane {
 
         Font font = Font.font(context.config().fontName(), context.config().fontSize());
         draw = new FxDraw(canvas.getGraphicsContext2D(), font);
-        model = EditorModel.of(Content.of(), draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context);
+        model = EditorModel.of(draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context);
         vScroll.setOrientation(Orientation.VERTICAL);
         hScroll.setOrientation(Orientation.HORIZONTAL);
         StackPane.setAlignment(vScroll, Pos.TOP_RIGHT);
