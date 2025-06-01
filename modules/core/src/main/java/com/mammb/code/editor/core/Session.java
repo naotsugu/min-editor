@@ -53,6 +53,10 @@ public interface Session {
      */
     Path altPath();
 
+    /**
+     * Checks whether the session is read-only.
+     * @return {@code true} if the session is read-only, {@code false} otherwise
+     */
     boolean readonly();
 
     /**
@@ -245,49 +249,6 @@ public interface Session {
         int caretRow,
         int caretCol,
         long timestamp) implements Session {
-    }
-
-    /**
-     * The session history.
-     */
-    class SessionHistory {
-
-        /** The backward session queue. */
-        private final Deque<Session> left = new ArrayDeque<>();
-        /** The forward session queue. */
-        private final Deque<Session> right = new ArrayDeque<>();
-
-        private Deque<Session> select;
-
-        public void push(Session session) {
-            if (!session.hasPath()) return;
-            boolean clearForward = (select == null);
-            Deque<Session> sel = clearForward ? left : select;
-            select = null;
-            if (sel.isEmpty() || !Objects.equals(sel.peek().path(), session.path())) {
-                sel.push(session);
-                if (clearForward) {
-                    right.clear();
-                }
-            }
-        }
-
-        public Optional<Session> backward() {
-            if (left.isEmpty()) {
-                return Optional.empty();
-            }
-            select = right;
-            return Optional.of(left.pop());
-        }
-
-        public Optional<Session> forward() {
-            if (right.isEmpty()) {
-                return Optional.empty();
-            }
-            select = left;
-            return Optional.of(right.pop());
-        }
-
     }
 
 }

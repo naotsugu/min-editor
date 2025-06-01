@@ -132,6 +132,12 @@ public interface Content {
     Optional<Path> path();
 
     /**
+     * Checks whether the content is read-only.
+     * @return {@code true} if the content is read-only, {@code false} otherwise
+     */
+    boolean readonly();
+
+    /**
      * Save the target content to a file.
      * @param path the path of file
      */

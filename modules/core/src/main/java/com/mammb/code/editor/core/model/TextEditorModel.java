@@ -655,7 +655,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             stashPath,
-            content instanceof RoTextContent || content instanceof RoStringContent,
+            content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
     }
@@ -779,7 +779,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             null,
-            content instanceof RoTextContent || content instanceof RoStringContent,
+            content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
     }

@@ -215,6 +215,11 @@ public class TextEditContent implements Content {
     }
 
     @Override
+    public boolean readonly() {
+        return false;
+    }
+
+    @Override
     public void save(Path path) {
         edit.save(path);
         modified = false;

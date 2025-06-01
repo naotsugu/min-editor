@@ -191,6 +191,11 @@ public class RoStringContent implements Content {
     }
 
     @Override
+    public boolean readonly() {
+        return true;
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {

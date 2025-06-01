@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Files;
@@ -24,7 +23,7 @@ import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Session;
-import com.mammb.code.editor.core.Session.SessionHistory;
+import com.mammb.code.editor.core.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.fx.Command.*;
 import javafx.application.Platform;

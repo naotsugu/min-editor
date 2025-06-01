@@ -145,6 +145,11 @@ public class RoTextContent implements Content {
     }
 
     @Override
+    public boolean readonly() {
+        return true;
+    }
+
+    @Override
     public void save(Path path) {
     }
 
