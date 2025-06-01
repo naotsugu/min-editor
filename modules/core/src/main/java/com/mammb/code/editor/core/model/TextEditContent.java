@@ -17,9 +17,7 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Find;
-import com.mammb.code.editor.core.FindSpec;
 import com.mammb.code.editor.core.Point;
-import com.mammb.code.editor.core.Point.PointLen;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
 import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
@@ -28,7 +26,6 @@ import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.Size;
 import com.mammb.code.piecetable.Pos;
-import com.mammb.code.piecetable.SearchContext;
 import com.mammb.code.piecetable.TextEdit;
 import java.nio.file.Path;
 import java.util.ArrayList;

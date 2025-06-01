@@ -500,7 +500,7 @@ public class EditorPane extends StackPane {
         return canDiscard;
     }
 
-    Optional<Session> stash() {
+    Optional<Session> restorableSession() {
         if (model().query(Query.contentPath).isPresent()) {
             if (canDiscard()) {
                 return Optional.of(model().getSession());
@@ -513,6 +513,12 @@ public class EditorPane extends StackPane {
         } else {
             return Optional.empty();
         }
+    }
+
+    Optional<Session> stash() {
+        return (model().query(Query.size) > 0)
+            ? Optional.of(model().stash())
+            : Optional.empty();
     }
 
     void closeModel() {

@@ -17,6 +17,7 @@ package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.ScreenScroll;
 import javafx.scene.control.ScrollBar;
+import java.util.function.Consumer;
 
 /**
  * A concrete implementation of the ScreenScroll interface for managing
@@ -63,6 +64,14 @@ public class FxScreenScroll implements ScreenScroll {
     @Override
     public double xVal() {
         return hScroll.getValue();
+    }
+
+    public void vScroll(Consumer<ScrollBar> consumer) {
+        consumer.accept(vScroll);
+    }
+
+    public void hScroll(Consumer<ScrollBar> consumer) {
+        consumer.accept(hScroll);
     }
 
 }

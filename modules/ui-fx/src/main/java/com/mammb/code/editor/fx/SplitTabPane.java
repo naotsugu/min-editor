@@ -16,7 +16,6 @@
 package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Query;
-import com.mammb.code.editor.core.Session;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -49,7 +48,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
 
 import static java.lang.System.Logger.Level.ERROR;
 
@@ -104,7 +102,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
         context.config().clearSessions();
         context.config().sessions(
-            tabs.stream().map(tab -> tab.pane().stash())
+            tabs.stream().map(tab -> tab.pane().restorableSession())
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList());
