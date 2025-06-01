@@ -193,11 +193,11 @@ public class RoTextContent implements Content {
                         rowLimit--;
                         if (rowLimit <= 0) {
                             output.write(buffer, 0, i);
-                            break;
+                            return output.toByteArray();
                         }
                     }
                 }
-                output.write(buffer);
+                output.write(buffer, 0, n);
             }
             return output.toByteArray();
         } catch (IOException e) {

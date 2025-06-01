@@ -113,7 +113,7 @@ class WrapLayoutTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return Content.readOnlyPartOf(path);
+        return Content.readonlyPartOf(path);
     }
 
 }
