@@ -203,7 +203,7 @@ public class EditorPane extends StackPane {
     private EditorPane duplicate() {
         return stash().map(session -> {
             var dup = new EditorPane(context);
-            dup.model = model.with(session.asReadonly());
+            dup.model = dup.model.with(session.asReadonly());
             dup.filePathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
             return dup;
         }).orElse(null);
