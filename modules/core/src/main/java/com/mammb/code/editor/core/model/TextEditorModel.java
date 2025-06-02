@@ -131,32 +131,6 @@ public class TextEditorModel implements EditorModel {
         );
     }
 
-    /**
-     * Constructor.
-     * @param session the session
-     * @param fm the font metrics
-     * @param scroll the screen scroll
-     * @param ctx the context
-     */
-    public TextEditorModel(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
-        this(Content.of(session), fm, scroll, ctx);
-        if (session.lineWidth() > 0) wrap(session.lineWidth());
-        setSize(width, height);
-        scrollAt(session.topLine());
-        carets.getFirst().at(session.caretRow(), session.caretCol());
-    }
-
-    public TextEditorModel with(Session session) {
-        var model = new TextEditorModel(Content.of(session), screenLayout.fontMetrics(), scroll, ctx);
-        if (session.lineWidth() > 0) {
-                model.wrap(session.lineWidth());
-            }
-        model.screenLayout.setScreenSize(screenLayout.screenWidth(), screenLayout.screenHeight());
-        model.scrollAt(session.topLine());
-        model.carets.getFirst().at(session.caretRow(), session.caretCol());
-        return model;
-    }
-
     @Override
     public void paint(Draw draw) {
         screenLayout.applyScreenScroll(scroll);
@@ -780,6 +754,18 @@ public class TextEditorModel implements EditorModel {
             content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
+    }
+
+    @Override
+    public TextEditorModel with(Session session) {
+        var model = new TextEditorModel(Content.of(session), screenLayout.fontMetrics(), scroll, ctx);
+        if (session.lineWidth() > 0) {
+            model.wrap(session.lineWidth());
+        }
+        model.screenLayout.setScreenSize(screenLayout.screenWidth(), screenLayout.screenHeight());
+        model.scrollAt(session.topLine());
+        model.carets.getFirst().at(session.caretRow(), session.caretCol());
+        return model;
     }
 
     @Override

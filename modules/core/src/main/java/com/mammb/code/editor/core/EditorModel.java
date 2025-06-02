@@ -181,6 +181,13 @@ public interface EditorModel {
     Session getSession();
 
     /**
+     * Associates the given {@link Session} with this {@link EditorModel}.
+     * @param session the session to associate with this editor model
+     * @return a new {@link EditorModel} that uses the specified session
+     */
+    EditorModel with(Session session);
+
+    /**
      * Apply the action.
      * @param action the action
      */
@@ -211,20 +218,6 @@ public interface EditorModel {
 
     static EditorModel of(Path path, FontMetrics fm, ScreenScroll scroll, Context ctx, Consumer<Long> consumer) {
         return new TextEditorModel(Content.of(path, consumer), fm, scroll, ctx);
-    }
-
-    /**
-     * Create a new {@link EditorModel} from session.
-     * @param session the session
-     * @param fm the font metrics
-     * @param scroll the screen scroll
-     * @param ctx the context
-     * @param width the window width
-     * @param height the window height
-     * @return a new {@link EditorModel}
-     */
-    static EditorModel of(Session session, FontMetrics fm, ScreenScroll scroll, Context ctx, double width, double height) {
-        return new TextEditorModel(session, fm, scroll, ctx, width, height);
     }
 
 }

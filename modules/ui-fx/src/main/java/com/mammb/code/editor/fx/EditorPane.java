@@ -88,12 +88,10 @@ public class EditorPane extends StackPane {
     private final Draw draw;
     /** The editor model. */
     private EditorModel model;
-    /** The vertical scroll bar. */
-    private final ScrollBar vScroll = new ScrollBar();
-    /** The horizon scroll bar. */
-    private final ScrollBar hScroll = new ScrollBar();
+    /** The screen scroll. */
+    private final FxScreenScroll scroll = new FxScreenScroll(new ScrollBar(), new ScrollBar());
     /** The float bar. */
-    private final FloatBar floatBar = new FloatBar(vScroll, hScroll);
+    private final FloatBar floatBar = new FloatBar(scroll.vScroll(), scroll.hScroll());
     /** The session history. */
     private final SessionHistory sessionHistory = new SessionHistory();
     /** The file path property. */
@@ -120,12 +118,12 @@ public class EditorPane extends StackPane {
 
         Font font = Font.font(context.config().fontName(), context.config().fontSize());
         draw = new FxDraw(canvas.getGraphicsContext2D(), font);
-        model = EditorModel.of(draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context);
-        vScroll.setOrientation(Orientation.VERTICAL);
-        hScroll.setOrientation(Orientation.HORIZONTAL);
-        StackPane.setAlignment(vScroll, Pos.TOP_RIGHT);
-        StackPane.setAlignment(hScroll, Pos.BOTTOM_LEFT);
-        getChildren().addAll(canvas, vScroll, hScroll, floatBar);
+        model = EditorModel.of(draw.fontMetrics(), scroll, context);
+        scroll.vScroll().setOrientation(Orientation.VERTICAL);
+        scroll.hScroll().setOrientation(Orientation.HORIZONTAL);
+        StackPane.setAlignment(scroll.vScroll(), Pos.TOP_RIGHT);
+        StackPane.setAlignment(scroll.hScroll(), Pos.BOTTOM_LEFT);
+        getChildren().addAll(canvas, scroll.vScroll(), scroll.hScroll(), floatBar);
 
         layoutBoundsProperty().addListener(this::handleLayoutBoundsChanged);
         setOnScroll(this::handleScroll);
@@ -139,8 +137,8 @@ public class EditorPane extends StackPane {
         setOnDragDropped(this::handleDragDropped);
         setOnContextMenuRequested(this::handleContextMenuRequested);
 
-        vScroll.valueProperty().addListener(this::handleVerticalScroll);
-        hScroll.valueProperty().addListener(this::handleHorizontalScroll);
+        scroll.vScroll().valueProperty().addListener(this::handleVerticalScroll);
+        scroll.hScroll().valueProperty().addListener(this::handleHorizontalScroll);
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethodTextChanged);
         canvas.focusedProperty().addListener((_, _, n) -> {
@@ -154,7 +152,7 @@ public class EditorPane extends StackPane {
             if (session.hasPath()) {
                 open(session);
             } else if (session.hasAltPath()) {
-                model = EditorModel.of(session, draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context, getWidth(), getHeight());
+                model = model.with(session);
             }
             paint();
         });
@@ -205,9 +203,7 @@ public class EditorPane extends StackPane {
     private EditorPane duplicate() {
         return stash().map(session -> {
             var dup = new EditorPane(context);
-            dup.model = EditorModel.of(session.asReadonly(),
-                dup.draw.fontMetrics(), new FxScreenScroll(dup.vScroll, dup.hScroll), context,
-                dup.getWidth(), dup.getHeight());
+            dup.model = model.with(session.asReadonly());
             dup.filePathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
             return dup;
         }).orElse(null);
@@ -456,8 +452,8 @@ public class EditorPane extends StackPane {
 
         closeModel();
         model = openInBackground
-            ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context)
-            : EditorModel.of(session, draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context, getWidth(), getHeight());
+            ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, context)
+            : model.with(session);
         model.setSize(getWidth(), getHeight());
         filePathProperty.setValue(session.path());
         if (openInBackground) {
@@ -477,7 +473,7 @@ public class EditorPane extends StackPane {
             @Override
             protected EditorModel call() {
                 return EditorModel.of(session.path(),
-                    draw.fontMetrics(), new FxScreenScroll(vScroll, hScroll), context,
+                    draw.fontMetrics(), scroll, context,
                     n -> updateProgress(workDone.addAndGet(n), size));
             }
         };
