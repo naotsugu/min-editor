@@ -488,7 +488,8 @@ public class EditorPane extends StackPane {
 
     boolean canDiscard() {
         boolean canDiscard = true;
-        if (model().query(Query.modified)) {
+        if (model().query(Query.modified) ||
+            (model().query(Query.contentPath).isEmpty() && model().query(Query.size) > 0)) {
             var ret = FxDialog.confirmation(getScene().getWindow(),
                     "Are you sure you want to discard your changes?").showAndWait();
             canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;

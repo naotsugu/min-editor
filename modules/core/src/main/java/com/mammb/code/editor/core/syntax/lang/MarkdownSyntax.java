@@ -73,7 +73,7 @@ public class MarkdownSyntax implements Syntax {
 
             if (ch == '`') {
                 readInlineBlock(source, '`', '\\', Palette.darkGreen).ifPresent(spans::add);
-            } else if (ch == '*') {
+            } else if (ch == '*' || ch == '-' || ch == '+' || ch == '~') {
                 spans.add(new Style.StyleSpan(Palette.darkOrange, peek.index(), 1));
             } else if (ch == '#' && peek.index() == 0) {
                 Style style;
