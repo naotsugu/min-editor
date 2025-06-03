@@ -19,6 +19,7 @@ import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Query;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 
 /**
  * AppContextMenu.
@@ -71,7 +72,19 @@ public class AppContextMenu extends ContextMenu {
         pasteAs.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, true))));
         pasteAs.setDisable(!FxClipboard.instance.hasContents());
 
-        getItems().addAll(cut, copy, paste, pasteAs);
+        var backward = new MenuItem("Backward");
+        backward.setStyle(style);
+        backward.setAccelerator(CommandKeys.SC_BW);
+        backward.setOnAction(_ -> editorPane.execute(new Command.Backward()));
+        backward.setDisable(!editorPane.sessionHistory().hasBackward());
+
+        var forward = new MenuItem("Forward");
+        forward.setStyle(style);
+        forward.setAccelerator(CommandKeys.SC_FW);
+        forward.setOnAction(_ -> editorPane.execute(new Command.Forward()));
+        forward.setDisable(!editorPane.sessionHistory().hasForward());
+
+        getItems().addAll(cut, copy, paste, pasteAs, new SeparatorMenuItem(), backward, forward);
     }
 
 }

@@ -65,7 +65,7 @@ public class FxDraw implements Draw {
     @Override
     public void text(Text sourceText, double x, double y, double w, List<Style> styles) {
         var text = formatTab(sourceText);
-        var bgColor = bgColor(styles);
+        var bgColor = Style.color(styles, Style.BgColor.class).map(this::color);
         if (bgColor.isPresent()) {
             var bg = bgColor.get();
             gc.setFill(bgColor.get());
@@ -93,15 +93,6 @@ public class FxDraw implements Draw {
                 .orElse(Theme.dark.fgColor()));
     }
 
-    private Optional<Color> bgColor(List<Style> styles) {
-        return styles.stream()
-                .filter(Style.BgColor.class::isInstance)
-                .map(Style.BgColor.class::cast)
-                .findFirst()
-                .map(Style.BgColor::colorString)
-                .map(this::color);
-    }
-
     @Override
     public void caret(double x, double y) {
         gc.setLineDashes(0);
@@ -113,7 +104,7 @@ public class FxDraw implements Draw {
     @Override
     public void select(double x1, double y1, double x2, double y2, double l, double r) {
         double lineHeight = fontMetrics().getLineHeight();
-        gc.setFill(color(Theme.dark.paleHighlightColor() + "AA"));
+        gc.setFill(color(Theme.dark.paleHighlightColor()));
         if (y1 == y2) {
             gc.fillRect(Math.min(x1, x2), y1, Math.abs(x2 - x1), lineHeight);
             gc.setLineWidth(0.5);

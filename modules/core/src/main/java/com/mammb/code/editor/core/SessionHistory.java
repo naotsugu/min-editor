@@ -46,6 +46,14 @@ public class SessionHistory {
         }
     }
 
+    public boolean hasBackward() {
+        return !left.isEmpty();
+    }
+
+    public boolean hasForward() {
+        return !right.isEmpty();
+    }
+
     public Optional<Session> backward() {
         if (left.isEmpty()) {
             return Optional.empty();

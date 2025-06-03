@@ -15,18 +15,38 @@
  */
 package com.mammb.code.editor.core.text;
 
+import java.util.List;
+import java.util.Optional;
+
+import static java.util.function.Predicate.not;
+
 /**
  * The style.
  * @author Naotsugu Kobayashi
  */
 public sealed interface Style {
 
+    sealed interface ColoredStyle extends Style {
+        String colorString();
+    }
+
     /** The text color style. */
-    record TextColor(String colorString) implements Style { }
+    record TextColor(String colorString) implements ColoredStyle { }
     /** The background color style. */
-    record BgColor(String colorString) implements Style { }
+    record BgColor(String colorString) implements ColoredStyle { }
+    /** The under color style. */
+    record UnderColor(String colorString) implements ColoredStyle { }
 
     /** The style span. */
     record StyleSpan(Style style, int offset, int length) { }
+
+    static Optional<String> color(List<Style> styles, Class<? extends ColoredStyle> clazz) {
+        return styles.stream()
+            .filter(clazz::isInstance)
+            .map(clazz::cast)
+            .findFirst()
+            .map(ColoredStyle::colorString)
+            .filter(not(String::isBlank));
+    }
 
 }

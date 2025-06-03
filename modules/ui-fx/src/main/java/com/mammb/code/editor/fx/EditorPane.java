@@ -362,8 +362,8 @@ public class EditorPane extends StackPane {
             case Pwf _              -> inputText(() -> model().query(Query.contentPath).orElse(null));
             case Now _              -> inputText(LocalDateTime::now);
             case Today _            -> inputText(LocalDate::now);
-            case Forward _          -> sessionHistory.forward().ifPresent(this::open);
-            case Backward _         -> sessionHistory.backward().ifPresent(this::open);
+            case Forward _          -> forward();
+            case Backward _         -> backward();
             case ZoomIn _           -> zoom( 1);
             case ZoomOut _          -> zoom(-1);
             case Help _             -> FxDialog.about(getScene().getWindow(), context).showAndWait();
@@ -497,6 +497,18 @@ public class EditorPane extends StackPane {
         return canDiscard;
     }
 
+    void forward() {
+        sessionHistory.forward().ifPresent(session -> {
+            if (canDiscard()) open(session);
+        });
+    }
+
+    void backward() {
+        sessionHistory.backward().ifPresent(session -> {
+            if (canDiscard()) open(session);
+        });
+    }
+
     Optional<Session> restorableSession() {
         if (model().query(Query.contentPath).isPresent()) {
             if (canDiscard()) {
@@ -607,6 +619,7 @@ public class EditorPane extends StackPane {
         return model().query(query);
     }
 
+    SessionHistory sessionHistory() { return sessionHistory; }
     private EditorModel model() { return model; }
 
 }
