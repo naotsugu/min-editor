@@ -28,6 +28,7 @@ import com.mammb.code.editor.core.syntax.lang.JavaSyntax;
 import com.mammb.code.editor.core.syntax.lang.JsSyntax;
 import com.mammb.code.editor.core.syntax.lang.KotlinSyntax;
 import com.mammb.code.editor.core.syntax.lang.MarkdownSyntax;
+import com.mammb.code.editor.core.syntax.lang.PowerShellSyntax;
 import com.mammb.code.editor.core.syntax.lang.PythonSyntax;
 import com.mammb.code.editor.core.syntax.lang.RustSyntax;
 import com.mammb.code.editor.core.syntax.lang.ShellSyntax;
@@ -127,6 +128,7 @@ public interface Syntax {
             case "diff" -> new DiffSyntax();
             case "text" -> new PassThrough("text");
             case "shell" -> new ShellSyntax();
+            case "ps1" -> new PowerShellSyntax();
             case null, default -> new PassThrough(name);
         };
     }
