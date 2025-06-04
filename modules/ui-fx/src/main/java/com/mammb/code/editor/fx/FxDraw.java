@@ -65,32 +65,29 @@ public class FxDraw implements Draw {
     @Override
     public void text(Text sourceText, double x, double y, double w, List<Style> styles) {
         var text = formatTab(sourceText);
-        var bgColor = Style.color(styles, Style.BgColor.class).map(this::color);
-        if (bgColor.isPresent()) {
-            var bg = bgColor.get();
-            gc.setFill(bgColor.get());
-            gc.fillRect(x + 0.5, y + 0.5, w - 1, fontMetrics.getLineHeight() - 1);
-            Color textColor = (bg.getBrightness() > 0.5)
-                    ? textColor(styles).darker()
-                    : textColor(styles).brighter();
-            gc.setStroke(textColor);
-            gc.setFill(textColor);
-            gc.fillText(text, x, y + fontMetrics.getAscent());
-        } else {
-            Color textColor = textColor(styles);
-            gc.setStroke(textColor);
-            gc.setFill(textColor);
-            gc.fillText(text, x, y + fontMetrics.getAscent());
+        String textColor = Theme.dark.fgColor();
+        String bgColor = "";
+        String underColor = "";
+        for (Style style : styles) {
+            switch (style) {
+                case Style.TextColor s -> textColor = s.colorString();
+                case Style.BgColor s -> bgColor = s.colorString();
+                case Style.UnderColor s -> underColor = s.colorString();
+            }
         }
-    }
-
-    private Color textColor(List<Style> styles) {
-        return color(styles.stream()
-                .filter(Style.TextColor.class::isInstance)
-                .map(Style.TextColor.class::cast)
-                .findFirst()
-                .map(Style.TextColor::colorString)
-                .orElse(Theme.dark.fgColor()));
+        if (!bgColor.isBlank()) {
+            gc.setFill(color(bgColor));
+            gc.fillRect(x + 0.5, y + 0.5, w - 1, fontMetrics.getLineHeight() - 1);
+        }
+        if (!underColor.isBlank()) {
+            gc.setStroke(color(underColor));
+            gc.setLineWidth(2);
+            gc.strokeLine(x, y + fontMetrics.getLineHeight(), x + w, y + fontMetrics.getLineHeight());
+        }
+        Color color = color(textColor);
+        gc.setStroke(color);
+        gc.setFill(color);
+        gc.fillText(text, x, y + fontMetrics.getAscent());
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,15 @@
  */
 package com.mammb.code.editor.core.text;
 
-import java.util.List;
-import java.util.Optional;
-
-import static java.util.function.Predicate.not;
-
 /**
  * The style.
  * @author Naotsugu Kobayashi
  */
 public sealed interface Style {
 
+    /**
+     * The colored style.
+     */
     sealed interface ColoredStyle extends Style {
         String colorString();
     }
@@ -39,14 +37,5 @@ public sealed interface Style {
 
     /** The style span. */
     record StyleSpan(Style style, int offset, int length) { }
-
-    static Optional<String> color(List<Style> styles, Class<? extends ColoredStyle> clazz) {
-        return styles.stream()
-            .filter(clazz::isInstance)
-            .map(clazz::cast)
-            .findFirst()
-            .map(ColoredStyle::colorString)
-            .filter(not(String::isBlank));
-    }
 
 }

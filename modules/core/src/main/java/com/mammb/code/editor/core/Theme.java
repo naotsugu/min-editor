@@ -25,7 +25,7 @@ public interface Theme {
             "#292929",   // baseColor
             "#C8D7E6",   // fgColor
             "#214283",   // paleHighlightColor
-            "#ffa2a222", // cautionColor
+            "#FDE047",   // cautionColor
             "#80808088", // faintColor
             "#303030"    // uiBaseColor
     );

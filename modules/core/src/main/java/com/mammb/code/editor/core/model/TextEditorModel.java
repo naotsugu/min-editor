@@ -716,7 +716,7 @@ public class TextEditorModel implements EditorModel {
 
     private void findAll(Find.Spec spec) {
         Caret c = carets.getFirst();
-        Style style = new Style.BgColor(Theme.dark.cautionColor());
+        Style style = new Style.UnderColor(Theme.dark.cautionColor());
         find.all(spec).forEach(p -> {
             if (!c.isMarked()) {
                 c.markTo(p.row(), p.col(), p.row(), p.col() + p.len());
@@ -838,7 +838,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void postEditing() {
-        Style style = new Style.BgColor(Theme.dark.cautionColor());
+        Style style = new Style.UnderColor(Theme.dark.cautionColor());
         find.founds().forEach(p -> {
             decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len()));
         });
