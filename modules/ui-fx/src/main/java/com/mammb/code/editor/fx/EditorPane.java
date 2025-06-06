@@ -95,7 +95,7 @@ public class EditorPane extends StackPane {
     /** The session history. */
     private final SessionHistory sessionHistory = new SessionHistory();
     /** The file path property. */
-    private final SimpleObjectProperty<Path> filePathProperty = new SimpleObjectProperty<>(Path.of("Untitled"));
+    private final SimpleObjectProperty<Path> pathProperty = new SimpleObjectProperty<>(Path.of("Untitled"));
     /** The modified property. */
     private final SimpleBooleanProperty modifiedProperty = new SimpleBooleanProperty();
 
@@ -204,7 +204,7 @@ public class EditorPane extends StackPane {
         return stash().map(session -> {
             var dup = new EditorPane(context);
             dup.model = dup.model.with(session.asReadonly());
-            dup.filePathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
+            dup.pathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
             return dup;
         }).orElse(null);
     }
@@ -455,7 +455,7 @@ public class EditorPane extends StackPane {
             ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, context)
             : model.with(session);
         model.setSize(getWidth(), getHeight());
-        filePathProperty.setValue(session.path());
+        pathProperty.setValue(session.path());
         if (openInBackground) {
             Task<EditorModel> task = buildOpenTask(session);
             floatBar.handleProgress(task);
@@ -554,7 +554,7 @@ public class EditorPane extends StackPane {
         if (file == null) return;
         Path path = file.toPath();
         model().save(path);
-        filePathProperty.setValue(path);
+        pathProperty.setValue(path);
     }
 
     private EditorPane newEdit() {
@@ -604,8 +604,8 @@ public class EditorPane extends StackPane {
         };
     }
 
-    public ReadOnlyObjectProperty<Path> filePathProperty() {
-        return filePathProperty;
+    public ReadOnlyObjectProperty<Path> pathProperty() {
+        return pathProperty;
     }
     public ReadOnlyBooleanProperty modifiedProperty() {
         return modifiedProperty;

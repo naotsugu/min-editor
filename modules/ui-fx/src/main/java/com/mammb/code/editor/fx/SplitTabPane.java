@@ -241,27 +241,27 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             });
         }
         private void initTab(Tab tab) {
-            var node = (EditorPane) tab.getContent();
-            var label = new Label(node.filePathProperty().get().getFileName().toString());
+            var pane = (EditorPane) tab.getContent();
+            var label = new Label(pane.pathProperty().get().getFileName().toString());
             label.setOnMouseClicked(Event::consume);
             tab.setGraphic(label);
-            tab.setTooltip(new Tooltip(node.filePathProperty().get().toString()));
+            tab.setTooltip(new Tooltip(pane.pathProperty().get().toString()));
             label.setOnDragDetected(this::handleTabDragDetected);
             tab.setOnCloseRequest(this::handleOnTabCloseRequest);
             tab.setOnClosed(this::handleOnTabClosed);
-            node.modifiedProperty().addListener((_, _, modified) ->
-                label.setText((modified ? "*" : "") + node.filePathProperty().get().getFileName().toString()));
-            node.filePathProperty().addListener((_, _, path) -> {
+            pane.modifiedProperty().addListener((_, _, modified) ->
+                label.setText((modified ? "*" : "") + pane.pathProperty().get().getFileName().toString()));
+            pane.pathProperty().addListener((_, _, path) -> {
                 label.setText(path.getFileName().toString());
                 tab.setTooltip(new Tooltip(path.toString()));
             });
-            node.setNewOpenHandler(_ -> addNewEdit());
+            pane.setNewOpenHandler(_ -> addNewEdit());
         }
 
         private EditorPane addNewEdit() {
-            EditorPane editorPane = new EditorPane(parent.context);
-            add(editorPane);
-            return editorPane;
+            EditorPane pane = new EditorPane(parent.context);
+            add(pane);
+            return pane;
         }
 
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
@@ -309,8 +309,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleOnTabClosed(Event e) {
             if (tabPane.getTabs().isEmpty()) {
                 if (parent.parent == null) {
-                    EditorPane editorPane = new EditorPane(parent.context);
-                    add(editorPane);
+                    EditorPane pane = new EditorPane(parent.context);
+                    add(pane);
                 } else {
                     parent.parent.remove(parent);
                 }

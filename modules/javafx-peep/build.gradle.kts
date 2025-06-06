@@ -18,19 +18,23 @@ val artifact = when {
 val javafxBase: Configuration by configurations.creating
 val javafxGraphics: Configuration by configurations.creating
 val javafxControls: Configuration by configurations.creating
+val javafxWeb: Configuration by configurations.creating
 
 val javafxBaseSources: Configuration by configurations.creating
 val javafxGraphicsSources: Configuration by configurations.creating
 val javafxControlsSources: Configuration by configurations.creating
+val javafxWebSources: Configuration by configurations.creating
 
 dependencies {
     javafxBase("org.openjfx:javafx-base:24.0.1:${artifact}")
     javafxGraphics("org.openjfx:javafx-graphics:24.0.1:${artifact}")
     javafxControls("org.openjfx:javafx-controls:24.0.1:${artifact}")
+    javafxWeb("org.openjfx:javafx-web:24.0.1:${artifact}")
 
     javafxBaseSources("org.openjfx:javafx-base:24.0.1:sources")
     javafxGraphicsSources("org.openjfx:javafx-graphics:24.0.1:sources")
     javafxControlsSources("org.openjfx:javafx-controls:24.0.1:sources")
+    javafxWebSources("org.openjfx:javafx-web:24.0.1:sources")
 }
 
 
@@ -94,6 +98,15 @@ tasks.register<Jar>("controlsJar") {
     })
 }
 
+tasks.register<Jar>("webJar") {
+    archiveBaseName.set("javafx-web")
+    from({ javafxControls
+        .filter { it.name.endsWith("jar") }
+        .filter { it.name.startsWith("javafx-web-") }
+        .map { zipTree(it) }
+    })
+}
+
 tasks.register<Jar>("graphicsSourcesJar") {
     archiveBaseName.set("javafx-graphics-sources")
     from({ javafxGraphicsSources.map { zipTree(it) } })
@@ -106,12 +119,18 @@ tasks.register<Jar>("controlsSourcesJar") {
     archiveBaseName.set("javafx-controls-sources")
     from({ javafxControlsSources.map { zipTree(it) } })
 }
+tasks.register<Jar>("webSourcesJar") {
+    archiveBaseName.set("javafx-web-sources")
+    from({ javafxWebSources.map { zipTree(it) } })
+}
 
 tasks.assemble {
     dependsOn("graphicsJar")
     dependsOn("baseJar")
     dependsOn("controlsJar")
+    dependsOn("webJar")
     dependsOn("graphicsSourcesJar")
     dependsOn("baseSourcesJar")
     dependsOn("controlsSourcesJar")
+    dependsOn("webSourcesJar")
 }

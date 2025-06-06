@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import java.util.function.Function;
 /**
  * A class representing the content being edited in a text editing context.
  * It provides methods to manipulate the text content, perform undo/redo operations,
- * manage insertion and deletion of text, and handle content flushes during text editing.
+ * manage insertion and deletion of a text, and handle content flushes during text editing.
  * @author Naotsugu Kobayashi
  */
 public class TextEditContent implements Content {
@@ -55,7 +55,7 @@ public class TextEditContent implements Content {
      * Creates a new, empty TextEdit instance for managing text editing operations.
      */
     public TextEditContent() {
-        this.edit = TextEdit.of();
+        edit = TextEdit.of();
     }
 
     /**
@@ -64,7 +64,7 @@ public class TextEditContent implements Content {
      * @param path the path to the file whose content will initialize the editor
      */
     public TextEditContent(Path path) {
-        this.edit = TextEdit.of(path);
+        edit = TextEdit.of(path);
     }
 
     /**
@@ -75,7 +75,7 @@ public class TextEditContent implements Content {
      * @param consumer the consumer that accepts segment fraction values for processing
      */
     public TextEditContent(Path path, Consumer<Long> consumer) {
-        this.edit = TextEdit.of(path, seg -> consumer.accept(seg.fraction()));
+        edit = TextEdit.of(path, seg -> consumer.accept(seg.fraction()));
     }
 
     /**
@@ -83,7 +83,8 @@ public class TextEditContent implements Content {
      * @param bytes the byte array representing the content
      */
     public TextEditContent(byte[] bytes) {
-        this.edit = TextEdit.of(bytes);
+        edit = TextEdit.of(bytes);
+        modified = bytes.length > 0;
     }
 
     @Override

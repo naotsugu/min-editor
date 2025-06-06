@@ -29,17 +29,9 @@ You can use the application by launching the executable file.
 ### Launching app on macOS
 
 By default, macOS allows you to open apps from the official Mac App Store only.
-If you have this still set as your default, you will be seeing the warning when you try to open an app for the first time.
 
-The easiest way to allow an app from an unidentified developer to run on macOS is to ⌘-click the app and click Open.
-
-1. Press ⌘ while clicking the app
-2. Click the Open button from the shortcut menu.
-3. Click Open again.
-
-After that, the app will be saved as a safe app to open, and you can double-click to use it in the future as you can with any registered apps.
-
-If the first one doesn't work, you can try to remove the quarantine attribute from the application. This will allow you to open the application without seeing the security warning.
+If you are unable to run the downloaded file, you can try to remove the quarantine attribute from the application.
+This will allow you to open the application without seeing the security warning.
 
 1. Open a Terminal window.
 2. Type the following command
@@ -47,7 +39,6 @@ If the first one doesn't work, you can try to remove the quarantine attribute fr
 ```shell
 sudo xattr -r -d com.apple.quarantine /Applications/min-editor.app
 ```
-
 
 ## Uninstalling
 

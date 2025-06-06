@@ -9,5 +9,5 @@ repositories {
 
 javafx {
     version = "24.0.1"
-    modules("javafx.controls")
+    modules("javafx.web")
 }
