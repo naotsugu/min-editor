@@ -267,7 +267,7 @@ public class TextEditContent implements Content {
      * Whether it has been modified or not.
      * @return {@code true} if it has been modified
      */
-    private boolean isModified() {
+    boolean isModified() {
         if (flushes.isEmpty() && !edit.hasUndoRecord()) {
             return false;
         }
