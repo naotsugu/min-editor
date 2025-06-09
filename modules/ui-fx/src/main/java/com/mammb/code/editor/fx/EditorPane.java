@@ -488,8 +488,7 @@ public class EditorPane extends StackPane {
 
     boolean canDiscard() {
         boolean canDiscard = true;
-        if (model().query(Query.modified) ||
-            (model().query(Query.contentPath).isEmpty() && model().query(Query.size) > 0)) {
+        if (model().query(Query.modified)) {
             var ret = FxDialog.confirmation(getScene().getWindow(),
                     "Are you sure you want to discard your changes?").showAndWait();
             canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;
@@ -525,8 +524,9 @@ public class EditorPane extends StackPane {
     }
 
     Optional<Session> stash() {
-        return (model().query(Query.size) > 0)
-            ? Optional.of(model().stash())
+        final EditorModel m = model();
+        return (m.query(Query.size) > 0)
+            ? Optional.of(m.stash())
             : Optional.empty();
     }
 

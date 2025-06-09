@@ -241,10 +241,10 @@ public interface Content {
      * @return the content created from the session paths or an empty content if no valid path is found
      */
     static Content of(Session session) {
-        Content content = session.hasPath()
-            ? Content.of(session.path())
-            : session.hasAltPath()
+        Content content = session.hasAltPath()
             ? Content.of(Files.readAllBytes(session.altPath()))
+            : session.hasPath()
+            ? Content.of(session.path())
             : Content.of();
         return session.readonly() ? new RoTextContent(content) : content;
     }

@@ -178,8 +178,12 @@ public class RoTextContent implements Content {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
-        return pear.query(query);
+        return switch (query) {
+            case QueryRecords.Modified _ -> (R) Boolean.FALSE;
+            default -> pear.query(query);
+        };
     }
 
     private static byte[] read(Path path, int rowLimit) {

@@ -622,7 +622,7 @@ public class TextEditorModel implements EditorModel {
         Optional<Path> path = content.path();
         Path stashPath = ctx.config().stashPath().resolve(
             String.join("_", UUID.randomUUID().toString(),
-            path.map(value -> value.getFileName().toString()).orElse("Untitled")));
+            path.map(Path::getFileName).map(Path::toString).orElse("Untitled")));
         content.write(stashPath);
         return Session.of(
             content.path().orElse(null),
