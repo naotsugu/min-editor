@@ -24,18 +24,16 @@ import java.nio.file.Path;
  */
 public class ContentNames {
 
-    public static Name of(TextEditContent content) {
+    public static Name of(TextEditContent content, String name) {
         return new Name() {
             @Override
             public String canonical() {
-                return content.path().map(Path::toAbsolutePath).map(Path::toString).orElse("Untitled");
+                return content.path().map(Path::toAbsolutePath).map(Path::toString).orElse(name);
             }
-
             @Override
             public String plain() {
-                return content.path().map(Path::getFileName).map(Path::toString).orElse("Untitled");
+                return content.path().map(Path::getFileName).map(Path::toString).orElse(name);
             }
-
             @Override
             public String contextual() {
                 return (content.isModified() ? "*" : "") + plain();
@@ -43,9 +41,25 @@ public class ContentNames {
         };
     }
 
-    public static Name readonlyOf(String name) {
-        record NameRecord(String canonical, String plain, String contextual) implements Name { }
-        return new NameRecord(name, name, "[" + name + "]");
+    public static Name of(TextEditContent content) {
+        return of(content, "Untitled");
+    }
+
+    public static Name readonlyOf(Name name) {
+        return new Name() {
+            @Override
+            public String canonical() {
+                return name.canonical();
+            }
+            @Override
+            public String plain() {
+                return name.plain();
+            }
+            @Override
+            public String contextual() {
+                return "[" + plain() + "]";
+            }
+        };
     }
 
 }
