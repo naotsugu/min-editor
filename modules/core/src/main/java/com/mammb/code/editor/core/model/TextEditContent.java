@@ -23,6 +23,7 @@ import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
 import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
+import com.mammb.code.editor.core.model.QueryRecords.ContentName;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.Size;
@@ -87,10 +88,11 @@ public class TextEditContent implements Content {
     /**
      * Constructor to create a new TextEditContent instance from a byte array.
      * @param bytes the byte array representing the content
+     * @param contentName the content name
      */
-    public TextEditContent(byte[] bytes) {
+    public TextEditContent(byte[] bytes, String contentName) {
         edit = TextEdit.of(bytes);
-        name = ContentNames.of(this); // TODO
+        name = ContentNames.of(this, contentName);
         modified = bytes.length > 0;
     }
 
@@ -270,6 +272,7 @@ public class TextEditContent implements Content {
             case Modified _        -> (R) (Boolean) isModified();
             case Bom _             -> (R) edit.bom();
             case ContentPath _     -> (R) Optional.ofNullable(edit.path());
+            case ContentName _     -> (R) name;
             case Size _            -> (R) Long.valueOf(edit.rawSize());
             default                -> null;
         };

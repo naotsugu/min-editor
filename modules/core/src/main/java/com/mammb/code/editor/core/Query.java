@@ -32,6 +32,7 @@ public interface Query<R> {
     Query<byte[]> bom = new Bom();
     Query<Point> caretPoint = new CaretPoint();
     Query<Optional<Path>> contentPath = new ContentPath();
+    Query<Name> contentName = new ContentName();
 
     Query<Integer> widthAsCharacters = new WidthAsCharacters();
     Query<Integer> foundCounts = new FoundCounts();

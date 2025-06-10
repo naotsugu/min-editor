@@ -25,14 +25,15 @@ import java.nio.file.Path;
 public class ContentNames {
 
     public static Name of(TextEditContent content, String name) {
+        String n = (name == null || name.isBlank()) ? "Untitled" : name;
         return new Name() {
             @Override
             public String canonical() {
-                return content.path().map(Path::toAbsolutePath).map(Path::toString).orElse(name);
+                return content.path().map(Path::toAbsolutePath).map(Path::toString).orElse(n);
             }
             @Override
             public String plain() {
-                return content.path().map(Path::getFileName).map(Path::toString).orElse(name);
+                return content.path().map(Path::getFileName).map(Path::toString).orElse(n);
             }
             @Override
             public String contextual() {
@@ -42,7 +43,7 @@ public class ContentNames {
     }
 
     public static Name of(TextEditContent content) {
-        return of(content, "Untitled");
+        return of(content, null);
     }
 
     public static Name readonlyOf(Name name) {

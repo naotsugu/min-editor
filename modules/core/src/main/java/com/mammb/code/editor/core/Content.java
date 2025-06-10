@@ -217,10 +217,11 @@ public interface Content {
     /**
      * Creates a new {@link Content} from the specified byte array.
      * @param bytes the byte array representing the content data
+     * @param contentName the content name
      * @return a new {@link Content} instance initialized with the provided bytes
      */
-    static Content of(byte[] bytes) {
-        return new TextEditContent(bytes);
+    static Content of(byte[] bytes, String contentName) {
+        return new TextEditContent(bytes, contentName);
     }
 
     /**
@@ -248,7 +249,7 @@ public interface Content {
      */
     static Content of(Session session) {
         Content content = session.hasAltPath()
-            ? Content.of(Files.readAllBytes(session.altPath()))
+            ? Content.of(Files.readAllBytes(session.altPath()), session.hasPath() ? session.path().getFileName().toString() : null)
             : session.hasPath()
             ? Content.of(session.path())
             : Content.of();
