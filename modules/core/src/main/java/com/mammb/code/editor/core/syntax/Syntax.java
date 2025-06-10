@@ -100,7 +100,7 @@ public interface Syntax {
      */
     static Syntax of(String name) {
 
-        // the pass through syntax
+        // the pass-through syntax
         record PassThrough(String name) implements Syntax {
             @Override
             public List<Style.StyleSpan> apply(int row, String text) {

@@ -128,7 +128,7 @@ public class TextEditorModel implements EditorModel {
      */
     public TextEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
         this(content, ScreenLayout.of(content, fm), scroll, ctx, content.find(),
-            Decorate.of(content.path().map(Syntax::of).orElse(Syntax.of()))
+            Decorate.of(Syntax.of(Path.of(content.query(Query.modelName).plain())))
         );
     }
 
