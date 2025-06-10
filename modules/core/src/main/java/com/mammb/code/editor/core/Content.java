@@ -131,6 +131,12 @@ public interface Content {
     Optional<Path> path();
 
     /**
+     * Get the name.
+     * @return the name
+     */
+    Name name();
+
+    /**
      * Checks whether the content is read-only.
      * @return {@code true} if the content is read-only, {@code false} otherwise
      */

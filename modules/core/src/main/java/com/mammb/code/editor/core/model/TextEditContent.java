@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Find;
+import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
@@ -44,6 +45,8 @@ public class TextEditContent implements Content {
 
     /** The text edit. */
     private final TextEdit edit;
+    /** The name. */
+    private final Name name;
     /** The flushes (text being edited with IME). */
     private final List<Point.PointText> flushes = new ArrayList<>();
     /** Whether it has been modified or not. */
@@ -56,6 +59,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent() {
         edit = TextEdit.of();
+        name = ContentNames.of(this);
     }
 
     /**
@@ -65,6 +69,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(Path path) {
         edit = TextEdit.of(path);
+        name = ContentNames.of(this);
     }
 
     /**
@@ -76,6 +81,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(Path path, Consumer<Long> consumer) {
         edit = TextEdit.of(path, seg -> consumer.accept(seg.fraction()));
+        name = ContentNames.of(this);
     }
 
     /**
@@ -84,6 +90,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(byte[] bytes) {
         edit = TextEdit.of(bytes);
+        name = ContentNames.of(this); // TODO
         modified = bytes.length > 0;
     }
 
@@ -210,6 +217,11 @@ public class TextEditContent implements Content {
     @Override
     public Optional<Path> path() {
         return Optional.ofNullable(edit.path());
+    }
+
+    @Override
+    public Name name() {
+        return name;
     }
 
     @Override

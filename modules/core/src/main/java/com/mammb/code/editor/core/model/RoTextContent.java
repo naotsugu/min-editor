@@ -17,6 +17,7 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Find;
+import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import java.io.ByteArrayOutputStream;
@@ -38,6 +39,9 @@ public class RoTextContent implements Content {
 
     /** The pear content. */
     private final Content pear;
+    /** The name. */
+    private final Name name;
+
 
     /**
      * Constructor for RoTextContent that wraps a given Content instance.
@@ -45,6 +49,7 @@ public class RoTextContent implements Content {
      */
     public RoTextContent(Content pear) {
         this.pear = pear;
+        this.name = ContentNames.readonlyOf(pear.name());
     }
 
     /**
@@ -142,6 +147,11 @@ public class RoTextContent implements Content {
     @Override
     public Optional<Path> path() {
         return pear.path();
+    }
+
+    @Override
+    public Name name() {
+        return name;
     }
 
     @Override
