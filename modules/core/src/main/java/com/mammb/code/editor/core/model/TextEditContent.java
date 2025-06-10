@@ -17,13 +17,12 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Find;
-import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
 import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
-import com.mammb.code.editor.core.model.QueryRecords.ContentName;
+import com.mammb.code.editor.core.model.QueryRecords.ModelName;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.Size;
@@ -47,7 +46,7 @@ public class TextEditContent implements Content {
     /** The text edit. */
     private final TextEdit edit;
     /** The name. */
-    private final Name name;
+    private final ContentName name;
     /** The flushes (text being edited with IME). */
     private final List<Point.PointText> flushes = new ArrayList<>();
     /** Whether it has been modified or not. */
@@ -60,7 +59,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent() {
         edit = TextEdit.of();
-        name = ContentNames.of(this);
+        name = ContentName.of(this);
     }
 
     /**
@@ -70,7 +69,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(Path path) {
         edit = TextEdit.of(path);
-        name = ContentNames.of(this);
+        name = ContentName.of(this);
     }
 
     /**
@@ -82,7 +81,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(Path path, Consumer<Long> consumer) {
         edit = TextEdit.of(path, seg -> consumer.accept(seg.fraction()));
-        name = ContentNames.of(this);
+        name = ContentName.of(this);
     }
 
     /**
@@ -92,7 +91,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(byte[] bytes, String contentName) {
         edit = TextEdit.of(bytes);
-        name = ContentNames.of(this, contentName);
+        name = ContentName.of(this, contentName);
         modified = bytes.length > 0;
     }
 
@@ -222,11 +221,6 @@ public class TextEditContent implements Content {
     }
 
     @Override
-    public Name name() {
-        return name;
-    }
-
-    @Override
     public boolean readonly() {
         return false;
     }
@@ -272,7 +266,7 @@ public class TextEditContent implements Content {
             case Modified _        -> (R) (Boolean) isModified();
             case Bom _             -> (R) edit.bom();
             case ContentPath _     -> (R) Optional.ofNullable(edit.path());
-            case ContentName _     -> (R) name;
+            case ModelName _     -> (R) name.mute();
             case Size _            -> (R) Long.valueOf(edit.rawSize());
             default                -> null;
         };

@@ -39,8 +39,6 @@ public class RoTextContent implements Content {
 
     /** The pear content. */
     private final Content pear;
-    /** The name. */
-    private final Name name;
 
     /**
      * Constructor for RoTextContent that wraps a given Content instance.
@@ -48,7 +46,6 @@ public class RoTextContent implements Content {
      */
     public RoTextContent(Content pear) {
         this.pear = pear;
-        this.name = ContentNames.readonlyOf(pear.name());
     }
 
     /**
@@ -149,11 +146,6 @@ public class RoTextContent implements Content {
     }
 
     @Override
-    public Name name() {
-        return name;
-    }
-
-    @Override
     public boolean readonly() {
         return true;
     }
@@ -191,8 +183,14 @@ public class RoTextContent implements Content {
     public <R> R query(Query<R> query) {
         return switch (query) {
             case QueryRecords.Modified _ -> (R) Boolean.FALSE;
+            case QueryRecords.ModelName q  -> (R) readonlyName(pear.query(q));
             default -> pear.query(query);
         };
+    }
+
+    private Name readonlyName(Name name) {
+        record NameRecord(String canonical, String plain, String contextual) implements Name { }
+        return new NameRecord(name.canonical(), name.plain(), "[" + name.plain() + "]");
     }
 
     private static byte[] read(Path path, int rowLimit) {

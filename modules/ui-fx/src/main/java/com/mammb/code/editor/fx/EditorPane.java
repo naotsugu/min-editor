@@ -19,6 +19,7 @@ import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.HoverOn;
+import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Action;
@@ -27,9 +28,7 @@ import com.mammb.code.editor.core.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.fx.Command.*;
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -95,9 +94,7 @@ public class EditorPane extends StackPane {
     /** The session history. */
     private final SessionHistory sessionHistory = new SessionHistory();
     /** The file path property. */
-    private final SimpleObjectProperty<Path> pathProperty = new SimpleObjectProperty<>(Path.of("Untitled"));
-    /** The modified property. */
-    private final SimpleBooleanProperty modifiedProperty = new SimpleBooleanProperty();
+    private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>();
 
     private Function<Path, EditorPane> newOpenHandler;
 
@@ -145,6 +142,7 @@ public class EditorPane extends StackPane {
             model().setCaretVisible(n);
             paint(); // TODO only caret draw
         });
+        nameProperty.setValue(model.query(Query.modelName));
     }
 
     public EditorPane bindLater(Session session) {
@@ -204,7 +202,6 @@ public class EditorPane extends StackPane {
         return stash().map(session -> {
             var dup = new EditorPane(context);
             dup.model = dup.model.with(session.asReadonly());
-            dup.pathProperty.setValue(Path.of("[" + session.path().getFileName().toString() + "]"));
             return dup;
         }).orElse(null);
     }
@@ -412,7 +409,7 @@ public class EditorPane extends StackPane {
             p.row() + 1 + ":" + p.col(),
             model().query(Query.rowEndingSymbol),
             model().query(Query.charsetSymbol) + ((model().query(Query.bom).length > 0) ? "(BOM)" : ""));
-        modifiedProperty.setValue(model().query(Query.modified));
+        nameProperty.setValue(model.query(Query.modelName));
     }
 
     private void openWithChooser() {
@@ -455,7 +452,7 @@ public class EditorPane extends StackPane {
             ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, context)
             : model.with(session);
         model.setSize(getWidth(), getHeight());
-        pathProperty.setValue(session.path());
+        nameProperty.setValue(model.query(Query.modelName));
         if (openInBackground) {
             Task<EditorModel> task = buildOpenTask(session);
             floatBar.handleProgress(task);
@@ -554,7 +551,7 @@ public class EditorPane extends StackPane {
         if (file == null) return;
         Path path = file.toPath();
         model().save(path);
-        pathProperty.setValue(path);
+        nameProperty.setValue(model.query(Query.modelName));
     }
 
     private EditorPane newEdit() {
@@ -604,11 +601,8 @@ public class EditorPane extends StackPane {
         };
     }
 
-    public ReadOnlyObjectProperty<Path> pathProperty() {
-        return pathProperty;
-    }
-    public ReadOnlyBooleanProperty modifiedProperty() {
-        return modifiedProperty;
+    public ReadOnlyObjectProperty<Name> nameProperty() {
+        return nameProperty;
     }
 
     void setCloseListener(Consumer<EditorPane> closeListener) {

@@ -40,7 +40,7 @@ public interface QueryRecords {
     /** The query of a content-path. */
     record ContentPath() implements Query<Optional<Path>> { }
     /** The query of a content-name. */
-    record ContentName() implements Query<Name> { }
+    record ModelName() implements Query<Name> { }
     /** The query of width as characters. */
     record WidthAsCharacters() implements Query<Integer> { }
     /** The query of founded count. */

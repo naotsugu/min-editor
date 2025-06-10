@@ -242,18 +242,16 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
         private void initTab(Tab tab) {
             var pane = (EditorPane) tab.getContent();
-            var label = new Label(pane.pathProperty().get().getFileName().toString());
+            var label = new Label(pane.nameProperty().get().canonical());
             label.setOnMouseClicked(Event::consume);
             tab.setGraphic(label);
-            tab.setTooltip(new Tooltip(pane.pathProperty().get().toString()));
+            tab.setTooltip(new Tooltip(pane.nameProperty().get().canonical()));
             label.setOnDragDetected(this::handleTabDragDetected);
             tab.setOnCloseRequest(this::handleOnTabCloseRequest);
             tab.setOnClosed(this::handleOnTabClosed);
-            pane.modifiedProperty().addListener((_, _, modified) ->
-                label.setText((modified ? "*" : "") + pane.pathProperty().get().getFileName().toString()));
-            pane.pathProperty().addListener((_, _, path) -> {
-                label.setText(path.getFileName().toString());
-                tab.setTooltip(new Tooltip(path.toString()));
+            pane.nameProperty().addListener((_, _, name) -> {
+                label.setText(name.contextual());
+                tab.setTooltip(new Tooltip(name.canonical()));
             });
             pane.setNewOpenHandler(_ -> addNewEdit());
         }
