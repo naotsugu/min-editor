@@ -619,10 +619,9 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session stash() {
-        Optional<Path> path = content.path();
         Path stashPath = ctx.config().stashPath().resolve(
             String.join("_", UUID.randomUUID().toString(),
-            path.map(Path::getFileName).map(Path::toString).orElse("Untitled"))); // TODO
+            query(Query.modelName).plain()));
         content.write(stashPath);
         return Session.of(
             content.path().orElse(null),

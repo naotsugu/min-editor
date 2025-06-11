@@ -266,7 +266,7 @@ public class TextEditContent implements Content {
             case Modified _        -> (R) (Boolean) isModified();
             case Bom _             -> (R) edit.bom();
             case ContentPath _     -> (R) Optional.ofNullable(edit.path());
-            case ModelName _     -> (R) name.mute();
+            case ModelName _       -> (R) name.mute();
             case Size _            -> (R) Long.valueOf(edit.rawSize());
             default                -> null;
         };
