@@ -17,7 +17,6 @@ package com.mammb.code.editor.core.syntax;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import com.mammb.code.editor.core.syntax.lang.CppSyntax;
 import com.mammb.code.editor.core.syntax.lang.DiffSyntax;
@@ -77,7 +76,7 @@ public interface Syntax {
 
     /**
      * Get the default syntax.
-     * Default syntax is markdown.
+     * The default syntax is markdown.
      * @return the syntax
      */
     static Syntax of() {
@@ -89,8 +88,18 @@ public interface Syntax {
      * @param path the path
      * @return the syntax
      */
-    static Syntax of(Path path) {
+    static Syntax pathOf(Path path) {
         return of(syntaxName(path));
+    }
+
+    /**
+     * Get the syntax for a given path string.
+     * @param path the path string
+     * @return the syntax
+     */
+    static Syntax pathOf(String path) {
+        var extension = (path == null) ? "" : path.substring(path.lastIndexOf(".") + 1);
+        return of(syntaxName(extension));
     }
 
     /**

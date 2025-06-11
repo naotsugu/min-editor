@@ -128,7 +128,7 @@ public class TextEditorModel implements EditorModel {
      */
     public TextEditorModel(Content content, FontMetrics fm, ScreenScroll scroll, Context ctx) {
         this(content, ScreenLayout.of(content, fm), scroll, ctx, content.find(),
-            Decorate.of(Syntax.of(Path.of(content.query(Query.modelName).plain())))
+            Decorate.of(Syntax.pathOf(content.query(Query.modelName).plain()))
         );
     }
 
@@ -608,7 +608,7 @@ public class TextEditorModel implements EditorModel {
             decorate.syntaxName());
         content.save(path);
         if (syntaxChanged) {
-            decorate = Decorate.of(Syntax.of(path));
+            decorate = Decorate.of(Syntax.pathOf(path));
         }
     }
 
@@ -622,7 +622,7 @@ public class TextEditorModel implements EditorModel {
         Optional<Path> path = content.path();
         Path stashPath = ctx.config().stashPath().resolve(
             String.join("_", UUID.randomUUID().toString(),
-            path.map(Path::getFileName).map(Path::toString).orElse("Untitled")));
+            path.map(Path::getFileName).map(Path::toString).orElse("Untitled"))); // TODO
         content.write(stashPath);
         return Session.of(
             content.path().orElse(null),
@@ -882,7 +882,7 @@ public class TextEditorModel implements EditorModel {
 
     private Integer selectedCounts() {
         return carets.marked().stream().findFirst()
-            .filter(range -> range.max().row() - range.min().row() < 100) // limit 100 rows
+            .filter(range -> range.max().row() - range.min().row() < 1000) // limit 1000 rows
             .map(range -> content.getText(range.min(), range.max()))
             .map(text -> text.codePointCount(0, text.length()))
             .orElse(0);
