@@ -170,8 +170,7 @@ public class EditorPane extends StackPane {
         cm.show(getScene().getWindow(), e.getScreenX(), e.getScreenY());
     }
 
-    private void handleLayoutBoundsChanged(
-            ObservableValue<? extends Bounds> ob, Bounds o, Bounds n) {
+    private void handleLayoutBoundsChanged(ObservableValue<? extends Bounds> ob, Bounds o, Bounds n) {
         canvas.setWidth(n.getWidth());
         canvas.setHeight(n.getHeight());
         model().setSize(n.getWidth(), n.getHeight());
@@ -207,15 +206,19 @@ public class EditorPane extends StackPane {
     }
 
     private void openRight(EditorPane editorPane) {
-        if (editorPane == null) return;
+        var container = tabContainer();
+        if (container != null && editorPane != null) {
+            container.parent().addRight(editorPane);
+        }
+    }
+
+    private SplitTabPane.DndTabPane tabContainer() {
         Node node = getParent();
         for (;;) {
-            if (node == null) return;
-            if (node instanceof SplitTabPane.DndTabPane) break;
+            if (node == null) return null;
+            if (node instanceof SplitTabPane.DndTabPane pane) return pane;
             node = node.getParent();
         }
-        var dndTabPane = (SplitTabPane.DndTabPane) node;
-        dndTabPane.parent().addRight(editorPane);
     }
 
     private void handleMouseMoved(MouseEvent e) {
@@ -395,7 +398,9 @@ public class EditorPane extends StackPane {
             Object obj = supplier.get();
             if (obj == null) return;
             model().apply(Action.input(obj.toString()));
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+            log.log(System.Logger.Level.WARNING, "failed to input text", ignore);
+        }
     }
 
     private void paint() {
@@ -507,17 +512,13 @@ public class EditorPane extends StackPane {
 
     Optional<Session> restorableSession() {
         if (model().query(Query.contentPath).isPresent()) {
-            if (canDiscard()) {
-                return Optional.of(model().getSession());
-            } else {
-                return Optional.empty();
-            }
+            return canDiscard()
+                ? Optional.of(model().getSession())
+                : Optional.empty();
         }
-        if (model().query(Query.size) > 0) {
-            return Optional.of(model().stash());
-        } else {
-            return Optional.empty();
-        }
+        return (model().query(Query.size) > 0)
+            ? Optional.of(model().stash())
+            : Optional.empty();
     }
 
     Optional<Session> stash() {

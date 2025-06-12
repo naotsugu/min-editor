@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.fx;
 
+import com.mammb.code.editor.core.Name;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.layout.StackPane;
 import java.util.function.Consumer;
 
@@ -31,5 +33,7 @@ public abstract class ContentPane extends StackPane {
     abstract void close();
 
     abstract void setCloseListener(Consumer<? extends ContentPane> closeListener);
+
+    abstract ReadOnlyObjectProperty<Name> nameProperty();
 
 }
