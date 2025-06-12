@@ -98,7 +98,10 @@ public interface Syntax {
      * @return the syntax
      */
     static Syntax pathOf(String path) {
-        var extension = (path == null) ? "" : path.substring(path.lastIndexOf(".") + 1);
+        if (path == null || path.indexOf('.') < 0) {
+            return of();
+        }
+        var extension = path.substring(path.lastIndexOf(".") + 1);
         return of(syntaxName(extension));
     }
 
