@@ -34,6 +34,8 @@ public abstract class ContentPane extends StackPane {
 
     abstract void setCloseListener(Consumer<ContentPane> closeListener);
 
+    abstract ContentPane newPane();
+
     abstract ReadOnlyObjectProperty<Name> nameProperty();
 
 }

@@ -611,6 +611,11 @@ public class EditorPane extends ContentPane {
         this.closeListener = closeListener;
     }
 
+    @Override
+    ContentPane newPane() {
+        return new EditorPane(context);
+    }
+
     <R> R query(Query<R> query) {
         return model().query(query);
     }
