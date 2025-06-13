@@ -95,7 +95,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         for (TabAndPane tabAndPane : tabs) {
             if (tabAndPane.pane().query(Query.contentPath).isPresent()) {
                 tabAndPane.select();
-                if (!tabAndPane.pane.canDiscard()) {
+                if (!tabAndPane.pane.canClose()) {
                     return false;
                 }
             }
@@ -106,7 +106,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList());
-        tabs.forEach(tab -> tab.pane.closeModel());
+        tabs.forEach(tab -> tab.pane.close());
         return true;
     }
 
@@ -233,7 +233,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             tabPane.getSelectionModel().selectedItemProperty().addListener(this::handleSelectedTabItem);
             parent.contents.add(tab);
             node.setCloseListener(e -> {
-                if (e.canDiscard()) {
+                if (e.canClose()) {
                     tab.getTabPane().getTabs().remove(tab);
                     parent.contents.remove(tab);
                     Event.fireEvent(tab, new Event(Tab.CLOSED_EVENT));
@@ -253,7 +253,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 label.setText(name.contextual());
                 tab.setTooltip(new Tooltip(name.canonical()));
             });
-            pane.setNewOpenHandler(_ -> addNewEdit());
         }
 
         private EditorPane addNewEdit() {
@@ -293,11 +292,11 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             if (maybeTab instanceof Tab tab) {
                 var maybeEditorPane = tab.getContent();
                 if (maybeEditorPane instanceof EditorPane editorPane) {
-                    if (!editorPane.canDiscard()) {
+                    if (!editorPane.canClose()) {
                         e.consume();
                     }
                     parent.contents.remove(tab);
-                    editorPane.closeModel();
+                    editorPane.close();
                 } else {
                     log.log(ERROR, "An unexpected node configuration has been detected.");
                 }

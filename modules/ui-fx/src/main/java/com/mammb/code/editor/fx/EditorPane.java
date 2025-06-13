@@ -64,7 +64,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -72,7 +71,7 @@ import java.util.stream.Collectors;
  * The EditorPane.
  * @author Naotsugu Kobayashi
  */
-public class EditorPane extends StackPane {
+public class EditorPane extends ContentPane {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(EditorPane.class.getName());
@@ -96,9 +95,7 @@ public class EditorPane extends StackPane {
     /** The file path property. */
     private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>();
 
-    private Function<Path, EditorPane> newOpenHandler;
-
-    private Consumer<EditorPane> closeListener;
+    private Consumer<ContentPane> closeListener;
 
     /**
      * Constructor.
@@ -157,10 +154,7 @@ public class EditorPane extends StackPane {
         return this;
     }
 
-    public void setNewOpenHandler(Function<Path, EditorPane> newOpenHandler) {
-        this.newOpenHandler = newOpenHandler;
-    }
-
+    @Override
     public void focus() {
         canvas.requestFocus();
     }
@@ -277,7 +271,7 @@ public class EditorPane extends StackPane {
             var paths = board.getFiles().stream().map(File::toPath).toList();
             var path = paths.stream().filter(Files::isReadableFile).findFirst();
             if (path.isPresent()) {
-                if (!canDiscard()) return;
+                if (!canClose()) return;
                 e.setDropCompleted(true);
                 e.consume();
                 open(Session.of(path.get()));
@@ -418,7 +412,7 @@ public class EditorPane extends StackPane {
     }
 
     private void openWithChooser() {
-        if (!canDiscard()) return;
+        if (!canClose()) return;
         FileChooser fc = new FileChooser();
         fc.setTitle("Select file...");
         if (model().query(Query.contentPath).isPresent()) {
@@ -433,7 +427,7 @@ public class EditorPane extends StackPane {
     }
 
     void open(String pathString) {
-        if (!canDiscard()) return;
+        if (!canClose()) return;
         var path = Path.of(pathString);
         if (Files.isReadableFile(path)) {
             open(Session.of(path));
@@ -452,7 +446,7 @@ public class EditorPane extends StackPane {
         // save previous session
         sessionHistory.push(model.getSession());
 
-        closeModel();
+        close();
         model = openInBackground
             ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, context)
             : model.with(session);
@@ -488,7 +482,8 @@ public class EditorPane extends StackPane {
         return task;
     }
 
-    boolean canDiscard() {
+    @Override
+    boolean canClose() {
         boolean canDiscard = true;
         if (model().query(Query.modified)) {
             var ret = FxDialog.confirmation(getScene().getWindow(),
@@ -500,19 +495,19 @@ public class EditorPane extends StackPane {
 
     void forward() {
         sessionHistory.forward().ifPresent(session -> {
-            if (canDiscard()) open(session);
+            if (canClose()) open(session);
         });
     }
 
     void backward() {
         sessionHistory.backward().ifPresent(session -> {
-            if (canDiscard()) open(session);
+            if (canClose()) open(session);
         });
     }
 
     Optional<Session> restorableSession() {
         if (model().query(Query.contentPath).isPresent()) {
-            return canDiscard()
+            return canClose()
                 ? Optional.of(model().getSession())
                 : Optional.empty();
         }
@@ -528,7 +523,8 @@ public class EditorPane extends StackPane {
             : Optional.empty();
     }
 
-    void closeModel() {
+    @Override
+    void close() {
         EditorModel m = model();
         if (m != null) m.close();
     }
@@ -545,9 +541,10 @@ public class EditorPane extends StackPane {
     private void saveAs() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Save As...");
-        fc.setInitialDirectory(model.query(Query.contentPath).isPresent()
-                ? model().query(Query.contentPath).get().toAbsolutePath().getParent().toFile()
-                : Path.of(System.getProperty("user.home")).toFile());
+        var current = model().query(Query.contentPath);
+        fc.setInitialDirectory(current
+            .map(value -> value.toAbsolutePath().getParent().toFile())
+            .orElseGet(() -> Path.of(System.getProperty("user.home")).toFile()));
         File file = fc.showSaveDialog(getScene().getWindow());
         if (file == null) return;
         Path path = file.toPath();
@@ -556,10 +553,12 @@ public class EditorPane extends StackPane {
     }
 
     private EditorPane newEdit() {
-        var handler = newOpenHandler;
-        if (handler != null) {
-            return handler.apply(null);
-        }
+        var editorPane = new EditorPane(context);
+        tabContainer().add(editorPane);
+        return editorPane;
+    }
+
+    private EditorPane newEditStage() {
         Stage current = (Stage) getScene().getWindow();
         Stage stage = new Stage();
         stage.setX(current.getX() + (current.isFullScreen() ? 0 : 15));
@@ -602,11 +601,13 @@ public class EditorPane extends StackPane {
         };
     }
 
+    @Override
     public ReadOnlyObjectProperty<Name> nameProperty() {
         return nameProperty;
     }
 
-    void setCloseListener(Consumer<EditorPane> closeListener) {
+    @Override
+    void setCloseListener(Consumer<ContentPane> closeListener) {
         this.closeListener = closeListener;
     }
 
