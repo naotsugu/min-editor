@@ -483,6 +483,11 @@ public class EditorPane extends ContentPane {
     }
 
     @Override
+    boolean needsCloseConfirmation() {
+        return model().query(Query.modified) && query(Query.contentPath).isPresent();
+    }
+
+    @Override
     boolean canClose() {
         boolean canDiscard = true;
         if (model().query(Query.modified)) {
@@ -505,17 +510,6 @@ public class EditorPane extends ContentPane {
         });
     }
 
-    Optional<Session> restorableSession() {
-        if (model().query(Query.contentPath).isPresent()) {
-            return canClose()
-                ? Optional.of(model().getSession())
-                : Optional.empty();
-        }
-        return (model().query(Query.size) > 0)
-            ? Optional.of(model().stash())
-            : Optional.empty();
-    }
-
     Optional<Session> stash() {
         final EditorModel m = model();
         return (m.query(Query.size) > 0)
@@ -524,9 +518,22 @@ public class EditorPane extends ContentPane {
     }
 
     @Override
-    void close() {
+    Optional<Session> close() {
         EditorModel m = model();
-        if (m != null) m.close();
+        if (m == null) return Optional.empty();
+        Optional<Session> restorableSession;
+        if (m.query(Query.contentPath).isPresent()) {
+            restorableSession = canClose()
+                ? Optional.of(m.getSession())
+                : Optional.empty();
+        } else {
+            restorableSession = (m.query(Query.size) > 0)
+                ? Optional.of(m.stash())
+                : Optional.empty();
+
+        }
+        m.close();
+        return restorableSession;
     }
 
     private void save() {
@@ -609,11 +616,6 @@ public class EditorPane extends ContentPane {
     @Override
     void setCloseListener(Consumer<ContentPane> closeListener) {
         this.closeListener = closeListener;
-    }
-
-    @Override
-    ContentPane newPane() {
-        return new EditorPane(context);
     }
 
     <R> R query(Query<R> query) {

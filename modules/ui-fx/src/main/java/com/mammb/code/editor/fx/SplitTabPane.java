@@ -16,6 +16,7 @@
 package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Query;
+import com.mammb.code.editor.core.Session;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -75,7 +76,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         getChildren().add(pane);
     }
 
-    public SplitTabPane(AppContext ctx, EditorPane... panes) {
+    public SplitTabPane(AppContext ctx, ContentPane... panes) {
         this(ctx);
         DndTabPane dndTabPane = add(panes[0]);
         Arrays.stream(panes).skip(1).forEach(dndTabPane::add);
@@ -83,34 +84,35 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
     public boolean closeAll() {
 
-        record TabAndPane(Tab tab, TabPane tabPane, EditorPane pane) {
+        record TabAndPane(Tab tab, TabPane tabPane, ContentPane pane) {
             void select() { if (tabPane != null) tabPane.getSelectionModel().select(tab); }
         }
 
         var tabs = contents.stream()
-            .filter(tab -> tab.getContent() instanceof EditorPane)
-            .map(tab -> new TabAndPane(tab, tab.getTabPane(), (EditorPane) tab.getContent()))
+            .filter(tab -> tab.getContent() instanceof ContentPane)
+            .map(tab -> new TabAndPane(tab, tab.getTabPane(), (ContentPane) tab.getContent()))
             .toList();
 
         for (TabAndPane tabAndPane : tabs) {
-            if (tabAndPane.pane().query(Query.contentPath).isPresent()) {
+            if (tabAndPane.pane().needsCloseConfirmation()) {
                 tabAndPane.select();
                 if (!tabAndPane.pane.canClose()) {
                     return false;
                 }
             }
         }
+
         context.config().clearSessions();
-        context.config().sessions(
-            tabs.stream().map(tab -> tab.pane().restorableSession())
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList());
-        tabs.forEach(tab -> tab.pane.close());
+        List<Session> sessions = tabs.stream()
+            .map(tab -> tab.pane().close())
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
+        context.config().sessions(sessions);
         return true;
     }
 
-    private SplitTabPane(EditorPane node, SplitTabPane parent) {
+    private SplitTabPane(ContentPane node, SplitTabPane parent) {
         this(parent.context);
         add(node);
         this.parent = parent;
@@ -122,7 +124,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         node.setParent(this);
     }
 
-    private DndTabPane add(EditorPane node) {
+    private DndTabPane add(ContentPane node) {
         pane.getItems().clear();
         DndTabPane dndTabPane = new DndTabPane(this, node);
         pane.getItems().add(dndTabPane);
@@ -140,7 +142,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         pane.getItems()
                 .forEach(i -> ((Hierarchical) i).setParent(this));
     }
-    DndTabPane addRight(EditorPane node) {
+    DndTabPane addRight(ContentPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
         } else {
@@ -153,7 +155,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             return (DndTabPane) right.pane.getItems().getFirst();
         }
     }
-    private DndTabPane addLeft(EditorPane node) {
+    private DndTabPane addLeft(ContentPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
         } else {
@@ -166,7 +168,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             return (DndTabPane) left.pane.getItems().getFirst();
         }
     }
-    private DndTabPane addTop(EditorPane node) {
+    private DndTabPane addTop(ContentPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
         } else {
@@ -179,7 +181,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             return (DndTabPane) top.pane.getItems().getFirst();
         }
     }
-    private DndTabPane addBottom(EditorPane node) {
+    private DndTabPane addBottom(ContentPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
         } else {
@@ -202,7 +204,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private final TabPane tabPane = new TabPane();
         private final Rectangle marker = new Rectangle();
         private SplitTabPane parent;
-        DndTabPane(SplitTabPane parent, EditorPane node) {
+        DndTabPane(SplitTabPane parent, ContentPane node) {
             this.parent = parent;
             getChildren().addAll(tabPane, marker);
             marker.setFill(Color.TRANSPARENT);
@@ -224,7 +226,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 }
             });
         }
-        void add(EditorPane node) {
+        void add(ContentPane node) {
             var tab = new Tab();
             tab.setContent(node);
             initTab(tab);
@@ -241,7 +243,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             });
         }
         private void initTab(Tab tab) {
-            var pane = (EditorPane) tab.getContent();
+            var pane = (ContentPane) tab.getContent();
             var label = new Label(pane.nameProperty().get().canonical());
             label.setOnMouseClicked(Event::consume);
             tab.setGraphic(label);
@@ -272,14 +274,14 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             getStyleClass().add("app-tab-pane-active");
             activePane.set(this);
             if (!tabPane.getTabs().isEmpty()) {
-                var tab = tabPane.getSelectionModel().getSelectedItem();
-                var editorPane = (EditorPane) tab.getContent();
-                editorPane.focus();
+                Tab tab = tabPane.getSelectionModel().getSelectedItem();
+                var contentPane = (ContentPane) tab.getContent();
+                contentPane.focus();
             }
         }
         private void handleSelectedTabItem(ObservableValue<? extends Tab> ob, Tab o, Tab tab) {
             if (tab != null) {
-                ((EditorPane) tab.getContent()).focus();
+                ((ContentPane) tab.getContent()).focus();
             }
         }
 
@@ -290,13 +292,13 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleOnTabCloseRequest(Event e) {
             var maybeTab = e.getTarget();
             if (maybeTab instanceof Tab tab) {
-                var maybeEditorPane = tab.getContent();
-                if (maybeEditorPane instanceof EditorPane editorPane) {
-                    if (!editorPane.canClose()) {
+                var maybeContentPane = tab.getContent();
+                if (maybeContentPane instanceof ContentPane contentPane) {
+                    if (!contentPane.canClose()) {
                         e.consume();
                     }
                     parent.contents.remove(tab);
-                    editorPane.close();
+                    contentPane.close();
                 } else {
                     log.log(ERROR, "An unexpected node configuration has been detected.");
                 }
@@ -407,22 +409,22 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     }
                     case RIGHT -> {
                         from.tabPane.getTabs().remove(dragged);
-                        var dndTabPane = parent.addRight((EditorPane) dragged.getContent());
+                        var dndTabPane = parent.addRight((ContentPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case LEFT -> {
                         from.tabPane.getTabs().remove(dragged);
-                        var dndTabPane = parent.addLeft((EditorPane) dragged.getContent());
+                        var dndTabPane = parent.addLeft((ContentPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case TOP -> {
                         from.tabPane.getTabs().remove(dragged);
-                        var dndTabPane = parent.addTop((EditorPane) dragged.getContent());
+                        var dndTabPane = parent.addTop((ContentPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case BOTTOM -> {
                         from.tabPane.getTabs().remove(dragged);
-                        var dndTabPane = parent.addBottom((EditorPane) dragged.getContent());
+                        var dndTabPane = parent.addBottom((ContentPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                 }
@@ -438,22 +440,22 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     }
                     case RIGHT -> {
                         dragged.getTabPane().getTabs().remove(dragged);
-                        var dndTabPane = parent.addRight((EditorPane) dragged.getContent());
+                        var dndTabPane = parent.addRight((ContentPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case LEFT -> {
                         dragged.getTabPane().getTabs().remove(dragged);
-                        var dndTabPane = parent.addLeft((EditorPane) dragged.getContent());
+                        var dndTabPane = parent.addLeft((ContentPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case TOP -> {
                         dragged.getTabPane().getTabs().remove(dragged);
-                        var dndTabPane = parent.addTop((EditorPane) dragged.getContent());
+                        var dndTabPane = parent.addTop((ContentPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case BOTTOM -> {
                         dragged.getTabPane().getTabs().remove(dragged);
-                        var dndTabPane = parent.addBottom((EditorPane) dragged.getContent());
+                        var dndTabPane = parent.addBottom((ContentPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                 }
