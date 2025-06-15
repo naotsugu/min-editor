@@ -93,7 +93,7 @@ public class EditorPane extends ContentPane {
     /** The session history. */
     private final SessionHistory sessionHistory = new SessionHistory();
     /** The file path property. */
-    private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.EMPTY);
 
     private Consumer<ContentPane> closeListener;
 
@@ -199,10 +199,14 @@ public class EditorPane extends ContentPane {
         }).orElse(null);
     }
 
-    private void openRight(EditorPane editorPane) {
+    private WebPane webPane() {
+        return new WebPane();
+    }
+
+    private void openRight(ContentPane contentPane) {
         var container = tabContainer();
-        if (container != null && editorPane != null) {
-            container.parent().addRight(editorPane);
+        if (container != null && contentPane != null) {
+            container.parent().addRight(contentPane);
         }
     }
 
@@ -362,6 +366,7 @@ public class EditorPane extends ContentPane {
             case ZoomOut _          -> zoom(-1);
             case Help _             -> FxDialog.about(getScene().getWindow(), context).showAndWait();
             case Duplicate _        -> openRight(duplicate());
+            case SearchInWeb cmd    -> openRight(webPane().search(cmd.str()));
             case Filter cmd         -> { } // TODO impl
             case Empty _            -> { }
         }

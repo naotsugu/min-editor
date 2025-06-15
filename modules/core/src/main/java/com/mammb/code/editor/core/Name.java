@@ -51,4 +51,10 @@ public interface Name {
      */
     String contextual();
 
+    Name EMPTY = new Name() {
+        @Override public String canonical() { return ""; }
+        @Override public String plain() { return ""; }
+        @Override public String contextual() { return ""; }
+    };
+
 }
