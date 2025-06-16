@@ -50,9 +50,9 @@ public class WebPane extends ContentPane {
             }
         });
         webView.setZoom(0.8);
-        engine.setUserAgent("""
-            Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.44 (KHTML, like Gecko) JavaFX/8.0 Safari/537.44
-            x-devcat-category: smartphone""");
+        engine.setUserAgent(
+            engine.getUserAgent()
+            + "\n" + "x-devcat-category: smartphone");
         getChildren().add(webView);
     }
 

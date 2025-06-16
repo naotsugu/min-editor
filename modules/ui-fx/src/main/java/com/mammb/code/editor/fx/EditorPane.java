@@ -58,6 +58,8 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -199,9 +201,18 @@ public class EditorPane extends ContentPane {
         }).orElse(null);
     }
 
-    private WebPane webPane() {
-        return new WebPane();
+    private void searchInBrowser(String query) {
+        if (query == null || query.isBlank()) return;
+        context.getApp().getHostServices().showDocument("https://www.google.com/search?q="
+            + URLEncoder.encode(query, StandardCharsets.UTF_8));
     }
+
+    private void translateInBrowser(String text) {
+        if (text == null || text.isBlank()) return;
+        context.getApp().getHostServices().showDocument("https://translate.google.com/?op=translate&text="
+            + URLEncoder.encode(text, StandardCharsets.UTF_8));
+    }
+
 
     private void openRight(ContentPane contentPane) {
         var container = tabContainer();
@@ -366,7 +377,8 @@ public class EditorPane extends ContentPane {
             case ZoomOut _          -> zoom(-1);
             case Help _             -> FxDialog.about(getScene().getWindow(), context).showAndWait();
             case Duplicate _        -> openRight(duplicate());
-            case SearchInWeb cmd    -> openRight(webPane().search(cmd.str()));
+            case SearchInBrowser _  -> searchInBrowser(model().query(Query.selectedText));
+            case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
             case Filter cmd         -> { } // TODO impl
             case Empty _            -> { }
         }

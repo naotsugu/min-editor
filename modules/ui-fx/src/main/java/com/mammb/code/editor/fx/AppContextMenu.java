@@ -84,7 +84,22 @@ public class AppContextMenu extends ContextMenu {
         forward.setOnAction(_ -> editorPane.execute(new Command.Forward()));
         forward.setDisable(!editorPane.sessionHistory().hasForward());
 
-        getItems().addAll(cut, copy, paste, pasteAs, new SeparatorMenuItem(), backward, forward);
+        var searchInBrowser = new MenuItem("Search In Browser");
+        searchInBrowser.setStyle(style);
+        searchInBrowser.setOnAction(_ -> editorPane.execute(new Command.SearchInBrowser()));
+        searchInBrowser.setDisable(!textSelected);
+
+        var translateInBrowser = new MenuItem("Translate In Browser");
+        translateInBrowser.setStyle(style);
+        translateInBrowser.setOnAction(_ -> editorPane.execute(new Command.TranslateInBrowser()));
+        translateInBrowser.setDisable(!textSelected);
+
+        getItems().addAll(
+            cut, copy, paste, pasteAs,
+            new SeparatorMenuItem(),
+            backward, forward,
+            new SeparatorMenuItem(),
+            searchInBrowser, translateInBrowser);
     }
 
 }

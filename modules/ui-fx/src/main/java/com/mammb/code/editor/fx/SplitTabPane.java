@@ -38,6 +38,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -45,6 +46,7 @@ import java.io.File;
 import java.lang.System.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -80,36 +82,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         this(ctx);
         DndTabPane dndTabPane = add(panes[0]);
         Arrays.stream(panes).skip(1).forEach(dndTabPane::add);
-    }
-
-    public boolean closeAll() {
-
-        record TabAndPane(Tab tab, TabPane tabPane, ContentPane pane) {
-            void select() { if (tabPane != null) tabPane.getSelectionModel().select(tab); }
-        }
-
-        var tabs = contents.stream()
-            .filter(tab -> tab.getContent() instanceof ContentPane)
-            .map(tab -> new TabAndPane(tab, tab.getTabPane(), (ContentPane) tab.getContent()))
-            .toList();
-
-        for (TabAndPane tabAndPane : tabs) {
-            if (tabAndPane.pane().needsCloseConfirmation()) {
-                tabAndPane.select();
-                if (!tabAndPane.pane.canClose()) {
-                    return false;
-                }
-            }
-        }
-
-        context.config().clearSessions();
-        List<Session> sessions = tabs.stream()
-            .map(tab -> tab.pane().close())
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .toList();
-        context.config().sessions(sessions);
-        return true;
     }
 
     private SplitTabPane(ContentPane node, SplitTabPane parent) {
@@ -195,9 +167,47 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
     }
 
+    private List<TabAndPane> tabAndPanesAll() {
+        SplitTabPane root = this;
+        while (root.parent != null) {
+            root = root.parent;
+        }
+        return traverse(root, Tab.class).stream()
+            .filter(tab -> tab.getContent() instanceof ContentPane)
+            .map(tab -> new TabAndPane(tab, tab.getTabPane(), (ContentPane) tab.getContent()))
+            .toList();
+    }
+
+    public boolean closeAll() {
+
+        var tabs = tabAndPanesAll();
+
+        for (TabAndPane tabAndPane : tabs) {
+            if (tabAndPane.pane().needsCloseConfirmation()) {
+                tabAndPane.select();
+                if (!tabAndPane.pane.canClose()) {
+                    return false;
+                }
+            }
+        }
+
+        context.config().clearSessions();
+        List<Session> sessions = tabs.stream()
+            .map(tab -> tab.pane().close())
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .toList();
+        context.config().sessions(sessions);
+        return true;
+    }
+
     @Override
     public void setParent(SplitTabPane parent) {
         this.parent = parent;
+    }
+
+    record TabAndPane(Tab tab, TabPane tabPane, ContentPane pane) {
+        void select() { if (tabPane != null) tabPane.getSelectionModel().select(tab); }
     }
 
     static class DndTabPane extends StackPane implements Hierarchical<SplitTabPane> {
@@ -562,6 +572,19 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 return null;
             }
         }).start();
+    }
+
+    private static <T> List<T> traverse(Pane parent, Class<T> type) {
+        if (parent == null || type == null) return Collections.emptyList();
+        List<T> list = new ArrayList<>();
+        for (Node node : parent.getChildren()) {
+            if (node instanceof Pane pane) {
+                list.addAll(traverse(pane, type));
+            } else if (type.isAssignableFrom(node.getClass())) {
+                list.add((T) node);
+            }
+        }
+        return list;
     }
 
 }

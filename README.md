@@ -62,6 +62,12 @@ git clone --recursive https://github.com/naotsugu/min-editor.git
 cd min-editor
 ./gradlew clean pkg
 ```
+The generated binary can be executed with the following command.
+
+```shell
+./modules/bootstrap/build/jpackage/min-editor/min-editor
+```
+
 
 The distribution archive will be created in the `/modules/bootstrap/build/distributions/` directories.
 
