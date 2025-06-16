@@ -51,13 +51,16 @@ public class AppContextMenu extends ContextMenu {
         var cut = new MenuItem("Cut");
         cut.setStyle(style);
         cut.setAccelerator(CommandKeys.SC_X);
-        cut.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.cut(FxClipboard.instance))));
+        cut.setOnAction(e -> {
+            e.consume();
+            editorPane.execute(new Command.ActionCommand(Action.cut(FxClipboard.instance)));
+        });
         cut.setDisable(!textSelected);
 
         var copy = new MenuItem("Copy");
         copy.setStyle(style);
         copy.setAccelerator(CommandKeys.SC_C);
-        copy.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.copy(FxClipboard.instance))));
+        copy.setOnAction(e -> editorPane.execute(new Command.ActionCommand(Action.copy(FxClipboard.instance))));
         copy.setDisable(!textSelected);
 
         var paste = new MenuItem("Paste");
@@ -86,7 +89,10 @@ public class AppContextMenu extends ContextMenu {
 
         var searchInBrowser = new MenuItem("Search In Browser");
         searchInBrowser.setStyle(style);
-        searchInBrowser.setOnAction(_ -> editorPane.execute(new Command.SearchInBrowser()));
+        searchInBrowser.setOnAction(e -> {
+            e.consume();
+            editorPane.execute(new Command.SearchInBrowser());
+        });
         searchInBrowser.setDisable(!textSelected);
 
         var translateInBrowser = new MenuItem("Translate In Browser");

@@ -31,8 +31,6 @@ application {
         "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m",
         "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCompactObjectHeaders", // Remove if JDK 25 "-XX:+UnlockExperimentalVMOptions"
         "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
-        "--enable-native-access=javafx.web",
-        "--enable-native-access=javafx.media",
         "--sun-misc-unsafe-memory-access=allow")  // sun.misc.Unsafe::allocateMemory will be removed in a future release
         //"-XX:G1PeriodicGCInterval=5000")
     if (providers.systemProperty("debug").isPresent) {

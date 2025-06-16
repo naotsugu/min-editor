@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.fx;
 
-import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -167,12 +166,12 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
     }
 
-    private List<TabAndPane> tabAndPanesAll() {
+    private List<TabAndPane> tabAndPanes() {
         SplitTabPane root = this;
         while (root.parent != null) {
             root = root.parent;
         }
-        return traverse(root, Tab.class).stream()
+        return tabs(root).stream()
             .filter(tab -> tab.getContent() instanceof ContentPane)
             .map(tab -> new TabAndPane(tab, tab.getTabPane(), (ContentPane) tab.getContent()))
             .toList();
@@ -180,7 +179,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
     public boolean closeAll() {
 
-        var tabs = tabAndPanesAll();
+        var tabs = tabAndPanes();
 
         for (TabAndPane tabAndPane : tabs) {
             if (tabAndPane.pane().needsCloseConfirmation()) {
@@ -574,14 +573,22 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }).start();
     }
 
-    private static <T> List<T> traverse(Pane parent, Class<T> type) {
-        if (parent == null || type == null) return Collections.emptyList();
-        List<T> list = new ArrayList<>();
-        for (Node node : parent.getChildren()) {
-            if (node instanceof Pane pane) {
-                list.addAll(traverse(pane, type));
-            } else if (type.isAssignableFrom(node.getClass())) {
-                list.add((T) node);
+    private static List<Tab> tabs(Node parent) {
+
+        if (parent == null) return Collections.emptyList();
+        List<Tab> list = new ArrayList<>();
+
+        List<Node> children = (parent instanceof SplitPane splitPane)
+            ? splitPane.getItems()
+            : (parent instanceof Pane pane)
+            ? pane.getChildren()
+            : List.of(parent);
+
+        for (Node node : children) {
+            if (node instanceof TabPane tabPane) {
+                list.addAll(tabPane.getTabs());
+            } else if (node instanceof SplitPane || node instanceof Pane) {
+                list.addAll(tabs(node));
             }
         }
         return list;
