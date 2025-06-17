@@ -209,6 +209,98 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         void select() { if (tabPane != null) tabPane.getSelectionModel().select(tab); }
     }
 
+
+    enum DropPoint { HEADER, TOP, RIGHT, BOTTOM, LEFT, ANY }
+
+    private static DropPoint dropPoint(Node node, DragEvent e) {
+        Bounds paneBounds = node.localToScreen(node.getBoundsInLocal());
+        double w = paneBounds.getWidth() / 4;
+        double h = paneBounds.getHeight() / 4;
+        if (new BoundingBox(
+                paneBounds.getMinX(),
+                paneBounds.getMinY(),
+                paneBounds.getWidth(),
+                25 * 2).contains(e.getScreenX(), e.getScreenY())) {
+            return DropPoint.HEADER;
+        } else if (new BoundingBox(
+                paneBounds.getMaxX() - w,
+                paneBounds.getMinY() + h,
+                w,
+                paneBounds.getHeight() - h * 2).contains(e.getScreenX(), e.getScreenY())) {
+            return DropPoint.RIGHT;
+        } else if (new BoundingBox(
+                paneBounds.getMinX() + w,
+                paneBounds.getMaxY() - h,
+                paneBounds.getWidth() - w * 2,
+                h).contains(e.getScreenX(), e.getScreenY())) {
+            return DropPoint.BOTTOM;
+        } else if (new BoundingBox(
+                paneBounds.getMinX(),
+                paneBounds.getMinY() + h,
+                w,
+                paneBounds.getHeight() - h * 2).contains(e.getScreenX(), e.getScreenY())) {
+            return DropPoint.LEFT;
+        } else if (new BoundingBox(
+                paneBounds.getMinX() + w,
+                paneBounds.getMinY(),
+                paneBounds.getWidth() - w * 2,
+                h).contains(e.getScreenX(), e.getScreenY())) {
+            return DropPoint.TOP;
+        } else {
+            return DropPoint.ANY;
+        }
+    }
+
+    private static Image tabImage(Node node) {
+        node = tabNode(node);
+        var snapshotParams = new SnapshotParameters();
+        snapshotParams.setFill(Color.TRANSPARENT);
+        return node.snapshot(snapshotParams, null);
+    }
+
+    private static Node tabNode(Node node) {
+        for (;;) {
+            node = node.getParent();
+            if (Objects.equals(
+                    node.getClass().getSimpleName(),
+                    "TabHeaderSkin")) return node;
+        }
+    }
+
+    private static void runLater(Runnable runnable) {
+        new Thread(new Task<Void>() {
+            @Override
+            protected Void call() {
+                try {
+                    Thread.sleep(17);
+                } catch (InterruptedException ignore) {  }
+                Platform.runLater(runnable);
+                return null;
+            }
+        }).start();
+    }
+
+    private static List<Tab> tabs(Node parent) {
+
+        if (parent == null) return Collections.emptyList();
+        List<Tab> list = new ArrayList<>();
+
+        List<Node> children = (parent instanceof SplitPane splitPane)
+            ? splitPane.getItems()
+            : (parent instanceof Pane pane)
+            ? pane.getChildren()
+            : List.of(parent);
+
+        for (Node node : children) {
+            if (node instanceof TabPane tabPane) {
+                list.addAll(tabPane.getTabs());
+            } else if (node instanceof SplitPane || node instanceof Pane) {
+                list.addAll(tabs(node));
+            }
+        }
+        return list;
+    }
+
     static class DndTabPane extends StackPane implements Hierarchical<SplitTabPane> {
         private final TabPane tabPane = new TabPane();
         private final Rectangle marker = new Rectangle();
@@ -253,7 +345,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
         private void initTab(Tab tab) {
             var pane = (ContentPane) tab.getContent();
-            var label = new Label(pane.nameProperty().get().canonical());
+            var label = new Label(pane.nameProperty().get().contextual());
             label.setOnMouseClicked(Event::consume);
             tab.setGraphic(label);
             tab.setTooltip(new Tooltip(pane.nameProperty().get().canonical()));
@@ -501,97 +593,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         public void setParent(SplitTabPane parent) { this.parent = parent; }
         SplitTabPane parent() { return parent; }
         private TabPane getTabPane() { return tabPane; }
-    }
-
-    enum DropPoint { HEADER, TOP, RIGHT, BOTTOM, LEFT, ANY }
-
-    private static DropPoint dropPoint(Node node, DragEvent e) {
-        Bounds paneBounds = node.localToScreen(node.getBoundsInLocal());
-        double w = paneBounds.getWidth() / 4;
-        double h = paneBounds.getHeight() / 4;
-        if (new BoundingBox(
-                paneBounds.getMinX(),
-                paneBounds.getMinY(),
-                paneBounds.getWidth(),
-                25 * 2).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.HEADER;
-        } else if (new BoundingBox(
-                paneBounds.getMaxX() - w,
-                paneBounds.getMinY() + h,
-                w,
-                paneBounds.getHeight() - h * 2).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.RIGHT;
-        } else if (new BoundingBox(
-                paneBounds.getMinX() + w,
-                paneBounds.getMaxY() - h,
-                paneBounds.getWidth() - w * 2,
-                h).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.BOTTOM;
-        } else if (new BoundingBox(
-                paneBounds.getMinX(),
-                paneBounds.getMinY() + h,
-                w,
-                paneBounds.getHeight() - h * 2).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.LEFT;
-        } else if (new BoundingBox(
-                paneBounds.getMinX() + w,
-                paneBounds.getMinY(),
-                paneBounds.getWidth() - w * 2,
-                h).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.TOP;
-        } else {
-            return DropPoint.ANY;
-        }
-    }
-
-    private static Image tabImage(Node node) {
-        node = tabNode(node);
-        var snapshotParams = new SnapshotParameters();
-        snapshotParams.setFill(Color.TRANSPARENT);
-        return node.snapshot(snapshotParams, null);
-    }
-
-    private static Node tabNode(Node node) {
-        for (;;) {
-            node = node.getParent();
-            if (Objects.equals(
-                    node.getClass().getSimpleName(),
-                    "TabHeaderSkin")) return node;
-        }
-    }
-
-    private static void runLater(Runnable runnable) {
-        new Thread(new Task<Void>() {
-            @Override
-            protected Void call() {
-                try {
-                    Thread.sleep(17);
-                } catch (InterruptedException ignore) {  }
-                Platform.runLater(runnable);
-                return null;
-            }
-        }).start();
-    }
-
-    private static List<Tab> tabs(Node parent) {
-
-        if (parent == null) return Collections.emptyList();
-        List<Tab> list = new ArrayList<>();
-
-        List<Node> children = (parent instanceof SplitPane splitPane)
-            ? splitPane.getItems()
-            : (parent instanceof Pane pane)
-            ? pane.getChildren()
-            : List.of(parent);
-
-        for (Node node : children) {
-            if (node instanceof TabPane tabPane) {
-                list.addAll(tabPane.getTabs());
-            } else if (node instanceof SplitPane || node instanceof Pane) {
-                list.addAll(tabs(node));
-            }
-        }
-        return list;
     }
 
 }
