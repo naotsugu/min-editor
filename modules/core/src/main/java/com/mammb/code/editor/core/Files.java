@@ -16,7 +16,10 @@
 package com.mammb.code.editor.core;
 
 import java.io.IOException;
+import java.nio.file.LinkOption;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.stream.Stream;
@@ -72,6 +75,51 @@ public interface Files {
             return java.nio.file.Files.getLastModifiedTime(path);
         } catch (IOException ignore) { }
         return null;
+    }
+
+    static Path createDirectories(Path dir, FileAttribute<?>... attrs) {
+        try {
+            return java.nio.file.Files.createDirectories(dir, attrs);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static Path createFile(Path file, FileAttribute<?>... attrs) {
+        try {
+            return java.nio.file.Files.createFile(file, attrs);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static List<String> readAllLines(Path path) {
+        try {
+            return java.nio.file.Files.readAllLines(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static Path write(Path path, Iterable<? extends CharSequence> lines,
+            OpenOption... options) {
+        try {
+            return java.nio.file.Files.write(path, lines, options);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static void delete(Path path) {
+        try {
+            java.nio.file.Files.delete(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static boolean exists(Path path, LinkOption... options) {
+        return java.nio.file.Files.exists(path, options);
     }
 
 }

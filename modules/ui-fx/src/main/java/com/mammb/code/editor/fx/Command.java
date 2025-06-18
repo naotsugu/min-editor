@@ -122,8 +122,6 @@ public sealed interface Command {
 
     record GoTo(Integer rowNumber) implements Command, RequireArgs1<Integer> { }
 
-    record Filter(String str) implements Command, RequireArgs1<String> { }
-
     record WrapLine(Integer width) implements Command, RequireArgs1<Integer> { }
 
     record ToggleLayout() implements Command { }
@@ -151,7 +149,6 @@ public sealed interface Command {
             case Class<?> c when c == Select.class -> "[string to search] [`true` if case insensitive]";
             case Class<?> c when c == SelectRegex.class -> "[regex to select]";
             case Class<?> c when c == GoTo.class -> "[line number]";
-            case Class<?> c when c == Filter.class -> "[regexp string to filter]";
             case Class<?> c when c == WrapLine.class -> "[wrap width(number of characters)]";
             case null, default -> "";
         };
@@ -195,7 +192,6 @@ public sealed interface Command {
             case Class<?> c when c == Select.class -> "selects for the specified text";
             case Class<?> c when c == SelectRegex.class -> "selects for the specified regex";
             case Class<?> c when c == GoTo.class -> "go to the specified number of row";
-            case Class<?> c when c == Filter.class -> "not implemented yet";
             case Class<?> c when c == WrapLine.class -> "wraps a line with a specified number of characters";
             case Class<?> c when c == ToggleLayout.class -> "toggle context layout";
             case Class<?> c when c == Open.class -> "opens the file at the specified path";

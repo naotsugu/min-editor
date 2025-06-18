@@ -379,7 +379,6 @@ public class EditorPane extends ContentPane {
             case Duplicate _        -> openRight(duplicate());
             case SearchInBrowser _  -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
-            case Filter cmd         -> { } // TODO impl
             case Empty _            -> { }
         }
         paint();

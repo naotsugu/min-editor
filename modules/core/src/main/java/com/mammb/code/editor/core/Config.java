@@ -16,7 +16,6 @@
 package com.mammb.code.editor.core;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,11 +64,7 @@ public interface Config {
     default Path stashPath() {
         Path dir = path().getParent().resolve("stash");
         if (!dir.toFile().exists()) {
-            try {
-                Files.createDirectories(dir);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            Files.createDirectories(dir);
         }
         return dir;
     }
@@ -122,23 +117,16 @@ public interface Config {
 
         @Override
         public void load() {
-            try {
-
-                Files.createDirectories(propsPath.getParent());
-                if (!Files.exists(propsPath)) {
-                    Files.createFile(propsPath);
-                    return;
-                }
-
-                for (String line : Files.readAllLines(propsPath)) {
-                    var str = line.trim();
-                    if (str.startsWith("#") || str.startsWith("!") || !str.contains("=")) continue;
-                    var kv = str.split("=", 2);
-                    props.put(kv[0], kv[1]);
-                }
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            Files.createDirectories(propsPath.getParent());
+            if (!Files.exists(propsPath)) {
+                Files.createFile(propsPath);
+                return;
+            }
+            for (String line : Files.readAllLines(propsPath)) {
+                var str = line.trim();
+                if (str.startsWith("#") || str.startsWith("!") || !str.contains("=")) continue;
+                var kv = str.split("=", 2);
+                props.put(kv[0], kv[1]);
             }
         }
 
@@ -167,7 +155,7 @@ public interface Config {
 
                 Files.write(propsPath, merged);
 
-            } catch (IOException ignore) {
+            } catch (Exception ignore) {
                 log.log(System.Logger.Level.ERROR, ignore);
             }
         }
@@ -176,7 +164,7 @@ public interface Config {
             try {
                 Files.delete(propsPath);
                 log.log(System.Logger.Level.INFO, "deleted config file.");
-            } catch (IOException ignore) {
+            } catch (Exception ignore) {
                 log.log(System.Logger.Level.ERROR, ignore);
             }
         }

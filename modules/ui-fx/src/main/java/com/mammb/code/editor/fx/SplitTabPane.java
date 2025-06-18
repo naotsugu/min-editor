@@ -67,10 +67,10 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     private static final AtomicReference<DndTabPane> activePane = new AtomicReference<>();
     private static final DataFormat tabMove = new DataFormat("SplitTabPane:tabMove");
 
-    private AppContext context;
+    private final AppContext context;
     private SplitPane pane = new SplitPane();
-    private SplitTabPane parent;
-    private List<Tab> contents = new ArrayList<>();
+    private SplitTabPane parent = null;
+    private final List<Tab> contents = new ArrayList<>();
 
     private SplitTabPane(AppContext ctx) {
         context = ctx;
@@ -88,6 +88,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         add(node);
         this.parent = parent;
     }
+
     private SplitTabPane(DndTabPane node, SplitTabPane parent) {
         this(parent.context);
         pane.getItems().add(node);
@@ -101,6 +102,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         pane.getItems().add(dndTabPane);
         return dndTabPane;
     }
+
     private void remove(SplitTabPane splitTabPane) {
         pane.getItems().remove(splitTabPane);
         var node = pane.getItems().getFirst();
@@ -110,9 +112,12 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             pane = stp.pane;
             getChildren().add(pane);
         }
-        pane.getItems()
-                .forEach(i -> ((Hierarchical) i).setParent(this));
+        pane.getItems().stream()
+            .filter(Hierarchical.class::isInstance)
+            .map(Hierarchical.class::cast)
+            .forEach(h -> h.setParent(this));
     }
+
     DndTabPane addRight(ContentPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
@@ -126,6 +131,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             return (DndTabPane) right.pane.getItems().getFirst();
         }
     }
+
     private DndTabPane addLeft(ContentPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
@@ -139,6 +145,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             return (DndTabPane) left.pane.getItems().getFirst();
         }
     }
+
     private DndTabPane addTop(ContentPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
@@ -152,6 +159,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             return (DndTabPane) top.pane.getItems().getFirst();
         }
     }
+
     private DndTabPane addBottom(ContentPane node) {
         if (pane.getItems().isEmpty()) {
             return add(node);
@@ -178,9 +186,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     public boolean closeAll() {
-
         var tabs = tabAndPanes();
-
         for (TabAndPane tabAndPane : tabs) {
             if (tabAndPane.pane().needsCloseConfirmation()) {
                 tabAndPane.select();
@@ -207,77 +213,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
     record TabAndPane(Tab tab, TabPane tabPane, ContentPane pane) {
         void select() { if (tabPane != null) tabPane.getSelectionModel().select(tab); }
-    }
-
-
-    enum DropPoint { HEADER, TOP, RIGHT, BOTTOM, LEFT, ANY }
-
-    private static DropPoint dropPoint(Node node, DragEvent e) {
-        Bounds paneBounds = node.localToScreen(node.getBoundsInLocal());
-        double w = paneBounds.getWidth() / 4;
-        double h = paneBounds.getHeight() / 4;
-        if (new BoundingBox(
-                paneBounds.getMinX(),
-                paneBounds.getMinY(),
-                paneBounds.getWidth(),
-                25 * 2).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.HEADER;
-        } else if (new BoundingBox(
-                paneBounds.getMaxX() - w,
-                paneBounds.getMinY() + h,
-                w,
-                paneBounds.getHeight() - h * 2).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.RIGHT;
-        } else if (new BoundingBox(
-                paneBounds.getMinX() + w,
-                paneBounds.getMaxY() - h,
-                paneBounds.getWidth() - w * 2,
-                h).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.BOTTOM;
-        } else if (new BoundingBox(
-                paneBounds.getMinX(),
-                paneBounds.getMinY() + h,
-                w,
-                paneBounds.getHeight() - h * 2).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.LEFT;
-        } else if (new BoundingBox(
-                paneBounds.getMinX() + w,
-                paneBounds.getMinY(),
-                paneBounds.getWidth() - w * 2,
-                h).contains(e.getScreenX(), e.getScreenY())) {
-            return DropPoint.TOP;
-        } else {
-            return DropPoint.ANY;
-        }
-    }
-
-    private static Image tabImage(Node node) {
-        node = tabNode(node);
-        var snapshotParams = new SnapshotParameters();
-        snapshotParams.setFill(Color.TRANSPARENT);
-        return node.snapshot(snapshotParams, null);
-    }
-
-    private static Node tabNode(Node node) {
-        for (;;) {
-            node = node.getParent();
-            if (Objects.equals(
-                    node.getClass().getSimpleName(),
-                    "TabHeaderSkin")) return node;
-        }
-    }
-
-    private static void runLater(Runnable runnable) {
-        new Thread(new Task<Void>() {
-            @Override
-            protected Void call() {
-                try {
-                    Thread.sleep(17);
-                } catch (InterruptedException ignore) {  }
-                Platform.runLater(runnable);
-                return null;
-            }
-        }).start();
     }
 
     private static List<Tab> tabs(Node parent) {
@@ -593,6 +528,77 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         public void setParent(SplitTabPane parent) { this.parent = parent; }
         SplitTabPane parent() { return parent; }
         private TabPane getTabPane() { return tabPane; }
+
+        private static Image tabImage(Node node) {
+            node = tabNode(node);
+            var snapshotParams = new SnapshotParameters();
+            snapshotParams.setFill(Color.TRANSPARENT);
+            return node.snapshot(snapshotParams, null);
+        }
+
+        private static Node tabNode(Node node) {
+            for (;;) {
+                node = node.getParent();
+                if (Objects.equals(
+                    node.getClass().getSimpleName(),
+                    "TabHeaderSkin")) return node;
+            }
+        }
+
+        private static void runLater(Runnable runnable) {
+            new Thread(new Task<Void>() {
+                @Override
+                protected Void call() {
+                    try {
+                        Thread.sleep(17);
+                    } catch (InterruptedException ignore) {  }
+                    Platform.runLater(runnable);
+                    return null;
+                }
+            }).start();
+        }
+
+        private enum DropPoint { HEADER, TOP, RIGHT, BOTTOM, LEFT, ANY }
+
+        private static DropPoint dropPoint(Node node, DragEvent e) {
+            Bounds paneBounds = node.localToScreen(node.getBoundsInLocal());
+            double w = paneBounds.getWidth() / 4;
+            double h = paneBounds.getHeight() / 4;
+            if (new BoundingBox(
+                paneBounds.getMinX(),
+                paneBounds.getMinY(),
+                paneBounds.getWidth(),
+                25 * 2).contains(e.getScreenX(), e.getScreenY())) {
+                return DropPoint.HEADER;
+            } else if (new BoundingBox(
+                paneBounds.getMaxX() - w,
+                paneBounds.getMinY() + h,
+                w,
+                paneBounds.getHeight() - h * 2).contains(e.getScreenX(), e.getScreenY())) {
+                return DropPoint.RIGHT;
+            } else if (new BoundingBox(
+                paneBounds.getMinX() + w,
+                paneBounds.getMaxY() - h,
+                paneBounds.getWidth() - w * 2,
+                h).contains(e.getScreenX(), e.getScreenY())) {
+                return DropPoint.BOTTOM;
+            } else if (new BoundingBox(
+                paneBounds.getMinX(),
+                paneBounds.getMinY() + h,
+                w,
+                paneBounds.getHeight() - h * 2).contains(e.getScreenX(), e.getScreenY())) {
+                return DropPoint.LEFT;
+            } else if (new BoundingBox(
+                paneBounds.getMinX() + w,
+                paneBounds.getMinY(),
+                paneBounds.getWidth() - w * 2,
+                h).contains(e.getScreenX(), e.getScreenY())) {
+                return DropPoint.TOP;
+            } else {
+                return DropPoint.ANY;
+            }
+        }
+
     }
 
 }
