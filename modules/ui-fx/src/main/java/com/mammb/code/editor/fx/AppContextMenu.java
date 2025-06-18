@@ -17,11 +17,9 @@ package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Query;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -43,44 +41,15 @@ public class AppContextMenu extends ContextMenu {
     public AppContextMenu(EditorPane editorPane) {
         super();
         this.editorPane = editorPane;
-        build();
+        buildMenuItems();
+        buildEventHandler();
     }
+
 
     /**
      * Build the menu items.
      */
-    private void build() {
-
-        EventHandler<KeyEvent> blockKeyPressed = keyEvent -> {
-            switch (keyEvent.getCode()) {
-                case UP, DOWN, ESCAPE -> {}
-                case ENTER -> {
-                    keyEvent.consume();
-                    EventTarget eventTarget = keyEvent.getTarget();
-                    if (eventTarget instanceof Node node) {
-                        MenuItem menuItem = (MenuItem) node.getProperties().get(MenuItem.class);
-                        if (menuItem != null) {
-                            menuItem.fire();
-                        }
-                    }
-                }
-                default -> keyEvent.consume();
-            }
-        };
-        EventHandler<KeyEvent> blockKeyTyped = KeyEvent::consume;
-
-        setOnShown(_ -> {
-            if (getScene() != null) {
-                getScene().addEventFilter(KeyEvent.KEY_PRESSED, blockKeyPressed);
-                getScene().addEventFilter(KeyEvent.KEY_TYPED, blockKeyTyped);
-            }
-        });
-        setOnHidden(_ -> {
-            if (getScene() != null) {
-                getScene().removeEventFilter(KeyEvent.KEY_PRESSED, blockKeyPressed);
-                getScene().removeEventFilter(KeyEvent.KEY_TYPED, blockKeyTyped);
-            }
-        });
+    private void buildMenuItems() {
 
         boolean textSelected = editorPane.query(Query.selectedCounts) > 0;
         String style = "-fx-font: normal 10pt System;";
@@ -142,4 +111,36 @@ public class AppContextMenu extends ContextMenu {
             searchInBrowser, translateInBrowser);
     }
 
+    private void buildEventHandler() {
+        final EventHandler<KeyEvent> blockKeyPressed = keyEvent -> {
+            switch (keyEvent.getCode()) {
+                case UP, DOWN, ESCAPE -> {}
+                case ENTER -> {
+                    keyEvent.consume();
+                    EventTarget eventTarget = keyEvent.getTarget();
+                    if (eventTarget instanceof Node node) {
+                        MenuItem menuItem = (MenuItem) node.getProperties().get(MenuItem.class);
+                        if (menuItem != null && !menuItem.isDisable() && menuItem.isVisible()) {
+                            menuItem.fire();
+                        }
+                    }
+                }
+                default -> keyEvent.consume();
+            }
+        };
+        final EventHandler<KeyEvent> blockKeyTyped = KeyEvent::consume;
+
+        setOnShown(_ -> {
+            if (getScene() != null) {
+                getScene().addEventFilter(KeyEvent.KEY_PRESSED, blockKeyPressed);
+                getScene().addEventFilter(KeyEvent.KEY_TYPED, blockKeyTyped);
+            }
+        });
+        setOnHidden(_ -> {
+            if (getScene() != null) {
+                getScene().removeEventFilter(KeyEvent.KEY_PRESSED, blockKeyPressed);
+                getScene().removeEventFilter(KeyEvent.KEY_TYPED, blockKeyTyped);
+            }
+        });
+    }
 }
