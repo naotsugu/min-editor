@@ -57,5 +57,6 @@ public interface QueryRecords {
     record HasSelected() implements Query<Boolean> { }
     /** The query of selected text. */
     record SelectedText() implements Query<String> { }
-
+    /** The query of char at caret. */
+    record CharAtCaret() implements Query<char[]> { }
 }

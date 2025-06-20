@@ -826,6 +826,7 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.HasSelected _       -> (R) Boolean.valueOf(carets.hasMarked());
             case QueryRecords.SelectedText _      -> (R) carets.marked().stream().findFirst()
                                                                .map(range -> content.getText(range.min(), range.max())).orElse("");
+            case QueryRecords.CharAtCaret _       -> (R) charAtCaret();
             case null -> null;
             default -> content.query(query);
         };
@@ -885,6 +886,16 @@ public class TextEditorModel implements EditorModel {
             .map(range -> content.getText(range.min(), range.max()))
             .map(text -> text.codePointCount(0, text.length()))
             .orElse(0);
+    }
+
+    private char[] charAtCaret() {
+        var p = carets.getFirst().point();
+        var text = content.getText(p.row());
+        int left = p.col() - 1;
+        char[] chars = new char[2];
+        if (left >= 0 && left < text.length()) chars[0] = text.charAt(left);
+        if (p.col() >= 0 && p.col() < text.length()) chars[1] = text.charAt(p.col());
+        return chars;
     }
 
 }
