@@ -27,6 +27,7 @@ import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.Pair;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.Query;
@@ -826,7 +827,7 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.HasSelected _       -> (R) Boolean.valueOf(carets.hasMarked());
             case QueryRecords.SelectedText _      -> (R) carets.marked().stream().findFirst()
                                                                .map(range -> content.getText(range.min(), range.max())).orElse("");
-            case QueryRecords.CharAtCaret _       -> (R) charAtCaret();
+            case QueryRecords.CharAtCaret _       -> (R) lrTextAt(carets.getFirst().point());
             case null -> null;
             default -> content.query(query);
         };
@@ -888,14 +889,23 @@ public class TextEditorModel implements EditorModel {
             .orElse(0);
     }
 
-    private char[] charAtCaret() {
-        var p = carets.getFirst().point();
+    private Pair<String> lrTextAt(Point p) {
         var text = content.getText(p.row());
-        int left = p.col() - 1;
-        char[] chars = new char[2];
-        if (left >= 0 && left < text.length()) chars[0] = text.charAt(left);
-        if (p.col() >= 0 && p.col() < text.length()) chars[1] = text.charAt(p.col());
-        return chars;
+
+        String right = (p.col() >= 0 && p.col() < text.length()) ?
+            Character.toString(Character.codePointAt(text, p.col())) : "";
+
+        String left = "";
+        int leftIndex = p.col() - 1;
+        if (leftIndex >= 0 && leftIndex < text.length()) {
+            char ch1 = text.charAt(leftIndex);
+            if (Character.isLowSurrogate(ch1) && --leftIndex >= 0) {
+                left = text.substring(leftIndex, leftIndex + 2);
+            } else {
+                left = Character.toString(ch1);
+            }
+        }
+        return new Pair<>(left, right);
     }
 
 }

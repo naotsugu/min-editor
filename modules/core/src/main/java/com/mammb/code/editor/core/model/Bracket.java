@@ -22,28 +22,24 @@ import java.util.Optional;
  * The Bracket.
  * @author Naotsugu Kobayashi
  */
-public record Bracket(Pair pair, boolean isOpen) {
-
-    public boolean isClose() {
-        return !isOpen;
-    }
+public record Bracket(Type type, boolean isOpen) {
 
     static Optional<Bracket> valueOf(char ch) {
         return (ch == 0) ? Optional.empty() :
-            Pair.valueOf(ch).map(p -> new Bracket(p, p.open() == ch));
+            Type.valueOf(ch).map(p -> new Bracket(p, p.open() == ch));
     }
 
     /**
      * The pair.
      */
-    public enum Pair {
+    public enum Type {
 
         /** The round bracket. */
         ROUND_BRACKET('(', ')'),
         /** The curly bracket. */
         CURLY_BRACKET('{', '}'),
         /** The square bracket. */
-        SQUARE_BRACKET('{', '}'),
+        SQUARE_BRACKET('[', ']'),
         ;
 
         /** Represents the opening character of a boundary pair. */
@@ -56,7 +52,7 @@ public record Bracket(Pair pair, boolean isOpen) {
          * @param open the opening character of the boundary pair
          * @param close the closing character of the boundary pair
          */
-        Pair(char open, char close) {
+        Type(char open, char close) {
             this.open = open;
             this.close = close;
         }
@@ -77,7 +73,7 @@ public record Bracket(Pair pair, boolean isOpen) {
             return close;
         }
 
-        static Optional<Pair> valueOf(char ch) {
+        static Optional<Type> valueOf(char ch) {
             return Arrays.stream(values())
                 .filter(v -> v.open() == ch || v.close() == ch)
                 .findFirst();

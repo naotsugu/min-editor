@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import java.nio.file.Path;
 import java.util.Optional;
 import com.mammb.code.editor.core.Name;
+import com.mammb.code.editor.core.Pair;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 
@@ -58,5 +59,5 @@ public interface QueryRecords {
     /** The query of selected text. */
     record SelectedText() implements Query<String> { }
     /** The query of char at caret. */
-    record CharAtCaret() implements Query<char[]> { }
+    record CharAtCaret() implements Query<Pair<String>> { }
 }
