@@ -821,13 +821,13 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.CaretPoint _        -> (R) carets.getFirst().point();
             case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
             case QueryRecords.FoundCounts _       -> (R) Integer.valueOf(decorate.highlightCounts());
-            case QueryRecords.SelectedCounts _    -> (R) selectedCounts();
+            case QueryRecords.SelectedCounts _    -> (R) Contents.countCodePoints(content, carets.marked());
             case QueryRecords.LineSize _          -> (R) Integer.valueOf(screenLayout.lineSize());
             case QueryRecords.RowSize _           -> (R) Integer.valueOf(screenLayout.rowSize());
             case QueryRecords.HasSelected _       -> (R) Boolean.valueOf(carets.hasMarked());
             case QueryRecords.SelectedText _      -> (R) carets.marked().stream().findFirst()
                                                                .map(range -> content.getText(range.min(), range.max())).orElse("");
-            case QueryRecords.CharAtCaret _       -> (R) lrTextAt(carets.getFirst().point());
+            case QueryRecords.CharAtCaret _       -> (R) Contents.lrTextAt(content, carets.getFirst().point());
             case null -> null;
             default -> content.query(query);
         };
@@ -879,33 +879,6 @@ public class TextEditorModel implements EditorModel {
             Collections.min(points).row(),
             Collections.max(points).row());
         carets.at(points);
-    }
-
-    private Integer selectedCounts() {
-        return carets.marked().stream().findFirst()
-            .filter(range -> range.max().row() - range.min().row() < 1000) // limit 1000 rows
-            .map(range -> content.getText(range.min(), range.max()))
-            .map(text -> text.codePointCount(0, text.length()))
-            .orElse(0);
-    }
-
-    private Pair<String> lrTextAt(Point p) {
-        var text = content.getText(p.row());
-
-        String right = (p.col() >= 0 && p.col() < text.length()) ?
-            Character.toString(Character.codePointAt(text, p.col())) : "";
-
-        String left = "";
-        int leftIndex = p.col() - 1;
-        if (leftIndex >= 0 && leftIndex < text.length()) {
-            char ch1 = text.charAt(leftIndex);
-            if (Character.isLowSurrogate(ch1) && --leftIndex >= 0) {
-                left = text.substring(leftIndex, leftIndex + 2);
-            } else {
-                left = Character.toString(ch1);
-            }
-        }
-        return new Pair<>(left, right);
     }
 
 }

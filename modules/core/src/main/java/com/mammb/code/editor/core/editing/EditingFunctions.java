@@ -57,7 +57,7 @@ public interface EditingFunctions {
     Function<String, String> indent = text -> Arrays.stream(text.split("(?<=\\n)"))
         .map(s -> " ".repeat(4) + s)
         .collect(Collectors.joining());
-    /** Un indent function. */
+    /** Un indent functions. */
     Function<String, String> unindent = text -> Arrays.stream(text.split("(?<=\\n)"))
         .map(s -> s.replaceFirst("^ {4}?|^\t", ""))
         .collect(Collectors.joining());

@@ -32,7 +32,7 @@ class StackIndents {
      * @param cs the input char sequence
      * @param s the start character
      * @param e the end character
-     * @return the indentted text
+     * @return the indented text
      */
     static CharSequence indentify(CharSequence cs, char s, char e) {
 

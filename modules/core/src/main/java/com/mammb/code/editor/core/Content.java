@@ -138,7 +138,7 @@ public interface Content {
 
     /**
      * Save the target content to a file.
-     * @param path the path of file
+     * @param path the path of a file
      */
     void save(Path path);
 
