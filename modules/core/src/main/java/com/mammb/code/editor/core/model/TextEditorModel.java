@@ -825,8 +825,7 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.LineSize _          -> (R) Integer.valueOf(screenLayout.lineSize());
             case QueryRecords.RowSize _           -> (R) Integer.valueOf(screenLayout.rowSize());
             case QueryRecords.HasSelected _       -> (R) Boolean.valueOf(carets.hasMarked());
-            case QueryRecords.SelectedText _      -> (R) carets.marked().stream().findFirst()
-                                                               .map(range -> content.getText(range.min(), range.max())).orElse("");
+            case QueryRecords.SelectedText _      -> (R) Contents.text(content, carets.marked());
             case QueryRecords.CharAtCaret _       -> (R) Contents.lrTextAt(content, carets.getFirst().point());
             case null -> null;
             default -> content.query(query);

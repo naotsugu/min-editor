@@ -19,6 +19,7 @@ import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Pair;
 import com.mammb.code.editor.core.Point;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Contents.
@@ -26,6 +27,21 @@ import java.util.List;
  */
 class Contents {
 
+    static String text(Content content, List<Point.Range> range) {
+        return range.stream()
+            .map(r -> content.getText(r.min(), r.max()))
+            .collect(Collectors.joining(System.lineSeparator()));
+    }
+
+    /**
+     * Counts the number of Unicode code points in the text from the specified range within the content.
+     *
+     * @param content the content from which text will be retrieved
+     * @param range a list of ranges specifying the text area, with only the first range being processed
+     *              if it meets the constraints
+     * @return the count of code points in the specified range of text, or 0 if the range is invalid
+     *         or exceeds the row limit
+     */
     static Integer countCodePoints(Content content, List<Point.Range> range) {
         return range.stream().findFirst()
             .filter(r -> r.max().row() - r.min().row() < 1000) // limit 1000 rows
@@ -34,6 +50,16 @@ class Contents {
             .orElse(0);
     }
 
+    /**
+     * Retrieves the left and right text characters relative to the specified column position
+     * in the row of the given content. The left text accounts for surrogate pairs if they exist.
+     *
+     * @param content the content to retrieve the text from
+     * @param p the position represented as a point, where the row specifies the line
+     *          and the column specifies the character index within that line
+     * @return a pair containing the left and right text characters as strings; if no character is available
+     *         on the left or right, an empty string is returned for that respective side
+     */
     static Pair<String> lrTextAt(Content content, Point p) {
         var text = content.getText(p.row());
 
