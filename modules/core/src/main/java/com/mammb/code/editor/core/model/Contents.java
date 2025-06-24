@@ -27,6 +27,14 @@ import java.util.stream.Collectors;
  */
 class Contents {
 
+    /**
+     * Combines text from the specified ranges within the content into a single string,
+     * separating each range's text with a line separator.
+     *
+     * @param content the content from which text will be retrieved
+     * @param range a list of ranges specifying the start and end positions to extract text from
+     * @return a combined string of the text from the specified ranges, separated by system line separators
+     */
     static String text(Content content, List<Point.Range> range) {
         return range.stream()
             .map(r -> content.getText(r.min(), r.max()))
