@@ -232,12 +232,12 @@ class WrapLayout implements ContentLayout {
     public int rowToLine(int row, int col) {
         int line = rowToFirstLine(row);
         int subLines = subRange(line).subLines();
-        for (int i = 0; i < subLines; i++) {
+        for (int i = 0; i < subLines - 1; i++) {
             if (subRange(line + i).contains(row, col)) {
                 return line + i;
             }
         }
-        return lines.size() - 1;
+        return line + (subLines - 1);
     }
 
     @Override
