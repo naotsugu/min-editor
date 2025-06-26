@@ -288,10 +288,12 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
-    public void applyScreenScroll(ScreenScroll scroll) {
+    public boolean applyScreenScroll(ScreenScroll scroll) {
+        boolean valChanged = scroll.yVal() != topLine || scroll.xVal() != xShift;
         scroll.vertical(0, layout.lineSize() - 1, topLine, screenLineSize());
         double max = xMax - Math.min(xMax, screenWidth / 2);
         scroll.horizontal(0, max, xShift, screenWidth * max / xMax);
+        return valChanged;
     }
 
     @Override

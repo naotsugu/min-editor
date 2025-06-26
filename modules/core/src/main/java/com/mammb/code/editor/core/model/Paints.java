@@ -21,7 +21,6 @@ import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.Point;
-import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.text.Style;
@@ -44,12 +43,11 @@ public class Paints {
      * @param marginTop the margin top
      * @param marginLeft the margin left
      * @param screenLayout the screen layout
-     * @param scroll the screen scroll
      * @param carets the carets
      */
     static void selection(Draw draw,
             double marginTop, double marginLeft,
-            ScreenLayout screenLayout, ScreenScroll scroll, CaretGroup carets) {
+            ScreenLayout screenLayout, CaretGroup carets) {
         for (Point.Range r : carets.marked()) {
             Loc l1 = screenLayout.locationOn(r.min().row(), r.min().col()).orElse(null);
             Loc l2 = screenLayout.locationOn(r.max().row(), r.max().col()).orElse(null);
@@ -59,9 +57,9 @@ public class Paints {
             if (l1 == null) l1 = new Loc(0, 0);
             if (l2 == null) l2 = new Loc(screenLayout.screenWidth(), screenLayout.screenHeight());
             draw.select(
-                l1.x() + marginLeft - scroll.xVal(), l1.y() + marginTop,
-                l2.x() + marginLeft - scroll.xVal(), l2.y() + marginTop,
-                marginLeft - scroll.xVal(), screenLayout.screenWidth() + marginLeft);
+                l1.x() + marginLeft - screenLayout.xShift(), l1.y() + marginTop,
+                l2.x() + marginLeft - screenLayout.xShift(), l2.y() + marginTop,
+                marginLeft - screenLayout.xShift(), screenLayout.screenWidth() + marginLeft);
         }
     }
 
@@ -72,13 +70,11 @@ public class Paints {
      * @param marginLeft the margin left
      * @param screenLayout the screen layout
      * @param decorate the decorate
-     * @param scroll the screen scroll
      * @param carets the carets
      */
     static void text(Draw draw,
             double marginTop, double marginLeft,
-            ScreenLayout screenLayout, Decorate decorate,
-            ScreenScroll scroll, CaretGroup carets) {
+            ScreenLayout screenLayout, Decorate decorate, CaretGroup carets) {
         double x, y = 0;
         double prevRow = -1;
         List<Style.StyleSpan> spans = List.of();
@@ -91,7 +87,7 @@ public class Paints {
                 prevRow = text.row();
             }
             for (StyledText st : StyledText.of(text, spans)) {
-                double px = x + marginLeft - scroll.xVal();
+                double px = x + marginLeft - screenLayout.xShift();
                 double py = y + marginTop;
                 draw.text(st, px, py, st.width(), st.styles());
                 for (var p : carets.points()) {
@@ -161,23 +157,22 @@ public class Paints {
      * @param marginLeft the margin left
      * @param caretVisible caretVisible?
      * @param screenLayout the screen layout
-     * @param scroll the screen scroll
      * @param carets the carets
      */
     static void caret(Draw draw,
             double marginTop, double marginLeft, boolean caretVisible,
-            ScreenLayout screenLayout, ScreenScroll scroll, CaretGroup carets) {
+            ScreenLayout screenLayout, CaretGroup carets) {
         if (!caretVisible) return;
         for (Caret c : carets.carets()) {
             Point p = c.flushedPoint();
             screenLayout.locationOn(p.row(), p.col()).ifPresent(loc -> {
-                draw.caret(loc.x() + marginLeft - scroll.xVal(), loc.y() + marginTop);
+                draw.caret(loc.x() + marginLeft - screenLayout.xShift(), loc.y() + marginTop);
                 if (c.hasImeFlush()) {
                     screenLayout.locationOn(c.point().row(), c.point().col()).ifPresent(org ->
                         draw.underline(
-                            org.x() + marginLeft - scroll.xVal(),
+                            org.x() + marginLeft - screenLayout.xShift(),
                             org.y() + marginTop,
-                            loc.x() + marginLeft - scroll.xVal(),
+                            loc.x() + marginLeft - screenLayout.xShift(),
                             loc.y() + marginTop,
                             screenLayout.lineWidth() + marginLeft));
                 }

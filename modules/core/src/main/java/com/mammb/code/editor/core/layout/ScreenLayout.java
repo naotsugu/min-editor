@@ -150,8 +150,9 @@ public interface ScreenLayout extends LineLayout {
     /**
      * Apply the screen scroll.
      * @param screenScroll the screen scroll
+     * @return {@code true}, if scrolled
      */
-    void applyScreenScroll(ScreenScroll screenScroll);
+    boolean applyScreenScroll(ScreenScroll screenScroll);
 
     /**
      * Update the {@link FontMetrics}.

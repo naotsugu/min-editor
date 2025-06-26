@@ -49,4 +49,11 @@ public interface ScreenScroll {
      * @return the current horizontal scroll value or position on the x-axis
      */
     double xVal();
+
+    /**
+     * Retrieves the vertical scroll value or position on the y-axis.
+     *
+     * @return the current vertical scroll value or position on the y-axis
+     */
+    int yVal();
 }

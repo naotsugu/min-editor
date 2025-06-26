@@ -324,7 +324,6 @@ public class EditorPane extends ContentPane {
             model().imeComposed(e.getComposed().stream()
                     .map(InputMethodTextRun::getText)
                     .collect(Collectors.joining()));
-            model().paint(draw);
         } else {
             model().imeComposed("");
             model().imeOff();

@@ -135,13 +135,13 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void paint(Draw draw) {
-        screenLayout.applyScreenScroll(scroll);
+        if (screenLayout.applyScreenScroll(scroll)) return;
         calcScreenLayout();
         draw.clear();
-        Paints.selection(draw, marginTop, marginLeft, screenLayout, scroll, carets);
-        Paints.text(draw, marginTop, marginLeft, screenLayout, decorate, scroll, carets);
+        Paints.selection(draw, marginTop, marginLeft, screenLayout, carets);
+        Paints.text(draw, marginTop, marginLeft, screenLayout, decorate, carets);
         Paints.map(draw, marginTop, marginLeft, screenLayout, decorate);
-        Paints.caret(draw, marginTop, marginLeft, caretVisible, screenLayout, scroll, carets);
+        Paints.caret(draw, marginTop, marginLeft, caretVisible, screenLayout, carets);
         Paints.leftGarter(draw, marginTop, marginLeft, screenLayout, carets);
     }
 
@@ -206,12 +206,12 @@ public class TextEditorModel implements EditorModel {
 
     private void scrollToCaretY(int gap) {
         Caret c = carets.getFirst();
-        int line = screenLayout.rowToLine(c.row(), c.col());
-        if (line - screenLayout.topLine() < 0) {
-            int nLine = Math.max(0, line - gap);
+        int caretLine = screenLayout.rowToLine(c.row(), c.col());
+        if (caretLine - screenLayout.topLine() < 0) {
+            int nLine = Math.max(0, caretLine - gap);
             scrollAt(nLine);
-        } else if (line - (screenLayout.topLine() + screenLayout.screenLineSize() - 3) > 0) {
-            int nLine = line - screenLayout.screenLineSize() + 3 + gap;
+        } else if (caretLine - (screenLayout.topLine() + screenLayout.screenLineSize() - 3) > 0) {
+            int nLine = caretLine - screenLayout.screenLineSize() + 3 + gap;
             scrollAt(Math.clamp(nLine, 0, screenLayout.lineSize() - screenLayout.screenLineSize() + 3));
         }
     }
