@@ -30,6 +30,8 @@ public interface QueryRecords {
 
     /** The query of a row ending symbol. */
     record RowEndingSymbol() implements Query<String> { }
+    /** The query of a charset. */
+    record Charset() implements Query<java.nio.charset.Charset> { }
     /** The query of a charset symbol. */
     record CharsetSymbol() implements Query<String> { }
     /** The query of modified. */
@@ -60,4 +62,7 @@ public interface QueryRecords {
     record SelectedText() implements Query<String> { }
     /** The query of char at caret. */
     record CharAtCaret() implements Query<Pair<String>> { }
+    /** The query of bytes at caret. */
+    record BytesAtCaret() implements Query<byte[]> { }
+
 }

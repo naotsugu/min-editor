@@ -63,6 +63,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HexFormat;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -422,6 +423,7 @@ public class EditorPane extends ContentPane {
             selectedCounts > 0 ? selectedCounts + " selected" : "",
             foundCounts > 0 ? foundCounts + " found" : "",
             p.row() + 1 + ":" + p.col(),
+            HexFormat.of().formatHex(model.query(Query.bytesAtCaret)),
             model.query(Query.rowEndingSymbol),
             model.query(Query.charsetSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
 

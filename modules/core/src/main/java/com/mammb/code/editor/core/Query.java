@@ -27,6 +27,7 @@ import com.mammb.code.editor.core.model.QueryRecords.*;
 public interface Query<R> {
 
     Query<String> rowEndingSymbol = new RowEndingSymbol();
+    Query<java.nio.charset.Charset> charset = new Charset();
     Query<String> charsetSymbol = new CharsetSymbol();
     Query<Boolean> modified = new Modified();
     Query<byte[]> bom = new Bom();
@@ -42,5 +43,5 @@ public interface Query<R> {
     Query<Long> size = new Size();
     Query<Boolean> hasSelected = new HasSelected();
     Query<String> selectedText = new SelectedText();
-
+    Query<byte[]> bytesAtCaret = new BytesAtCaret();
 }

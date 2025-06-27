@@ -20,6 +20,7 @@ import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
+import com.mammb.code.editor.core.model.QueryRecords.Charset;
 import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
 import com.mammb.code.editor.core.model.QueryRecords.ModelName;
@@ -262,6 +263,7 @@ public class TextEditContent implements Content {
     public <R> R query(Query<R> query) {
         return switch (query) {
             case RowEndingSymbol _ -> (R) edit.rowEnding().toString();
+            case Charset _         -> (R) edit.charset();
             case CharsetSymbol _   -> (R) charsetName();
             case Modified _        -> (R) (Boolean) isModified();
             case Bom _             -> (R) edit.bom();

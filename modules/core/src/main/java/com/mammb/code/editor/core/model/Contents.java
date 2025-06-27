@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Pair;
 import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Query;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,6 +74,9 @@ class Contents {
 
         String right = (p.col() >= 0 && p.col() < text.length()) ?
             Character.toString(Character.codePointAt(text, p.col())) : "";
+        if (right.equals("\r") && p.col() + 1 < text.length()) {
+            right += text.charAt(p.col() + 1);
+        }
 
         String left = "";
         int leftIndex = p.col() - 1;
@@ -85,6 +89,19 @@ class Contents {
             }
         }
         return new Pair<>(left, right);
+    }
+
+    /**
+     * Converts the right text at a specified point within the content into a byte array
+     * using the character set defined in the content query.
+     *
+     * @param content the content from which the text will be retrieved
+     * @param p the position represented as a point, where the row specifies the line
+     *          and the column specifies the character index within that line
+     * @return a byte array representation of the right text at the specified point
+     */
+    static byte[] bytesAt(Content content, Point p) {
+        return lrTextAt(content, p).right().getBytes(content.query(Query.charset));
     }
 
 }
