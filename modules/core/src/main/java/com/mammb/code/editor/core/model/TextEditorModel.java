@@ -27,7 +27,6 @@ import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.FontMetrics;
-import com.mammb.code.editor.core.Pair;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Point.Range;
 import com.mammb.code.editor.core.Query;
@@ -118,6 +117,7 @@ public class TextEditorModel implements EditorModel {
         this.ctx = ctx;
         this.find = find;
         this.decorate = decorate;
+        this.marginLeft += screenLayout.standardCharWidth() * 8;
     }
 
     /**

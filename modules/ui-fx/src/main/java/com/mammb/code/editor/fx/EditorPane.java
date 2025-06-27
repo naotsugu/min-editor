@@ -413,16 +413,18 @@ public class EditorPane extends ContentPane {
     }
 
     private void paint() {
-        model().paint(draw);
-        Point p = model().query(Query.caretPoint);
-        int selectedCounts = model().query(Query.selectedCounts);
-        int foundCounts = model().query(Query.foundCounts);
+        var model = model();
+        model.paint(draw);
+        Point p = model.query(Query.caretPoint);
+        int selectedCounts = model.query(Query.selectedCounts);
+        int foundCounts = model.query(Query.foundCounts);
         floatBar.setText(
             selectedCounts > 0 ? selectedCounts + " selected" : "",
             foundCounts > 0 ? foundCounts + " found" : "",
             p.row() + 1 + ":" + p.col(),
-            model().query(Query.rowEndingSymbol),
-            model().query(Query.charsetSymbol) + ((model().query(Query.bom).length > 0) ? "(BOM)" : ""));
+            model.query(Query.rowEndingSymbol),
+            model.query(Query.charsetSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
+
         nameProperty.setValue(model.query(Query.modelName));
     }
 
@@ -459,7 +461,7 @@ public class EditorPane extends ContentPane {
         boolean openInBackground = Files.size(session.path()) > BACKGROUND_THRESHOLD;
 
         // save previous session
-        sessionHistory.push(model.getSession());
+        sessionHistory.push(model().getSession());
 
         close();
         model = openInBackground
@@ -571,7 +573,7 @@ public class EditorPane extends ContentPane {
         if (file == null) return;
         Path path = file.toPath();
         model().save(path);
-        nameProperty.setValue(model.query(Query.modelName));
+        nameProperty.setValue(model().query(Query.modelName));
     }
 
     private EditorPane newEdit() {
