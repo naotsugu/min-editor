@@ -51,8 +51,12 @@ public class AppPane extends BorderPane {
             .map(session -> new EditorPane(ctx).bindLater(session))
             .toArray(EditorPane[]::new);
         var container = new SplitTabPane(ctx, panes);
-
         setCenter(container);
+
+        stage.focusedProperty().addListener((_, _, focused) -> {
+            if (focused) container.checkExternalChange();
+        });
+
         stage.setOnCloseRequest(e -> {
             e.consume();
             var notExistsUnsaved = container.closeAll();

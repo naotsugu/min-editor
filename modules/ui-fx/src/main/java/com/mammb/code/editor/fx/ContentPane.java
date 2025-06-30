@@ -40,4 +40,6 @@ public abstract class ContentPane extends StackPane {
 
     abstract ReadOnlyObjectProperty<Name> nameProperty();
 
+    abstract boolean externalChanged();
+
 }

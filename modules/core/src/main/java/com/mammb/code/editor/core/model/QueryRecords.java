@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.model;
 
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.Optional;
 import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Pair;
@@ -42,6 +43,8 @@ public interface QueryRecords {
     record CaretPoint() implements Query<Point> { }
     /** The query of a content-path. */
     record ContentPath() implements Query<Optional<Path>> { }
+    /** The last modified time. */
+    record LastModifiedTime() implements Query<Optional<FileTime>> { }
     /** The query of a content-name. */
     record ModelName() implements Query<Name> { }
     /** The query of width as characters. */

@@ -633,6 +633,16 @@ public class EditorPane extends ContentPane {
     }
 
     @Override
+    boolean externalChanged() {
+        var contentPath = query(Query.contentPath);
+        if (contentPath.isPresent()) {
+            var current = Files.lastModifiedTime(contentPath.get());
+            return current.compareTo(query(Query.lastModifiedTime).get()) != 0;
+        }
+        return false;
+    }
+
+    @Override
     void setCloseListener(Consumer<ContentPane> closeListener) {
         this.closeListener = closeListener;
     }

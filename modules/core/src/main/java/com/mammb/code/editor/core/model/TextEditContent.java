@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
@@ -23,6 +24,7 @@ import com.mammb.code.editor.core.model.QueryRecords.Bom;
 import com.mammb.code.editor.core.model.QueryRecords.Charset;
 import com.mammb.code.editor.core.model.QueryRecords.CharsetSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
+import com.mammb.code.editor.core.model.QueryRecords.LastModifiedTime;
 import com.mammb.code.editor.core.model.QueryRecords.ModelName;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
@@ -30,6 +32,7 @@ import com.mammb.code.editor.core.model.QueryRecords.Size;
 import com.mammb.code.piecetable.Pos;
 import com.mammb.code.piecetable.TextEdit;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -52,6 +55,8 @@ public class TextEditContent implements Content {
     private final List<Point.PointText> flushes = new ArrayList<>();
     /** Whether it has been modified or not. */
     private boolean modified = false;
+    /** The last modified time. */
+    private FileTime lastModifiedTime;
 
     /**
      * Default constructor for the TextEditContent class.
@@ -71,6 +76,7 @@ public class TextEditContent implements Content {
     public TextEditContent(Path path) {
         edit = TextEdit.of(path);
         name = ContentName.of(this);
+        lastModifiedTime = Files.lastModifiedTime(path);
     }
 
     /**
@@ -83,6 +89,7 @@ public class TextEditContent implements Content {
     public TextEditContent(Path path, Consumer<Long> consumer) {
         edit = TextEdit.of(path, seg -> consumer.accept(seg.fraction()));
         name = ContentName.of(this);
+        lastModifiedTime = Files.lastModifiedTime(path);
     }
 
     /**
@@ -230,6 +237,7 @@ public class TextEditContent implements Content {
     public void save(Path path) {
         edit.save(path);
         modified = false;
+        lastModifiedTime = Files.lastModifiedTime(path);
     }
 
     @Override
@@ -262,15 +270,16 @@ public class TextEditContent implements Content {
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
-            case RowEndingSymbol _ -> (R) edit.rowEnding().toString();
-            case Charset _         -> (R) edit.charset();
-            case CharsetSymbol _   -> (R) charsetName();
-            case Modified _        -> (R) (Boolean) isModified();
-            case Bom _             -> (R) edit.bom();
-            case ContentPath _     -> (R) Optional.ofNullable(edit.path());
-            case ModelName _       -> (R) name.mute();
-            case Size _            -> (R) Long.valueOf(edit.rawSize());
-            default                -> null;
+            case RowEndingSymbol _  -> (R) edit.rowEnding().toString();
+            case Charset _          -> (R) edit.charset();
+            case CharsetSymbol _    -> (R) charsetName();
+            case Modified _         -> (R) (Boolean) isModified();
+            case Bom _              -> (R) edit.bom();
+            case ContentPath _      -> (R) Optional.ofNullable(edit.path());
+            case LastModifiedTime _ -> (R) Optional.ofNullable(lastModifiedTime);
+            case ModelName _        -> (R) name.mute();
+            case Size _             -> (R) Long.valueOf(edit.rawSize());
+            default                 -> null;
         };
     }
 

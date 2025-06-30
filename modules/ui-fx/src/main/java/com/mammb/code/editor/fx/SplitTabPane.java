@@ -206,6 +206,15 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         return true;
     }
 
+    public void checkExternalChange() {
+        var tabs = tabAndPanes();
+        for (TabAndPane tabAndPane : tabs) {
+            if (tabAndPane.pane().externalChanged()) {
+                System.out.println("external change detected");
+            }
+        }
+    }
+
     @Override
     public void setParent(SplitTabPane parent) {
         this.parent = parent;
