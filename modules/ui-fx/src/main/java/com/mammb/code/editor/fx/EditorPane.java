@@ -339,6 +339,7 @@ public class EditorPane extends ContentPane {
             case Save _             -> save();
             case SaveAs _           -> saveAs();
             case New _              -> newEdit();
+            case Reload _           -> reload();
             case TabClose _         -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd        -> showCommandPalette(cmd.initial());
             case Open cmd           -> open(cmd.path());
@@ -582,6 +583,10 @@ public class EditorPane extends ContentPane {
         var editorPane = new EditorPane(context);
         tabContainer().add(editorPane);
         return editorPane;
+    }
+
+    private void reload() {
+        model.reload();
     }
 
     private EditorPane newEditStage() {

@@ -614,6 +614,11 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
+    public void reload() {
+        content.reload();
+    }
+
+    @Override
     public void close() {
         content.close();
     }

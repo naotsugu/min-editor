@@ -155,6 +155,11 @@ public class RoTextContent implements Content {
     }
 
     @Override
+    public void reload() {
+        pear.reload();
+    }
+
+    @Override
     public void write(Path path) {
         pear.write(path);
     }

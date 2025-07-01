@@ -241,6 +241,11 @@ public class TextEditContent implements Content {
     }
 
     @Override
+    public void reload() {
+        // TODO impl
+    }
+
+    @Override
     public void write(Path path) {
         edit.write(path);
     }

@@ -143,6 +143,11 @@ public interface Content {
     void save(Path path);
 
     /**
+     * Reloads the content, refreshing its state to reflect any external changes.
+     */
+    void reload();
+
+    /**
      * Writes the contents to the specified path.
      * This method is intended for backup path creation and other uses.
      * @param path the specified path

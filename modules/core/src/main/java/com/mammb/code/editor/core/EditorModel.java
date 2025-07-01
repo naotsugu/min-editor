@@ -129,6 +129,11 @@ public interface EditorModel {
     void save(Path path);
 
     /**
+     * Reloads the editor's content and state.
+     */
+    void reload();
+
+    /**
      * Closes the editor and releases any associated resources.
      */
     void close();

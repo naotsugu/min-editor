@@ -209,8 +209,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     public void checkExternalChange() {
         var tabs = tabAndPanes();
         for (TabAndPane tabAndPane : tabs) {
-            if (tabAndPane.pane().externalChanged()) {
-                System.out.println("external change detected");
+            if (tabAndPane.pane().externalChanged() && tabAndPane.pane() instanceof EditorPane pane) {
+                pane.execute(new Command.Reload());
             }
         }
     }

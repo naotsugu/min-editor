@@ -56,6 +56,8 @@ public sealed interface Command {
 
     record New() implements Command {}
 
+    record Reload() implements Command {}
+
     record TabClose() implements Command {}
 
     record Config() implements Command {}
@@ -160,6 +162,7 @@ public sealed interface Command {
             case Class<?> c when c == Save.class -> "save the current file";
             case Class<?> c when c == SaveAs.class -> "save under a different name";
             case Class<?> c when c == New.class -> "open new tab";
+            case Class<?> c when c == Reload.class -> "reload content";
             case Class<?> c when c == TabClose.class -> "close current tab";
             case Class<?> c when c == Config.class -> "open current config";
             case Class<?> c when c == ToLowerCase.class -> "converts the selected text to lower case";
