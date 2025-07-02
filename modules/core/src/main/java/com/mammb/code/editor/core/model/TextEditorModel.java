@@ -616,12 +616,13 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void reload() {
         content.reload();
+        moveTo(0);
+        escape();
     }
 
     @Override
     public void close() {
         content.close();
-        moveTo(0);
     }
 
     @Override

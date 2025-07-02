@@ -48,7 +48,7 @@ import java.util.function.Function;
 public class TextEditContent implements Content {
 
     /** The text edit. */
-    private final TextEdit edit;
+    private TextEdit edit;
     /** The name. */
     private final ContentName name;
     /** The flushes (text being edited with IME). */
@@ -243,7 +243,7 @@ public class TextEditContent implements Content {
     @Override
     public void reload() {
         if (edit.path() == null) return;
-        // TODO edit.reload();
+        edit = TextEdit.of(edit.path());
         flushes.clear();
         modified = false;
         lastModifiedTime = Files.lastModifiedTime(edit.path());

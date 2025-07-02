@@ -210,6 +210,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         var tabs = tabAndPanes();
         for (TabAndPane tabAndPane : tabs) {
             if (tabAndPane.pane().externalChanged() && tabAndPane.pane() instanceof EditorPane editorPane) {
+                // TODO
                 editorPane.execute(new Command.Reload());
             }
         }
