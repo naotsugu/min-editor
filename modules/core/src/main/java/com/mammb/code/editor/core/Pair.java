@@ -17,6 +17,9 @@ package com.mammb.code.editor.core;
 
 /**
  * The Pair.
+ * @param left the left
+ * @param right
+ * @param <T>
  * @author Naotsugu Kobayashi
  */
 public record Pair<T>(T left, T right) {

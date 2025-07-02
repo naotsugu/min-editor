@@ -242,7 +242,11 @@ public class TextEditContent implements Content {
 
     @Override
     public void reload() {
-        // TODO impl
+        if (edit.path() == null) return;
+        // TODO edit.reload();
+        flushes.clear();
+        modified = false;
+        lastModifiedTime = Files.lastModifiedTime(edit.path());
     }
 
     @Override

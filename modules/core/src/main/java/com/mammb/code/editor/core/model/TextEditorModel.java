@@ -621,6 +621,7 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void close() {
         content.close();
+        moveTo(0);
     }
 
     @Override
