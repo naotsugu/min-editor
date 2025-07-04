@@ -70,7 +70,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     private final AppContext context;
     private SplitPane pane = new SplitPane();
     private SplitTabPane parent = null;
-    private final List<Tab> contents = new ArrayList<>();
 
     private SplitTabPane(AppContext ctx) {
         context = ctx;
@@ -279,11 +278,9 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             tabPane.getTabs().add(tab);
             tabPane.getSelectionModel().select(tab);
             tabPane.getSelectionModel().selectedItemProperty().addListener(this::handleSelectedTabItem);
-            parent.contents.add(tab);
             node.setCloseListener(e -> {
                 if (e.canClose()) {
                     tab.getTabPane().getTabs().remove(tab);
-                    parent.contents.remove(tab);
                     Event.fireEvent(tab, new Event(Tab.CLOSED_EVENT));
                 }
             });
@@ -343,7 +340,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     if (!contentPane.canClose()) {
                         e.consume();
                     }
-                    parent.contents.remove(tab);
                     contentPane.close();
                 } else {
                     log.log(ERROR, "An unexpected node configuration has been detected.");
@@ -426,7 +422,17 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             // TODO if dropped outside window, open a new window
             var db = e.getDragboard();
             if (db.hasFiles() && dropPoint(this, e) == DropPoint.HEADER) {
-                addNewEdit().open(db.getFiles().stream().map(File::toString).findFirst().orElse(null));
+                var path = db.getFiles().stream().findFirst().map(File::toPath).orElse(null);
+                if (path == null) return;
+                var tap = parent.tabAndPanes().stream()
+                    .filter(t -> t.pane().nameProperty().get().canonical().equals(path.toString()))
+                    .findFirst();
+                if (tap.isPresent()) {
+                    tabPane.getSelectionModel().select(tap.get().tab());
+                    tap.get().pane().focus();
+                } else {
+                    addNewEdit().open(path);
+                }
                 e.setDropCompleted(false);
                 return;
             }

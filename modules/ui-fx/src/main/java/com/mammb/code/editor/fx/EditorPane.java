@@ -334,53 +334,53 @@ public class EditorPane extends ContentPane {
 
     void execute(Command command) {
         switch (command) {
-            case ActionCommand cmd  -> model().apply(cmd.action());
-            case OpenChoose _       -> openWithChooser();
-            case Save _             -> save();
-            case SaveAs _           -> saveAs();
-            case New _              -> newEdit();
-            case Reload _           -> reload();
-            case TabClose _         -> { if (closeListener != null) closeListener.accept(this); }
-            case Palette cmd        -> showCommandPalette(cmd.initial());
-            case Open cmd           -> open(cmd.path());
-            case Config _           -> newEdit().open(Session.of(context.config().path()));
-            case FindNext cmd       -> apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
-            case FindPrev cmd       -> apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
-            case FindAll cmd        -> apply(Action.findAll(cmd.str(), cmd.caseSensitive()));
-            case FindNextRegex cmd  -> apply(Action.findNextRegex(cmd.str()));
-            case FindPrevRegex cmd  -> apply(Action.findPrevRegex(cmd.str()));
-            case FindAllRegex cmd   -> apply(Action.findAllRegex(cmd.str()));
-            case Select cmd         -> apply(Action.select(cmd.str(), cmd.caseSensitive()));
-            case SelectRegex cmd    -> apply(Action.selectRegex(cmd.str()));
-            case GoTo cmd           -> apply(Action.goTo(cmd.rowNumber() - 1));
-            case WrapLine cmd       -> model().apply(Action.wrapLine(cmd.width()));
-            case ToggleLayout _     -> model().apply(Action.toggleLayout());
-            case ToLowerCase _      -> model().apply(Action.replace(EditingFunctions.toLower, true));
-            case ToUpperCase _      -> model().apply(Action.replace(EditingFunctions.toUpper, true));
-            case IndentParen _      -> model().apply(Action.replace(EditingFunctions.toIndentParen, false));
-            case IndentCurlyBrace _ -> model().apply(Action.replace(EditingFunctions.toIndentCurlyBrace, false));
-            case Calc _             -> model().apply(Action.replace(EditingFunctions.toCalc, false));
-            case Sort _             -> model().apply(Action.replace(EditingFunctions.sort, false));
-            case Unique _           -> model().apply(Action.replace(EditingFunctions.unique, false));
-            case DecToHex _         -> model().apply(Action.replace(EditingFunctions.decToHex, true));
-            case DecToBin _         -> model().apply(Action.replace(EditingFunctions.decToBin, true));
-            case HexToBin _         -> model().apply(Action.replace(EditingFunctions.hexToBin, true));
-            case HexToDec _         -> model().apply(Action.replace(EditingFunctions.hexToDec, true));
-            case BinToHex _         -> model().apply(Action.replace(EditingFunctions.binToHex, true));
-            case BinToDec _         -> model().apply(Action.replace(EditingFunctions.binToDec, true));
-            case Pwd _              -> inputText(() -> model().query(Query.contentPath).map(Path::getParent).orElse(null));
-            case Pwf _              -> inputText(() -> model().query(Query.contentPath).orElse(null));
-            case Now _              -> inputText(LocalDateTime::now);
-            case Today _            -> inputText(LocalDate::now);
-            case Forward _          -> forward();
-            case Backward _         -> backward();
-            case ZoomIn _           -> zoom( 1);
-            case ZoomOut _          -> zoom(-1);
-            case Help _             -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Duplicate _        -> openRight(duplicate());
-            case SearchInBrowser _  -> searchInBrowser(model().query(Query.selectedText));
+            case ActionCommand cmd    -> model().apply(cmd.action());
+            case OpenChoose _         -> openWithChooser();
+            case Save _               -> save();
+            case SaveAs _             -> saveAs();
+            case New _                -> newEdit();
+            case Reload _             -> reload();
+            case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
+            case Palette cmd          -> showCommandPalette(cmd.initial());
+            case Open cmd             -> open(Path.of(cmd.path()));
+            case Config _             -> newEdit().open(Session.of(context.config().path()));
+            case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
+            case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
+            case FindAll cmd          -> apply(Action.findAll(cmd.str(), cmd.caseSensitive()));
+            case FindNextRegex cmd    -> apply(Action.findNextRegex(cmd.str()));
+            case FindPrevRegex cmd    -> apply(Action.findPrevRegex(cmd.str()));
+            case FindAllRegex cmd     -> apply(Action.findAllRegex(cmd.str()));
+            case Select cmd           -> apply(Action.select(cmd.str(), cmd.caseSensitive()));
+            case SelectRegex cmd      -> apply(Action.selectRegex(cmd.str()));
+            case GoTo cmd             -> apply(Action.goTo(cmd.rowNumber() - 1));
+            case WrapLine cmd         -> model().apply(Action.wrapLine(cmd.width()));
+            case ToggleLayout _       -> model().apply(Action.toggleLayout());
+            case ToLowerCase _        -> model().apply(Action.replace(EditingFunctions.toLower, true));
+            case ToUpperCase _        -> model().apply(Action.replace(EditingFunctions.toUpper, true));
+            case IndentParen _        -> model().apply(Action.replace(EditingFunctions.toIndentParen, false));
+            case IndentCurlyBrace _   -> model().apply(Action.replace(EditingFunctions.toIndentCurlyBrace, false));
+            case Calc _               -> model().apply(Action.replace(EditingFunctions.toCalc, false));
+            case Sort _               -> model().apply(Action.replace(EditingFunctions.sort, false));
+            case Unique _             -> model().apply(Action.replace(EditingFunctions.unique, false));
+            case DecToHex _           -> model().apply(Action.replace(EditingFunctions.decToHex, true));
+            case DecToBin _           -> model().apply(Action.replace(EditingFunctions.decToBin, true));
+            case HexToBin _           -> model().apply(Action.replace(EditingFunctions.hexToBin, true));
+            case HexToDec _           -> model().apply(Action.replace(EditingFunctions.hexToDec, true));
+            case BinToHex _           -> model().apply(Action.replace(EditingFunctions.binToHex, true));
+            case BinToDec _           -> model().apply(Action.replace(EditingFunctions.binToDec, true));
+            case Pwd _                -> inputText(() -> model().query(Query.contentPath).map(Path::getParent).orElse(null));
+            case Pwf _                -> inputText(() -> model().query(Query.contentPath).orElse(null));
+            case Now _                -> inputText(LocalDateTime::now);
+            case Today _              -> inputText(LocalDate::now);
+            case Forward _            -> forward();
+            case Backward _           -> backward();
+            case ZoomIn _             -> zoom( 1);
+            case ZoomOut _            -> zoom(-1);
+            case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
+            case Duplicate _          -> openRight(duplicate());
+            case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
-            case Empty _            -> { }
+            case Empty _              -> { }
         }
         paint();
     }
@@ -446,16 +446,15 @@ public class EditorPane extends ContentPane {
         open(Session.of(file.toPath()));
     }
 
-    void open(String pathString) {
-        if (!canClose()) return;
-        var path = Path.of(pathString);
+    void open(Path path) {
+        if (path == null || !canClose()) return;
         if (Files.isReadableFile(path)) {
             open(Session.of(path));
         } else if (Files.isReadableDirectory(path)) {
             String list = String.join("\n", Files.listAbsolutePath(path));
             newEdit().inputText(() -> list.isEmpty() ? path.toAbsolutePath().toString() : list);
         } else {
-            newEdit().inputText(() -> pathString);
+            newEdit().inputText(path::toString);
         }
     }
 
