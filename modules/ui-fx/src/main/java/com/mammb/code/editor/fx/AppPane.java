@@ -54,7 +54,7 @@ public class AppPane extends BorderPane {
         setCenter(container);
 
         stage.focusedProperty().addListener((_, _, focused) -> {
-            if (focused) container.checkExternalChange();
+            if (focused) container.reloadExternalChanges();
         });
 
         stage.setOnCloseRequest(e -> {

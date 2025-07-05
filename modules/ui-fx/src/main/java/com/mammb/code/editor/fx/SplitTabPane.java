@@ -43,6 +43,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.io.File;
 import java.lang.System.Logger;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -205,14 +206,19 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         return true;
     }
 
-    public void checkExternalChange() {
+    public void reloadExternalChanges() {
         var tabs = tabAndPanes();
         for (TabAndPane tabAndPane : tabs) {
-            if (tabAndPane.pane().externalChanged() && tabAndPane.pane() instanceof EditorPane editorPane) {
-                // TODO
+            if (tabAndPane.pane().externalChanged()
+                && tabAndPane.pane() instanceof EditorPane editorPane) {
                 editorPane.execute(new Command.Reload());
             }
         }
+    }
+
+    public boolean contains(Path path) {
+        return tabAndPanes().stream()
+            .anyMatch(tap -> tap.pane().nameProperty().get().canonical().equals(path.toString()));
     }
 
     @Override
@@ -221,7 +227,12 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     record TabAndPane(Tab tab, TabPane tabPane, ContentPane pane) {
-        void select() { if (tabPane != null) tabPane.getSelectionModel().select(tab); }
+        void select() {
+            if (tabPane != null) {
+                tabPane.getSelectionModel().select(tab);
+                pane.focus();
+            }
+        }
     }
 
     private static List<Tab> tabs(Node parent) {
@@ -428,8 +439,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     .filter(t -> t.pane().nameProperty().get().canonical().equals(path.toString()))
                     .findFirst();
                 if (tap.isPresent()) {
-                    tabPane.getSelectionModel().select(tap.get().tab());
-                    tap.get().pane().focus();
+                    tap.get().select();
                 } else {
                     addNewEdit().open(path);
                 }
