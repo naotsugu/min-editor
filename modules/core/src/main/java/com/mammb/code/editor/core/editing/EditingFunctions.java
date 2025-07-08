@@ -59,7 +59,7 @@ public interface EditingFunctions {
         .collect(Collectors.joining());
     /** Un indent functions. */
     Function<String, String> unindent = text -> Arrays.stream(text.split("(?<=\\n)"))
-        .map(s -> s.replaceFirst("^ {4}?|^\t", ""))
+        .map(s -> s.replaceFirst("^ {1,4}|^\t", ""))
         .collect(Collectors.joining());
 
     /** Sort function. */
