@@ -178,8 +178,9 @@ public class TextEditContent implements Content {
 
     @Override
     public List<Point> undo() {
+        if (!edit.hasUndoRecord()) return List.of();
         var ret = edit.undo().stream().map(p -> Point.of(p.row(), p.col())).toList();
-        modified |= !ret.isEmpty();
+        modified = edit.hasUndoRecord();
         return ret;
     }
 
@@ -299,9 +300,6 @@ public class TextEditContent implements Content {
      * @return {@code true} if it has been modified
      */
     boolean isModified() {
-        if (flushes.isEmpty() && !edit.hasUndoRecord()) {
-            return false;
-        }
         return modified;
     }
 

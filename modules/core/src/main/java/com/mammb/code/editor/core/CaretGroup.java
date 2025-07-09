@@ -169,6 +169,7 @@ public interface CaretGroup {
 
         @Override
         public void at(List<Point> points) {
+            if (points.isEmpty()) return;
             carets.clear();
             points.forEach(p -> carets.add(Caret.of(p.row(), p.col())));
             normalize();
