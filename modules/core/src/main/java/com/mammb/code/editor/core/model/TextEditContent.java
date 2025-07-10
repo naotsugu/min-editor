@@ -180,7 +180,7 @@ public class TextEditContent implements Content {
     public List<Point> undo() {
         if (!edit.hasUndoRecord()) return List.of();
         var ret = edit.undo().stream().map(p -> Point.of(p.row(), p.col())).toList();
-        modified = edit.hasUndoRecord();
+        modified = (edit.path() == null && edit.rawSize() > 0) || edit.hasUndoRecord();
         return ret;
     }
 
