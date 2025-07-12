@@ -18,11 +18,15 @@ package com.mammb.code.editor.core.syntax.lang;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
+import com.mammb.code.editor.core.Clipboard;
+import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.syntax.BlockScopes;
 import com.mammb.code.editor.core.syntax.BlockToken;
 import com.mammb.code.editor.core.syntax.BlockType;
 import com.mammb.code.editor.core.syntax.LexerSource;
 import com.mammb.code.editor.core.syntax.Palette;
+import com.mammb.code.editor.core.syntax.handler.PasteHandler;
 import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
@@ -34,7 +38,7 @@ import static com.mammb.code.editor.core.syntax.LexerSources.readInlineBlock;
  * The Markdown syntax.
  * @author Naotsugu Kobayashi
  */
-public class MarkdownSyntax implements Syntax {
+public class MarkdownSyntax implements Syntax, PasteHandler {
 
     /** The fence block. */
     private final BlockType fence = neutral("```", Syntax::of);
@@ -96,4 +100,18 @@ public class MarkdownSyntax implements Syntax {
     public BlockScopes blockScopes() {
         return blockScopes;
     }
+
+    @Override
+    public boolean handlePaste(Clipboard clipboard, Consumer<String> pasteConsumer) {
+        var html = clipboard.getHtml();
+        if (html != null && html.contains("<table") && html.contains("</table>")) {
+            var mdTable = EditingFunctions.markdownTable.apply(html);
+            if (!mdTable.isEmpty()) {
+                pasteConsumer.accept(mdTable);
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

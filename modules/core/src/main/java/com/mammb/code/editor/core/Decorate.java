@@ -17,6 +17,7 @@ package com.mammb.code.editor.core;
 
 import com.mammb.code.editor.core.syntax.LexerSource;
 import com.mammb.code.editor.core.syntax.Syntax;
+import com.mammb.code.editor.core.syntax.handler.SyntaxHandler;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Text;
@@ -73,6 +74,8 @@ public interface Decorate {
      * @return the syntax name
      */
     String syntaxName();
+
+    <T extends SyntaxHandler> T syntaxHandler(Class<T> type);
 
     /**
      * Create a new {@link Decorate}.
@@ -132,6 +135,14 @@ public interface Decorate {
         @Override
         public String syntaxName() {
             return syntax.name();
+        }
+
+        @Override
+        public <T extends SyntaxHandler> T syntaxHandler(Class<T> type) {
+            if (type.isAssignableFrom(syntax.getClass())) {
+                return type.cast(syntax);
+            }
+            return null;
         }
 
         @Override

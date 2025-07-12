@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.syntax;
+package com.mammb.code.editor.core.syntax.handler;
 
 import com.mammb.code.editor.core.Clipboard;
 import java.util.function.Consumer;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
  * of pasting content in a specific context.
  * @author Naotsugu Kobayashi
  */
-public interface PasteHandler {
+public interface PasteHandler extends SyntaxHandler {
 
     /**
      * Handles the clipboard's paste operation by processing or customizing its behavior.
@@ -32,6 +32,6 @@ public interface PasteHandler {
      * @param pasteConsumer a consumer to handle the processed content after customization
      * @return {@code true} if the operation was successfully handled, or {@code false} otherwise
      */
-    boolean handle(Clipboard clipboard, Consumer<String> pasteConsumer);
+    boolean handlePaste(Clipboard clipboard, Consumer<String> pasteConsumer);
 
 }

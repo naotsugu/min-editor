@@ -37,6 +37,7 @@ import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
+import com.mammb.code.editor.core.syntax.handler.PasteHandler;
 import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
@@ -572,15 +573,10 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void pasteFromClipboard(Clipboard clipboard, boolean withOpt) {
-        if (!withOpt && Objects.equals(decorate.syntaxName(), "markdown")) {
-            // TODO
-            var html = clipboard.getHtml();
-            if (html != null && html.contains("<table") && html.contains("</table>")) {
-                var mdTable = EditingFunctions.markdownTable.apply(html);
-                if (!mdTable.isEmpty()) {
-                    input(mdTable);
-                    return;
-                }
+        if (!withOpt) {
+            PasteHandler handler = decorate.syntaxHandler(PasteHandler.class);
+            if (handler != null && handler.handlePaste(clipboard, this::input)) {
+                return;
             }
         }
         var text = clipboard.getString();

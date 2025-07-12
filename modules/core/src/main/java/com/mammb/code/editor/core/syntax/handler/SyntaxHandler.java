@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.core.syntax.handler;
 
 /**
- * The code editor module.
+ * Represents a handler for managing syntax-related operations.
  * @author Naotsugu Kobayashi
  */
-module code.editor.core {
-    requires com.mammb.code.piecetable;
-    exports com.mammb.code.editor.core;
-    exports com.mammb.code.editor.core.text;
-    exports com.mammb.code.editor.core.syntax;
-    exports com.mammb.code.editor.core.editing;
-    exports com.mammb.code.editor.core.syntax.handler;
+public interface SyntaxHandler {
 }
