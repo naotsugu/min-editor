@@ -15,6 +15,9 @@
  */
 package com.mammb.code.editor.core;
 
+import java.io.File;
+import java.util.List;
+
 /**
  * The Clipboard.
  * @author Naotsugu Kobayashi
@@ -40,9 +43,27 @@ public interface Clipboard {
     String getHtml();
 
     /**
+     * Retrieves a list of files from the clipboard.
+     * @return a list of files present in the clipboard, or an empty list if no files are available
+     */
+    List<File> getFiles();
+
+    /**
      * Get whether the clipboard has content.
      * @return {@code true}, if the clipboard has content
      */
     boolean hasContents();
+
+    /**
+     * Checks if the clipboard contains an image.
+     * @return {@code true} if the clipboard has an image, otherwise {@code false}
+     */
+    boolean hasImage();
+
+    /**
+     * Checks if the clipboard contains any files.
+     * @return {@code true} if the clipboard has files, otherwise {@code false}
+     */
+    boolean hasFiles();
 
 }

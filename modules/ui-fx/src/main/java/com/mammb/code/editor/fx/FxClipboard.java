@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.fx;
 
+import java.io.File;
+import java.util.List;
 import java.util.Map;
 import javafx.scene.input.DataFormat;
 import com.mammb.code.editor.core.Clipboard;
@@ -49,9 +51,27 @@ public final class FxClipboard implements Clipboard {
     }
 
     @Override
+    public List<File> getFiles() {
+        var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+        return clipboard.hasFiles() ? clipboard.getFiles() : List.of();
+    }
+
+    @Override
     public boolean hasContents() {
         var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
         return clipboard.hasString();
+    }
+
+    @Override
+    public boolean hasImage() {
+        var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+        return clipboard.hasImage();
+    }
+
+    @Override
+    public boolean hasFiles() {
+        var clipboard = javafx.scene.input.Clipboard.getSystemClipboard();
+        return clipboard.hasFiles();
     }
 
 }
