@@ -27,9 +27,9 @@ jobs:
           submodules: recursive
       - uses: actions/setup-java@v4
         with:
-          java-version: '23'
+          java-version: '24'
           distribution: 'temurin'
-      - uses: gradle/wrapper-validation-action@v1
+      - uses: gradle/wrapper-validation-action@v3
       - uses: gradle/gradle-build-action@v2
         with:
           arguments: pkg
