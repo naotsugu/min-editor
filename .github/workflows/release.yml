@@ -29,8 +29,8 @@ jobs:
         with:
           java-version: '24'
           distribution: 'temurin'
-      - uses: gradle/wrapper-validation-action@v3
-      - uses: gradle/gradle-build-action@v2
+      - uses: gradle/actions/wrapper-validation@v3
+      - uses: gradle/actions/setup-gradle@v3
         with:
           arguments: pkg
       - uses: actions/upload-artifact@v4
@@ -49,6 +49,6 @@ jobs:
         with:
           pattern: min-editor-*
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: min-editor-*/*
