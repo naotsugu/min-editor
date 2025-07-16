@@ -25,5 +25,39 @@ public interface Version {
     String appName = "min-editor";
 
     /** The version value. */
-    String val = "0.2.0";
+    String val = "0.2.1";
+
+    /**
+     * Extracts and returns the major version number from the version string.
+     * The version string is expected to follow the format "major.minor.patch",
+     * and this method retrieves the component before the first dot.
+     *
+     * @return the major version number as a string
+     */
+    static String major() {
+        return val.split("\\.")[0];
+    }
+
+    /**
+     * Extracts and returns the minor version number from the version string.
+     * The version string is expected to follow the format "major.minor.patch",
+     * and this method retrieves the component between the first and second dots.
+     *
+     * @return the minor version number as a string
+     */
+    static String minor() {
+        return val.split("\\.")[1];
+    }
+
+    /**
+     * Combines and returns the major and minor version numbers from the version string.
+     * The version string is expected to follow the format "major.minor.patch",
+     * and this method concatenates the major and minor components with a dot separator.
+     *
+     * @return the combined major and minor version numbers as a string
+     */
+    static String majorAndMinor() {
+        return major() + "." + minor();
+    }
+
 }

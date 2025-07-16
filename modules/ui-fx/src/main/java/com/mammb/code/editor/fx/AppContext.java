@@ -62,7 +62,7 @@ public class AppContext implements Context {
 
         AppConfig() {
             super(AbstractConfig.configRoot()
-                .resolve(Version.appName, Version.val, "config.properties"));
+                .resolve(Version.appName, Version.majorAndMinor(), "config.properties"));
             load();
             Runtime.getRuntime().addShutdownHook(new Thread(this::save));
         }
