@@ -105,7 +105,8 @@ public class MarkdownSyntax implements Syntax, PasteHandler {
     public boolean handlePaste(Clipboard clipboard, Consumer<String> pasteConsumer) {
         var html = clipboard.getHtml();
         if (html != null && html.contains("<table") && html.contains("</table>")) {
-            var mdTable = EditingFunctions.markdownTable.apply(html);
+            var mdTable = EditingFunctions.removeTags.apply(
+                EditingFunctions.markdownTable.apply(html));
             if (!mdTable.isEmpty()) {
                 pasteConsumer.accept(mdTable);
                 return true;

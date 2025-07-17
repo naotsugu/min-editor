@@ -60,8 +60,7 @@ class MarkdownTables {
         }
         sb.append(html.substring(index));
 
-        // TODO fix width
-        return sb.toString().replaceAll("<.*?>", "");
+        return sb.toString();
     }
 
     // -- private helper ------------------------------------------------------

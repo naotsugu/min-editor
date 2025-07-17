@@ -41,12 +41,12 @@ public interface EditingFunctions {
      * U+2028: LINE_SEPARATOR(Zl category)
      * U+2029: PARAGRAPH_SEPARATOR(Zp category)
      */
-    Function<String, String> sanitize = text -> text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f\\u2028\\u2029]", "");
+    Function<String, String> sanitize = text -> text == null ? "" : text.replaceAll("[\\x00-\\x08\\x0b-\\x0c\\x0e-\\x1f\\x7f\\u2028\\u2029]", "");
 
     /** To lower case function. */
-    Function<String, String> toLower = String::toLowerCase;
+    Function<String, String> toLower = text -> text == null ? "" : text.toLowerCase();
     /** To upper case function. */
-    Function<String, String> toUpper = String::toUpperCase;
+    Function<String, String> toUpper = text -> text == null ? "" : text.toUpperCase();
 
     /** To indent paren. */
     Function<String, String> toIndentParen = text -> StackIndents.indentify(text, '(', ')').toString();
@@ -54,20 +54,20 @@ public interface EditingFunctions {
     Function<String, String> toIndentCurlyBrace = text -> StackIndents.indentify(text, '{', '}').toString();
 
     /** Indent function. */
-    Function<String, String> indent = text -> Arrays.stream(text.split("(?<=\\n)"))
+    Function<String, String> indent = text -> text == null ? "" : Arrays.stream(text.split("(?<=\\n)"))
         .map(s -> " ".repeat(4) + s)
         .collect(Collectors.joining());
     /** Un indent functions. */
-    Function<String, String> unindent = text -> Arrays.stream(text.split("(?<=\\n)"))
+    Function<String, String> unindent = text -> text == null ? "" : Arrays.stream(text.split("(?<=\\n)"))
         .map(s -> s.replaceFirst("^ {1,4}|^\t", ""))
         .collect(Collectors.joining());
 
     /** Sort function. */
-    Function<String, String> sort = text -> Arrays.stream(text.split("(?<=\\n)"))
+    Function<String, String> sort = text -> text == null ? "" : Arrays.stream(text.split("(?<=\\n)"))
         .sorted().collect(Collectors.joining());
 
     /** Unique function. */
-    Function<String, String> unique = text -> Arrays.stream(text.split("(?<=\\n)"))
+    Function<String, String> unique = text -> text == null ? "" : Arrays.stream(text.split("(?<=\\n)"))
         .distinct().collect(Collectors.joining());
 
     /** Calc function. */
@@ -87,12 +87,15 @@ public interface EditingFunctions {
     Function<String, String> binToDec = text -> dec(text.replaceAll(" ", ""), 2);
 
     /** binToDec function. */
-    Function<String, String> lfToCrLf = text -> text.replaceAll("(?<!\r)\n", "\r\n");
+    Function<String, String> lfToCrLf = text -> text == null ? "" : text.replaceAll("(?<!\r)\n", "\r\n");
     /** binToDec function. */
-    Function<String, String> crLfToLf = text -> text.replaceAll("\r\n", "\n");
+    Function<String, String> crLfToLf = text -> text == null ? "" : text.replaceAll("\r\n", "\n");
 
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
+
+    /** remove tag like. */
+    Function<String, String> removeTags = text -> text == null ? "" : text.replaceAll("<.*?>", "");
 
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
@@ -100,6 +103,8 @@ public interface EditingFunctions {
     // -- helper --------------------------------------------------------------
 
     private static String calc(String text) {
+
+        if (text == null || text.isEmpty()) return "";
 
         var sb = new StringBuilder();
         for (String line : text.split("(?<=\\R)")) {

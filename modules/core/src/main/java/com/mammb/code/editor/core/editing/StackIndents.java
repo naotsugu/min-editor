@@ -36,6 +36,8 @@ class StackIndents {
      */
     static CharSequence indentify(CharSequence cs, char s, char e) {
 
+        if (cs == null || cs.isEmpty()) return "";
+
         Deque<Character> stack = new ArrayDeque<>();
         final StringBuilder sb = new StringBuilder(cs.length());
 
