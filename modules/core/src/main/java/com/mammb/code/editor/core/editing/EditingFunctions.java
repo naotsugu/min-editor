@@ -21,6 +21,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -95,7 +97,11 @@ public interface EditingFunctions {
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
 
     /** remove tag like. */
-    Function<String, String> removeTags = text -> text == null ? "" : text.replaceAll("<.*?>", "");
+    Function<String, String> removeHtmlTags = text -> text == null ? "" : text.replaceAll("<.*?>", "");
+
+    /** html to markdown. */
+    Function<String, String> htmlToMarkdown = text -> text == null ? "" : removeHtmlTags.apply(
+        MarkdownTables.fromHtml(htmlAnchorToMarkdownLink(text)));
 
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
@@ -174,6 +180,19 @@ public interface EditingFunctions {
             }
         }
         return sb.toString();
+    }
+
+    private static String htmlAnchorToMarkdownLink(String html) {
+        if (html == null || html.isEmpty()) {
+            return "";
+        }
+        String regex = "<a\\s+href=\"([^\"]+)\"[^>]*>([^<]+)</a>";
+        String replacement = "[$2]($1)";
+
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(html);
+
+        return matcher.replaceAll(replacement);
     }
 
 }
