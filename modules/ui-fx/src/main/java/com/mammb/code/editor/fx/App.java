@@ -37,20 +37,23 @@ public class App extends Application {
     public void start(Stage stage) {
 
         var ctx = new AppContext(this);
-        if (ctx.config().windowPositionX() >= 0 && ctx.config().windowPositionY() >= 0) {
+        var posX = ctx.config().windowPositionX();
+        var posY = ctx.config().windowPositionY();
+        if (posX >= 0 && posY >= 0) {
             // init window location
-            stage.setX(ctx.config().windowPositionX());
-            stage.setY(ctx.config().windowPositionY());
+            stage.setX(posX);
+            stage.setY(posY);
         }
 
         var appPane = new AppPane(stage, paramPath(), ctx);
-        Scene scene = new Scene(appPane, ctx.config().windowWidth(), ctx.config().windowHeight());
+        Scene scene = new Scene(appPane, posX, posY);
         scene.getStylesheets().add(css);
         stage.setScene(scene);
         stage.setTitle(Version.appName);
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
-        syncConfigProperty(stage, scene, ctx);
+        buildConfigPropertyListener(stage, scene, ctx);
+
         stage.show();
 
     }
@@ -61,7 +64,7 @@ public class App extends Application {
      * @param scene the scene
      * @param ctx the application context
      */
-    private void syncConfigProperty(Stage stage, Scene scene, AppContext ctx) {
+    private void buildConfigPropertyListener(Stage stage, Scene scene, AppContext ctx) {
         scene.heightProperty().addListener((_, _, h) -> ctx.config().windowHeight(h.doubleValue()));
         scene.widthProperty().addListener((_, _, w) -> ctx.config().windowWidth(w.doubleValue()));
         stage.xProperty().addListener((_, _, x) -> ctx.config().windowPositionX(x.doubleValue()));
@@ -76,9 +79,7 @@ public class App extends Application {
         Parameters params = getParameters();
         if (params.getRaw().isEmpty()) return null;
         Path path = Path.of(params.getRaw().getLast());
-        if (!Files.exists(path)) return null;
-        if (!Files.isReadable(path)) return null;
-        if (!Files.isRegularFile(path)) return null;
+        if (!Files.exists(path) || !Files.isReadable(path) || !Files.isRegularFile(path)) return null;
         return path;
     }
 
