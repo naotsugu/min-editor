@@ -136,7 +136,10 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void paint(Draw draw) {
-        if (screenLayout.applyScreenScroll(scroll)) return;
+        if (screenLayout.applyScreenScroll(scroll)) {
+            // if scrolling occurs, paint() is called from the scroll event
+            return;
+        }
         calcScreenLayout();
         draw.clear();
         Paints.selection(draw, marginTop, marginLeft, screenLayout, carets);

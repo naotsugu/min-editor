@@ -75,6 +75,12 @@ public interface Decorate {
      */
     String syntaxName();
 
+    /**
+     * Retrieves an instance of the specified {@code SyntaxHandler} type.
+     * @param <T> the type of {@code SyntaxHandler}
+     * @param type the class type of the desired {@code SyntaxHandler}
+     * @return an instance of the specified {@code SyntaxHandler} type
+     */
     <T extends SyntaxHandler> T syntaxHandler(Class<T> type);
 
     /**
