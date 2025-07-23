@@ -446,7 +446,6 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void input(String text) {
-        preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
             if (c.isMarked()) {
@@ -464,11 +463,9 @@ public class TextEditorModel implements EditorModel {
                 refreshPointsRange(points);
             }
         }
-        postEditing();
     }
 
     private void delete() {
-        preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
             if (c.isMarked()) {
@@ -486,11 +483,9 @@ public class TextEditorModel implements EditorModel {
                 refreshPointsRange(points);
             }
         }
-        postEditing();
     }
 
     private void backspace() {
-        preEditing();
         if (carets.size() == 1) {
             Caret c = carets.getFirst();
             if (c.isMarked()) {
@@ -508,11 +503,9 @@ public class TextEditorModel implements EditorModel {
                 refreshPointsRange(points);
             }
         }
-        postEditing();
     }
 
     private void replace(Function<String, String> fun, boolean keepSelection) {
-        preEditing();
         List<Range> caretRanges = carets.ranges();
         List<Range> ranges = content.replace(caretRanges, fun);
         Range rangeMin = Collections.min(caretRanges);
@@ -534,7 +527,6 @@ public class TextEditorModel implements EditorModel {
         screenLayout.refreshBuffer(
             rangeMin.min().row(),
             rangeMax.max().row());
-        postEditing();
     }
 
     private void inputTab(boolean sc) {
@@ -560,19 +552,15 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void undo() {
-        preEditing();
         List<Point> points = content.undo();
         screenLayout.refreshBuffer();
         carets.at(points);
-        postEditing();
     }
 
     private void redo() {
-        preEditing();
         List<Point> points = content.redo();
         screenLayout.refreshBuffer();
         carets.at(points);
-        postEditing();
     }
 
     private void pasteFromClipboard(Clipboard clipboard, boolean withOpt) {
@@ -781,14 +769,14 @@ public class TextEditorModel implements EditorModel {
         if (isImeOn() || action.isEmpty()) return;
 
         switch (action) {
-            case Input a        -> input(a.attr());
-            case Delete _       -> delete();
-            case Backspace _    -> backspace();
-            case Undo _         -> undo();
-            case Redo _         -> redo();
+            case Input a        -> aroundEdit(() -> input(a.attr()));
+            case Delete _       -> aroundEdit(this::delete);
+            case Backspace _    -> aroundEdit(this::backspace);
+            case Undo _         -> aroundEdit(this::undo);
+            case Redo _         -> aroundEdit(this::redo);
             case Home a         -> moveCaretHome(a.withSelect());
             case End a          -> moveCaretEnd(a.withSelect());
-            case Tab a          -> inputTab(a.withSelect());
+            case Tab a          -> aroundEdit(() -> inputTab(a.withSelect()));
             case CaretRight a   -> moveCaretRight(a.withSelect(), a.withShortcut());
             case CaretLeft a    -> moveCaretLeft(a.withSelect(), a.withShortcut());
             case CaretUp a      -> moveCaretUp(a.withSelect(), a.withShortcut());
@@ -796,8 +784,8 @@ public class TextEditorModel implements EditorModel {
             case PageUp a       -> moveCaretPageUp(a.withSelect());
             case PageDown a     -> moveCaretPageDown(a.withSelect());
             case Copy a         -> copyToClipboard(a.attr());
-            case Cut a          -> cutToClipboard(a.attr());
-            case Paste a        -> pasteFromClipboard(a.attr(), a.withOpt());
+            case Cut a          -> aroundEdit(() -> cutToClipboard(a.attr()));
+            case Paste a        -> aroundEdit(() -> pasteFromClipboard(a.attr(), a.withOpt()));
             case SelectAll _    -> selectAll();
             case WrapLine a     -> wrap(a.attr());
             case ToggleLayout _ -> toggleLayout();
@@ -808,7 +796,7 @@ public class TextEditorModel implements EditorModel {
             case Select a       -> select(a.attr());
             case Escape _       -> escape();
             case Repeat _       -> actionHistory.repetition().forEach(this::apply);
-            case Replace a      -> replace(a.attr(), a.keepSelect());
+            case Replace a      -> aroundEdit(() -> replace(a.attr(), a.keepSelect()));
             case Save a         -> save(a.attr());
             case Empty _        -> { }
         }
@@ -841,15 +829,12 @@ public class TextEditorModel implements EditorModel {
 
     // -- private -------------------------------------------------------------
 
-    private void preEditing() {
+    private void aroundEdit(Runnable runnable) {
         decorate.clear();
-    }
-
-    private void postEditing() {
+        runnable.run();
         Style style = new Style.UnderColor(Theme.dark.cautionColor());
-        find.founds().forEach(p -> {
-            decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len()));
-        });
+        find.founds().forEach(p ->
+            decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len())));
     }
 
     /**
