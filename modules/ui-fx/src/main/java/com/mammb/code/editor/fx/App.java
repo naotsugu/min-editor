@@ -37,6 +37,7 @@ public class App extends Application {
     public void start(Stage stage) {
 
         var ctx = new AppContext(this);
+
         var posX = ctx.config().windowPositionX();
         var posY = ctx.config().windowPositionY();
         if (posX >= 0 && posY >= 0) {
@@ -46,7 +47,9 @@ public class App extends Application {
         }
 
         var appPane = new AppPane(stage, paramPath(), ctx);
-        Scene scene = new Scene(appPane, posX, posY);
+        double w = Math.max(ctx.config().windowWidth(), 91);
+        double h = Math.max(ctx.config().windowHeight(), 33);
+        Scene scene = new Scene(appPane, w, h);
         scene.getStylesheets().add(css);
         stage.setScene(scene);
         stage.setTitle(Version.appName);
