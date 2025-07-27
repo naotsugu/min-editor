@@ -46,12 +46,14 @@ public interface Files {
     }
 
     static boolean isReadableFile(Path path) {
-        return java.nio.file.Files.isRegularFile(path)
+        return path != null
+            && java.nio.file.Files.isRegularFile(path)
             && java.nio.file.Files.isReadable(path);
     }
 
     static boolean isReadableDirectory(Path path) {
-        return java.nio.file.Files.isDirectory(path)
+        return path != null
+            && java.nio.file.Files.isDirectory(path)
             && java.nio.file.Files.isReadable(path);
     }
 

@@ -16,10 +16,10 @@
 package com.mammb.code.editor.fx;
 
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Objects;
+import com.mammb.code.editor.core.Files;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -38,8 +38,8 @@ public class App extends Application {
 
         var ctx = new AppContext(this);
 
-        var posX = ctx.config().windowPositionX();
-        var posY = ctx.config().windowPositionY();
+        double posX = ctx.config().windowPositionX();
+        double posY = ctx.config().windowPositionY();
         if (posX >= 0 && posY >= 0) {
             // init window location
             stage.setX(posX);
@@ -56,7 +56,6 @@ public class App extends Application {
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
         buildConfigPropertyListener(stage, scene, ctx);
-
         stage.show();
 
     }
@@ -82,7 +81,7 @@ public class App extends Application {
         Parameters params = getParameters();
         if (params.getRaw().isEmpty()) return null;
         Path path = Path.of(params.getRaw().getLast());
-        if (!Files.exists(path) || !Files.isReadable(path) || !Files.isRegularFile(path)) return null;
+        if (!Files.isReadableFile(path)) return null;
         return path;
     }
 
