@@ -46,10 +46,11 @@ public class App extends Application {
             stage.setY(posY);
         }
 
-        var appPane = new AppPane(stage, paramPath(), ctx);
         double w = Math.max(ctx.config().windowWidth(), 91);
         double h = Math.max(ctx.config().windowHeight(), 33);
+        var appPane = new AppPane(stage, paramPath(), ctx);
         Scene scene = new Scene(appPane, w, h);
+
         scene.getStylesheets().add(css);
         stage.setScene(scene);
         stage.setTitle(Version.appName);

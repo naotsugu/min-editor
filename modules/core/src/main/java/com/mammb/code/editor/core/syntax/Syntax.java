@@ -37,6 +37,7 @@ import com.mammb.code.editor.core.syntax.lang.TsSyntax;
 import com.mammb.code.editor.core.syntax.lang.CsvSyntax;
 import com.mammb.code.editor.core.syntax.lang.TsvSyntax;
 import com.mammb.code.editor.core.syntax.lang.YamlSyntax;
+import com.mammb.code.editor.core.syntax.lang.ZigSyntax;
 import com.mammb.code.editor.core.text.Style;
 
 /**
@@ -141,6 +142,7 @@ public interface Syntax {
             case "text" -> new PassThrough("text");
             case "shell" -> new ShellSyntax();
             case "ps1" -> new PowerShellSyntax();
+            case "zig" -> new ZigSyntax();
             case null, default -> new PassThrough(name);
         };
     }
