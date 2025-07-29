@@ -40,10 +40,12 @@ import static com.mammb.code.editor.core.syntax.LexerSources.readInlineBlock;
  */
 public class MarkdownSyntax implements Syntax, PasteHandler {
 
+    /** The 4 fence block. */
+    private final BlockType fence4 = neutral("````", Syntax::of);
     /** The fence block. */
     private final BlockType fence = neutral("```", Syntax::of);
     /** The block scopes. */
-    private final BlockScopes blockScopes = new BlockScopes(fence);
+    private final BlockScopes blockScopes = new BlockScopes(fence4, fence);
 
     @Override
     public String name() {
