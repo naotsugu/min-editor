@@ -105,6 +105,22 @@ public class SubRange implements Comparable<SubRange> {
     }
 
     /**
+     * Checks if the current subline is the last subline within the range.
+     * @return {@code true} if the current subline is the last subline
+     */
+    public boolean isLast() {
+        return subLine == subLines - 1;
+    }
+
+    /**
+     * Determines if the current subline spans multiple lines and is not the last subline.
+     * @return {@code true} if the current subline is part of multiple lines and is not the last subline
+     */
+    public boolean isWrapped() {
+        return subLines > 1 && !isLast();
+    }
+
+    /**
      * Get whether the specified rows and columns are included in this {@link SubRange}.
      * @param row the row number
      * @param col the column number
@@ -114,7 +130,7 @@ public class SubRange implements Comparable<SubRange> {
         return this.row == row && (
             (this.fromIndex <= col && col < this.toIndex) ||
                 (col == 0 && fromIndex == 0 && toIndex == 0) ||
-                (col == this.toIndex && subLine == subLines - 1)
+                (col == this.toIndex && isLast())
         );
     }
 

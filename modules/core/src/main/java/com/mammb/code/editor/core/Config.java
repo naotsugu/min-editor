@@ -94,8 +94,8 @@ public interface Config {
         @Override
         public String fontName() {
             var defaultValue = switch (Context.platform) {
-                case "windows" -> "MS Gothic"; // BIZ UDGothic Consolas
-                case "mac" -> "Menlo"; // Monaco
+                case "windows" -> "MS Gothic"; // MS Gothic | BIZ UDGothic Consolas
+                case "mac" -> "Menlo"; // Menlo | Monaco
                 default -> "monospace";
             };
             return props.getOrDefault("fontName", defaultValue).toString();

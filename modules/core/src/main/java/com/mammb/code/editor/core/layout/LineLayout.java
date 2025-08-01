@@ -152,6 +152,9 @@ public interface LineLayout {
      */
     int xToCol(int line, double x);
 
+
+    int xToCaretCol(int line, double x);
+
     /**
      * Get the standard a character width.
      * @return the standard a character width

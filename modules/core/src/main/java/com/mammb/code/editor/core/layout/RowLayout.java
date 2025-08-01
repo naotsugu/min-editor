@@ -99,6 +99,11 @@ class RowLayout implements ContentLayout {
     }
 
     @Override
+    public int xToCaretCol(int line, double x) {
+        return xToCol(line, x);
+    }
+
+    @Override
     public int homeColOnRow(int line) {
         return 0;
     }

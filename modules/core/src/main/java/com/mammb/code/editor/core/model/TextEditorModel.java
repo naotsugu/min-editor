@@ -285,7 +285,7 @@ public class TextEditorModel implements EditorModel {
                     ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
             line = Math.min(withShortcut ? line + screenLayout.screenLineSize() / 2 : line + 1, max);
-            c.at(screenLayout.lineToRow(line), screenLayout.xToCol(line, x), x);
+            c.at(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x), x);
         }
     }
 
@@ -298,7 +298,7 @@ public class TextEditorModel implements EditorModel {
                     ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
             line = Math.max(withShortcut ? line - screenLayout.screenLineSize() / 2 : line - 1, 0);
-            c.at(screenLayout.lineToRow(line), screenLayout.xToCol(line, x), x);
+            c.at(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x), x);
         }
     }
 
@@ -388,7 +388,7 @@ public class TextEditorModel implements EditorModel {
             carets.add(stream
                     .mapToObj(line -> Point.of(
                             screenLayout.lineToRow(line),
-                            screenLayout.xToCol(line, caretX)))
+                            screenLayout.xToCaretCol(line, caretX)))
                     .toList());
         } else {
             int line = screenLayout.yToLineOnScreen(y - marginTop);

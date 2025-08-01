@@ -233,6 +233,11 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
+    public int xToCaretCol(int line, double x) {
+        return layout.xToCaretCol(line, x);
+    }
+
+    @Override
     public int yToLineOnScreen(double y) {
         return Math.clamp(topLine + (int) (y / layout.lineHeight()), 0, lineSize() - 1);
     }

@@ -54,6 +54,10 @@ public sealed interface Command {
 
     record SaveAs() implements Command {}
 
+    record SaveWithLF() implements Command {}
+
+    record SaveWithCRLF() implements Command {}
+
     record New() implements Command {}
 
     record Reload() implements Command {}
@@ -161,6 +165,8 @@ public sealed interface Command {
             case Class<?> c when c == OpenChoose.class -> "open file selection dialog";
             case Class<?> c when c == Save.class -> "save the current file";
             case Class<?> c when c == SaveAs.class -> "save under a different name";
+            case Class<?> c when c == SaveWithLF.class -> "save with LF line breaks";
+            case Class<?> c when c == SaveWithCRLF.class -> "save with CRLF line breaks.";
             case Class<?> c when c == New.class -> "open new tab";
             case Class<?> c when c == Reload.class -> "reload content";
             case Class<?> c when c == TabClose.class -> "close current tab";

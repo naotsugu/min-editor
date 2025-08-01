@@ -169,6 +169,22 @@ class WrapLayout implements ContentLayout {
     }
 
     @Override
+    public int xToCaretCol(int line, double x) {
+        SubText subText = text(line);
+        SubRange subRange = subRange(line);
+        int len = subText.indexTo(x);
+        int col = subRange.fromIndex() + len;
+        if (subRange.isWrapped() &&
+            subRange.length() == len &&
+            x < subText.width() + fm.standardCharWidth()) {
+            return subText.indexLeftBound(col);
+        } else {
+            return col;
+        }
+    }
+
+
+    @Override
     public double xOnLayout(int line, int col) {
         SubText subText = text(line);
         return subText.widthTo(col - subText.fromIndex());

@@ -338,6 +338,8 @@ public class EditorPane extends ContentPane {
             case OpenChoose _         -> openWithChooser();
             case Save _               -> save();
             case SaveAs _             -> saveAs();
+            case SaveWithLF _         -> saveWithLineBreak("LF");
+            case SaveWithCRLF _       -> saveWithLineBreak("CRLF");
             case New _                -> newEdit();
             case Reload _             -> reload();
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
@@ -576,6 +578,10 @@ public class EditorPane extends ContentPane {
         Path path = file.toPath();
         model().save(path);
         nameProperty.setValue(model().query(Query.modelName));
+    }
+
+    private void saveWithLineBreak(String endingSymbol) {
+        // TODO
     }
 
     private EditorPane newEdit() {
