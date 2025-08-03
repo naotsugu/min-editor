@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -127,6 +128,13 @@ public interface EditorModel {
      * @param path the path of a file
      */
     void save(Path path);
+
+    /**
+     * Saves the target content to a file with the specified character set and row-ending symbol.
+     * @param charset the character set to use for encoding the content
+     * @param rowEndingSymbol the symbol to use for row endings (e.g., "\n", "\r\n")
+     */
+    void saveWith(Charset charset, String rowEndingSymbol);
 
     /**
      * Reloads the editor's content and state.

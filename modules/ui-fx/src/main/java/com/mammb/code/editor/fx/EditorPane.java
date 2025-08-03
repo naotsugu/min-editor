@@ -59,6 +59,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.io.File;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -338,8 +339,8 @@ public class EditorPane extends ContentPane {
             case OpenChoose _         -> openWithChooser();
             case Save _               -> save();
             case SaveAs _             -> saveAs();
-            case SaveWithLF _         -> saveWithLineBreak("LF");
-            case SaveWithCRLF _       -> saveWithLineBreak("CRLF");
+            case SaveWithLF _         -> saveWith(null, "LF");
+            case SaveWithCRLF _       -> saveWith(null, "CRLF");
             case New _                -> newEdit();
             case Reload _             -> reload();
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
@@ -580,8 +581,13 @@ public class EditorPane extends ContentPane {
         nameProperty.setValue(model().query(Query.modelName));
     }
 
-    private void saveWithLineBreak(String endingSymbol) {
-        // TODO
+    private void saveWith(String charsetSymbol, String endingSymbol) {
+        if (model().query(Query.contentPath).isEmpty()) {
+            saveAs();
+        }
+        model().saveWith(
+            (charsetSymbol == null) ? null : Charset.forName(charsetSymbol, null),
+            endingSymbol);
     }
 
     private EditorPane newEdit() {

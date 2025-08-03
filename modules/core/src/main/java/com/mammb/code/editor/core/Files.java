@@ -15,13 +15,20 @@
  */
 package com.mammb.code.editor.core;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.file.CopyOption;
 import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -103,8 +110,7 @@ public interface Files {
         }
     }
 
-    static Path write(Path path, Iterable<? extends CharSequence> lines,
-            OpenOption... options) {
+    static Path write(Path path, Iterable<? extends CharSequence> lines, OpenOption... options) {
         try {
             return java.nio.file.Files.write(path, lines, options);
         } catch (IOException e) {
@@ -122,6 +128,65 @@ public interface Files {
 
     static boolean exists(Path path, LinkOption... options) {
         return java.nio.file.Files.exists(path, options);
+    }
+
+    static Path createTempFile(Path dir, String prefix, String suffix, FileAttribute<?>... attrs) {
+        try {
+            return java.nio.file.Files.createTempFile(dir, prefix, suffix, attrs);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static Path move(Path source, Path target, CopyOption... options) {
+        try {
+            return java.nio.file.Files.move(source, target, options);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static void writeWith(Path path, Charset charset, Charset newCharset, String lineSeparator) {
+        Path destinationPath = createTempFile(path.getParent(), path.getFileName().toString(), null);
+        if (lineSeparator != null && !lineSeparator.isBlank()) {
+            writeWith(path, charset, destinationPath, newCharset);
+        } else {
+            writeWith(path, charset, destinationPath, newCharset, lineSeparator);
+        }
+        move(destinationPath, path, StandardCopyOption.REPLACE_EXISTING);
+    }
+
+    private static void writeWith(
+            Path sourcePath, Charset sourceCharset,
+            Path destinationPath, Charset destinationCharset) {
+        try (Reader reader = java.nio.file.Files.newBufferedReader(sourcePath, sourceCharset);
+             Writer writer = java.nio.file.Files.newBufferedWriter(destinationPath, destinationCharset)) {
+            char[] buffer = new char[8192];
+            int charsRead;
+            while ((charsRead = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, charsRead);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void writeWith(
+            Path sourcePath, Charset sourceCharset,
+            Path destinationPath, Charset destinationCharset, String lineSeparator) {
+        try (BufferedReader reader = java.nio.file.Files.newBufferedReader(sourcePath, sourceCharset);
+             Writer writer = java.nio.file.Files.newBufferedWriter(destinationPath, destinationCharset)) {
+            reader.lines().forEachOrdered(line -> {
+                try {
+                    writer.write(line);
+                    writer.write(lineSeparator);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

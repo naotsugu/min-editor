@@ -41,6 +41,11 @@ import com.mammb.code.editor.core.syntax.handler.PasteHandler;
 import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +56,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import com.mammb.code.editor.core.model.ActionRecords.*;
+import com.mammb.code.piecetable.RowEnding;
 
 /**
  * The TextEditorModel represents the core functionality and state of a text editor.
@@ -598,6 +604,25 @@ public class TextEditorModel implements EditorModel {
         if (syntaxChanged) {
             decorate = Decorate.of(Syntax.pathOf(path));
         }
+    }
+
+    @Override
+    public void saveWith(Charset charset, String rowEndingSymbol) {
+        Path path = content.path().orElseThrow();
+        Charset currentCharset = content.query(Query.charset);
+        Charset newCharset = (charset == null) ? currentCharset : charset;
+
+        RowEnding currentRowEnding = RowEnding.of(content.query(Query.rowEndingSymbol));
+        RowEnding newRowEnding = (rowEndingSymbol == null || rowEndingSymbol.isBlank())
+            ? currentRowEnding : RowEnding.of(rowEndingSymbol);
+
+        if (Objects.equals(currentRowEnding, newRowEnding) && Objects.equals(currentCharset, newCharset)) {
+            return;
+        }
+        save(path);
+        close();
+        Files.writeWith(path, currentCharset, newCharset, newRowEnding.str());
+        reload();
     }
 
     @Override
