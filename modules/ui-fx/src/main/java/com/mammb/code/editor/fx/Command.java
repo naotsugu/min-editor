@@ -16,6 +16,8 @@
 package com.mammb.code.editor.fx;
 
 import java.lang.reflect.ParameterizedType;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -58,7 +60,7 @@ public sealed interface Command {
 
     record SaveWithCRLF() implements Command {}
 
-    record SaveWithCharset() implements RequireArgs {}
+    record SaveWithCharset() implements RequireArgs1<Charset> {}
 
     record New() implements Command {}
 
@@ -289,6 +291,7 @@ public sealed interface Command {
             case Class<?> c when c == Boolean.class -> toBoolean(args, index);
             case Class<?> c when c == Integer.class -> toInt(args, index);
             case Class<?> c when c == Character.class -> toChar(args, index);
+            case Class<?> c when c == Charset.class -> toCharset(args, index);
             case null, default -> null;
         };
     }
@@ -329,6 +332,20 @@ public sealed interface Command {
             Objects.equals(arg, "yes") ||
             Objects.equals(arg, "y") ||
             Objects.equals(arg, "1");
+    }
+
+    private static Charset toCharset(String[] args, int index) {
+        if (args.length - 1 < index || args[index] == null) {
+            return null;
+        }
+        String arg = args[index].toLowerCase().replace("-", "").replace("_", "");
+        return switch (arg) {
+            case "utf8" -> StandardCharsets.UTF_8;
+            case "utf16" -> StandardCharsets.UTF_16;
+            case "utf32" -> StandardCharsets.UTF_32;
+            case "windows31j", "ms932", "sjis", "shiftjis" -> Charset.forName("Windows-31J");
+            default -> Charset.forName(args[index]);
+        };
     }
 
 }
