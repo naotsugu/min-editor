@@ -60,7 +60,7 @@ public sealed interface Command {
 
     record SaveWithCRLF() implements Command {}
 
-    record SaveWithCharset() implements RequireArgs1<Charset> {}
+    record SaveWithCharset(Charset charset) implements Command, RequireArgs1<Charset> {}
 
     record New() implements Command {}
 
@@ -344,7 +344,7 @@ public sealed interface Command {
             case "utf16" -> StandardCharsets.UTF_16;
             case "utf32" -> StandardCharsets.UTF_32;
             case "windows31j", "ms932", "sjis", "shiftjis" -> Charset.forName("Windows-31J");
-            default -> Charset.forName(args[index]);
+            default -> Charset.forName(args[index], null);
         };
     }
 

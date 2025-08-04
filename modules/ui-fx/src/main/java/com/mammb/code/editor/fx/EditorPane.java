@@ -341,6 +341,7 @@ public class EditorPane extends ContentPane {
             case SaveAs _             -> saveAs();
             case SaveWithLF _         -> saveWith(null, "LF");
             case SaveWithCRLF _       -> saveWith(null, "CRLF");
+            case SaveWithCharset cmd  -> saveWith(cmd.charset(), null);
             case New _                -> newEdit();
             case Reload _             -> reload();
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
@@ -581,13 +582,11 @@ public class EditorPane extends ContentPane {
         nameProperty.setValue(model().query(Query.modelName));
     }
 
-    private void saveWith(String charsetSymbol, String endingSymbol) {
+    private void saveWith(Charset charset, String endingSymbol) {
         if (model().query(Query.contentPath).isEmpty()) {
             saveAs();
         }
-        model().saveWith(
-            (charsetSymbol == null) ? null : Charset.forName(charsetSymbol, null),
-            endingSymbol);
+        model().saveWith(charset, endingSymbol);
     }
 
     private EditorPane newEdit() {
