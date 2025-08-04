@@ -135,6 +135,12 @@ public interface Text {
 
     /**
      * Get the index moved to the right bound of the specified index.
+     * <pre>
+     *   | a | b | c | 1 | 2 |
+     *       ^       |
+     *       index   |
+     *              right bound
+     * </pre>
      * @param index the base index
      * @return the index moved to the right bound
      */
@@ -169,6 +175,12 @@ public interface Text {
 
     /**
      * Get the index moved to the left bound of the specified index.
+     * <pre>
+     *   | a | b | 1 | 2 | 3 |
+     *           |       ^
+     *           |       index
+     *           left bound
+     * </pre>
      * @param index the base index
      * @return the index moved to the left bound
      */

@@ -173,13 +173,12 @@ class WrapLayout implements ContentLayout {
         SubText subText = text(line);
         SubRange subRange = subRange(line);
         int len = subText.indexTo(x);
-        int col = subRange.fromIndex() + len;
         if (subRange.isWrapped() &&
             subRange.length() == len &&
             x < subText.width() + fm.standardCharWidth()) {
-            return subText.indexLeftBound(col);
+            return subRange.fromIndex() + subText.indexLeft(len);
         } else {
-            return col;
+            return subRange.fromIndex() + len;
         }
     }
 
