@@ -96,12 +96,14 @@ public interface EditingFunctions {
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
 
+    Function<String, String> htmlBrToLf = text -> text == null ? "" : text.replaceAll("(?i)<br\\b[^>]*>", "\n");
+
     /** remove tag like. */
     Function<String, String> removeHtmlTags = text -> text == null ? "" : text.replaceAll("<.*?>", "");
 
     /** html to markdown. */
-    Function<String, String> htmlToMarkdown = text -> text == null ? "" : removeHtmlTags.apply(
-        MarkdownTables.fromHtml(htmlAnchorToMarkdownLink(text)));
+    Function<String, String> htmlToMarkdown = text -> text == null ? "" : markdownTable
+        .andThen(htmlBrToLf).andThen(removeHtmlTags).apply(htmlAnchorToMarkdownLink(text));
 
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;

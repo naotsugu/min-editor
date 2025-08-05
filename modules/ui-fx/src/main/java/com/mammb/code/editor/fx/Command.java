@@ -340,7 +340,7 @@ public sealed interface Command {
         }
         String arg = args[index].toLowerCase().replace("-", "").replace("_", "");
         return switch (arg) {
-            case "utf8" -> StandardCharsets.UTF_8;
+            case "utf8", "utf" -> StandardCharsets.UTF_8;
             case "utf16" -> StandardCharsets.UTF_16;
             case "utf32" -> StandardCharsets.UTF_32;
             case "windows31j", "ms932", "sjis", "shiftjis" -> Charset.forName("Windows-31J");
