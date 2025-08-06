@@ -469,7 +469,7 @@ public class EditorPane extends ContentPane {
         // save previous session
         sessionHistory.push(model().getSession());
 
-        close();
+        close(false);
         model = openInBackground
             ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, context)
             : model.with(session);
@@ -515,7 +515,9 @@ public class EditorPane extends ContentPane {
         boolean canDiscard = true;
         if (model().query(Query.modified)) {
             var ret = FxDialog.confirmation(getScene().getWindow(),
-                    "Are you sure you want to discard your changes?").showAndWait();
+                    "Are you sure you want to discard your changes?\n" +
+                    model().query(Query.contentPath).map(Path::getFileName).map(Path::toString).orElse("") + " has been modified.")
+                .showAndWait();
             canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;
         }
         return canDiscard;
@@ -541,12 +543,12 @@ public class EditorPane extends ContentPane {
     }
 
     @Override
-    Optional<Session> close() {
+    Optional<Session> close(boolean force) {
         EditorModel m = model();
         if (m == null) return Optional.empty();
         Optional<Session> restorableSession;
         if (m.query(Query.contentPath).isPresent()) {
-            restorableSession = canClose()
+            restorableSession = force || canClose()
                 ? Optional.of(m.getSession())
                 : Optional.empty();
         } else {

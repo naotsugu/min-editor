@@ -198,7 +198,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
         context.config().clearSessions();
         List<Session> sessions = tabs.stream()
-            .map(tab -> tab.pane().close())
+            .map(tab -> tab.pane().close(true))
             .filter(Optional::isPresent)
             .map(Optional::get)
             .toList();
@@ -351,7 +351,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     if (!contentPane.canClose()) {
                         e.consume();
                     }
-                    contentPane.close();
+                    contentPane.close(false);
                 } else {
                     log.log(ERROR, "An unexpected node configuration has been detected.");
                 }

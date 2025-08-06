@@ -34,7 +34,7 @@ public abstract class ContentPane extends StackPane {
 
     abstract boolean canClose();
 
-    abstract Optional<Session> close();
+    abstract Optional<Session> close(boolean force);
 
     abstract void setCloseListener(Consumer<ContentPane> closeListener);
 
