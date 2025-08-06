@@ -19,6 +19,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.MULTILINE;
 
 /**
  * The MarkdownTables.
@@ -26,10 +28,10 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
  */
 class MarkdownTables {
 
-    private static final Pattern tablePattern   = Pattern.compile("<table.*?>(.*?)</table>", CASE_INSENSITIVE);
-    private static final Pattern captionPattern = Pattern.compile("<caption.*?>(.*?)</caption>", CASE_INSENSITIVE);
-    private static final Pattern recordPattern  = Pattern.compile("<tr.*?>(.*?)</tr>", CASE_INSENSITIVE);
-    private static final Pattern colPattern     = Pattern.compile("<t[hd ].*?>(.*?)</t[hd]>", CASE_INSENSITIVE);
+    private static final Pattern tablePattern   = Pattern.compile("<table.*?>(.*?)</table>", CASE_INSENSITIVE | DOTALL);
+    private static final Pattern captionPattern = Pattern.compile("<caption.*?>(.*?)</caption>", CASE_INSENSITIVE | DOTALL);
+    private static final Pattern recordPattern  = Pattern.compile("<tr.*?>(.*?)</tr>", CASE_INSENSITIVE | DOTALL);
+    private static final Pattern colPattern     = Pattern.compile("<t[hd ].*?>(.*?)</t[hd]>", CASE_INSENSITIVE | DOTALL);
 
     /**
      * Convert HTML tables to markdown tables.
@@ -37,8 +39,6 @@ class MarkdownTables {
      * @return markdown text
      */
     static String fromHtml(String html) {
-
-        html = html.replaceAll("\\R", "");
 
         var sb = new StringBuilder(html.length());
         int index = 0;
