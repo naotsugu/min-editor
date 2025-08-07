@@ -15,6 +15,11 @@
  */
 package com.mammb.code.editor.bootstrap;
 
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.Locale;
 import com.mammb.code.editor.fx.AppLauncher;
 
@@ -23,6 +28,9 @@ import com.mammb.code.editor.fx.AppLauncher;
  * @author Naotsugu Kobayashi
  */
 public class Main {
+
+    /** The logger. */
+    private static final System.Logger log = System.getLogger(Main.class.getName());
 
     /**
      * Launch application.
@@ -43,6 +51,45 @@ public class Main {
         // launch application
         new AppLauncher().launch(args);
 
+    }
+
+    /**
+     * Gets the base path of the application, regardless of the execution environment (JAR, IDE, or jlink).
+     * <ul>
+     *     <li>If the application is executed from the IDE: min-editor/modules/bootstrap/build/classes/java/main</li>
+     *     <li>If the application is executed from the JAR: min-editor/modules/bootstrap/build/libs/bootstrap.jar</li>
+     *     <li>If the application is executed from the IMAGE: min-editor/modules/bootstrap/build/image</li>
+     *     <li>If the application is executed from the MAC APP: /Applications/min-editor.app/Contents/runtime/Contents/Home</li>
+     *     <li>If the application is executed from the WIN APP: c:\Program Files\min-editor</li>
+     * </ul>
+     * @return A Path object. Instead of returning null if resolution fails, this method throws an exception.
+     * @throws IllegalStateException if the path could not be determined.
+     */
+    public static Path applicationPath() {
+        try {
+
+            // Get the CodeSource of the current class.
+            ProtectionDomain domain = Main.class.getProtectionDomain();
+            CodeSource source = domain.getCodeSource();
+
+            if (source == null) {
+                log.log(System.Logger.Level.ERROR, "CodeSource is null. Cannot determine application path.");
+                return null;
+            }
+
+            URL location = source.getLocation();
+            String protocol = location.getProtocol();
+
+            return switch (protocol) {
+                case "file" -> Path.of(location.toURI());
+                case "jrt" -> Path.of(System.getProperty("java.home"));
+                default -> null;
+            };
+
+        } catch (URISyntaxException e) {
+            log.log(System.Logger.Level.ERROR, "Failed to convert URL to URI.", e);
+            return null;
+        }
     }
 
 }
