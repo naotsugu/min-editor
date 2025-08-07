@@ -28,6 +28,17 @@ import static org.junit.jupiter.api.Assertions.*;
 class TextTest {
 
     @Test
+    void length() {
+        assertEquals(0, Text.of(0, "",      new double[] { 0 }, 1).length());
+        assertEquals(1, Text.of(0, "a",     new double[] { 0 }, 1).length());
+        assertEquals(3, Text.of(0, "a𠀋",   new double[] { 0 }, 1).length());
+        assertEquals(1, Text.of(0, "\n",    new double[] { 0 }, 1).length());
+        assertEquals(2, Text.of(0, "\r\n",  new double[] { 0 }, 1).length());
+        assertEquals(2, Text.of(0, "a\n",   new double[] { 0 }, 1).length());
+        assertEquals(3, Text.of(0, "a\r\n", new double[] { 0 }, 1).length());
+    }
+
+    @Test
     void isEndWithLf() {
         assertEquals(false, Text.of(0, "",      new double[] { 0 }, 1).isEndWithLf());
         assertEquals(false, Text.of(0, "a",     new double[] { 0 }, 1).isEndWithLf());

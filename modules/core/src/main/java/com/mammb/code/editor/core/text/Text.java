@@ -84,6 +84,11 @@ public interface Text {
 
     /**
      * Get the number of characters excluding newline codes.
+     * <pre>
+     *     | a | b | c |\r |\n | -> textLength: 3
+     *     | a | b | c |\n |     -> textLength: 3
+     *     | a | b | c |         -> textLength: 3
+     * </pre>
      * @return the number of characters excluding newline codes
      */
     default int textLength() {
@@ -226,8 +231,8 @@ public interface Text {
     }
 
     /**
-     * Get whether this text is empty or not.
-     * @return {@code true} if, and only if, {@link #length()} is {@code 0}.
+     * Checks if the underlying value is empty.
+     * @return {@code true} if the value is empty
      */
     default boolean isEmpty() {
         return value().isEmpty();
