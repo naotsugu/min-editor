@@ -642,7 +642,14 @@ public class TextEditorModel implements EditorModel {
         Path stashPath = ctx.config().stashPath().resolve(
             String.join("_", UUID.randomUUID().toString(),
             query(Query.modelName).plain()));
-        content.write(stashPath);
+
+        try {
+            content.write(stashPath);
+        } catch (Exception ignore) {
+            log.log(System.Logger.Level.ERROR, "failed to write stash file: " + stashPath, ignore);
+            return Session.empty();
+        }
+
         return Session.of(
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),

@@ -555,7 +555,6 @@ public class EditorPane extends ContentPane {
             restorableSession = (m.query(Query.size) > 0)
                 ? Optional.of(m.stash())
                 : Optional.empty();
-
         }
         m.close();
         return restorableSession;
