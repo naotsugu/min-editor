@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Locale;
-import java.util.Optional;
+import java.util.Objects;
 import com.mammb.code.editor.fx.AppLauncher;
 
 /**
@@ -49,8 +49,12 @@ public class Main {
                 "java.util.logging.SimpleFormatter.format",
                 "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
 
-        System.setProperty("min-editor.root",
-            Optional.ofNullable(applicationPath()).map(Path::toString).orElse(""));
+        if (System.getProperty("app.home") == null) {
+            Path home = applicationHomePath();
+            if (home != null) {
+                System.setProperty("app.home", home.toString());
+            }
+        }
 
         // launch application
         new AppLauncher().launch(args);
@@ -59,17 +63,10 @@ public class Main {
 
     /**
      * Gets the base path of the application, regardless of the execution environment (JAR, IDE, or jlink).
-     * <ul>
-     *     <li>If the application is executed from the IDE: min-editor/modules/bootstrap/build/classes/java/main</li>
-     *     <li>If the application is executed from the JAR: min-editor/modules/bootstrap/build/libs/bootstrap.jar</li>
-     *     <li>If the application is executed from the IMAGE: min-editor/modules/bootstrap/build/image</li>
-     *     <li>If the application is executed from the MAC APP: /Applications/min-editor.app/Contents/runtime/Contents/Home</li>
-     *     <li>If the application is executed from the WIN APP: c:\Program Files\min-editor</li>
-     * </ul>
      * @return A Path object. Instead of returning null if resolution fails, this method throws an exception.
      * @throws IllegalStateException if the path could not be determined.
      */
-    public static Path applicationPath() {
+    public static Path applicationHomePath() {
         try {
 
             // Get the CodeSource of the current class.
@@ -84,11 +81,35 @@ public class Main {
             URL location = source.getLocation();
             String protocol = location.getProtocol();
 
-            return switch (protocol) {
-                case "file" -> Path.of(location.toURI());
-                case "jrt" -> Path.of(System.getProperty("java.home"));
-                default -> null;
-            };
+            if (Objects.equals(protocol, "file")) {
+                // executed from the IDE: min-editor/modules/bootstrap/build/classes/java/main
+                // executed from the JAR: min-editor/modules/bootstrap/build/libs/bootstrap.jar
+                return Path.of(location.toURI());
+
+            } else if (Objects.equals(protocol, "jrt")) {
+                Path path = Path.of(System.getProperty("java.home"));
+                if (!path.toString().contains("runtime")) {
+                    // executed from the IMAGE: min-editor/modules/bootstrap/build/image
+                    return path;
+                }
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.contains("windows")) {
+                    // executed from the Win app: min-editor/runtime
+                    return path.getParent();
+                }
+                if (os.contains("mac")) {
+                    // executed from the Mac app: min-editor.app/Contents/runtime/Contents/Home
+                    return path.getParent().getParent().getParent().getParent();
+                }
+                if (os.contains("linux")) {
+                    // executed from the Linux app: min-editor/lib/runtime
+                    return path.getParent().getParent();
+                }
+            } else {
+                return null;
+            }
+
+            return null;
 
         } catch (URISyntaxException e) {
             log.log(System.Logger.Level.ERROR, "Failed to convert URL to URI.", e);
