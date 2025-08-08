@@ -34,13 +34,14 @@ import java.util.stream.Collectors;
 public class AppContext implements Context {
 
     /** The configuration instance. */
-    private AppConfig appConfig = new AppConfig();
+    private final AppConfig appConfig;
 
     /** The application. */
     private final Application app;
 
     public AppContext(Application app) {
         this.app = app;
+        this.appConfig = new AppConfig();
     }
 
     @Override
@@ -162,7 +163,7 @@ public class AppContext implements Context {
                     Files.deleteIfExists(file.toPath());
                 }
             } catch (IOException ignore) {
-                log.log(System.Logger.Level.WARNING, ignore.getMessage());
+                log.log(System.Logger.Level.WARNING, ignore.getMessage(), ignore);
             }
         }
     }

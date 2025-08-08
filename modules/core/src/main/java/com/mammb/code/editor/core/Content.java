@@ -247,11 +247,15 @@ public interface Content {
      * @return the content created from the session paths or an empty content if no valid path is found
      */
     static Content of(Session session) {
-        Content content = session.hasAltPath()
-            ? Content.of(Files.readAllBytes(session.altPath()), session.hasPath() ? session.path().getFileName().toString() : null)
-            : session.hasPath()
-            ? Content.of(session.path())
-            : Content.of();
+        Content content;
+        if (session.hasAltPath() && Files.exists(session.altPath())) {
+            content = Content.of(Files.readAllBytes(session.altPath()),
+                session.hasPath() ? session.path().getFileName().toString() : null);
+        } else if (session.hasPath() && Files.exists(session.path())) {
+            content = Content.of(session.path());
+        } else {
+            content = Content.of();
+        }
         return session.readonly() ? new RoTextContent(content) : content;
     }
 

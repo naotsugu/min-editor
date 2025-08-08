@@ -49,6 +49,7 @@ public class Main {
                 "java.util.logging.SimpleFormatter.format",
                 "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
 
+        // setup an application home directory
         if (System.getProperty("app.home") == null) {
             Path home = applicationHomePath();
             if (home != null) {
@@ -66,7 +67,7 @@ public class Main {
      * @return A Path object. Instead of returning null if resolution fails, this method throws an exception.
      * @throws IllegalStateException if the path could not be determined.
      */
-    public static Path applicationHomePath() {
+    private static Path applicationHomePath() {
         try {
 
             // Get the CodeSource of the current class.
