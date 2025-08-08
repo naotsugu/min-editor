@@ -516,7 +516,7 @@ public class EditorPane extends ContentPane {
         if (model().query(Query.modified)) {
             var ret = FxDialog.confirmation(getScene().getWindow(),
                     "Are you sure you want to discard your changes?\n" +
-                    model().query(Query.contentPath).map(Path::getFileName).map(Path::toString).orElse("") + " has been modified.")
+                    model().query(Query.modelName).plain() + " has been modified.")
                 .showAndWait();
             canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;
         }
