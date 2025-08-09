@@ -43,6 +43,7 @@ import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -278,6 +279,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void moveCaretDown(boolean withSelect, boolean withShortcut) {
+        List<Point> points = new ArrayList<>();
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -287,11 +289,17 @@ public class TextEditorModel implements EditorModel {
                     ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
             line = Math.min(line + 1, max);
-            c.at(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x), x);
+            if (withShortcut) {
+                points.add(Point.of(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x)));
+            } else {
+                c.at(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x), x);
+            }
         }
+        carets.add(points);
     }
 
     private void moveCaretUp(boolean withSelect, boolean withShortcut) {
+        List<Point> points = new ArrayList<>();
         for (Caret c : carets.carets()) {
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
@@ -300,8 +308,13 @@ public class TextEditorModel implements EditorModel {
                     ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
             line = Math.max(line - 1, 0);
-            c.at(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x), x);
+            if (withShortcut) {
+                points.add(Point.of(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x)));
+            } else {
+                c.at(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x), x);
+            }
         }
+        carets.add(points);
     }
 
     private void moveCaretHome(boolean withSelect) {
