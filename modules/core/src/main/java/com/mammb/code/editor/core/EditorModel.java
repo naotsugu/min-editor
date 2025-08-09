@@ -138,8 +138,9 @@ public interface EditorModel {
 
     /**
      * Reloads the editor's content and state.
+     * @param charset the character set to use for encoding the content (nullable)
      */
-    void reload();
+    void reload(Charset charset);
 
     /**
      * Closes the editor and releases any associated resources.

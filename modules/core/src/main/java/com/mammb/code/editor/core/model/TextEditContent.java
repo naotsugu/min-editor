@@ -29,6 +29,7 @@ import com.mammb.code.editor.core.model.QueryRecords.ModelName;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.Size;
+import com.mammb.code.piecetable.CharsetMatch;
 import com.mammb.code.piecetable.Pos;
 import com.mammb.code.piecetable.TextEdit;
 import java.nio.charset.Charset;
@@ -252,7 +253,9 @@ public class TextEditContent implements Content {
         Path path = edit.path();
         if (path == null) return;
         edit.close();
-        edit = TextEdit.of(path);
+        edit = (charset == null)
+            ? TextEdit.of(path)
+            : TextEdit.of(path, CharsetMatch.of(charset));
         flushes.clear();
         modified = false;
         lastModifiedTime = Files.lastModifiedTime(path);

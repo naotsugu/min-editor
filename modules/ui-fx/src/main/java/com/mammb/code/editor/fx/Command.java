@@ -60,11 +60,11 @@ public sealed interface Command {
 
     record SaveWithCRLF() implements Command {}
 
-    record SaveWithCharset(Charset charset) implements Command, RequireArgs1<Charset> {}
+    record SaveWith(Charset charset) implements Command, RequireArgs1<Charset> {}
 
     record New() implements Command {}
 
-    record Reload() implements Command {}
+    record ReloadWith(Charset charset) implements Command, RequireArgs1<Charset> {}
 
     record TabClose() implements Command {}
 
@@ -160,7 +160,8 @@ public sealed interface Command {
             case Class<?> c when c == SelectRegex.class -> "[regex to select]";
             case Class<?> c when c == GoTo.class -> "[line number]";
             case Class<?> c when c == WrapLine.class -> "[wrap width(number of characters)]";
-            case Class<?> c when c == SaveWithCharset.class -> "[charset name]";
+            case Class<?> c when c == SaveWith.class -> "[charset name]";
+            case Class<?> c when c == ReloadWith.class -> "[charset name]";
             case null, default -> "";
         };
     }
@@ -171,10 +172,10 @@ public sealed interface Command {
             case Class<?> c when c == Save.class -> "save the current file";
             case Class<?> c when c == SaveAs.class -> "save under a different name";
             case Class<?> c when c == SaveWithLF.class -> "save with LF line breaks";
-            case Class<?> c when c == SaveWithCRLF.class -> "save with CRLF line breaks.";
-            case Class<?> c when c == SaveWithCharset.class -> "save with charset.";
+            case Class<?> c when c == SaveWithCRLF.class -> "save with CRLF line breaks";
+            case Class<?> c when c == SaveWith.class -> "save with charset";
             case Class<?> c when c == New.class -> "open new tab";
-            case Class<?> c when c == Reload.class -> "reload content";
+            case Class<?> c when c == ReloadWith.class -> "reload content with charset";
             case Class<?> c when c == TabClose.class -> "close current tab";
             case Class<?> c when c == Config.class -> "open current config";
             case Class<?> c when c == ToLowerCase.class -> "converts the selected text to lower case";

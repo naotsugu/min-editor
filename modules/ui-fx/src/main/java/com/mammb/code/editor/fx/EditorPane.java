@@ -341,9 +341,9 @@ public class EditorPane extends ContentPane {
             case SaveAs _             -> saveAs();
             case SaveWithLF _         -> saveWith(null, "LF");
             case SaveWithCRLF _       -> saveWith(null, "CRLF");
-            case SaveWithCharset cmd  -> saveWith(cmd.charset(), null);
+            case SaveWith cmd  -> saveWith(cmd.charset(), null);
             case New _                -> newEdit();
-            case Reload _             -> reload();
+            case ReloadWith cmd       -> reload(cmd.charset());
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> open(Path.of(cmd.path()));
@@ -596,8 +596,8 @@ public class EditorPane extends ContentPane {
         return editorPane;
     }
 
-    private void reload() {
-        model.reload();
+    private void reload(Charset charset) {
+        model.reload(charset);
     }
 
     private EditorPane newEditStage() {

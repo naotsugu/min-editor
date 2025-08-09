@@ -618,12 +618,16 @@ public class TextEditorModel implements EditorModel {
         save(path);
         close();
         Files.writeWith(path, currentCharset, newCharset, newRowEnding.str());
-        reload();
+        reload(newCharset);
     }
 
     @Override
-    public void reload() {
-        content.reload();
+    public void reload(Charset charset) {
+        if (charset == null) {
+            content.reload();
+        } else {
+            content.reloadWith(charset);
+        }
         moveTo(0);
         escape();
     }

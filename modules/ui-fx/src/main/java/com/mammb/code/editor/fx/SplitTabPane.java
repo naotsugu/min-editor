@@ -43,7 +43,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.io.File;
 import java.lang.System.Logger;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -212,7 +211,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         for (TabAndPane tabAndPane : tabs) {
             if (tabAndPane.pane().externalChanged()
                 && tabAndPane.pane() instanceof EditorPane editorPane) {
-                editorPane.execute(new Command.Reload());
+                editorPane.execute(new Command.ReloadWith(null));
             }
         }
     }
