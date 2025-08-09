@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Optional;
@@ -28,8 +29,8 @@ import com.mammb.code.editor.core.model.QueryRecords.*;
 public interface Query<R> {
 
     Query<String> rowEndingSymbol = new RowEndingSymbol();
-    Query<java.nio.charset.Charset> charset = new Charset();
-    Query<String> charsetSymbol = new CharsetSymbol();
+    Query<Charset> charCode = new CharCode();
+    Query<String> charCodeSymbol = new CharCodeSymbol();
     Query<Boolean> modified = new Modified();
     Query<byte[]> bom = new Bom();
     Query<Point> caretPoint = new CaretPoint();

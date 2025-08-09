@@ -101,7 +101,7 @@ class Contents {
      * @return a byte array representation of the right text at the specified point
      */
     static byte[] bytesAt(Content content, Point p) {
-        return lrTextAt(content, p).right().getBytes(content.query(Query.charset));
+        return lrTextAt(content, p).right().getBytes(content.query(Query.charCode));
     }
 
 }

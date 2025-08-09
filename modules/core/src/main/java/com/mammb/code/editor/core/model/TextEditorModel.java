@@ -41,10 +41,6 @@ import com.mammb.code.editor.core.syntax.handler.PasteHandler;
 import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -609,7 +605,7 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void saveWith(Charset charset, String rowEndingSymbol) {
         Path path = content.path().orElseThrow();
-        Charset currentCharset = content.query(Query.charset);
+        Charset currentCharset = content.query(Query.charCode);
         Charset newCharset = (charset == null) ? currentCharset : charset;
 
         RowEnding currentRowEnding = RowEnding.of(content.query(Query.rowEndingSymbol));

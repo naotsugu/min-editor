@@ -62,6 +62,7 @@ import static java.lang.System.Logger.Level.ERROR;
  */
 public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane> {
 
+    /** the logger. */
     private static final Logger log = System.getLogger(SplitTabPane.class.getName());
 
     private static final AtomicReference<Tab> draggedTab = new AtomicReference<>();
@@ -216,11 +217,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
     }
 
-    public boolean contains(Path path) {
-        return tabAndPanes().stream()
-            .anyMatch(tap -> tap.pane().nameProperty().get().canonical().equals(path.toString()));
-    }
-
     @Override
     public void setParent(SplitTabPane parent) {
         this.parent = parent;
@@ -243,8 +239,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         List<Node> children = (parent instanceof SplitPane splitPane)
             ? splitPane.getItems()
             : (parent instanceof Pane pane)
-            ? pane.getChildren()
-            : List.of(parent);
+                ? pane.getChildren()
+                : List.of(parent);
 
         for (Node node : children) {
             if (node instanceof TabPane tabPane) {

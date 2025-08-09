@@ -430,7 +430,7 @@ public class EditorPane extends ContentPane {
             p.row() + 1 + ":" + p.col(),
             HexFormat.of().formatHex(model.query(Query.bytesAtCaret)),
             model.query(Query.rowEndingSymbol),
-            model.query(Query.charsetSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
+            model.query(Query.charCodeSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
 
         nameProperty.setValue(model.query(Query.modelName));
     }

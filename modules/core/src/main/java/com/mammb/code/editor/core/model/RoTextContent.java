@@ -22,6 +22,7 @@ import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -157,6 +158,11 @@ public class RoTextContent implements Content {
     @Override
     public void reload() {
         pear.reload();
+    }
+
+    @Override
+    public void reload(Charset charset) {
+        pear.reload(charset);
     }
 
     @Override

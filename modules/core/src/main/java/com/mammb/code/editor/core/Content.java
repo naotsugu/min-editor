@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -146,6 +147,12 @@ public interface Content {
      * Reloads the content, refreshing its state to reflect any external changes.
      */
     void reload();
+
+    /**
+     * Reloads the content, refreshing its state to reflect any external changes using the specified character set.
+     * @param charset the character set to be used for reloading the content
+     */
+    void reload(Charset charset);
 
     /**
      * Writes the contents to the specified path.

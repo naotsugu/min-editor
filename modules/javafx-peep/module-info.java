@@ -26,82 +26,82 @@ module javafx.graphics {
     exports javafx.stage;
 
     exports com.sun.glass.ui to
-        javafx.media,
-        javafx.web;
+        javafx.media;
+        //javafx.web;
     exports com.sun.glass.utils to
-        javafx.media,
-        javafx.web;
+        javafx.media;
+        //javafx.web;
     exports com.sun.javafx.application to
         java.base,
-        javafx.controls,
-        javafx.web;
+        javafx.controls;
+        //javafx.web;
     exports com.sun.javafx.css to
         javafx.controls;
     exports com.sun.javafx.font to
-        code.editor.ui.fx,
-        javafx.web;
+        code.editor.ui.fx;
+        //javafx.web;
     exports com.sun.javafx.geom to
         code.editor.ui.fx,
         javafx.controls,
-        javafx.media,
-        javafx.web;
+        javafx.media;
+        //javafx.web;
     exports com.sun.javafx.geom.transform to
         code.editor.ui.fx,
         javafx.controls,
-        javafx.media,
-        javafx.web;
-    exports com.sun.javafx.iio to
-        javafx.web;
+        javafx.media;
+        //javafx.web;
+    //exports com.sun.javafx.iio to
+    //    javafx.web;
     exports com.sun.javafx.menu to
         javafx.controls;
     exports com.sun.javafx.scene to
         javafx.controls,
-        javafx.media,
-        javafx.web;
+        javafx.media;
+        //javafx.web;
     exports com.sun.javafx.scene.input to
-        javafx.controls,
-        javafx.web;
+        javafx.controls;
+        //javafx.web;
     exports com.sun.javafx.scene.layout to
         code.editor.ui.fx,
-        javafx.controls,
-        javafx.web;
+        javafx.controls;
+        //javafx.web;
     exports com.sun.javafx.scene.text to
         code.editor.ui.fx,
-        javafx.controls,
-        javafx.web;
+        javafx.controls;
+        //javafx.web;
     exports com.sun.javafx.scene.shape to
         javafx.controls;
     exports com.sun.javafx.scene.traversal to
-        javafx.controls,
-        javafx.web;
+        javafx.controls;
+        //javafx.web;
     exports com.sun.javafx.sg.prism to
-        javafx.media,
-        javafx.web;
+        javafx.media;
+        //javafx.web;
     exports com.sun.javafx.stage to
         javafx.controls;
     exports com.sun.javafx.text to
-        code.editor.ui.fx,
-        javafx.web;
+        code.editor.ui.fx;
+        //javafx.web;
     exports com.sun.javafx.tk to
         code.editor.ui.fx,
         javafx.controls,
-        javafx.media,
-        javafx.web;
+        javafx.media;
+        //javafx.web;
     exports com.sun.javafx.util to
         javafx.controls,
-        javafx.media,
-        javafx.web;
+        javafx.media;
+        //javafx.web;
     exports com.sun.prism to
-        javafx.media,
-        javafx.web;
-    exports com.sun.prism.image to
-        javafx.web;
-    exports com.sun.prism.paint to
-        javafx.web;
-    exports com.sun.scenario.effect to
-        javafx.web;
-    exports com.sun.scenario.effect.impl to
-        javafx.web;
-    exports com.sun.scenario.effect.impl.prism to
-        javafx.web;
+        javafx.media;
+        //javafx.web;
+    //exports com.sun.prism.image to
+    //    javafx.web;
+    //exports com.sun.prism.paint to
+    //    javafx.web;
+    //exports com.sun.scenario.effect to
+    //    javafx.web;
+    //exports com.sun.scenario.effect.impl to
+    //    javafx.web;
+    //exports com.sun.scenario.effect.impl.prism to
+    //    javafx.web;
 }

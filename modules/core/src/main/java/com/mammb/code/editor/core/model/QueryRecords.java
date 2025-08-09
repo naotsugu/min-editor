@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core.model;
 
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.Optional;
@@ -32,9 +33,9 @@ public interface QueryRecords {
     /** The query of a row ending symbol. */
     record RowEndingSymbol() implements Query<String> { }
     /** The query of a charset. */
-    record Charset() implements Query<java.nio.charset.Charset> { }
+    record CharCode() implements Query<Charset> { }
     /** The query of a charset symbol. */
-    record CharsetSymbol() implements Query<String> { }
+    record CharCodeSymbol() implements Query<String> { }
     /** The query of modified. */
     record Modified() implements Query<Boolean> { }
     /** The query of bom. */
