@@ -163,11 +163,11 @@ public sealed interface Action
     static Action caretDown(boolean withSelect, boolean withShortcut) {
         return new CaretDown(withSelect, withShortcut, System.currentTimeMillis());
     }
-    static Action pageUp(boolean withSelect) {
-        return new PageUp(withSelect, System.currentTimeMillis());
+    static Action pageUp(boolean withSelect, boolean withShortcut) {
+        return new PageUp(withSelect, withShortcut, System.currentTimeMillis());
     }
-    static Action pageDown(boolean withSelect) {
-        return new PageDown(withSelect, System.currentTimeMillis());
+    static Action pageDown(boolean withSelect, boolean withShortcut) {
+        return new PageDown(withSelect, withShortcut, System.currentTimeMillis());
     }
 
 }

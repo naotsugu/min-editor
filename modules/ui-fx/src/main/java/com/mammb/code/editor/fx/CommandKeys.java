@@ -40,8 +40,8 @@ public class CommandKeys {
         else if (e.getCode() == DOWN) return of(Action.caretDown(e.isShiftDown(), e.isShortcutDown()));
         else if (e.getCode() == HOME || SC_HOME.match(e)) return of(Action.home(e.isShiftDown()));
         else if (e.getCode() == END || SC_END.match(e)) return of(Action.end(e.isShiftDown()));
-        else if (e.getCode() == PAGE_UP) return of(Action.pageUp(e.isShiftDown()));
-        else if (e.getCode() == PAGE_DOWN) return of(Action.pageDown(e.isShiftDown()));
+        else if (e.getCode() == PAGE_UP) return of(Action.pageUp(e.isShiftDown(), e.isShortcutDown()));
+        else if (e.getCode() == PAGE_DOWN) return of(Action.pageDown(e.isShiftDown(), e.isShortcutDown()));
         else if (e.getCode() == TAB) return of(Action.tab(e.isShiftDown()));
         else if (e.getCode() == ESCAPE) return of(Action.escape());
         else if (e.getCode() == DELETE) return of(Action.delete());
