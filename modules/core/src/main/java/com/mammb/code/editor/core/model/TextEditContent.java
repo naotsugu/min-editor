@@ -31,6 +31,7 @@ import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.Size;
 import com.mammb.code.piecetable.Pos;
 import com.mammb.code.piecetable.TextEdit;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
@@ -243,11 +244,11 @@ public class TextEditContent implements Content {
 
     @Override
     public void reload() {
-        reload(edit.charset());
+        reloadWith(edit.charset());
     }
 
     @Override
-    public void reload(java.nio.charset.Charset charset) {
+    public void reloadWith(Charset charset) {
         Path path = edit.path();
         if (path == null) return;
         edit.close();

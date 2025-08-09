@@ -152,7 +152,7 @@ public interface Content {
      * Reloads the content, refreshing its state to reflect any external changes using the specified character set.
      * @param charset the character set to be used for reloading the content
      */
-    void reload(Charset charset);
+    void reloadWith(Charset charset);
 
     /**
      * Writes the contents to the specified path.

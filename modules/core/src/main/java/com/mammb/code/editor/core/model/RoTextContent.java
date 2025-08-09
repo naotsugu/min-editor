@@ -161,8 +161,8 @@ public class RoTextContent implements Content {
     }
 
     @Override
-    public void reload(Charset charset) {
-        pear.reload(charset);
+    public void reloadWith(Charset charset) {
+        pear.reloadWith(charset);
     }
 
     @Override
