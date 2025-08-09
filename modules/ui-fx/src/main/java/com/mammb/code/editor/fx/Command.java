@@ -160,8 +160,8 @@ public sealed interface Command {
             case Class<?> c when c == SelectRegex.class -> "[regex to select]";
             case Class<?> c when c == GoTo.class -> "[line number]";
             case Class<?> c when c == WrapLine.class -> "[wrap width(number of characters)]";
-            case Class<?> c when c == SaveWith.class -> "[charset name]";
-            case Class<?> c when c == ReloadWith.class -> "[charset name]";
+            case Class<?> c when c == SaveWith.class -> "[charset name (e.g. utf-8 | sjis)]";
+            case Class<?> c when c == ReloadWith.class -> "[charset name (e.g. utf-8 | sjis)]";
             case null, default -> "";
         };
     }
