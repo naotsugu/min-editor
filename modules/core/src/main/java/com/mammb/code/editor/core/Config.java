@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.core;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +97,11 @@ public interface Config {
                 case "mac" -> "Menlo"; // Menlo | Monaco
                 default -> "monospace";
             };
-            return props.getOrDefault("fontName", defaultValue).toString();
+            return get("fontName", defaultValue);
+        }
+
+        public void fontName(String fontName) {
+            put("fontName", fontName);
         }
 
         @Override
@@ -113,6 +116,10 @@ public interface Config {
                 default -> "15";
             };
             return Double.parseDouble(props.getOrDefault("fontSize", defaultValue).toString());
+        }
+
+        public void fontSize(double fontSize) {
+            put("fontSize", fontSize);
         }
 
         @Override
