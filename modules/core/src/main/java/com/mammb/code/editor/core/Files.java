@@ -111,6 +111,14 @@ public interface Files {
         }
     }
 
+    static List<String> readAllLines(Path path, Charset cs) {
+        try {
+            return java.nio.file.Files.readAllLines(path, cs);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static Path write(Path path, Iterable<? extends CharSequence> lines, OpenOption... options) {
         try {
             return java.nio.file.Files.write(path, lines, options);

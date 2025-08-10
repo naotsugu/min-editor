@@ -15,6 +15,9 @@
  */
 package com.mammb.code.editor.core.editing;
 
+import com.mammb.code.editor.core.Files;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -160,6 +163,13 @@ public class Diff {
         static <T> Source<T> of(List<T> list) {
             return new Source<T>() {
                 @Override public T get(int index) { return list.get(index); }
+                @Override public int size() { return list.size(); }
+            };
+        }
+        static Source<CharSequence> of(Path path, Charset cs) {
+            return new Source<>() {
+                final List<String> list = Files.readAllLines(path, cs);
+                @Override public CharSequence get(int index) { return list.get(index); }
                 @Override public int size() { return list.size(); }
             };
         }
