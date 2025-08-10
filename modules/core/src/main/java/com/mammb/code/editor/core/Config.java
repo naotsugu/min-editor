@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -82,26 +83,41 @@ public interface Config {
         /** The path of props. */
         private final Path propsPath;
 
+        /** The default font name. */
+        private String defaultFontName;
+
+        /** The default font size. */
+        private double defaultFontSize;
+
         /**
          * Constructor.
          * @param path the path of props
          */
         protected AbstractConfig(Path path) {
-            this.propsPath = path;
-        }
-
-        @Override
-        public String fontName() {
-            var defaultValue = switch (Context.platform) {
+            propsPath = path;
+            defaultFontName = switch (Context.platform) {
                 case "windows" -> "MS Gothic"; // MS Gothic | BIZ UDGothic Consolas
                 case "mac" -> "Menlo"; // Menlo | Monaco
                 default -> "monospace";
             };
-            return get("fontName", defaultValue);
+            defaultFontSize = switch (Context.platform) {
+                case "mac" -> 14;
+                default -> 15;
+            };
+        }
+
+        @Override
+        public String fontName() {
+            return get("fontName", defaultFontName);
         }
 
         public void fontName(String fontName) {
             put("fontName", fontName);
+        }
+
+        public void defaultFontName(String defaultFontName) {
+            this.defaultFontName = Objects.isNull(defaultFontName) || defaultFontName.isBlank()
+                ? this.defaultFontName : defaultFontName;
         }
 
         @Override
@@ -111,15 +127,15 @@ public interface Config {
 
         @Override
         public double fontSize() {
-            var defaultValue = switch (Context.platform) {
-                case "mac" -> "14";
-                default -> "15";
-            };
-            return Double.parseDouble(props.getOrDefault("fontSize", defaultValue).toString());
+            return Double.parseDouble(props.getOrDefault("fontSize", defaultFontSize).toString());
         }
 
         public void fontSize(double fontSize) {
             put("fontSize", fontSize);
+        }
+
+        public void defaultFontSize(double defaultFontSize) {
+            this.defaultFontSize = defaultFontSize;
         }
 
         @Override

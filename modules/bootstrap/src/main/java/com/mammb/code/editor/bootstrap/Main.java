@@ -85,8 +85,12 @@ public class Main {
             if (Objects.equals(protocol, "file")) {
                 // executed from the IDE: min-editor/modules/bootstrap/build/classes/java/main
                 // executed from the JAR: min-editor/modules/bootstrap/build/libs/bootstrap.jar
-                return Path.of(location.toURI());
-
+                Path path = Path.of(location.toURI());
+                if (path.toString().endsWith(".jar")) {
+                    return path.getParent();
+                } else {
+                    return Path.of(location.toURI());
+                }
             } else if (Objects.equals(protocol, "jrt")) {
                 Path path = Path.of(System.getProperty("java.home"));
                 if (!path.toString().contains("runtime")) {

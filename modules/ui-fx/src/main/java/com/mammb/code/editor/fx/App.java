@@ -46,6 +46,10 @@ public class App extends Application {
 
         var ctx = new AppContext(this);
 
+        // if additional fonts are added, set them as the default font
+        ctx.config().defaultFontName(
+            loadFonts(System.getProperty("app.home")).orElse(null));
+
         double posX = ctx.config().windowPositionX();
         double posY = ctx.config().windowPositionY();
         if (posX >= 0 && posY >= 0) {
@@ -94,7 +98,9 @@ public class App extends Application {
         return path;
     }
 
-    private Optional<String> loadFonts(Path path) {
+    private Optional<String> loadFonts(String pathString) {
+        if (pathString == null || pathString.isBlank()) return Optional.empty();
+        Path path = Path.of(pathString);
         if (!Files.exists(path)) return Optional.empty();
         return Files.list(path).filter(Files::isReadableFile)
             .filter(p -> p.getFileName().toString().endsWith(".ttf"))
