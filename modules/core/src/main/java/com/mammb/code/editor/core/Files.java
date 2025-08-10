@@ -17,6 +17,7 @@ package com.mammb.code.editor.core;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -127,6 +128,7 @@ public interface Files {
     }
 
     static boolean exists(Path path, LinkOption... options) {
+        if (Objects.isNull(path)) return false;
         return java.nio.file.Files.exists(path, options);
     }
 
@@ -145,6 +147,15 @@ public interface Files {
             throw new RuntimeException(e);
         }
     }
+
+    static InputStream newInputStream(Path path, OpenOption... options) {
+        try {
+            return java.nio.file.Files.newInputStream(path, options);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     static void writeWith(Path path, Charset charset, Charset newCharset, String lineSeparator) {
         Path destinationPath = createTempFile(path.getParent(), path.getFileName().toString(), null);

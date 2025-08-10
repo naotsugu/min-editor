@@ -15,16 +15,21 @@
  */
 package com.mammb.code.editor.fx;
 
+import java.awt.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.Objects;
-import com.mammb.code.editor.core.Files;
+import java.util.Optional;
+import java.util.stream.Stream;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import com.sun.javafx.tk.Toolkit;
 import com.mammb.code.editor.core.Theme;
+import com.mammb.code.editor.core.Files;
 
 /**
  * The App class serves as the entry point for the JavaFX application.
@@ -32,6 +37,9 @@ import com.mammb.code.editor.core.Theme;
  * @author Naotsugu Kobayashi
  */
 public class App extends Application {
+
+    /** The logger. */
+    private static final System.Logger log = System.getLogger(App.class.getName());
 
     @Override
     public void start(Stage stage) {
@@ -84,6 +92,24 @@ public class App extends Application {
         Path path = Path.of(params.getRaw().getLast());
         if (!Files.isReadableFile(path)) return null;
         return path;
+    }
+
+    private Optional<String> loadFonts(Path path) {
+        if (!Files.exists(path)) return Optional.empty();
+        return Files.list(path).filter(Files::isReadableFile)
+            .filter(p -> p.getFileName().toString().endsWith(".ttf"))
+            .map(p -> {
+                try (var is = Files.newInputStream(p)) {
+                    return Toolkit.getToolkit().getFontLoader().loadFont(is, 0, false);
+                } catch (Exception ignore) {
+                    log.log(System.Logger.Level.WARNING, ignore);
+                }
+                return null;
+            })
+            .filter(Objects::nonNull)
+            .flatMap(Stream::of)
+            .map(Font::getName)
+            .sorted().findFirst();
     }
 
     /** The app css. */

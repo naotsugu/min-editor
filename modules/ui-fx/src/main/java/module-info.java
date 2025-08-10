@@ -22,5 +22,6 @@ module code.editor.ui.fx {
     requires javafx.graphics;
     requires javafx.controls;
     requires code.editor.core;
+    requires java.desktop;
     exports com.mammb.code.editor.fx;
 }
