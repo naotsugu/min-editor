@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core.editing;
 
+import com.mammb.code.editor.core.Content;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -107,6 +108,10 @@ public interface EditingFunctions {
 
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
+
+    Function<Content, String> diff = content -> {
+        Diff.fullLines()
+    };
 
     // -- helper --------------------------------------------------------------
 

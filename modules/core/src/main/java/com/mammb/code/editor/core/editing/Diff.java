@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * The diff.
@@ -117,20 +118,32 @@ public class Diff {
         return changes;
     }
 
-    private static List<CharSequence> text(final List<Change> changes,
-            final Source<CharSequence> org, final Source<CharSequence> rev) {
+    private static List<CharSequence> text(List<Change> changes, final Source<CharSequence> org, final Source<CharSequence> rev) {
 
         final String FMT_D = " %04d       : -  %s" + "\n";
         final String FMT_I = "       %04d : +  %s" + "\n";
         final String FMT_N = " %04d  %04d :    %s" + "\n";
 
-        List<CharSequence> ret = new ArrayList<>();
+        List<CharSequence> list = new ArrayList<>();
+        unify(changes, org, rev, line -> {
+            if (line.both()) {
+                list.add(FMT_N.formatted(line.i, line.j, line.text));
+            } else if (line.left()) {
+                list.add(FMT_D.formatted(line.i, line.text));
+            } else if (line.right()) {
+                list.add(FMT_I.formatted(line.j, line.text));
+            }
+        });
+        return list;
+    }
+
+    private static <T> void unify(List<Change> changes, final Source<T> org, final Source<T> rev, final Consumer<Line<T>> consumer) {
 
         int i = 0;
         int j = 0;
         while (i < org.size() || j < rev.size()) {
             if (changes.isEmpty()) {
-                ret.add(String.format(FMT_N, i, j, rev.get(j++)));
+                consumer.accept(new Line<>(i, j, rev.get(j++)));
                 i++;
                 continue;
             }
@@ -138,24 +151,24 @@ public class Diff {
             if (c.type == Change.Type.CHANGE && (c.orgFrom <= i && i < c.orgTo || c.revFrom <= j && j < c.revTo)) {
                 if (c.orgTo - 1 == i && c.revTo - 1 == j) changes.removeFirst();
                 if (org.size() > i) {
-                    ret.add(String.format(FMT_D, i, org.get(i++)));
+                    consumer.accept(new Line<>(i, -1, org.get(i++)));
                 }
                 if (rev.size() > j) {
-                    ret.add(String.format(FMT_I, j, rev.get(j++)));
+                    consumer.accept(new Line<>(-1, j, rev.get(j++)));
                 }
             } else if (c.type == Change.Type.INSERT && c.revFrom <= j && j < c.revTo) {
                 if (c.revTo - 1 == j) changes.removeFirst();
-                ret.add(String.format(FMT_I, j, rev.get(j++)));
+                consumer.accept(new Line<>(-1, j, rev.get(j++)));
             } else if (c.type == Change.Type.DELETE && c.orgFrom <= i && i < c.orgTo) {
                 if (c.orgTo - 1 == i) changes.removeFirst();
-                ret.add(String.format(FMT_D, i, org.get(i++)));
+                consumer.accept(new Line<>(i, -1, org.get(i++)));
             } else {
-                ret.add(String.format(FMT_N, i, j, rev.get(j++)));
+                consumer.accept(new Line<>(i, j, rev.get(j++)));
                 i++;
             }
         }
-        return ret;
     }
+
 
     public interface Source<T> {
         T get(int index);
@@ -192,6 +205,12 @@ public class Diff {
 
     private record Change(Type type, int orgFrom, int orgTo, int revFrom, int revTo) {
         enum Type { CHANGE, DELETE, INSERT }
+    }
+
+    record Line<T> (int i, int j, T text) {
+        boolean left() { return i >= 0; }
+        boolean right() { return j >= 0; }
+        boolean both() { return i >= 0 && j >= 0; }
     }
 
 }
