@@ -195,6 +195,10 @@ public class EditorPane extends ContentPane {
         model().updateFonts(draw.fontMetrics());
     }
 
+    private EditorPane diff(Path path) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     private EditorPane duplicate() {
         return stash().map(session -> {
             var dup = new EditorPane(context);
@@ -381,6 +385,7 @@ public class EditorPane extends ContentPane {
             case ZoomIn _             -> zoom( 1);
             case ZoomOut _            -> zoom(-1);
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
+            case Diff cmd             -> openRight(diff(Path.of(cmd.path())));
             case Duplicate _          -> openRight(duplicate());
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));

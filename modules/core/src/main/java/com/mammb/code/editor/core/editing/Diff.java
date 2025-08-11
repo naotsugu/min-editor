@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core.editing;
 
+import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Files;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -28,7 +29,6 @@ import java.util.function.Consumer;
  * @author Naotsugu Kobayashi
  */
 public class Diff {
-
 
     public static List<CharSequence> fullLines(final Source<CharSequence> org, final Source<CharSequence> rev) {
         List<Change> changes = buildChanges(buildPath(org, rev));
@@ -185,6 +185,12 @@ public class Diff {
                 final List<String> list = Files.readAllLines(path, cs);
                 @Override public CharSequence get(int index) { return list.get(index); }
                 @Override public int size() { return list.size(); }
+            };
+        }
+        static Source<CharSequence> of(Content content) {
+            return new Source<>() {
+                @Override public CharSequence get(int index) { return content.getText(index); }
+                @Override public int size() { return content.rows(); }
             };
         }
     }

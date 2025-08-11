@@ -16,11 +16,13 @@
 package com.mammb.code.editor.core.editing;
 
 import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.Query;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -108,6 +110,16 @@ public interface EditingFunctions {
 
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
+
+    Function<Content, String> diff = content -> Diff.fullLines(
+            Diff.Source.of(content.path().get(), content.query(Query.charCode)),
+            Diff.Source.of(content))
+        .stream().collect(Collectors.joining(content.query(Query.rowEndingSymbol)));
+
+    BiFunction<Content, Path, String> diff2 = (content, path) -> Diff.fullLines(
+            Diff.Source.of(content),
+            Diff.Source.of(path, content.query(Query.charCode)))
+        .stream().collect(Collectors.joining(content.query(Query.rowEndingSymbol)));
 
     // -- helper --------------------------------------------------------------
 
