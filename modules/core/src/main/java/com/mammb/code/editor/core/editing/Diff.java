@@ -29,6 +29,7 @@ import java.util.function.Consumer;
  */
 public class Diff {
 
+
     public static List<CharSequence> fullLines(final Source<CharSequence> org, final Source<CharSequence> rev) {
         List<Change> changes = buildChanges(buildPath(org, rev));
         changes.forEach(System.out::println);

@@ -109,10 +109,6 @@ public interface EditingFunctions {
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
 
-    Function<Content, String> diff = content -> {
-        Diff.fullLines()
-    };
-
     // -- helper --------------------------------------------------------------
 
     private static String calc(String text) {
