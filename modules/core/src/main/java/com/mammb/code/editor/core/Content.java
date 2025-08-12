@@ -255,7 +255,7 @@ public interface Content {
      */
     static Content of(Session session) {
         Content content;
-        if (session.hasAltPath() && Files.exists(session.altPath())) {
+        if (Files.exists(session.altPath())) {
             content = Content.of(Files.readAllBytes(session.altPath()),
                 session.hasPath() ? session.path().getFileName().toString() : null);
         } else if (session.hasPath() && Files.exists(session.path())) {

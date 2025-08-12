@@ -200,11 +200,7 @@ public class EditorPane extends ContentPane {
     }
 
     private EditorPane duplicate() {
-        return stash().map(session -> {
-            var dup = new EditorPane(context);
-            dup.model = dup.model.with(session.asReadonly());
-            return dup;
-        }).orElse(null);
+        return stash().map(session -> new EditorPane(context).with(session.asReadonly())).orElse(null);
     }
 
     private void searchInBrowser(String query) {
@@ -345,7 +341,7 @@ public class EditorPane extends ContentPane {
             case SaveAs _             -> saveAs();
             case SaveWithLF _         -> saveWith(null, "LF");
             case SaveWithCRLF _       -> saveWith(null, "CRLF");
-            case SaveWith cmd  -> saveWith(cmd.charset(), null);
+            case SaveWith cmd         -> saveWith(cmd.charset(), null);
             case New _                -> newEdit();
             case ReloadWith cmd       -> reload(cmd.charset());
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
@@ -671,5 +667,10 @@ public class EditorPane extends ContentPane {
 
     SessionHistory sessionHistory() { return sessionHistory; }
     private EditorModel model() { return model; }
+
+    private EditorPane with(Session session) {
+        model = model.with(session);
+        return this;
+    }
 
 }

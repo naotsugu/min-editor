@@ -16,6 +16,8 @@
 package com.mammb.code.editor.core;
 
 import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
@@ -211,7 +213,8 @@ public interface Session {
      * @param caretCol the column index at the caret
      * @return a new {@link Session}
      */
-    static Session of(Path path, FileTime lastModifiedTime, Path altPath, boolean readonly,
+    static Session of(Path path, FileTime lastModifiedTime, Path altPath,
+        boolean readonly,
         int topLine, int lineWidth, int caretRow, int caretCol) {
         return new SessionRecord(
             path,

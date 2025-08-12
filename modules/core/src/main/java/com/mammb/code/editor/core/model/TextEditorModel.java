@@ -808,9 +808,11 @@ public class TextEditorModel implements EditorModel {
             model.wrap(session.lineWidth());
         }
         model.screenLayout.setScreenSize(screenLayout.screenWidth(), screenLayout.screenHeight());
+        // init scroll and caret position
         model.scrollAt(Math.clamp(session.topLine(), 0, model.screenLayout.lineSize() - 1));
         int row = Math.clamp(session.caretRow(), 0, model.screenLayout.rowSize() - 1);
         model.carets.getFirst().at(row, Math.clamp(session.caretCol(), 0, model.screenLayout.rowTextAt(row).textLength()));
+
         return model;
     }
 
