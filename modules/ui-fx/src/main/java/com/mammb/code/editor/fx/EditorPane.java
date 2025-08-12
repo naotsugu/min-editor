@@ -541,10 +541,8 @@ public class EditorPane extends ContentPane {
     }
 
     Optional<Session> stash() {
-        final EditorModel m = model();
-        return (m.query(Query.size) > 0)
-            ? Optional.of(m.stash())
-            : Optional.empty();
+        var session = model().getSession();
+        return session.isEmpty() ? Optional.empty() : Optional.of(session);
     }
 
     @Override
@@ -557,9 +555,8 @@ public class EditorPane extends ContentPane {
                 ? Optional.of(m.getSession())
                 : Optional.empty();
         } else {
-            restorableSession = (m.query(Query.size) > 0)
-                ? Optional.of(m.stash())
-                : Optional.empty();
+            var session = m.stash();
+            restorableSession = session.isEmpty() ? Optional.empty() : Optional.of(session);
         }
         m.close();
         return restorableSession;

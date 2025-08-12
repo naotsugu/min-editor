@@ -105,6 +105,15 @@ public interface Session {
         return altPath() != null;
     }
 
+    /**
+     * Checks whether the session is empty. A session is considered empty
+     * if it does not have a path and does not have an alternate path.
+     * @return {@code true} if the session is empty, {@code false} otherwise
+     */
+    default boolean isEmpty() {
+        return !hasPath() && !hasAltPath();
+    }
+
     default Session asReadonly() {
         return new SessionRecord(
             path(),
@@ -188,10 +197,6 @@ public interface Session {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    static Session altOf(Path path) {
-        return new SessionRecord(null, null, path, false, 0, 0, 0, 0, System.currentTimeMillis());
     }
 
     /**

@@ -652,6 +652,11 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session stash() {
+
+        if (query(Query.size) <= 0) {
+            return Session.empty();
+        }
+
         Path stashPath = ctx.config().stashPath().resolve(
             String.join("_", UUID.randomUUID().toString(),
             query(Query.modelName).plain()));
