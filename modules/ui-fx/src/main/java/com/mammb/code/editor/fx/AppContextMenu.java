@@ -17,6 +17,7 @@ package com.mammb.code.editor.fx;
 
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Query;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.scene.Node;
@@ -124,6 +125,7 @@ public class AppContextMenu extends ContextMenu {
                             menuItem.fire();
                         }
                     }
+                    Platform.runLater(this::hide);
                 }
                 default -> keyEvent.consume();
             }
