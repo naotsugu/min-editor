@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -31,6 +32,7 @@ import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Text;
+import javafx.scene.text.FontSmoothingType;
 
 /**
  * The draw.
@@ -52,6 +54,11 @@ public class FxDraw implements Draw {
      */
     public FxDraw(GraphicsContext gc, Font font) {
         this.gc = gc;
+        if (Objects.equals(font.getName(), "MS Gothic")) {
+            this.gc.setFontSmoothingType(FontSmoothingType.GRAY);
+        } else {
+            this.gc.setFontSmoothingType(FontSmoothingType.LCD);
+        }
         this.gc.setFont(font);
         this.fontMetrics = FxFontMetrics.of(font);
     }
