@@ -111,16 +111,6 @@ public interface EditingFunctions {
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
 
-    Function<Content, String> diff = content -> Diff.fullLines(
-            Diff.Source.of(content.path().get(), content.query(Query.charCode)),
-            Diff.Source.of(content))
-        .stream().collect(Collectors.joining(content.query(Query.rowEndingSymbol)));
-
-    BiFunction<Content, Path, String> diff2 = (content, path) -> Diff.fullLines(
-            Diff.Source.of(content),
-            Diff.Source.of(path, content.query(Query.charCode)))
-        .stream().collect(Collectors.joining(content.query(Query.rowEndingSymbol)));
-
     // -- helper --------------------------------------------------------------
 
     private static String calc(String text) {
