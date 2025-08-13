@@ -16,8 +16,12 @@
 package com.mammb.code.editor.core;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
@@ -28,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -111,9 +116,14 @@ public interface Files {
         }
     }
 
-    static List<String> readAllLines(Path path, Charset cs) {
+    static List<String> readStrictAllLines(Path path, Charset cs) {
         try {
-            return java.nio.file.Files.readAllLines(path, cs);
+            var ret = java.nio.file.Files.readAllLines(path, cs);
+            if (endsWithNewline(path)) {
+                ret = new ArrayList<>(ret);
+                ret.add("");
+            }
+            return ret;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -125,6 +135,18 @@ public interface Files {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    static Path write(Path path, Iterable<? extends CharSequence> lines, Charset cs, String nl) {
+        try (OutputStream out = java.nio.file.Files.newOutputStream(path);
+             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, cs))) {
+            for (CharSequence line: lines) {
+                writer.append(line).append(nl);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return path;
     }
 
     static void delete(Path path) {
@@ -208,4 +230,16 @@ public interface Files {
         }
     }
 
+    private static boolean endsWithNewline(Path path) {
+        long size = Files.size(path);
+        if (Files.size(path) == 0) {
+            return false;
+        }
+        try (RandomAccessFile raf = new RandomAccessFile(path.toFile(), "r")) {
+            raf.seek(size - 1);
+            return raf.read() == '\n';
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

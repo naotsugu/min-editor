@@ -194,6 +194,8 @@ public interface EditorModel {
      */
     Session getSession();
 
+    Session getDiffSession(Path path);
+
     /**
      * Associates the given {@link Session} with this {@link EditorModel}.
      * @param session the session to associate with this editor model

@@ -55,7 +55,7 @@ public record SourcePair<T>(Source<T> org, Source<T> rev) {
         }
 
         static Source<String> of(Path path, Charset cs) {
-            return Source.of(Files.readAllLines(path, cs));
+            return Source.of(Files.readStrictAllLines(path, cs));
         }
 
     }

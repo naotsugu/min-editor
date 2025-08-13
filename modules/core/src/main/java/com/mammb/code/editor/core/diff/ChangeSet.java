@@ -30,29 +30,42 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
     }
 
     public List<String> unifyTexts() {
+        List<String> list = new ArrayList<>();
+        unify(line -> {
+            if (line.both()) {
+                list.add("  " + line.text);
+            } else if (line.left()) {
+                list.add("- " + line.text);
+            } else if (line.right()) {
+                list.add("+ " + line.text);
+            }
+        });
+        return list;
+    }
+
+    public List<String> unifyTextsWithNumbers() {
 
         int n = Math.max(4, String.valueOf(source.sizeMax()).length());
 
         String SP = " ";
         String NUM = "%0" + n + "d";
         String TAB = " ".repeat(n);
-        final String FMT_D = SP + NUM + SP + TAB + SP + " : -  %s";
-        final String FMT_I = SP + TAB + SP + NUM + SP + " : +  %s";
-        final String FMT_N = SP + NUM + SP + NUM + SP + " :    %s";
+        String FMT_D = SP + NUM + SP.repeat(2) + TAB + " : -  %s";
+        String FMT_I = SP + TAB + SP.repeat(2) + NUM + " : +  %s";
+        String FMT_N = SP + NUM + SP.repeat(2) + NUM + " :    %s";
 
         List<String> list = new ArrayList<>();
         unify(line -> {
             if (line.both()) {
-                list.add(FMT_N.formatted(line.i, line.j, line.text));
+                list.add(FMT_N.formatted(line.i + 1, line.j + 1, line.text));
             } else if (line.left()) {
-                list.add(FMT_D.formatted(line.i, line.text));
+                list.add(FMT_D.formatted(line.i + 1, line.text));
             } else if (line.right()) {
-                list.add(FMT_I.formatted(line.j, line.text));
+                list.add(FMT_I.formatted(line.j + 1, line.text));
             }
         });
         return list;
     }
-
 
     private void unify(Consumer<Line<T>> consumer) {
 

@@ -35,6 +35,7 @@ import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.diff.Diff;
+import com.mammb.code.editor.core.diff.SourcePair;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
@@ -42,6 +43,9 @@ import com.mammb.code.editor.core.syntax.handler.PasteHandler;
 import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
+import java.io.BufferedWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -800,6 +804,23 @@ public class TextEditorModel implements EditorModel {
             content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
+    }
+
+    @Override
+    public Session getDiffSession(Path path) {
+        var current = new SourcePair.Source<String>() {
+            @Override public String get(int index) { return content.getText(index).replaceAll("\\R", ""); }
+            @Override public int size() { return content.rows(); }
+        };
+        var cs = query(Query.charCode);
+        var source = (path == null)
+            ? new SourcePair<>(SourcePair.Source.of(content.path().get(), cs), current)
+            : new SourcePair<>(current, SourcePair.Source.of(path, cs));
+        Path stashPath = ctx.config().stashPath().resolve(
+            String.join("_", UUID.randomUUID().toString()) + ".diff");
+        Files.write(stashPath, Diff.run(source).unifyTexts(), cs, "\n");
+
+        return Session.of(stashPath, null, null, false, 0, 0, 0, 0);
     }
 
     @Override

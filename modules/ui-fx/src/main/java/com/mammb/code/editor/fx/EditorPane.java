@@ -195,8 +195,9 @@ public class EditorPane extends ContentPane {
         model().updateFonts(draw.fontMetrics());
     }
 
-    private EditorPane diff(Path path) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    private EditorPane diff(String pathString) {
+        Path path = (pathString == null || pathString.isBlank()) ? null : Path.of(pathString);
+        return new EditorPane(context).with(model().getDiffSession(path));
     }
 
     private EditorPane duplicate() {
@@ -381,7 +382,7 @@ public class EditorPane extends ContentPane {
             case ZoomIn _             -> zoom( 1);
             case ZoomOut _            -> zoom(-1);
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff cmd             -> openRight(diff(Path.of(cmd.path())));
+            case Diff cmd             -> openRight(diff(cmd.path()));
             case Duplicate _          -> openRight(duplicate());
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));

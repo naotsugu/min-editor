@@ -189,6 +189,7 @@ public interface Syntax {
             case "yaml", "yml" -> "yaml";
             case "txt" -> "text";
             case "shell", "sh", "bash" -> "shell";
+            case "diff", "patch" -> "diff";
             default -> extension;
         };
     }
