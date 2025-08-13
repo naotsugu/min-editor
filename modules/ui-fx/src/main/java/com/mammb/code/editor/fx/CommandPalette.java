@@ -222,8 +222,6 @@ public class CommandPalette extends Dialog<Command> {
         private void handleTextFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
             if (focused) {
                 popup.hide();
-            } else {
-                populatePopup(getText());
             }
         }
 
