@@ -213,9 +213,8 @@ public interface Session {
      * @param caretCol the column index at the caret
      * @return a new {@link Session}
      */
-    static Session of(Path path, FileTime lastModifiedTime, Path altPath,
-        boolean readonly,
-        int topLine, int lineWidth, int caretRow, int caretCol) {
+    static Session of(Path path, FileTime lastModifiedTime, Path altPath, boolean readonly,
+            int topLine, int lineWidth, int caretRow, int caretCol) {
         return new SessionRecord(
             path,
             lastModifiedTime,

@@ -15,16 +15,81 @@
  */
 package com.mammb.code.editor.core.diff;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * The change set.
  * @author Naotsugu Kobayashi
  */
-public record ChangeSet<T>(SourceSet<T> source, List<Change> changes) {
+public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
 
     public record Change(Change.Type type, int orgFrom, int orgTo, int revFrom, int revTo) {
         enum Type { CHANGE, DELETE, INSERT }
+    }
+
+    public List<String> unifyTexts() {
+
+        int n = Math.max(4, String.valueOf(source.sizeMax()).length());
+
+        String SP = " ";
+        String NUM = "%0" + n + "d";
+        String TAB = " ".repeat(n);
+        final String FMT_D = SP + NUM + SP + TAB + SP + " : -  %s";
+        final String FMT_I = SP + TAB + SP + NUM + SP + " : +  %s";
+        final String FMT_N = SP + NUM + SP + NUM + SP + " :    %s";
+
+        List<String> list = new ArrayList<>();
+        unify(line -> {
+            if (line.both()) {
+                list.add(FMT_N.formatted(line.i, line.j, line.text));
+            } else if (line.left()) {
+                list.add(FMT_D.formatted(line.i, line.text));
+            } else if (line.right()) {
+                list.add(FMT_I.formatted(line.j, line.text));
+            }
+        });
+        return list;
+    }
+
+
+    private void unify(Consumer<Line<T>> consumer) {
+
+        int i = 0;
+        int j = 0;
+        while (i < source.org().size() || j < source.rev().size()) {
+            if (changes.isEmpty()) {
+                consumer.accept(new Line<>(i, j, source.rev().get(j++)));
+                i++;
+                continue;
+            }
+            Change c = changes.getFirst();
+            if (c.type == Change.Type.CHANGE && (c.orgFrom <= i && i < c.orgTo || c.revFrom <= j && j < c.revTo)) {
+                if (c.orgTo - 1 == i && c.revTo - 1 == j) changes.removeFirst();
+                if (source.org().size() > i) {
+                    consumer.accept(new Line<>(i, -1, source.org().get(i++)));
+                }
+                if (source.rev().size() > j) {
+                    consumer.accept(new Line<>(-1, j, source.rev().get(j++)));
+                }
+            } else if (c.type == Change.Type.INSERT && c.revFrom <= j && j < c.revTo) {
+                if (c.revTo - 1 == j) changes.removeFirst();
+                consumer.accept(new Line<>(-1, j, source.rev().get(j++)));
+            } else if (c.type == Change.Type.DELETE && c.orgFrom <= i && i < c.orgTo) {
+                if (c.orgTo - 1 == i) changes.removeFirst();
+                consumer.accept(new Line<>(i, -1, source.org().get(i++)));
+            } else {
+                consumer.accept(new Line<>(i, j, source.rev().get(j++)));
+                i++;
+            }
+        }
+    }
+
+    private record Line<T> (int i, int j, T text) {
+        boolean left() { return i >= 0; }
+        boolean right() { return j >= 0; }
+        boolean both() { return i >= 0 && j >= 0; }
     }
 
 }

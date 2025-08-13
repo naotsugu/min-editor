@@ -25,13 +25,13 @@ import java.util.List;
  */
 public class Diff {
 
-    public static <T> ChangeSet<T> apply(SourceSet<T> source) {
+    public static <T> ChangeSet<T> run(SourcePair<T> source) {
         Node path = buildPath(source);
         List<Change> changes = buildChanges(path);
-        return new ChangeSet<T>(source, changes);
+        return new ChangeSet<>(source, changes);
     }
 
-    private static <T> Node buildPath(final SourceSet<T> source) {
+    private static <T> Node buildPath(final SourcePair<T> source) {
 
         final int n = source.org().size();
         final int m = source.rev().size();

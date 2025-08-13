@@ -34,6 +34,7 @@ import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Theme;
+import com.mammb.code.editor.core.diff.Diff;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;

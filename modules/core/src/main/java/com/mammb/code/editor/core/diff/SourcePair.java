@@ -25,10 +25,14 @@ import java.util.Objects;
  * The diff source set.
  * @author Naotsugu Kobayashi
  */
-public record SourceSet<T>(Source<T> org, Source<T> rev) {
+public record SourcePair<T>(Source<T> org, Source<T> rev) {
 
     public boolean equalsAt(int indexOrg, int indexRev) {
         return Objects.equals(org.get(indexOrg), rev.get(indexRev));
+    }
+
+    public int sizeMax() {
+        return Math.max(org.size(), rev.size());
     }
 
     public interface Source<T> {
