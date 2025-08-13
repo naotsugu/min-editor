@@ -47,11 +47,11 @@ public class DiffSyntax implements Syntax {
             var peek = source.peek();
             if (peek.ch() == '-' && peek.index() == 0) {
                 var s = source.nextRemaining();
-                spans.add(new Style.StyleSpan(Palette.lightRed, s.index(), s.length()));
+                spans.add(new Style.StyleSpan(Palette.ansiRed, s.index(), s.length()));
 
             } else if (peek.ch() == '+' && peek.index() == 0) {
                 var s = source.nextRemaining();
-                spans.add(new Style.StyleSpan(Palette.lightGreen, s.index(), s.length()));
+                spans.add(new Style.StyleSpan(Palette.ansiGreen, s.index(), s.length()));
 
             }
             source.commitPeek();

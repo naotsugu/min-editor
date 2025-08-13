@@ -33,4 +33,7 @@ public interface Palette {
     TextColor lightRed = new Style.TextColor("#FECACA");   // Tailwind RED 300
     TextColor lightGreen = new Style.TextColor("#86EFAC"); // Tailwind GREEN 300
 
+    TextColor ansiRed = new Style.TextColor("#f0524f");
+    TextColor ansiGreen = new Style.TextColor("#5c962c");
+    TextColor ansiBlue = new Style.TextColor("#3993d4");
 }
