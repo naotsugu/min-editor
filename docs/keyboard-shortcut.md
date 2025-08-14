@@ -8,12 +8,12 @@
 | `←`          | Move caret right                        |
 | `↑`          | Move caret up                           |
 | `↓`          | Move caret down                         |
-| `Ctrl` + `↑` | Half-page up                            |
-| `Ctrl` + `↓` | Half-page down                          |
 | `Ctrl` + `→` | Move the caret to the right word        |
 | `Ctrl` + `←` | Move the caret to the left word         |
 | `Home`       | Move the caret to the beginning of line |
 | `End`        | Move the caret to the ending of line    |
+| `Ctrl` + `↑` | Separate the caret upward               |
+| `Ctrl` + `↓` | Separate the caret downward             |
 
 
 ## File
