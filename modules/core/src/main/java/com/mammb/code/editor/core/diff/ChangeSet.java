@@ -71,15 +71,22 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
 
         int i = 0;
         int j = 0;
+        List<Change> stack = new ArrayList<>(this.changes);
         while (i < source.org().size() || j < source.rev().size()) {
-            if (changes.isEmpty()) {
-                consumer.accept(new Line<>(i, j, source.rev().get(j++)));
-                i++;
+            if (stack.isEmpty()) {
+                if (i < source.org().size() && j < source.rev().size()) {
+                    consumer.accept(new Line<>(i, j, source.rev().get(j++)));
+                    i++;
+                } else if (i < source.org().size()) {
+                    consumer.accept(new Line<>(i, -1, source.org().get(i++)));
+                } else {
+                    consumer.accept(new Line<>(-1, j, source.rev().get(j++)));
+                }
                 continue;
             }
-            Change c = changes.getFirst();
+            Change c = stack.getFirst();
             if (c.type == Change.Type.CHANGE && (c.orgFrom <= i && i < c.orgTo || c.revFrom <= j && j < c.revTo)) {
-                if (c.orgTo - 1 == i && c.revTo - 1 == j) changes.removeFirst();
+                if (c.orgTo - 1 == i && c.revTo - 1 == j) stack.removeFirst();
                 if (source.org().size() > i) {
                     consumer.accept(new Line<>(i, -1, source.org().get(i++)));
                 }
@@ -87,10 +94,10 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
                     consumer.accept(new Line<>(-1, j, source.rev().get(j++)));
                 }
             } else if (c.type == Change.Type.INSERT && c.revFrom <= j && j < c.revTo) {
-                if (c.revTo - 1 == j) changes.removeFirst();
+                if (c.revTo - 1 == j) stack.removeFirst();
                 consumer.accept(new Line<>(-1, j, source.rev().get(j++)));
             } else if (c.type == Change.Type.DELETE && c.orgFrom <= i && i < c.orgTo) {
-                if (c.orgTo - 1 == i) changes.removeFirst();
+                if (c.orgTo - 1 == i) stack.removeFirst();
                 consumer.accept(new Line<>(i, -1, source.org().get(i++)));
             } else {
                 consumer.accept(new Line<>(i, j, source.rev().get(j++)));
