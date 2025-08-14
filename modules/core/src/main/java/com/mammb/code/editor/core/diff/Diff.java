@@ -21,46 +21,70 @@ import java.util.List;
 
 /**
  * The diff.
+ * This class implements the diff algorithm based on "An O(ND) Difference Algorithm and Its Variations" by Eugene W. Myers.
  * @author Naotsugu Kobayashi
  */
-public class Diff {
+public final class Diff {
 
+    /**
+     * Run the diff algorithm.
+     * @param source the source pair
+     * @return the change set
+     * @param <T> the type of source element
+     */
     public static <T> ChangeSet<T> run(SourcePair<T> source) {
         Node path = buildPath(source);
         List<Change> changes = buildChanges(path);
         return new ChangeSet<>(source, changes);
     }
 
+
+    /**
+     * Build the path of the shortest edit script.
+     * @param source the source pair
+     * @return the end node of the path
+     * @param <T> the type of source element
+     */
     private static <T> Node buildPath(final SourcePair<T> source) {
 
         final int n = source.org().size();
         final int m = source.rev().size();
 
+        // The maximum number of differences is n + m
         final int max = n + m + 1;
+        // The size of the diagonal array. +1 for the center, +1 for the start offset
         final int size = 1 + 2 * max;
         final int mid = size / 2;
+
         final Node[] diagonal = new Node[size];
         diagonal[mid + 1] = Node.of();
 
+        // d is the number of differences
         for (int d = 0; d < max; d++) {
+            // k is the diagonal index. k = i - j
             for (int k = -d; k <= d; k += 2) {
+
                 final int mk = mid + k;
                 final Node prev;
                 int i;
 
                 if ((k == -d) || (k != d && diagonal[mk - 1].i < diagonal[mk + 1].i)) {
+                    // move down, meaning an insertion
                     i = diagonal[mk + 1].i;
                     prev = diagonal[mk + 1];
                 } else {
+                    // move right, meaning a deletion
                     i = diagonal[mk - 1].i + 1;
                     prev = diagonal[mk - 1];
                 }
-                diagonal[mk - 1] = null; // no longer used
+                // De-reference to allow for garbage collection
+                diagonal[mk - 1] = null;
 
                 int j = i - k;
 
                 Node node = Node.stepOf(i, j, prev);
 
+                // Follow the snake (common sequence)
                 while (i < n && j < m && source.equalsAt(i, j)) {
                     i++;
                     j++;
@@ -73,14 +97,22 @@ public class Diff {
                 diagonal[mk] = node;
 
                 if (i >= n && j >= m) {
+                    // found the end of the path
                     return diagonal[mk];
                 }
             }
+            // De-reference to allow for garbage collection
             diagonal[mid + d - 1] = null;
         }
         throw new IllegalStateException("could not find a diff path");
     }
 
+
+    /**
+     * Build the list of changes from the path.
+     * @param path the end node of the path
+     * @return the list of changes
+     */
     private static List<Change> buildChanges(Node path) {
 
         List<Change> changes = new ArrayList<>();
@@ -99,12 +131,7 @@ public class Diff {
 
             path = path.prev;
 
-            Change.Type type = (path.i == i && path.j != j)
-                ? Change.Type.INSERT
-                : (path.i != i && path.j == j)
-                    ? Change.Type.DELETE
-                    : Change.Type.CHANGE;
-
+            Change.Type type = getChangeType(i, j, path);
             changes.addFirst(new Change(type, path.i, i, path.j, j));
 
             if (path.snake) {
@@ -114,19 +141,57 @@ public class Diff {
         return changes;
     }
 
+
+    /**
+     * Get the type of change.
+     * @param i the current i
+     * @param j the current j
+     * @param path the previous node
+     * @return the type of change
+     */
+    private static Change.Type getChangeType(int i, int j, Node path) {
+        if (path.i == i) {
+            return Change.Type.INSERT;
+        } else if (path.j == j) {
+            return Change.Type.DELETE;
+        } else {
+            return Change.Type.CHANGE;
+        }
+    }
+
+
+    /**
+     * Represents a node in the diff path.
+     * @param i the line number in the original source
+     * @param j the line number in the revised source
+     * @param snake true if this node is part of a snake (common sequence)
+     * @param prev the previous node in the path
+     */
     private record Node(int i, int j, boolean snake, Node prev) {
-        static Node of() { return new Node(0, -1, true, null); }
-        static Node snakeOf(int i, int j, Node prev) { return new Node(i, j, true, prev); }
+
+        static Node of() {
+            return new Node(0, -1, true, null);
+        }
+
+        static Node snakeOf(int i, int j, Node prev) {
+            return new Node(i, j, true, prev);
+        }
+
         static Node stepOf(int i, int j, Node prev) {
             return new Node(i, j, false, prev == null ? null : prev.prevSnake());
         }
+
         private Node prevSnake() {
-            return isBootstrap() ? null
+            return isBootstrap()
+                ? null
                 : (!snake && prev != null)
-                ? prev.prevSnake()
-                : this;
+                    ? prev.prevSnake()
+                    : this;
         }
-        private boolean isBootstrap() { return (i < 0 || j < 0); }
+
+        private boolean isBootstrap() {
+            return (i < 0 || j < 0);
+        }
     }
 
 }
