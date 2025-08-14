@@ -85,7 +85,7 @@ public class FxDraw implements Draw {
         }
         if (!underColor.isBlank()) {
             gc.setStroke(color(underColor));
-            gc.setLineWidth(1);
+            gc.setLineWidth(1.5);
             gc.strokeLine(x, y + fontMetrics.getLineHeight() - 1, x + w, y + fontMetrics.getLineHeight() - 1);
         }
         Color color = color(textColor);
