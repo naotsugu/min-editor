@@ -29,11 +29,18 @@ public interface Palette {
     TextColor darkOrange = new Style.TextColor("#CC7832");
     TextColor darkPale = new Style.TextColor("#6897BB");
 
-    TextColor darkRed = new Style.TextColor("#B91C1C");    // Tailwind RED 700
-    TextColor lightRed = new Style.TextColor("#FECACA");   // Tailwind RED 300
-    TextColor lightGreen = new Style.TextColor("#86EFAC"); // Tailwind GREEN 300
-
     TextColor ansiRed = new Style.TextColor("#f0524f");
     TextColor ansiGreen = new Style.TextColor("#5c962c");
     TextColor ansiBlue = new Style.TextColor("#3993d4");
+
+    TextColor twDarkRed = new Style.TextColor("#B91C1C");    // Tailwind RED 700
+    TextColor twRed = new Style.TextColor("#ef4444");        // Tailwind RED 500
+    TextColor twLightRed = new Style.TextColor("#FECACA");   // Tailwind RED 300
+    TextColor twDarkGreen = new Style.TextColor("#15803d");  // Tailwind GREEN 700
+    TextColor twGreen = new Style.TextColor("#22c55e");      // Tailwind GREEN 500
+    TextColor twLightGreen = new Style.TextColor("#86EFAC"); // Tailwind GREEN 300
+    TextColor twDarkBlue = new Style.TextColor("#1d4ed8");   // Tailwind BLUE 700
+    TextColor twBlue = new Style.TextColor("#3b82f6");       // Tailwind BLUE 500
+    TextColor twLightBlue = new Style.TextColor("#93c5fd");  // Tailwind BLUE 300
+
 }
