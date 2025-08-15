@@ -21,7 +21,8 @@ import java.util.List;
 
 /**
  * The diff.
- * This class implements the diff algorithm based on "An O(ND) Difference Algorithm and Its Variations" by Eugene W. Myers.
+ * This class implements the diff algorithm based on
+ * "An O(ND) Difference Algorithm and Its Variations" by Eugene W. Myers.
  * @author Naotsugu Kobayashi
  */
 public final class Diff {

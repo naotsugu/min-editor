@@ -1,3 +1,18 @@
+/*
+ * Copyright 2023-2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mammb.code.editor.core.diff;
 
 import org.junit.jupiter.api.Test;
@@ -6,31 +21,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class DiffTest {
 
-    private SourcePair<String> pair(List<String> org, List<String> rev) {
-        return new SourcePair<>(SourcePair.Source.of(org), SourcePair.Source.of(rev));
-    }
-
     @Test
     void testEmpty() {
-        var source = pair(List.of(), List.of());
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of()),
+            SourcePair.Source.of(List.of()));
         var changeSet = Diff.run(source);
         assertTrue(changeSet.changes().isEmpty());
     }
 
     @Test
     void testIdentical() {
-        var source = pair(
-            List.of("a", "b", "c"),
-            List.of("a", "b", "c"));
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of("a", "b", "c")),
+            SourcePair.Source.of(List.of("a", "b", "c")));
         var changeSet = Diff.run(source);
         assertTrue(changeSet.changes().isEmpty());
     }
 
     @Test
     void testInsertion() {
-        var source = pair(
-            List.of("a", "c"),
-            List.of("a", "b", "c"));
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of("a", "c")),
+            SourcePair.Source.of(List.of("a", "b", "c")));
         var changeSet = Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -43,9 +56,9 @@ class DiffTest {
 
     @Test
     void testDeletion() {
-        var source = pair(
-            List.of("a", "b", "c"),
-            List.of("a", "c"));
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of("a", "b", "c")),
+            SourcePair.Source.of(List.of("a", "c")));
         var changeSet = Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -58,9 +71,9 @@ class DiffTest {
 
     @Test
     void testChange() {
-        var source = pair(
-            List.of("a", "b", "c"),
-            List.of("a", "x", "c"));
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of("a", "b", "c")),
+            SourcePair.Source.of(List.of("a", "x", "c")));
         var changeSet = Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -73,9 +86,9 @@ class DiffTest {
 
     @Test
     void testMixed() {
-        var source = pair(
-            List.of("a", "b", "c", "d", "f", "g"),
-            List.of("a", "x", "c", "e", "f", "h"));
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of("a", "b", "c", "d", "f", "g")),
+            SourcePair.Source.of(List.of("a", "x", "c", "e", "f", "h")));
         var changeSet = Diff.run(source);
         var changes = changeSet.changes();
         assertEquals(3, changes.size());
@@ -104,9 +117,9 @@ class DiffTest {
 
     @Test
     void testAnotherMixed() {
-        var source = pair(
-            List.of("a", "b", "c"),
-            List.of("d", "e", "f"));
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of("a", "b", "c")),
+            SourcePair.Source.of(List.of("d", "e", "f")));
         var changeSet = Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -116,5 +129,58 @@ class DiffTest {
         assertEquals(0, change.revFrom());
         assertEquals(3, change.revTo());
     }
+
+    @Test
+    void testToUnifiedDiffString() {
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of("a", "b", "c", "d", "f", "g"), "org.txt"),
+            SourcePair.Source.of(List.of("a", "x", "c", "e", "f", "h"), "rev.txt"));
+        var changeSet = Diff.run(source);
+        String expected = """
+            --- org.txt
+            +++ rev.txt
+            @@ -1,6 +1,6 @@
+              a
+            - b
+            + x
+              c
+            - d
+            + e
+              f
+            - g
+            + h
+            """;
+        List<String> actual = changeSet.unifiedFormText(3);
+        assertEquals(expected.lines().toList(), actual);
+    }
+
+    @Test
+    void testToUnifiedDiffStringWithTwoHunks() {
+        var source = new SourcePair<>(
+            SourcePair.Source.of(List.of("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"), "org.txt"),
+            SourcePair.Source.of(List.of("a", "X", "c", "d", "e", "f", "g", "h", "i", "j", "k", "Y", "m"), "rev.txt"));
+        var changeSet = Diff.run(source);
+        String expected = """
+            --- org.txt
+            +++ rev.txt
+            @@ -1,5 +1,5 @@
+              a
+            - b
+            + X
+              c
+              d
+              e
+            @@ -9,5 +9,5 @@
+              i
+              j
+              k
+            - l
+            + Y
+              m
+            """;
+        List<String> actual = changeSet.unifiedFormText(3);
+        assertEquals(expected.lines().toList(), actual);
+    }
+
 
 }

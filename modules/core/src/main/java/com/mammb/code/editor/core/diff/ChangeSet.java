@@ -67,16 +67,16 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
         return list;
     }
 
-    public String unifiedFormText(int contextSize) {
+    public List<String> unifiedFormText(int contextSize) {
 
         if (changes.isEmpty()) {
-            return "";
+            return List.of();
         }
 
-        StringBuilder sb = new StringBuilder();
+        List<String> list = new ArrayList<>();
         if (source.named()) {
-            sb.append("--- ").append(source.org().name()).append(System.lineSeparator());
-            sb.append("+++ ").append(source.rev().name()).append(System.lineSeparator());
+            list.add("--- " + source.org().name());
+            list.add("+++ " + source.rev().name());
         }
 
         List<Line<T>> allLines = new ArrayList<>();
@@ -121,24 +121,22 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
                     }
                 }
 
-                sb.append("@@ -").append(orgStartLine).append(',').append(orgLineCount)
-                    .append(" +").append(revStartLine).append(',').append(revLineCount)
-                    .append(" @@").append(System.lineSeparator());
+                list.add("@@ -" + orgStartLine + ',' + orgLineCount + " +" + revStartLine + ',' + revLineCount +" @@");
 
                 for (int k = hunkStart; k <= hunkEnd; k++) {
                     Line<T> line = allLines.get(k);
                     if (line.both()) {
-                        sb.append("  ").append(line.text).append(System.lineSeparator());
+                        list.add("  " + line.text);
                     } else if (line.left()) {
-                        sb.append("- ").append(line.text).append(System.lineSeparator());
+                        list.add("- " + line.text);
                     } else if (line.right()) {
-                        sb.append("+ ").append(line.text).append(System.lineSeparator());
+                        list.add("+ " + line.text);
                     }
                 }
                 i = hunkEnd;
             }
         }
-        return sb.toString();
+        return list;
     }
 
     private void unify(Consumer<Line<T>> consumer) {
