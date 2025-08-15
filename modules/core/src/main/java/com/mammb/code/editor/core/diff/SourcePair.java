@@ -35,13 +35,19 @@ public record SourcePair<T>(Source<T> org, Source<T> rev) {
         return Math.max(org.size(), rev.size());
     }
 
+    public boolean named() {
+        return !org.name().isEmpty() || !rev.name().isEmpty();
+    }
+
     public interface Source<T> {
 
         T get(int index);
 
         int size();
 
-        static <T> Source<T> of(List<T> list) {
+        String name();
+
+        static <T> Source<T> of(List<T> list, String name) {
             return new Source<>() {
                 @Override
                 public T get(int index) {
@@ -51,7 +57,15 @@ public record SourcePair<T>(Source<T> org, Source<T> rev) {
                 public int size() {
                     return list.size();
                 }
+                @Override
+                public String name() {
+                    return name;
+                }
             };
+        }
+
+        static <T> Source<T> of(List<T> list) {
+            return of(list, "");
         }
 
         static Source<String> of(Path path, Charset cs) {

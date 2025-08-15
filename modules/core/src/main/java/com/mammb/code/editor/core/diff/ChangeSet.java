@@ -67,11 +67,86 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
         return list;
     }
 
+    public String unifiedFormText(int contextSize) {
+
+        if (changes.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        if (source.named()) {
+            sb.append("--- ").append(source.org().name()).append(System.lineSeparator());
+            sb.append("+++ ").append(source.rev().name()).append(System.lineSeparator());
+        }
+
+        List<Line<T>> allLines = new ArrayList<>();
+        unify(allLines::add);
+
+        boolean[] isChange = new boolean[allLines.size()];
+        for (int i = 0; i < allLines.size(); i++) {
+            if (!allLines.get(i).both()) {
+                isChange[i] = true;
+            }
+        }
+
+        boolean[] inHunk = new boolean[allLines.size()];
+        for (int i = 0; i < allLines.size(); i++) {
+            if (isChange[i]) {
+                for (int j = Math.max(0, i - contextSize); j <= Math.min(allLines.size() - 1, i + contextSize); j++) {
+                    inHunk[j] = true;
+                }
+            }
+        }
+
+        for (int i = 0; i < allLines.size(); i++) {
+            if (inHunk[i]) {
+                int hunkStart = i;
+                int hunkEnd = i;
+                while (hunkEnd + 1 < allLines.size() && inHunk[hunkEnd + 1]) {
+                    hunkEnd++;
+                }
+
+                int orgStartLine = -1, revStartLine = -1;
+                int orgLineCount = 0, revLineCount = 0;
+
+                for (int k = hunkStart; k <= hunkEnd; k++) {
+                    Line<T> line = allLines.get(k);
+                    if (line.left()) {
+                        if (orgStartLine == -1) orgStartLine = line.i + 1;
+                        orgLineCount++;
+                    }
+                    if (line.right()) {
+                        if (revStartLine == -1) revStartLine = line.j + 1;
+                        revLineCount++;
+                    }
+                }
+
+                sb.append("@@ -").append(orgStartLine).append(',').append(orgLineCount)
+                    .append(" +").append(revStartLine).append(',').append(revLineCount)
+                    .append(" @@").append(System.lineSeparator());
+
+                for (int k = hunkStart; k <= hunkEnd; k++) {
+                    Line<T> line = allLines.get(k);
+                    if (line.both()) {
+                        sb.append("  ").append(line.text).append(System.lineSeparator());
+                    } else if (line.left()) {
+                        sb.append("- ").append(line.text).append(System.lineSeparator());
+                    } else if (line.right()) {
+                        sb.append("+ ").append(line.text).append(System.lineSeparator());
+                    }
+                }
+                i = hunkEnd;
+            }
+        }
+        return sb.toString();
+    }
+
     private void unify(Consumer<Line<T>> consumer) {
 
         int i = 0;
         int j = 0;
         List<Change> stack = new ArrayList<>(this.changes);
+
         while (i < source.org().size() || j < source.rev().size()) {
             if (stack.isEmpty()) {
                 if (i < source.org().size() && j < source.rev().size()) {

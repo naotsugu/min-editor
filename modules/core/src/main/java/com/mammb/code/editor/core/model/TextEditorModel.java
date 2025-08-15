@@ -811,6 +811,7 @@ public class TextEditorModel implements EditorModel {
         var current = new SourcePair.Source<String>() {
             @Override public String get(int index) { return content.getText(index).replaceAll("\\R", ""); }
             @Override public int size() { return content.rows(); }
+            @Override public String name() { return ""; }
         };
         var cs = query(Query.charCode);
         var source = (path == null)
