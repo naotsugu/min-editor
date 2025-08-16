@@ -43,9 +43,6 @@ import com.mammb.code.editor.core.syntax.handler.PasteHandler;
 import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
-import java.io.BufferedWriter;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -882,11 +879,11 @@ public class TextEditorModel implements EditorModel {
             default -> scrollToCaret();
         }
         actionHistory.offer(action);
+
+        // add bracket highlights if exists
         decorate.clearFlush();
-        BracketFind.pair(carets.getFirst().point(), query(Query.charAtCaret), screenLayout.texts()).ifPresent(p -> {
-            decorate.addFlush(p.left().row(), new StyleSpan(new Style.AroundSq(Theme.dark.cautionColor()), p.left().col(), 1));
-            decorate.addFlush(p.right().row(), new StyleSpan(new Style.AroundSq(Theme.dark.cautionColor()), p.right().col(), 1));
-        });
+        BracketFind.apply(carets.getFirst().point(), query(Query.charAtCaret), screenLayout.texts()).forEach(p ->
+            decorate.addFlush(p.row(), new StyleSpan(new Style.AroundSq(Theme.dark.cautionColor()), p.col(), 1)));
     }
 
     @Override

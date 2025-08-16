@@ -29,35 +29,44 @@ import java.util.List;
  */
 public class BracketFind {
 
-    static Optional<Pair<Point>> pair(Point point, Pair<String> charAtCaret, List<Text> lines) {
+    /**
+     * Applies bracket matching logic to find points in a text based on the given caret point
+     * and the characters surrounding it. Depending on the type of bracket and its position,
+     * this method searches forwards or backwards across the lines of text to identify matching brackets.
+     * @param point the current caret point in the text
+     * @param charAtCaret a pair representing the characters at and next to the caret position
+     * @param lines the list of text lines to search within
+     * @return a list of points that indicate matching bracket positions, or an empty list if no matches are found
+     */
+    static List<Point> apply(Point point, Pair<String> charAtCaret, List<Text> lines) {
 
         if (lines.isEmpty()) {
-            return Optional.empty();
+            return List.of();
         }
 
         var left = bracket(charAtCaret.left());
         var right = bracket(charAtCaret.right());
 
         if (left.isEmpty() && right.isEmpty()) {
-            return Optional.empty();
+            return List.of();
         }
 
         List<Text> rows = rows(lines);
 
         if (left.isPresent() && left.get().isClose()) {
             var c = Point.of(point.row(), point.col() - 1);
-            return findBackward(rows, c, left.get()).map(p -> new Pair<>(p, c));
+            return findBackward(rows, c, left.get()).map(p -> List.of(p, c)).orElse(List.of(c));
         } else if (right.isPresent() && right.get().isOpen()) {
             var base = Point.of(point.row(), point.col() + 1);
-            return findForward(rows, base, right.get()).map(p -> new Pair<>(point, p));
+            return findForward(rows, base, right.get()).map(p -> List.of(point, p)).orElse(List.of(point));
         } else if (left.isPresent() && left.get().isOpen()) {
             var c = Point.of(point.row(), point.col() - 1);
-            return findForward(rows, point, left.get()).map(p -> new Pair<>(c, p));
+            return findForward(rows, point, left.get()).map(p -> List.of(c, p)).orElse(List.of(c));
         } else if (right.isPresent() && right.get().isClose()) {
-            return findBackward(rows, point, right.get()).map(p -> new Pair<>(p, point));
+            return findBackward(rows, point, right.get()).map(p -> List.of(p, point)).orElse(List.of(point));
         }
 
-        return Optional.empty();
+        return List.of();
     }
 
     private static Optional<Point> findForward(List<Text> rows, Point base, Bracket bracket) {
