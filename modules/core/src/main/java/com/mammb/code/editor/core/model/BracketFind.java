@@ -49,9 +49,9 @@ public class BracketFind {
         } else if (right.isPresent() && right.get().isOpen()) {
             return findForward(rows, point, right.get());
         } else if (left.isPresent() && left.get().isOpen()) {
-            return return findForward(rows, point, left.get());
+            return findForward(rows, point, left.get());
         } else if (right.isPresent() && right.get().isClose()) {
-            return return findBackward(rows, point, right.get());
+            return findBackward(rows, point, right.get());
         }
 
         return Optional.empty();
@@ -80,7 +80,22 @@ public class BracketFind {
 
     private static Optional<Point> findBackward(List<Text> rows, Point base, Bracket bracket) {
         assert bracket.isClose();
-        // TODO
+        int nest = 0;
+        for (int i = rows.size() - 1; i >= 0; i--) {
+            Text row = rows.get(i);
+            if (row.row() > base.row()) continue;
+            int col = (row.row() == base.row()) ? base.col() : row.length() - 1;
+            for (; col >= 0; col--) {
+                char ci = row.value().charAt(col);
+                if (ci == bracket.type().close()) {
+                    nest++;
+                } else if (ci == bracket.type().open()) {
+                    if (nest == 0) {
+                        return Optional.of(Point.of(row.row(), col));
+                    }
+                }
+            }
+        }
         return Optional.empty();
     }
 
@@ -102,23 +117,4 @@ public class BracketFind {
         return texts;
     }
 
-//    private static Optional<Point> findBackward(List<Text> lines, int lineIndex, int col, Bracket bracket) {
-//        int nest = 1;
-//        for (int i = lineIndex; i >= 0; i--) {
-//            Text text = lines.get(i);
-//            for (int j = (i == lineIndex) ? col - 1 : text.length() - 1; j >= 0; j--) {
-//                char ch = text.value().charAt(j);
-//                if (ch == bracket.type().close()) {
-//                    nest++;
-//                } else if (ch == bracket.type().open()) {
-//                    nest--;
-//                }
-//                if (nest == 0) {
-//                    int offset = (text instanceof SubText sub) ? sub.fromIndex() : 0;
-//                    return Optional.of(Point.of(text.row(), offset + j));
-//                }
-//            }
-//        }
-//        return Optional.empty();
-//    }
 }
