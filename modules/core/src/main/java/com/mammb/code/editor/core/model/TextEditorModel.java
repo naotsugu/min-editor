@@ -34,8 +34,6 @@ import com.mammb.code.editor.core.ScreenScroll;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Theme;
-import com.mammb.code.editor.core.diff.Diff;
-import com.mammb.code.editor.core.diff.SourcePair;
 import com.mammb.code.editor.core.editing.EditingFunctions;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.layout.ScreenLayout;
@@ -805,19 +803,13 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session getDiffSession(Path path) {
-        var current = new SourcePair.Source<String>() {
-            @Override public String get(int index) { return content.getText(index).replaceAll("\\R", ""); }
-            @Override public int size() { return content.rows(); }
-            @Override public String name() { return ""; }
-        };
-        var cs = query(Query.charCode);
-        var source = (path == null)
-            ? new SourcePair<>(SourcePair.Source.of(content.path().get(), cs), current)
-            : new SourcePair<>(current, SourcePair.Source.of(path, cs));
         Path stashPath = ctx.config().stashPath().resolve(
             String.join("_", UUID.randomUUID().toString()) + ".diff");
-        Files.write(stashPath, Diff.run(source).unifyTexts(), cs, "\n");
-
+        if (path == null) {
+            DiffRun.of(content).write(stashPath);
+        } else {
+            DiffRun.of(content, path).write(stashPath);
+        }
         return Session.of(stashPath, null, null, false, 0, 0, 0, 0);
     }
 

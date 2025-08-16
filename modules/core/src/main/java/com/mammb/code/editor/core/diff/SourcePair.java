@@ -15,10 +15,6 @@
  */
 package com.mammb.code.editor.core.diff;
 
-import com.mammb.code.editor.core.Files;
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -51,60 +47,6 @@ public record SourcePair<T>(Source<T> org, Source<T> rev) {
      */
     public boolean named() {
         return !org.name().isEmpty() || !rev.name().isEmpty();
-    }
-
-    /**
-     * Represents a source of elements with a specific size and an optional name.
-     * This interface is typically used to abstract collections or resources
-     * that allow indexed retrieval of elements.
-     * @param <T> the type of elements provided by this source
-     */
-    public interface Source<T> {
-
-        /**
-         * Get the element at the specified index.
-         * @param index the specified index
-         * @return the element at the specified index
-         */
-        T get(int index);
-
-        /**
-         * Get the size of this source.
-         * @return the size of this source
-         */
-        int size();
-
-        /**
-         * Get the name of this source.
-         * @return the name of this source
-         */
-        String name();
-
-        static <T> Source<T> of(List<T> list, String name) {
-            return new Source<>() {
-                @Override
-                public T get(int index) {
-                    return list.get(index);
-                }
-                @Override
-                public int size() {
-                    return list.size();
-                }
-                @Override
-                public String name() {
-                    return name;
-                }
-            };
-        }
-
-        static <T> Source<T> of(List<T> list) {
-            return of(list, "");
-        }
-
-        static Source<String> of(Path path, Charset cs) {
-            return Source.of(Files.readStrictAllLines(path, cs));
-        }
-
     }
 
 }

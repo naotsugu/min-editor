@@ -382,7 +382,8 @@ public class EditorPane extends ContentPane {
             case ZoomIn _             -> zoom( 1);
             case ZoomOut _            -> zoom(-1);
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff cmd             -> openRight(diff(cmd.path()));
+            case Diff _               -> openRight(diff(null));
+            case DiffWith cmd         -> openRight(diff(cmd.path()));
             case Duplicate _          -> openRight(duplicate());
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));

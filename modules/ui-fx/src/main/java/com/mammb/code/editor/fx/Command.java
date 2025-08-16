@@ -138,7 +138,9 @@ public sealed interface Command {
 
     record Open(String path) implements Command, RequireArgs1<String> { }
 
-    record Diff(String path) implements Command, RequireArgs1<String> { }
+    record Diff() implements Command { }
+
+    record DiffWith(String path) implements Command, RequireArgs1<String> { }
 
     record Duplicate() implements Command {}
 
@@ -165,6 +167,7 @@ public sealed interface Command {
             case Class<?> c when c == SaveWith.class -> "[charset name (e.g. utf-8 | sjis)]";
             case Class<?> c when c == ReloadWith.class -> "[charset name (e.g. utf-8 | sjis)]";
             case Class<?> c when c == Diff.class -> "[empty or path to diff target]";
+            case Class<?> c when c == DiffWith.class -> "[path to diff target]";
             case null, default -> "";
         };
     }
@@ -215,6 +218,7 @@ public sealed interface Command {
             case Class<?> c when c == ToggleLayout.class -> "toggle context layout";
             case Class<?> c when c == Open.class -> "opens the file at the specified path";
             case Class<?> c when c == Diff.class -> "diff";
+            case Class<?> c when c == DiffWith.class -> "diff with the specified file";
             case Class<?> c when c == Duplicate.class -> "duplicate content as read-only";
             case Class<?> c when c == SearchInBrowser.class -> "search in the browser web";
             case Class<?> c when c == TranslateInBrowser.class -> "translate in the browser web";

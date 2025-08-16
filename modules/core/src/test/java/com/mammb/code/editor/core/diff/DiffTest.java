@@ -24,8 +24,8 @@ class DiffTest {
     @Test
     void testEmpty() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of()),
-            SourcePair.Source.of(List.of()));
+            Source.of(List.of()),
+            Source.of(List.of()));
         var changeSet = Diff.run(source);
         assertTrue(changeSet.changes().isEmpty());
     }
@@ -33,8 +33,8 @@ class DiffTest {
     @Test
     void testIdentical() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of("a", "b", "c")),
-            SourcePair.Source.of(List.of("a", "b", "c")));
+            Source.of(List.of("a", "b", "c")),
+            Source.of(List.of("a", "b", "c")));
         var changeSet = Diff.run(source);
         assertTrue(changeSet.changes().isEmpty());
     }
@@ -42,8 +42,8 @@ class DiffTest {
     @Test
     void testInsertion() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of("a", "c")),
-            SourcePair.Source.of(List.of("a", "b", "c")));
+            Source.of(List.of("a", "c")),
+            Source.of(List.of("a", "b", "c")));
         var changeSet = Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -57,8 +57,8 @@ class DiffTest {
     @Test
     void testDeletion() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of("a", "b", "c")),
-            SourcePair.Source.of(List.of("a", "c")));
+            Source.of(List.of("a", "b", "c")),
+            Source.of(List.of("a", "c")));
         var changeSet = Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -72,8 +72,8 @@ class DiffTest {
     @Test
     void testChange() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of("a", "b", "c")),
-            SourcePair.Source.of(List.of("a", "x", "c")));
+            Source.of(List.of("a", "b", "c")),
+            Source.of(List.of("a", "x", "c")));
         var changeSet = Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -87,8 +87,8 @@ class DiffTest {
     @Test
     void testMixed() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of("a", "b", "c", "d", "f", "g")),
-            SourcePair.Source.of(List.of("a", "x", "c", "e", "f", "h")));
+            Source.of(List.of("a", "b", "c", "d", "f", "g")),
+            Source.of(List.of("a", "x", "c", "e", "f", "h")));
         var changeSet = Diff.run(source);
         var changes = changeSet.changes();
         assertEquals(3, changes.size());
@@ -118,8 +118,8 @@ class DiffTest {
     @Test
     void testAnotherMixed() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of("a", "b", "c")),
-            SourcePair.Source.of(List.of("d", "e", "f")));
+            Source.of(List.of("a", "b", "c")),
+            Source.of(List.of("d", "e", "f")));
         var changeSet = Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -133,8 +133,8 @@ class DiffTest {
     @Test
     void testToUnifiedDiffString() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of("a", "b", "c", "d", "f", "g"), "org.txt"),
-            SourcePair.Source.of(List.of("a", "x", "c", "e", "f", "h"), "rev.txt"));
+            Source.of(List.of("a", "b", "c", "d", "f", "g"), "org.txt"),
+            Source.of(List.of("a", "x", "c", "e", "f", "h"), "rev.txt"));
         var changeSet = Diff.run(source);
         String expected = """
             --- org.txt
@@ -157,8 +157,8 @@ class DiffTest {
     @Test
     void testToUnifiedDiffStringWithTwoHunks() {
         var source = new SourcePair<>(
-            SourcePair.Source.of(List.of("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"), "org.txt"),
-            SourcePair.Source.of(List.of("a", "X", "c", "d", "e", "f", "g", "h", "i", "j", "k", "Y", "m"), "rev.txt"));
+            Source.of(List.of("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"), "org.txt"),
+            Source.of(List.of("a", "X", "c", "d", "e", "f", "g", "h", "i", "j", "k", "Y", "m"), "rev.txt"));
         var changeSet = Diff.run(source);
         String expected = """
             --- org.txt
