@@ -25,6 +25,10 @@ public sealed interface Style {
      * The colored style.
      */
     sealed interface ColoredStyle extends Style {
+        /**
+         * Get the color string.
+         * @return the color string
+         */
         String colorString();
     }
 

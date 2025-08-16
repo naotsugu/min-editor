@@ -15,14 +15,11 @@
  */
 package com.mammb.code.editor.core.editing;
 
-import com.mammb.code.editor.core.Content;
-import com.mammb.code.editor.core.Query;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
