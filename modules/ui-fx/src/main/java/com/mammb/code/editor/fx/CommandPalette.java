@@ -16,6 +16,7 @@
 package com.mammb.code.editor.fx;
 
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
@@ -29,10 +30,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -196,7 +200,7 @@ public class CommandPalette extends Dialog<Command> {
         public AcTextField(CommandPalette commandPalette, boolean hasSelect) {
             super();
             this.commandPalette = commandPalette;
-            this.popup = new ContextMenu();
+            this.popup = new AcContextMenu();
             this.hasSelect = hasSelect;
 
             setStyle("""
@@ -204,9 +208,6 @@ public class CommandPalette extends Dialog<Command> {
             -fx-padding: 0.333333em 0.583em 0.333333em 0.2em;
             -fx-prompt-text-fill:gray;
             """);
-            popup.setStyle("""
-                -fx-background-color: derive(-fx-control-inner-background,10%);
-                """);
             textProperty().addListener(this::handleTextChanged);
             focusedProperty().addListener(this::handleTextFocused);
         }
@@ -288,6 +289,22 @@ public class CommandPalette extends Dialog<Command> {
             Node node = popup.getSkin().getNode().lookup(".menu-item");
             node.requestFocus();
             node.fireEvent(new KeyEvent(KEY_PRESSED, "", "", DOWN, false, false, false, false));
+        }
+    }
+
+
+    static class AcContextMenu extends ContextMenu {
+        public AcContextMenu() {
+            setStyle("""
+                -fx-background-color: derive(-fx-control-inner-background,10%);
+                """);
+        }
+        @Override
+        public void show(Node anchor, Side side, double dx, double dy) {
+            super.show(anchor, side, dx, dy);
+            if (getSkin().getNode() instanceof Region region) {
+                region.setMaxHeight(400);
+            }
         }
     }
 
