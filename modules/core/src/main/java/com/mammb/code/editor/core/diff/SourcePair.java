@@ -27,24 +27,57 @@ import java.util.Objects;
  */
 public record SourcePair<T>(Source<T> org, Source<T> rev) {
 
+    /**
+     * Check if the specified index elements are equal.
+     * @param indexOrg the specified index of original
+     * @param indexRev the specified index of revise
+     * @return {@code true} if the specified index elements are equal
+     */
     public boolean equalsAt(int indexOrg, int indexRev) {
         return Objects.equals(org.get(indexOrg), rev.get(indexRev));
     }
 
+    /**
+     * Get the maximum size of this source pair.
+     * @return the maximum size of this source pair
+     */
     public int sizeMax() {
         return Math.max(org.size(), rev.size());
     }
 
+    /**
+     * Check if this source pair has named.
+     * @return {@code true} if this source pair has named
+     */
     public boolean named() {
         return !org.name().isEmpty() || !rev.name().isEmpty();
     }
 
+    /**
+     * Represents a source of elements with a specific size and an optional name.
+     * This interface is typically used to abstract collections or resources
+     * that allow indexed retrieval of elements.
+     * @param <T> the type of elements provided by this source
+     */
     public interface Source<T> {
 
+        /**
+         * Get the element at the specified index.
+         * @param index the specified index
+         * @return the element at the specified index
+         */
         T get(int index);
 
+        /**
+         * Get the size of this source.
+         * @return the size of this source
+         */
         int size();
 
+        /**
+         * Get the name of this source.
+         * @return the name of this source
+         */
         String name();
 
         static <T> Source<T> of(List<T> list, String name) {
