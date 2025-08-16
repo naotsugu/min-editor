@@ -24,6 +24,19 @@ import java.util.Optional;
  */
 public record Bracket(Type type, boolean isOpen) {
 
+    /**
+     * Returns {@code true} if the bracket is a closing bracket.
+     * @return {@code true} if the bracket is a closing bracket
+     */
+    public boolean isClose() {
+        return !isOpen;
+    }
+
+    /**
+     * Creates an Optional containing a Bracket instance if the provided character matches a valid bracket type.
+     * @param ch the character to check, which can represent an opening or closing bracket
+     * @return an Optional containing a Bracket if the character matches a valid bracket type
+     */
     static Optional<Bracket> valueOf(char ch) {
         return (ch == 0) ? Optional.empty() :
             Type.valueOf(ch).map(p -> new Bracket(p, p.open() == ch));
@@ -73,6 +86,11 @@ public record Bracket(Type type, boolean isOpen) {
             return close;
         }
 
+        /**
+         * Returns the BoundaryPair corresponding to the specified character.
+         * @param ch the character to check
+         * @return the BoundaryPair corresponding to the specified character
+         */
         static Optional<Type> valueOf(char ch) {
             return Arrays.stream(values())
                 .filter(v -> v.open() == ch || v.close() == ch)
