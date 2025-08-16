@@ -47,4 +47,5 @@ public interface Query<R> {
     Query<Boolean> hasSelected = new HasSelected();
     Query<String> selectedText = new SelectedText();
     Query<byte[]> bytesAtCaret = new BytesAtCaret();
+    Query<Pair<String>> charAtCaret = new CharAtCaret();
 }

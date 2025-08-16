@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class BracketFind {
 
-    Optional<Point> pair(Point point, Pair<String> charAtCaret, List<Text> lines) {
+    static Optional<Pair<Point>> pair(Point point, Pair<String> charAtCaret, List<Text> lines) {
 
         if (lines.isEmpty()) {
             return Optional.empty();
@@ -45,13 +45,16 @@ public class BracketFind {
         List<Text> rows = rows(lines);
 
         if (left.isPresent() && left.get().isClose()) {
-            return findBackward(rows, point, left.get());
+            var c = Point.of(point.row(), point.col() - 1);
+            return findBackward(rows, c, left.get()).map(p -> new Pair<>(p, c));
         } else if (right.isPresent() && right.get().isOpen()) {
-            return findForward(rows, point, right.get());
+            var base = Point.of(point.row(), point.col() + 1);
+            return findForward(rows, base, right.get()).map(p -> new Pair<>(point, p));
         } else if (left.isPresent() && left.get().isOpen()) {
-            return findForward(rows, point, left.get());
+            var c = Point.of(point.row(), point.col() - 1);
+            return findForward(rows, point, left.get()).map(p -> new Pair<>(c, p));
         } else if (right.isPresent() && right.get().isClose()) {
-            return findBackward(rows, point, right.get());
+            return findBackward(rows, point, right.get()).map(p -> new Pair<>(p, point));
         }
 
         return Optional.empty();
@@ -66,10 +69,10 @@ public class BracketFind {
             for (; col < row.length(); col++) {
                 char ci = row.value().charAt(col);
                 if (ci == bracket.type().close()) {
-                   if (nest == 0) {
-                       return Optional.of(Point.of(row.row(), col));
-                   }
-                   nest--;
+                    if (nest == 0) {
+                        return Optional.of(Point.of(row.row(), col));
+                    }
+                    nest--;
                 } else if (ci == bracket.type().open()) {
                     nest++;
                 }
@@ -84,7 +87,7 @@ public class BracketFind {
         for (int i = rows.size() - 1; i >= 0; i--) {
             Text row = rows.get(i);
             if (row.row() > base.row()) continue;
-            int col = (row.row() == base.row()) ? base.col() : row.length() - 1;
+            int col = (row.row() == base.row()) ? base.col() - 1 : row.length() - 1;
             for (; col >= 0; col--) {
                 char ci = row.value().charAt(col);
                 if (ci == bracket.type().close()) {
@@ -93,13 +96,14 @@ public class BracketFind {
                     if (nest == 0) {
                         return Optional.of(Point.of(row.row(), col));
                     }
+                    nest--;
                 }
             }
         }
         return Optional.empty();
     }
 
-    private Optional<Bracket> bracket(String string) {
+    private static Optional<Bracket> bracket(String string) {
         if (string == null || string.isBlank()) return Optional.empty();
         return Bracket.valueOf(string.charAt(0));
     }
@@ -107,7 +111,7 @@ public class BracketFind {
     private static List<Text> rows(List<Text> lines) {
         List<Text> texts = new ArrayList<>();
         for (Text text : lines) {
-            Text row = (lines.getFirst() instanceof SubText sub) ? sub.parent() : text;
+            Text row = (text instanceof SubText sub) ? sub.parent() : text;
             if (texts.isEmpty()) {
                 texts.add(row);
             } else if (texts.getLast().row() != row.row()) {

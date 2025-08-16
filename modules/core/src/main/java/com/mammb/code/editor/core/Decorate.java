@@ -48,10 +48,14 @@ public interface Decorate {
      */
     void addHighlights(int row, StyleSpan span);
 
+    void addFlush(int row, StyleSpan span);
+
     /**
      * Clear the decoration.
      */
     void clear();
+
+    void clearFlush();
 
     /**
      * Get the highlighted row.
@@ -103,6 +107,9 @@ public interface Decorate {
         /** The style spans keyed by row number. */
         private final Map<Integer, List<StyleSpan>> highlights = new HashMap<>();
 
+        /** The flush style spans. */
+        private final Map<Integer, List<StyleSpan>> flushes = new HashMap<>();
+
         /**
          * Constructor.
          * @param syntax the syntax
@@ -118,6 +125,8 @@ public interface Decorate {
             }
             List<StyleSpan> spans = highlights.getOrDefault(text.row(), new ArrayList<>());
             spans.addAll(syntax.apply(text.row(), text.value()));
+            spans.addAll(flushes.getOrDefault(text.row(), List.of()));
+
             return spans;
         }
 
@@ -157,8 +166,19 @@ public interface Decorate {
         }
 
         @Override
+        public void addFlush(int row, StyleSpan span) {
+            flushes.computeIfAbsent(row, _ -> new ArrayList<>()).add(span);
+        }
+
+        @Override
         public void clear() {
             highlights.clear();
+            flushes.clear();
+        }
+
+        @Override
+        public void clearFlush() {
+            flushes.clear();
         }
 
         @Override

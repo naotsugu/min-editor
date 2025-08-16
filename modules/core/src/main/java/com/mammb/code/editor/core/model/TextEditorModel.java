@@ -882,6 +882,11 @@ public class TextEditorModel implements EditorModel {
             default -> scrollToCaret();
         }
         actionHistory.offer(action);
+        decorate.clearFlush();
+        BracketFind.pair(carets.getFirst().point(), query(Query.charAtCaret), screenLayout.texts()).ifPresent(p -> {
+            decorate.addFlush(p.left().row(), new StyleSpan(new Style.AroundSq(Theme.dark.cautionColor()), p.left().col(), 1));
+            decorate.addFlush(p.right().row(), new StyleSpan(new Style.AroundSq(Theme.dark.cautionColor()), p.right().col(), 1));
+        });
     }
 
     @Override

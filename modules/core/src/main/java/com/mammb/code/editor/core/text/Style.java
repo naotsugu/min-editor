@@ -34,6 +34,9 @@ public sealed interface Style {
     record BgColor(String colorString) implements ColoredStyle { }
     /** The under color style. */
     record UnderColor(String colorString) implements ColoredStyle { }
+    /** The around squarer color style. */
+    record AroundSq(String colorString) implements ColoredStyle { }
+
 
     /** The style span. */
     record StyleSpan(Style style, int offset, int length) { }

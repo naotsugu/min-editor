@@ -72,11 +72,13 @@ public class FxDraw implements Draw {
         String textColor = Theme.dark.fgColor();
         String bgColor = "";
         String underColor = "";
+        String aroundColor = "";
         for (Style style : styles) {
             switch (style) {
                 case Style.TextColor s -> textColor = s.colorString();
                 case Style.BgColor s -> bgColor = s.colorString();
                 case Style.UnderColor s -> underColor = s.colorString();
+                case Style.AroundSq s -> aroundColor = s.colorString();
             }
         }
         if (!bgColor.isBlank()) {
@@ -88,6 +90,12 @@ public class FxDraw implements Draw {
             gc.setLineWidth(1.5);
             gc.strokeLine(x, y + fontMetrics.getLineHeight() - 1, x + w, y + fontMetrics.getLineHeight() - 1);
         }
+        if (!aroundColor.isBlank()) {
+            gc.setStroke(color(aroundColor));
+            gc.setLineWidth(0.5);
+            gc.strokeRect(x, y, w, fontMetrics.getLineHeight());
+        }
+
         Color color = color(textColor);
         gc.setStroke(color);
         gc.setFill(color);
