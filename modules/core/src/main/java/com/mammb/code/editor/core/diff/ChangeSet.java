@@ -15,7 +15,9 @@
  */
 package com.mammb.code.editor.core.diff;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -31,15 +33,7 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
 
     public List<String> unifyTexts() {
         List<String> list = new ArrayList<>();
-        unify(line -> {
-            if (line.both()) {
-                list.add("  " + line.text);
-            } else if (line.left()) {
-                list.add("- " + line.text);
-            } else if (line.right()) {
-                list.add("+ " + line.text);
-            }
-        });
+        unify(line -> list.add(line.markedText()));
         return list;
     }
 
@@ -79,63 +73,9 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
             list.add("+++ " + source.rev().name());
         }
 
-        List<Line<T>> allLines = new ArrayList<>();
-        unify(allLines::add);
-
-        boolean[] isChange = new boolean[allLines.size()];
-        for (int i = 0; i < allLines.size(); i++) {
-            if (!allLines.get(i).both()) {
-                isChange[i] = true;
-            }
-        }
-
-        boolean[] inHunk = new boolean[allLines.size()];
-        for (int i = 0; i < allLines.size(); i++) {
-            if (isChange[i]) {
-                for (int j = Math.max(0, i - contextSize); j <= Math.min(allLines.size() - 1, i + contextSize); j++) {
-                    inHunk[j] = true;
-                }
-            }
-        }
-
-        for (int i = 0; i < allLines.size(); i++) {
-            if (inHunk[i]) {
-                int hunkStart = i;
-                int hunkEnd = i;
-                while (hunkEnd + 1 < allLines.size() && inHunk[hunkEnd + 1]) {
-                    hunkEnd++;
-                }
-
-                int orgStartLine = -1, revStartLine = -1;
-                int orgLineCount = 0, revLineCount = 0;
-
-                for (int k = hunkStart; k <= hunkEnd; k++) {
-                    Line<T> line = allLines.get(k);
-                    if (line.left()) {
-                        if (orgStartLine == -1) orgStartLine = line.i + 1;
-                        orgLineCount++;
-                    }
-                    if (line.right()) {
-                        if (revStartLine == -1) revStartLine = line.j + 1;
-                        revLineCount++;
-                    }
-                }
-
-                list.add("@@ -" + orgStartLine + ',' + orgLineCount + " +" + revStartLine + ',' + revLineCount +" @@");
-
-                for (int k = hunkStart; k <= hunkEnd; k++) {
-                    Line<T> line = allLines.get(k);
-                    if (line.both()) {
-                        list.add("  " + line.text);
-                    } else if (line.left()) {
-                        list.add("- " + line.text);
-                    } else if (line.right()) {
-                        list.add("+ " + line.text);
-                    }
-                }
-                i = hunkEnd;
-            }
-        }
+        var processor = new HunkProcessor(contextSize);
+        unify(processor);
+        list.addAll(processor.getResult());
         return list;
     }
 
@@ -179,10 +119,79 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
         }
     }
 
+    private class HunkProcessor implements Consumer<Line<T>> {
+
+        private final int contextSize;
+        private final List<String> result = new ArrayList<>();
+        private final Deque<Line<T>> buffer = new ArrayDeque<>();
+        private boolean inHunk = false;
+        private int contextCountdown = 0;
+
+        HunkProcessor(int contextSize) {
+            this.contextSize = contextSize;
+        }
+
+        List<String> getResult() {
+            if (inHunk) flushHunk();
+            return result;
+        }
+
+        @Override
+        public void accept(Line<T> line) {
+            if (!line.both()) {
+                // changed
+                inHunk = true;
+                buffer.add(line);
+                contextCountdown = contextSize;
+            } else {
+                // not changed
+                if (inHunk) {
+                    buffer.add(line);
+                    if (contextCountdown > 0) contextCountdown--;
+                    if (contextCountdown == 0) flushHunk();
+                } else {
+                    buffer.add(line);
+                    if (buffer.size() > contextSize) buffer.pollFirst();
+                }
+            }
+        }
+
+        private void flushHunk() {
+            inHunk = false;
+            if (buffer.isEmpty()) return;
+
+            int orgStartLine = -1, revStartLine = -1;
+            int orgLineCount = 0, revLineCount = 0;
+            for (Line<T> line : buffer) {
+                if (line.left()) {
+                    if (orgStartLine == -1) orgStartLine = line.i + 1;
+                    orgLineCount++;
+                }
+                if (line.right()) {
+                    if (revStartLine == -1) revStartLine = line.j + 1;
+                    revLineCount++;
+                }
+            }
+            result.add("@@ -" + orgStartLine + ',' + orgLineCount + " +" + revStartLine + ',' + revLineCount + " @@");
+
+            buffer.forEach(line -> result.add(line.markedText()));
+            buffer.clear();
+        }
+    }
+
     private record Line<T> (int i, int j, T text) {
         boolean left() { return i >= 0; }
         boolean right() { return j >= 0; }
         boolean both() { return i >= 0 && j >= 0; }
+        char mark() {
+            if (both()) return ' ';
+            if (left()) return '-';
+            if (right()) return '+';
+            return ' ';
+        }
+        String markedText() {
+            return mark() + " " + text;
+        }
     }
 
 }
