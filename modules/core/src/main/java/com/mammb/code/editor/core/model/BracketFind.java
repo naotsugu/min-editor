@@ -17,9 +17,7 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Pair;
 import com.mammb.code.editor.core.Point;
-import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Text;
-import java.util.ArrayList;
 import java.util.Optional;
 import java.util.List;
 
@@ -35,12 +33,12 @@ public class BracketFind {
      * this method searches forwards or backwards across the lines of text to identify matching brackets.
      * @param point the current caret point in the text
      * @param charAtCaret a pair representing the characters at and next to the caret position
-     * @param lines the list of text lines to search within
+     * @param rows the list of text rows to search within
      * @return a list of points that indicate matching bracket positions, or an empty list if no matches are found
      */
-    static List<Point> apply(Point point, Pair<String> charAtCaret, List<Text> lines) {
+    static List<Point> apply(Point point, Pair<String> charAtCaret, List<Text> rows) {
 
-        if (lines.isEmpty()) {
+        if (rows.isEmpty()) {
             return List.of();
         }
 
@@ -50,8 +48,6 @@ public class BracketFind {
         if (left.isEmpty() && right.isEmpty()) {
             return List.of();
         }
-
-        List<Text> rows = rows(lines);
 
         if (left.isPresent() && left.get().isClose()) {
             var c = Point.of(point.row(), point.col() - 1);
@@ -115,19 +111,6 @@ public class BracketFind {
     private static Optional<Bracket> bracket(String string) {
         if (string == null || string.isBlank()) return Optional.empty();
         return Bracket.valueOf(string.charAt(0));
-    }
-
-    private static List<Text> rows(List<Text> lines) {
-        List<Text> texts = new ArrayList<>();
-        for (Text text : lines) {
-            Text row = (text instanceof SubText sub) ? sub.parent() : text;
-            if (texts.isEmpty()) {
-                texts.add(row);
-            } else if (texts.getLast().row() != row.row()) {
-                texts.add(row);
-            }
-        }
-        return texts;
     }
 
 }

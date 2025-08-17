@@ -874,7 +874,7 @@ public class TextEditorModel implements EditorModel {
 
         // add bracket highlights if exists
         decorate.clearFlush();
-        BracketFind.apply(carets.getFirst().point(), query(Query.charAtCaret), screenLayout.texts()).forEach(p ->
+        BracketFind.apply(carets.getFirst().point(), query(Query.charAtCaret), screenLayout.screenRows()).forEach(p ->
             decorate.addFlush(p.row(), new StyleSpan(new Style.AroundSq(Theme.dark.cautionColor()), p.col(), 1)));
     }
 

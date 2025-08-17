@@ -22,6 +22,7 @@ import java.util.Optional;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.ScreenScroll;
+import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Text;
 
 /**
@@ -125,8 +126,24 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
-    public List<Text> texts() {
+    public List<Text> screenLines() {
         return buffer;
+    }
+
+    @Override
+    public List<Text> screenRows() {
+        if (layout instanceof WrapLayout) {
+            int n = -1;
+            List<Text> rows = new ArrayList<>();
+            for (Text text : screenLines()) {
+                Text row = (text instanceof SubText sub) ? sub.parent() : text;
+                if (n != row.row()) rows.add(row);
+                n = row.row();
+            }
+            return rows;
+        } else {
+            return screenLines();
+        }
     }
 
     @Override

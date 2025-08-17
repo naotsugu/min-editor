@@ -78,7 +78,7 @@ public class Paints {
         double x, y = 0;
         double prevRow = -1;
         List<Style.StyleSpan> spans = List.of();
-        for (Text text : screenLayout.texts()) {
+        for (Text text : screenLayout.screenLines()) {
             x = 0;
             if (text.row() != prevRow) {
                 // update the spans only if the row is different from the previous one

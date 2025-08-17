@@ -76,7 +76,16 @@ public interface ScreenLayout extends LineLayout {
      * Get the text list on the screen.
      * @return the text list on the screen
      */
-    List<Text> texts();
+    List<Text> screenLines();
+
+    /**
+     * Retrieves a sequenced collection of unique {@code Text} objects,
+     * where each object is derived from the parent of {@code SubText} instances
+     * or the {@code Text} object itself. The sequence preserves the order
+     * in which the elements appear on the screen.
+     * @return a sequenced collection of unique {@code Text} objects
+     */
+    List<Text> screenRows();
 
     /**
      * Get the list of line numbers on the screen.
