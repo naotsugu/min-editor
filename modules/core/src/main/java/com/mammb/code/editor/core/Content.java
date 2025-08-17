@@ -150,6 +150,7 @@ public interface Content {
 
     /**
      * Reloads the content, refreshing its state to reflect any external changes using the specified character set.
+     * If the character set is {@code null}, the character set will be determined from the content.
      * @param charset the character set to be used for reloading the content
      */
     void reloadWith(Charset charset);

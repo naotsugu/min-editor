@@ -804,13 +804,9 @@ public class TextEditorModel implements EditorModel {
     @Override
     public Session getDiffSession(Path path) {
         Path stashPath = ctx.config().stashPath().resolve(
-            String.join("_", UUID.randomUUID().toString()) + ".diff");
-        if (path == null) {
-            DiffRun.of(content).write(stashPath);
-        } else {
-            DiffRun.of(content, path).write(stashPath);
-        }
-        return Session.of(stashPath, null, null, false, 0, 0, 0, 0);
+            String.join("_", UUID.randomUUID().toString(), query(Query.modelName).plain()) + ".diff");
+        DiffRun diffRun = (path == null) ? DiffRun.of(content) : DiffRun.of(content, path);
+        return Session.of(diffRun.write(stashPath), null, null, false, 0, 0, 0, 0);
     }
 
     @Override
