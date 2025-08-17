@@ -42,6 +42,7 @@ import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -672,6 +673,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             stashPath,
+            query(Query.charCode),
             content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
@@ -796,6 +798,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             null,
+            query(Query.charCode),
             content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
             carets.getFirst().row(), carets.getFirst().col());
@@ -806,7 +809,7 @@ public class TextEditorModel implements EditorModel {
         Path stashPath = ctx.config().stashPath().resolve(
             String.join("_", UUID.randomUUID().toString(), query(Query.modelName).plain()) + ".diff");
         DiffRun diffRun = (path == null) ? DiffRun.of(content) : DiffRun.of(content, path);
-        return Session.of(diffRun.write(stashPath), null, null, false, 0, 0, 0, 0);
+        return Session.of(diffRun.write(stashPath), null, null, StandardCharsets.UTF_8, false, 0, 0, 0, 0);
     }
 
     @Override

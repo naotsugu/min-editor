@@ -65,7 +65,22 @@ public class DiffRun {
         return new DiffRun(current(content), Source.of(other, content.query(Query.charCode)));
     }
 
+    /**
+     * Write the diff run to the specified path.
+     * @param path the specified path
+     * @return the specified path
+     */
     public Path write(Path path) {
+        Files.write(path, Diff.run(new SourcePair<>(org, rev)).unifiedFormText(3), StandardCharsets.UTF_8, "\n");
+        return path;
+    }
+
+    /**
+     * Write the diff run to the specified path.
+     * @param path the specified path
+     * @return the specified path
+     */
+    public Path writeFully(Path path) {
         Files.write(path, Diff.run(new SourcePair<>(org, rev)).unifyTexts(), StandardCharsets.UTF_8, "\n");
         return path;
     }

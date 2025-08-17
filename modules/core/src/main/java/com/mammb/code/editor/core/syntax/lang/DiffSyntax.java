@@ -53,6 +53,10 @@ public class DiffSyntax implements Syntax {
                 var s = source.nextRemaining();
                 spans.add(new Style.StyleSpan(Palette.ansiGreen, s.index(), s.length()));
 
+            } else if (peek.ch() == '@' && peek.index() == 0) {
+                var s = source.nextRemaining();
+                spans.add(new Style.StyleSpan(Palette.ansiBlue, s.index(), s.length()));
+
             }
             source.commitPeek();
         }
