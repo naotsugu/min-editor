@@ -35,7 +35,7 @@ public class BlockScopes {
 
     /**
      * Constructor.
-     * @param blockTypes
+     * @param blockTypes the block types
      */
     public BlockScopes(BlockType... blockTypes) {
         types.addAll(Stream.of(blockTypes).filter(Objects::nonNull).toList());

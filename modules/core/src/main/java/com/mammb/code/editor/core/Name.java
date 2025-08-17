@@ -26,7 +26,6 @@ public interface Name {
      * Returns the canonical (standardized, official, or complete) representation of the name.
      * This is typically the most precise and unambiguous form.
      * <p>Example: Absolute path for a file, full URL for a web page.</p>
-     *
      * @return The canonical string representation.
      */
     String canonical();
@@ -35,7 +34,6 @@ public interface Name {
      * Returns the plain, unformatted representation of the name.
      * This form is typically not for direct UI display where specific formatting is required.
      * <p>Example: File name including extension, HTML page title.</p>
-     *
      * @return The plain, unformatted string representation.
      */
     String plain();
@@ -46,7 +44,6 @@ public interface Name {
      * than the canonical representation. This form does not include state-dependent modifications
      * (e.g., a leading '*' for unsaved changes); such modifications should be applied by the consumer of this name.
      * <p>Example: File name, HTML page title.</p>
-     *
      * @return A string optimized for a specific context.
      */
     String contextual();

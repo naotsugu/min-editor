@@ -23,8 +23,16 @@ import java.util.function.Function;
  */
 public interface BlockType {
 
+    /**
+     * Get the open string.
+     * @return the open string
+     */
     String open();
 
+    /**
+     * Get the close string.
+     * @return the close string
+     */
     String close();
 
     interface BlockTypeWith<T> extends BlockType, With<T> {

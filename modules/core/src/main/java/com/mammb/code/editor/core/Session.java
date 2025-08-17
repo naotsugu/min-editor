@@ -122,6 +122,10 @@ public interface Session {
         return !hasPath() && !hasAltPath();
     }
 
+    /**
+     * Get the session as a read-only session.
+     * @return a read-only session
+     */
     default Session asReadonly() {
         return new SessionRecord(
             path(),

@@ -364,7 +364,8 @@ public class TextEditorModel implements EditorModel {
 
     private void selectAll() {
         carets.unique().markTo(0, 0,
-            screenLayout.rowSize() - 1, screenLayout.endColOnRow(screenLayout.lineSize() - 1));
+            screenLayout.rowSize() - 1,
+            screenLayout.endColOnRow(screenLayout.lineSize() - 1));
     }
 
     @Override
@@ -932,9 +933,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void refreshPointsRange(List<Point> points) {
-        if (points == null || points.isEmpty()) {
-            return;
-        }
+        if (points == null || points.isEmpty()) return;
         screenLayout.refreshBuffer(
             Collections.min(points).row(),
             Collections.max(points).row());

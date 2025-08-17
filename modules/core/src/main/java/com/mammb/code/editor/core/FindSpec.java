@@ -39,7 +39,6 @@ public record FindSpec(String pattern, PatternType patternType) {
     /**
      * Creates a new instance of {@link FindSpec} based on the given pattern
      * and case sensitivity flag.
-     *
      * @param pattern the pattern string to be used for finding
      * @param caseSensitive flag indicating whether the pattern matching should be case-sensitive
      * @return a new {@link FindSpec} instance with the specified pattern and case sensitivity
@@ -50,7 +49,6 @@ public record FindSpec(String pattern, PatternType patternType) {
 
     /**
      * Creates a new {@link FindSpec} instance for a regular expression pattern.
-     *
      * @param regex the regular expression pattern string to be used for finding
      * @return a new {@link FindSpec} instance configured with the specified regular expression pattern
      */
@@ -62,7 +60,6 @@ public record FindSpec(String pattern, PatternType patternType) {
      * Checks if the current find specification is empty.
      * The find specification is considered empty if the pattern type is
      * {@code PatternType.EMPTY} or if the pattern string is an empty string.
-     *
      * @return {@code true} if the find specification is empty, otherwise {@code false}.
      */
     public boolean isEmpty() {

@@ -23,11 +23,15 @@ import com.mammb.code.editor.core.syntax.BlockType.BlockTypeWith;
  */
 public interface BlockToken {
 
+    /**
+     * Get the block type.
+     * @return the block type
+     */
     BlockType type();
 
     /**
      * Composite interface {@link With}.
-     * @param <T>
+     * @param <T> the type of with
      */
     interface BlockTokenWith<T> extends BlockToken, With<T> {
         T with();

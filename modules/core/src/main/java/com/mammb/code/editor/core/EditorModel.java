@@ -194,6 +194,11 @@ public interface EditorModel {
      */
     Session getSession();
 
+    /**
+     * Get the diff session.
+     * @param path the path
+     * @return the diff session
+     */
     Session getDiffSession(Path path);
 
     /**

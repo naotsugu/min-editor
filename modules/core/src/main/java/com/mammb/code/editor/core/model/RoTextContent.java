@@ -73,7 +73,8 @@ public class RoTextContent implements Content {
      * @return a new {@code RoTextContent} instance representing the immutable content of the file with the specified row limit
      */
     public static RoTextContent of(Path path, int rowLimit) {
-        return new RoTextContent(new TextEditContent(read(path, rowLimit), path.getFileName().toString()));
+        Content content = new TextEditContent(read(path, rowLimit), path.getFileName().toString());
+        return new RoTextContent(content);
     }
 
     @Override

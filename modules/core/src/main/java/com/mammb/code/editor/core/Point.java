@@ -92,11 +92,13 @@ public interface Point extends Comparable<Point> {
      * Point and length.
      */
     interface PointLen extends Point {
+
         /**
          * Get the length.
          * @return the length
          */
         int len();
+
         /**
          * Create a new point len.
          * @param row the number of rows
@@ -107,6 +109,7 @@ public interface Point extends Comparable<Point> {
             record PointLenRecord(int row, int col, int len) implements PointLen { }
             return new PointLenRecord(row, col, len);
         }
+
     }
 
     /**
