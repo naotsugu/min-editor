@@ -20,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +34,9 @@ public interface EditingFunctions {
 
     /** logger. */
     System.Logger log = System.getLogger(EditingFunctions.class.getName());
+
+    /** HTML escape or numeric character reference. */
+    Pattern htmlUnescapePattern = Pattern.compile("&(?:#(?<type>x?)(?<digit>[0-9a-fA-F]+)|(?<name>[a-zA-Z]+));");
 
     /** Pass through function. */
     Function<String, String> passThrough = text -> text;
@@ -101,9 +105,25 @@ public interface EditingFunctions {
     /** remove tag like. */
     Function<String, String> removeHtmlTags = text -> text == null ? "" : text.replaceAll("<.*?>", "");
 
+    Function<String, String> unescapeHtml = text -> text == null ? "" : htmlUnescapePattern.matcher(text).replaceAll(match -> {
+        if (match.group("name") != null) {
+            String name = match.group("name");
+            return Map.of("lt", "<", "gt", ">", "amp", "&", "quot", "\"", "apos", "'", "nbsp", " ")
+                .getOrDefault(name, match.group(0));
+        }
+        try {
+            return String.valueOf(
+                (char) Integer.parseInt(match.group("digit"),
+                "x".equalsIgnoreCase(match.group("type")) ? 16 : 10));
+        } catch (NumberFormatException e) {
+            return match.group(0);
+        }
+    });
+
     /** html to markdown. */
     Function<String, String> htmlToMarkdown = text -> text == null ? "" : markdownTable
-        .andThen(htmlBrToLf).andThen(removeHtmlTags).apply(htmlAnchorToMarkdownLink(text));
+        .andThen(htmlBrToLf).andThen(removeHtmlTags).andThen(unescapeHtml).andThen(unescapeHtml)
+        .apply(htmlAnchorToMarkdownLink(text));
 
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
