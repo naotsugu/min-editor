@@ -744,6 +744,7 @@ public class TextEditorModel implements EditorModel {
         var pos = content.insertFlush(c.point(), text);
         screenLayout.refreshBuffer(c.row(), pos.row());
         c.imeFlushAt(pos);
+        decorate.clearFlush();
     }
 
     private void findNext(Find.Spec spec) {
