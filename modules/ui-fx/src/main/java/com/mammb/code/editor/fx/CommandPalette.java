@@ -304,6 +304,7 @@ public class CommandPalette extends Dialog<Command> {
             super.show(anchor, side, dx, dy);
             if (getSkin().getNode() instanceof Region region) {
                 region.setMaxHeight(400);
+                setY(anchor.localToScreen(anchor.getBoundsInLocal()).getMaxY() + dy);
             }
         }
     }

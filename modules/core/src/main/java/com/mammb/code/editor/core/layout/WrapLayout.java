@@ -16,9 +16,11 @@
 package com.mammb.code.editor.core.layout;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import com.mammb.code.editor.core.Content;
@@ -105,6 +107,20 @@ class WrapLayout implements ContentLayout {
             // fix up the shifted row number
             for (int i = fromIndex + renew.size(); i < lines.size(); i++) {
                 lines.get(i).plusRow(fluctuations);
+            }
+        }
+        if (Objects.nonNull(System.getProperty("debug." + WrapLayout.class.getName()))) {
+            var expects = new ArrayList<SubRange>();
+            for (int i = 0; i < content.rows(); i++) {
+                expects.addAll(subRanges(i));
+            }
+            if (!expects.equals(lines)) {
+                System.out.println("!! " + startRow + " " + endRow);
+                System.out.println(Arrays.deepToString(Thread.currentThread().getStackTrace()));
+                System.out.println("lines");
+                lines.forEach(System.out::println);
+                System.out.println("expects");
+                expects.forEach(System.out::println);
             }
         }
     }
