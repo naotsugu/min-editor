@@ -57,7 +57,7 @@ public class FxDraw implements Draw {
         this.gc.setFontSmoothingType(Objects.equals(font.getName(), "MS Gothic")
             ? FontSmoothingType.GRAY : FontSmoothingType.LCD);
         this.gc.setFont(font);
-        this.fontMetrics = FxFontMetrics.of(font);
+        this.fontMetrics = FxFontMetrics.of(font, gc.getFontSmoothingType());
     }
 
     @Override
@@ -185,7 +185,7 @@ public class FxDraw implements Draw {
         if (size < 6) return;
         Font font = Font.font(old.getFamily(), size);
         gc.setFont(font);
-        fontMetrics = FxFontMetrics.of(font);
+        fontMetrics = FxFontMetrics.of(font, gc.getFontSmoothingType());
     }
 
     @Override

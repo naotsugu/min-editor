@@ -27,6 +27,7 @@ import com.sun.javafx.font.PGFont;
 import com.sun.javafx.geom.transform.BaseTransform;
 import com.sun.javafx.scene.text.FontHelper;
 import com.sun.javafx.tk.Toolkit;
+import javafx.scene.text.FontSmoothingType;
 
 /**
  * The fontMetrics.
@@ -51,12 +52,14 @@ public class FxFontMetrics implements FontMetrics {
     /**
      * Constructor.
      * @param font the font that was used to construct these metrics
+     * @param smoothingType the smoothing type used to construct these metrics
      */
-    FxFontMetrics(Font font) {
+    FxFontMetrics(Font font, FontSmoothingType smoothingType) {
         Objects.requireNonNull(font);
         this.fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
         var pgFont = (PGFont) FontHelper.getNativeFont(font);
-        this.strike = pgFont.getStrike(BaseTransform.IDENTITY_TRANSFORM, FontResource.AA_GREYSCALE);
+        this.strike = pgFont.getStrike(BaseTransform.IDENTITY_TRANSFORM,
+            smoothingType == FontSmoothingType.GRAY ? FontResource.AA_GREYSCALE : FontResource.AA_LCD);
         this.resource = strike.getFontResource();
         this.mapper  = resource.getGlyphMapper();
         this.standardCharWidth = getAdvance("0");
@@ -65,10 +68,11 @@ public class FxFontMetrics implements FontMetrics {
     /**
      * Create the new {@link FxFontMetrics}.
      * @param font the font
+     * @param smoothingType the smoothing type used to construct these metrics
      * @return the new {@link FxFontMetrics}
      */
-    public static FxFontMetrics of(Font font) {
-        return new FxFontMetrics(font);
+    public static FxFontMetrics of(Font font, FontSmoothingType smoothingType) {
+        return new FxFontMetrics(font, smoothingType);
     }
 
     @Override
