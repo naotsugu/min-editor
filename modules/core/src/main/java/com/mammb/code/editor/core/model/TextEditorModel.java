@@ -744,7 +744,7 @@ public class TextEditorModel implements EditorModel {
         var pos = content.insertFlush(c.point(), text);
         screenLayout.refreshBuffer(c.row(), pos.row());
         c.imeFlushAt(pos);
-        decorate.clearFlush();
+        decorate.clearFlushMarks();
     }
 
     private void findNext(Find.Spec spec) {
@@ -874,9 +874,9 @@ public class TextEditorModel implements EditorModel {
         actionHistory.offer(action);
 
         // add bracket highlights if exists
-        decorate.clearFlush();
+        decorate.clearFlushMarks();
         BracketFind.apply(carets.getFirst().point(), query(Query.charAtCaret), screenLayout.screenRows()).forEach(p ->
-            decorate.addFlush(p.row(), new StyleSpan(new Style.AroundSq(Theme.dark.cautionColor()), p.col(), 1)));
+            decorate.addFlushMark(p.row(), new StyleSpan(new Style.AroundSq(Theme.dark.cautionColor()), p.col(), 1)));
     }
 
     @Override

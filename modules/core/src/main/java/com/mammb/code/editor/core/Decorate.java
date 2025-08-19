@@ -49,11 +49,11 @@ public interface Decorate {
     void addHighlights(int row, StyleSpan span);
 
     /**
-     * Add a flush on the specified row.
+     * Add a flush mark on the specified row.
      * @param row the number of rows
      * @param span the style span
      */
-    void addFlush(int row, StyleSpan span);
+    void addFlushMark(int row, StyleSpan span);
 
     /**
      * Clear the decoration.
@@ -61,9 +61,9 @@ public interface Decorate {
     void clear();
 
     /**
-     * Clear the flushes.
+     * Clear the flush Marks.
      */
-    void clearFlush();
+    void clearFlushMarks();
 
     /**
      * Get the highlighted row.
@@ -174,7 +174,7 @@ public interface Decorate {
         }
 
         @Override
-        public void addFlush(int row, StyleSpan span) {
+        public void addFlushMark(int row, StyleSpan span) {
             flushes.computeIfAbsent(row, _ -> new ArrayList<>()).add(span);
         }
 
@@ -185,7 +185,7 @@ public interface Decorate {
         }
 
         @Override
-        public void clearFlush() {
+        public void clearFlushMarks() {
             flushes.clear();
         }
 
