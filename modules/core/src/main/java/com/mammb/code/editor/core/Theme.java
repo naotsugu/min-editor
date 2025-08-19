@@ -23,7 +23,7 @@ public interface Theme {
 
     Theme dark = new ThemeRecord(
             "#292929",   // baseColor
-            "#C8D7E6",   // fgColor
+            "#CCCCCC",   // "#C8D7E6", // fgColor
             "#214283",   // paleHighlightColor
             "#FDE047",   // cautionColor
             "#80808088", // faintColor

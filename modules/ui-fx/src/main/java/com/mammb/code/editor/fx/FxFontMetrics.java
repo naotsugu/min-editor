@@ -56,6 +56,7 @@ public class FxFontMetrics implements FontMetrics {
      */
     FxFontMetrics(Font font, FontSmoothingType smoothingType) {
         Objects.requireNonNull(font);
+        Objects.requireNonNull(smoothingType);
         this.fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(font);
         var pgFont = (PGFont) FontHelper.getNativeFont(font);
         this.strike = pgFont.getStrike(BaseTransform.IDENTITY_TRANSFORM,
@@ -76,17 +77,17 @@ public class FxFontMetrics implements FontMetrics {
     }
 
     @Override
-    public final float getMaxAscent() {
+    public final double getMaxAscent() {
         return fontMetrics.getMaxAscent();
     }
 
     @Override
-    public final float getAscent() {
+    public final double getAscent() {
         return fontMetrics.getAscent();
     }
 
     @Override
-    public final float getXheight() {
+    public final double getXheight() {
         return fontMetrics.getXheight();
     }
 
@@ -96,22 +97,22 @@ public class FxFontMetrics implements FontMetrics {
     }
 
     @Override
-    public final float getDescent() {
+    public final double getDescent() {
         return fontMetrics.getDescent();
     }
 
     @Override
-    public final float getMaxDescent() {
+    public final double getMaxDescent() {
         return fontMetrics.getMaxDescent();
     }
 
     @Override
-    public final float getLeading() {
+    public final double getLeading() {
         return fontMetrics.getLeading();
     }
 
     @Override
-    public final float getLineHeight() {
+    public final double getLineHeight() {
         return fontMetrics.getLineHeight();
     }
 
@@ -121,7 +122,7 @@ public class FxFontMetrics implements FontMetrics {
     }
 
     @Override
-    public float getAdvance(int codePoint) {
+    public double getAdvance(int codePoint) {
         return advanceCache.computeIfAbsent(codePoint,
                 cp -> resource.getAdvance(mapper.charToGlyph(cp), strike.getSize()));
     }

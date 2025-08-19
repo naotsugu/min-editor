@@ -26,20 +26,20 @@ public interface FontMetrics {
      * This value is always positive
      * @return the max ascent
      */
-    float getMaxAscent();
+    double getMaxAscent();
 
     /**
      * The distance from the baseline to the avg max character height.
      * this value is always positive
      * @return the ascent
      */
-    float getAscent();
+    double getAscent();
 
     /**
      * The distance from the baseline to the top of the avg. lowercase letter.
      * @return the x height
      */
-    float getXheight();
+    double getXheight();
 
     /**
      * The baseline is the imaginary line upon which letters without descenders
@@ -55,14 +55,14 @@ public interface FontMetrics {
      * This value is always positive
      * @return the descent
      */
-    float getDescent();
+    double getDescent();
 
     /**
      * The distance from the baseline down to the absolute lowest descender.
      * this value is always positive
      * @return the max descent
      */
-    float getMaxDescent();
+    double getMaxDescent();
 
     /**
      * The amount of space between lines of text in this font. This is the
@@ -70,14 +70,14 @@ public interface FontMetrics {
      * of the next. This number is included in the lineHeight.
      * @return the leading
      */
-    float getLeading();
+    double getLeading();
 
     /**
      * The maximum line height for a line of text in this font.
      * maxAscent + maxDescent + leading
      * @return the line height
      */
-    float getLineHeight();
+    double getLineHeight();
 
     /**
       * The standard a character width.
@@ -92,14 +92,14 @@ public interface FontMetrics {
      * @param codePoint the code point
      * @return advance of single char
      */
-    float getAdvance(int codePoint);
+    double getAdvance(int codePoint);
 
     /**
      * Get the total advance.
      * @param str the string
      * @return advance of string
      */
-    default float getAdvance(String str) {
+    default double getAdvance(String str) {
         return (float) str.codePoints().mapToDouble(this::getAdvance).sum();
     }
 
@@ -109,7 +109,7 @@ public interface FontMetrics {
      * @param low the low surrogate char
      * @return advance of char
      */
-    default float getAdvance(char high, char low) {
+    default double getAdvance(char high, char low) {
         return getAdvance(Character.toCodePoint(high, low));
     }
 
