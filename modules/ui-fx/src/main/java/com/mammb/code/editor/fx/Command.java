@@ -48,6 +48,7 @@ public sealed interface Command {
 
     interface RequireSelection { }
 
+
     record ActionCommand(Action action) implements Command, Hidden {}
 
     record OpenChoose() implements Command {}
@@ -144,6 +145,8 @@ public sealed interface Command {
 
     record Duplicate() implements Command {}
 
+    record OpenInFiler() implements Command { }
+
     record SearchInBrowser() implements Command { }
 
     record TranslateInBrowser() implements Command { }
@@ -220,6 +223,7 @@ public sealed interface Command {
             case Class<?> c when c == Diff.class -> "diff";
             case Class<?> c when c == DiffWith.class -> "diff with the specified file";
             case Class<?> c when c == Duplicate.class -> "duplicate content as read-only";
+            case Class<?> c when c == OpenInFiler.class -> which("open in the Finder", "open in the Explorer", "open in the FileManager");
             case Class<?> c when c == SearchInBrowser.class -> "search in the browser web";
             case Class<?> c when c == TranslateInBrowser.class -> "translate in the browser web";
             case Class<?> c when c == Help.class -> "show help dialog";
@@ -228,7 +232,7 @@ public sealed interface Command {
     }
 
     static String shortcutText(Class<? extends Command> clazz) {
-        var shortcut = System.getProperty("os.name").toLowerCase().contains("mac") ? "⌘" : "Ctrl";
+        var shortcut = which("⌘", "Ctrl", "Ctrl");
         return switch (clazz) {
             case Class<?> c when c == OpenChoose.class -> shortcut + " O";
             case Class<?> c when c == Save.class -> shortcut + " S";
@@ -256,10 +260,17 @@ public sealed interface Command {
         return Arrays.stream(permitted)
             .filter(not(Hidden.class::isAssignableFrom))
             .collect(Collectors.toMap(
-                Class::getSimpleName,
+                Command::commandName,
                 UnaryOperator.identity(),
                 (_, e2) -> e2,
                 LinkedHashMap::new));
+    }
+
+    static String commandName(Class<? extends Command> clazz) {
+        return switch (clazz) {
+            case Class<?> c when c == OpenInFiler.class -> which("OpenInFinder", "OpenInExplorer", "OpenInFileManager");
+            default -> clazz.getSimpleName();
+        };
     }
 
     static Command newInstance(Class<? extends Command> clazz, String... args) {
@@ -355,6 +366,17 @@ public sealed interface Command {
             case "windows31j", "ms932", "sjis", "shiftjis" -> Charset.forName("Windows-31J");
             default -> Charset.forName(args[index], null);
         };
+    }
+
+    private static String which(String mac, String win, String any) {
+        var os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("mac")) {
+            return mac;
+        } else if (os.contains("windows")) {
+            return win;
+        } else {
+            return any;
+        }
     }
 
 }
