@@ -195,9 +195,9 @@ public class EditorPane extends ContentPane {
         model().updateFonts(draw.fontMetrics());
     }
 
-    private EditorPane diff(String pathString) {
+    private EditorPane diff(String pathString, boolean withoutFold) {
         Path path = (pathString == null || pathString.isBlank()) ? null : Path.of(pathString);
-        return new EditorPane(context).with(model().getDiffSession(path));
+        return new EditorPane(context).with(model().getDiffSession(path, withoutFold));
     }
 
     private EditorPane duplicate() {
@@ -388,8 +388,9 @@ public class EditorPane extends ContentPane {
             case ZoomIn _             -> zoom( 1);
             case ZoomOut _            -> zoom(-1);
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff _               -> openRight(diff(null));
-            case DiffWith cmd         -> openRight(diff(cmd.path()));
+            case Diff _               -> openRight(diff(null, false));
+            case DiffFoldOff _        -> openRight(diff(null, true));
+            case DiffWith cmd         -> openRight(diff(cmd.path(), false));
             case Duplicate _          -> openRight(duplicate());
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));

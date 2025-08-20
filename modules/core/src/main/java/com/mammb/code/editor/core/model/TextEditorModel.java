@@ -807,11 +807,14 @@ public class TextEditorModel implements EditorModel {
     }
 
     @Override
-    public Session getDiffSession(Path path) {
+    public Session getDiffSession(Path path, boolean withoutFold) {
         Path stashPath = ctx.config().stashPath().resolve(
             String.join("_", UUID.randomUUID().toString(), query(Query.modelName).plain()) + ".diff");
         DiffRun diffRun = (path == null) ? DiffRun.of(content) : DiffRun.of(content, path);
-        return Session.of(diffRun.write(stashPath), null, null, StandardCharsets.UTF_8, false, 0, 0, 0, 0);
+        if (withoutFold) diffRun.writeWithoutFold(stashPath); else diffRun.write(stashPath);
+        return Session.of(
+            withoutFold ? diffRun.writeWithoutFold(stashPath) : diffRun.write(stashPath),
+            null, null, StandardCharsets.UTF_8, false, 0, 0, 0, 0);
     }
 
     @Override

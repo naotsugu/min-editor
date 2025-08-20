@@ -141,6 +141,8 @@ public sealed interface Command {
 
     record Diff() implements Command { }
 
+    record DiffFoldOff() implements Command {}
+
     record DiffWith(String path) implements Command, RequireArgs1<String> { }
 
     record Duplicate() implements Command {}
@@ -169,7 +171,6 @@ public sealed interface Command {
             case Class<?> c when c == WrapLine.class -> "[wrap width(number of characters)]";
             case Class<?> c when c == SaveWith.class -> "[charset name (e.g. utf-8 | sjis)]";
             case Class<?> c when c == ReloadWith.class -> "[charset name (e.g. utf-8 | sjis)]";
-            case Class<?> c when c == Diff.class -> "[empty or path to diff target]";
             case Class<?> c when c == DiffWith.class -> "[path to diff target]";
             case null, default -> "";
         };
@@ -221,6 +222,7 @@ public sealed interface Command {
             case Class<?> c when c == ToggleLayout.class -> "toggle context layout";
             case Class<?> c when c == Open.class -> "opens the file at the specified path";
             case Class<?> c when c == Diff.class -> "diff";
+            case Class<?> c when c == DiffFoldOff.class -> "display all lines without folding.";
             case Class<?> c when c == DiffWith.class -> "diff with the specified file";
             case Class<?> c when c == Duplicate.class -> "duplicate content as read-only";
             case Class<?> c when c == OpenInFiler.class -> which("open in the Finder", "open in the Explorer", "open in the FileManager");

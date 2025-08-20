@@ -80,7 +80,7 @@ public class DiffRun {
      * @param path the specified path
      * @return the specified path
      */
-    public Path writeFully(Path path) {
+    public Path writeWithoutFold(Path path) {
         Files.write(path, Diff.run(new SourcePair<>(org, rev)).unifyTexts(), StandardCharsets.UTF_8, "\n");
         return path;
     }

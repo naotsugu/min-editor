@@ -197,9 +197,10 @@ public interface EditorModel {
     /**
      * Get the diff session.
      * @param path the path
+     * @param withoutFold the without fold
      * @return the diff session
      */
-    Session getDiffSession(Path path);
+    Session getDiffSession(Path path, boolean withoutFold);
 
     /**
      * Associates the given {@link Session} with this {@link EditorModel}.

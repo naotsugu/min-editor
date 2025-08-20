@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.fx;
 
+import com.mammb.code.editor.core.Theme;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -228,13 +229,14 @@ public class CommandPalette extends Dialog<Command> {
 
         private SequencedMap<String, CustomMenuItem> commandTypeItems() {
             SequencedMap<String, CustomMenuItem> keywordMappedItems = new LinkedHashMap<>();
+            Color textColor = Color.web(Theme.dark.fgColor());
             for (var entry : Command.values().entrySet()) {
 
                 var text = new Text(entry.getKey());
-                text.setFill(Color.GRAY.brighter());
+                text.setFill(textColor);
                 var note = new Text("  " +  Command.noteText(entry.getValue()));
                 note.setFont(Font.font(13));
-                note.setFill(Color.GRAY.darker());
+                note.setFill(textColor.darker().darker());
                 var noteBox = new HBox(note);
                 noteBox.setSpacing(0.0);
 
@@ -257,6 +259,7 @@ public class CommandPalette extends Dialog<Command> {
                 box.setPrefWidth(AcTextField.this.getWidth());
 
                 CustomMenuItem item = new CustomMenuItem(box, true);
+                item.setStyle("-fx-border-color: red;");
                 item.setOnAction(_ -> commandPalette.selectCommand(entry.getValue()));
                 if (Command.RequireSelection.class.isAssignableFrom(entry.getValue())) {
                     item.setDisable(!hasSelect);
