@@ -205,7 +205,7 @@ public class EditorPane extends ContentPane {
     }
 
     private void openInFiler(Path path) {
-        if (Files.isReadableDirectory(path.getParent())) {
+        if (path != null && Files.isReadableDirectory(path.getParent())) {
             context.getApp().getHostServices().showDocument(path.getParent().toUri().toString());
         }
     }
