@@ -347,7 +347,7 @@ class BasicScreenLayout implements ScreenLayout {
             if (layout instanceof RowLayout) {
                 if (layout.rowSize() > 50_000) return; // large files are not allowed to wrap.
                 layout = new WrapLayout(layout.content(), layout.fontMetrics());
-                layout.setCharsInLine((int) Math.floor((screenWidth - 16 /* margin right */) / layout.standardCharWidth()));
+                layout.setCharsInLine((int) Math.floor((screenWidth - 16 /* margin right */ * 2) / layout.standardCharWidth()));
             } else {
                 layout = new RowLayout(layout.content(), layout.fontMetrics());
             }
