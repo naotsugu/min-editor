@@ -22,17 +22,17 @@ package com.mammb.code.editor.core;
 public class FontMetricsTestImpl implements FontMetrics {
 
     @Override
-    public float getMaxAscent() {
+    public double getMaxAscent() {
         return 0;
     }
 
     @Override
-    public float getAscent() {
+    public double getAscent() {
         return 0;
     }
 
     @Override
-    public float getXheight() {
+    public double getXheight() {
         return 0;
     }
 
@@ -42,22 +42,22 @@ public class FontMetricsTestImpl implements FontMetrics {
     }
 
     @Override
-    public float getDescent() {
+    public double getDescent() {
         return 0;
     }
 
     @Override
-    public float getMaxDescent() {
+    public double getMaxDescent() {
         return 0;
     }
 
     @Override
-    public float getLeading() {
+    public double getLeading() {
         return 0;
     }
 
     @Override
-    public float getLineHeight() {
+    public double getLineHeight() {
         return 2;
     }
 
@@ -67,7 +67,7 @@ public class FontMetricsTestImpl implements FontMetrics {
     }
 
     @Override
-    public float getAdvance(int codePoint) {
+    public double getAdvance(int codePoint) {
         return codePoint < 1024 ? 1 : 2;
     }
 
