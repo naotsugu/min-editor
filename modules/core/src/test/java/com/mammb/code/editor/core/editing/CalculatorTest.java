@@ -27,17 +27,49 @@ class CalculatorTest {
 
     @Test
     void infixToRpn() {
+
+        assertEquals("3 4 + 1 2 - *",
+            String.join(" ", Calculator.infixToRpn("( 3 + 4 ) * ( 1 - 2 )")));
+
+        assertEquals("3 4 2 * 1 5 - 2 3 ^ ^ / +",
+            String.join(" ", Calculator.infixToRpn("3 + 4 * 2 / ( 1 - 5 ) ^ 2 ^ 3")));
+
         assertEquals("1 2 + 3 4 / 5 6 + ^ *",
             String.join(" ", Calculator.infixToRpn("( 1 + 2 ) * ( 3 / 4 ) ^ ( 5 + 6 )")));
 
         assertEquals("5 2 ^ 2 5 * 8 * + 8 2 ^ +",
             String.join(" ", Calculator.infixToRpn("5 ^ 2 + 2 * 5 * 8 + 8 ^ 2")));
+
+        assertEquals("5 ~ 3 + 8 *",
+            String.join(" ", Calculator.infixToRpn("( ( -5 + 3 ) * 8)")));
+
+        assertEquals("2e3 4 *",
+            String.join(" ", Calculator.infixToRpn("2e3 * 4")));
+
+        assertEquals("5 8 ~ *",
+            String.join(" ", Calculator.infixToRpn("5 * - 8")));
+
+        assertEquals("2 ~ 3 ^",
+            String.join(" ", Calculator.infixToRpn("- 2 ^ 3")));
+
     }
 
     @Test
     void calc() {
         assertEquals("3", Calculator.calc("1+2"));
         assertEquals("7", Calculator.calc("1+2*3"));
+        assertEquals("2", Calculator2.calc("10/5"));
+        assertEquals("8", Calculator2.calc("2^3"));
+
+        assertEquals("14", Calculator2.calc("2+3*4"));
+        assertEquals("20", Calculator2.calc("(2+3)*4"));
+        assertEquals("144", Calculator2.calc("(2+10)^2"));
+
+        assertEquals("2.5", Calculator2.calc("10/4"));
+        assertEquals("10.5", Calculator2.calc("5.5+5"));
+        assertEquals("3.14", Calculator2.calc("1.1+2.04"));
+
+        assertEquals("25", Calculator2.calc("((2+3)*5/5)^2"));
     }
 
 }

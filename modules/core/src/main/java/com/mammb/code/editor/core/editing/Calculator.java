@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Stack;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -38,9 +39,13 @@ class Calculator {
      * @return the result string
      */
     static String calc(String text) {
-        List<String> rpn = infixToRpn(text.replace(",", ""));
-        BigDecimal result = evaluate(rpn);
-        return result.toPlainString();
+        try {
+            List<String> rpn = infixToRpn(text.replace(",", ""));
+            BigDecimal result = evaluate(rpn);
+            return result.toPlainString();
+        } catch (Exception e) {
+            return "NaN";
+        }
     }
 
     /**
@@ -57,7 +62,7 @@ class Calculator {
     /**
      * Evaluate the reverse polish notation.
      * @param rpn the reverse polish notation
-     * @return the result of evaluate
+     * @return the result of evaluating
      */
     static BigDecimal evaluate(List<String> rpn) {
         if (rpn == null || rpn.isEmpty()) {
@@ -66,31 +71,38 @@ class Calculator {
         Stack<String> stack = new Stack<>();
         for (String token : rpn) {
             stack.push(switch (token) {
-                case "+" -> new BigDecimal(stack.pop()).add(new BigDecimal(stack.pop())).toPlainString();
-                case "-" -> {
-                    var str1 = stack.pop();
-                    var str2 = stack.pop();
-                    yield new BigDecimal(str2).subtract(new BigDecimal(str1)).toPlainString();
-                }
-                case "*" -> new BigDecimal(stack.pop()).multiply(new BigDecimal(stack.pop())).toPlainString();
-                case "^" -> new BigDecimal(stack.pop()).pow(Integer.parseInt(stack.pop())).toPlainString();
-                case "/" -> {
-                    var str1 = stack.pop();
-                    var str2 = stack.pop();
-                    int scale = 1;
-                    if (str1.indexOf('.') > 0) {
-                        scale = str1.length() - str1.lastIndexOf(".");
-                    }
-                    if (str2.indexOf('.') > 0) {
-                        scale = Math.max(str2.length() - str2.lastIndexOf("."), scale);
-                    }
-                    var divisor = new BigDecimal(str1);
-                    yield new BigDecimal(str2).divide(divisor, scale, RoundingMode.HALF_UP).toPlainString();
-                }
+                case "+" -> add(stack.pop(), stack.pop());
+                case "-" -> sub(stack.pop(), stack.pop());
+                case "*" -> mul(stack.pop(), stack.pop());
+                case "/" -> div(stack.pop(), stack.pop());
+                case "^" -> pow(stack.pop(), stack.pop());
+                case "~" -> new BigDecimal(stack.pop()).negate().toPlainString();
                 default -> token;
             });
         }
         return new BigDecimal(stack.pop());
+    }
+
+    private static String add(String l, String r) {
+        return new BigDecimal(r).add(new BigDecimal(l)).toPlainString();
+    }
+
+    private static String sub(String l, String r) {
+        return new BigDecimal(r).subtract(new BigDecimal(l)).toPlainString();
+    }
+
+    private static String mul(String l, String r) {
+        return new BigDecimal(r).multiply(new BigDecimal(l)).toPlainString();
+    }
+
+    private static String div(String l, String r) {
+        var divisor = new BigDecimal(l);
+        var dividend = new BigDecimal(r);
+        return dividend.divide(divisor, Math.min(divisor.scale(), dividend.scale()), RoundingMode.HALF_UP).toPlainString();
+    }
+
+    private static String pow(String l, String r) {
+        return new BigDecimal(r).pow(Integer.parseInt(l)).toPlainString();
     }
 
     /**
@@ -98,10 +110,12 @@ class Calculator {
      */
     private enum Operator {
         ADD("+", false, 0),
-        SUB("-", true, 0),
+        SUB("-", false, 0),
         DIV("/", false, 5),
         MUL("*", false, 5),
-        POW("^", true, 10);
+        POW("^", true, 10),
+        NRG("~", true, 15), // unary operation (like -2 * 3)
+        ;
 
         final String symbol;
         final boolean rightAssociative;
@@ -143,20 +157,35 @@ class Calculator {
         List<String> output = new ArrayList<>();
         Stack<String> stack = new Stack<>();
 
+        boolean unaryAllowed = true;
         for (String token: tokens) {
+
+            if (token == null || token.isBlank()) continue;
+
+            if (Objects.equals(token, "-") && unaryAllowed) {
+                token = "~";
+            } else if (Objects.equals(token, "+") && unaryAllowed) {
+                continue;
+            }
+            unaryAllowed = false;
+
             if (Operator.values.containsKey(token)) {
+                unaryAllowed = true;
                 while (!stack.isEmpty() && Operator.values.containsKey(stack.peek())) {
                     Operator cOp = Operator.values.get(token);
                     Operator lOp = Operator.values.get(stack.peek());
                     if ((cOp.isLeftAssociative() && cOp.comparePrecedence(lOp) <= 0) ||
-                        (cOp.isRightAssociative() && cOp.comparePrecedence(lOp) < 0)) {
+                        (cOp.comparePrecedence(lOp) < 0)) {
+                        // pop o2 from the operator stack into the output queue
                         output.add(stack.pop());
                         continue;
                     }
                     break;
                 }
+                // push o1 onto the operator stack
                 stack.push(token);
             } else if ("(".equals(token)) {
+                unaryAllowed = true;
                 stack.push(token);
             } else if (")".equals(token)) {
                 while (!stack.isEmpty() && !stack.peek().equals("(")) {
