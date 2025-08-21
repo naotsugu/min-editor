@@ -46,6 +46,9 @@ class CalculatorTest {
         assertEquals("2e3 4 *",
             String.join(" ", Calculator.infixToRpn("2e3 * 4")));
 
+        assertEquals("2e-2",
+            String.join(" ", Calculator.infixToRpn("2e-2")));
+
         assertEquals("5 8 ~ *",
             String.join(" ", Calculator.infixToRpn("5 * - 8")));
 
@@ -80,6 +83,13 @@ class CalculatorTest {
     void calcScientificNotation() {
         assertEquals("2000", Calculator.calc("2e3"));
         assertEquals("2100", Calculator.calc("2.1e3"));
+    }
+
+    @Test
+    void calcWithUnaryMinus() {
+        assertEquals("5", Calculator.calc("-5+10"));
+        assertEquals("-5", Calculator.calc("5+-10"));
+        assertEquals("-5", Calculator.calc("5 * -1"));
     }
 
     @Test

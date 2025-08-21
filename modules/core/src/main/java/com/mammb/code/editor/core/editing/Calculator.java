@@ -54,8 +54,10 @@ class Calculator {
      * @return the reverse polish notation list
      */
     static List<String> infixToRpn(String text) {
-        List<String> tokens = Arrays.stream(text.splitWithDelimiters("[^a-zA-Z_0-9\\.]", -1))
-            .filter(Predicate.not(String::isBlank)).toList();
+        List<String> tokens = Arrays.stream(text.replace("e-", "EM").splitWithDelimiters("[^a-zA-Z_0-9\\.]", -1))
+            .filter(Predicate.not(String::isBlank))
+            .map(t -> t.contains("EM") ? t.replace("EM", "e-") : t)
+            .toList();
         return shuntingYard(tokens);
     }
 
