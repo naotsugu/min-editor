@@ -98,7 +98,10 @@ class Calculator {
     private static String div(String l, String r) {
         var divisor = new BigDecimal(l);
         var dividend = new BigDecimal(r);
-        return dividend.divide(divisor, Math.min(divisor.scale(), dividend.scale()), RoundingMode.HALF_UP).toPlainString();
+        System.out.println(divisor.scale());
+        System.out.println(dividend.scale());
+        return dividend.divide(divisor, Math.min(divisor.scale(), dividend.scale()) + 1, RoundingMode.HALF_UP)
+            .stripTrailingZeros().toPlainString();
     }
 
     private static String pow(String l, String r) {

@@ -58,18 +58,33 @@ class CalculatorTest {
     void calc() {
         assertEquals("3", Calculator.calc("1+2"));
         assertEquals("7", Calculator.calc("1+2*3"));
-        assertEquals("2", Calculator2.calc("10/5"));
-        assertEquals("8", Calculator2.calc("2^3"));
+        assertEquals("2", Calculator.calc("10/5"));
+        assertEquals("8", Calculator.calc("2^3"));
 
-        assertEquals("14", Calculator2.calc("2+3*4"));
-        assertEquals("20", Calculator2.calc("(2+3)*4"));
-        assertEquals("144", Calculator2.calc("(2+10)^2"));
+        assertEquals("14", Calculator.calc("2+3*4"));
+        assertEquals("20", Calculator.calc("(2+3)*4"));
+        assertEquals("144", Calculator.calc("(2+10)^2"));
 
-        assertEquals("2.5", Calculator2.calc("10/4"));
-        assertEquals("10.5", Calculator2.calc("5.5+5"));
-        assertEquals("3.14", Calculator2.calc("1.1+2.04"));
+        assertEquals("2.5", Calculator.calc("10/4"));
+        assertEquals("10.5", Calculator.calc("5.5+5"));
+        assertEquals("3.14", Calculator.calc("1.1+2.04"));
 
-        assertEquals("25", Calculator2.calc("((2+3)*5/5)^2"));
+        assertEquals("-8", Calculator.calc("-2^3"));
+        assertEquals("4", Calculator.calc("(-2)^2"));
+        assertEquals("-4", Calculator.calc("-(2^2)"));
+
+        assertEquals("25", Calculator.calc("((2+3)*5/5)^2"));
+    }
+
+    @Test
+    void calcScientificNotation() {
+        assertEquals("2000", Calculator.calc("2e3"));
+        assertEquals("2100", Calculator.calc("2.1e3"));
+    }
+
+    @Test
+    void calcDivisionByZero() {
+        assertEquals("NaN", Calculator.calc("1/0"));
     }
 
 }
