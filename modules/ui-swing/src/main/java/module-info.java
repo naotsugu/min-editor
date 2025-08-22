@@ -15,13 +15,11 @@
  */
 
 /**
- * The code editor ui fx module.
+ * The code editor module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui.fx {
-    requires javafx.graphics;
-    requires javafx.controls;
+module code.editor.ui.swing {
     requires code.editor.core;
     requires code.editor.ui;
-    exports com.mammb.code.editor.ui.fx;
+    requires java.desktop;
 }

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.fx;
+package com.mammb.code.editor.ui.fx;
 
-import java.awt.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -30,6 +29,7 @@ import javafx.stage.Stage;
 import com.sun.javafx.tk.Toolkit;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.Files;
+import com.mammb.code.editor.ui.Version;
 
 /**
  * The App class serves as the entry point for the JavaFX application.

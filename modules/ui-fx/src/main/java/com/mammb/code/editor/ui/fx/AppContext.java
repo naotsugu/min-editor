@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.fx;
+package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Session;
+import com.mammb.code.editor.ui.Version;
 import javafx.application.Application;
 import java.io.File;
 import java.io.IOException;

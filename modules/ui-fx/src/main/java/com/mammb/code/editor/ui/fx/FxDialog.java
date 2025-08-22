@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.fx;
+package com.mammb.code.editor.ui.fx;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
@@ -23,6 +23,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
+import com.mammb.code.editor.ui.Version;
 
 /**
  * The BasicDialog.

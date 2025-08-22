@@ -22,7 +22,7 @@ import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Locale;
 import java.util.Objects;
-import com.mammb.code.editor.fx.AppLauncher;
+import com.mammb.code.editor.ui.fx.AppLauncher;
 
 /**
  * The application entry point.

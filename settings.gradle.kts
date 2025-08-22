@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = "min-editor"
 
-include("bootstrap", "core", "ui-fx")
+include("bootstrap", "core", "ui", "ui-fx", "ui-swing")
 
 // javaFX
 include("javafx", "javafx-peep", "javafx-original")

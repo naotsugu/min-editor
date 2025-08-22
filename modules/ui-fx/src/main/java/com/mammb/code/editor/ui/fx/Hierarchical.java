@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.fx;
+package com.mammb.code.editor.ui.fx;
 
 /**
- * The application launcher.
+ * The Hierarchical.
+ * @param <E> the type of element
  * @author Naotsugu Kobayashi
  */
-public class AppLauncher {
+public interface Hierarchical<E> {
 
     /**
-     * Launch the application.
-     * @param args the arguments
+     * Set the parent.
+     * @param parent the parent
      */
-    public void launch(String[] args) {
-        App.launch(App.class, args);
-    }
+    void setParent(E parent);
 
 }

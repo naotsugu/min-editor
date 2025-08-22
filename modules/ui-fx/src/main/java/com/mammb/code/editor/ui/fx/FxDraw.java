@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.fx;
+package com.mammb.code.editor.ui.fx;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -30,7 +28,6 @@ import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.text.Style;
-import com.mammb.code.editor.core.text.SubText;
 import com.mammb.code.editor.core.text.Text;
 import javafx.scene.text.FontSmoothingType;
 

@@ -13,15 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.ui.fx;
 
 /**
- * The code editor ui fx module.
+ * The application launcher.
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui.fx {
-    requires javafx.graphics;
-    requires javafx.controls;
-    requires code.editor.core;
-    requires code.editor.ui;
-    exports com.mammb.code.editor.ui.fx;
+public class AppLauncher {
+
+    /**
+     * Launch the application.
+     * @param args the arguments
+     */
+    public void launch(String[] args) {
+        App.launch(App.class, args);
+    }
+
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.fx;
+package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
@@ -26,7 +26,8 @@ import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
-import com.mammb.code.editor.fx.Command.*;
+import com.mammb.code.editor.ui.fx.Command.*;
+import com.mammb.code.editor.ui.Version;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

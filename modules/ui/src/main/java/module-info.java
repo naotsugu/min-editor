@@ -13,19 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.fx;
 
 /**
- * The Hierarchical.
- * @param <E> the type of element
+ * The code editor ui module.
  * @author Naotsugu Kobayashi
  */
-public interface Hierarchical<E> {
-
-    /**
-     * Set the parent.
-     * @param parent the parent
-     */
-    void setParent(E parent);
-
+module code.editor.ui {
+    requires code.editor.core;
+    exports com.mammb.code.editor.ui;
 }
