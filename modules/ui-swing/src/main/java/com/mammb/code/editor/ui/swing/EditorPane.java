@@ -15,19 +15,19 @@
  */
 package com.mammb.code.editor.ui.swing;
 
-import com.mammb.code.editor.ui.Version;
+import com.mammb.code.editor.core.EditorModel;
 import javax.swing.*;
+import java.awt.*;
 
-public class App {
+public class EditorPane extends JPanel {
 
-    private final JFrame mainFrame;
+    /** The canvas. */
+    private final Canvas canvas;
+    /** The editor model. */
+    private EditorModel model;
 
-    App() {
-        mainFrame = new JFrame(Version.appName);
-        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        mainFrame.setSize(800, 600);
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
+    public EditorPane() {
+        this.canvas = new Canvas();
+        this.canvas.setBackground(Color.WHITE);
     }
-
 }
