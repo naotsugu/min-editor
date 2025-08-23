@@ -53,22 +53,22 @@ class RgbaTest {
     }
 
     @Test
-    void testWebColor() {
+    void testWeb() {
         Rgba rgba1 = new Rgba(255, 255, 255);
-        assertEquals("#ffffff", rgba1.webColor());
+        assertEquals("#ffffff", rgba1.web());
 
         Rgba rgba2 = new Rgba(0, 0, 0);
-        assertEquals("#000000", rgba2.webColor());
+        assertEquals("#000000", rgba2.web());
 
         Rgba rgba3 = new Rgba(16, 32, 48);
-        assertEquals("#102030", rgba3.webColor());
+        assertEquals("#102030", rgba3.web());
 
         Rgba rgba4 = new Rgba(16, 32, 48, 128);
-        assertEquals("#10203080", rgba4.webColor());
+        assertEquals("#10203080", rgba4.web());
     }
 
     @Test
-    void testWebColorParsing() {
+    void testWebParsing() {
         // 3-digit
         Rgba rgba1 = new Rgba("#fff");
         assertEquals(255, rgba1.r());

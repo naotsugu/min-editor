@@ -46,7 +46,7 @@ public record Rgba(int r, int g, int b, int a) {
         this(parseWebColor(webColor));
     }
 
-    public String webColor() {
+    public String web() {
         return (a >= 255)
             ? String.format("#%02x%02x%02x", r, g, b)
             : String.format("#%02x%02x%02x%02x", r, g, b, a);
