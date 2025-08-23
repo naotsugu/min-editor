@@ -29,9 +29,9 @@ public record Rgba(int r, int g, int b, int a) {
 
     public Rgba {
         r = Math.clamp(r, 0, 255);
-        g = Math.clamp(r, 0, 255);
-        b = Math.clamp(r, 0, 255);
-        a = Math.clamp(r, 0, 255);
+        g = Math.clamp(g, 0, 255);
+        b = Math.clamp(b, 0, 255);
+        a = Math.clamp(a, 0, 255);
     }
 
     public Rgba(int r, int g, int b) {
@@ -69,8 +69,8 @@ public record Rgba(int r, int g, int b, int a) {
             };
             case 6 -> new int[] {
                 Integer.parseInt(hex.substring(0, 2), 16),
-                Integer.parseInt(hex.substring(0, 2), 16),
-                Integer.parseInt(hex.substring(0, 2), 16)
+                Integer.parseInt(hex.substring(2, 4), 16),
+                Integer.parseInt(hex.substring(4, 6), 16)
             };
             case 8 -> new int[] {
                 Integer.parseInt(hex.substring(0, 2), 16),
