@@ -225,7 +225,7 @@ public class CommandPalette extends Dialog<Command> {
 
         private SequencedMap<String, CustomMenuItem> commandTypeItems() {
             SequencedMap<String, CustomMenuItem> keywordMappedItems = new LinkedHashMap<>();
-            Color textColor = Color.web(Theme.dark.fgColor().web());
+            Color textColor = Color.web(Theme.current.fgColor().web());
             for (var entry : Command.values().entrySet()) {
 
                 var text = new Text(entry.getKey());

@@ -98,13 +98,13 @@ public class Paints {
                                 px + st.width() + screenLayout.standardCharWidth() * 0.2,
                                 py,
                                 screenLayout.standardCharWidth() * 0.8,
-                                screenLayout.lineHeight() * 0.8, Theme.dark.faintColor().web()));
+                                screenLayout.lineHeight() * 0.8, Theme.current.faintColor().web()));
                         } else if (st.isEndWithLf()) {
                             draw.line(Symbols.lineFeed(
                                 px + st.width() + screenLayout.standardCharWidth() * 0.2,
                                 py,
                                 screenLayout.standardCharWidth() * 0.8,
-                                screenLayout.lineHeight() * 0.8, Theme.dark.faintColor().web()));
+                                screenLayout.lineHeight() * 0.8, Theme.current.faintColor().web()));
                         }
                         for (int i = 0; i < st.value().length(); i++) {
                             i = st.value().indexOf('　', i);
@@ -113,7 +113,7 @@ public class Paints {
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - screenLayout.lineHeight() * 0.1,
                                 st.advances()[i],
-                                screenLayout.lineHeight(), Theme.dark.faintColor().web()));
+                                screenLayout.lineHeight(), Theme.current.faintColor().web()));
                         }
                         for (int i = 0; i < st.value().length(); i++) {
                             i = st.value().indexOf('\t', i);
@@ -122,7 +122,7 @@ public class Paints {
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - screenLayout.lineHeight() * 0.1,
                                 screenLayout.standardCharWidth(),
-                                screenLayout.lineHeight(), Theme.dark.faintColor().web()));
+                                screenLayout.lineHeight(), Theme.current.faintColor().web()));
                         }
                     }
                 }
@@ -199,8 +199,8 @@ public class Paints {
             // if the text is wrapped, display the row number only on the first line.
             if (!Objects.equals(prevValue, num.value())) {
                 String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
-                    ? Theme.dark.fgColor().web()
-                    : Theme.dark.fgColor().web() + "66";
+                    ? Theme.current.fgColor().web()
+                    : Theme.current.fgColor().web() + "66";
                 draw.text(num,
                     marginLeft - 12 - num.width(),
                     y + marginTop,

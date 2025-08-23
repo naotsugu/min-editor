@@ -34,7 +34,14 @@ public interface Theme {
     );
 
     /** The light theme. */
-    Theme light = new ThemeRecord(null, null, null, null, null, null);
+    Theme light = new ThemeRecord(
+        new Rgba("#ffffff"),   // baseColor
+        new Rgba("#000000"),   // fgColor
+        new Rgba("#a9d7ff"),   // paleHighlightColor
+        new Rgba("#fbbf24"),   // cautionColor
+        new Rgba("#80808088"), // faintColor
+        new Rgba("#f0f0f0")    // uiBaseColor
+    );
 
     /** The current theme. */
     Theme current = Objects.equals("light", System.getProperty("editor.core.Theme", "dark")) ? light : dark;

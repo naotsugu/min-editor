@@ -231,10 +231,10 @@ public class App extends Application {
         }
 
         """
-            .replaceAll("app-base", Theme.dark.baseColor().web()) // TODO theme vs config
-            .replaceAll("app-text", Theme.dark.fgColor().web())
-            .replaceAll("app-back", Theme.dark.baseColor().web())
-            .replaceAll("app-accent", Theme.dark.paleHighlightColor().web())
+            .replaceAll("app-base", Theme.current.baseColor().web()) // TODO theme vs config
+            .replaceAll("app-text", Theme.current.fgColor().web())
+            .replaceAll("app-back", Theme.current.baseColor().web())
+            .replaceAll("app-accent", Theme.current.paleHighlightColor().web())
             .getBytes(StandardCharsets.UTF_8)));
 
 }
