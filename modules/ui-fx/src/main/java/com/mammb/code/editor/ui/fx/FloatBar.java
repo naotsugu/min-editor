@@ -51,12 +51,12 @@ public class FloatBar extends HBox {
         setManaged(false);
         setAlignment(Pos.BOTTOM_CENTER);
         setBackground(new Background(new BackgroundFill(
-            Color.web(Theme.dark.baseColor()),
+            Color.web(Theme.dark.baseColor().web()),
             new CornerRadii(2),
             new Insets(2, 0, 0, 2))));
 
         text.setFont(Font.font("Consolas", 12));
-        text.setFill(Color.web(Theme.dark.fgColor()));
+        text.setFill(Color.web(Theme.dark.fgColor().web()));
 
         vScroll.layoutBoundsProperty().addListener((_, _, _) -> layout(vScroll, hScroll));
         hScroll.layoutBoundsProperty().addListener((_, _, _) -> layout(vScroll, hScroll));

@@ -66,7 +66,7 @@ public class FxDraw implements Draw {
     @Override
     public void text(Text sourceText, double x, double y, double w, List<Style> styles) {
         var text = formatTab(sourceText);
-        String textColor = Theme.dark.fgColor();
+        String textColor = Theme.dark.fgColor().web();
         String bgColor = "";
         String underColor = "";
         String aroundColor = "";
@@ -110,11 +110,11 @@ public class FxDraw implements Draw {
     @Override
     public void select(double x1, double y1, double x2, double y2, double l, double r) {
         double lineHeight = fontMetrics().getLineHeight();
-        gc.setFill(color(Theme.dark.paleHighlightColor()));
+        gc.setFill(color(Theme.dark.paleHighlightColor().web()));
         if (y1 == y2) {
             gc.fillRect(Math.min(x1, x2), y1, Math.abs(x2 - x1), lineHeight);
             gc.setLineWidth(0.5);
-            gc.setStroke(color(Theme.dark.faintColor()));
+            gc.setStroke(color(Theme.dark.faintColor().web()));
             gc.strokeRect(Math.min(x1, x2) - 0.25, y1 - 0.25, Math.abs(x2 - x1) + 0.5, lineHeight + 0.5);
             return;
         }
@@ -138,7 +138,7 @@ public class FxDraw implements Draw {
         x[7] = x1; y[7]= y1 + lineHeight;
         gc.fillPolygon(x, y, 8);
         gc.setLineWidth(0.5);
-        gc.setStroke(color(Theme.dark.faintColor()));
+        gc.setStroke(color(Theme.dark.faintColor().web()));
         gc.strokePolygon(x, y, 8);
     }
 
@@ -161,14 +161,14 @@ public class FxDraw implements Draw {
 
     @Override
     public void hLine(double x, double y, double w) {
-        gc.setStroke(color(Theme.dark.cautionColor().substring(0, 7)));
+        gc.setStroke(color(Theme.dark.cautionColor().web().substring(0, 7)));
         gc.setLineWidth(2);
         gc.strokeLine(x, y, x + w, y);
     }
 
     @Override
     public void rect(double x, double y, double w, double h) {
-        gc.setFill(color(Theme.dark.uiBaseColor()));
+        gc.setFill(color(Theme.dark.uiBaseColor().web()));
         gc.fillRect(x, y, w, h);
     }
 

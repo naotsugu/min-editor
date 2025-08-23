@@ -22,44 +22,58 @@ package com.mammb.code.editor.core;
 public interface Theme {
 
     Theme dark = new ThemeRecord(
-            "#292929",   // baseColor
-            "#CEDFF2",   // fgColor
-            "#214283",   // paleHighlightColor
-            "#FDE047",   // cautionColor
-            "#80808088", // faintColor
-            "#303030"    // uiBaseColor
+        new Rgba("#292929"),   // baseColor
+        new Rgba("#CEDFF2"),   // fgColor
+        new Rgba("#214283"),   // paleHighlightColor
+        new Rgba("#FDE047"),   // cautionColor
+        new Rgba("#80808088"), // faintColor
+        new Rgba("#303030")    // uiBaseColor
     );
 
     /**
-     * Get the base color string.
-     * @return the base color string
+     * Get the base color.
+     * @return the base color
      */
-    String baseColor();
+    Rgba baseColor();
 
     /**
-     * Get the foreground color string.
-     * @return the foreground color string
+     * Get the foreground color.
+     * @return the foreground color
      */
-    String fgColor();
-    String paleHighlightColor();
+    Rgba fgColor();
 
     /**
-     * Get the caution color string.
+     * Get the pale highlight color.
+     * @return the pale highlight color
+     */
+    Rgba paleHighlightColor();
+
+    /**
+     * Get the caution color.
      * Typically, highlighting the searched string color.
-     * @return the caution color string
+     * @return the caution color
      */
-    String cautionColor();
-    String faintColor();
-    String uiBaseColor();
+    Rgba cautionColor();
+
+    /**
+     * Get the faint color.
+     * @return the faint color
+     */
+    Rgba faintColor();
+
+    /**
+     * Get the ui base color.
+     * @return the ui base color
+     */
+    Rgba uiBaseColor();
 
     record ThemeRecord(
-            String baseColor,
-            String fgColor,
-            String paleHighlightColor,
-            String cautionColor,
-            String faintColor,
-            String uiBaseColor
+        Rgba baseColor,
+        Rgba fgColor,
+        Rgba paleHighlightColor,
+        Rgba cautionColor,
+        Rgba faintColor,
+        Rgba uiBaseColor
     ) implements Theme { }
-
 
 }
