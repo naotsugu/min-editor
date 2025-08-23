@@ -15,12 +15,15 @@
  */
 package com.mammb.code.editor.core;
 
+import java.util.Objects;
+
 /**
  * The Theme.
  * @author Naotsugu Kobayashi
  */
 public interface Theme {
 
+    /** The dark theme. */
     Theme dark = new ThemeRecord(
         new Rgba("#292929"),   // baseColor
         new Rgba("#CEDFF2"),   // fgColor
@@ -29,6 +32,12 @@ public interface Theme {
         new Rgba("#80808088"), // faintColor
         new Rgba("#303030")    // uiBaseColor
     );
+
+    /** The light theme. */
+    Theme light = new ThemeRecord(null, null, null, null, null, null);
+
+    /** The current theme. */
+    Theme current = Objects.equals("light", System.getProperty("editor.core.Theme", "dark")) ? light : dark;
 
     /**
      * Get the base color.
