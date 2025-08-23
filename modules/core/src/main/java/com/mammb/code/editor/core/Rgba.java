@@ -56,29 +56,16 @@ public record Rgba(int r, int g, int b, int a) {
         Objects.requireNonNull(webColor, "webColor must not be null");
         String hex = webColor.replace("#", "");
         return switch (hex.length()) {
-            case 3 -> new int[] {
-                Integer.parseInt(hex.substring(0, 1).repeat(2), 16),
-                Integer.parseInt(hex.substring(1, 2).repeat(2), 16),
-                Integer.parseInt(hex.substring(2, 3).repeat(2), 16)
-            };
-            case 4 -> new int[] {
-                Integer.parseInt(hex.substring(0, 1).repeat(2), 16),
-                Integer.parseInt(hex.substring(1, 2).repeat(2), 16),
-                Integer.parseInt(hex.substring(2, 3).repeat(2), 16),
-                Integer.parseInt(hex.substring(3, 4).repeat(2), 16)
-            };
-            case 6 -> new int[] {
-                Integer.parseInt(hex.substring(0, 2), 16),
-                Integer.parseInt(hex.substring(2, 4), 16),
-                Integer.parseInt(hex.substring(4, 6), 16)
-            };
-            case 8 -> new int[] {
-                Integer.parseInt(hex.substring(0, 2), 16),
-                Integer.parseInt(hex.substring(2, 4), 16),
-                Integer.parseInt(hex.substring(4, 6), 16),
-                Integer.parseInt(hex.substring(6, 8), 16)
-            };
+            case 3 -> new int[] { h(hex, 0, 1), h(hex, 1, 1), h(hex, 2, 1) };
+            case 4 -> new int[] { h(hex, 0, 1), h(hex, 1, 1), h(hex, 2, 1), h(hex, 3, 1) };
+            case 6 -> new int[] { h(hex, 0, 2), h(hex, 2, 2), h(hex, 4, 2) };
+            case 8 -> new int[] { h(hex, 0, 2), h(hex, 2, 2), h(hex, 4, 2), h(hex, 6, 2) };
             default -> new int[] { 0, 0, 0 };
         };
     }
+
+    private static int h(String s, int i, int n) {
+        return Integer.parseInt(s.substring(i, i + n).repeat(n == 1 ? 2 : 1), 16);
+    }
+
 }
