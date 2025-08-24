@@ -19,6 +19,7 @@ import com.mammb.code.editor.core.Rgba;
 import com.mammb.code.editor.ui.GraphicsDraw;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,11 @@ public class FxGraphicsDraw implements GraphicsDraw {
      */
     public FxGraphicsDraw(GraphicsContext gc) {
         this.gc = gc;
+    }
+
+    @Override
+    public void clearRect() {
+        clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
     @Override
@@ -84,6 +90,18 @@ public class FxGraphicsDraw implements GraphicsDraw {
     public void fillPolygon(Rgba color, double[] xPoints, double[] yPoints, int nPoints) {
         gc.setFill(color(color));
         gc.fillPolygon(xPoints, yPoints, nPoints);
+    }
+
+    @Override
+    public void increaseFontSize(double sizeDelta) {
+        if (sizeDelta == 0) {
+            return;
+        }
+        Font old = gc.getFont();
+        double size = old.getSize() + sizeDelta;
+        if (size < 6) return;
+        Font font = Font.font(old.getFamily(), size);
+        gc.setFont(font);
     }
 
     private Color color(Rgba color) {

@@ -33,6 +33,11 @@ public class SwGraphicsDraw implements GraphicsDraw {
     private final Map<Rgba, Color> colors = new HashMap<>();
 
     @Override
+    public void clearRect() {
+        clearRect(0, 0, g.getClipBounds().width, g.getClipBounds().height);
+    }
+
+    @Override
     public void clearRect(double x, double y, double w, double h) {
         g.clearRect((int) x, (int) y, (int) w, (int) h);
     }
@@ -99,6 +104,18 @@ public class SwGraphicsDraw implements GraphicsDraw {
         }
         g.setColor(color(color));
         g.fillPolygon(xInts, yInts, nPoints);
+    }
+
+    @Override
+    public void increaseFontSize(double sizeDelta) {
+        if (sizeDelta == 0) {
+            return;
+        }
+        Font old = g.getFont();
+        int size = old.getSize() + (int) sizeDelta;
+        if (size < 6) return;
+        Font font = new Font(old.getFamily(), old.getStyle(), size);
+        g.setFont(font);
     }
 
     private Color color(Rgba color) {
