@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.ui.ColorScheme;
+
 /**
  * The application launcher.
  * @author Naotsugu Kobayashi
@@ -26,6 +28,9 @@ public class AppLauncher {
      * @param args the arguments
      */
     public void launch(String[] args) {
+        if (System.getProperty("core.theme") == null) {
+            System.setProperty("core.theme", ColorScheme.platform().isDark() ? "dark" : "light");
+        }
         App.launch(App.class, args);
     }
 

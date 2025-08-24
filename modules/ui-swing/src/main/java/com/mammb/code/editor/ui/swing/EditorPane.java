@@ -15,19 +15,49 @@
  */
 package com.mammb.code.editor.ui.swing;
 
+import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
+import com.mammb.code.editor.core.Theme;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * The editor pane.
+ * @author Naotsugu Kobayashi
+ */
 public class EditorPane extends JPanel {
 
+    /** The context. */
+    private final AppContext context;
     /** The canvas. */
     private final Canvas canvas;
+    /** The draw. */
+    private final SgDraw draw;
     /** The editor model. */
     private EditorModel model;
+    /** The screen scroll. */
+    private final SgScreenScroll scroll = new SgScreenScroll();
 
-    public EditorPane() {
-        this.canvas = new Canvas();
-        this.canvas.setBackground(Color.WHITE);
+
+    public EditorPane(AppContext ctx) {
+        context = ctx;
+
+        canvas = new Canvas() {
+            @Override public void paint(Graphics g) {
+                super.paint(g);
+                model.paint(draw.with(g));
+            }
+        };
+        add(canvas);
+        canvas.setFocusable(false);
+        canvas.setBackground(Theme.current.baseColor()
+            .as(c -> new Color(c[0], c[1], c[2], c[3])));
+        Font font = new Font(context.config().fontName(), Font.PLAIN, (int) context.config().fontSize());
+        canvas.setFont(font);
+        System.out.println(canvas.getFontMetrics(font));
+        draw = new SgDraw(canvas);
+        model = EditorModel.of(draw.fontMetrics(), scroll, context);
+
     }
+
 }

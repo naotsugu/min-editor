@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * The RGBA.
@@ -50,6 +51,10 @@ public record Rgba(int r, int g, int b, int a) {
         return (a >= 255)
             ? String.format("#%02x%02x%02x", r, g, b)
             : String.format("#%02x%02x%02x%02x", r, g, b, a);
+    }
+
+    public <T> T as(Function<int[], T> fun) {
+        return fun.apply(new int[] { r, g, b, a });
     }
 
     private static int[] parseWebColor(String webColor) {

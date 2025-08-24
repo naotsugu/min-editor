@@ -1,6 +1,6 @@
 /*
  * Copyright 2023-2025 the original author or authors.
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,26 +15,31 @@
  */
 package com.mammb.code.editor.ui.swing;
 
-import com.mammb.code.editor.ui.ColorScheme;
-import javax.swing.*;
+import com.mammb.code.editor.core.ScreenScroll;
 
-public class AppLauncher {
+/**
+ * The screen scroll.
+ * @author Naotsugu Kobayashi
+ */
+public class SgScreenScroll implements ScreenScroll {
 
-    /**
-     * Launch the application.
-     * @param args the arguments
-     */
-    public void launch(String[] args) {
+    @Override
+    public void vertical(int min, int max, int val, int len) {
 
-        System.setProperty("apple.awt.application.appearance", "system");
-        if (System.getProperty("core.theme") == null) {
-            System.setProperty("core.theme", ColorScheme.platform().isDark() ? "dark" : "light");
-        }
-        SwingUtilities.invokeLater(() -> new App(args));
     }
 
-    public static void main(String[] args) {
-        new AppLauncher().launch(args);
+    @Override
+    public void horizontal(double min, double max, double val, double len) {
+
     }
 
+    @Override
+    public double xVal() {
+        return 0;
+    }
+
+    @Override
+    public int yVal() {
+        return 0;
+    }
 }

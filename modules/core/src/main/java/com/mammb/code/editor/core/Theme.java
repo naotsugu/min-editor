@@ -44,7 +44,7 @@ public interface Theme {
     );
 
     /** The current theme. */
-    Theme current = Objects.equals("light", System.getProperty("editor.core.Theme", "dark")) ? light : dark;
+    Theme current = Objects.equals("light", System.getProperty("core.theme", "dark")) ? light : dark;
 
     /**
      * Get the base color.

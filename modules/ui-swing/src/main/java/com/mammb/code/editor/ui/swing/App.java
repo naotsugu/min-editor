@@ -16,18 +16,24 @@
 package com.mammb.code.editor.ui.swing;
 
 import com.mammb.code.editor.ui.Version;
-import javax.swing.*;
+import java.nio.file.Path;
 
+/**
+ * The application entry point.
+ * @author Naotsugu Kobayashi
+ */
 public class App {
 
-    private final JFrame mainFrame;
+    App(String[] args) {
 
-    App() {
-        mainFrame = new JFrame(Version.appName);
-        mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        mainFrame.setSize(800, 600);
-        mainFrame.setLocationRelativeTo(null);
-        mainFrame.setVisible(true);
+        var ctx = new AppContext();
+        var appPane = new AppPane(Version.appName, paramPath(args), ctx);
+
+
+        appPane.setVisible(true);
     }
 
+    private Path paramPath(String[] args) {
+        return null;
+    }
 }

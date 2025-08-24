@@ -31,6 +31,10 @@ public class AppContext implements Context {
     /** The application. */
     private final Application app;
 
+    /**
+     * Constructor.
+     * @param app the application
+     */
     public AppContext(Application app) {
         this.app = app;
         this.appConfig = new AppConfig();

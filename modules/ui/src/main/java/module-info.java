@@ -20,5 +20,6 @@
  */
 module code.editor.ui {
     requires code.editor.core;
+    requires java.desktop;
     exports com.mammb.code.editor.ui;
 }
