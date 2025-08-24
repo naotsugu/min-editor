@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.core.text;
 
+import com.mammb.code.editor.core.Rgba;
+
 /**
  * The style.
  * @author Naotsugu Kobayashi
@@ -26,20 +28,20 @@ public sealed interface Style {
      */
     sealed interface ColoredStyle extends Style {
         /**
-         * Get the color string.
-         * @return the color string
+         * Get the color.
+         * @return the color
          */
-        String colorString();
+        Rgba color();
     }
 
     /** The text color style. */
-    record TextColor(String colorString) implements ColoredStyle { }
+    record TextColor(Rgba color) implements ColoredStyle { }
     /** The background color style. */
-    record BgColor(String colorString) implements ColoredStyle { }
+    record BgColor(Rgba color) implements ColoredStyle { }
     /** The under color style. */
-    record UnderColor(String colorString) implements ColoredStyle { }
+    record UnderColor(Rgba color) implements ColoredStyle { }
     /** The around squarer color style. */
-    record AroundSq(String colorString) implements ColoredStyle { }
+    record AroundSq(Rgba color) implements ColoredStyle { }
 
 
     /** The style span. */

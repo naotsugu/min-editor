@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.text;
 
 import com.mammb.code.editor.core.Draw;
+import com.mammb.code.editor.core.Rgba;
 
 /**
  * The symbols.
@@ -40,7 +41,7 @@ public interface Symbols {
      *        x0     x1     x2
      * </pre>
      */
-    static Draw.Line[] lineFeed(double x, double y, double w, double h, String color) {
+    static Draw.Line[] lineFeed(double x, double y, double w, double h, Rgba color) {
         double x0 = x + w * 0.1;
         double x1 = x + w * 0.5;
         double x2 = x + w * 0.9;
@@ -73,7 +74,7 @@ public interface Symbols {
      *        x0     x1     x2
      * </pre>
      */
-    static Draw.Line[] crlf(double x, double y, double w, double h, String color) {
+    static Draw.Line[] crlf(double x, double y, double w, double h, Rgba color) {
         double x0 = x + w * 0.1;
         double x1 = x + w * 0.5;
         double x2 = x + w * 0.9;
@@ -105,7 +106,7 @@ public interface Symbols {
      *        x0     x1     x2
      * </pre>
      */
-    static Draw.Line[] tab(double x, double y, double w, double h, String color) {
+    static Draw.Line[] tab(double x, double y, double w, double h, Rgba color) {
         double x0 = x + w * 0.1;
         double x1 = x + w * 0.5;
         double x2 = x + w * 0.9;
@@ -137,7 +138,7 @@ public interface Symbols {
      *        x0     x1     x2
      * </pre>
      */
-    static Draw.Line[] whiteSpace(double x, double y, double w, double h, String color) {
+    static Draw.Line[] whiteSpace(double x, double y, double w, double h, Rgba color) {
         double x0 = x + w * 0.1;
         double x2 = x + w * 0.9;
         double y1 = y + h * 0.7;

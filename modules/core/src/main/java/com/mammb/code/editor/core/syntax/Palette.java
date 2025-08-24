@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core.syntax;
 
+import com.mammb.code.editor.core.Rgba;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.TextColor;
 
@@ -24,23 +25,23 @@ import com.mammb.code.editor.core.text.Style.TextColor;
  */
 public interface Palette {
 
-    TextColor gray = new Style.TextColor("#888888");
-    TextColor darkGreen = new Style.TextColor("#6A8759");
-    TextColor darkOrange = new Style.TextColor("#CC7832");
-    TextColor darkPale = new Style.TextColor("#6897BB");
+    TextColor gray = new Style.TextColor(new Rgba("#888888"));
+    TextColor darkGreen = new Style.TextColor(new Rgba("#6A8759"));
+    TextColor darkOrange = new Style.TextColor(new Rgba("#CC7832"));
+    TextColor darkPale = new Style.TextColor(new Rgba("#6897BB"));
 
-    TextColor ansiRed = new Style.TextColor("#f0524f");
-    TextColor ansiGreen = new Style.TextColor("#5c962c");
-    TextColor ansiBlue = new Style.TextColor("#3993d4");
+    TextColor ansiRed = new Style.TextColor(new Rgba("#f0524f"));
+    TextColor ansiGreen = new Style.TextColor(new Rgba("#5c962c"));
+    TextColor ansiBlue = new Style.TextColor(new Rgba("#3993d4"));
 
-    TextColor twDarkRed = new Style.TextColor("#B91C1C");    // Tailwind RED 700
-    TextColor twRed = new Style.TextColor("#ef4444");        // Tailwind RED 500
-    TextColor twLightRed = new Style.TextColor("#FECACA");   // Tailwind RED 300
-    TextColor twDarkGreen = new Style.TextColor("#15803d");  // Tailwind GREEN 700
-    TextColor twGreen = new Style.TextColor("#22c55e");      // Tailwind GREEN 500
-    TextColor twLightGreen = new Style.TextColor("#86EFAC"); // Tailwind GREEN 300
-    TextColor twDarkBlue = new Style.TextColor("#1d4ed8");   // Tailwind BLUE 700
-    TextColor twBlue = new Style.TextColor("#3b82f6");       // Tailwind BLUE 500
-    TextColor twLightBlue = new Style.TextColor("#93c5fd");  // Tailwind BLUE 300
+    TextColor twDarkRed = new Style.TextColor(new Rgba("#B91C1C"));    // Tailwind RED 700
+    TextColor twRed = new Style.TextColor(new Rgba("#ef4444"));        // Tailwind RED 500
+    TextColor twLightRed = new Style.TextColor(new Rgba("#FECACA"));   // Tailwind RED 300
+    TextColor twDarkGreen = new Style.TextColor(new Rgba("#15803d"));  // Tailwind GREEN 700
+    TextColor twGreen = new Style.TextColor(new Rgba("#22c55e"));      // Tailwind GREEN 500
+    TextColor twLightGreen = new Style.TextColor(new Rgba("#86EFAC")); // Tailwind GREEN 300
+    TextColor twDarkBlue = new Style.TextColor(new Rgba("#1d4ed8"));   // Tailwind BLUE 700
+    TextColor twBlue = new Style.TextColor(new Rgba("#3b82f6"));       // Tailwind BLUE 500
+    TextColor twLightBlue = new Style.TextColor(new Rgba("#93c5fd"));  // Tailwind BLUE 300
 
 }

@@ -104,6 +104,6 @@ public interface Draw {
     void line(Line... lines);
 
     /** Line record. */
-    record Line(double x1, double y1, double x2, double y2, String color) {}
+    record Line(double x1, double y1, double x2, double y2, Rgba color) {}
 
 }

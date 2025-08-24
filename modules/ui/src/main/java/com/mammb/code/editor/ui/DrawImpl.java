@@ -13,55 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.fx;
+package com.mammb.code.editor.ui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import com.mammb.code.editor.core.Rgba;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.FontMetrics;
+import com.mammb.code.editor.core.Rgba;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Text;
-import javafx.scene.text.FontSmoothingType;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * The draw.
+ * The Draw implementation.
  * @author Naotsugu Kobayashi
  */
-public class FxDraw implements Draw {
+public class DrawImpl implements Draw {
 
     /** The graphics context. */
-    private final GraphicsContext gc;
+    private final GraphicsDraw gd;
     /** The font metrics. */
     private FontMetrics fontMetrics;
-    /** The cache of color. */
-    private final Map<Rgba, Color> colors = new HashMap<>();
 
     /**
      * Constructor.
-     * @param gc the graphics context
-     * @param font the font
+     * @param gd the graphics context
      */
-    public FxDraw(GraphicsContext gc, Font font) {
-        this.gc = gc;
-        this.gc.setFontSmoothingType(Objects.equals(font.getName(), "MS Gothic")
-            ? FontSmoothingType.GRAY : FontSmoothingType.LCD);
-        this.gc.setFont(font);
-        this.fontMetrics = FxFontMetrics.of(font, gc.getFontSmoothingType());
+    public DrawImpl(GraphicsDraw gd) {
+        this.gd = gd;
+        this.fontMetrics = gd.fontMetrics();
     }
 
     @Override
     public void clear() {
-        Canvas canvas = gc.getCanvas();
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        gd.clear();
     }
 
     @Override
@@ -80,43 +65,34 @@ public class FxDraw implements Draw {
             }
         }
         if (bgColor != null) {
-            gc.setFill(color(bgColor));
-            gc.fillRect(x + 0.5, y + 0.5, w - 1, fontMetrics.getLineHeight() - 1);
+            gd.fillRect(bgColor, x + 0.5, y + 0.5, w - 1, fontMetrics.getLineHeight() - 1);
         }
         if (underColor != null) {
-            gc.setStroke(color(underColor));
-            gc.setLineWidth(1.5);
-            gc.strokeLine(x, y + fontMetrics.getLineHeight() - 1, x + w, y + fontMetrics.getLineHeight() - 1);
+            gd.strokeLine(underColor, 1.5, x, y + fontMetrics.getLineHeight() - 1, x + w, y + fontMetrics.getLineHeight() - 1);
         }
         if (aroundColor != null) {
-            gc.setStroke(color(aroundColor));
-            gc.setLineWidth(0.5);
-            gc.strokeRect(x, y, w, fontMetrics.getLineHeight());
+            gd.strokeRect(aroundColor, 0.5, x, y, w, fontMetrics.getLineHeight());
         }
 
-        Color color = color(textColor);
-        gc.setStroke(color);
-        gc.setFill(color);
-        gc.fillText(text, x, y + fontMetrics.getAscent());
+        gd.fillText(textColor, text, x, y + fontMetrics.getAscent());
+    }
+
+    @Override
+    public void rect(double x, double y, double w, double h) {
+        gd.fillRect(Theme.current.uiBaseColor(), x, y, w, h);
     }
 
     @Override
     public void caret(double x, double y) {
-        gc.setLineDashes(0);
-        gc.setStroke(Color.ORANGE);
-        gc.setLineWidth(1.5);
-        gc.strokeLine(x - 1, y, x - 1, y + fontMetrics.getLineHeight());
+        gd.strokeLine(Rgba.ORANGE, 1.5, x - 1, y, x - 1, y + fontMetrics.getLineHeight());
     }
 
     @Override
     public void select(double x1, double y1, double x2, double y2, double l, double r) {
         double lineHeight = fontMetrics().getLineHeight();
-        gc.setFill(color(Theme.current.paleHighlightColor()));
         if (y1 == y2) {
-            gc.fillRect(Math.min(x1, x2), y1, Math.abs(x2 - x1), lineHeight);
-            gc.setLineWidth(0.5);
-            gc.setStroke(color(Theme.current.faintColor()));
-            gc.strokeRect(Math.min(x1, x2) - 0.25, y1 - 0.25, Math.abs(x2 - x1) + 0.5, lineHeight + 0.5);
+            gd.fillRect(Theme.current.paleHighlightColor(), Math.min(x1, x2), y1, Math.abs(x2 - x1), lineHeight);
+            gd.strokeRect(Theme.current.faintColor(), 0.5, Math.min(x1, x2) - 0.25, y1 - 0.25, Math.abs(x2 - x1) + 0.5, lineHeight + 0.5);
             return;
         }
         //                    0:(x1, y1)
@@ -137,53 +113,34 @@ public class FxDraw implements Draw {
         x[5] = l;  y[5]= y2 + lineHeight;
         x[6] = l;  y[6]= y1 + lineHeight;
         x[7] = x1; y[7]= y1 + lineHeight;
-        gc.fillPolygon(x, y, 8);
-        gc.setLineWidth(0.5);
-        gc.setStroke(color(Theme.current.faintColor()));
-        gc.strokePolygon(x, y, 8);
+        gd.fillPolygon(Theme.current.paleHighlightColor(), x, y, 8);
+        gd.strokePolygon(Theme.current.faintColor(), 0.5, x, y, 8);
     }
 
     @Override
     public void underline(double x1, double y1, double x2, double y2, double wrapWidth) {
         double height = fontMetrics().getAscent();
-        gc.setStroke(Color.LIGHTGRAY);
-        gc.setLineWidth(1);
         if (y1 == y2) {
-            gc.strokeLine(x1, y1 + height, x2, y1 + height);
+            gd.strokeLine(Rgba.LIGHTGRAY, 1, x1, y1 + height, x2, y1 + height);
         } else {
             // if line wrapped
             for (double y = y1; y <= y2; y += fontMetrics.getLineHeight()) {
                 double xs = (y == y1) ? x1 : 0;
                 double xe = (y == y2) ? x2 : wrapWidth;
-                gc.strokeLine(xs, y + height, xe, y + height);
+                gd.strokeLine(Rgba.LIGHTGRAY, 1, xs, y + height, xe, y + height);
             }
         }
     }
 
     @Override
     public void hLine(double x, double y, double w) {
-        gc.setStroke(color(Theme.current.cautionColor().opaque()));
-        gc.setLineWidth(2);
-        gc.strokeLine(x, y, x + w, y);
-    }
-
-    @Override
-    public void rect(double x, double y, double w, double h) {
-        gc.setFill(color(Theme.current.uiBaseColor()));
-        gc.fillRect(x, y, w, h);
+        gd.strokeLine(Theme.current.cautionColor().opaque(), 2, x, y, x + w, y);
     }
 
     @Override
     public void increaseFontSize(double sizeDelta) {
-        if (sizeDelta == 0) {
-            return;
-        }
-        Font old = gc.getFont();
-        double size = old.getSize() + sizeDelta;
-        if (size < 6) return;
-        Font font = Font.font(old.getFamily(), size);
-        gc.setFont(font);
-        fontMetrics = FxFontMetrics.of(font, gc.getFontSmoothingType());
+        gd.increaseFontSize(sizeDelta);
+        fontMetrics = gd.fontMetrics();
     }
 
     @Override
@@ -193,20 +150,9 @@ public class FxDraw implements Draw {
 
     @Override
     public void line(Line... lines) {
-        gc.setLineWidth(1);
         for (Line line : lines) {
-            gc.setStroke(color(line.color()));
-            gc.strokeLine(line.x1(), line.y1(), line.x2(), line.y2());
+            gd.strokeLine(line.color(), 1, line.x1(), line.y1(), line.x2(), line.y2());
         }
-    }
-
-    /**
-     * Get the Color from the specified color string.
-     * @param color the color
-     * @return the Color
-     */
-    private Color color(Rgba color) {
-        return colors.computeIfAbsent(color, c -> c.as(a -> Color.rgb(a[0], a[1], a[2], (double)a[3] / (double)255.0F)));
     }
 
     /**

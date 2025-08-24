@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui;
 
+import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Rgba;
 
 /**
@@ -23,13 +24,15 @@ import com.mammb.code.editor.core.Rgba;
  */
 public interface GraphicsDraw {
 
-    void clearRect();
+    void clear();
     void clearRect(double x, double y, double w, double h);
     void fillRect(Rgba color, double x, double y, double w, double h);
     void strokeLine(Rgba color, double lineWidth, double x1, double y1, double x2, double y2);
     void strokeRect(Rgba color, double lineWidth, double x, double y, double w, double h);
     void fillText(Rgba color, String text, double x, double y);
-    void strokePolygon(Rgba color, double lineWidth, double xPoints[], double yPoints[], int nPoints);
-    void fillPolygon(Rgba color, double xPoints[], double yPoints[], int nPoints);
+    void strokePolygon(Rgba color, double lineWidth, double[] xPoints, double[] yPoints, int nPoints);
+    void fillPolygon(Rgba color, double[] xPoints, double[] yPoints, int nPoints);
     void increaseFontSize(double sizeDelta);
+    FontMetrics fontMetrics();
+
 }

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.swing;
 
+import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Rgba;
 import com.mammb.code.editor.ui.GraphicsDraw;
 import java.awt.*;
@@ -33,7 +34,7 @@ public class SwGraphicsDraw implements GraphicsDraw {
     private final Map<Rgba, Color> colors = new HashMap<>();
 
     @Override
-    public void clearRect() {
+    public void clear() {
         clearRect(0, 0, g.getClipBounds().width, g.getClipBounds().height);
     }
 
@@ -116,6 +117,11 @@ public class SwGraphicsDraw implements GraphicsDraw {
         if (size < 6) return;
         Font font = new Font(old.getFamily(), old.getStyle(), size);
         g.setFont(font);
+    }
+
+    @Override
+    public FontMetrics fontMetrics() {
+        return new SgFontMetrics(g.getFontMetrics());
     }
 
     private Color color(Rgba color) {

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Rgba;
 import com.mammb.code.editor.ui.GraphicsDraw;
 import javafx.scene.canvas.GraphicsContext;
@@ -44,7 +45,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
     }
 
     @Override
-    public void clearRect() {
+    public void clear() {
         clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
     }
 
@@ -104,8 +105,14 @@ public class FxGraphicsDraw implements GraphicsDraw {
         gc.setFont(font);
     }
 
+    @Override
+    public FontMetrics fontMetrics() {
+        return FxFontMetrics.of(gc.getFont(), gc.getFontSmoothingType());
+    }
+
     private Color color(Rgba color) {
-        return colors.computeIfAbsent(color, c -> c.as(a -> new Color(a[0], a[1], a[2], a[3])));
+        return colors.computeIfAbsent(color, c -> c.as(
+            a -> Color.rgb(a[0], a[1], a[2], (double) a[3] / (double) 255.0F)));
     }
 
 }

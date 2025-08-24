@@ -765,7 +765,7 @@ public class TextEditorModel implements EditorModel {
 
     private void findAll(Find.Spec spec) {
         Caret c = carets.getFirst();
-        Style style = new Style.UnderColor(Theme.current.cautionColor().web());
+        Style style = new Style.UnderColor(Theme.current.cautionColor());
         find.all(spec).forEach(p -> {
             if (!c.isMarked()) {
                 c.markTo(p.row(), p.col(), p.row(), p.col() + p.len());
@@ -879,7 +879,7 @@ public class TextEditorModel implements EditorModel {
         // add bracket highlights if exists
         decorate.clearFlushMarks();
         BracketFind.apply(carets.getFirst().point(), query(Query.charAtCaret), screenLayout.screenRows()).forEach(p ->
-            decorate.addFlushMark(p.row(), new StyleSpan(new Style.AroundSq(Theme.current.cautionColor().web()), p.col(), 1)));
+            decorate.addFlushMark(p.row(), new StyleSpan(new Style.AroundSq(Theme.current.cautionColor()), p.col(), 1)));
     }
 
     @Override
@@ -906,7 +906,7 @@ public class TextEditorModel implements EditorModel {
     private void aroundEdit(Runnable runnable) {
         decorate.clear();
         runnable.run();
-        Style style = new Style.UnderColor(Theme.current.cautionColor().web());
+        Style style = new Style.UnderColor(Theme.current.cautionColor());
         find.founds().forEach(p ->
             decorate.addHighlights(p.row(), new StyleSpan(style, p.col(), p.len())));
     }

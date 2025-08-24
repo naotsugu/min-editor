@@ -28,6 +28,9 @@ import java.util.function.Function;
  */
 public record Rgba(int r, int g, int b, int a) {
 
+    public static final Rgba ORANGE = new Rgba("#FF8C00");
+    public static final Rgba LIGHTGRAY = new Rgba("#D3D3D3");
+
     public Rgba {
         r = Math.clamp(r, 0, 255);
         g = Math.clamp(g, 0, 255);
@@ -55,6 +58,14 @@ public record Rgba(int r, int g, int b, int a) {
 
     public <T> T as(Function<int[], T> fun) {
         return fun.apply(new int[] { r, g, b, a });
+    }
+
+    public Rgba opaque() {
+        return new Rgba(r, g, b, 255);
+    }
+
+    public Rgba alphaWith(int alpha) {
+        return new Rgba(r, g, b, alpha);
     }
 
     private static int[] parseWebColor(String webColor) {

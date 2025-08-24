@@ -21,6 +21,7 @@ import com.mammb.code.editor.core.Decorate;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.Loc;
 import com.mammb.code.editor.core.Point;
+import com.mammb.code.editor.core.Rgba;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.text.Style;
@@ -98,13 +99,13 @@ public class Paints {
                                 px + st.width() + screenLayout.standardCharWidth() * 0.2,
                                 py,
                                 screenLayout.standardCharWidth() * 0.8,
-                                screenLayout.lineHeight() * 0.8, Theme.current.faintColor().web()));
+                                screenLayout.lineHeight() * 0.8, Theme.current.faintColor()));
                         } else if (st.isEndWithLf()) {
                             draw.line(Symbols.lineFeed(
                                 px + st.width() + screenLayout.standardCharWidth() * 0.2,
                                 py,
                                 screenLayout.standardCharWidth() * 0.8,
-                                screenLayout.lineHeight() * 0.8, Theme.current.faintColor().web()));
+                                screenLayout.lineHeight() * 0.8, Theme.current.faintColor()));
                         }
                         for (int i = 0; i < st.value().length(); i++) {
                             i = st.value().indexOf('　', i);
@@ -113,7 +114,7 @@ public class Paints {
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - screenLayout.lineHeight() * 0.1,
                                 st.advances()[i],
-                                screenLayout.lineHeight(), Theme.current.faintColor().web()));
+                                screenLayout.lineHeight(), Theme.current.faintColor()));
                         }
                         for (int i = 0; i < st.value().length(); i++) {
                             i = st.value().indexOf('\t', i);
@@ -122,7 +123,7 @@ public class Paints {
                                 px + Arrays.stream(st.advances()).limit(i).sum(),
                                 py - screenLayout.lineHeight() * 0.1,
                                 screenLayout.standardCharWidth(),
-                                screenLayout.lineHeight(), Theme.current.faintColor().web()));
+                                screenLayout.lineHeight(), Theme.current.faintColor()));
                         }
                     }
                 }
@@ -198,9 +199,9 @@ public class Paints {
         for (Text num : screenLayout.lineNumbers()) {
             // if the text is wrapped, display the row number only on the first line.
             if (!Objects.equals(prevValue, num.value())) {
-                String colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
-                    ? Theme.current.fgColor().web()
-                    : Theme.current.fgColor().web() + "66";
+                Rgba colorString = carets.points().stream().anyMatch(p -> p.row() == num.row())
+                    ? Theme.current.fgColor()
+                    : Theme.current.fgColor().alphaWith(125);
                 draw.text(num,
                     marginLeft - 12 - num.width(),
                     y + marginTop,
