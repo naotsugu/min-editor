@@ -29,8 +29,6 @@ public class EditorPane extends JPanel {
 
     /** The context. */
     private final AppContext context;
-    /** The canvas. */
-    private final Canvas canvas;
     /** The draw. */
     private final SgDraw draw;
     /** The editor model. */
@@ -38,26 +36,21 @@ public class EditorPane extends JPanel {
     /** The screen scroll. */
     private final SgScreenScroll scroll = new SgScreenScroll();
 
-
     public EditorPane(AppContext ctx) {
         context = ctx;
-
-        canvas = new Canvas() {
-            @Override public void paint(Graphics g) {
-                super.paint(g);
-                model.paint(draw.with(g));
-            }
-        };
-        add(canvas);
-        canvas.setFocusable(false);
-        canvas.setBackground(Theme.current.baseColor()
+        setFocusable(false);
+        setBackground(Theme.current.baseColor()
             .as(c -> new Color(c[0], c[1], c[2], c[3])));
         Font font = new Font(context.config().fontName(), Font.PLAIN, (int) context.config().fontSize());
-        canvas.setFont(font);
-        System.out.println(canvas.getFontMetrics(font));
-        draw = new SgDraw(canvas);
+        setFont(font);
+        draw = new SgDraw(this);
         model = EditorModel.of(draw.fontMetrics(), scroll, context);
+    }
 
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        model.paint(draw.with(g));
     }
 
 }

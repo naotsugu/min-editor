@@ -38,7 +38,6 @@ public class SgDraw implements Draw {
 
     public Draw with(Graphics g) {
         this.g = Objects.requireNonNull(g);
-        this.fontMetrics = new SgFontMetrics(g, g.getFont());
         return this;
     }
 

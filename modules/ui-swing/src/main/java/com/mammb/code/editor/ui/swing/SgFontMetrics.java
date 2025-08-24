@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.swing;
 
 import com.mammb.code.editor.core.FontMetrics;
 import java.awt.*;
+import java.util.Objects;
 
 /**
  * The font metrics.
@@ -31,12 +32,8 @@ public class SgFontMetrics implements FontMetrics {
     private final double standardCharWidth;
 
     public SgFontMetrics(java.awt.FontMetrics fm) {
-        this.fm = fm;
+        this.fm = Objects.requireNonNull(fm);
         this.standardCharWidth = fm.charWidth('0');
-    }
-
-    public SgFontMetrics(Graphics g, Font font) {
-        this(g.getFontMetrics(font));
     }
 
     public SgFontMetrics(Component component) {
