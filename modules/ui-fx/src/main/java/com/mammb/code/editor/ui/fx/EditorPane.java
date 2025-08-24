@@ -26,6 +26,7 @@ import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
+import com.mammb.code.editor.ui.DrawImpl;
 import com.mammb.code.editor.ui.fx.Command.*;
 import com.mammb.code.editor.ui.Version;
 import javafx.application.Platform;
@@ -109,14 +110,16 @@ public class EditorPane extends ContentPane {
     public EditorPane(AppContext ctx) {
 
         context = ctx;
+        Font font = Font.font(context.config().fontName(), context.config().fontSize());
 
         canvas = new Canvas();
         canvas.setManaged(false);
         canvas.setFocusTraversable(true);
         canvas.setOnMouseMoved(this::handleMouseMoved);
+        canvas.getGraphicsContext2D().setFont(font);
 
-        Font font = Font.font(context.config().fontName(), context.config().fontSize());
-        draw = new FxDraw(canvas.getGraphicsContext2D(), font);
+        draw = new DrawImpl(new FxGraphicsDraw(canvas.getGraphicsContext2D()));
+        //draw = new FxDraw(canvas.getGraphicsContext2D(), font);
         model = EditorModel.of(draw.fontMetrics(), scroll, context);
         scroll.vScroll().setOrientation(Orientation.VERTICAL);
         scroll.hScroll().setOrientation(Orientation.HORIZONTAL);

@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.swing;
 
-import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Theme;
 import javax.swing.*;
@@ -38,7 +37,6 @@ public class EditorPane extends JPanel {
 
     public EditorPane(AppContext ctx) {
         context = ctx;
-        setFocusable(false);
         setBackground(Theme.current.baseColor()
             .as(c -> new Color(c[0], c[1], c[2], c[3])));
         Font font = new Font(context.config().fontName(), Font.PLAIN, (int) context.config().fontSize());
@@ -49,7 +47,6 @@ public class EditorPane extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
         model.paint(draw.with(g));
     }
 

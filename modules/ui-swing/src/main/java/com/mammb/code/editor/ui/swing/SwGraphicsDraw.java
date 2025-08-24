@@ -21,6 +21,7 @@ import com.mammb.code.editor.ui.GraphicsDraw;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * The swing graphics draw.
@@ -30,8 +31,19 @@ public class SwGraphicsDraw implements GraphicsDraw {
 
     /** The graphics. */
     private Graphics g;
+
+    private final Component component;
     /** The cache of color. */
     private final Map<Rgba, Color> colors = new HashMap<>();
+
+    public SwGraphicsDraw(Component component) {
+        this.component = Objects.requireNonNull(component);
+    }
+
+    public GraphicsDraw with(Graphics g) {
+        this.g = Objects.requireNonNull(g);
+        return this;
+    }
 
     @Override
     public void clear() {
@@ -121,7 +133,7 @@ public class SwGraphicsDraw implements GraphicsDraw {
 
     @Override
     public FontMetrics fontMetrics() {
-        return new SgFontMetrics(g.getFontMetrics());
+        return new SgFontMetrics(component.getFontMetrics(component.getFont()));
     }
 
     private Color color(Rgba color) {

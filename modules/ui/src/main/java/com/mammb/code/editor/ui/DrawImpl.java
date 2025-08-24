@@ -178,4 +178,8 @@ public class DrawImpl implements Draw {
         return str;
     }
 
+    protected GraphicsDraw gd() {
+        return gd;
+    }
+
 }
