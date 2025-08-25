@@ -31,22 +31,14 @@ import java.awt.event.KeyListener;
  */
 public class EditorPane extends JPanel {
 
-    /**
-     * The context.
-     */
+    /** The context. */
     private final AppContext context;
-    /**
-     * The draw.
-     */
+    /** The draw. */
     private final SgDraw draw;
-    /**
-     * The editor model.
-     */
+    /** The editor model. */
     private EditorModel model;
-    /**
-     * The screen scroll.
-     */
-    private final SgScreenScroll scroll = new SgScreenScroll();
+    /** The screen scroll. */
+    private final SgScreenScroll scroll = new SgScreenScroll(new JScrollBar(JScrollBar.VERTICAL), new JScrollBar(JScrollBar.HORIZONTAL));
 
     public EditorPane(AppContext ctx) {
         context = ctx;

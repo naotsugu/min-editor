@@ -128,6 +128,6 @@ public class CommandKeys {
 
     private static final Predicate<KeyEvent> keyInput = e ->
         e.getID() == KeyEvent.KEY_TYPED &&
-            !(e.isActionKey() || !controlKeysFilter.test(e));
+            !(e.isActionKey() || e.isControlDown() || e.isAltDown() || e.isMetaDown() || e.isAltGraphDown() || !controlKeysFilter.test(e));
 
 }

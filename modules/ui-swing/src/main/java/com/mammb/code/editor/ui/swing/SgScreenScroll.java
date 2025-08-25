@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.swing;
 
 import com.mammb.code.editor.core.ScreenScroll;
+import javax.swing.*;
 
 /**
  * The screen scroll.
@@ -23,23 +24,56 @@ import com.mammb.code.editor.core.ScreenScroll;
  */
 public class SgScreenScroll implements ScreenScroll {
 
+    /** The vertical scrollbar. */
+    private final JScrollBar vScroll;
+
+    /** The horizontal scroll bar. */
+    private final JScrollBar hScroll;
+
+    /**
+     * Constructs an SgScreenScroll instance with the specified vertical and horizontal scrollbars.
+     * @param vScroll the vertical scrollbar to be managed by this instance
+     * @param hScroll the horizontal scrollbar to be managed by this instance
+     */
+    public SgScreenScroll(JScrollBar vScroll, JScrollBar hScroll) {
+        this.vScroll = vScroll;
+        this.hScroll = hScroll;
+    }
+
     @Override
     public void vertical(int min, int max, int val, int len) {
-
+        vScroll.setMinimum(min);
+        vScroll.setMaximum(max);
+        vScroll.setValue(val);
+        vScroll.setVisibleAmount(len);
+        //vScroll.setVisible(max > len);
     }
 
     @Override
     public void horizontal(double min, double max, double val, double len) {
-
+        hScroll.setMinimum((int) min);
+        hScroll.setMaximum((int) max);
+        hScroll.setValue((int) val);
+        hScroll.setVisibleAmount((int) len);
+        //hScroll.setVisible(max > len);
     }
 
     @Override
     public double xVal() {
-        return 0;
+        return hScroll.getValue();
     }
 
     @Override
     public int yVal() {
-        return 0;
+        return vScroll.getValue();
     }
+
+    public JScrollBar vScroll() {
+        return vScroll;
+    }
+
+    public JScrollBar hScroll() {
+        return hScroll;
+    }
+
 }
