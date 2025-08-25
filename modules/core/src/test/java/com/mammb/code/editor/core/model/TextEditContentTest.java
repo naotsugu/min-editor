@@ -36,8 +36,8 @@ class TextEditContentTest {
         assertEquals("abc", content.getText(0));
         assertEquals(1, content.rows());
 
-        content.insert(Point.of(0, 3), "d\n");
-        assertEquals("abcd\n", content.getText(0));
+        content.insert(Point.of(0, 3), "d" + System.lineSeparator());
+        assertEquals("abcd" + System.lineSeparator(), content.getText(0));
         assertEquals(2, content.rows());
     }
 
