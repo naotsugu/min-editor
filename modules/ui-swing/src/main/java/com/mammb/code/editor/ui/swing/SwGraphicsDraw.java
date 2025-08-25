@@ -52,7 +52,10 @@ public class SwGraphicsDraw implements GraphicsDraw {
 
     @Override
     public void clearRect(double x, double y, double w, double h) {
-        g.clearRect((int) x, (int) y, (int) w, (int) h);
+        // g.clearRect((int) x, (int) y, (int) w, (int) h);
+        g.setColor(component.getBackground());
+        g.fillRect((int) x, (int) y, (int) w, (int) h);
+
     }
 
     @Override

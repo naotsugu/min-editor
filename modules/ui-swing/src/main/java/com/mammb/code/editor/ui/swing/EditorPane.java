@@ -19,6 +19,8 @@ import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Theme;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 
 /**
  * The editor pane.
@@ -43,11 +45,34 @@ public class EditorPane extends JPanel {
         setFont(font);
         draw = new SgDraw(this);
         model = EditorModel.of(draw.fontMetrics(), scroll, context);
+        addComponentListener(componentListener());
     }
 
     @Override
     protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (getSize().height <= 0 || getSize().width <= 0) return;
         model.paint(draw.with(g));
+    }
+
+    private ComponentListener componentListener() {
+        return new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Dimension size = e.getComponent().getSize();
+                model.setSize(size.width, size.height);
+                repaint();
+            }
+            @Override
+            public void componentMoved(ComponentEvent e) {
+            }
+            @Override
+            public void componentShown(ComponentEvent e) {
+            }
+            @Override
+            public void componentHidden(ComponentEvent e) {
+            }
+        };
     }
 
 }
