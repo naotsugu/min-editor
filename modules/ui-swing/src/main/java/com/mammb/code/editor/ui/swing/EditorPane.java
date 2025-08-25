@@ -17,10 +17,13 @@ package com.mammb.code.editor.ui.swing;
 
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Theme;
+import com.mammb.code.editor.ui.Command;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * The editor pane.
@@ -28,17 +31,26 @@ import java.awt.event.ComponentListener;
  */
 public class EditorPane extends JPanel {
 
-    /** The context. */
+    /**
+     * The context.
+     */
     private final AppContext context;
-    /** The draw. */
+    /**
+     * The draw.
+     */
     private final SgDraw draw;
-    /** The editor model. */
+    /**
+     * The editor model.
+     */
     private EditorModel model;
-    /** The screen scroll. */
+    /**
+     * The screen scroll.
+     */
     private final SgScreenScroll scroll = new SgScreenScroll();
 
     public EditorPane(AppContext ctx) {
         context = ctx;
+        setFocusable(true);
         setBackground(Theme.current.baseColor()
             .as(c -> new Color(c[0], c[1], c[2], c[3])));
         Font font = new Font(context.config().fontName(), Font.PLAIN, (int) context.config().fontSize());
@@ -46,6 +58,7 @@ public class EditorPane extends JPanel {
         draw = new SgDraw(this);
         model = EditorModel.of(draw.fontMetrics(), scroll, context);
         addComponentListener(componentListener());
+        addKeyListener(keyListener());
     }
 
     @Override
@@ -63,16 +76,47 @@ public class EditorPane extends JPanel {
                 model.setSize(size.width, size.height);
                 repaint();
             }
+
             @Override
             public void componentMoved(ComponentEvent e) {
             }
+
             @Override
             public void componentShown(ComponentEvent e) {
             }
+
             @Override
             public void componentHidden(ComponentEvent e) {
             }
         };
     }
 
+    private KeyListener keyListener() {
+        return new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                execute(CommandKeys.of(e));
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                execute(CommandKeys.of(e));
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+        };
+    }
+
+    void execute(Command command) {
+        switch (command) {
+            case Command.ActionCommand cmd -> model().apply(cmd.action());
+            case Command.Empty _ -> { }
+            default -> { }
+        }
+        repaint();
+    }
+    private EditorModel model() { return model; }
 }

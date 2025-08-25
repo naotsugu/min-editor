@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.fx;
 
 import java.util.function.Predicate;
+import com.mammb.code.editor.ui.Command;
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;

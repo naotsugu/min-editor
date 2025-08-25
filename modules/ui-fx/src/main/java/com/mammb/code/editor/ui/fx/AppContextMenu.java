@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Query;
+import com.mammb.code.editor.ui.Command;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;

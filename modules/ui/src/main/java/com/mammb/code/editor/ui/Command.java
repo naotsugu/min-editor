@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui.fx;
+package com.mammb.code.editor.ui;
 
 import java.lang.reflect.ParameterizedType;
 import java.nio.charset.Charset;
