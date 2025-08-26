@@ -33,6 +33,6 @@ public interface GraphicsDraw {
     void strokePolygon(Rgba color, double lineWidth, double[] xPoints, double[] yPoints, int nPoints);
     void fillPolygon(Rgba color, double[] xPoints, double[] yPoints, int nPoints);
     void increaseFontSize(double sizeDelta);
-    FontMetrics fontMetrics();
+    FontMetrics buildFontMetrics();
 
 }

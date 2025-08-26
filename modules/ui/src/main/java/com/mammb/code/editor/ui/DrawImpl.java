@@ -41,7 +41,7 @@ public class DrawImpl implements Draw {
      */
     public DrawImpl(GraphicsDraw gd) {
         this.gd = gd;
-        this.fontMetrics = gd.fontMetrics();
+        this.fontMetrics = gd.buildFontMetrics();
     }
 
     @Override
@@ -140,7 +140,7 @@ public class DrawImpl implements Draw {
     @Override
     public void increaseFontSize(double sizeDelta) {
         gd.increaseFontSize(sizeDelta);
-        fontMetrics = gd.fontMetrics();
+        fontMetrics = gd.buildFontMetrics();
     }
 
     @Override

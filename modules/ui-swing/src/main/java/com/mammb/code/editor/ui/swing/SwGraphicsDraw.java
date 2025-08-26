@@ -135,7 +135,7 @@ public class SwGraphicsDraw implements GraphicsDraw {
     }
 
     @Override
-    public FontMetrics fontMetrics() {
+    public FontMetrics buildFontMetrics() {
         return new SgFontMetrics(component.getFontMetrics(component.getFont()));
     }
 

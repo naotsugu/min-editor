@@ -112,7 +112,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
     }
 
     @Override
-    public FontMetrics fontMetrics() {
+    public FontMetrics buildFontMetrics() {
         return FxFontMetrics.of(gc.getFont(), gc.getFontSmoothingType());
     }
 
