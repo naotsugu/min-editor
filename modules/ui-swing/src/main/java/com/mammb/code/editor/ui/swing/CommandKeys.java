@@ -32,20 +32,20 @@ public class CommandKeys {
 
         e.consume();
 
-        if (e.getKeyCode() == VK_RIGHT) return of(Action.caretRight(e.isShiftDown(), e.isControlDown()));
-        else if (e.getKeyCode() == VK_LEFT) return of(Action.caretLeft(e.isShiftDown(), e.isControlDown()));
-        else if (e.getKeyCode() == VK_UP) return of(Action.caretUp(e.isShiftDown(), e.isControlDown()));
-        else if (e.getKeyCode() == VK_DOWN) return of(Action.caretDown(e.isShiftDown(), e.isControlDown()));
+        if (e.getKeyCode() == VK_RIGHT) return of(Action.caretRight(e.isShiftDown(), isShortcutDown(e)));
+        else if (e.getKeyCode() == VK_LEFT) return of(Action.caretLeft(e.isShiftDown(), isShortcutDown(e)));
+        else if (e.getKeyCode() == VK_UP) return of(Action.caretUp(e.isShiftDown(), isShortcutDown(e)));
+        else if (e.getKeyCode() == VK_DOWN) return of(Action.caretDown(e.isShiftDown(), isShortcutDown(e)));
         else if (e.getKeyCode() == VK_HOME || SC_HOME.test(e)) return of(Action.home(e.isShiftDown()));
         else if (e.getKeyCode() == VK_END || SC_END.test(e)) return of(Action.end(e.isShiftDown()));
-        else if (e.getKeyCode() == VK_PAGE_UP) return of(Action.pageUp(e.isShiftDown(), e.isControlDown()));
-        else if (e.getKeyCode() == VK_PAGE_DOWN) return of(Action.pageDown(e.isShiftDown(), e.isControlDown()));
+        else if (e.getKeyCode() == VK_PAGE_UP) return of(Action.pageUp(e.isShiftDown(), isShortcutDown(e)));
+        else if (e.getKeyCode() == VK_PAGE_DOWN) return of(Action.pageDown(e.isShiftDown(), isShortcutDown(e)));
         else if (e.getKeyCode() == VK_TAB) return of(Action.tab(e.isShiftDown()));
         else if (e.getKeyCode() == VK_ESCAPE) return of(Action.escape());
         else if (e.getKeyCode() == VK_DELETE) return of(Action.delete());
         else if (e.getKeyCode() == VK_BACK_SPACE) return of(Action.backspace());
         else if (e.getKeyCode() == VK_F1) return new Command.Help();
-        else if (e.getKeyCode() == VK_F3) return (e.isShiftDown() || e.isControlDown()) ? of(Action.findPrev()) : of(Action.findNext());
+        else if (e.getKeyCode() == VK_F3) return (e.isShiftDown() || isShortcutDown(e)) ? of(Action.findPrev()) : of(Action.findNext());
 
         else if (SC_C.test(e)) return of(Action.copy(SgClipboard.instance));
         else if (SC_V.test(e)) return of(Action.paste(SgClipboard.instance, false));
@@ -94,31 +94,31 @@ public class CommandKeys {
         return new Command.ActionCommand(action);
     }
 
-    static final Predicate<KeyEvent> SC_A = e -> e.getKeyCode() == VK_A && e.isControlDown();
-    static final Predicate<KeyEvent> SC_C = e -> e.getKeyCode() == VK_C && e.isControlDown();
-    static final Predicate<KeyEvent> SC_V = e -> e.getKeyCode() == VK_V && e.isControlDown();
-    static final Predicate<KeyEvent> SC_SV = e -> e.getKeyCode() == VK_V && e.isControlDown() && e.isShiftDown();
-    static final Predicate<KeyEvent> SC_X = e -> e.getKeyCode() == VK_X && e.isControlDown();
-    static final Predicate<KeyEvent> SC_Z = e -> e.getKeyCode() == VK_Z && e.isControlDown();
-    static final Predicate<KeyEvent> SC_Y = e -> e.getKeyCode() == VK_Y && e.isControlDown();
-    static final Predicate<KeyEvent> SC_SZ = e -> e.getKeyCode() == VK_Z && e.isControlDown() && e.isShiftDown();
-    static final Predicate<KeyEvent> SC_END  = e -> e.getKeyCode() == VK_RIGHT && e.isControlDown();
-    static final Predicate<KeyEvent> SC_HOME = e -> e.getKeyCode() == VK_LEFT && e.isControlDown();
-    static final Predicate<KeyEvent> SC_N = e -> e.getKeyCode() == VK_N && e.isControlDown();
-    static final Predicate<KeyEvent> SC_O = e -> e.getKeyCode() == VK_O && e.isControlDown();
-    static final Predicate<KeyEvent> SC_S = e -> e.getKeyCode() == VK_S && e.isControlDown();
-    static final Predicate<KeyEvent> SC_SA= e -> e.getKeyCode() == VK_S && e.isControlDown() && e.isShiftDown();
-    static final Predicate<KeyEvent> SC_F = e -> e.getKeyCode() == VK_F && e.isControlDown();
-    static final Predicate<KeyEvent> SC_P = e -> e.getKeyCode() == VK_P && e.isControlDown();
-    static final Predicate<KeyEvent> SC_R = e -> e.getKeyCode() == VK_R && e.isControlDown();
-    static final Predicate<KeyEvent> SC_W = e -> e.getKeyCode() == VK_W && e.isControlDown();
-    static final Predicate<KeyEvent> SC_L = e -> e.getKeyCode() == VK_L && e.isControlDown();
-    static final Predicate<KeyEvent> SC_DOT = e -> e.getKeyCode() == VK_PERIOD && e.isControlDown();
-    static final Predicate<KeyEvent> SC_COMMA = e -> e.getKeyCode() == VK_COMMA && e.isControlDown();
-    static final Predicate<KeyEvent> SC_PLUS = e -> e.getKeyCode() == VK_PLUS && e.isControlDown();
-    static final Predicate<KeyEvent> SC_MINUS = e -> e.getKeyCode() == VK_MINUS && e.isControlDown();
-    static final Predicate<KeyEvent> SC_FW = e -> e.getKeyCode() == VK_CLOSE_BRACKET && e.isControlDown();
-    static final Predicate<KeyEvent> SC_BW = e -> e.getKeyCode() == VK_OPEN_BRACKET && e.isControlDown();
+    static final Predicate<KeyEvent> SC_A = e -> e.getKeyCode() == VK_A && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_C = e -> e.getKeyCode() == VK_C && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_V = e -> e.getKeyCode() == VK_V && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_SV = e -> e.getKeyCode() == VK_V && isShortcutDown(e) && e.isShiftDown();
+    static final Predicate<KeyEvent> SC_X = e -> e.getKeyCode() == VK_X && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_Z = e -> e.getKeyCode() == VK_Z && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_Y = e -> e.getKeyCode() == VK_Y && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_SZ = e -> e.getKeyCode() == VK_Z && isShortcutDown(e) && e.isShiftDown();
+    static final Predicate<KeyEvent> SC_END  = e -> e.getKeyCode() == VK_RIGHT && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_HOME = e -> e.getKeyCode() == VK_LEFT && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_N = e -> e.getKeyCode() == VK_N && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_O = e -> e.getKeyCode() == VK_O && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_S = e -> e.getKeyCode() == VK_S && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_SA= e -> e.getKeyCode() == VK_S && isShortcutDown(e) && e.isShiftDown();
+    static final Predicate<KeyEvent> SC_F = e -> e.getKeyCode() == VK_F && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_P = e -> e.getKeyCode() == VK_P && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_R = e -> e.getKeyCode() == VK_R && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_W = e -> e.getKeyCode() == VK_W && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_L = e -> e.getKeyCode() == VK_L && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_DOT = e -> e.getKeyCode() == VK_PERIOD && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_COMMA = e -> e.getKeyCode() == VK_COMMA && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_PLUS = e -> e.getKeyCode() == VK_PLUS && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_MINUS = e -> e.getKeyCode() == VK_MINUS && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_FW = e -> e.getKeyCode() == VK_CLOSE_BRACKET && isShortcutDown(e);
+    static final Predicate<KeyEvent> SC_BW = e -> e.getKeyCode() == VK_OPEN_BRACKET && isShortcutDown(e);
 
     private static final Predicate<KeyEvent> controlKeysFilter = e ->
         System.getProperty("os.name").toLowerCase().startsWith("windows")
@@ -130,4 +130,7 @@ public class CommandKeys {
         e.getID() == KeyEvent.KEY_TYPED &&
             !(e.isActionKey() || e.isControlDown() || e.isAltDown() || e.isMetaDown() || e.isAltGraphDown() || !controlKeysFilter.test(e));
 
+    private static boolean isShortcutDown(KeyEvent e) {
+        return System.getProperty("os.name").toLowerCase().contains("mac") ? e.isMetaDown() : e.isControlDown();
+    }
 }

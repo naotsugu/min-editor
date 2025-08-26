@@ -68,36 +68,24 @@ public class EditorPane extends JPanel {
                 model.setSize(size.width, size.height);
                 repaint();
             }
-
-            @Override
-            public void componentMoved(ComponentEvent e) {
+            @Override public void componentMoved(ComponentEvent e) {
             }
-
-            @Override
-            public void componentShown(ComponentEvent e) {
+            @Override public void componentShown(ComponentEvent e) {
             }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
+            @Override public void componentHidden(ComponentEvent e) {
             }
         };
     }
 
     private KeyListener keyListener() {
         return new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
+            @Override public void keyTyped(KeyEvent e) {
                 execute(CommandKeys.of(e));
             }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
+            @Override public void keyPressed(KeyEvent e) {
                 execute(CommandKeys.of(e));
             }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-
+            @Override public void keyReleased(KeyEvent e) {
             }
         };
     }
