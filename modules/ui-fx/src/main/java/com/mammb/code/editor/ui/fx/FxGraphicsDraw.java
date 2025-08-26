@@ -83,6 +83,9 @@ public class FxGraphicsDraw implements GraphicsDraw {
     @Override
     public void fillText(Rgba color, String text, double x, double y) {
         gc.setFill(color(color));
+        // In JavaFX, fonts appear faint and blurred, causing visibility issues.
+        // Here, we avoid the faint display by drawing the text twice.
+        gc.fillText(text, x, y);
         gc.fillText(text, x, y);
     }
 
