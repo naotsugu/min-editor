@@ -21,8 +21,10 @@ import com.mammb.code.editor.ui.GraphicsDraw;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontSmoothingType;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * The fx graphics draw.
@@ -39,9 +41,13 @@ public class FxGraphicsDraw implements GraphicsDraw {
     /**
      * Constructor.
      * @param gc the graphics context
+     * @param font the font
      */
-    public FxGraphicsDraw(GraphicsContext gc) {
+    public FxGraphicsDraw(GraphicsContext gc, Font font) {
         this.gc = gc;
+        this.gc.setFont(font);
+        this.gc.setFontSmoothingType(Objects.equals(gc.getFont().getName(), "MS Gothic")
+            ? FontSmoothingType.GRAY : FontSmoothingType.LCD);
     }
 
     @Override
