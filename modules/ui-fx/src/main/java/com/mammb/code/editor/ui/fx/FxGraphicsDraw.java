@@ -38,6 +38,8 @@ public class FxGraphicsDraw implements GraphicsDraw {
     /** The cache of color. */
     private final Map<Rgba, Color> colors = new HashMap<>();
 
+    private boolean thin = true;
+
     /**
      * Constructor.
      * @param gc the graphics context
@@ -48,6 +50,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
         this.gc.setFont(font);
         this.gc.setFontSmoothingType(Objects.equals(gc.getFont().getName(), "MS Gothic")
             ? FontSmoothingType.GRAY : FontSmoothingType.LCD);
+        setupThin();
     }
 
     @Override
@@ -83,10 +86,13 @@ public class FxGraphicsDraw implements GraphicsDraw {
     @Override
     public void fillText(Rgba color, String text, double x, double y) {
         gc.setFill(color(color));
-        // In JavaFX, fonts appear faint and blurred, causing visibility issues.
-        // Here, we avoid the faint display by drawing the text twice.
         gc.fillText(text, x, y);
-        gc.fillText(text, x, y);
+        if (thin) {
+            // in JavaFX, fonts appear faint and blurred, causing visibility issues.
+            // here, we avoid the faint display by drawing the text twice.
+            gc.fillText(text, x, y);
+        }
+
     }
 
     @Override
@@ -112,6 +118,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
         if (size < 6) return;
         Font font = Font.font(old.getFamily(), size);
         gc.setFont(font);
+        setupThin();
     }
 
     @Override
@@ -122,6 +129,10 @@ public class FxGraphicsDraw implements GraphicsDraw {
     private Color color(Rgba color) {
         return colors.computeIfAbsent(color, c -> c.as(
             a -> Color.rgb(a[0], a[1], a[2], (double) a[3] / (double) 255.0F)));
+    }
+
+    private void setupThin() {
+        thin = gc.getFont().getSize() < 20 && !gc.getFont().getName().toLowerCase().contains("bold");
     }
 
 }
