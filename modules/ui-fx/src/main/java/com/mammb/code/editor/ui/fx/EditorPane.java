@@ -35,6 +35,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
@@ -288,14 +289,18 @@ public class EditorPane extends ContentPane {
     }
 
     private void handleDragOver(DragEvent e) {
-        if (e.getY() < 25) return; // drops to the top are handled on the tab pane
+        if (!new BoundingBox(20, 20, getWidth() - 40, getHeight() - 40).contains(e.getX(), e.getY())) {
+            return; // ignore drops to the edge
+        }
         if (e.getDragboard().hasFiles()) {
             e.acceptTransferModes(TransferMode.COPY);
         }
     }
 
     private void handleDragDropped(DragEvent e) {
-        if (e.getY() < 25) return; // drops to the top are handled on the tab pane
+        if (!new BoundingBox(20, 20, getWidth() - 40, getHeight() - 40).contains(e.getX(), e.getY())) {
+            return; // ignore drops to the edge
+        }
         Dragboard board = e.getDragboard();
         if (board.hasFiles()) {
             var paths = board.getFiles().stream().map(File::toPath).toList();
