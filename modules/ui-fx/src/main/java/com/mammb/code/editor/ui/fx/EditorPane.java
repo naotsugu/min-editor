@@ -288,12 +288,14 @@ public class EditorPane extends ContentPane {
     }
 
     private void handleDragOver(DragEvent e) {
+        if (e.getY() < 25) return; // drops to the top are handled on the tab pane
         if (e.getDragboard().hasFiles()) {
             e.acceptTransferModes(TransferMode.COPY);
         }
     }
 
     private void handleDragDropped(DragEvent e) {
+        if (e.getY() < 25) return; // drops to the top are handled on the tab pane
         Dragboard board = e.getDragboard();
         if (board.hasFiles()) {
             var paths = board.getFiles().stream().map(File::toPath).toList();

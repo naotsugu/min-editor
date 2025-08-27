@@ -68,6 +68,14 @@ public class EditorPane extends JPanel {
         addMouseWheelListener(mouseWheelListener());
         addInputMethodListener(inputMethodListener());
 
+        scroll.vScroll().addAdjustmentListener(e -> {
+            model.scrollAt(e.getValue());
+            repaint();
+        });
+        scroll.hScroll().addAdjustmentListener(e -> {
+            model.scrollX(e.getValue());
+            repaint();
+        });
     }
 
     @Override
