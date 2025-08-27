@@ -77,7 +77,7 @@ public class AppContextMenu extends ContextMenu {
         paste.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, false))));
         paste.setDisable(!FxClipboard.instance.hasContents());
 
-        var pasteAs = new MenuItem("Paste as plain text");
+        var pasteAs = new MenuItem("Paste with context");
         pasteAs.setStyle(style);
         pasteAs.setAccelerator(CommandKeys.SC_SV);
         pasteAs.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, true))));

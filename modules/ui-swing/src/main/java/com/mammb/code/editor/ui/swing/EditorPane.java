@@ -52,12 +52,14 @@ public class EditorPane extends JPanel {
     public EditorPane(AppContext ctx) {
         context = ctx;
         setFocusable(true);
+        setLayout(new OverlayLayout(this));
         setBackground(Theme.current.baseColor()
             .as(c -> new Color(c[0], c[1], c[2], c[3])));
         Font font = new Font(context.config().fontName(), Font.PLAIN, (int) context.config().fontSize());
         setFont(font);
         draw = new SgDraw(this);
         model = EditorModel.of(draw.fontMetrics(), scroll, context);
+
         addComponentListener(componentListener());
         addFocusListener(focusListener());
         addKeyListener(keyListener());
@@ -65,6 +67,7 @@ public class EditorPane extends JPanel {
         addMouseMotionListener(mouseMotionListener());
         addMouseWheelListener(mouseWheelListener());
         addInputMethodListener(inputMethodListener());
+
     }
 
     @Override

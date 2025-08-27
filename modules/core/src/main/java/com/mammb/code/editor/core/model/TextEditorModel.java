@@ -581,10 +581,11 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void pasteFromClipboard(Clipboard clipboard, boolean withOpt) {
-        if (!withOpt) {
+        if (withOpt) {
             PasteHandler handler = decorate.syntaxHandler(PasteHandler.class);
-            if (handler != null && handler.handlePaste(clipboard, this::input)) {
-                return;
+            if (handler != null) {
+                boolean handled = handler.handlePaste(clipboard, this::input);
+                if (handled) return;
             }
         }
         var text = clipboard.getString();

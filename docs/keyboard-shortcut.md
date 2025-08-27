@@ -27,10 +27,11 @@
 
 ## Edit
 
-| shortcut     | description                             |
-|--------------|-----------------------------------------|
-| `Ctrl` + `c`           | Copy                                  |
-| `Ctrl` + `v`           | Past                                  |
+| shortcut               | description           |
+|------------------------|-----------------------|
+| `Ctrl` + `c`           | Copy                  |
+| `Ctrl` + `v`           | Past                  |
+| `Ctrl` + `Shift` + `v` | Paste with context |
 | `Ctrl` + `x`           | Cut                                   |
 | `Ctrl` + `z`           | Undo                                  |
 | `Ctrl` + `y`           | Redo                                  |
