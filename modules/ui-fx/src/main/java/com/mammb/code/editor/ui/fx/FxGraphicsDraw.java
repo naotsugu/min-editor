@@ -38,7 +38,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
     /** The cache of color. */
     private final Map<Rgba, Color> colors = new HashMap<>();
 
-    private boolean thin = true;
+    private boolean faint = true;
 
     /**
      * Constructor.
@@ -48,9 +48,10 @@ public class FxGraphicsDraw implements GraphicsDraw {
     public FxGraphicsDraw(GraphicsContext gc, Font font) {
         this.gc = gc;
         this.gc.setFont(font);
-        this.gc.setFontSmoothingType(Objects.equals(gc.getFont().getName(), "MS Gothic")
-            ? FontSmoothingType.GRAY : FontSmoothingType.LCD);
-        setupThin();
+        //this.gc.setFontSmoothingType(Objects.equals(gc.getFont().getName(), "MS Gothic")
+        //    ? FontSmoothingType.GRAY : FontSmoothingType.LCD);
+        this.gc.setFontSmoothingType(FontSmoothingType.GRAY);
+        this.faint = isFaint(font);
     }
 
     @Override
@@ -87,7 +88,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
     public void fillText(Rgba color, String text, double x, double y) {
         gc.setFill(color(color));
         gc.fillText(text, x, y);
-        if (thin) {
+        if (faint) {
             // in JavaFX, fonts appear faint and blurred, causing visibility issues.
             // here, we avoid the faint display by drawing the text twice.
             gc.fillText(text, x, y);
@@ -118,7 +119,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
         if (size < 6) return;
         Font font = Font.font(old.getFamily(), size);
         gc.setFont(font);
-        setupThin();
+        faint = isFaint(font);
     }
 
     @Override
@@ -131,8 +132,14 @@ public class FxGraphicsDraw implements GraphicsDraw {
             a -> Color.rgb(a[0], a[1], a[2], (double) a[3] / (double) 255.0F)));
     }
 
-    private void setupThin() {
-        thin = gc.getFont().getSize() < 20 && !gc.getFont().getName().toLowerCase().contains("bold");
+    private static boolean isFaint(Font font) {
+        if (font.getSize() <= 20) {
+            // fonts smaller than 20pt will generally appear fainted in JavaFx.
+            // MS Gothic fonts of 20pt or smaller are bitmap fonts.
+            var fontName = font.getName().toLowerCase();
+            return !Objects.equals(fontName, "ms gothic") && !fontName.contains("bold");
+        }
+        return false;
     }
 
 }

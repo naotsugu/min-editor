@@ -102,7 +102,7 @@ public interface Config {
             };
             defaultFontSize = switch (Context.platform) {
                 case "mac" -> 15;
-                case "windows" -> 15;
+                case "windows" -> 16;
                 default -> 15;
             };
         }
