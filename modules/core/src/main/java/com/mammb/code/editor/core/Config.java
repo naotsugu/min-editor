@@ -97,7 +97,7 @@ public interface Config {
             propsPath = path;
             defaultFontName = switch (Context.platform) {
                 case "windows" -> "MS Gothic"; // MS Gothic | BIZ UDGothic Consolas
-                case "mac" -> "Menlo"; // Menlo | Monaco
+                case "mac" -> "Monaco";        // Menlo | Monaco | SF Mono
                 default -> "monospace";
             };
             defaultFontSize = switch (Context.platform) {
