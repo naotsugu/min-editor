@@ -20,6 +20,7 @@ import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.ui.Command;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -44,23 +45,36 @@ public class EditorPane extends JPanel {
     private final AppContext context;
     /** The draw. */
     private final SgDraw draw;
+    /** The canvas. */
+    private JComponent canvas;
     /** The editor model. */
     private EditorModel model;
     /** The screen scroll. */
     private final SgScreenScroll scroll = new SgScreenScroll(new JScrollBar(JScrollBar.VERTICAL), new JScrollBar(JScrollBar.HORIZONTAL));
 
     public EditorPane(AppContext ctx) {
+
         context = ctx;
-        setFocusable(true);
-        setLayout(new OverlayLayout(this));
-        setBackground(Theme.current.baseColor()
+
+        canvas = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (getSize().height <= 0 || getSize().width <= 0) return;
+                model().paint(draw.with(g));
+            }
+        };
+        canvas.setOpaque(false);
+        canvas.setFocusable(true);
+        canvas.setBackground(Theme.current.baseColor()
             .as(c -> new Color(c[0], c[1], c[2], c[3])));
-        Font font = new Font(context.config().fontName(), Font.PLAIN, (int) context.config().fontSize());
-        setFont(font);
-        draw = new SgDraw(this);
+        canvas.setFont(new Font(context.config().fontName(), Font.PLAIN, (int) context.config().fontSize()));
+
+        draw = new SgDraw(canvas);
         model = EditorModel.of(draw.fontMetrics(), scroll, context);
 
-        addComponentListener(componentListener());
+        setFocusable(true);
+        setLayout(null);
         addFocusListener(focusListener());
         addKeyListener(keyListener());
         addMouseListener(mouseListener());
@@ -68,36 +82,39 @@ public class EditorPane extends JPanel {
         addMouseWheelListener(mouseWheelListener());
         addInputMethodListener(inputMethodListener());
 
+        add(scroll.vScroll());
+        add(scroll.hScroll());
+        add(canvas);
+
+        addComponentListener(componentListener());
+
         scroll.vScroll().addAdjustmentListener(e -> {
             model.scrollAt(e.getValue());
-            repaint();
+            canvas.repaint();
         });
         scroll.hScroll().addAdjustmentListener(e -> {
             model.scrollX(e.getValue());
-            repaint();
+            canvas.repaint();
         });
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (getSize().height <= 0 || getSize().width <= 0) return;
-        model.paint(draw.with(g));
-    }
-
     private ComponentListener componentListener() {
-        return new ComponentListener() {
+        return new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                Dimension size = e.getComponent().getSize();
-                model.setSize(size.width, size.height);
-                repaint();
-            }
-            @Override public void componentMoved(ComponentEvent e) {
-            }
-            @Override public void componentShown(ComponentEvent e) {
-            }
-            @Override public void componentHidden(ComponentEvent e) {
+                int width = getWidth();
+                int height = getHeight();
+
+                canvas.setBounds(0, 0, width, height);
+                model.setSize(width, height);
+
+                var vScroll = scroll.vScroll();
+                int vWidth = (vScroll.isVisible()) ? vScroll.getPreferredSize().width : 0;
+                var hScroll = scroll.hScroll();
+                int hHeight = (hScroll.isVisible()) ? hScroll.getPreferredSize().height : 0;
+
+                vScroll.setBounds(width - vWidth, 0, vWidth, height - hHeight);
+                hScroll.setBounds(0, height - hHeight, width - vWidth, hHeight);
             }
         };
     }
