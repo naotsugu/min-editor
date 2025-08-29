@@ -675,6 +675,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             stashPath,
+            query(Query.modelName).plain(),
             query(Query.charCode),
             content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
@@ -801,6 +802,7 @@ public class TextEditorModel implements EditorModel {
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             null,
+            null,
             query(Query.charCode),
             content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
@@ -809,13 +811,14 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session getDiffSession(Path path, boolean withoutFold) {
-        Path stashPath = ctx.config().stashPath().resolve(
-            String.join("_", UUID.randomUUID().toString(), query(Query.modelName).plain()) + ".diff");
+        String name = query(Query.modelName).plain() + ".diff";
+        Path stashPath = ctx.config().stashPath().resolve(String.join("_", UUID.randomUUID().toString(), name));
         DiffRun diffRun = (path == null) ? DiffRun.of(content) : DiffRun.of(content, path);
         if (withoutFold) diffRun.writeWithoutFold(stashPath); else diffRun.write(stashPath);
         return Session.of(
+            null, null,
             withoutFold ? diffRun.writeWithoutFold(stashPath) : diffRun.write(stashPath),
-            null, null, StandardCharsets.UTF_8, false, 0, 0, 0, 0);
+            name, StandardCharsets.UTF_8, false, 0, 0, 0, 0);
     }
 
     @Override

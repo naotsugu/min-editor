@@ -102,7 +102,7 @@ public class TextEditContent implements Content {
     public TextEditContent(byte[] bytes, String contentName) {
         edit = TextEdit.of(bytes);
         name = ContentName.of(this, contentName);
-        modified = bytes.length > 0;
+        // modified = bytes.length > 0;
     }
 
     @Override

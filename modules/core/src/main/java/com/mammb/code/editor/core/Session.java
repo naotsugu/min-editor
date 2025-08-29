@@ -56,6 +56,12 @@ public interface Session {
     Path altPath();
 
     /**
+     * Get the alt name.
+     * @return the alt name
+     */
+    String altName();
+
+    /**
      * Get the charset.
      * @return the charset
      */
@@ -131,6 +137,7 @@ public interface Session {
             path(),
             lastModifiedTime(),
             altPath(),
+            altName(),
             charset(),
             true,
             topLine(),
@@ -149,6 +156,7 @@ public interface Session {
             .add("path=" + ((path() == null) ? "" : path()))
             .add("lastModifiedTime=" + ((lastModifiedTime() == null) ? "" : lastModifiedTime().toMillis()))
             .add("altPath=" + ((altPath() == null) ? "" : altPath()))
+            .add("altName=" + ((altName() == null) ? "" : altName()))
             .add("charset=" + ((charset() == null) ? "" : charset()))
             .add("readonly=" + readonly())
             .add("topLine=" + topLine())
@@ -164,7 +172,7 @@ public interface Session {
      * @return a new {@code Session} instance with all fields initialized to default values
      */
     static Session empty() {
-        return new SessionRecord(null, null, null, null, false, 0, 0, 0, 0, System.currentTimeMillis());
+        return new SessionRecord(null, null, null, "", null, false, 0, 0, 0, 0, System.currentTimeMillis());
     }
 
     /**
@@ -185,6 +193,7 @@ public interface Session {
             existsValue(map, "path") ? Path.of(map.get("path")) : null,
             existsValue(map, "lastModifiedTime") ? FileTime.fromMillis(Long.parseLong(map.get("lastModifiedTime"))) : null,
             existsValue(map, "altPath") ? Path.of(map.get("altPath")) : null,
+            map.getOrDefault("altName", ""),
             existsValue(map, "charset") ? Charset.forName(map.get("charset")) : null,
             Boolean.parseBoolean(map.getOrDefault("readonly", "false")),
             Integer.parseInt(map.getOrDefault("topLine", "0")),
@@ -206,6 +215,7 @@ public interface Session {
                 pathExists ? path : null,
                 pathExists ? Files.getLastModifiedTime(path) : null,
                 null,
+                "",
                 null,
                 false,
                 0, 0, 0, 0,
@@ -218,23 +228,26 @@ public interface Session {
     /**
      * Create a new {@link Session}.
      * @param path the path
+     * @param lastModifiedTime the last modified time
      * @param altPath the alt path
+     * @param altName the alt name
      * @param charset the charset
      * @param readonly the readonly
-     * @param lastModifiedTime the last modified time
      * @param topLine the line number at the top of the screen
      * @param lineWidth the width of line wrap characters
      * @param caretRow the row index at the caret
      * @param caretCol the column index at the caret
      * @return a new {@link Session}
      */
-    static Session of(Path path, FileTime lastModifiedTime, Path altPath,
+    static Session of(Path path, FileTime lastModifiedTime,
+            Path altPath, String altName,
             Charset charset, boolean readonly,
             int topLine, int lineWidth, int caretRow, int caretCol) {
         return new SessionRecord(
             path,
             lastModifiedTime,
             altPath,
+            altName,
             charset,
             readonly,
             topLine,
@@ -255,6 +268,7 @@ public interface Session {
      * @param path the path
      * @param lastModifiedTime the last modified time
      * @param altPath the alt path
+     * @param altName the alt name
      * @param charset the charset
      * @param readonly the readonly
      * @param topLine the line number at the top of the screen
@@ -268,6 +282,7 @@ public interface Session {
         Path path,
         FileTime lastModifiedTime,
         Path altPath,
+        String altName,
         Charset charset,
         boolean readonly,
         int topLine,
@@ -275,6 +290,9 @@ public interface Session {
         int caretRow,
         int caretCol,
         long timestamp) implements Session {
+        public SessionRecord {
+            altName = Objects.requireNonNullElse(altName, "");
+        }
     }
 
 }

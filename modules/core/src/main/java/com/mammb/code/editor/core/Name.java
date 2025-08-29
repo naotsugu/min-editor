@@ -48,6 +48,7 @@ public interface Name {
      */
     String contextual();
 
+    /** The empty name. */
     Name EMPTY = new Name() {
         @Override public String canonical() { return ""; }
         @Override public String plain() { return ""; }
