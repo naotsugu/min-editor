@@ -15,13 +15,14 @@
  */
 package com.mammb.code.editor.core.tools;
 
+import java.io.Closeable;
 import java.util.Objects;
 
 /**
  * The diff source set.
  * @author Naotsugu Kobayashi
  */
-public record SourcePair<T>(Source<T> org, Source<T> rev) {
+public record SourcePair<T>(Source<T> org, Source<T> rev) implements Closeable {
 
     /**
      * Check if the specified index elements are equal.
@@ -47,6 +48,12 @@ public record SourcePair<T>(Source<T> org, Source<T> rev) {
      */
     public boolean named() {
         return !org.name().isEmpty() || !rev.name().isEmpty();
+    }
+
+    @Override
+    public void close() {
+        org.close();
+        rev.close();
     }
 
 }

@@ -71,7 +71,7 @@ public class DiffRun {
      * @return the specified path
      */
     public Path write(Path path) {
-        Files.write(path, Diff.run(new SourcePair<>(org, rev)).unifiedFormText(3), StandardCharsets.UTF_8, "\n");
+        Files.write(path, Diff.run(new SourcePair<>(org, rev)).asUnifiedFormText(3), StandardCharsets.UTF_8, "\n");
         return path;
     }
 
@@ -81,7 +81,7 @@ public class DiffRun {
      * @return the specified path
      */
     public Path writeWithoutFold(Path path) {
-        Files.write(path, Diff.run(new SourcePair<>(org, rev)).unifyTexts(), StandardCharsets.UTF_8, "\n");
+        Files.write(path, Diff.run(new SourcePair<>(org, rev)).asUnifyTexts(), StandardCharsets.UTF_8, "\n");
         return path;
     }
 

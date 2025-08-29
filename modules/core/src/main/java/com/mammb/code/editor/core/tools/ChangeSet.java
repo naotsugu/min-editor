@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core.tools;
 
+import java.io.Closeable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -25,19 +26,39 @@ import java.util.function.Consumer;
  * The change set.
  * @author Naotsugu Kobayashi
  */
-public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
+public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) implements Diff.Result, Closeable {
 
-    record Change(Change.Type type, int orgFrom, int orgTo, int revFrom, int revTo) {
+    @Override
+    public Iterable<? extends CharSequence> asUnifyTexts() {
+        var ret = unifyTexts();
+        close();
+        return ret;
+    }
+
+    @Override
+    public Iterable<? extends CharSequence> asUnifiedFormText(int contextSize) {
+        var ret = unifiedFormText(contextSize);
+        close();
+        return ret;
+    }
+
+    @Override
+    public void close() {
+        source.close();
+    }
+
+    public record Change(Change.Type type, int orgFrom, int orgTo, int revFrom, int revTo) {
         enum Type { CHANGE, DELETE, INSERT }
     }
 
-    public List<String> unifyTexts() {
+
+    List<String> unifyTexts() {
         List<String> list = new ArrayList<>();
         unify(line -> list.add(line.markedText()));
         return list;
     }
 
-    public List<String> unifyTextsWithNumbers() {
+    List<String> unifyTextsWithNumbers() {
 
         int n = Math.max(4, String.valueOf(source.sizeMax()).length());
 
@@ -61,7 +82,7 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
         return list;
     }
 
-    public List<String> unifiedFormText(int contextSize) {
+    List<String> unifiedFormText(int contextSize) {
 
         if (changes.isEmpty()) {
             return List.of();
@@ -79,7 +100,7 @@ public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
         return list;
     }
 
-    private void unify(Consumer<Line<T>> consumer) {
+    void unify(Consumer<Line<T>> consumer) {
 
         int i = 0;
         int j = 0;

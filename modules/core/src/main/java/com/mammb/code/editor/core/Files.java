@@ -24,12 +24,14 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.file.CopyOption;
 import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
@@ -186,6 +188,21 @@ public interface Files {
         }
     }
 
+    static FileChannel newFileChannel(Path path) {
+        try {
+            return FileChannel.open(path, StandardOpenOption.READ);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static long size(FileChannel channel) {
+        try {
+            return channel.size();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     static void writeWith(Path path, Charset charset, Charset newCharset, String lineSeparator) {
         Path destinationPath = createTempFile(path.getParent(), path.getFileName().toString(), null);

@@ -26,7 +26,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of()),
             Source.of(List.of()));
-        var changeSet = Diff.run(source);
+        var changeSet = (ChangeSet<String>) Diff.run(source);
         assertTrue(changeSet.changes().isEmpty());
     }
 
@@ -35,7 +35,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c")),
             Source.of(List.of("a", "b", "c")));
-        var changeSet = Diff.run(source);
+        var changeSet = (ChangeSet<String>) Diff.run(source);
         assertTrue(changeSet.changes().isEmpty());
     }
 
@@ -44,7 +44,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "c")),
             Source.of(List.of("a", "b", "c")));
-        var changeSet = Diff.run(source);
+        var changeSet = (ChangeSet<String>) Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
         assertEquals(ChangeSet.Change.Type.INSERT, change.type());
@@ -59,7 +59,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c")),
             Source.of(List.of("a", "c")));
-        var changeSet = Diff.run(source);
+        var changeSet = (ChangeSet<String>) Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
         assertEquals(ChangeSet.Change.Type.DELETE, change.type());
@@ -74,7 +74,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c")),
             Source.of(List.of("a", "x", "c")));
-        var changeSet = Diff.run(source);
+        var changeSet = (ChangeSet<String>) Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
         assertEquals(ChangeSet.Change.Type.CHANGE, change.type());
@@ -89,7 +89,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c", "d", "f", "g")),
             Source.of(List.of("a", "x", "c", "e", "f", "h")));
-        var changeSet = Diff.run(source);
+        var changeSet = (ChangeSet<String>) Diff.run(source);
         var changes = changeSet.changes();
         assertEquals(3, changes.size());
 
@@ -120,7 +120,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c")),
             Source.of(List.of("d", "e", "f")));
-        var changeSet = Diff.run(source);
+        var changeSet = (ChangeSet<String>) Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
         assertEquals(ChangeSet.Change.Type.CHANGE, change.type());
@@ -135,7 +135,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c", "d", "f", "g"), "org.txt"),
             Source.of(List.of("a", "x", "c", "e", "f", "h"), "rev.txt"));
-        var changeSet = Diff.run(source);
+        var result = Diff.run(source);
         String expected = """
             --- org.txt
             +++ rev.txt
@@ -150,7 +150,7 @@ class DiffTest {
             - g
             + h
             """;
-        List<String> actual = changeSet.unifiedFormText(3);
+        var actual = result.asUnifiedFormText(3);
         assertEquals(expected.lines().toList(), actual);
     }
 
@@ -159,7 +159,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m"), "org.txt"),
             Source.of(List.of("a", "X", "c", "d", "e", "f", "g", "h", "i", "j", "k", "Y", "m"), "rev.txt"));
-        var changeSet = Diff.run(source);
+        var result = Diff.run(source);
         String expected = """
             --- org.txt
             +++ rev.txt
@@ -178,7 +178,7 @@ class DiffTest {
             + Y
               m
             """;
-        List<String> actual = changeSet.unifiedFormText(3);
+        var actual = result.asUnifiedFormText(3);
         assertEquals(expected.lines().toList(), actual);
     }
 

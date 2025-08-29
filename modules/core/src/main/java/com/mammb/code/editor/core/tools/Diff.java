@@ -27,13 +27,18 @@ import java.util.List;
  */
 public final class Diff {
 
+    public interface Result {
+        Iterable<? extends CharSequence> asUnifyTexts();
+        Iterable<? extends CharSequence> asUnifiedFormText(int contextSize);
+    }
+
     /**
      * Run the diff algorithm.
      * @param source the source pair
      * @return the change set
      * @param <T> the type of source element
      */
-    public static <T> ChangeSet<T> run(SourcePair<T> source) {
+    public static <T> Result run(SourcePair<T> source) {
         Node path = buildPath(source);
         List<Change> changes = buildChanges(path);
         return new ChangeSet<>(source, changes);

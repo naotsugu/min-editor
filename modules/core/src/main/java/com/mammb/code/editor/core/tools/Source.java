@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.tools;
 
 import com.mammb.code.editor.core.Files;
+import java.io.Closeable;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
  * @param <T> the type of elements provided by this source
  * @author Naotsugu Kobayashi
  */
-public interface Source<T> {
+public interface Source<T> extends Closeable {
 
     /**
      * Get the element at the specified index.
@@ -47,6 +48,9 @@ public interface Source<T> {
      * @return the name of this source
      */
     String name();
+
+    @Override
+    default void close() { }
 
     /**
      * Create a new {@link Source} with the specified list and name.
@@ -103,6 +107,10 @@ public interface Source<T> {
      */
     static Source<String> of(Path path, Charset cs, String name) {
         return Source.of(Files.readStrictAllLines(path, cs), name);
+    }
+
+    static Source<byte[]> bytes16Of(Path path) {
+        return new Source16(path);
     }
 
 }
