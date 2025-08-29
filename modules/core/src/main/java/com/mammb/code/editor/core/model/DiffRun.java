@@ -18,9 +18,9 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Query;
-import com.mammb.code.editor.core.diff.Diff;
-import com.mammb.code.editor.core.diff.Source;
-import com.mammb.code.editor.core.diff.SourcePair;
+import com.mammb.code.editor.core.tools.Diff;
+import com.mammb.code.editor.core.tools.Source;
+import com.mammb.code.editor.core.tools.SourcePair;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 

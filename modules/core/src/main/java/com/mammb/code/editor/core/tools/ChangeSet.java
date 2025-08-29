@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.diff;
+package com.mammb.code.editor.core.tools;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.function.Consumer;
  */
 public record ChangeSet<T>(SourcePair<T> source, List<Change> changes) {
 
-    public record Change(Change.Type type, int orgFrom, int orgTo, int revFrom, int revTo) {
+    record Change(Change.Type type, int orgFrom, int orgTo, int revFrom, int revTo) {
         enum Type { CHANGE, DELETE, INSERT }
     }
 

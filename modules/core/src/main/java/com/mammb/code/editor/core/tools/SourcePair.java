@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.diff;
+package com.mammb.code.editor.core.tools;
 
 import java.util.Objects;
 

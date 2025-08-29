@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.core.diff;
+package com.mammb.code.editor.core.tools;
 
-import com.mammb.code.editor.core.diff.ChangeSet.Change;
+import com.mammb.code.editor.core.tools.ChangeSet.Change;
 import java.util.ArrayList;
 import java.util.List;
 
