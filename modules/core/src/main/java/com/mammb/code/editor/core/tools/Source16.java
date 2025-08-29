@@ -28,11 +28,19 @@ import java.util.Arrays;
  */
 public class Source16 implements Source<byte[]> {
 
+    /** The file channel. */
     private final FileChannel fc;
+    /** The length of the file. */
     private final long length;
+    /** The source name. */
     private final String name;
+    /** The buffer. */
     private final ByteBuffer bb = ByteBuffer.allocate(16);
 
+    /**
+     * Initializes a Source16 instance with the given file path.
+     * @param path the path to the file to be read; must not be null and should point to a readable file
+     */
     Source16(Path path) {
         fc = Files.newFileChannel(path);
         length = Files.size(fc);
@@ -70,4 +78,5 @@ public class Source16 implements Source<byte[]> {
             throw new RuntimeException(e);
         }
     }
+
 }
