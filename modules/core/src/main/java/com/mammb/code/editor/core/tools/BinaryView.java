@@ -55,14 +55,15 @@ public class BinaryView {
                 sb.append(String.format("%08X: ", index * 16));
 
                 for (int i = 0; i < 16; i++) {
+                    if (i > 0 && i % 8 == 0) {
+                        sb.append(" ");
+                    }
                     if (i < bytes.length) {
                         sb.append(String.format("%02X", bytes[i]));
                     } else {
                         sb.append("  ");
                     }
-                    if (i % 2 == 1) {
-                        sb.append(" ");
-                    }
+                    sb.append(" ");
                 }
                 sb.append(" | ");
 
