@@ -131,6 +131,14 @@ public interface Files {
         }
     }
 
+    static Path write(Path path, byte[] bytes, OpenOption... options) {
+        try {
+            return java.nio.file.Files.write(path, bytes, options);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static Path write(Path path, Iterable<? extends CharSequence> lines, OpenOption... options) {
         try {
             return java.nio.file.Files.write(path, lines, options);

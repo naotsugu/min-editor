@@ -42,7 +42,7 @@ public class BinaryView {
             @Override
             public boolean hasNext() {
                 boolean ret = index < source.size();
-                if (!ret) { source.close();}
+                if (!ret) source.close();
                 return ret;
             }
 
