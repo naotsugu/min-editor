@@ -15,6 +15,9 @@
  */
 package com.mammb.code.editor.core.tools;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HexFormat;
 import java.util.Iterator;
 
 /**
@@ -29,16 +32,18 @@ public class BinaryView {
      * line includes the offset, hexadecimal representation of bytes, and their
      * corresponding printable ASCII characters (non-printable characters are
      * replaced with a dot '.').
+     *
      * @param source the source object containing binary data to be processed. The
      *               source is divided into segments of 16 bytes each, with any
      *               remaining bytes handled accordingly in the final segment.
      * @return an iterable of CharSequence, where each element represents a line of
-     *         the formatted output.
+     * the formatted output.
      */
     public static Iterable<? extends CharSequence> run(Source16 source) {
         Iterator<CharSequence> iterator = new Iterator<>() {
             int index = 0;
             final StringBuilder sb = new StringBuilder();
+
             @Override
             public boolean hasNext() {
                 boolean ret = index < source.size();
@@ -81,6 +86,19 @@ public class BinaryView {
             }
         };
         return () -> iterator;
+    }
+
+    public static Path save(Path path, Source<? extends CharSequence> source) {
+        HexFormat hexFormat = HexFormat.of();
+        try (var out = Files.newOutputStream(path)) {
+            for (int i = 0; i < source.size(); i++) {
+                var line = source.get(i).toString();
+                out.write(hexFormat.parseHex(line.substring(10, Math.min(line.length(), 58)).replace(" ", "")));
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return path;
     }
 
 }
