@@ -43,8 +43,8 @@ class BinaryViewTest {
         iterable.forEach(cs -> list.add(cs.toString()));
 
         assertEquals(2, list.size());
-        assertEquals("00000000: 74 68 69 73 20 69 73 20  61 20 62 69 6E 61 72 79  | this is a binary", list.get(0).trim());
-        assertEquals("00000010: 20 76 69 65 77 20 74 65  73 74 0A                 |  view test.", list.get(1).trim());
+        assertEquals("00000000 | 74 68 69 73 20 69 73 20  61 20 62 69 6E 61 72 79 | this is a binary", list.get(0).trim());
+        assertEquals("00000010 | 20 76 69 65 77 20 74 65  73 74 0A                |  view test.", list.get(1).trim());
     }
 
     @Test
@@ -71,7 +71,7 @@ class BinaryViewTest {
         iterable.forEach(cs -> list.add(cs.toString()));
 
         assertEquals(1, list.size());
-        assertEquals("00000000: 30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66  | 0123456789abcdef", list.getFirst().trim());
+        assertEquals("00000000 | 30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66 | 0123456789abcdef", list.getFirst().trim());
     }
 
     @Test
@@ -85,8 +85,8 @@ class BinaryViewTest {
         iterable.forEach(cs -> list.add(cs.toString()));
 
         assertEquals(2, list.size());
-        assertEquals("00000000: 30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66  | 0123456789abcdef", list.get(0).trim());
-        assertEquals("00000010: 30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66  | 0123456789abcdef", list.get(1).trim());
+        assertEquals("00000000 | 30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66 | 0123456789abcdef", list.get(0).trim());
+        assertEquals("00000010 | 30 31 32 33 34 35 36 37  38 39 61 62 63 64 65 66 | 0123456789abcdef", list.get(1).trim());
     }
 
     @Test
@@ -100,7 +100,7 @@ class BinaryViewTest {
         iterable.forEach(cs -> list.add(cs.toString()));
 
         assertEquals(1, list.size());
-        assertEquals("00000000: 00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F  | ................", list.getFirst().trim());
+        assertEquals("00000000 | 00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F | ................", list.getFirst().trim());
     }
 
     @Test
@@ -119,11 +119,23 @@ class BinaryViewTest {
 
         assertEquals(16, list.size());
         // Just check a few lines for brevity
-        assertEquals("00000000: 00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F  | ................", list.get(0).trim());
-        assertEquals("00000010: 10 11 12 13 14 15 16 17  18 19 1A 1B 1C 1D 1E 1F  | ................", list.get(1).trim());
-        assertEquals("00000020: 20 21 22 23 24 25 26 27  28 29 2A 2B 2C 2D 2E 2F  |  !\"#$%&'()*+,-./", list.get(2).trim());
-        assertEquals("00000070: 70 71 72 73 74 75 76 77  78 79 7A 7B 7C 7D 7E 7F  | pqrstuvwxyz{|}~.", list.get(7).trim());
-        assertEquals("000000F0: F0 F1 F2 F3 F4 F5 F6 F7  F8 F9 FA FB FC FD FE FF  | ................", list.get(15).trim());
+        assertEquals("00000000 | 00 01 02 03 04 05 06 07  08 09 0A 0B 0C 0D 0E 0F | ................", list.get(0).trim());
+        assertEquals("00000010 | 10 11 12 13 14 15 16 17  18 19 1A 1B 1C 1D 1E 1F | ................", list.get(1).trim());
+        assertEquals("00000020 | 20 21 22 23 24 25 26 27  28 29 2A 2B 2C 2D 2E 2F |  !\"#$%&'()*+,-./", list.get(2).trim());
+        assertEquals("00000070 | 70 71 72 73 74 75 76 77  78 79 7A 7B 7C 7D 7E 7F | pqrstuvwxyz{|}~.", list.get(7).trim());
+        assertEquals("000000F0 | F0 F1 F2 F3 F4 F5 F6 F7  F8 F9 FA FB FC FD FE FF | ................", list.get(15).trim());
+    }
+
+    @Test
+    void save(@TempDir Path tempDir) {
+
+        var source = Source.of(List.of(
+            "00000000 | 74 68 69 73 20 69 73 20  61 20 62 69 6E 61 72 79 | this is a binary",
+            "00000010 | 20 76 69 65 77 20 74 65  73 74 0A                |  view test."));
+
+        Path path = BinaryView.save(tempDir.resolve("saved.dat"), source);
+        assertArrayEquals("this is a binary view test\n".getBytes(), Files.readAllBytes(path));
+
     }
 
 }

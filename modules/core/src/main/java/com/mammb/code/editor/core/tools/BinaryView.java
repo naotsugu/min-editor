@@ -57,7 +57,7 @@ public class BinaryView {
                 byte[] bytes = source.get(index);
 
                 sb.setLength(0);
-                sb.append(String.format("%08X: ", index * 16));
+                sb.append(String.format("%08X | ", index * 16));
 
                 for (int i = 0; i < 16; i++) {
                     if (i > 0 && i % 8 == 0) {
@@ -70,7 +70,7 @@ public class BinaryView {
                     }
                     sb.append(" ");
                 }
-                sb.append(" | ");
+                sb.append("| ");
 
                 for (byte aByte : bytes) {
                     char c = (char) aByte;
@@ -93,7 +93,7 @@ public class BinaryView {
         try (var out = Files.newOutputStream(path)) {
             for (int i = 0; i < source.size(); i++) {
                 var line = source.get(i).toString();
-                out.write(hexFormat.parseHex(line.substring(10, Math.min(line.length(), 58)).replace(" ", "")));
+                out.write(hexFormat.parseHex(line.substring(11, Math.min(line.length(), 59)).replace(" ", "")));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
