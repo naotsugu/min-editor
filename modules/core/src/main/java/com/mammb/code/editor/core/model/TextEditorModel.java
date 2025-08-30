@@ -44,8 +44,12 @@ import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -582,6 +586,7 @@ public class TextEditorModel implements EditorModel {
 
     private void pasteFromClipboard(Clipboard clipboard, boolean withOpt) {
         if (withOpt) {
+            // paste with context
             PasteHandler handler = decorate.syntaxHandler(PasteHandler.class);
             if (handler != null) {
                 boolean handled = handler.handlePaste(clipboard, this::input);
@@ -591,7 +596,13 @@ public class TextEditorModel implements EditorModel {
         var text = clipboard.getString();
         text = (text == null || text.isEmpty()) ? clipboard.getHtml() : text;
         if (text == null || text.isEmpty()) return;
-        input(EditingFunctions.sanitize.apply(text));
+        text = EditingFunctions.sanitize.apply(text);
+        if (carets.size() > 1 && text.contains("\n")) {
+            Deque<String> stack = new ArrayDeque<>(Arrays.stream(text.split("\\R")).toList());
+            carets.carets().forEach(c -> selectionReplace(c, stack.isEmpty() ? "" : stack.pop()));
+        } else {
+            input(text);
+        }
     }
 
     private void copyToClipboard(Clipboard clipboard) {
