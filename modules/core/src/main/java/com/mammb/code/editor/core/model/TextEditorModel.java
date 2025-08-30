@@ -83,7 +83,7 @@ public class TextEditorModel implements EditorModel {
 
     /** The margin top. */
     private final double marginTop = 5;
-    /** The margin left(garter width). */
+    /** The margin left (garter width). */
     private double marginLeft = 5;
     /** caretVisible?. */
     private boolean caretVisible = true;
@@ -597,9 +597,17 @@ public class TextEditorModel implements EditorModel {
         text = (text == null || text.isEmpty()) ? clipboard.getHtml() : text;
         if (text == null || text.isEmpty()) return;
         text = EditingFunctions.sanitize.apply(text);
+
         if (carets.size() > 1 && text.contains("\n")) {
+            // multi line paste
+            List<Range> caretRanges = carets.ranges();
+            Range rangeMin = Collections.min(caretRanges);
+            Range rangeMax = Collections.max(caretRanges);
             Deque<String> stack = new ArrayDeque<>(Arrays.stream(text.split("\\R")).toList());
-            carets.carets().forEach(c -> selectionReplace(c, stack.isEmpty() ? "" : stack.pop()));
+            Function<String, String> fun = _ -> stack.isEmpty() ? "" : stack.pop();
+            var ranges = content.replace(caretRanges, fun);
+            carets.at(ranges.stream().map(r -> r.isAsc() ? r.start() : r.end()).toList());
+            screenLayout.refreshBuffer(rangeMin.min().row(), rangeMax.max().row());
         } else {
             input(text);
         }

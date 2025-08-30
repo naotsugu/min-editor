@@ -67,8 +67,8 @@ public class BinaryView {
                 }
                 sb.append(" | ");
 
-                for (int i = 0; i < bytes.length; i++) {
-                    char c = (char) bytes[i];
+                for (byte aByte : bytes) {
+                    char c = (char) aByte;
                     if (c >= 32 && c < 127) {
                         sb.append(c);
                     } else {
