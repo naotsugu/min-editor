@@ -634,7 +634,7 @@ public class EditorPane extends ContentPane {
     }
 
     private void showCommandPalette(Class<? extends Command> clazz) {
-        new CommandPalette(this, clazz, model().query(Query.selectedText))
+        new CommandPalette(this, clazz, model()::query)
             .showAndWait()
             .ifPresent(this::execute);
     }

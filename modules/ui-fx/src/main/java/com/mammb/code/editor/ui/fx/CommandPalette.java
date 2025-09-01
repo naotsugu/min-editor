@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.ui.Command;
 import javafx.beans.value.ObservableValue;
@@ -41,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SequencedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -69,13 +71,15 @@ public class CommandPalette extends Dialog<Command> {
     /** The command type. */
     private Class<? extends Command> cmdType;
 
+    public interface Queryable { <R> R query(Query<R> query); }
 
-    public CommandPalette(Node node, Class<? extends Command> init, String initText) {
+
+    public CommandPalette(Node node, Class<? extends Command> init, Queryable queryable) {
         super();
         this.box = new HBox();
         this.commandLabel = new Label();
         this.cmdType = init;
-        this.textField = new AcTextField(this, !initText.isEmpty());
+        this.textField = new AcTextField(this, queryable);
 
         initOwner(node.getScene().getWindow());
         initStyle(StageStyle.TRANSPARENT);
@@ -141,7 +145,7 @@ public class CommandPalette extends Dialog<Command> {
         pane.getStyleClass().add("app-command-palette-dialog-pane");
 
         initCommandLabel();
-        initText(initText);
+        initText(queryable.query(Query.selectedText));
     }
 
     private void initText(String initText) {
@@ -192,14 +196,14 @@ public class CommandPalette extends Dialog<Command> {
     static class AcTextField extends TextField {
         final CommandPalette commandPalette;
         final AcContextMenu popup;
-        final boolean hasSelect;
+        final Queryable queryable;
         SequencedMap<String, CustomMenuItem> items;
 
-        public AcTextField(CommandPalette commandPalette, boolean hasSelect) {
+        public AcTextField(CommandPalette commandPalette, Queryable queryable) {
             super();
             this.commandPalette = commandPalette;
             this.popup = new AcContextMenu();
-            this.hasSelect = hasSelect;
+            this.queryable = queryable;
 
             setStyle("""
             -fx-background-color: derive(-fx-control-inner-background,10%);
@@ -259,7 +263,13 @@ public class CommandPalette extends Dialog<Command> {
                 item.setStyle("-fx-border-color: red;");
                 item.setOnAction(_ -> commandPalette.selectCommand(entry.getValue()));
                 if (Command.RequireSelection.class.isAssignableFrom(entry.getValue())) {
-                    item.setDisable(!hasSelect);
+                    item.setDisable(!queryable.query(Query.selectedText).isEmpty());
+                }
+                if (Command.Diff.class.isAssignableFrom(entry.getValue()) ||
+                    Command.DiffFoldOff.class.isAssignableFrom(entry.getValue())) {
+                    item.setDisable(
+                        !queryable.query(Query.modified) ||
+                        queryable.query(Query.contentPath).isEmpty());
                 }
                 keywordMappedItems.put(entry.getKey(), item);
             }
