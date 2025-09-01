@@ -71,10 +71,7 @@ public class CommandPalette extends Dialog<Command> {
     /** The command type. */
     private Class<? extends Command> cmdType;
 
-    public interface Queryable { <R> R query(Query<R> query); }
-
-
-    public CommandPalette(Node node, Class<? extends Command> init, Queryable queryable) {
+    public CommandPalette(Node node, Class<? extends Command> init, Query.Queryable queryable) {
         super();
         this.box = new HBox();
         this.commandLabel = new Label();
@@ -196,10 +193,10 @@ public class CommandPalette extends Dialog<Command> {
     static class AcTextField extends TextField {
         final CommandPalette commandPalette;
         final AcContextMenu popup;
-        final Queryable queryable;
+        final Query.Queryable queryable;
         SequencedMap<String, CustomMenuItem> items;
 
-        public AcTextField(CommandPalette commandPalette, Queryable queryable) {
+        public AcTextField(CommandPalette commandPalette, Query.Queryable queryable) {
             super();
             this.commandPalette = commandPalette;
             this.popup = new AcContextMenu();

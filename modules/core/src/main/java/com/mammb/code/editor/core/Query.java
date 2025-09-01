@@ -28,6 +28,20 @@ import com.mammb.code.editor.core.model.QueryRecords.*;
  */
 public interface Query<R> {
 
+    /**
+     * Represents an object that allows queries to be performed on it,
+     * returning results of a specified type.
+     */
+    interface Queryable {
+        /**
+         * Get the result of the query.
+         * @param <R> the type of result
+         * @param query the query
+         * @return the result of a query
+         */
+        <R> R query(Query<R> query);
+    }
+
     Query<String> rowEndingSymbol = new RowEndingSymbol();
     Query<Charset> charCode = new CharCode();
     Query<String> charCodeSymbol = new CharCodeSymbol();

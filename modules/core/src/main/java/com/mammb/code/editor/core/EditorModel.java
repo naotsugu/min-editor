@@ -27,7 +27,7 @@ import com.mammb.code.editor.core.model.TextEditorModel;
  *
  * @author Naotsugu Kobayashi
  */
-public interface EditorModel {
+public interface EditorModel extends Query.Queryable {
 
     /**
      * Paint the editor screen.
@@ -214,14 +214,6 @@ public interface EditorModel {
      * @param action the action
      */
     void apply(Action action);
-
-    /**
-     * Get the result of the query.
-     * @param <R> the type of result
-     * @param query the query
-     * @return the result of a query
-     */
-    <R> R query(Query<R> query);
 
     /**
      * Create a new {@link EditorModel}.
