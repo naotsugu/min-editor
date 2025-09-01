@@ -191,7 +191,7 @@ public class CommandPalette extends Dialog<Command> {
      */
     static class AcTextField extends TextField {
         final CommandPalette commandPalette;
-        final ContextMenu popup;
+        final AcContextMenu popup;
         final boolean hasSelect;
         SequencedMap<String, CustomMenuItem> items;
 
@@ -276,6 +276,9 @@ public class CommandPalette extends Dialog<Command> {
                 .toList();
             popup.getItems().clear();
             if (!menuItems.isEmpty()) {
+                popup.setAvailableHeight(commandPalette.getOwner().getHeight()
+                    - (commandPalette.getY() - commandPalette.getOwner().getY() + commandPalette.getHeight())
+                    - 40);
                 popup.getItems().addAll(menuItems);
                 popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
                 focusFirstItem();
@@ -294,16 +297,21 @@ public class CommandPalette extends Dialog<Command> {
 
 
     static class AcContextMenu extends ContextMenu {
+        private double availableHeight = 400;
         public AcContextMenu() {
             setStyle("""
                 -fx-background-color: derive(-fx-control-inner-background,10%);
                 """);
         }
+        public void setAvailableHeight(double height) {
+            availableHeight = height;
+        }
+
         @Override
         public void show(Node anchor, Side side, double dx, double dy) {
             super.show(anchor, side, dx, dy);
             if (getSkin().getNode() instanceof Region region) {
-                region.setMaxHeight(400);
+                region.setMaxHeight(availableHeight);
                 setY(anchor.localToScreen(anchor.getBoundsInLocal()).getMaxY() + dy);
             }
         }
