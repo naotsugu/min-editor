@@ -18,6 +18,10 @@ package com.mammb.code.editor.ui.swing;
 import com.mammb.code.editor.ui.ColorScheme;
 import javax.swing.*;
 
+/**
+ * The application launcher.
+ * @author Naotsugu Kobayashi
+ */
 public class AppLauncher {
 
     /**
@@ -33,6 +37,10 @@ public class AppLauncher {
         SwingUtilities.invokeLater(() -> new App(args));
     }
 
+    /**
+     * Launch the application.
+     * @param args the arguments
+     */
     public static void main(String[] args) {
         new AppLauncher().launch(args);
     }

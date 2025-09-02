@@ -79,6 +79,12 @@ public interface Decorate {
 
     boolean isBlockScoped();
 
+    /**
+     * Applies a modification or operation to a specified range of rows within the content.
+     * @param row the starting row to apply the operation
+     * @param len the number of rows to apply the operation to
+     * @param content the content object containing the text data to be modified
+     */
     void warmApply(int row, int len, Content content);
 
     /**

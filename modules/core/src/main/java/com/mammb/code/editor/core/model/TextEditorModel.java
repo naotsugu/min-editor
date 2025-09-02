@@ -628,12 +628,11 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void save(Path path) {
-        boolean syntaxChanged = !Objects.equals(
-            Syntax.syntaxName(content.path().orElse(null)),
-            decorate.syntaxName());
+        boolean syntaxChanged = !Objects.equals(Syntax.syntaxName(path), decorate.syntaxName());
         content.save(path);
         if (syntaxChanged) {
             decorate = Decorate.of(Syntax.pathOf(path));
+            decorate.warmApply(0, screenLayout.topRow(), content);
         }
     }
 
