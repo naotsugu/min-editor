@@ -260,7 +260,7 @@ public class CommandPalette extends Dialog<Command> {
                 item.setStyle("-fx-border-color: red;");
                 item.setOnAction(_ -> commandPalette.selectCommand(entry.getValue()));
                 if (Command.RequireSelection.class.isAssignableFrom(entry.getValue())) {
-                    item.setDisable(!queryable.query(Query.selectedText).isEmpty());
+                    item.setDisable(queryable.query(Query.selectedText).isEmpty());
                 }
                 if (Command.Diff.class.isAssignableFrom(entry.getValue()) ||
                     Command.DiffFoldOff.class.isAssignableFrom(entry.getValue())) {
