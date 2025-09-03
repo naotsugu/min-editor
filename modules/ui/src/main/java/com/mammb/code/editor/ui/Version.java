@@ -25,7 +25,7 @@ public interface Version {
     String appName = "min-editor";
 
     /** The version value. */
-    String val = "0.2.3";
+    String val = "0.2.4";
 
     /**
      * Extracts and returns the major version number from the version string.
