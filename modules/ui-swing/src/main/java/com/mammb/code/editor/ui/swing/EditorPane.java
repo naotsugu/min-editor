@@ -90,11 +90,11 @@ public class EditorPane extends JPanel {
 
         scroll.vScroll().addAdjustmentListener(e -> {
             model.scrollAt(e.getValue());
-            canvas.repaint();
+            repaint();
         });
         scroll.hScroll().addAdjustmentListener(e -> {
             model.scrollX(e.getValue());
-            canvas.repaint();
+            repaint();
         });
     }
 
