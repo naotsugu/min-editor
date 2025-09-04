@@ -41,7 +41,7 @@ public class Source16 implements Source<byte[]> {
      * Initializes a Source16 instance with the given file path.
      * @param path the path to the file to be read; must not be null and should point to a readable file
      */
-    Source16(Path path) {
+    public Source16(Path path) {
         fc = Files.newFileChannel(path);
         length = Files.size(fc);
         name = path.getFileName().toString();

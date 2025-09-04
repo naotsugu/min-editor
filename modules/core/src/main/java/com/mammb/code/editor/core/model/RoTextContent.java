@@ -16,18 +16,15 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
-import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -36,17 +33,14 @@ import java.util.function.Function;
  * instance while suppressing any modification operations.
  * @author Naotsugu Kobayashi
  */
-public class RoTextContent implements Content {
-
-    /** The pear content. */
-    private final Content pear;
+public class RoTextContent extends ContentAdapter {
 
     /**
      * Constructor for RoTextContent that wraps a given Content instance.
      * @param pear the underlying Content instance to be wrapped
      */
     public RoTextContent(Content pear) {
-        this.pear = pear;
+        super(pear);
     }
 
     /**
@@ -128,52 +122,12 @@ public class RoTextContent implements Content {
     }
 
     @Override
-    public String getText(int row) {
-        return pear.getText(row);
-    }
-
-    @Override
-    public String getText(Point start, Point end) {
-        return pear.getText(start, end);
-    }
-
-    @Override
-    public int rows() {
-        return pear.rows();
-    }
-
-    @Override
-    public Optional<Path> path() {
-        return pear.path();
-    }
-
-    @Override
     public boolean readonly() {
         return true;
     }
 
     @Override
     public void save(Path path) {
-    }
-
-    @Override
-    public void reload() {
-        pear.reload();
-    }
-
-    @Override
-    public void reloadWith(Charset charset) {
-        pear.reloadWith(charset);
-    }
-
-    @Override
-    public void write(Path path) {
-        pear.write(path);
-    }
-
-    @Override
-    public void close() {
-        pear.close();
     }
 
     @Override
@@ -186,25 +140,31 @@ public class RoTextContent implements Content {
     }
 
     @Override
-    public Find find() {
-        return pear.find();
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
             case QueryRecords.Modified _ -> (R) Boolean.FALSE;
-            case QueryRecords.ModelName q  -> (R) readonlyName(pear.query(q));
-            default -> pear.query(query);
+            case QueryRecords.ModelName q  -> (R) readonlyName(super.query(q));
+            default -> super.query(query);
         };
     }
 
+    /**
+     * Wraps the specified name with a readonly name.
+     * @param name the specified name
+     * @return the wrapped name
+     */
     private Name readonlyName(Name name) {
         record NameRecord(String canonical, String plain, String contextual) implements Name { }
         return new NameRecord(name.canonical(), name.plain(), "[" + name.plain() + "]");
     }
 
+    /**
+     * Read the specified file path and return the content as a byte array.
+     * @param path the specified file path
+     * @param rowLimit the maximum number of rows to be read from the file
+     * @return the content as a byte array
+     */
     private static byte[] read(Path path, int rowLimit) {
         var output = new ByteArrayOutputStream();
         var buffer = new byte[1024 * 64];
