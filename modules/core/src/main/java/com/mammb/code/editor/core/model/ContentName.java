@@ -35,10 +35,6 @@ public class ContentName implements Name {
         this.name = (name == null || name.isBlank()) ? "Untitled" : name;
     }
 
-    public static ContentName of(Content content, String name) {
-        return new ContentName(content, name);
-    }
-
     public static ContentName of(Content content) {
         return new ContentName(content, null);
     }
