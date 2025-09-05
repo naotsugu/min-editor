@@ -49,10 +49,18 @@ public interface Name {
     String contextual();
 
     /** The empty name. */
-    Name EMPTY = new Name() {
-        @Override public String canonical() { return ""; }
-        @Override public String plain() { return ""; }
-        @Override public String contextual() { return ""; }
-    };
+    Name EMPTY = of("", "", "");
+
+    /**
+     * Create a new name.
+     * @param canonical the canonical name
+     * @param plain the plain name
+     * @param contextual the contextual name
+     * @return a new name
+     */
+    static Name of(String canonical, String plain, String contextual) {
+        record NameRecord(String canonical, String plain, String contextual) implements Name { }
+        return new NameRecord(canonical, plain, contextual);
+    }
 
 }

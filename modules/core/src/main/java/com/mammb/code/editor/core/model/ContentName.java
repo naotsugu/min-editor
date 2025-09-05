@@ -68,8 +68,7 @@ public class ContentName implements Name {
      * @return a new ContentName with the muted name
      */
     public Name mute() {
-        record NameRecord(String canonical, String plain, String contextual) implements Name { }
-        return new NameRecord(canonical(), plain(), contextual());
+        return Name.of(canonical(), plain(), contextual());
     }
 
 }
