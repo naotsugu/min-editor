@@ -58,6 +58,19 @@ public class ContentName implements Name {
         return content.query(Query.modified) ? "*" + plain() : plain();
     }
 
+    /**
+     * Create a new ContentName with the given name.
+     * @param name the name to use
+     * @return a new ContentName with the given name
+     */
+    public ContentName with(String name) {
+        return new ContentName(content, name);
+    }
+
+    /**
+     * Mute the name.
+     * @return a new ContentName with the muted name
+     */
     public Name mute() {
         record NameRecord(String canonical, String plain, String contextual) implements Name { }
         return new NameRecord(canonical(), plain(), contextual());
