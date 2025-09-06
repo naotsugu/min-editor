@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.core;
 
+import java.nio.file.Path;
+
 /**
  * Represents a value object for a name, providing different forms of its representation.
  * This interface focuses solely on the various textual forms of a name.
@@ -61,6 +63,21 @@ public interface Name {
     static Name of(String canonical, String plain, String contextual) {
         record NameRecord(String canonical, String plain, String contextual) implements Name { }
         return new NameRecord(canonical, plain, contextual);
+    }
+
+    /**
+     * Create a new name.
+     * @param path the path
+     * @param modified whether the file is modified
+     * @param altName the alternative name
+     * @return a new name
+     */
+    static Name of(Path path, boolean modified, String altName) {
+        var name = (altName == null || altName.isBlank()) ? "Untitled" : altName;
+        var canonical  = (path == null) ? name : path.toAbsolutePath().toString();
+        var plain      = (path == null) ? name : path.getFileName().toString();
+        var contextual = modified ? "*" + plain : plain;
+        return of(canonical, plain, contextual);
     }
 
 }

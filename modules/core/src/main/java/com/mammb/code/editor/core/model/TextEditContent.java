@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Find;
+import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
@@ -52,7 +53,7 @@ public class TextEditContent implements Content {
     /** The text edit. */
     private TextEdit edit;
     /** The name. */
-    private final ContentName name;
+    private String name;
     /** The flushes (text being edited with IME). */
     private final List<Point.PointText> flushes = new ArrayList<>();
     /** Whether it has been modified or not. */
@@ -67,7 +68,6 @@ public class TextEditContent implements Content {
      */
     public TextEditContent() {
         edit = TextEdit.of();
-        name = ContentName.of(this);
     }
 
     /**
@@ -77,7 +77,6 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(Path path) {
         edit = TextEdit.of(path);
-        name = ContentName.of(this);
         lastModifiedTime = Files.lastModifiedTime(path);
     }
 
@@ -90,7 +89,6 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(Path path, Consumer<Long> consumer) {
         edit = TextEdit.of(path, seg -> consumer.accept(seg.fraction()));
-        name = ContentName.of(this);
         lastModifiedTime = Files.lastModifiedTime(path);
     }
 
@@ -101,7 +99,7 @@ public class TextEditContent implements Content {
      */
     public TextEditContent(byte[] bytes, String contentName) {
         edit = TextEdit.of(bytes);
-        name = ContentName.of(this).with(contentName);
+        name = contentName;
         // modified = bytes.length > 0;
     }
 
@@ -294,22 +292,14 @@ public class TextEditContent implements Content {
             case RowEndingSymbol _  -> (R) edit.rowEnding().toString();
             case CharCode _         -> (R) edit.charset();
             case CharCodeSymbol _   -> (R) charsetName();
-            case Modified _         -> (R) (Boolean) isModified();
+            case Modified _         -> (R) (Boolean) modified;
             case Bom _              -> (R) edit.bom();
             case ContentPath _      -> (R) Optional.ofNullable(edit.path());
             case LastModifiedTime _ -> (R) Optional.ofNullable(lastModifiedTime);
-            case ModelName _        -> (R) name.mute();
+            case ModelName _        -> (R) Name.of(edit.path(), modified, name);
             case Size _             -> (R) Long.valueOf(edit.rawSize());
             default                 -> null;
         };
-    }
-
-    /**
-     * Whether it has been modified or not.
-     * @return {@code true} if it has been modified
-     */
-    boolean isModified() {
-        return modified;
     }
 
     /**

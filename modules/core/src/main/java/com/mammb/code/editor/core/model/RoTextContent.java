@@ -155,8 +155,7 @@ public class RoTextContent extends ContentAdapter {
      * @return the wrapped name
      */
     private Name readonlyName(Name name) {
-        record NameRecord(String canonical, String plain, String contextual) implements Name { }
-        return new NameRecord(name.canonical(), name.plain(), "[" + name.plain() + "]");
+        return Name.of(name.canonical(), name.plain(), "[" + name.plain() + "]");
     }
 
     /**
