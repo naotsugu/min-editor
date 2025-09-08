@@ -294,7 +294,6 @@ public class TextEditContent implements Content {
             case CharCodeSymbol _   -> (R) charsetName();
             case Modified _         -> (R) (Boolean) modified;
             case Bom _              -> (R) edit.bom();
-            case ContentPath _      -> (R) Optional.ofNullable(edit.path());
             case LastModifiedTime _ -> (R) Optional.ofNullable(lastModifiedTime);
             case ModelName _        -> (R) Name.of(edit.path(), modified, name);
             case Size _             -> (R) Long.valueOf(edit.rawSize());

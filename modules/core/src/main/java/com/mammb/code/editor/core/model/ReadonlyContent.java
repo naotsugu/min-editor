@@ -16,14 +16,11 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
+import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.function.Function;
 
@@ -33,27 +30,14 @@ import java.util.function.Function;
  * instance while suppressing any modification operations.
  * @author Naotsugu Kobayashi
  */
-public class RoTextContent extends ContentAdapter {
+public class ReadonlyContent extends ContentAdapter {
 
     /**
      * Constructor for RoTextContent that wraps a given Content instance.
      * @param pear the underlying Content instance to be wrapped
      */
-    public RoTextContent(Content pear) {
+    public ReadonlyContent(Content pear) {
         super(pear);
-    }
-
-    /**
-     * Creates a new {@code RoTextContent} instance from a given file path.
-     * This method wraps the content of the file located at the specified path
-     * inside a {@code TextEditContent} and then constructs a {@code RoTextContent}
-     * to provide an immutable representation of the content.
-     *
-     * @param path the {@code Path} of the file to be wrapped in a {@code RoTextContent} instance
-     * @return a new {@code RoTextContent} instance representing the immutable content of the file
-     */
-    public static RoTextContent of(Path path) {
-        return new RoTextContent(new TextEditContent(path));
     }
 
     /**
@@ -66,9 +50,9 @@ public class RoTextContent extends ContentAdapter {
      * @param rowLimit the maximum number of rows to be read from the file
      * @return a new {@code RoTextContent} instance representing the immutable content of the file with the specified row limit
      */
-    public static RoTextContent of(Path path, int rowLimit) {
-        Content content = new TextEditContent(read(path, rowLimit), path.getFileName().toString());
-        return new RoTextContent(content);
+    public static ReadonlyContent of(Path path, int rowLimit) {
+        Content content = new TextEditContent(Files.read(path, rowLimit), path.getFileName().toString());
+        return new ReadonlyContent(content);
     }
 
     @Override
@@ -156,35 +140,6 @@ public class RoTextContent extends ContentAdapter {
      */
     private Name readonlyName(Name name) {
         return Name.of(name.canonical(), name.plain(), "[" + name.plain() + "]");
-    }
-
-    /**
-     * Read the specified file path and return the content as a byte array.
-     * @param path the specified file path
-     * @param rowLimit the maximum number of rows to be read from the file
-     * @return the content as a byte array
-     */
-    private static byte[] read(Path path, int rowLimit) {
-        var output = new ByteArrayOutputStream();
-        var buffer = new byte[1024 * 64];
-        try (var in = Files.newInputStream(path, StandardOpenOption.READ)) {
-            int n;
-            while ((n = in.read(buffer)) > 0) {
-                for (int i = 0; i < n; i++) {
-                    if (buffer[i] == '\n') {
-                        rowLimit--;
-                        if (rowLimit <= 0) {
-                            output.write(buffer, 0, i);
-                            return output.toByteArray();
-                        }
-                    }
-                }
-                output.write(buffer, 0, n);
-            }
-            return output.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

@@ -918,6 +918,7 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.SelectedText _      -> (R) Contents.text(content, carets.marked());
             case QueryRecords.CharAtCaret _       -> (R) Contents.lrTextAt(content, carets.getFirst().point());
             case QueryRecords.BytesAtCaret _      -> (R) Contents.bytesAt(content, carets.getFirst().point());
+            case QueryRecords.ContentPath _       -> (R) content.path();
             case null -> null;
             default -> content.query(query);
         };

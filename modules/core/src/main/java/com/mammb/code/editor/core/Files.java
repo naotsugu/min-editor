@@ -17,6 +17,7 @@ package com.mammb.code.editor.core;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -50,14 +51,6 @@ public interface Files {
             return java.nio.file.Files.size(path);
         } catch (Exception ignore) { }
         return 0;
-    }
-
-    static byte[] readAllBytes(Path path) {
-        try {
-            return java.nio.file.Files.readAllBytes(path);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     static boolean isReadableFile(Path path) {
@@ -105,6 +98,43 @@ public interface Files {
     static Path createFile(Path file, FileAttribute<?>... attrs) {
         try {
             return java.nio.file.Files.createFile(file, attrs);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static byte[] readAllBytes(Path path) {
+        try {
+            return java.nio.file.Files.readAllBytes(path);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Read the specified file path and return the content as a byte array.
+     * @param path the specified file path
+     * @param rowLimit the maximum number of rows to be read from the file
+     * @return the content as a byte array
+     */
+    static byte[] read(Path path, int rowLimit) {
+        var output = new ByteArrayOutputStream();
+        var buffer = new byte[1024 * 64];
+        try (var in = java.nio.file.Files.newInputStream(path, StandardOpenOption.READ)) {
+            int n;
+            while ((n = in.read(buffer)) > 0) {
+                for (int i = 0; i < n; i++) {
+                    if (buffer[i] == '\n') {
+                        rowLimit--;
+                        if (rowLimit <= 0) {
+                            output.write(buffer, 0, i);
+                            return output.toByteArray();
+                        }
+                    }
+                }
+                output.write(buffer, 0, n);
+            }
+            return output.toByteArray();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
