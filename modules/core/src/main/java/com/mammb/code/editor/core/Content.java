@@ -17,6 +17,7 @@ package com.mammb.code.editor.core;
 
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -130,6 +131,12 @@ public interface Content {
      * @return the content path
      */
     Optional<Path> path();
+
+    /**
+     * Get the last modified time.
+     * @return the last modified time
+     */
+    Optional<FileTime> lastModifiedTime();
 
     /**
      * Checks whether the content is read-only.

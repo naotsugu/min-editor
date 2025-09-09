@@ -32,12 +32,15 @@ import java.util.function.Function;
  */
 public class ReadonlyContent extends ContentAdapter {
 
+    /** The pear content. */
+    private final Content pear;
+
     /**
      * Constructor for RoTextContent that wraps a given Content instance.
      * @param pear the underlying Content instance to be wrapped
      */
     public ReadonlyContent(Content pear) {
-        super(pear);
+        this.pear = pear;
     }
 
     /**
@@ -131,6 +134,11 @@ public class ReadonlyContent extends ContentAdapter {
             case QueryRecords.ModelName q  -> (R) readonlyName(super.query(q));
             default -> super.query(query);
         };
+    }
+
+    @Override
+    protected Content pear() {
+        return pear;
     }
 
     /**

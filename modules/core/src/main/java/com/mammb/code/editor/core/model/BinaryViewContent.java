@@ -27,10 +27,13 @@ import java.nio.file.Path;
  */
 public class BinaryViewContent extends ContentAdapter {
 
+    /** The pear content. */
+    private final Content pear;
+
     private Path path;
 
     public BinaryViewContent(Path path, Content pear) {
-        super(pear);
+        this.pear = pear;
         this.path = path;
     }
 
@@ -39,6 +42,11 @@ public class BinaryViewContent extends ContentAdapter {
             Files.createTempFile(null, path.getFileName().toString(), ""),
             BinaryView.run(new Source16(path)));
         return new BinaryViewContent(path, Content.of(viewPath));
+    }
+
+    @Override
+    protected Content pear() {
+        return pear;
     }
 
 }

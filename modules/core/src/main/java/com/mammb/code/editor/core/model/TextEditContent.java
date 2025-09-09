@@ -230,6 +230,11 @@ public class TextEditContent implements Content {
     }
 
     @Override
+    public Optional<FileTime> lastModifiedTime() {
+        return Optional.ofNullable(lastModifiedTime);
+    }
+
+    @Override
     public boolean readonly() {
         return false;
     }
@@ -294,7 +299,6 @@ public class TextEditContent implements Content {
             case CharCodeSymbol _   -> (R) charsetName();
             case Modified _         -> (R) (Boolean) modified;
             case Bom _              -> (R) edit.bom();
-            case LastModifiedTime _ -> (R) Optional.ofNullable(lastModifiedTime);
             case ModelName _        -> (R) Name.of(edit.path(), modified, name);
             case Size _             -> (R) Long.valueOf(edit.rawSize());
             default                 -> null;

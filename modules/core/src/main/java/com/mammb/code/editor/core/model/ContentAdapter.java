@@ -21,8 +21,8 @@ import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -34,135 +34,130 @@ import java.util.function.Function;
  */
 public abstract class ContentAdapter implements Content {
 
-    /** The pear content. */
-    private final Content pear;
-
-    /**
-     * Constructor.
-     * @param pear the underlying Content instance to be wrapped
-     */
-    protected ContentAdapter(Content pear) {
-        this.pear = Objects.requireNonNull(pear);
-    }
-
     @Override
     public Point insert(Point point, String text) {
-        return pear.insert(point, text);
+        return pear().insert(point, text);
     }
 
     @Override
     public List<Point> insert(List<Point> points, String text) {
-        return pear.insert(points, text);
+        return pear().insert(points, text);
     }
 
     @Override
     public String delete(Point point) {
-        return pear.delete(point);
+        return pear().delete(point);
     }
 
     @Override
     public List<Point> delete(List<Point> points) {
-        return pear.delete(points);
+        return pear().delete(points);
     }
 
     @Override
     public Point backspace(Point point) {
-        return pear.backspace(point);
+        return pear().backspace(point);
     }
 
     @Override
     public List<Point> backspace(List<Point> points) {
-        return pear.backspace(points);
+        return pear().backspace(points);
     }
 
     @Override
     public Point replace(Point start, Point end, String text) {
-        return pear.replace(start, end, text);
+        return pear().replace(start, end, text);
     }
 
     @Override
     public List<Point.Range> replace(List<Point.Range> ranges, Function<String, String> fun) {
-        return pear.replace(ranges, fun);
+        return pear().replace(ranges, fun);
     }
 
     @Override
     public List<Point> undo() {
-        return pear.undo();
+        return pear().undo();
     }
 
     @Override
     public List<Point> redo() {
-        return pear.redo();
+        return pear().redo();
     }
 
     @Override
     public String getText(int row) {
-        return pear.getText(row);
+        return pear().getText(row);
     }
 
     @Override
     public String getText(Point start, Point end) {
-        return pear.getText(start, end);
+        return pear().getText(start, end);
     }
 
     @Override
     public int rows() {
-        return pear.rows();
+        return pear().rows();
     }
 
     @Override
     public Optional<Path> path() {
-        return pear.path();
+        return pear().path();
+    }
+
+    @Override
+    public Optional<FileTime> lastModifiedTime() {
+        return pear().lastModifiedTime();
     }
 
     @Override
     public boolean readonly() {
-        return pear.readonly();
+        return pear().readonly();
     }
 
     @Override
     public void save(Path path) {
-        pear.save(path);
+        pear().save(path);
     }
 
     @Override
     public void reload() {
-        pear.reload();
+        pear().reload();
     }
 
     @Override
     public void reloadWith(Charset charset) {
-        pear.reloadWith(charset);
+        pear().reloadWith(charset);
     }
 
     @Override
     public void write(Path path) {
-        pear.write(path);
+        pear().write(path);
     }
 
     @Override
     public void close() {
-        pear.close();
+        pear().close();
     }
 
     @Override
     public Point insertFlush(Point point, String text) {
-        return pear.insertFlush(point, text);
+        return pear().insertFlush(point, text);
     }
 
     @Override
     public void clearFlush() {
-        pear.clearFlush();
+        pear().clearFlush();
     }
 
     @Override
     public Find find() {
-        return pear.find();
+        return pear().find();
     }
 
     @Override
     public <R> R query(Query<R> query) {
-        return pear.query(query);
+        return pear().query(query);
     }
 
+    abstract protected Content pear();
 }
