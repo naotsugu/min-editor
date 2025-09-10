@@ -344,10 +344,10 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             if (maybeTab instanceof Tab tab) {
                 var maybeContentPane = tab.getContent();
                 if (maybeContentPane instanceof ContentPane contentPane) {
-                    if (!contentPane.canClose()) {
-                        e.consume();
+                    if (contentPane.canClose()) {
+                        contentPane.close(true);
                     }
-                    contentPane.close(false);
+                    e.consume();
                 } else {
                     log.log(ERROR, "An unexpected node configuration has been detected.");
                 }

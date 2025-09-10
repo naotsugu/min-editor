@@ -17,31 +17,36 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Files;
+import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.tools.BinaryView;
 import com.mammb.code.editor.core.tools.Source16;
 import java.nio.file.Path;
+import java.util.Optional;
 
 /**
- * The BinaryViewContent.
+ * The BinaryContent.
  * @author Naotsugu Kobayashi
  */
-public class BinaryViewContent extends ContentAdapter {
+public class BinaryContent extends ContentAdapter {
 
     /** The pear content. */
     private final Content pear;
 
-    private Path path;
+    private String name;
 
-    public BinaryViewContent(Path path, Content pear) {
+    private Path source;
+
+    private BinaryContent(Path source, Content pear) {
         this.pear = pear;
-        this.path = path;
+        this.source = source;
     }
 
-    public static BinaryViewContent of(Path path) {
-        var viewPath = Files.write(
-            Files.createTempFile(null, path.getFileName().toString(), ""),
-            BinaryView.run(new Source16(path)));
-        return new BinaryViewContent(path, Content.of(viewPath));
+    public static BinaryContent of(Path source) {
+        Path temp = Files.createTempFile(null, source.getFileName().toString(), "");
+        temp.toFile().deleteOnExit();
+        Path view = Files.write(temp, BinaryView.run(new Source16(source)));
+        Content pear = new TextEditContent(view);
+        return new BinaryContent(source, pear);
     }
 
     @Override
