@@ -47,9 +47,8 @@ public class ColsText implements RowText {
         peer = RowText.of(row, text, fm, false);
         advances = Arrays.copyOf(peer.advances(), peer.advances().length);
         margin = fm.standardCharWidth() * 2;
-        colLengths = Arrays.stream(text.split(separator))
+        colLengths = Arrays.stream(split(text, separator))
             .mapToInt(String::length).toArray();
-
         double[] advances = peer.advances();
         rawWidths = new double[colLengths.length];
         int offset = 0;
@@ -67,7 +66,7 @@ public class ColsText implements RowText {
     public void fixCols(List<Double> colsWidth) {
         if (advances.length == 0) return;
         int offset = 0;
-        for (int i = 0; i < colsWidth.size() || i < colLengths.length; i++) {
+        for (int i = 0; i < colsWidth.size() && i < colLengths.length; i++) {
             offset += colLengths[i];
             if (offset >= advances.length) break;
             double width = colsWidth.get(i) - rawWidths[i];
@@ -106,6 +105,10 @@ public class ColsText implements RowText {
      */
     public double[] rawWidths() {
         return rawWidths;
+    }
+
+    static String[] split(String text, String separator) {
+        return text.split(separator);
     }
 
 }
