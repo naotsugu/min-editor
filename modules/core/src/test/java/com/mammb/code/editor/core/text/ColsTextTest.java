@@ -27,7 +27,14 @@ class ColsTextTest {
 
     @Test
     void split() {
-        assertArrayEquals(new String[] { "a", "b" }, ColsText.split("a,b", ","));
+        assertArrayEquals(new String[] { "", "", "" }, ColsText.split(",,", ","));
+        assertArrayEquals(new String[] { "a", "b", "c" }, ColsText.split("a,b,c", ","));
+        assertArrayEquals(new String[] { "a", "", "b", "" }, ColsText.split("a,,b,", ","));
+        assertArrayEquals(new String[] { "\"a,b\"", "c" }, ColsText.split("\"a,b\",c", ","));
+        assertArrayEquals(new String[] { "a", "\"\"hello\"\" world", "c" }, ColsText.split("a,\"\"hello\"\" world,c", ","));
+        assertArrayEquals(new String[] { "\"a,b\"", "\"c\"\"d\"" }, ColsText.split("\"a,b\",\"c\"\"d\"", ","));
+        assertArrayEquals(new String[] { "one", "two", "", "three" }, ColsText.split("one<>two<><>three", "<>"));
+        assertArrayEquals(new String[] { "", "", "" }, ColsText.split(",,", ","));
+        assertArrayEquals(new String[] { "a,b" }, ColsText.split("a,b", null));
     }
-
 }

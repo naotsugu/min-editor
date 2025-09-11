@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.text;
 
 import com.mammb.code.editor.core.FontMetrics;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -107,8 +108,40 @@ public class ColsText implements RowText {
         return rawWidths;
     }
 
-    static String[] split(String text, String separator) {
-        return text.split(separator);
+
+    public static String[] split(String text, String separator) {
+
+        if (text == null) return new String[0];
+        if (text.isEmpty() || separator == null || separator.isEmpty()) return new String[] { text };
+
+        var result = new ArrayList<String>();
+        boolean inQuotes = false;
+        int beginIndex = 0;
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+
+            if (!inQuotes && text.startsWith(separator, i)) {
+                result.add(text.substring(beginIndex, i));
+                i += separator.length() - 1;
+                beginIndex = i + 1;
+                continue;
+            }
+
+            if (c == '"') {
+                if (inQuotes) {
+                    if (i < text.length() - 1 && text.charAt(i + 1) == '"') {
+                        i++;
+                    } else {
+                        inQuotes = false;
+                    }
+                } else {
+                    inQuotes = true;
+                }
+            }
+        }
+        result.add(text.substring(beginIndex));
+        return result.toArray(new String[0]);
     }
 
 }
