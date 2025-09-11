@@ -108,8 +108,16 @@ public class ColsText implements RowText {
         return rawWidths;
     }
 
-
-    public static String[] split(String text, String separator) {
+    /**
+     * Splits the provided text into an array of substrings using the specified separator.
+     * The method respects quoted parts of the text and does not split within quotes.
+     * Double quotes inside quoted parts are escaped using an additional double quote.
+     * @param text the string to be split may be null
+     * @param separator the string used as the delimiter may be null or empty
+     * @return an array of split substrings; returns an empty array if the input text is null
+     *         or an array containing the original text if the separator is null or empty
+     */
+    static String[] split(String text, String separator) {
 
         if (text == null) return new String[0];
         if (text.isEmpty() || separator == null || separator.isEmpty()) return new String[] { text };
