@@ -54,7 +54,7 @@ public class ReadonlyContent extends ContentAdapter {
      * @return a new {@code RoTextContent} instance representing the immutable content of the file with the specified row limit
      */
     public static ReadonlyContent of(Path path, int rowLimit) {
-        Content content = new TextEditContent(Files.read(path, rowLimit), path.getFileName().toString());
+        Content content = new TextEditContent(Files.read(path, rowLimit));
         return new ReadonlyContent(content);
     }
 

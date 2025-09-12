@@ -24,8 +24,6 @@ import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.model.QueryRecords.Bom;
 import com.mammb.code.editor.core.model.QueryRecords.CharCode;
 import com.mammb.code.editor.core.model.QueryRecords.CharCodeSymbol;
-import com.mammb.code.editor.core.model.QueryRecords.ContentPath;
-import com.mammb.code.editor.core.model.QueryRecords.LastModifiedTime;
 import com.mammb.code.editor.core.model.QueryRecords.ModelName;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
@@ -52,8 +50,6 @@ public class TextEditContent implements Content {
 
     /** The text edit. */
     private TextEdit edit;
-    /** The name. */
-    private String name;
     /** The flushes (text being edited with IME). */
     private final List<Point.PointText> flushes = new ArrayList<>();
     /** Whether it has been modified or not. */
@@ -95,11 +91,9 @@ public class TextEditContent implements Content {
     /**
      * Constructor to create a new TextEditContent instance from a byte array.
      * @param bytes the byte array representing the content
-     * @param contentName the content name
      */
-    public TextEditContent(byte[] bytes, String contentName) {
+    public TextEditContent(byte[] bytes) {
         edit = TextEdit.of(bytes);
-        name = contentName;
         // modified = bytes.length > 0;
     }
 
@@ -299,7 +293,7 @@ public class TextEditContent implements Content {
             case CharCodeSymbol _   -> (R) charsetName();
             case Modified _         -> (R) (Boolean) modified;
             case Bom _              -> (R) edit.bom();
-            case ModelName _        -> (R) Name.of(edit.path(), modified, name);
+            case ModelName _        -> (R) Name.of(edit.path(), modified);
             case Size _             -> (R) Long.valueOf(edit.rawSize());
             default                 -> null;
         };

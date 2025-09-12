@@ -69,6 +69,16 @@ public interface Name {
      * Create a new name.
      * @param path the path
      * @param modified whether the file is modified
+     * @return a new name
+     */
+    static Name of(Path path, boolean modified) {
+        return of(path, modified, (path == null) ? null : path.getFileName().toString());
+    }
+
+    /**
+     * Create a new name.
+     * @param path the path
+     * @param modified whether the file is modified
      * @param altName the alternative name
      * @return a new name
      */

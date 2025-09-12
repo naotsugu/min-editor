@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Point.Range;
+import com.mammb.code.editor.core.model.NamedContent;
 import com.mammb.code.editor.core.model.ReadonlyContent;
 import com.mammb.code.editor.core.model.TextEditContent;
 
@@ -231,11 +232,10 @@ public interface Content {
     /**
      * Creates a new {@link Content} from the specified byte array.
      * @param bytes the byte array representing the content data
-     * @param contentName the content name
      * @return a new {@link Content} instance initialized with the provided bytes
      */
-    static Content of(byte[] bytes, String contentName) {
-        return new TextEditContent(bytes, contentName);
+    static Content of(byte[] bytes) {
+        return new TextEditContent(bytes);
     }
 
     /**
@@ -255,14 +255,12 @@ public interface Content {
     static Content of(Session session) {
         Content content;
         if (Files.exists(session.altPath())) {
-            content = Content.of(
-                Files.readAllBytes(session.altPath()),
-                !session.altName().isBlank()
-                    ? session.altName()
-                    : session.hasPath()
-                        ? session.path().getFileName().toString()
-                        : null
-            );
+            var name = !session.altName().isBlank()
+                ? session.altName()
+                : session.hasPath()
+                ? session.path().getFileName().toString()
+                : null;
+            content = NamedContent.interimOf(session.altPath(), name);
         } else if (session.hasPath() && Files.exists(session.path())) {
             content = Content.of(session.path());
         } else {
