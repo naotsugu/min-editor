@@ -17,10 +17,13 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Files;
+import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.tools.BinaryView;
+import com.mammb.code.editor.core.tools.Source;
 import com.mammb.code.editor.core.tools.Source16;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileTime;
 import java.util.Optional;
 
 /**
@@ -32,8 +35,7 @@ public class BinaryContent extends ContentAdapter {
     /** The pear content. */
     private final Content pear;
 
-    private String name;
-
+    /** The binary source. */
     private Path source;
 
     private BinaryContent(Path source, Content pear) {
@@ -50,8 +52,42 @@ public class BinaryContent extends ContentAdapter {
     }
 
     @Override
+    public Optional<Path> path() {
+        return Optional.of(source);
+    }
+
+    @Override
+    public Optional<FileTime> lastModifiedTime() {
+        return Optional.ofNullable(Files.lastModifiedTime(source));
+    }
+
+    @Override
+    public void save(Path path) {
+        BinaryView.save(path, source(pear));
+        source = path;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <R> R query(Query<R> query) {
+        return switch (query) {
+            case QueryRecords.ModelName _ ->
+                (R) Name.of(path().orElse(null), pear.query(Query.modified));
+            default -> super.query(query);
+        };
+    }
+
+    @Override
     protected Content pear() {
         return pear;
+    }
+
+    private Source<String> source(Content content) {
+        return new Source<>() {
+            @Override public String get(int index) { return content.getText(index); }
+            @Override public int size() { return content.rows(); }
+            @Override public String name() { return source.getFileName().toString(); }
+        };
     }
 
 }

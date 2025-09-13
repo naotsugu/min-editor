@@ -35,23 +35,22 @@ public class NamedContent extends ContentAdapter {
     /** The interim name. */
     private String name;
 
+    private boolean interim;
+
     /** Whether it has been synced or not. */
     private boolean synced = false;
 
 
-    private NamedContent(Content pear, String name) {
+
+    private NamedContent(Content pear, String name, boolean interim) {
         this.pear = Objects.requireNonNull(pear);
         this.name = Objects.requireNonNull(name);
+        this.interim = interim;
     }
 
     public static Content interimOf(Path path, String name) {
         Content content = new TextEditContent(path);
-        return new NamedContent(content, name);
-    }
-
-    public NamedContent asName(String name) {
-        this.name = Objects.requireNonNull(name);
-        return this;
+        return new NamedContent(content, name, true);
     }
 
     @Override
@@ -67,8 +66,10 @@ public class NamedContent extends ContentAdapter {
     @Override
     public void save(Path path) {
         pear.save(path);
-        name = path.getFileName().toString();
         synced = true;
+        if (interim) {
+            name = path.getFileName().toString();
+        }
     }
 
     @Override
