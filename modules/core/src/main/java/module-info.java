@@ -20,7 +20,6 @@
  */
 module code.editor.core {
     requires com.mammb.code.piecetable;
-    requires code.editor.core;
     exports com.mammb.code.editor.core;
     exports com.mammb.code.editor.core.text;
     exports com.mammb.code.editor.core.syntax;

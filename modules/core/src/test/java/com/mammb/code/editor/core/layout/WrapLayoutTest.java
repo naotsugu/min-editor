@@ -113,7 +113,7 @@ class WrapLayoutTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return Content.readonlyPartOf(path);
+        return Content.placeholderOf(path);
     }
 
 }

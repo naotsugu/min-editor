@@ -227,7 +227,7 @@ public interface EditorModel extends Query.Queryable {
     }
 
     static EditorModel placeholderOf(Path path, FontMetrics fm, ScreenScroll scroll, Context ctx) {
-        return new TextEditorModel(Content.readonlyPartOf(path), fm, scroll, ctx);
+        return new TextEditorModel(Content.placeholderOf(path), fm, scroll, ctx);
     }
 
     static EditorModel of(Path path, FontMetrics fm, ScreenScroll scroll, Context ctx, Consumer<Long> consumer) {

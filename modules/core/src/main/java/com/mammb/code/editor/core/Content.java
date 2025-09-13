@@ -239,11 +239,12 @@ public interface Content {
     }
 
     /**
-     * Create a new read-only partial {@link Content} from the specified path.
-     * @param path the specified path
-     * @return a new read-only partial {@link Content}
+     * Creates a new placeholder {@link Content} with the specified path.
+     * The content is initialized as read-only with a predefined buffer size.
+     * @param path the path to be used for creating the placeholder content
+     * @return a new {@link Content} instance representing a placeholder
      */
-    static Content readonlyPartOf(Path path) {
+    static Content placeholderOf(Path path) {
         return ReadonlyContent.of(path, 5_000);
     }
 
@@ -255,16 +256,11 @@ public interface Content {
     static Content of(Session session) {
         Content content;
         if (Files.exists(session.altPath())) {
-            var name = !session.altName().isBlank()
-                ? session.altName()
-                : session.hasPath()
-                ? session.path().getFileName().toString()
-                : null;
-            content = NamedContent.interimOf(session.altPath(), name);
+            content = NamedContent.interimOf(session.altPath(), session.preferredName());
         } else if (session.hasPath() && Files.exists(session.path())) {
-            content = Content.of(session.path());
+            content = new TextEditContent(session.path());
         } else {
-            content = Content.of();
+            content = new TextEditContent();
         }
         return session.readonly() ? new ReadonlyContent(content) : content;
     }

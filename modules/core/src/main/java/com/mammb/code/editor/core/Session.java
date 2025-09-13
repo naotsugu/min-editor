@@ -120,6 +120,20 @@ public interface Session {
     }
 
     /**
+     * Get the preferred name of the session.
+     * @return the preferred name
+     */
+    default String preferredName() {
+        if (!altName().isBlank()) {
+            return altName();
+        }
+        if (path() != null) {
+            return path().getFileName().toString();
+        }
+        return "";
+    }
+
+    /**
      * Checks whether the session is empty. A session is considered empty
      * if it does not have a path and does not have an alternate path.
      * @return {@code true} if the session is empty, {@code false} otherwise
