@@ -19,10 +19,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Point.Range;
+import com.mammb.code.editor.core.model.BinaryContent;
 import com.mammb.code.editor.core.model.NamedContent;
 import com.mammb.code.editor.core.model.ReadonlyContent;
 import com.mammb.code.editor.core.model.TextEditContent;
@@ -254,13 +256,18 @@ public interface Content {
      * @return the content created from the session paths or an empty content if no valid path is found
      */
     static Content of(Session session) {
+
         Content content;
         if (Files.exists(session.altPath())) {
             content = NamedContent.interimOf(session.altPath(), session.preferredName());
-        } else if (session.hasPath() && Files.exists(session.path())) {
+        } else if (Files.exists(session.path())) {
             content = new TextEditContent(session.path());
         } else {
             content = new TextEditContent();
+        }
+
+        if (Objects.equals(content.query(Query.charCode).name(), "Binary") && session.hasPath()) {
+            content = BinaryContent.of(session.path());
         }
         return session.readonly() ? new ReadonlyContent(content) : content;
     }

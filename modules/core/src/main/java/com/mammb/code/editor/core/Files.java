@@ -204,6 +204,9 @@ public interface Files {
 
     static Path createTempFile(Path dir, String prefix, String suffix, FileAttribute<?>... attrs) {
         try {
+            if (Objects.isNull(dir)) {
+                dir = Path.of(System.getProperty("java.io.tmpdir"));
+            }
             return java.nio.file.Files.createTempFile(dir, prefix, suffix, attrs);
         } catch (IOException e) {
             throw new RuntimeException(e);

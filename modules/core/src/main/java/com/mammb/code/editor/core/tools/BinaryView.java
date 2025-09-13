@@ -80,7 +80,6 @@ public class BinaryView {
                         sb.append('.');
                     }
                 }
-                sb.append("\n");
                 index++;
                 return sb.toString();
             }
