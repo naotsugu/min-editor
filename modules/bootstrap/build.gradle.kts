@@ -3,7 +3,7 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
 plugins {
     id("buildlogic.base")
     application
-    id("org.beryx.jlink") version "3.1.1"
+    id("org.beryx.jlink") version "3.1.3"
 }
 
 

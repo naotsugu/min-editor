@@ -92,7 +92,9 @@ public class BinaryView {
         try (var out = Files.newOutputStream(path)) {
             for (int i = 0; i < source.size(); i++) {
                 var line = source.get(i).toString();
-                out.write(hexFormat.parseHex(line.substring(11, Math.min(line.length(), 59)).replace(" ", "")));
+                int beginIndex = line.indexOf('|') + 1;
+                int endIndex = Math.max(line.indexOf('|', beginIndex), line.length());
+                out.write(hexFormat.parseHex(line.substring(beginIndex, endIndex).replace(" ", "")));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

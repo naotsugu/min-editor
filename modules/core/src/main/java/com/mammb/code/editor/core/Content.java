@@ -267,7 +267,7 @@ public interface Content {
         }
 
         if (Objects.equals(content.query(Query.charCode).name(), "Binary") && session.hasPath()) {
-            content = BinaryContent.of(session.path());
+            return new ReadonlyContent(BinaryContent.of(session.path()));
         }
         return session.readonly() ? new ReadonlyContent(content) : content;
     }
