@@ -147,7 +147,7 @@ public interface Session {
      * @return a read-only session
      */
     default Session asReadonly() {
-        return new SessionRecord(
+        return record(
             path(),
             lastModifiedTime(),
             altPath(),
@@ -186,7 +186,7 @@ public interface Session {
      * @return a new {@code Session} instance with all fields initialized to default values
      */
     static Session empty() {
-        return new SessionRecord(null, null, null, "", null, false, 0, 0, 0, 0, System.currentTimeMillis());
+        return record(null, null, null, "", null, false, 0, 0, 0, 0, System.currentTimeMillis());
     }
 
     /**
@@ -203,7 +203,7 @@ public interface Session {
                 map.put(split[0], split[1]);
             }
         }
-        return new SessionRecord(
+        return record(
             existsValue(map, "path") ? Path.of(map.get("path")) : null,
             existsValue(map, "lastModifiedTime") ? FileTime.fromMillis(Long.parseLong(map.get("lastModifiedTime"))) : null,
             existsValue(map, "altPath") ? Path.of(map.get("altPath")) : null,
@@ -225,7 +225,7 @@ public interface Session {
     static Session of(Path path) {
         try {
             boolean pathExists = (path != null && Files.exists(path));
-            return new SessionRecord(
+            return record(
                 pathExists ? path : null,
                 pathExists ? Files.getLastModifiedTime(path) : null,
                 null,
@@ -257,7 +257,7 @@ public interface Session {
             Path altPath, String altName,
             Charset charset, boolean readonly,
             int topLine, int lineWidth, int caretRow, int caretCol) {
-        return new SessionRecord(
+        return record(
             path,
             lastModifiedTime,
             altPath,
@@ -277,22 +277,7 @@ public interface Session {
         return val != null && !val.isBlank();
     }
 
-    /**
-     * The SessionRecord.
-     * @param path the path
-     * @param lastModifiedTime the last modified time
-     * @param altPath the alt path
-     * @param altName the alt name
-     * @param charset the charset
-     * @param readonly the readonly
-     * @param topLine the line number at the top of the screen
-     * @param lineWidth the width of line wrap characters
-     * @param caretRow the row index at the caret
-     * @param caretCol the column index at the caret
-     * @param timestamp the timestamp of this session
-     * @author Naotsugu Kobayashi
-     */
-    record SessionRecord(
+    private static Session record(
         Path path,
         FileTime lastModifiedTime,
         Path altPath,
@@ -303,10 +288,17 @@ public interface Session {
         int lineWidth,
         int caretRow,
         int caretCol,
-        long timestamp) implements Session {
-        public SessionRecord {
-            altName = Objects.requireNonNullElse(altName, "");
+        long timestamp) {
+
+        record SessionRecord(Path path, FileTime lastModifiedTime, Path altPath, String altName,
+            Charset charset, boolean readonly, int topLine, int lineWidth, int caretRow, int caretCol, long timestamp) implements Session {
+            public SessionRecord {
+                altName = Objects.requireNonNullElse(altName, "");
+            }
         }
+
+        return new SessionRecord(path, lastModifiedTime, altPath, altName, charset, readonly, topLine, lineWidth, caretRow, caretCol, timestamp);
+
     }
 
 }
