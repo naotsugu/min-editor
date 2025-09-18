@@ -42,12 +42,10 @@ import com.mammb.code.editor.core.syntax.Syntax;
 import com.mammb.code.editor.core.text.Style;
 import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
@@ -689,7 +687,7 @@ public class TextEditorModel implements EditorModel {
             return Session.empty();
         }
 
-        return Session.of(
+        return Session.stashOf(
             content.path().orElse(null),
             content.path().map(Files::lastModifiedTime).orElse(null),
             stashPath,
@@ -818,9 +816,6 @@ public class TextEditorModel implements EditorModel {
     public Session getSession() {
         return Session.of(
             content.path().orElse(null),
-            content.path().map(Files::lastModifiedTime).orElse(null),
-            null,
-            null,
             query(Query.charCode),
             content.readonly(),
             screenLayout.topLine(), screenLayout.charsInLine(),
@@ -832,11 +827,7 @@ public class TextEditorModel implements EditorModel {
         String name = query(Query.modelName).plain() + ".diff";
         Path stashPath = ctx.config().stashPath().resolve(String.join("_", UUID.randomUUID().toString(), name));
         DiffRun diffRun = (path == null) ? DiffRun.of(content) : DiffRun.of(content, path);
-        if (withoutFold) diffRun.writeWithoutFold(stashPath); else diffRun.write(stashPath);
-        return Session.of(
-            null, null,
-            withoutFold ? diffRun.writeWithoutFold(stashPath) : diffRun.write(stashPath),
-            name, StandardCharsets.UTF_8, false, 0, 0, 0, 0);
+        return Session.altOf(withoutFold ? diffRun.writeWithoutFold(stashPath) : diffRun.write(stashPath), name);
     }
 
     @Override

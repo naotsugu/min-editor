@@ -18,21 +18,16 @@ package com.mammb.code.editor.core;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.StringJoiner;
 
 /**
  * Represents a session containing information such as file paths,
  * modification times, caret positions, and other metadata.
- *
  * @author Naotsugu Kobayashi
  */
 public interface Session {
@@ -217,26 +212,35 @@ public interface Session {
             Long.parseLong(map.getOrDefault("timestamp", "0")));
     }
 
+    static Session of(Path contentPath, Charset charset, boolean readonly,
+        int topLine, int lineWidth, int caretRow, int caretCol) {
+        return record(
+            contentPath, Files.lastModifiedTime(contentPath), null, "",
+            charset, readonly, topLine, lineWidth, caretRow, caretCol, System.currentTimeMillis());
+    }
+
+    static Session altOf(Path path, String name) {
+        return record(
+            null, null, path, name,
+            StandardCharsets.UTF_8, false, 0, 0, 0, 0,
+            System.currentTimeMillis());
+    }
+
     /**
      * Create a new {@link Session}.
      * @param path the path
      * @return a new {@link Session}
      */
     static Session of(Path path) {
-        try {
-            boolean pathExists = (path != null && Files.exists(path));
-            return record(
-                pathExists ? path : null,
-                pathExists ? Files.getLastModifiedTime(path) : null,
-                null,
-                "",
-                null,
-                false,
-                0, 0, 0, 0,
-                System.currentTimeMillis());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return record(
+            Files.exists(path) ? path : null,
+            Files.lastModifiedTime(path),
+            null,
+            "",
+            null,
+            false,
+            0, 0, 0, 0,
+            System.currentTimeMillis());
     }
 
     /**
@@ -253,10 +257,10 @@ public interface Session {
      * @param caretCol the column index at the caret
      * @return a new {@link Session}
      */
-    static Session of(Path path, FileTime lastModifiedTime,
-            Path altPath, String altName,
-            Charset charset, boolean readonly,
-            int topLine, int lineWidth, int caretRow, int caretCol) {
+    static Session stashOf(Path path, FileTime lastModifiedTime,
+           Path altPath, String altName,
+           Charset charset, boolean readonly,
+           int topLine, int lineWidth, int caretRow, int caretCol) {
         return record(
             path,
             lastModifiedTime,
@@ -299,6 +303,10 @@ public interface Session {
 
         return new SessionRecord(path, lastModifiedTime, altPath, altName, charset, readonly, topLine, lineWidth, caretRow, caretCol, timestamp);
 
+    }
+
+    interface Footprint {
+        Session apply(Content content);
     }
 
 }

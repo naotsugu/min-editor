@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SessionTest {
 
     @Test
-    void of(@TempDir Path tempDir) throws IOException {
+    void stashOf(@TempDir Path tempDir) throws IOException {
         var path = tempDir.resolve("test.txt");
         Files.writeString(path, "ab\ncd");
         var session = Session.of(path);

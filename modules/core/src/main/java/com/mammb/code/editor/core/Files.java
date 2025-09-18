@@ -81,6 +81,7 @@ public interface Files {
     }
 
     static FileTime lastModifiedTime(Path path) {
+        if (!Files.exists(path)) return null;
         try {
             return java.nio.file.Files.getLastModifiedTime(path);
         } catch (IOException ignore) { }

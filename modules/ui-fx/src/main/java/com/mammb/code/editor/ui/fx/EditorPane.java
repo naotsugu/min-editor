@@ -209,6 +209,10 @@ public class EditorPane extends ContentPane {
         return stash().map(session -> new EditorPane(context).with(session.asReadonly())).orElse(null);
     }
 
+    private EditorPane binary() {
+        return stash().map(session -> new EditorPane(context).with(session.asReadonly())).orElse(null);
+    }
+
     private void openInFiler(Path path) {
         if (path != null && Files.isReadableDirectory(path.getParent())) {
             context.getApp().getHostServices().showDocument(path.getParent().toUri().toString());
@@ -403,6 +407,7 @@ public class EditorPane extends ContentPane {
             case DiffFoldOff _        -> openRight(diff(null, true));
             case DiffWith cmd         -> openRight(diff(cmd.path(), false));
             case Duplicate _          -> openRight(duplicate());
+            case OpenAsBinary _       -> openRight(binary());
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
