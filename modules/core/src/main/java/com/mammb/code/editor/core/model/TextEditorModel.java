@@ -671,31 +671,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session stash() {
-
-        if (query(Query.size) <= 0) {
-            return Session.empty();
-        }
-
-        Path stashPath = ctx.config().stashPath().resolve(
-            String.join("_", UUID.randomUUID().toString(),
-            query(Query.modelName).plain()));
-
-        try {
-            content.write(stashPath);
-        } catch (Exception ignore) {
-            log.log(System.Logger.Level.ERROR, "failed to write stash file: " + stashPath, ignore);
-            return Session.empty();
-        }
-
-        return Session.stashOf(
-            content.path().orElse(null),
-            content.path().map(Files::lastModifiedTime).orElse(null),
-            stashPath,
-            query(Query.modelName).plain(),
-            query(Query.charCode),
-            content.readonly(),
-            screenLayout.topLine(), screenLayout.charsInLine(),
-            carets.getFirst().row(), carets.getFirst().col());
+        return Sessions.stash(ctx, content, screenLayout, carets.getFirst());
     }
 
     /**
@@ -814,12 +790,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session getSession() {
-        return Session.of(
-            content.path().orElse(null),
-            query(Query.charCode),
-            content.readonly(),
-            screenLayout.topLine(), screenLayout.charsInLine(),
-            carets.getFirst().row(), carets.getFirst().col());
+        return Sessions.current(content, screenLayout, carets.getFirst());
     }
 
     @Override
