@@ -298,8 +298,8 @@ public interface Session {
 
     }
 
-    interface Footprint {
-        Session apply(Content content);
+    interface Transformer {
+        Session apply(Context ctx, Content content);
     }
 
 }

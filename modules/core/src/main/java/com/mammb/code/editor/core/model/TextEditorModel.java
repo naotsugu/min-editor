@@ -671,7 +671,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session stash() {
-        return Sessions.stash(ctx, content, screenLayout, carets.getFirst());
+        return new Sessions.Stash(screenLayout, carets.getFirst().point()).apply(ctx, content);
     }
 
     /**
@@ -790,7 +790,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session getSession() {
-        return Sessions.current(content, screenLayout, carets.getFirst());
+        return new Sessions.Current(screenLayout, carets.getFirst().point()).apply(ctx, content);
     }
 
     @Override

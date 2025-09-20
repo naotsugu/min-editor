@@ -19,6 +19,7 @@ import com.mammb.code.editor.core.Caret;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
+import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.layout.ScreenLayout;
@@ -29,51 +30,88 @@ import java.util.UUID;
  * The session utilities for the model.
  * @author Naotsugu Kobayashi
  */
-class Sessions {
+public class Sessions {
 
     /** logger. */
     private static final System.Logger log = System.getLogger(Sessions.class.getName());
 
-
-    static Session stash(Context ctx, Content content, ScreenLayout screenLayout, Caret caret) {
-
-        if (content.query(Query.size) <= 0) {
-            return Session.empty();
+    static abstract class PointAtTransformer implements Session.Transformer {
+        protected final ScreenLayout screenLayout;
+        protected final Point point;
+        public PointAtTransformer(ScreenLayout screenLayout, Point point) {
+            this.screenLayout = screenLayout;
+            this.point = point;
         }
-
-        Path stashPath = ctx.config().stashPath().resolve(
-            String.join("_", UUID.randomUUID().toString(),
-            content.query(Query.modelName).plain()));
-
-        try {
-            content.write(stashPath);
-        } catch (Exception ignore) {
-            log.log(System.Logger.Level.ERROR, "failed to write stash file: " + stashPath, ignore);
-            return Session.empty();
-        }
-
-        return Session.of(
-            content.path().orElse(null),
-            content.path().map(Files::lastModifiedTime).orElse(null),
-            stashPath,
-            content.query(Query.modelName).plain(),
-            content.query(Query.charCode),
-            content.readonly(),
-            screenLayout.topLine(), screenLayout.charsInLine(),
-            caret.row(), caret.col());
     }
 
-    static Session current(Content content, ScreenLayout screenLayout, Caret caret) {
-        var path = content.path().orElse(null);
-        return Session.of(
-            path,
-            Files.lastModifiedTime(path),
-            null,
-            "",
-            content.query(Query.charCode),
-            content.readonly(),
-            screenLayout.topLine(), screenLayout.charsInLine(),
-            caret.row(), caret.col());
+    public static class Stash extends PointAtTransformer {
+        public Stash(ScreenLayout screenLayout, Point point) {
+            super(screenLayout, point);
+        }
+        @Override
+        public Session apply(Context ctx, Content content) {
+            if (content.query(Query.size) <= 0) {
+                return Session.empty();
+            }
+
+            Path stashPath = ctx.config().stashPath().resolve(
+                String.join("_", UUID.randomUUID().toString(),
+                    content.query(Query.modelName).plain()));
+
+            try {
+                content.write(stashPath);
+            } catch (Exception ignore) {
+                log.log(System.Logger.Level.ERROR, "failed to write stash file: " + stashPath, ignore);
+                return Session.empty();
+            }
+
+            return Session.of(
+                content.path().orElse(null),
+                content.path().map(Files::lastModifiedTime).orElse(null),
+                stashPath,
+                content.query(Query.modelName).plain(),
+                content.query(Query.charCode),
+                content.readonly(),
+                screenLayout.topLine(), screenLayout.charsInLine(),
+                point.row(), point.col());
+        }
+    }
+
+    public static class Current extends PointAtTransformer {
+        public Current(ScreenLayout screenLayout, Point point) {
+            super(screenLayout, point);
+        }
+        @Override
+        public Session apply(Context ctx, Content content) {
+            var path = content.path().orElse(null);
+            return Session.of(
+                path,
+                Files.lastModifiedTime(path),
+                null,
+                "",
+                content.query(Query.charCode),
+                content.readonly(),
+                screenLayout.topLine(), screenLayout.charsInLine(),
+                point.row(), point.col());
+        }
+    }
+
+
+    public static class Diff implements Session.Transformer {
+        private final Path path;
+        private final boolean withoutFold;
+        public Diff(Path path, boolean withoutFold) {
+            this.path = path;
+            this.withoutFold = withoutFold;
+        }
+        @Override
+        public Session apply(Context ctx, Content content) {
+            String name = content.query(Query.modelName).plain() + ".diff";
+            Path stashPath = ctx.config().stashPath().resolve(String.join(
+                "_", UUID.randomUUID().toString(), name));
+            DiffRun diffRun = (path == null) ? DiffRun.of(content) : DiffRun.of(content, path);
+            return Session.altOf(withoutFold ? diffRun.writeWithoutFold(stashPath) : diffRun.write(stashPath), name);
+        }
     }
 
 }
