@@ -202,7 +202,7 @@ public class EditorPane extends ContentPane {
 
     private EditorPane diff(String pathString, boolean withoutFold) {
         Path path = (pathString == null || pathString.isBlank()) ? null : Path.of(pathString);
-        return new EditorPane(context).with(model().getDiffSession(path, withoutFold));
+        return new EditorPane(context).with(model().getSession(Session.diff(path, withoutFold)));
     }
 
     private EditorPane duplicate() {

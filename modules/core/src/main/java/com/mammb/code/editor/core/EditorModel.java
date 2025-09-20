@@ -155,6 +155,19 @@ public interface EditorModel extends Query.Queryable {
     Session stash();
 
     /**
+     * Get the session.
+     * @return the session
+     */
+    Session getSession();
+
+    /**
+     * Retrieves a session by applying the provided {@link Session.Transformer}.
+     * @param transformer the transformer to apply for retrieving the session
+     * @return the transformed session
+     */
+    Session getSession(Session.Transformer transformer);
+
+    /**
      * Update fFonts.
      * @param fontMetrics the {@link FontMetrics}
      */
@@ -187,20 +200,6 @@ public interface EditorModel extends Query.Queryable {
      * @param text composed text
      */
     void imeComposed(String text);
-
-    /**
-     * Get the session.
-     * @return the session
-     */
-    Session getSession();
-
-    /**
-     * Get the diff session.
-     * @param path the path
-     * @param withoutFold the without fold
-     * @return the diff session
-     */
-    Session getDiffSession(Path path, boolean withoutFold);
 
     /**
      * Associates the given {@link Session} with this {@link EditorModel}.

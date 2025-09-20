@@ -671,7 +671,17 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session stash() {
-        return new Sessions.Stash(screenLayout, carets.getFirst().point()).apply(ctx, content);
+        return getSession(new Sessions.Stash(screenLayout, carets.getFirst().point()));
+    }
+
+    @Override
+    public Session getSession() {
+        return getSession(new Sessions.Current(screenLayout, carets.getFirst().point()));
+    }
+
+    @Override
+    public Session getSession(Session.Transformer transformer) {
+        return transformer.apply(ctx, content);
     }
 
     /**
@@ -786,19 +796,6 @@ public class TextEditorModel implements EditorModel {
         if (found) {
             scrollToCaretY(screenLayout.screenLineHalfSize());
         }
-    }
-
-    @Override
-    public Session getSession() {
-        return new Sessions.Current(screenLayout, carets.getFirst().point()).apply(ctx, content);
-    }
-
-    @Override
-    public Session getDiffSession(Path path, boolean withoutFold) {
-        String name = query(Query.modelName).plain() + ".diff";
-        Path stashPath = ctx.config().stashPath().resolve(String.join("_", UUID.randomUUID().toString(), name));
-        DiffRun diffRun = (path == null) ? DiffRun.of(content) : DiffRun.of(content, path);
-        return Session.altOf(withoutFold ? diffRun.writeWithoutFold(stashPath) : diffRun.write(stashPath), name);
     }
 
     @Override

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
+import com.mammb.code.editor.core.model.Sessions;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -300,6 +301,10 @@ public interface Session {
 
     interface Transformer {
         Session apply(Context ctx, Content content);
+    }
+
+    static Transformer diff(Path path, boolean withoutFold) {
+        return new Sessions.Diff(path, withoutFold);
     }
 
 }
