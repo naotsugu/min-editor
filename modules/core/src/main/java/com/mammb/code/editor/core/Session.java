@@ -213,13 +213,6 @@ public interface Session {
             Long.parseLong(map.getOrDefault("timestamp", "0")));
     }
 
-    static Session altOf(Path path, String name) {
-        return record(
-            null, null, path, name,
-            StandardCharsets.UTF_8, false, 0, 0, 0, 0,
-            System.currentTimeMillis());
-    }
-
     /**
      * Create a new {@link Session}.
      * @param path the path
@@ -305,6 +298,10 @@ public interface Session {
 
     static Transformer diff(Path path, boolean withoutFold) {
         return new Sessions.Diff(path, withoutFold);
+    }
+
+    static Transformer binary(Path path) {
+        return new Sessions.Binary(path);
     }
 
 }

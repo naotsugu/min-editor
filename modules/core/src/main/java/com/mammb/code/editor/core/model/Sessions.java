@@ -23,6 +23,9 @@ import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.layout.ScreenLayout;
+import com.mammb.code.editor.core.tools.BinaryView;
+import com.mammb.code.editor.core.tools.Source16;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.UUID;
 
@@ -54,14 +57,9 @@ public class Sessions {
                 return Session.empty();
             }
 
-            Path stashPath = ctx.config().stashPath().resolve(
-                String.join("_", UUID.randomUUID().toString(),
-                    content.query(Query.modelName).plain()));
-
-            try {
-                content.write(stashPath);
-            } catch (Exception ignore) {
-                log.log(System.Logger.Level.ERROR, "failed to write stash file: " + stashPath, ignore);
+            Path stashPath = writeStash(ctx, content);
+            if (stashPath == null) {
+                log.log(System.Logger.Level.ERROR, "failed to write stash file");
                 return Session.empty();
             }
 
@@ -110,8 +108,57 @@ public class Sessions {
             Path stashPath = ctx.config().stashPath().resolve(String.join(
                 "_", UUID.randomUUID().toString(), name));
             DiffRun diffRun = (path == null) ? DiffRun.of(content) : DiffRun.of(content, path);
-            return Session.altOf(withoutFold ? diffRun.writeWithoutFold(stashPath) : diffRun.write(stashPath), name);
+            return Session.of(
+                null,
+                null,
+                withoutFold ? diffRun.writeWithoutFold(stashPath) : diffRun.write(stashPath),
+                name,
+                StandardCharsets.UTF_8,
+                false,
+                0, 0, 0, 0);
         }
+    }
+
+    public static class Binary implements Session.Transformer {
+        private final Path path;
+        public Binary(Path path) {
+            this.path = path;
+        }
+        @Override
+        public Session apply(Context ctx, Content content) {
+            if (path == null) {
+                return Session.empty();
+            }
+
+            String name = content.query(Query.modelName).plain() + ".binary";
+            Path outPath = ctx.config().stashPath().resolve(String.join(
+                "_", UUID.randomUUID().toString(), name));
+            Path view = Files.write(outPath, BinaryView.run(new Source16(path)));
+
+            return Session.of(
+                null,
+                null,
+                view,
+                name,
+                StandardCharsets.UTF_8,
+                false,
+                0, 0, 0, 0);
+        }
+    }
+
+    private static Path writeStash(Context ctx, Content content) {
+
+        Path stashPath = ctx.config().stashPath().resolve(
+            String.join("_", UUID.randomUUID().toString(),
+                content.query(Query.modelName).plain()));
+
+        try {
+            content.write(stashPath);
+            return stashPath;
+        } catch (Exception ignore) {
+            log.log(System.Logger.Level.ERROR, "failed to write stash file: " + stashPath, ignore);
+        }
+        return null;
     }
 
 }

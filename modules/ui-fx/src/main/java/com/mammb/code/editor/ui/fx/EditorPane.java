@@ -202,15 +202,18 @@ public class EditorPane extends ContentPane {
 
     private EditorPane diff(String pathString, boolean withoutFold) {
         Path path = (pathString == null || pathString.isBlank()) ? null : Path.of(pathString);
-        return new EditorPane(context).with(model().getSession(Session.diff(path, withoutFold)));
+        return new EditorPane(context)
+            .with(model().getSession(Session.diff(path, withoutFold)));
     }
 
     private EditorPane duplicate() {
-        return stash().map(session -> new EditorPane(context).with(session.asReadonly())).orElse(null);
+        return session().map(session -> new EditorPane(context)
+            .with(session.asReadonly())).orElse(null);
     }
 
     private EditorPane binary() {
-        return stash().map(session -> new EditorPane(context).with(session.asReadonly())).orElse(null);
+        return new EditorPane(context)
+            .with(model().getSession(Session.binary(model().stash().altPath())));
     }
 
     private void openInFiler(Path path) {
@@ -562,7 +565,7 @@ public class EditorPane extends ContentPane {
         });
     }
 
-    Optional<Session> stash() {
+    Optional<Session> session() {
         var session = model().getSession();
         return session.isEmpty() ? Optional.empty() : Optional.of(session);
     }
