@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.core.model;
 
-import com.mammb.code.editor.core.Caret;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
@@ -38,16 +37,18 @@ public class Sessions {
     /** logger. */
     private static final System.Logger log = System.getLogger(Sessions.class.getName());
 
-    static abstract class PointAtTransformer implements Session.Transformer {
-        protected final ScreenLayout screenLayout;
+    static abstract class Viewport {
+        protected final int topLine;
+        protected final int charsInLine;
         protected final Point point;
-        public PointAtTransformer(ScreenLayout screenLayout, Point point) {
-            this.screenLayout = screenLayout;
+        public Viewport(ScreenLayout screenLayout, Point point) {
+            topLine = screenLayout.topLine();
+            charsInLine = screenLayout.charsInLine();
             this.point = point;
         }
     }
 
-    public static class Stash extends PointAtTransformer {
+    public static class Stash extends Viewport implements Session.Transformer {
         public Stash(ScreenLayout screenLayout, Point point) {
             super(screenLayout, point);
         }
@@ -70,12 +71,12 @@ public class Sessions {
                 content.query(Query.modelName).plain(),
                 content.query(Query.charCode),
                 content.readonly(),
-                screenLayout.topLine(), screenLayout.charsInLine(),
+                topLine, charsInLine,
                 point.row(), point.col());
         }
     }
 
-    public static class Current extends PointAtTransformer {
+    public static class Current extends Viewport implements Session.Transformer {
         public Current(ScreenLayout screenLayout, Point point) {
             super(screenLayout, point);
         }
@@ -89,7 +90,7 @@ public class Sessions {
                 "",
                 content.query(Query.charCode),
                 content.readonly(),
-                screenLayout.topLine(), screenLayout.charsInLine(),
+                topLine, charsInLine,
                 point.row(), point.col());
         }
     }

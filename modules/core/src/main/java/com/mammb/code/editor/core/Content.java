@@ -19,12 +19,10 @@ import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Point.Range;
-import com.mammb.code.editor.core.model.BinaryContent;
 import com.mammb.code.editor.core.model.NamedContent;
 import com.mammb.code.editor.core.model.ReadonlyContent;
 import com.mammb.code.editor.core.model.TextEditContent;
@@ -266,9 +264,6 @@ public interface Content {
             content = new TextEditContent();
         }
 
-        if (Objects.equals(content.query(Query.charCode).name(), "Binary") && session.hasPath()) {
-            return new ReadonlyContent(BinaryContent.of(session.path()));
-        }
         return session.readonly() ? new ReadonlyContent(content) : content;
     }
 

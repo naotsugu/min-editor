@@ -410,7 +410,7 @@ public class EditorPane extends ContentPane {
             case DiffFoldOff _        -> openRight(diff(null, true));
             case DiffWith cmd         -> openRight(diff(cmd.path(), false));
             case Duplicate _          -> openRight(duplicate());
-            case OpenAsBinary _       -> openRight(binary());
+            case BinaryView _         -> openRight(binary());
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));

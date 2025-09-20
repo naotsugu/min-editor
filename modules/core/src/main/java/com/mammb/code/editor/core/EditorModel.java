@@ -225,10 +225,27 @@ public interface EditorModel extends Query.Queryable {
         return new TextEditorModel(Content.of(), fm, scroll, ctx);
     }
 
+    /**
+     * Creates a new placeholder for an {@link EditorModel} associated with the specified parameters.
+     * @param path the file path associated with the placeholder content
+     * @param fm the font metrics used for text layout
+     * @param scroll the screen scroll settings of the editor
+     * @param ctx the context associated with this editor
+     * @return a new {@link EditorModel} that represents the placeholder
+     */
     static EditorModel placeholderOf(Path path, FontMetrics fm, ScreenScroll scroll, Context ctx) {
         return new TextEditorModel(Content.placeholderOf(path), fm, scroll, ctx);
     }
 
+    /**
+     * Creates a new {@link EditorModel} based on the specified parameters.
+     * @param path the file path associated with the editor's content
+     * @param fm the font metrics used for text layout in the editor
+     * @param scroll the screen scroll settings for the editor
+     * @param ctx the context associated with the editor
+     * @param consumer a consumer to handle file modification timestamps
+     * @return a new {@link EditorModel} initialized with the specified parameters
+     */
     static EditorModel of(Path path, FontMetrics fm, ScreenScroll scroll, Context ctx, Consumer<Long> consumer) {
         return new TextEditorModel(Content.of(path, consumer), fm, scroll, ctx);
     }
