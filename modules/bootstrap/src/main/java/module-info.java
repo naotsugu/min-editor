@@ -20,5 +20,6 @@
  */
 module code.editor.bootstrap {
     requires code.editor.ui.fx;
+    requires jdk.charsets;
     exports com.mammb.code.editor.bootstrap;
 }
