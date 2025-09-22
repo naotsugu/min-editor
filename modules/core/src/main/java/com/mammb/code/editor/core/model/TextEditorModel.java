@@ -671,12 +671,12 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public Session stash() {
-        return getSession(new Sessions.Stash(screenLayout, carets.getFirst().point()));
+        return getSession(new Sessions.Stash().as(screenLayout, carets));
     }
 
     @Override
     public Session getSession() {
-        return getSession(new Sessions.Current(screenLayout, carets.getFirst().point()));
+        return getSession(new Sessions.Current().as(screenLayout, carets));
     }
 
     @Override

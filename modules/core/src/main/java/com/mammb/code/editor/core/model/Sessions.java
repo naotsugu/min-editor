@@ -15,10 +15,10 @@
  */
 package com.mammb.code.editor.core.model;
 
+import com.mammb.code.editor.core.CaretGroup;
 import com.mammb.code.editor.core.Content;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
-import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.layout.ScreenLayout;
@@ -37,21 +37,22 @@ public class Sessions {
     /** logger. */
     private static final System.Logger log = System.getLogger(Sessions.class.getName());
 
-    static abstract class Viewport {
-        protected final int topLine;
-        protected final int charsInLine;
-        protected final Point point;
-        public Viewport(ScreenLayout screenLayout, Point point) {
-            topLine = screenLayout.topLine();
-            charsInLine = screenLayout.charsInLine();
-            this.point = point;
+
+    static abstract class Transformer implements Session.Transformer {
+        protected Session.Viewport viewport = Session.Viewport.of();
+        @Override
+        public Session.Transformer as(Session.Viewport viewport) {
+            this.viewport = viewport;
+            return this;
+        }
+        public Session.Transformer as(ScreenLayout screenLayout, CaretGroup carets) {
+            return as(Session.Viewport.of(
+                screenLayout.topLine(), screenLayout.charsInLine(),
+                carets.getFirst().row(), carets.getFirst().col()));
         }
     }
 
-    public static class Stash extends Viewport implements Session.Transformer {
-        public Stash(ScreenLayout screenLayout, Point point) {
-            super(screenLayout, point);
-        }
+    public static class Stash extends Transformer {
         @Override
         public Session apply(Context ctx, Content content) {
             if (content.query(Query.size) <= 0) {
@@ -71,15 +72,12 @@ public class Sessions {
                 content.query(Query.modelName).plain(),
                 content.query(Query.charCode),
                 content.readonly(),
-                topLine, charsInLine,
-                point.row(), point.col());
+                viewport.topLine(), viewport.lineWidth(), viewport.caretRow(), viewport.caretCol());
         }
+
     }
 
-    public static class Current extends Viewport implements Session.Transformer {
-        public Current(ScreenLayout screenLayout, Point point) {
-            super(screenLayout, point);
-        }
+    public static class Current extends Transformer {
         @Override
         public Session apply(Context ctx, Content content) {
             var path = content.path().orElse(null);
@@ -90,13 +88,12 @@ public class Sessions {
                 "",
                 content.query(Query.charCode),
                 content.readonly(),
-                topLine, charsInLine,
-                point.row(), point.col());
+                viewport.topLine(), viewport.lineWidth(), viewport.caretRow(), viewport.caretCol());
         }
     }
 
 
-    public static class Diff implements Session.Transformer {
+    public static class Diff extends Transformer {
         private final Path path;
         private final boolean withoutFold;
         public Diff(Path path, boolean withoutFold) {
@@ -116,15 +113,17 @@ public class Sessions {
                 name,
                 StandardCharsets.UTF_8,
                 false,
-                0, 0, 0, 0);
+                viewport.topLine(), viewport.lineWidth(), viewport.caretRow(), viewport.caretCol());
         }
     }
 
-    public static class Binary implements Session.Transformer {
+    public static class Binary extends Transformer {
         private final Path path;
         public Binary(Path path) {
             this.path = path;
         }
+        @Override
+        public Binary as(Session.Viewport viewport) { return this; }
         @Override
         public Session apply(Context ctx, Content content) {
             if (path == null) {
@@ -143,7 +142,7 @@ public class Sessions {
                 name,
                 StandardCharsets.UTF_8,
                 false,
-                0, 0, 0, 0);
+                viewport.topLine(), viewport.lineWidth(), viewport.caretRow(), viewport.caretCol());
         }
     }
 

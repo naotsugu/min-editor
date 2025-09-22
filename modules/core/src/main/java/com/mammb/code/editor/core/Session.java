@@ -15,10 +15,10 @@
  */
 package com.mammb.code.editor.core;
 
+import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.model.Sessions;
 import java.io.File;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.HashMap;
@@ -292,7 +292,22 @@ public interface Session {
 
     }
 
+    interface Viewport {
+        int topLine();
+        int lineWidth();
+        int caretRow();
+        int caretCol();
+        static Viewport of() {
+            return of(0, 0, 0, 0);
+        }
+        static Viewport of(int topLine, int lineWidth, int caretRow, int caretCol) {
+            record ViewportRecord(int topLine, int lineWidth, int caretRow, int caretCol) implements Viewport { }
+            return new ViewportRecord(topLine, lineWidth, caretRow, caretCol);
+        }
+    }
+
     interface Transformer {
+        Transformer as(Viewport viewport);
         Session apply(Context ctx, Content content);
     }
 

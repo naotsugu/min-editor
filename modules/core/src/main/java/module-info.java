@@ -25,5 +25,4 @@ module code.editor.core {
     exports com.mammb.code.editor.core.syntax;
     exports com.mammb.code.editor.core.editing;
     exports com.mammb.code.editor.core.syntax.handler;
-    exports com.mammb.code.editor.core.tools;
 }
