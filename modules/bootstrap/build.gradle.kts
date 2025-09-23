@@ -3,9 +3,7 @@ import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform;
 plugins {
     id("buildlogic.base")
     application
-    id("org.beryx.jlink") version "3.1.3"
 }
-
 
 val os   = DefaultNativePlatform.getCurrentOperatingSystem()
 val arch = DefaultNativePlatform.getCurrentArchitecture()
@@ -56,23 +54,53 @@ tasks.register<Jar>("uberJar") {
     }
 }
 
-jlink {
-    options = listOf("--strip-debug", "--compress", "zip-0",
-        "--no-header-files", "--no-man-pages")
-    // enableCds()
-    launcher {
-        name = "min-editor"
-        noConsole = true
+tasks.register<Exec>("jpackage") {
+
+    dependsOn(tasks.jar)
+
+    val javaToolchainService = project.extensions.getByType(JavaToolchainService::class.java)
+    val jdkPath = javaToolchainService.launcherFor(java.toolchain).get().executablePath
+    val commandPath = File(jdkPath.asFile.parentFile, "jpackage").absolutePath
+
+    val outputDir = project.layout.buildDirectory.dir("jpackage").get().asFile
+    doFirst { delete(outputDir) }
+
+    val jarFileProvider = tasks.named<Jar>("jar").flatMap { it.archiveFile }
+    val modulePath = configurations.runtimeClasspath.get().joinToString(separator = File.pathSeparator) {
+        it.absolutePath
     }
-    jpackage {
-        imageName = "min-editor"
-        val iconType = if (os.isWindows) "icon.ico" else if (os.isMacOsX) "icon.icns" else "icon.png"
-        icon = "${project.rootDir}/docs/icon/${iconType}"
-    }
+
+    val iconType = if (os.isWindows) "icon.ico" else if (os.isMacOsX) "icon.icns" else "icon.png"
+    val iconPath = "${project.rootDir}/docs/icon/${iconType}"
+
+    commandLine(commandPath,
+        "--type", "app-image",
+        "--name", "min-editor",
+        "--module-path", jarFileProvider.get().asFile.absolutePath,
+        "--module-path", modulePath,
+        "--module", "${application.mainModule.get()}/${application.mainClass.get()}",
+        "--dest", outputDir.absolutePath,
+        "--icon", iconPath,
+
+        "--jlink-options", "--strip-debug",
+        "--jlink-options", "--compress=zip-0",
+        "--jlink-options", "--no-header-files",
+        "--jlink-options", "--no-man-pages",
+
+        "--java-options", "-Xms32m",
+        "--java-options", "--enable-preview",
+        "--java-options", "-XX:+UseZGC",
+        "--java-options", "-XX:+ZUncommit",
+        "--java-options", "-XX:ZUncommitDelay=64m",
+        "--java-options", "-XX:+UseCompactObjectHeaders",
+        "--java-options", "-XX:+UnlockExperimentalVMOptions",       // Remove if JDK 25 "-XX:+UnlockExperimentalVMOptions"
+        "--java-options", "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
+        "--java-options", "--sun-misc-unsafe-memory-access=allow",  // sun.misc.Unsafe::allocateMemory will be removed in a future release
+    )
 }
 
 tasks.register<Zip>("pkg") {
-    dependsOn("jpackageImage")
+    dependsOn("jpackage")
     archiveFileName = "min-editor-${platform}.zip"
     from(layout.buildDirectory.dir("jpackage"))
 }
