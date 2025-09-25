@@ -27,7 +27,6 @@ application {
         "-Xms32m",
         "--enable-preview",
         "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m",
-        "-XX:+UnlockExperimentalVMOptions", // Remove if JDK 25 "-XX:+UnlockExperimentalVMOptions"
         //"-XX:+UseCompactObjectHeaders",
         "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
         "--sun-misc-unsafe-memory-access=allow")  // sun.misc.Unsafe::allocateMemory will be removed in a future release
@@ -94,7 +93,6 @@ tasks.register<Exec>("jpackage") {
         "--java-options", "-XX:+ZUncommit",
         "--java-options", "-XX:ZUncommitDelay=64m",
         //"--java-options", "-XX:+UseCompactObjectHeaders",
-        "--java-options", "-XX:+UnlockExperimentalVMOptions",       // Remove if JDK 25 "-XX:+UnlockExperimentalVMOptions"
         "--java-options", "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
         "--java-options", "--sun-misc-unsafe-memory-access=allow",  // sun.misc.Unsafe::allocateMemory will be removed in a future release
     )
