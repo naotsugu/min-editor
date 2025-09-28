@@ -78,7 +78,6 @@ public class IntegerField extends TextField {
         if (!((minValue <= initialValue) && (initialValue <= maxValue))) {
             throw new IllegalArgumentException("initialValue %d not between %d  and %d".formatted(initialValue, minValue, maxValue));
         }
-        getStyleClass().setAll("integer-field");
         this.minValue = minValue;
         this.maxValue.set(maxValue);
         this.value.set(initialValue);

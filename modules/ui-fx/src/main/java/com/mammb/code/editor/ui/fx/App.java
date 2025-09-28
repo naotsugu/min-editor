@@ -130,6 +130,8 @@ public class App extends Application {
           -fx-focus-color: -fx-accent;
           -fx-faint-focus-color:app-accent;
           -fx-light-text-color:app-text;
+          -fx-dark-text-color:app-text;
+          -fx-mid-text-color: #333;
           -fx-mark-color: -fx-light-text-color;
           -fx-mark-highlight-color: derive(-fx-mark-color,20%);
           -fx-background-color:app-back;

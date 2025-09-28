@@ -65,12 +65,12 @@ public class CommandKeys {
         else if (SC_N.match(e)) return new Command.New();
         else if (SC_W.match(e)) return new Command.TabClose();
         else if (SC_F.match(e)) return new Command.Palette(Command.FindAll.class);
-        else if (SC_P.match(e) || SC_R.match(e)) return new Command.Palette(null);
         else if (SC_COMMA.match(e)) return new Command.Config();
         else if (SC_PLUS.match(e)) return new Command.ZoomIn();
         else if (SC_MINUS.match(e)) return new Command.ZoomOut();
         else if (SC_FW.match(e)) return new Command.Forward();
         else if (SC_BW.match(e)) return new Command.Backward();
+        else if (SC_P.match(e) || SC_R.match(e) || SC_J.match(e)) return new Command.Palette(null);
 
         else {
             if (keyInput.test(e)) {
@@ -112,7 +112,8 @@ public class CommandKeys {
     static final KeyCombination SC_SA= new KeyCharacterCombination("s", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN);
     static final KeyCombination SC_F = new KeyCharacterCombination("f", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_P = new KeyCharacterCombination("p", KeyCombination.SHORTCUT_DOWN);
-    static final KeyCombination SC_R = new KeyCharacterCombination("R", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_R = new KeyCharacterCombination("r", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_J = new KeyCharacterCombination("j", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_W = new KeyCharacterCombination("w", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_L = new KeyCharacterCombination("l", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_DOT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
