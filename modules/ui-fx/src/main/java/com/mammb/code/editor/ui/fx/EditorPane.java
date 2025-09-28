@@ -234,6 +234,10 @@ public class EditorPane extends ContentPane {
             + URLEncoder.encode(text, StandardCharsets.UTF_8));
     }
 
+    private void colorPick() {
+        new FxColorDialog(getScene().getWindow()).show();
+    }
+
 
     private void openRight(ContentPane contentPane) {
         var container = tabContainer();
@@ -405,6 +409,7 @@ public class EditorPane extends ContentPane {
             case Backward _           -> backward();
             case ZoomIn _             -> zoom( 1);
             case ZoomOut _            -> zoom(-1);
+            case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
             case Diff _               -> openRight(diff(null, false));
             case DiffFoldOff _        -> openRight(diff(null, true));

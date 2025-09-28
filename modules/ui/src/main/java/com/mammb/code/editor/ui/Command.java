@@ -155,6 +155,8 @@ public sealed interface Command {
 
     record TranslateInBrowser() implements Command { }
 
+    record ColorPick() implements Command {}
+
     record Help() implements Command {}
 
     record Empty() implements Command, Hidden {}
@@ -231,6 +233,7 @@ public sealed interface Command {
             case Class<?> c when c == OpenInFiler.class -> which("open in the Finder", "open in the Explorer", "open in the FileManager");
             case Class<?> c when c == SearchInBrowser.class -> "search in the browser web";
             case Class<?> c when c == TranslateInBrowser.class -> "translate in the browser web";
+            case Class<?> c when c == ColorPick.class -> "show color pick dialog";
             case Class<?> c when c == Help.class -> "show help dialog";
             case null, default -> "";
         };

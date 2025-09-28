@@ -23,5 +23,6 @@ module code.editor.ui.fx {
     requires javafx.controls;
     requires code.editor.core;
     requires code.editor.ui;
+    requires javafx.base;
     exports com.mammb.code.editor.ui.fx;
 }

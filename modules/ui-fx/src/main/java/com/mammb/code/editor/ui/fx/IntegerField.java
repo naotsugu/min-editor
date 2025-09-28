@@ -38,9 +38,11 @@ import javafx.scene.input.KeyEvent;
  */
 public class IntegerField extends TextField {
 
-    private final IntegerProperty value;
+    private final IntegerProperty value = new SimpleIntegerProperty(this, "value");
+
+    private final IntegerProperty maxValue = new SimpleIntegerProperty(this, "maxValue", -1);
+
     private final int minValue;
-    private final int maxValue;
 
     /**
      * Creates an instance of the IntegerField class with default minimum value, maximum value,
@@ -56,7 +58,7 @@ public class IntegerField extends TextField {
     }
 
     /**
-     * Constructs an IntegerField instance with specified minimum value, maximum value,
+     * Constructs an IntegerField instance with a specified minimum value, maximum value,
      * and initial value. The IntegerField is a specialized TextField designed to manage
      * and restrict input to integer values within a specified range.
      * <p>
@@ -76,10 +78,10 @@ public class IntegerField extends TextField {
         if (!((minValue <= initialValue) && (initialValue <= maxValue))) {
             throw new IllegalArgumentException("initialValue %d not between %d  and %d".formatted(initialValue, minValue, maxValue));
         }
-
+        getStyleClass().setAll("integer-field");
         this.minValue = minValue;
-        this.maxValue = maxValue;
-        this.value = new SimpleIntegerProperty(initialValue);
+        this.maxValue.set(maxValue);
+        this.value.set(initialValue);
         setText(String.valueOf(initialValue));
 
         addEventFilter(KeyEvent.KEY_TYPED, this::keyEventFilter);
@@ -88,7 +90,8 @@ public class IntegerField extends TextField {
     }
 
     private void keyEventFilter(KeyEvent keyEvent) {
-        if (!"0123456789".contains(keyEvent.getCharacter())) {
+        var s = keyEvent.getCharacter();
+        if (s.isEmpty() || !s.chars().allMatch(Character::isDigit)) {
             keyEvent.consume();
         }
     }
@@ -100,7 +103,7 @@ public class IntegerField extends TextField {
         }
 
         final int intValue = Integer.parseInt(nv);
-        if (minValue > intValue || intValue > maxValue) {
+        if (minValue > intValue || intValue > maxValue.get()) {
             textProperty().setValue(ov);
         }
 
@@ -118,8 +121,8 @@ public class IntegerField extends TextField {
             return;
         }
 
-        if (nv.intValue() > maxValue) {
-            value.setValue(maxValue);
+        if (nv.intValue() > maxValue.get()) {
+            value.setValue(maxValue.get());
             return;
         }
 
@@ -134,7 +137,7 @@ public class IntegerField extends TextField {
      * Get the current value of the IntegerField.
      * @return the current value
      */
-    public int  getValue() {
+    public final int getValue() {
         return value.getValue();
     }
 
@@ -142,7 +145,7 @@ public class IntegerField extends TextField {
      * Set the value of the IntegerField.
      * @param newValue the new value to set
      */
-    public void setValue(int newValue) {
+    public final void setValue(int newValue) {
         value.setValue(newValue);
     }
 
@@ -150,8 +153,20 @@ public class IntegerField extends TextField {
      * Get the property that represents the current value of the IntegerField.
      * @return the property representing the current value
      */
-    public IntegerProperty valueProperty() {
+    public final IntegerProperty valueProperty() {
         return value;
+    }
+
+    public final int getMaxValue() {
+        return maxValue.get();
+    }
+
+    public final void setMaxValue(int maxVal) {
+        this.maxValue.set(maxVal);
+    }
+
+    public final IntegerProperty maxValueProperty() {
+        return maxValue;
     }
 
 }
