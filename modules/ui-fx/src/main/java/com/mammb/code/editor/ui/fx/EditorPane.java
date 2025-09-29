@@ -58,6 +58,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -235,9 +236,15 @@ public class EditorPane extends ContentPane {
     }
 
     private void colorPick() {
-        new FxColorDialog(getScene().getWindow()).show();
+        var d = new FxColorDialog(getScene().getWindow());
+        try {
+            Color c = Color.valueOf(model().query(Query.selectedText));
+            d.setCurrentColor(c);
+            d.setCustomColor(c);
+        } catch (Exception e) { }
+        d.setOnSelect(() -> inputText(d::getSelectedWebColor));
+        d.show();
     }
-
 
     private void openRight(ContentPane contentPane) {
         var container = tabContainer();

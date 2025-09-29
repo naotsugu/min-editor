@@ -43,6 +43,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+import java.util.Locale;
 import java.util.Objects;
 
 public class FxColorDialog extends HBox {
@@ -50,19 +51,18 @@ public class FxColorDialog extends HBox {
     private final Stage dialog = new Stage();
     private ColorRectPane colorRectPane;
     private ControlsPane controlsPane;
-    private Scene customScene;
+    private final Scene customScene;
 
-    private ObjectProperty<Color> currentColorProperty = new SimpleObjectProperty<>(Color.WHITE);
-    private ObjectProperty<Color> customColorProperty = new SimpleObjectProperty<>(Color.TRANSPARENT);
-    private Runnable onSave;
-    private Runnable onUse;
+    private final ObjectProperty<Color> currentColorProperty = new SimpleObjectProperty<>(Color.WHITE);
+    private final ObjectProperty<Color> customColorProperty = new SimpleObjectProperty<>(Color.TRANSPARENT);
+    private Runnable onSelect;
     private Runnable onCancel;
 
     public FxColorDialog(Window owner) {
         getStyleClass().add("custom-color-dialog");
         Objects.requireNonNull(owner);
         dialog.initOwner(owner);
-        dialog.setTitle("Color Picker");
+        dialog.setTitle("Color Pick");
         dialog.initModality(Modality.APPLICATION_MODAL);
         //dialog.initStyle(StageStyle.UNDECORATED);
         dialog.initStyle(StageStyle.UTILITY);
@@ -102,12 +102,28 @@ public class FxColorDialog extends HBox {
     };
 
     public void setCurrentColor(Color currentColor) {
-        this.currentColorProperty.set(currentColor);
+        this.currentColorProperty.set(currentColor == null ? Color.WHITE : currentColor);
     }
 
     public final Color getCurrentColor() {
         return currentColorProperty.get();
     }
+
+    public final String getSelectedWebColor() {
+        return formatHexString(getCustomColor());
+    }
+
+    private static String formatHexString(Color c) {
+        if (c != null) {
+            return String.format((Locale) null, "#%02x%02x%02x",
+                Math.round(c.getRed() * 255),
+                Math.round(c.getGreen() * 255),
+                Math.round(c.getBlue() * 255));
+        } else {
+            return null;
+        }
+    }
+
 
     public final ObjectProperty<Color> customColorProperty() {
         return customColorProperty;
@@ -119,6 +135,10 @@ public class FxColorDialog extends HBox {
 
     public final Color getCustomColor() {
         return customColorProperty.get();
+    }
+
+    public void setOnSelect(Runnable onSelect) {
+        this.onSelect = onSelect;
     }
 
     public void show() {
@@ -138,7 +158,7 @@ public class FxColorDialog extends HBox {
         }
     }
 
-    private InvalidationListener positionAdjuster = new InvalidationListener() {
+    private final InvalidationListener positionAdjuster = new InvalidationListener() {
 
         @Override
         public void invalidated(Observable ignored) {
@@ -153,6 +173,13 @@ public class FxColorDialog extends HBox {
     };
 
     private void fixPosition() {
+        Window w = dialog.getOwner();
+        double wx = w.getX() + (w.getWidth() / 2);
+        double wy = w.getY() + (w.getHeight() / 2);
+        double x = wx - (dialog.getWidth() / 2);
+        double y = wy - (dialog.getHeight() / 2);
+        dialog.setX(x);
+        dialog.setY(y);
     }
 
     @Override
@@ -171,14 +198,14 @@ public class FxColorDialog extends HBox {
     }
 
     private class ColorRectPane extends HBox {
-        private Pane colorRect;
-        private Pane colorBar;
-        private Pane colorRectOverlayOne;
-        private Pane colorRectOverlayTwo;
-        private Region colorRectIndicator;
-        private Region colorBarIndicator;
+        private final Pane colorRect;
+        private final Pane colorBar;
+        private final Pane colorRectOverlayOne;
+        private final Pane colorRectOverlayTwo;
+        private final Region colorRectIndicator;
+        private final Region colorBarIndicator;
         private boolean changeIsLocal = false;
-        private DoubleProperty hue = new SimpleDoubleProperty(-1) {
+        private final DoubleProperty hue = new SimpleDoubleProperty(-1) {
             @Override
             protected void invalidated() {
                 if (!changeIsLocal) {
@@ -188,7 +215,7 @@ public class FxColorDialog extends HBox {
                 }
             }
         };
-        private DoubleProperty sat = new SimpleDoubleProperty(-1) {
+        private final DoubleProperty sat = new SimpleDoubleProperty(-1) {
             @Override
             protected void invalidated() {
                 if (!changeIsLocal) {
@@ -198,7 +225,7 @@ public class FxColorDialog extends HBox {
                 }
             }
         };
-        private DoubleProperty bright = new SimpleDoubleProperty(-1) {
+        private final DoubleProperty bright = new SimpleDoubleProperty(-1) {
             @Override
             protected void invalidated() {
                 if (!changeIsLocal) {
@@ -208,7 +235,7 @@ public class FxColorDialog extends HBox {
                 }
             }
         };
-        private IntegerProperty red = new SimpleIntegerProperty(-1) {
+        private final IntegerProperty red = new SimpleIntegerProperty(-1) {
             @Override
             protected void invalidated() {
                 if (!changeIsLocal) {
@@ -219,7 +246,7 @@ public class FxColorDialog extends HBox {
             }
         };
 
-        private IntegerProperty green = new SimpleIntegerProperty(-1) {
+        private final IntegerProperty green = new SimpleIntegerProperty(-1) {
             @Override
             protected void invalidated() {
                 if (!changeIsLocal) {
@@ -230,7 +257,7 @@ public class FxColorDialog extends HBox {
             }
         };
 
-        private IntegerProperty blue = new SimpleIntegerProperty(-1) {
+        private final IntegerProperty blue = new SimpleIntegerProperty(-1) {
             @Override
             protected void invalidated() {
                 if (!changeIsLocal) {
@@ -241,7 +268,7 @@ public class FxColorDialog extends HBox {
             }
         };
 
-        private DoubleProperty alpha = new SimpleDoubleProperty(100) {
+        private final DoubleProperty alpha = new SimpleDoubleProperty(100) {
             @Override
             protected void invalidated() {
                 if (!changeIsLocal) {
@@ -291,9 +318,7 @@ public class FxColorDialog extends HBox {
 
             getStyleClass().add("color-rect-pane");
 
-            customColorProperty().addListener((ov, t, t1) -> {
-                colorChanged();
-            });
+            customColorProperty().addListener((_, _, _) -> colorChanged());
 
             colorRectIndicator = new Region();
             colorRectIndicator.setId("color-rect-indicator");
@@ -324,7 +349,7 @@ public class FxColorDialog extends HBox {
             colorRect.getStyleClass().addAll("color-rect", "transparent-pattern");
 
             Pane colorRectHue = new Pane();
-            colorRectHue.backgroundProperty().bind(new ObjectBinding<Background>() {
+            colorRectHue.backgroundProperty().bind(new ObjectBinding<>() {
                 {
                     bind(hue);
                 }
@@ -428,23 +453,23 @@ public class FxColorDialog extends HBox {
     }
 
     private class ControlsPane extends VBox {
-        private Region currentColorRect;
-        private Region newColorRect;
-        private Region currentTransparent; // for opacity
-        private GridPane currentAndNewColor;
-        private Region currentNewColorBorder;
-        private ToggleButton hsbButton;
-        private ToggleButton rgbButton;
-        private HBox hBox;
+        private final Region currentColorRect;
+        private final Region newColorRect;
+        private final Region currentTransparent; // for opacity
+        private final GridPane currentAndNewColor;
+        private final Region currentNewColorBorder;
+        private final ToggleButton hsbButton;
+        private final ToggleButton rgbButton;
+        private final HBox hBox;
 
-        private Label labels[] = new Label[4];
-        private Slider sliders[] = new Slider[4];
-        private IntegerField fields[] = new IntegerField[4];
-        private Label units[] = new Label[4];
-        private HBox buttonBox;
-        private Region whiteBox;
+        private final Label[] labels = new Label[4];
+        private final Slider[] sliders = new Slider[4];
+        private final IntegerField[] fields = new IntegerField[4];
+        private final Label[] units = new Label[4];
+        private final HBox buttonBox;
+        private final Region whiteBox;
 
-        private GridPane settingsPane = new GridPane();
+        private final GridPane settingsPane = new GridPane();
 
         public ControlsPane() {
             getStyleClass().add("controls-pane");
@@ -525,7 +550,6 @@ public class FxColorDialog extends HBox {
             currentAndNewColor.add(currentNewColorBorder, 0, 2, 2, 1);
             currentAndNewColor.add(spacer2, 0, 3, 2, 1);
 
-            settingsPane = new GridPane();
             settingsPane.setId("settings-pane");
             settingsPane.getColumnConstraints().addAll(new ColumnConstraints(),
                 new ColumnConstraints(), new ColumnConstraints(),
@@ -555,15 +579,7 @@ public class FxColorDialog extends HBox {
                 units[i] = new Label(i == 0 ? "\u00B0" : "%");
                 units[i].getStyleClass().add("settings-unit");
 
-                if (i > 0 && i < 3) {
-                    // first row and opacity labels are always visible
-                    // second and third row labels are not visible in Web page
-                    //labels[i].visibleProperty().bind(group.selectedToggleProperty().isNotEqualTo(webButton));
-                }
                 if (i < 3) {
-                    // sliders and fields shouldn't be visible in Web page
-                    //sliders[i].visibleProperty().bind(group.selectedToggleProperty().isNotEqualTo(webButton));
-                    //fields[i].visibleProperty().bind(group.selectedToggleProperty().isNotEqualTo(webButton));
                     units[i].visibleProperty().bind(group.selectedToggleProperty().isEqualTo(hsbButton));
                 }
                 int row = 1 + i;
@@ -598,10 +614,10 @@ public class FxColorDialog extends HBox {
             buttonBox = new HBox();
             buttonBox.setId("buttons-hbox");
 
-            Button useButton = new Button("Use");
-            useButton.setOnAction(t -> {
-                if (onUse != null) {
-                    onUse.run();
+            Button okButton = new Button("Ok");
+            okButton.setOnAction(_ -> {
+                if (onSelect != null) {
+                    onSelect.run();
                 }
                 dialog.hide();
             });
@@ -616,7 +632,7 @@ public class FxColorDialog extends HBox {
                 dialog.hide();
             });
 
-            buttonBox.getChildren().addAll(useButton, cancelButton);
+            buttonBox.getChildren().addAll(okButton, cancelButton);
 
             getChildren().addAll(currentAndNewColor, settingsPane, buttonBox);
         }
@@ -633,7 +649,7 @@ public class FxColorDialog extends HBox {
             set(2, "Blue:", 255, colorRectPane.blue);
         }
 
-        private Property<Number>[] bindedProperties = new Property[4];
+        private final Property<Number>[] bindedProperties = new Property[4];
 
         private void set(int row, String caption, int maxValue, Property<Number> prop) {
             labels[row].setText(caption);
