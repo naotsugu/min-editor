@@ -101,6 +101,14 @@ public class FxColorDialog extends HBox {
         }
     };
 
+    public void setColor(Color color) {
+        if (color == null) {
+            color = Color.BLACK;
+        }
+        setCurrentColor(color);
+        setCustomColor(color);
+    }
+
     public void setCurrentColor(Color currentColor) {
         this.currentColorProperty.set(currentColor == null ? Color.WHITE : currentColor);
     }

@@ -238,9 +238,7 @@ public class EditorPane extends ContentPane {
     private void colorPick() {
         var d = new FxColorDialog(getScene().getWindow());
         try {
-            Color c = Color.valueOf(model().query(Query.selectedText));
-            d.setCurrentColor(c);
-            d.setCustomColor(c);
+            d.setColor(Color.valueOf(model().query(Query.selectedText)));
         } catch (Exception e) { }
         d.setOnSelect(() -> inputText(d::getSelectedWebColor));
         d.show();
