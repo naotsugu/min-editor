@@ -129,6 +129,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var left  = new SplitTabPane(item, this);
             var right = new SplitTabPane(node, this);
             pane.getItems().addAll(left, right);
+            pane.setDividerPositions(0.5);
+            pane.layout();
             return (DndTabPane) right.pane.getItems().getFirst();
         }
     }
@@ -143,6 +145,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var left  = new SplitTabPane(node, this);
             var right = new SplitTabPane(item, this);
             pane.getItems().addAll(left, right);
+            pane.setDividerPositions(0.5);
+            pane.layout();
             return (DndTabPane) left.pane.getItems().getFirst();
         }
     }
@@ -157,6 +161,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var top = new SplitTabPane(node, this);
             var bottom = new SplitTabPane(item, this);
             pane.getItems().addAll(top, bottom);
+            pane.setDividerPositions(0.5);
+            pane.layout();
             return (DndTabPane) top.pane.getItems().getFirst();
         }
     }
@@ -171,6 +177,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var top = new SplitTabPane(item, this);
             var bottom = new SplitTabPane(node, this);
             pane.getItems().addAll(top, bottom);
+            pane.setDividerPositions(0.5);
+            pane.layout();
             return (DndTabPane) bottom.pane.getItems().getFirst();
         }
     }
