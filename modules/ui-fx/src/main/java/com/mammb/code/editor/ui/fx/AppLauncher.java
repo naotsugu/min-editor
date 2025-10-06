@@ -30,6 +30,7 @@ public class AppLauncher {
     public void launch(String[] args) {
         if (System.getProperty("core.theme") == null) {
             System.setProperty("core.theme", ColorScheme.platform().isDark() ? "dark" : "light");
+            // TODO use Platform.getPreferences().getColorScheme() in javafx
         }
         App.launch(App.class, args);
     }
