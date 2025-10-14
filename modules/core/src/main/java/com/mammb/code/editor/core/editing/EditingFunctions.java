@@ -103,7 +103,7 @@ public interface EditingFunctions {
     Function<String, String> htmlBrToLf = text -> text == null ? "" : text.replaceAll("(?i)<br\\b[^>]*>", "\n");
 
     /** remove tag like. */
-    Function<String, String> removeHtmlTags = text -> text == null ? "" : text.replaceAll("<.*?>", "");
+    Function<String, String> removeHtmlTags = text -> text == null ? "" : text.replaceAll("(?s)<.*?>", "");
 
     Function<String, String> unescapeHtml = text -> text == null ? "" : htmlUnescapePattern.matcher(text).replaceAll(match -> {
         if (match.group("name") != null) {
