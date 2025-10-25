@@ -28,9 +28,18 @@ import java.util.function.Function;
  */
 public record Rgba(int r, int g, int b, int a) {
 
+    /** The orange. */
     public static final Rgba ORANGE = new Rgba("#FF8C00");
+    /** The light gray. */
     public static final Rgba LIGHTGRAY = new Rgba("#D3D3D3");
 
+    /**
+     * Canonical Constructor.
+     * @param r The red value.
+     * @param g The green value.
+     * @param b The blue value.
+     * @param a The alpha value.
+     */
     public Rgba {
         r = Math.clamp(r, 0, 255);
         g = Math.clamp(g, 0, 255);
@@ -38,32 +47,65 @@ public record Rgba(int r, int g, int b, int a) {
         a = Math.clamp(a, 0, 255);
     }
 
+    /**
+     * Create a new Rgba.
+     * @param r The red value.
+     * @param g The green value.
+     * @param b The blue value.
+     */
     public Rgba(int r, int g, int b) {
         this(r, g, b, 255);
     }
 
+    /**
+     * Create a new Rgba.
+     * @param rgba the rgba array
+     */
     public Rgba(int[] rgba) {
         this(rgba[0], rgba[1], rgba[2], (rgba.length < 4) ? 255 : rgba[3]);
     }
 
+    /**
+     * Create a new Rgba from the webColor string.
+     * @param webColor the webColor string
+     */
     public Rgba(String webColor) {
         this(parseWebColor(webColor));
     }
 
+    /**
+     * Get the webColor string.
+     * @return the webColor string
+     */
     public String web() {
         return (a >= 255)
             ? String.format("#%02x%02x%02x", r, g, b)
             : String.format("#%02x%02x%02x%02x", r, g, b, a);
     }
 
+    /**
+     * Get the rgba as the specified type.
+     * @param fun the function to apply
+     * @return the specified type
+     * @param <T> the type to convert to
+     */
     public <T> T as(Function<int[], T> fun) {
         return fun.apply(new int[] { r, g, b, a });
     }
 
+    /**
+     * Creates a new {@code Rgba} with the alpha value set to 255.
+     * @return a new opaque {@code Rgba} object
+     */
     public Rgba opaque() {
         return new Rgba(r, g, b, 255);
     }
 
+    /**
+     * Creates a new {@code Rgba} with the specified alpha value.
+     * @param alpha the alpha value
+     * @return a new {@code Rgba} object with the specified alpha value
+     */
     public Rgba alphaWith(int alpha) {
         return new Rgba(r, g, b, alpha);
     }
