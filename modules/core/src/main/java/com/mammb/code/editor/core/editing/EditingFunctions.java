@@ -96,6 +96,8 @@ public interface EditingFunctions {
     Function<String, String> lfToCrLf = text -> text == null ? "" : text.replaceAll("(?<!\r)\n", "\r\n");
     /** binToDec function. */
     Function<String, String> crLfToLf = text -> text == null ? "" : text.replaceAll("\r\n", "\n");
+    /** normalize ascii. */
+    Function<String, String> normalizeAscii = Normalizer::fullToAscii;
 
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
