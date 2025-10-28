@@ -406,6 +406,7 @@ public class EditorPane extends ContentPane {
             case HexToDec _           -> model().apply(Action.replace(EditingFunctions.hexToDec, true));
             case BinToHex _           -> model().apply(Action.replace(EditingFunctions.binToHex, true));
             case BinToDec _           -> model().apply(Action.replace(EditingFunctions.binToDec, true));
+            case NormalizeAscii _     -> model().apply(Action.replace(EditingFunctions.normalizeAscii, true));
             case Pwd _                -> inputText(() -> model().query(Query.contentPath).map(Path::getParent).orElse(null));
             case Pwf _                -> inputText(() -> model().query(Query.contentPath).orElse(null));
             case Now _                -> inputText(LocalDateTime::now);
