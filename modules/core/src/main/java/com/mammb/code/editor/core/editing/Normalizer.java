@@ -47,8 +47,15 @@ public class Normalizer {
         Map.entry("＋", "+"), Map.entry("－", "-"), Map.entry("＝", "="), Map.entry("＊", "*"), Map.entry("／", "/"),
         Map.entry("（", "("), Map.entry("）", ")"), Map.entry("＜", "<"), Map.entry("＞", ">"), Map.entry("：", ":"),
         Map.entry("［", "["), Map.entry("］", "]"), Map.entry("｛", "{"), Map.entry("｝", "}"), Map.entry("；", ";"),
-        //Map.entry("「", "｢"), Map.entry("」", "｣"), Map.entry("、", "､"), Map.entry("・", "･"), Map.entry("。", "｡"),
-        Map.entry("～", "~"), Map.entry("　", " "), Map.entry("￥", "\\"), Map.entry("―", "‐"),
+        Map.entry("～", "~"), Map.entry("￥", "\\"), Map.entry("―", "‐"),
+        // Map.entry("「", "｢"), Map.entry("」", "｣"), Map.entry("、", "､"), Map.entry("・", "･"), Map.entry("。", "｡"),
+
+        // space
+        Map.entry("\u00A0", " "), Map.entry("\u1680", " "), Map.entry("\u180E", " "), Map.entry("\u2000", " "), Map.entry("\u2001", " "),
+        Map.entry("\u2002", " "), Map.entry("\u2003", " "), Map.entry("\u2004", " "), Map.entry("\u2005", " "), Map.entry("\u2006", " "),
+        Map.entry("\u2007", " "), Map.entry("\u2008", " "), Map.entry("\u2009", " "), Map.entry("\u200A", " "), Map.entry("\u202F", " "),
+        Map.entry("\u205F", " "), Map.entry("\u3000", " "), Map.entry("\u200B", " "), Map.entry("\uFEFF", " "),
+
         Map.entry("０", "0"), Map.entry("１", "1"), Map.entry("２", "2"), Map.entry("３", "3"), Map.entry("４", "4"),
         Map.entry("５", "5"), Map.entry("６", "6"), Map.entry("７", "7"), Map.entry("８", "8"), Map.entry("９", "9"),
         Map.entry("Ａ", "A"), Map.entry("Ｂ", "B"), Map.entry("Ｃ", "C"), Map.entry("Ｄ", "D"), Map.entry("Ｅ", "E"),
