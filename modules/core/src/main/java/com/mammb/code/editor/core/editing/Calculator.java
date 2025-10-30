@@ -100,9 +100,7 @@ class Calculator {
     private static String div(String l, String r) {
         var divisor = new BigDecimal(l);
         var dividend = new BigDecimal(r);
-        System.out.println(divisor.scale());
-        System.out.println(dividend.scale());
-        return dividend.divide(divisor, Math.min(divisor.scale(), dividend.scale()) + 1, RoundingMode.HALF_UP)
+        return dividend.divide(divisor, Math.max(l.length(), r.length()), RoundingMode.HALF_UP)
             .stripTrailingZeros().toPlainString();
     }
 
