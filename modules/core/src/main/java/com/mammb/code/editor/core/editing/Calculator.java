@@ -86,21 +86,21 @@ class Calculator {
     }
 
     private static String add(String l, String r) {
-        return new BigDecimal(r).add(new BigDecimal(l)).toPlainString();
+        return new BigDecimal(r).add(new BigDecimal(l)).stripTrailingZeros().toPlainString();
     }
 
     private static String sub(String l, String r) {
-        return new BigDecimal(r).subtract(new BigDecimal(l)).toPlainString();
+        return new BigDecimal(r).subtract(new BigDecimal(l)).stripTrailingZeros().toPlainString();
     }
 
     private static String mul(String l, String r) {
-        return new BigDecimal(r).multiply(new BigDecimal(l)).toPlainString();
+        return new BigDecimal(r).multiply(new BigDecimal(l)).stripTrailingZeros().toPlainString();
     }
 
     private static String div(String l, String r) {
         var divisor = new BigDecimal(l);
         var dividend = new BigDecimal(r);
-        return dividend.divide(divisor, Math.max(l.length(), r.length()), RoundingMode.HALF_UP)
+        return dividend.divide(divisor, l.length() + r.length(), RoundingMode.HALF_UP)
             .stripTrailingZeros().toPlainString();
     }
 
