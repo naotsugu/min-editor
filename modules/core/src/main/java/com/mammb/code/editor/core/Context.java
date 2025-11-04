@@ -30,6 +30,10 @@ public interface Context {
      */
     Config config();
 
+    /**
+     * Get the platform string.
+     * @return the platform string
+     */
     private static String platform() {
         var osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("windows")) return "windows";
