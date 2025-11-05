@@ -18,27 +18,8 @@ package com.mammb.code.editor.core.syntax;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-import com.mammb.code.editor.core.syntax.lang.CppSyntax;
-import com.mammb.code.editor.core.syntax.lang.DiffSyntax;
-import com.mammb.code.editor.core.syntax.lang.GoSyntax;
-import com.mammb.code.editor.core.syntax.lang.HtmlSyntax;
-import com.mammb.code.editor.core.syntax.lang.IniSyntax;
-import com.mammb.code.editor.core.syntax.lang.JavaSyntax;
-import com.mammb.code.editor.core.syntax.lang.JsSyntax;
-import com.mammb.code.editor.core.syntax.lang.KotlinSyntax;
-import com.mammb.code.editor.core.syntax.lang.MarkdownSyntax;
-import com.mammb.code.editor.core.syntax.lang.PowerShellSyntax;
-import com.mammb.code.editor.core.syntax.lang.PythonSyntax;
-import com.mammb.code.editor.core.syntax.lang.RubySyntax;
-import com.mammb.code.editor.core.syntax.lang.RustSyntax;
-import com.mammb.code.editor.core.syntax.lang.ShellSyntax;
-import com.mammb.code.editor.core.syntax.lang.SqlSyntax;
-import com.mammb.code.editor.core.syntax.lang.TomlSyntax;
-import com.mammb.code.editor.core.syntax.lang.TsSyntax;
-import com.mammb.code.editor.core.syntax.lang.CsvSyntax;
-import com.mammb.code.editor.core.syntax.lang.TsvSyntax;
-import com.mammb.code.editor.core.syntax.lang.YamlSyntax;
-import com.mammb.code.editor.core.syntax.lang.ZigSyntax;
+
+import com.mammb.code.editor.core.syntax.lang.*;
 import com.mammb.code.editor.core.text.Style;
 
 /**
@@ -145,6 +126,7 @@ public interface Syntax {
             case "ps1" -> new PowerShellSyntax();
             case "zig" -> new ZigSyntax();
             case "ruby" -> new RubySyntax();
+            case "swift" -> new SwiftSyntax();
             case null, default -> new PassThrough(name);
         };
     }
@@ -193,6 +175,7 @@ public interface Syntax {
             case "shell", "sh", "bash" -> "shell";
             case "diff", "patch" -> "diff";
             case "rb" -> "ruby";
+            case "swift" -> "swift";
             default -> extension;
         };
     }
