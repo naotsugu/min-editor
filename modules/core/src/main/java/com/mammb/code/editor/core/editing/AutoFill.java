@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.core.editing;
 
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
 import java.util.function.Function;
 
 /**
@@ -23,20 +25,96 @@ import java.util.function.Function;
  */
 public class AutoFill implements Function<String, String> {
 
-    private enum Mode { INCREMENT_NUMBER }
-
-    private int n = 0;
-
-    private String previousValue;
-
-    private double distance = 0;
-
-    private Mode mode = Mode.INCREMENT_NUMBER;
-
+    private FillStrategy fillStrategy;
+    private int n;
 
     @Override
     public String apply(String string) {
-        // TODO
-        return string;
+        if (n == 0) {
+            fillStrategy = FillStrategy.of(string);
+        } else if (n == 1) {
+            fillStrategy = FillStrategy.of(fillStrategy, string);
+        }
+        return fillStrategy.at(n++, string);
     }
+
+    interface FillStrategy {
+
+        String at(int n, String value);
+
+        static FillStrategy of(String value) {
+            if (value == null || value.isBlank()) {
+                return new IntIncrement(1, 1);
+            } else {
+                OptionalInt maybeInt = asInt(value);
+                if (maybeInt.isPresent()) {
+                    return new IntIncrement(maybeInt.getAsInt(), 1);
+                }
+                OptionalDouble maybeDouble = asDouble(value);
+                if (maybeDouble.isPresent()) {
+                    return new DoubleIncrement(maybeDouble.getAsDouble(), 1);
+                }
+                return new Passthrough();
+            }
+        }
+        static FillStrategy of(FillStrategy current, String value) {
+            return switch (current) {
+                case IntIncrement(var initial, _) -> {
+                    OptionalInt maybeInt = asInt(value);
+                    if (maybeInt.isPresent()) {
+                        yield new IntIncrement(initial, maybeInt.getAsInt() - initial);
+                    }
+                    OptionalDouble maybeDouble = asDouble(value);
+                    if (maybeDouble.isPresent()) {
+                        yield new DoubleIncrement(initial, maybeDouble.getAsDouble() - initial);
+                    }
+                    yield current;
+                }
+                case DoubleIncrement(var initial, _) -> {
+                    OptionalDouble maybeDouble = asDouble(value);
+                    if (maybeDouble.isPresent()) {
+                        yield new DoubleIncrement(initial, maybeDouble.getAsDouble() - initial);
+                    }
+                    yield current;
+                }
+                default -> current;
+            };
+        }
+    }
+
+    record Passthrough() implements FillStrategy {
+        @Override
+        public String at(int n, String value) {
+            return value;
+        }
+    }
+
+    record IntIncrement(int initial, int distance) implements FillStrategy {
+        @Override
+        public String at(int n, String value) {
+            return String.valueOf(initial + n * distance);
+        }
+    }
+
+    record DoubleIncrement(double initial, double distance) implements FillStrategy {
+        @Override
+        public String at(int n, String value) {
+            return String.valueOf(initial + n * distance);
+        }
+    }
+
+    private static OptionalInt asInt(String string) {
+        try {
+            return OptionalInt.of(Integer.parseInt(string));
+        } catch (NumberFormatException _) { }
+        return OptionalInt.empty();
+    }
+
+    private static OptionalDouble asDouble(String string) {
+        try {
+            return OptionalDouble.of(Double.parseDouble(string));
+        } catch (NumberFormatException _) { }
+        return OptionalDouble.empty();
+    }
+
 }
