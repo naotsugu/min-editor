@@ -52,4 +52,13 @@ class AutoFillTest {
         assertEquals("8", autoFill.apply(""));
     }
 
+    @Test
+    void testApplyWithIncrement2() {
+        AutoFill autoFill = new AutoFill();
+        assertEquals("10", autoFill.apply("10"));
+        assertEquals("11", autoFill.apply(""));
+        assertEquals("12", autoFill.apply(""));
+        assertEquals("13", autoFill.apply(""));
+    }
+
 }
