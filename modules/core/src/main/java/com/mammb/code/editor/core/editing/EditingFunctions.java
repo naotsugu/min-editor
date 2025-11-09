@@ -98,6 +98,8 @@ public interface EditingFunctions {
     Function<String, String> crLfToLf = text -> text == null ? "" : text.replaceAll("\r\n", "\n");
     /** normalize ascii. */
     Function<String, String> normalizeAscii = Normalizer::fullToAscii;
+    /** auto fill. */
+    Function<String, String> autoFill = new AutoFill();
 
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
