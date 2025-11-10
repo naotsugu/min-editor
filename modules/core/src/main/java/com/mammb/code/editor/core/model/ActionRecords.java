@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.model;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Action.*;
@@ -32,7 +33,7 @@ public interface ActionRecords {
 
     record Input(String attr, long occurredAt) implements Action, WithAttr<String>, Repeatable { }
 
-    record Replace(Function<String, String> attr, boolean keepSelect, long occurredAt) implements Action, WithAttr<Function<String, String>>, Repeatable { }
+    record Replace(List<Function<String, String>> attr, boolean keepSelect, long occurredAt) implements Action, WithAttr<List<Function<String, String>>>, Repeatable { }
 
     record Delete(long occurredAt) implements Action, Repeatable { }
 

@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.Function;
 import com.mammb.code.editor.core.model.ActionRecords.*;
 
@@ -68,6 +69,9 @@ public sealed interface Action
         return new Input(string, System.currentTimeMillis());
     }
     static Action replace(Function<String, String> fun, boolean keepSelect) {
+        return replace(List.of(fun), keepSelect);
+    }
+    static Action replace(List<Function<String, String>> fun, boolean keepSelect) {
         return new Replace(fun, keepSelect, System.currentTimeMillis());
     }
     static Action delete() {

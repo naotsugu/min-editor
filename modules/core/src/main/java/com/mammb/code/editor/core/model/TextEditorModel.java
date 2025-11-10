@@ -525,6 +525,10 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void replace(Function<String, String> fun, boolean keepSelection) {
+        replace(List.of(fun), keepSelection);
+    }
+
+    private void replace(List<Function<String, String>> fun, boolean keepSelection) {
         List<Range> caretRanges = carets.ranges();
         List<Range> ranges = content.replace(caretRanges, fun);
         Range rangeMin = Collections.min(caretRanges);

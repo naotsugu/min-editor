@@ -135,9 +135,9 @@ public interface EditingFunctions {
     }
 
     /** auto fill. */
-    static List<Function<String, String>> autoFill(String texts) {
+    static List<Function<String, String>> autoFill(List<String> texts) {
         var autoFill = new AutoFill();
-        return texts.lines()
+        return texts.stream()
             .map(autoFill::apply)
             .map(EditingFunctions::constant)
             .toList();
