@@ -17,18 +17,16 @@ package com.mammb.code.editor.core.editing;
 
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
-import java.util.function.Function;
 
 /**
  * AutoFill.
  * @author Naotsugu Kobayashi
  */
-public class AutoFill implements Function<String, String> {
+public class AutoFill {
 
     private FillStrategy fillStrategy;
     private int n;
 
-    @Override
     public String apply(String string) {
         if (n == 0) {
             fillStrategy = FillStrategy.of(string);

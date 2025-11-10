@@ -98,8 +98,6 @@ public interface EditingFunctions {
     Function<String, String> crLfToLf = text -> text == null ? "" : text.replaceAll("\r\n", "\n");
     /** normalize ascii. */
     Function<String, String> normalizeAscii = Normalizer::fullToAscii;
-    /** auto fill. */
-    Function<String, String> autoFill = new AutoFill();
 
     /** markdown table. */
     Function<String, String> markdownTable = MarkdownTables::fromHtml;
@@ -131,6 +129,19 @@ public interface EditingFunctions {
 
     /** ls. */
     Function<List<Path>, String> list = EditingFunctions::list;
+
+    static Function<String, String> constant(String text) {
+        return _ -> text;
+    }
+
+    /** auto fill. */
+    static List<Function<String, String>> autoFill(String texts) {
+        var autoFill = new AutoFill();
+        return texts.lines()
+            .map(autoFill::apply)
+            .map(EditingFunctions::constant)
+            .toList();
+    }
 
     // -- helper --------------------------------------------------------------
 
