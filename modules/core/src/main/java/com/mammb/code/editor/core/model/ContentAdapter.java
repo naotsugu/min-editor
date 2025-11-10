@@ -70,7 +70,7 @@ public abstract class ContentAdapter implements Content {
     }
 
     @Override
-    public List<Point.Range> replace(List<Point.Range> ranges, Function<String, String> fun) {
+    public List<Point.Range> replace(List<Point.Range> ranges, List<Function<String, String>> fun) {
         return pear().replace(ranges, fun);
     }
 

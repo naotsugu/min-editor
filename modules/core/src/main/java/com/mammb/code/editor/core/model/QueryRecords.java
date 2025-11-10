@@ -18,6 +18,7 @@ package com.mammb.code.editor.core.model;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.List;
 import java.util.Optional;
 import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Pair;
@@ -42,6 +43,8 @@ public interface QueryRecords {
     record Bom() implements Query<byte[]> { }
     /** The query of caret point. */
     record CaretPoint() implements Query<Point> { }
+    /** The query of caret count. */
+    record CaretCount() implements Query<Integer> { }
     /** The query of a content-path. */
     record ContentPath() implements Query<Optional<Path>> { }
     /** The last modified time. */
@@ -64,6 +67,8 @@ public interface QueryRecords {
     record HasSelected() implements Query<Boolean> { }
     /** The query of selected text. */
     record SelectedText() implements Query<String> { }
+    /** The query of text at carets. */
+    record TextAtCarets() implements Query<List<String>> { }
     /** The query of char at caret. */
     record CharAtCaret() implements Query<Pair<String>> { }
     /** The query of bytes at caret. */

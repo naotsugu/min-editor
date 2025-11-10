@@ -868,6 +868,7 @@ public class TextEditorModel implements EditorModel {
     public <R> R query(Query<R> query) {
         return switch (query) {
             case QueryRecords.CaretPoint _        -> (R) carets.getFirst().point();
+            case QueryRecords.CaretCount _        -> (R) Integer.valueOf(carets.size());
             case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
             case QueryRecords.FoundCounts _       -> (R) Integer.valueOf(decorate.highlightCounts());
             case QueryRecords.SelectedCounts _    -> (R) Contents.countCodePoints(content, carets.marked());
@@ -875,6 +876,7 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.RowSize _           -> (R) Integer.valueOf(screenLayout.rowSize());
             case QueryRecords.HasSelected _       -> (R) Boolean.valueOf(carets.hasMarked());
             case QueryRecords.SelectedText _      -> (R) Contents.text(content, carets.marked());
+            case QueryRecords.TextAtCarets _      -> (R) Contents.textAt(content, carets.ranges());
             case QueryRecords.CharAtCaret _       -> (R) Contents.lrTextAt(content, carets.getFirst().point());
             case QueryRecords.BytesAtCaret _      -> (R) Contents.bytesAt(content, carets.getFirst().point());
             case QueryRecords.ContentPath _       -> (R) content.path();

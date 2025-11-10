@@ -37,6 +37,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -149,6 +150,33 @@ public class TextEditContent implements Content {
         String txt = edit.rowEnding().unify(text).toString();
         var pos = edit.replace(start.row(), start.col(), end.row(), end.col(), _ -> txt);
         return Point.of(pos.row(), pos.col());
+    }
+
+    @Override
+    public List<Point.Range> replace(List<Point.Range> ranges, List<Function<String, String>> funs) {
+
+        if (funs == null || funs.isEmpty()) {
+            return ranges;
+        }
+
+        modified = true;
+
+        AtomicInteger index = new AtomicInteger(0);
+        var requests = ranges.stream()
+            .map(r -> {
+                var fun = funs.get(index.getAndIncrement() % funs.size());
+                return new TextEdit.Replace(
+                    Pos.of(r.start().row(), r.start().col()),
+                    Pos.of(r.end().row(),   r.end().col()),
+                    fun::apply);
+            }).toList();
+
+        return edit.replace(requests).stream()
+            .map(r -> new Point.Range(
+                Point.of(r.from().row(), r.from().col()),
+                Point.of(r.to().row(), r.to().col())))
+            .toList();
+
     }
 
     @Override

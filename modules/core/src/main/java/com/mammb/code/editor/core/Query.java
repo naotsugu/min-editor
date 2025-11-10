@@ -18,6 +18,7 @@ package com.mammb.code.editor.core;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.List;
 import java.util.Optional;
 import com.mammb.code.editor.core.model.QueryRecords.*;
 
@@ -48,6 +49,7 @@ public interface Query<R> {
     Query<Boolean> modified = new Modified();
     Query<byte[]> bom = new Bom();
     Query<Point> caretPoint = new CaretPoint();
+    Query<Integer> caretCount = new CaretCount();
     Query<Optional<Path>> contentPath = new ContentPath();
     Query<Optional<FileTime>> lastModifiedTime = new LastModifiedTime();
     Query<Name> modelName = new ModelName();
@@ -60,6 +62,7 @@ public interface Query<R> {
     Query<Long> size = new Size();
     Query<Boolean> hasSelected = new HasSelected();
     Query<String> selectedText = new SelectedText();
+    Query<List<String>> textAtCarets = new TextAtCarets();
     Query<byte[]> bytesAtCaret = new BytesAtCaret();
     Query<Pair<String>> charAtCaret = new CharAtCaret();
 }

@@ -92,7 +92,17 @@ public interface Content {
      * @param fun the specified function
      * @return the caret position after replacement
      */
-    List<Range> replace(List<Range> ranges, Function<String, String> fun);
+    default List<Range> replace(List<Range> ranges, Function<String, String> fun) {
+        return replace(ranges, List.of(fun));
+    }
+
+    /**
+     * Replace the specific ranges of text with the specified function.
+     * @param ranges the specific ranges
+     * @param funs the list of specified function
+     * @return the caret position after replacement
+     */
+    List<Range> replace(List<Range> ranges, List<Function<String, String>> funs);
 
     /**
      * Undo.

@@ -94,7 +94,7 @@ public class ReadonlyContent extends ContentAdapter {
     }
 
     @Override
-    public List<Point.Range> replace(List<Point.Range> ranges, Function<String, String> fun) {
+    public List<Point.Range> replace(List<Point.Range> ranges, List<Function<String, String>> fun) {
         return ranges;
     }
 

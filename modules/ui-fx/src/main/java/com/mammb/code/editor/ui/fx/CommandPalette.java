@@ -262,6 +262,9 @@ public class CommandPalette extends Dialog<Command> {
                 if (Command.RequireSelection.class.isAssignableFrom(entry.getValue())) {
                     item.setDisable(queryable.query(Query.selectedText).isEmpty());
                 }
+                if (Command.RequireSeveralCarets.class.isAssignableFrom(entry.getValue())) {
+                    item.setDisable(queryable.query(Query.caretCount) < 2);
+                }
                 if (Command.Diff.class.isAssignableFrom(entry.getValue()) ||
                     Command.DiffFoldOff.class.isAssignableFrom(entry.getValue())) {
                     item.setDisable(

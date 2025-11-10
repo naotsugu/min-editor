@@ -43,6 +43,18 @@ class Contents {
     }
 
     /**
+     * TODO
+     * @param content
+     * @param range
+     * @return
+     */
+    static List<String> textAt(Content content, List<Point.Range> range) {
+        return range.stream()
+            .map(r -> content.getText(r.min(), r.max()))
+            .toList();
+    }
+
+    /**
      * Counts the number of Unicode code points in the text from the specified range within the content.
      *
      * @param content the content from which text will be retrieved
