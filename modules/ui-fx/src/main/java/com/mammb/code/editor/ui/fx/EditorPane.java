@@ -145,10 +145,11 @@ public class EditorPane extends ContentPane {
         scroll.hScroll().valueProperty().addListener(this::handleHorizontalScroll);
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethodTextChanged);
-        canvas.focusedProperty().addListener((_, _, n) -> {
-            model().setCaretVisible(n);
-            paint(); // TODO only caret draw
-        });
+// After giving it some thought, I don't see any necessity to hide the caret.
+//        canvas.focusedProperty().addListener((_, _, n) -> {
+//            model().setCaretVisible(n);
+//            paint(); // TODO only caret draw
+//        });
         nameProperty.setValue(model.query(Query.modelName));
     }
 
