@@ -292,10 +292,12 @@ public class TextEditorModel implements EditorModel {
                     ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
             line = Math.min(line + 1, max);
+            int row = screenLayout.lineToRow(line);
+            int col = screenLayout.xToCaretCol(line, x);
             if (withShortcut) {
-                points.add(Point.of(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x)));
+                points.add(Point.of(row, col));
             } else {
-                c.at(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x), x);
+                c.at(row, col, x);
             }
         }
         carets.add(points);
@@ -311,10 +313,12 @@ public class TextEditorModel implements EditorModel {
                     ? screenLayout.xOnLayout(line, c.col())
                     : c.vPos();
             line = Math.max(line - 1, 0);
+            int row = screenLayout.lineToRow(line);
+            int col = screenLayout.xToCaretCol(line, x);
             if (withShortcut) {
-                points.add(Point.of(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x)));
+                points.add(Point.of(row, col));
             } else {
-                c.at(screenLayout.lineToRow(line), screenLayout.xToCaretCol(line, x), x);
+                c.at(row, col, x);
             }
         }
         carets.add(points);
