@@ -80,6 +80,21 @@ class EditingFunctionsTest {
     }
 
     @Test
+    void textToCodepoint() {
+        assertEquals("U+0041", EditingFunctions.textToCodepoint.apply("A"));
+        assertEquals("U+3042", EditingFunctions.textToCodepoint.apply("あ"));
+        assertEquals("U+3053U+3093U+306BU+3061U+306FU+1F600", EditingFunctions.textToCodepoint.apply("こんにちは😀"));
+    }
+
+    @Test
+    void codepointToText() {
+        assertEquals("A", EditingFunctions.codepointToText.apply("U+0041"));
+        assertEquals("あ", EditingFunctions.codepointToText.apply("U+3042"));
+        assertEquals("こんにちは😀", EditingFunctions.codepointToText.apply("U+3053U+3093U+306BU+3061U+306FU+1F600"));
+        assertEquals("Hello AU+200000", EditingFunctions.codepointToText.apply("Hello U+0041U+200000"));
+    }
+
+    @Test
     void lfToCrLf() {
         assertEquals("\r\n", EditingFunctions.lfToCrLf.apply("\n"));
         assertEquals("\r\n", EditingFunctions.lfToCrLf.apply("\r\n"));

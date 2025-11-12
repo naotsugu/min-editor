@@ -92,10 +92,16 @@ public interface EditingFunctions {
     /** binToDec function. */
     Function<String, String> binToDec = text -> dec(text.replaceAll(" ", ""), 2);
 
+    /** textToCodepoint function. */
+    Function<String, String> textToCodepoint = EditingFunctions::textToCodepoint;
+    /** codepointToText function. */
+    Function<String, String> codepointToText = EditingFunctions::codepointToText;
+
     /** binToDec function. */
     Function<String, String> lfToCrLf = text -> text == null ? "" : text.replaceAll("(?<!\r)\n", "\r\n");
     /** binToDec function. */
     Function<String, String> crLfToLf = text -> text == null ? "" : text.replaceAll("\r\n", "\n");
+
     /** normalize ascii. */
     Function<String, String> normalizeAscii = Normalizer::fullToAscii;
 
@@ -144,6 +150,39 @@ public interface EditingFunctions {
     }
 
     // -- helper --------------------------------------------------------------
+
+    private static String textToCodepoint(String text) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        return text.codePoints()
+            .mapToObj(cp -> String.format("U+%04X", cp))
+            .collect(Collectors.joining());
+    }
+
+    private static String codepointToText(String text) {
+        if (text == null || text.isEmpty()) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        Matcher matcher = Pattern.compile("U\\+([0-9A-Fa-f]{4,6})").matcher(text);
+        while (matcher.find()) {
+            String hexString = matcher.group(1);
+            try {
+                int codePoint = Integer.parseInt(hexString, 16);
+                if (Character.isValidCodePoint(codePoint)) {
+                    String replacement = new String(Character.toChars(codePoint));
+                    matcher.appendReplacement(sb, replacement);
+                } else {
+                    matcher.appendReplacement(sb, Matcher.quoteReplacement(matcher.group(0)));
+                }
+            } catch (NumberFormatException e) {
+                matcher.appendReplacement(sb, Matcher.quoteReplacement(matcher.group(0)));
+            }
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
 
     private static String calc(String text) {
 
