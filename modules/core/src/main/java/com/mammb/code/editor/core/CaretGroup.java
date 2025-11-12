@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import com.mammb.code.editor.core.Point.Range;
 
@@ -29,7 +30,7 @@ public interface CaretGroup {
      * Get the caret first one.
      * @return the caret first one
      */
-    Caret getFirst();
+    Caret getOne();
 
     /**
      * Get unique processed caret.
@@ -115,6 +116,8 @@ public interface CaretGroup {
      */
     class CaretGroupImpl implements CaretGroup {
 
+        private Caret primary;
+
         /** The carets. */
         private final List<Caret> carets = new ArrayList<>();
 
@@ -122,11 +125,12 @@ public interface CaretGroup {
          * Constructor.
          */
         CaretGroupImpl() {
-            carets.add(Caret.of());
+            primary = Caret.of();
+            carets.add(primary);
         }
 
         @Override
-        public Caret getFirst() {
+        public Caret getOne() {
             return carets.getFirst();
         }
 
@@ -147,7 +151,7 @@ public interface CaretGroup {
         @Override
         public List<Caret> carets() {
             normalize();
-            return carets;
+            return Collections.unmodifiableList(carets);
         }
 
         @Override
