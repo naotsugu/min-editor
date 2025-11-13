@@ -241,7 +241,7 @@ public class EditorPane extends ContentPane {
         try {
             d.setColor(Color.valueOf(model().query(Query.selectedText)));
         } catch (Exception e) { }
-        d.setOnSelect(() -> inputText(d::getSelectedWebColor));
+        d.setOnSelect(() -> execute(CommandKeys.of(Action.input(d.getSelectedWebColor()))));
         d.show();
     }
 
