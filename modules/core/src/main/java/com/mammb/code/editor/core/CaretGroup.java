@@ -131,14 +131,15 @@ public interface CaretGroup {
 
         @Override
         public Caret getOne() {
-            return primary;
+            return carets.getFirst();
         }
 
         @Override
         public Caret unique() {
-            carets.clear();
-            carets.add(primary);
-            return primary;
+            if (carets.size() > 1) {
+                carets.subList(1, carets.size()).clear();
+            }
+            return carets.getFirst();
         }
 
         @Override
