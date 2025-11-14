@@ -109,6 +109,8 @@ public sealed interface Command {
 
     record BinToDec() implements Command, RequireSelection {}
 
+    record ToggleCodepoint() implements Command, RequireSelection {}
+
     record NormalizeAscii() implements Command, RequireSelection {}
 
     record AutoFill() implements Command, RequireSeveralCarets {}
@@ -215,6 +217,7 @@ public sealed interface Command {
             case Class<?> c when c == HexToDec.class -> "converts the selected hexadecimal to decimal";
             case Class<?> c when c == BinToHex.class -> "converts the selected binary to hexadecimal";
             case Class<?> c when c == BinToDec.class -> "converts the selected binary to a decimal number";
+            case Class<?> c when c == ToggleCodepoint.class -> "toggle the selected text to Unicode codepoint";
             case Class<?> c when c == NormalizeAscii.class -> "converts the selected text to the ascii text";
             case Class<?> c when c == AutoFill.class -> "converts the selected text with auto fill";
             case Class<?> c when c == Backward.class -> "history back on tab";

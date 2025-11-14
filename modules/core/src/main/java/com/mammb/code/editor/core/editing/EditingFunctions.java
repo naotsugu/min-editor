@@ -96,6 +96,9 @@ public interface EditingFunctions {
     Function<String, String> textToCodepoint = EditingFunctions::textToCodepoint;
     /** codepointToText function. */
     Function<String, String> codepointToText = EditingFunctions::codepointToText;
+    /** toggle codepoint function. */
+    Function<String, String> toggleCodepoint = text -> text != null && text.contains("U+")
+        ? codepointToText.apply(text) : textToCodepoint.apply(text);
 
     /** binToDec function. */
     Function<String, String> lfToCrLf = text -> text == null ? "" : text.replaceAll("(?<!\r)\n", "\r\n");
