@@ -188,6 +188,9 @@ public interface EditingFunctions {
 
         if (text == null || text.isEmpty()) return "";
 
+        text = text.replace('＋', '+').replace('－', '-')
+            .replace('×', '*').replace('÷', '/').replace('＝', '=');
+
         var sb = new StringBuilder();
         for (String line : text.split("(?<=\\R)")) {
 
