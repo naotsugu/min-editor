@@ -18,6 +18,7 @@ package com.mammb.code.editor.core;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 import com.mammb.code.editor.core.Point.Range;
 
 /**
@@ -116,6 +117,7 @@ public interface CaretGroup {
      */
     class CaretGroupImpl implements CaretGroup {
 
+        /** The primary caret. */
         private Caret primary;
 
         /** The carets. */
@@ -131,15 +133,14 @@ public interface CaretGroup {
 
         @Override
         public Caret getOne() {
-            return carets.getFirst();
+            return primary;
         }
 
         @Override
         public Caret unique() {
-            if (carets.size() > 1) {
-                carets.subList(1, carets.size()).clear();
-            }
-            return carets.getFirst();
+            carets.clear();
+            carets.add(primary);
+            return primary;
         }
 
         @Override
@@ -176,12 +177,13 @@ public interface CaretGroup {
             if (points.isEmpty()) return;
             carets.clear();
             points.forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+            primary = carets.getFirst();
             normalize();
         }
 
         @Override
         public void add(List<Point> points) {
-            points.forEach(p -> carets.add(Caret.of(p.row(), p.col())));
+            points.forEach(p -> add(p.row(), p.col()));
             normalize();
         }
 
@@ -194,8 +196,23 @@ public interface CaretGroup {
 
         @Override
         public void toggle(final Point point) {
-            if (!carets.removeIf(p -> p.point().compareTo(point) == 0) || size() == 0) {
+
+            Predicate<Caret> match = (Caret c) -> c.point().compareTo(point) == 0;
+            boolean removed = carets.removeIf(match);
+            if (!removed) {
+                // toggle on
                 carets.add(Caret.of(point.row(), point.col()));
+                return;
+            }
+
+            if (carets.isEmpty()) {
+                primary = Caret.of(point.row(), point.col());
+                carets.add(primary);
+                return;
+            }
+
+            if (match.test(primary)) {
+                primary = carets.getFirst();
             }
         }
 
@@ -226,10 +243,10 @@ public interface CaretGroup {
                 primary = Caret.of();
                 carets.add(primary);
             }
-        }
 
-        void selectPrimary() {
-
+            if (!carets.contains(primary)) {
+                primary = carets.stream().filter(c -> primary.row() == c.row()).findFirst().orElse(carets.getFirst());
+            }
         }
 
     }
