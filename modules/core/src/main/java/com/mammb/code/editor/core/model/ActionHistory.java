@@ -62,6 +62,14 @@ public class ActionHistory {
     }
 
     /**
+     * Peek the last action.
+     * @return the last action
+     */
+    public Action peekLast() {
+        return actions.isEmpty() ? Action.empty() : actions.getLast();
+    }
+
+    /**
      * Get the action event repetition.
      * @return the action event repetition
      */
