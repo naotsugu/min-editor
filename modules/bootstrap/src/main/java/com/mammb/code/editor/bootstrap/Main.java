@@ -57,6 +57,9 @@ public class Main {
             }
         }
 
+        // set up piecetable config
+        System.setProperty("com.mammb.code.piecetable.core.gcInterval", "100");
+
         // launch application
         new AppLauncher().launch(args);
 
