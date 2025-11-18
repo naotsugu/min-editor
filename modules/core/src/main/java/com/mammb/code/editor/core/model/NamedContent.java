@@ -30,27 +30,46 @@ import java.util.Optional;
 public class NamedContent extends ContentAdapter {
 
     /** The pear content. */
-    private Content pear;
+    private final Content pear;
 
     /** The interim name. */
     private String name;
 
-    private boolean interim;
+    /** interim?. */
+    private final boolean interim;
 
     /** Whether it has been synced or not. */
     private boolean synced = false;
 
 
-
+    /**
+     * Constructor.
+     */
     private NamedContent(Content pear, String name, boolean interim) {
         this.pear = Objects.requireNonNull(pear);
         this.name = Objects.requireNonNull(name);
         this.interim = interim;
     }
 
+    /**
+     * Create a named content with a interim name.
+     * @param path the path
+     * @param name the name
+     * @return {@link NamedContent}
+     */
     public static Content interimOf(Path path, String name) {
         Content content = new TextEditContent(path);
         return new NamedContent(content, name, true);
+    }
+
+    /**
+     * Create a named content.
+     * @param content the pear content
+     * @param name the name
+     * @return {@link NamedContent}
+     */
+    public static Content of(Content content, String name) {
+        return new NamedContent(content, name, false);
     }
 
     @Override
