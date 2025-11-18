@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * RoTextContent is an immutable implementation of the {@code Content} interface.
+ * ReadonlyContent is an immutable implementation of the {@code Content} interface.
  * This class delegates all read operations to an underlying {@code Content}
  * instance while suppressing any modification operations.
  * @author Naotsugu Kobayashi
@@ -36,7 +36,7 @@ public class ReadonlyContent extends ContentAdapter {
     private final Content pear;
 
     /**
-     * Constructor for RoTextContent that wraps a given Content instance.
+     * Constructor for ReadonlyContent that wraps a given Content instance.
      * @param pear the underlying Content instance to be wrapped
      */
     public ReadonlyContent(Content pear) {
@@ -44,14 +44,14 @@ public class ReadonlyContent extends ContentAdapter {
     }
 
     /**
-     * Creates a new {@code RoTextContent} instance from a given file path with a specified row limit.
+     * Creates a new {@code ReadonlyContent} instance from a given file path with a specified row limit.
      * This method reads the content from the specified file path, limiting it to the provided number of rows,
-     * wraps the content in a {@code TextEditContent}, and constructs a {@code RoTextContent} to represent
+     * wraps the content in a {@code TextEditContent}, and constructs a {@code ReadonlyContent} to represent
      * an immutable view of the content.
      *
-     * @param path the {@code Path} of the file to be read and wrapped in a {@code RoTextContent} instance
+     * @param path the {@code Path} of the file to be read and wrapped in a {@code ReadonlyContent} instance
      * @param rowLimit the maximum number of rows to be read from the file
-     * @return a new {@code RoTextContent} instance representing the immutable content of the file with the specified row limit
+     * @return a new {@code ReadonlyContent} instance representing the immutable content of the file with the specified row limit
      */
     public static ReadonlyContent of(Path path, int rowLimit) {
         Content content = new TextEditContent(Files.read(path, rowLimit));
