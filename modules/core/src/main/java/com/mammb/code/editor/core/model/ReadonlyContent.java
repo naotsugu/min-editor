@@ -55,7 +55,7 @@ public class ReadonlyContent extends ContentAdapter {
      */
     public static ReadonlyContent of(Path path, int rowLimit) {
         Content content = new TextEditContent(Files.read(path, rowLimit));
-        return new ReadonlyContent(content);
+        return new ReadonlyContent(NamedContent.of(content, path.getFileName().toString()));
     }
 
     @Override

@@ -543,6 +543,7 @@ public class EditorPane extends ContentPane {
         task.setOnSucceeded(_ -> {
             model = task.getValue();
             model.setSize(getWidth(), getHeight());
+            paint();
             log.log(System.Logger.Level.INFO, "opened %,d rows in %,d ms"
                 .formatted(model.query(Query.rowSize), System.currentTimeMillis() - start));
         });
