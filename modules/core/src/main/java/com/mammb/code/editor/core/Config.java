@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +70,8 @@ public interface Config {
         return dir;
     }
 
+    record TimedPath(LocalDateTime dateTime, Path path) {}
+
     /**
      * AbstractConfig.
      */
@@ -89,6 +92,9 @@ public interface Config {
         /** The default font size. */
         private double defaultFontSize;
 
+        /** The default font size. */
+        private final List<TimedPath> recents;
+
         /**
          * Constructor.
          * @param path the path of props
@@ -105,6 +111,7 @@ public interface Config {
                 case "windows" -> 15;
                 default -> 16;
             };
+            recents = new ArrayList<>();
         }
 
         @Override
@@ -112,13 +119,22 @@ public interface Config {
             return get("fontName", defaultFontName);
         }
 
+        /**
+         * Set the font name.
+         * @param fontName the font name
+         */
         public void fontName(String fontName) {
             put("fontName", fontName);
         }
 
+        /**
+         * Set the default font name.
+         * @param defaultFontName the default font name
+         */
         public void defaultFontName(String defaultFontName) {
-            this.defaultFontName = Objects.isNull(defaultFontName) || defaultFontName.isBlank()
-                ? this.defaultFontName : defaultFontName;
+            if (Objects.nonNull(defaultFontName) && !defaultFontName.isBlank()) {
+                this.defaultFontName = defaultFontName;
+            }
         }
 
         @Override
@@ -135,8 +151,14 @@ public interface Config {
             put("fontSize", fontSize);
         }
 
+        /**
+         * Set the default font size.
+         * @param defaultFontSize the default font size
+         */
         public void defaultFontSize(double defaultFontSize) {
-            this.defaultFontSize = defaultFontSize;
+            if (defaultFontSize > 0) {
+                this.defaultFontSize = defaultFontSize;
+            }
         }
 
         @Override

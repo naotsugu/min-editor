@@ -16,12 +16,12 @@
 package com.mammb.code.editor.core;
 
 /**
- * The configuration.
+ * The context.
  * @author Naotsugu Kobayashi
  */
 public interface Context {
 
-    /** The os name. */
+    /** The platform (os) name. */
     String platform = platform();
 
     /**
