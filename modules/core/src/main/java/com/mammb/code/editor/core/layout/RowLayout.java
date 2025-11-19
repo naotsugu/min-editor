@@ -26,6 +26,7 @@ import com.mammb.code.editor.core.text.Text;
 
 /**
  * The RowLayout.
+ * This layout does not wrap lines.
  * @author Naotsugu Kobayashi
  */
 class RowLayout implements ContentLayout {

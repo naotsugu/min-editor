@@ -24,9 +24,16 @@ import java.util.OptionalInt;
  */
 public class AutoFill {
 
+    /** The fill strategy. */
     private FillStrategy fillStrategy;
+    /** The sample index. */
     private int n;
 
+    /**
+     * Apply autofill.
+     * @param string the source text
+     * @return the applied text
+     */
     public String apply(String string) {
         if (n == 0) {
             fillStrategy = FillStrategy.of(string);
@@ -46,7 +53,11 @@ public class AutoFill {
             } else {
                 OptionalInt maybeInt = asInt(value);
                 if (maybeInt.isPresent()) {
-                    return new IntIncrement(maybeInt.getAsInt(), 1);
+                    if (value.startsWith("0") && value.length() > 1) {
+                        return new IntIncrement(maybeInt.getAsInt(), 1, value.length());
+                    } else {
+                        return new IntIncrement(maybeInt.getAsInt(), 1);
+                    }
                 }
                 OptionalDouble maybeDouble = asDouble(value);
                 if (maybeDouble.isPresent()) {
@@ -55,12 +66,13 @@ public class AutoFill {
                 return new Passthrough();
             }
         }
+
         static FillStrategy of(FillStrategy current, String value) {
             return switch (current) {
-                case IntIncrement(var initial, _) -> {
+                case IntIncrement(var initial, _, var format) -> {
                     OptionalInt maybeInt = asInt(value);
                     if (maybeInt.isPresent()) {
-                        yield new IntIncrement(initial, maybeInt.getAsInt() - initial);
+                        yield new IntIncrement(initial, maybeInt.getAsInt() - initial, format);
                     }
                     OptionalDouble maybeDouble = asDouble(value);
                     if (maybeDouble.isPresent()) {
@@ -87,10 +99,16 @@ public class AutoFill {
         }
     }
 
-    record IntIncrement(int initial, int distance) implements FillStrategy {
+    record IntIncrement(int initial, int distance, String format) implements FillStrategy {
+        public IntIncrement(int initial, int distance) {
+            this(initial, distance, "%d");
+        }
+        public IntIncrement(int initial, int distance, int width) {
+            this(initial, distance, "%0" + width + "d");
+        }
         @Override
         public String at(int n, String value) {
-            return String.valueOf(initial + n * distance);
+            return String.format(format, initial + n * distance);
         }
     }
 
