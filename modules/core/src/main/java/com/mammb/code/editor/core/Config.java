@@ -43,6 +43,12 @@ public interface Config {
     double fontSize();
 
     /**
+     * Push the recent path.
+     * @param path the path
+     */
+    void pushRecents(Path path);
+
+    /**
      * Get the config path.
      * @return the config path
      */
@@ -70,7 +76,12 @@ public interface Config {
         return dir;
     }
 
-    record TimedPath(LocalDateTime dateTime, Path path) {}
+    /** The timed path. */
+    record TimedPath(LocalDateTime dateTime, Path path) {
+        public TimedPath(Path path) {
+            this(LocalDateTime.now(), path);
+        }
+    }
 
     /**
      * AbstractConfig.
@@ -92,9 +103,6 @@ public interface Config {
         /** The default font size. */
         private double defaultFontSize;
 
-        /** The default font size. */
-        private final List<TimedPath> recents;
-
         /**
          * Constructor.
          * @param path the path of props
@@ -111,7 +119,6 @@ public interface Config {
                 case "windows" -> 15;
                 default -> 16;
             };
-            recents = new ArrayList<>();
         }
 
         @Override
@@ -138,11 +145,6 @@ public interface Config {
         }
 
         @Override
-        public Path path() {
-            return propsPath;
-        }
-
-        @Override
         public double fontSize() {
             return Double.parseDouble(props.getOrDefault("fontSize", defaultFontSize).toString());
         }
@@ -159,6 +161,18 @@ public interface Config {
             if (defaultFontSize > 0) {
                 this.defaultFontSize = defaultFontSize;
             }
+        }
+
+        @Override
+        public void pushRecents(Path path) {
+            @SuppressWarnings("unchecked")
+            var list = (ArrayList<TimedPath>) props.computeIfAbsent("recents", _ -> new ArrayList<TimedPath>());
+            list.add(new TimedPath(path));
+        }
+
+        @Override
+        public Path path() {
+            return propsPath;
         }
 
         @Override
