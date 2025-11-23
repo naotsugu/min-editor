@@ -168,6 +168,7 @@ public class EditorPane extends ContentPane {
     @Override
     public void focus() {
         canvas.requestFocus();
+        paint();
     }
 
     private void handleContextMenuRequested(ContextMenuEvent e) {
