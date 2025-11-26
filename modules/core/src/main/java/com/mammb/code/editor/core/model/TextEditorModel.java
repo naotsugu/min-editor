@@ -94,10 +94,10 @@ public class TextEditorModel implements EditorModel {
     private final ScreenScroll scroll;
     /** The context. */
     private final Context ctx;
-    /** The find. */
-    private final Find find;
     /** The action history. */
     private final ActionHistory actionHistory = new ActionHistory();
+    /** The find. */
+    private Find find;
     /** The decorate. */
     private Decorate decorate;
 
@@ -669,6 +669,7 @@ public class TextEditorModel implements EditorModel {
         }
         moveTo(0);
         escape();
+        find = content.find();
     }
 
     @Override
