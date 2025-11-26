@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2024 the original author or authors.
+ * Copyright 2023-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.CodingErrorAction;
 import java.nio.file.CopyOption;
 import java.nio.file.LinkOption;
 import java.nio.file.OpenOption;
@@ -249,18 +250,22 @@ public interface Files {
     static void writeWith(Path path, Charset charset, Charset newCharset, String lineSeparator) {
         Path destinationPath = createTempFile(path.getParent(), path.getFileName().toString(), null);
         if (lineSeparator != null && !lineSeparator.isBlank()) {
-            writeWith(path, charset, destinationPath, newCharset);
+            writeWith(path, charset, destinationPath, newCharset, false);
         } else {
-            writeWith(path, charset, destinationPath, newCharset, lineSeparator);
+            writeWith(path, charset, destinationPath, newCharset, lineSeparator, false);
         }
         move(destinationPath, path, StandardCopyOption.REPLACE_EXISTING);
     }
 
     private static void writeWith(
-            Path sourcePath, Charset sourceCharset,
-            Path destinationPath, Charset destinationCharset) {
+        Path sourcePath, Charset sourceCharset,
+        Path destinationPath, Charset destinationCharset,
+        boolean strict) {
         try (Reader reader = java.nio.file.Files.newBufferedReader(sourcePath, sourceCharset);
-             Writer writer = java.nio.file.Files.newBufferedWriter(destinationPath, destinationCharset)) {
+             Writer writer = strict
+                 ? java.nio.file.Files.newBufferedWriter(destinationPath, destinationCharset)
+                 : new BufferedWriter(new OutputStreamWriter(java.nio.file.Files.newOutputStream(destinationPath),
+                    sourceCharset.newEncoder().onMalformedInput(CodingErrorAction.IGNORE).onUnmappableCharacter(CodingErrorAction.IGNORE)))) {
             char[] buffer = new char[8192];
             int charsRead;
             while ((charsRead = reader.read(buffer)) != -1) {
@@ -272,10 +277,14 @@ public interface Files {
     }
 
     private static void writeWith(
-            Path sourcePath, Charset sourceCharset,
-            Path destinationPath, Charset destinationCharset, String lineSeparator) {
+        Path sourcePath, Charset sourceCharset,
+        Path destinationPath, Charset destinationCharset, String lineSeparator,
+        boolean strict) {
         try (BufferedReader reader = java.nio.file.Files.newBufferedReader(sourcePath, sourceCharset);
-             Writer writer = java.nio.file.Files.newBufferedWriter(destinationPath, destinationCharset)) {
+             Writer writer = strict
+                 ? java.nio.file.Files.newBufferedWriter(destinationPath, destinationCharset)
+                 : new BufferedWriter(new OutputStreamWriter(java.nio.file.Files.newOutputStream(destinationPath),
+                    sourceCharset.newEncoder().onMalformedInput(CodingErrorAction.IGNORE).onUnmappableCharacter(CodingErrorAction.IGNORE)))) {
             reader.lines().forEachOrdered(line -> {
                 try {
                     writer.write(line);
