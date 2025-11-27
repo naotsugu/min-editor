@@ -675,6 +675,7 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void close() {
         content.close();
+        find = Find.empty();
     }
 
     @Override
