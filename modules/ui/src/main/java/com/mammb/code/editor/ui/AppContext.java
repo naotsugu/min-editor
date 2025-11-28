@@ -18,9 +18,10 @@ package com.mammb.code.editor.ui;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -33,7 +34,7 @@ public class AppContext implements Context {
     private final AppConfig appConfig;
 
     /** The recent path. */
-    private final ConcurrentLinkedDeque<Path> recents = new ConcurrentLinkedDeque<>();
+    private final Deque<Path> recents = new ConcurrentLinkedDeque<>();
 
     /**
      * Constructor.
@@ -62,6 +63,11 @@ public class AppContext implements Context {
                 recents.removeLast();
             }
         }
+    }
+
+    @Override
+    public List<Path> recents() {
+        return new ArrayList<>(recents);
     }
 
 }

@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core;
 
 import java.nio.file.Path;
+import java.util.List;
 
 /**
  * The context.
@@ -37,6 +38,12 @@ public interface Context {
      * @param path the recent path
      */
     void pushRecents(Path path);
+
+    /**
+     * Get the recent path list.
+     * @return the recent path list
+     */
+    List<Path> recents();
 
     /**
      * Get the platform string.

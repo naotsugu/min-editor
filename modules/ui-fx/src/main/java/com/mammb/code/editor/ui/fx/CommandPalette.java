@@ -23,7 +23,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -32,7 +31,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -42,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.SequencedMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 
 import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -192,14 +189,14 @@ public class CommandPalette extends Dialog<Command> {
      */
     static class AcTextField extends TextField {
         final CommandPalette commandPalette;
-        final AcContextMenu popup;
+        final FxSelectOneMenu popup;
         final Query.Queryable queryable;
         SequencedMap<String, CustomMenuItem> items;
 
         public AcTextField(CommandPalette commandPalette, Query.Queryable queryable) {
             super();
             this.commandPalette = commandPalette;
-            this.popup = new AcContextMenu();
+            this.popup = new FxSelectOneMenu();
             this.queryable = queryable;
 
             setStyle("""
@@ -291,38 +288,7 @@ public class CommandPalette extends Dialog<Command> {
                     - 40);
                 popup.getItems().addAll(menuItems);
                 popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
-                focusFirstItem();
-            }
-        }
-
-        void focusFirstItem() {
-            if (popup.getSkin() == null) {
-                return;
-            }
-            Node node = popup.getSkin().getNode().lookup(".menu-item");
-            node.requestFocus();
-            node.fireEvent(new KeyEvent(KEY_PRESSED, "", "", DOWN, false, false, false, false));
-        }
-    }
-
-
-    static class AcContextMenu extends ContextMenu {
-        private double availableHeight = 400;
-        public AcContextMenu() {
-            setStyle("""
-                -fx-background-color: derive(-fx-control-inner-background,10%);
-                """);
-        }
-        public void setAvailableHeight(double height) {
-            availableHeight = height;
-        }
-
-        @Override
-        public void show(Node anchor, Side side, double dx, double dy) {
-            super.show(anchor, side, dx, dy);
-            if (getSkin().getNode() instanceof Region region) {
-                region.setMaxHeight(availableHeight);
-                setY(anchor.localToScreen(anchor.getBoundsInLocal()).getMaxY() + dy);
+                popup.focusFirstItem();
             }
         }
     }
