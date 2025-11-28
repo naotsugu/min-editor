@@ -16,14 +16,11 @@
 package com.mammb.code.editor.core;
 
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * The application configuration.
@@ -43,12 +40,6 @@ public interface Config {
      * @return the font size
      */
     double fontSize();
-
-    /**
-     * Push the recent path.
-     * @param path the path
-     */
-    void pushRecents(Path path);
 
     /**
      * Get the config path.
@@ -78,16 +69,6 @@ public interface Config {
         return dir;
     }
 
-    /** The timed path. */
-    record TimedPath(LocalDateTime dateTime, Path path) {
-        public TimedPath(Path path) {
-            this(LocalDateTime.now(), path);
-        }
-        public boolean exists() {
-            return Files.exists(path);
-        }
-    }
-
     /**
      * AbstractConfig.
      */
@@ -107,10 +88,6 @@ public interface Config {
 
         /** The default font size. */
         private double defaultFontSize;
-
-        /** The recents. */
-        private final Deque<TimedPath> recents = new ConcurrentLinkedDeque<>();
-
 
         /**
          * Constructor.
@@ -170,13 +147,6 @@ public interface Config {
             if (defaultFontSize > 0) {
                 this.defaultFontSize = defaultFontSize;
             }
-        }
-
-        @Override
-        public void pushRecents(Path path) {
-            var timedPath = new TimedPath(path);
-            if (!timedPath.exists()) return;
-            recents.addFirst(timedPath);
         }
 
         @Override

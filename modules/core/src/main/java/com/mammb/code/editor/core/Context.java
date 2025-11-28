@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.core;
 
+import java.nio.file.Path;
+
 /**
  * The context.
  * @author Naotsugu Kobayashi
@@ -29,6 +31,12 @@ public interface Context {
      * @return the config
      */
     Config config();
+
+    /**
+     * Push the recent path.
+     * @param path the recent path
+     */
+    void pushRecents(Path path);
 
     /**
      * Get the platform string.

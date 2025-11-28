@@ -16,6 +16,12 @@
 package com.mammb.code.editor.ui;
 
 import com.mammb.code.editor.core.Context;
+import com.mammb.code.editor.core.Files;
+import java.nio.file.Path;
+import java.util.Deque;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * The application context.
@@ -25,6 +31,9 @@ public class AppContext implements Context {
 
     /** The configuration instance. */
     private final AppConfig appConfig;
+
+    /** The recent path. */
+    private final ConcurrentLinkedDeque<Path> recents = new ConcurrentLinkedDeque<>();
 
     /**
      * Constructor.
@@ -36,6 +45,23 @@ public class AppContext implements Context {
     @Override
     public AppConfig config() {
         return appConfig;
+    }
+
+    @Override
+    public void pushRecents(Path path) {
+        if (!Files.exists(path)) return;
+        boolean dup = recents.contains(path);
+        recents.addFirst(path);
+        if (dup) {
+            recents.clear();
+            recents.addAll(new LinkedHashSet<>(recents));
+        }
+        if (recents.size() > 25) {
+            int rem = recents.size() - 25;
+            for (int i = 0; i < rem; i ++) {
+                recents.removeLast();
+            }
+        }
     }
 
 }
