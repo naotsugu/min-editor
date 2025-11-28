@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.ui.AppContext;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -53,7 +54,7 @@ public class FxDialog extends Dialog<ButtonType> {
      * @param owner the owner of the dialog
      * @return the about dialog
      */
-    public static FxDialog about(Window owner, AppContext ctx) {
+    public static FxDialog about(Window owner, FxAppContext ctx) {
         FxDialog dialog = new FxDialog(owner, "About", Version.appName + " " + Version.val, ButtonType.CLOSE);
         var label = new Label(Version.appName + " " + Version.val);
         label.setPrefWidth(300);

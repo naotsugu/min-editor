@@ -137,6 +137,7 @@ public class TextEditorModel implements EditorModel {
         this(content, ScreenLayout.of(content, fm), scroll, ctx, content.find(),
             Decorate.of(Syntax.pathOf(content.query(Query.modelName).plain()))
         );
+        content.path().ifPresent(path -> ctx.config().pushRecents(path));
     }
 
     @Override

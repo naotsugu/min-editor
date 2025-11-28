@@ -69,16 +69,16 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     private static final AtomicReference<DndTabPane> activePane = new AtomicReference<>();
     private static final DataFormat tabMove = new DataFormat("SplitTabPane:tabMove");
 
-    private final AppContext context;
+    private final FxAppContext context;
     private SplitPane pane = new SplitPane();
     private SplitTabPane parent = null;
 
-    private SplitTabPane(AppContext ctx) {
+    private SplitTabPane(FxAppContext ctx) {
         context = ctx;
         getChildren().add(pane);
     }
 
-    public SplitTabPane(AppContext ctx, ContentPane... panes) {
+    public SplitTabPane(FxAppContext ctx, ContentPane... panes) {
         this(ctx);
         DndTabPane dndTabPane = add(panes[0]);
         Arrays.stream(panes).skip(1).forEach(dndTabPane::add);

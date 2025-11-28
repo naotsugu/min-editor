@@ -15,38 +15,24 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.editor.core.Context;
-import com.mammb.code.editor.ui.AppConfig;
+import com.mammb.code.editor.ui.AppContext;
 import javafx.application.Application;
 
 /**
  * The application context.
  * @author Naotsugu Kobayashi
  */
-public class AppContext implements Context {
-
-    /** The configuration instance. */
-    private final AppConfig appConfig;
+public class FxAppContext extends AppContext {
 
     /** The application. */
     private final Application app;
 
-    /**
-     * Constructor.
-     * @param app the application
-     */
-    public AppContext(Application app) {
+    public FxAppContext(Application app) {
+        super();
         this.app = app;
-        this.appConfig = new AppConfig();
-    }
-
-    @Override
-    public AppConfig config() {
-        return appConfig;
     }
 
     public Application getApp() {
         return app;
     }
-
 }

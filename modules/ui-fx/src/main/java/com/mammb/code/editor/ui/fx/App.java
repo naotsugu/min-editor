@@ -21,6 +21,7 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import com.mammb.code.editor.ui.AppContext;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -44,7 +45,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
-        var ctx = new AppContext(this);
+        var ctx = new FxAppContext(this);
 
         // if additional fonts are added, set them as the default font
         ctx.config().defaultFontName(

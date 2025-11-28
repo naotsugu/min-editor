@@ -26,6 +26,7 @@ import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
+import com.mammb.code.editor.ui.AppContext;
 import com.mammb.code.editor.ui.Command;
 import com.mammb.code.editor.ui.DrawImpl;
 import com.mammb.code.editor.ui.Command.*;
@@ -88,7 +89,7 @@ public class EditorPane extends ContentPane {
     private static final long BACKGROUND_THRESHOLD = 2_000_000;
 
     /** The context. */
-    private final AppContext context;
+    private final FxAppContext context;
     /** The canvas. */
     private final Canvas canvas;
     /** The draw. */
@@ -110,7 +111,7 @@ public class EditorPane extends ContentPane {
      * Constructor.
      * @param ctx the application context
      */
-    public EditorPane(AppContext ctx) {
+    public EditorPane(FxAppContext ctx) {
 
         context = ctx;
         Font font = Font.font(context.config().fontName(), context.config().fontSize());

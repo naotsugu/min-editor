@@ -34,7 +34,7 @@ public class AppPane extends BorderPane {
      * @param path the path of content or {@code null}
      * @param ctx the application context
      */
-    public AppPane(Stage stage, Path path, AppContext ctx) {
+    public AppPane(Stage stage, Path path, FxAppContext ctx) {
 
         // restore sessions
         var sessions = new ArrayList<>(ctx.config().sessions());

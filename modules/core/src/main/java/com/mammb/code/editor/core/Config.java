@@ -18,10 +18,12 @@ package com.mammb.code.editor.core;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * The application configuration.
@@ -81,6 +83,9 @@ public interface Config {
         public TimedPath(Path path) {
             this(LocalDateTime.now(), path);
         }
+        public boolean exists() {
+            return Files.exists(path);
+        }
     }
 
     /**
@@ -102,6 +107,10 @@ public interface Config {
 
         /** The default font size. */
         private double defaultFontSize;
+
+        /** The recents. */
+        private final Deque<TimedPath> recents = new ConcurrentLinkedDeque<>();
+
 
         /**
          * Constructor.
@@ -165,9 +174,9 @@ public interface Config {
 
         @Override
         public void pushRecents(Path path) {
-            @SuppressWarnings("unchecked")
-            var list = (ArrayList<TimedPath>) props.computeIfAbsent("recents", _ -> new ArrayList<TimedPath>());
-            list.add(new TimedPath(path));
+            var timedPath = new TimedPath(path);
+            if (!timedPath.exists()) return;
+            recents.addFirst(timedPath);
         }
 
         @Override
