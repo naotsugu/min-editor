@@ -147,6 +147,8 @@ public sealed interface Command {
 
     record Open(String path) implements Command, RequireArgs1<String> { }
 
+    record OpenRecent() implements Command { }
+
     record Diff() implements Command { }
 
     record DiffFoldOff() implements Command {}
@@ -235,7 +237,8 @@ public sealed interface Command {
             case Class<?> c when c == GoTo.class -> "go to the specified number of row";
             case Class<?> c when c == WrapLine.class -> "wraps a line with a specified number of characters";
             case Class<?> c when c == ToggleLayout.class -> "toggle context layout";
-            case Class<?> c when c == Open.class -> "opens the file at the specified path";
+            case Class<?> c when c == Open.class -> "open the file at the specified path";
+            case Class<?> c when c == OpenRecent.class -> "open the file from recent list";
             case Class<?> c when c == Diff.class -> "diff";
             case Class<?> c when c == DiffFoldOff.class -> "display all lines without folding.";
             case Class<?> c when c == DiffWith.class -> "diff with the specified file";

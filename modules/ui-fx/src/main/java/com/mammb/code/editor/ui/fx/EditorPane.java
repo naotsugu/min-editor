@@ -26,7 +26,6 @@ import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
-import com.mammb.code.editor.ui.AppContext;
 import com.mammb.code.editor.ui.Command;
 import com.mammb.code.editor.ui.DrawImpl;
 import com.mammb.code.editor.ui.Command.*;
@@ -41,6 +40,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -105,6 +105,7 @@ public class EditorPane extends ContentPane {
     /** The file path property. */
     private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.EMPTY);
 
+    /** The close listener. */
     private Consumer<ContentPane> closeListener;
 
     /**
@@ -173,8 +174,8 @@ public class EditorPane extends ContentPane {
     }
 
     private void handleContextMenuRequested(ContextMenuEvent e) {
-        var cm = new AppContextMenu(this);
-        cm.show(getScene().getWindow(), e.getScreenX(), e.getScreenY());
+        new AppContextMenu(this)
+            .show(getScene().getWindow(), e.getScreenX(), e.getScreenY());
     }
 
     private void handleLayoutBoundsChanged(ObservableValue<? extends Bounds> ob, Bounds o, Bounds n) {
@@ -384,6 +385,7 @@ public class EditorPane extends ContentPane {
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> open(Path.of(cmd.path()));
+            case OpenRecent cmd       -> openRecent();
             case Config _             -> newEdit().open(Session.of(context.config().path()));
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
             case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
@@ -506,6 +508,13 @@ public class EditorPane extends ContentPane {
         } else {
             newEdit().inputText(path::toString);
         }
+    }
+
+    void openRecent() {
+        FxSelectOneMenu.of(context.recents(), path -> {
+            open(Session.of(path));
+            paint();
+        }).show(this, Side.LEFT, 5, 5);
     }
 
     private void open(Session session) {

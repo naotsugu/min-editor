@@ -181,7 +181,6 @@ public class CommandPalette extends Dialog<Command> {
         close();
     }
 
-
     /**
      * Auto Complete TextField.
      */
@@ -285,7 +284,6 @@ public class CommandPalette extends Dialog<Command> {
                     - 40);
                 popup.getItems().addAll(menuItems);
                 popup.show(AcTextField.this, Side.BOTTOM, -7, 7);
-                popup.focusFirstItem();
             }
         }
     }

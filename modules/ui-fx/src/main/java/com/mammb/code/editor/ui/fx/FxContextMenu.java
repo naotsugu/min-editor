@@ -15,54 +15,34 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.editor.core.Theme;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import java.util.Collection;
-import java.util.function.Consumer;
 
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyEvent.KEY_PRESSED;
 
 /**
- * The select one menu.
+ * The FxContextMenu.
  * @author Naotsugu Kobayashi
  */
-public class FxSelectOneMenu extends ContextMenu {
+public class FxContextMenu extends ContextMenu {
 
-    private double availableHeight = 400;
+    private double availableHeight = 0;
 
-    public FxSelectOneMenu() {
-        setStyle("""
-            -fx-background-color: derive(-fx-control-inner-background,10%);
-            """);
+    public FxContextMenu(MenuItem... menuItems) {
+        super(menuItems);
         buildEventHandler();
     }
 
-    public static <E> FxSelectOneMenu of(Collection<E> list, Consumer<E> consumer) {
-        var menu = new FxSelectOneMenu();
-        Color textColor = Color.web(Theme.current.fgColor().web());
-        list.forEach(e -> {
-            var label = new Text(e.toString());
-            label.setFill(textColor);
-            CustomMenuItem item = new CustomMenuItem(label, true);
-            item.setOnAction(a -> {
-                a.consume();
-                consumer.accept(e);
-            });
-            menu.getItems().add(item);
-        });
-        return menu;
+    public FxContextMenu() {
+        this(new MenuItem[0]);
     }
 
     public void setAvailableHeight(double height) {
@@ -72,15 +52,15 @@ public class FxSelectOneMenu extends ContextMenu {
     @Override
     public void show(Node anchor, Side side, double dx, double dy) {
         super.show(anchor, side, dx, dy);
+        if (availableHeight <= 0) return;
         if (getSkin() != null && getSkin().getNode() instanceof Region region) {
             region.setMaxHeight(availableHeight);
             setY(anchor.localToScreen(anchor.getBoundsInLocal()).getMaxY() + dy);
         }
-        requestFocus();
         focusFirstItem();
     }
 
-    void focusFirstItem() {
+    private void focusFirstItem() {
         if (getSkin() == null || getSkin().getNode() == null) {
             return;
         }

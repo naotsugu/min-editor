@@ -18,43 +18,30 @@ package com.mammb.code.editor.ui.fx;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.ui.Command;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.event.EventTarget;
-import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
-import javafx.scene.input.KeyEvent;
 
 /**
  * AppContextMenu.
  * @author Naotsugu Kobayashi
  */
-public class AppContextMenu extends ContextMenu {
-
-    /** The target {@link EditorPane}. */
-    private final EditorPane editorPane;
+public class AppContextMenu extends FxContextMenu {
 
     /**
      * Constructor.
      * @param editorPane the target {@link EditorPane}
      */
     public AppContextMenu(EditorPane editorPane) {
-        super();
-        this.editorPane = editorPane;
-        buildMenuItems();
-        buildEventHandler();
+        super(buildMenuItems(editorPane));
     }
-
 
     /**
      * Build the menu items.
      */
-    private void buildMenuItems() {
+    private static MenuItem[] buildMenuItems(EditorPane editorPane) {
 
         boolean textSelected = editorPane.query(Query.selectedCounts) > 0;
-        String style = "-fx-font: normal 10pt System;";
+        String style = "-fx-font: normal 11pt System;";
 
         var cut = new MenuItem("Cut");
         cut.setStyle(style);
@@ -105,45 +92,13 @@ public class AppContextMenu extends ContextMenu {
         translateInBrowser.setOnAction(_ -> editorPane.execute(new Command.TranslateInBrowser()));
         translateInBrowser.setDisable(!textSelected);
 
-        getItems().addAll(
+        return new MenuItem[] {
             cut, copy, paste, pasteAs,
             new SeparatorMenuItem(),
             backward, forward,
             new SeparatorMenuItem(),
-            searchInBrowser, translateInBrowser);
-    }
-
-    private void buildEventHandler() {
-        final EventHandler<KeyEvent> blockKeyPressed = keyEvent -> {
-            switch (keyEvent.getCode()) {
-                case UP, DOWN, ESCAPE -> {}
-                case ENTER -> {
-                    keyEvent.consume();
-                    EventTarget eventTarget = keyEvent.getTarget();
-                    if (eventTarget instanceof Node node) {
-                        MenuItem menuItem = (MenuItem) node.getProperties().get(MenuItem.class);
-                        if (menuItem != null && !menuItem.isDisable() && menuItem.isVisible()) {
-                            menuItem.fire();
-                        }
-                    }
-                    Platform.runLater(this::hide);
-                }
-                default -> keyEvent.consume();
-            }
+            searchInBrowser, translateInBrowser
         };
-        final EventHandler<KeyEvent> blockKeyTyped = KeyEvent::consume;
-
-        setOnShown(_ -> {
-            if (getScene() != null) {
-                getScene().addEventFilter(KeyEvent.KEY_PRESSED, blockKeyPressed);
-                getScene().addEventFilter(KeyEvent.KEY_TYPED, blockKeyTyped);
-            }
-        });
-        setOnHidden(_ -> {
-            if (getScene() != null) {
-                getScene().removeEventFilter(KeyEvent.KEY_PRESSED, blockKeyPressed);
-                getScene().removeEventFilter(KeyEvent.KEY_TYPED, blockKeyTyped);
-            }
-        });
     }
+
 }
