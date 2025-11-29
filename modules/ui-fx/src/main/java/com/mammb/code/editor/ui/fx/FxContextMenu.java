@@ -42,7 +42,7 @@ public class FxContextMenu extends ContextMenu {
     }
 
     public FxContextMenu() {
-        this(false, new MenuItem[0]);
+        this(false);
     }
 
     public void setAvailableHeight(double height) {
@@ -58,6 +58,11 @@ public class FxContextMenu extends ContextMenu {
             setY(anchor.localToScreen(anchor.getBoundsInLocal()).getMaxY() + dy);
         }
         focusFirstItem();
+    }
+
+    @Override
+    public void show(Node anchor, double dx, double dy) {
+        show(anchor, null, dx, dy);
     }
 
     private void focusFirstItem() {

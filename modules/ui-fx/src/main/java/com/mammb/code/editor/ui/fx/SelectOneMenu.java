@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Theme;
 import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.MenuItem;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import java.util.Collection;
@@ -28,27 +29,31 @@ import java.util.function.Consumer;
  */
 public class SelectOneMenu extends FxContextMenu {
 
-    public SelectOneMenu() {
+    private SelectOneMenu(boolean modal, MenuItem... menuItems) {
+        super(modal, menuItems);
         setStyle("""
             -fx-background-color: derive(-fx-control-inner-background,10%);
             """);
         setAvailableHeight(400);
     }
 
+    public SelectOneMenu() {
+        this(false);
+    }
+
     public static <E> SelectOneMenu of(Collection<E> list, Consumer<E> consumer) {
-        var menu = new SelectOneMenu();
         Color textColor = Color.web(Theme.current.fgColor().web());
-        list.forEach(e -> {
-            var label = new Text(e.toString());
-            label.setFill(textColor);
-            CustomMenuItem item = new CustomMenuItem(label, true);
-            item.setOnAction(a -> {
-                a.consume();
-                consumer.accept(e);
-            });
-            menu.getItems().add(item);
-        });
-        return menu;
+        return new SelectOneMenu(true, list.stream()
+            .map(e -> {
+                var label = new Text(e.toString());
+                label.setFill(textColor);
+                CustomMenuItem item = new CustomMenuItem(label, true);
+                item.setOnAction(a -> {
+                    a.consume();
+                    consumer.accept(e);
+                });
+                return item;
+            }).toArray(CustomMenuItem[]::new));
     }
 
 }
