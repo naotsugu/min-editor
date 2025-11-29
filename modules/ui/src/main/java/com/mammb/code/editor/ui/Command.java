@@ -48,7 +48,7 @@ public sealed interface Command {
 
     interface RequireSelection { }
 
-    interface RequireSeveralCarets { }
+    interface RequireSomeCarets { }
 
 
     record ActionCommand(Action action) implements Command, Hidden {}
@@ -113,7 +113,7 @@ public sealed interface Command {
 
     record NormalizeAscii() implements Command, RequireSelection {}
 
-    record AutoFill() implements Command, RequireSeveralCarets {}
+    record AutoFill() implements Command, RequireSomeCarets {}
 
     record Backward() implements Command {}
 

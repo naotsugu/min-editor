@@ -28,7 +28,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
@@ -45,7 +44,6 @@ import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.ESCAPE;
-import static javafx.scene.input.KeyEvent.KEY_PRESSED;
 
 /**
  * The CommandPalette.
@@ -254,12 +252,11 @@ public class CommandPalette extends Dialog<Command> {
                 box.setPrefWidth(AcTextField.this.getWidth());
 
                 CustomMenuItem item = new CustomMenuItem(box, true);
-                item.setStyle("-fx-border-color: red;");
                 item.setOnAction(_ -> commandPalette.selectCommand(entry.getValue()));
                 if (Command.RequireSelection.class.isAssignableFrom(entry.getValue())) {
                     item.setDisable(queryable.query(Query.selectedText).isEmpty());
                 }
-                if (Command.RequireSeveralCarets.class.isAssignableFrom(entry.getValue())) {
+                if (Command.RequireSomeCarets.class.isAssignableFrom(entry.getValue())) {
                     item.setDisable(queryable.query(Query.caretCount) < 2);
                 }
                 if (Command.Diff.class.isAssignableFrom(entry.getValue()) ||
