@@ -511,7 +511,7 @@ public class EditorPane extends ContentPane {
     }
 
     void openRecent() {
-        FxSelectOneMenu.of(context.recents(), path -> {
+        SelectOneMenu.of(context.recents(), path -> {
             open(Session.of(path));
             paint();
         }).show(this, Side.LEFT, 5, 5);

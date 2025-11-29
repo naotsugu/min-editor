@@ -186,14 +186,14 @@ public class CommandPalette extends Dialog<Command> {
      */
     static class AcTextField extends TextField {
         final CommandPalette commandPalette;
-        final FxSelectOneMenu popup;
+        final SelectOneMenu popup;
         final Query.Queryable queryable;
         SequencedMap<String, CustomMenuItem> items;
 
         public AcTextField(CommandPalette commandPalette, Query.Queryable queryable) {
             super();
             this.commandPalette = commandPalette;
-            this.popup = new FxSelectOneMenu();
+            this.popup = new SelectOneMenu();
             this.queryable = queryable;
 
             setStyle("""

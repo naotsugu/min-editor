@@ -36,13 +36,13 @@ public class FxContextMenu extends ContextMenu {
 
     private double availableHeight = 0;
 
-    public FxContextMenu(MenuItem... menuItems) {
+    public FxContextMenu(boolean modal, MenuItem... menuItems) {
         super(menuItems);
-        buildEventHandler();
+        if (modal) buildEventHandler();
     }
 
     public FxContextMenu() {
-        this(new MenuItem[0]);
+        this(false, new MenuItem[0]);
     }
 
     public void setAvailableHeight(double height) {

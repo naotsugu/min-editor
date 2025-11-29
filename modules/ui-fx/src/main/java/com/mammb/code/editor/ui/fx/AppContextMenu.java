@@ -32,7 +32,7 @@ public class AppContextMenu extends FxContextMenu {
      * @param editorPane the target {@link EditorPane}
      */
     public AppContextMenu(EditorPane editorPane) {
-        super(buildMenuItems(editorPane));
+        super(true, buildMenuItems(editorPane));
     }
 
     /**
