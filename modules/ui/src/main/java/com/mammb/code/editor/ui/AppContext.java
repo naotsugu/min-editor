@@ -54,8 +54,9 @@ public class AppContext implements Context {
         boolean dup = recents.contains(path);
         recents.addFirst(path);
         if (dup) {
+            var set = new LinkedHashSet<>(recents);
             recents.clear();
-            recents.addAll(new LinkedHashSet<>(recents));
+            recents.addAll(set);
         }
         if (recents.size() > 25) {
             int rem = recents.size() - 25;

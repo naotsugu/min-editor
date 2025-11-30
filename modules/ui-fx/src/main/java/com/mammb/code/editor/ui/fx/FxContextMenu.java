@@ -24,6 +24,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
+import javafx.stage.Window;
 
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyEvent.KEY_PRESSED;
@@ -65,13 +66,20 @@ public class FxContextMenu extends ContextMenu {
         show(anchor, null, dx, dy);
     }
 
+    public void show(Window window, double dx, double dy) {
+        super.show(window, dx, dy);
+        focusFirstItem();
+    }
+
     private void focusFirstItem() {
         if (getSkin() == null || getSkin().getNode() == null) {
             return;
         }
         Node node = getSkin().getNode().lookup(".menu-item");
-        node.requestFocus();
-        node.fireEvent(new KeyEvent(KEY_PRESSED, "", "", DOWN, false, false, false, false));
+        if (node != null) {
+            node.requestFocus();
+            node.fireEvent(new KeyEvent(KEY_PRESSED, "", "", DOWN, false, false, false, false));
+        }
     }
 
     private void buildEventHandler() {

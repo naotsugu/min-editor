@@ -511,10 +511,11 @@ public class EditorPane extends ContentPane {
     }
 
     void openRecent() {
+        var window = getScene().getWindow();
         SelectOneMenu.of(context.recents(), path -> {
             open(Session.of(path));
             paint();
-        }).show(this, Side.LEFT, 5, 5);
+        }).show(window, window.getX(), window.getY() + 55);
     }
 
     private void open(Session session) {
