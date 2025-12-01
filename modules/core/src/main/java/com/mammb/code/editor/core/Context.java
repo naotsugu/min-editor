@@ -33,6 +33,10 @@ public interface Context {
      */
     Config config();
 
+    void opened(Path path);
+
+    void closed(Path path);
+
     /**
      * Push the recent path.
      * @param path the recent path

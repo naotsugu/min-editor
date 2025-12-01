@@ -602,7 +602,9 @@ public class EditorPane extends ContentPane {
         EditorModel m = model();
         if (m == null) return Optional.empty();
         Optional<Session> restorableSession;
-        if (m.query(Query.contentPath).isPresent()) {
+        var contentPath = m.query(Query.contentPath);
+        if (contentPath.isPresent()) {
+            context.closed(contentPath.get());
             restorableSession = force || canClose()
                 ? Optional.of(m.getSession())
                 : Optional.empty();

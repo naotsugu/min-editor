@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
@@ -32,6 +33,9 @@ public class AppContext implements Context {
 
     /** The configuration instance. */
     private final AppConfig appConfig;
+
+    /** The recent path. */
+    private final Set<Path> current = new LinkedHashSet<>();
 
     /** The recent path. */
     private final Deque<Path> recents = new ConcurrentLinkedDeque<>();
@@ -46,6 +50,19 @@ public class AppContext implements Context {
     @Override
     public AppConfig config() {
         return appConfig;
+    }
+
+    @Override
+    public void opened(Path path) {
+        if (!Files.exists(path)) return;
+        current.add(path);
+        pushRecents(path);
+    }
+
+    @Override
+    public void closed(Path path) {
+        if (!Files.exists(path)) return;
+        current.remove(path);
     }
 
     @Override

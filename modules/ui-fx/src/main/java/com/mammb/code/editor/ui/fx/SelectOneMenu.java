@@ -47,6 +47,7 @@ public class SelectOneMenu extends FxContextMenu {
             .map(e -> {
                 var label = new Text(e.toString());
                 label.setFill(textColor);
+                label.setStyle("-fx-font: 15px \"Consolas\";");
                 CustomMenuItem item = new CustomMenuItem(label, true);
                 item.setOnAction(a -> {
                     a.consume();
