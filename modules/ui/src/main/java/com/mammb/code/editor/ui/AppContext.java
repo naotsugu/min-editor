@@ -16,76 +16,23 @@
 package com.mammb.code.editor.ui;
 
 import com.mammb.code.editor.core.Context;
-import com.mammb.code.editor.core.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * The application context.
  * @author Naotsugu Kobayashi
  */
-public class AppContext implements Context {
-
-    /** The configuration instance. */
-    private final AppConfig appConfig;
-
-    /** The recent path. */
-    private final Set<Path> current = new LinkedHashSet<>();
-
-    /** The recent path. */
-    private final Deque<Path> recents = new ConcurrentLinkedDeque<>();
+public class AppContext extends Context.AbstractContext {
 
     /**
      * Constructor.
      */
     public AppContext() {
-        this.appConfig = new AppConfig();
+        super(new AppConfig());
     }
 
     @Override
     public AppConfig config() {
-        return appConfig;
-    }
-
-    @Override
-    public void opened(Path path) {
-        if (!Files.exists(path)) return;
-        current.add(path);
-        pushRecents(path);
-    }
-
-    @Override
-    public void closed(Path path) {
-        if (!Files.exists(path)) return;
-        current.remove(path);
-    }
-
-    @Override
-    public void pushRecents(Path path) {
-        if (!Files.exists(path)) return;
-        boolean dup = recents.contains(path);
-        recents.addFirst(path);
-        if (dup) {
-            var set = new LinkedHashSet<>(recents);
-            recents.clear();
-            recents.addAll(set);
-        }
-        if (recents.size() > 25) {
-            int rem = recents.size() - 25;
-            for (int i = 0; i < rem; i ++) {
-                recents.removeLast();
-            }
-        }
-    }
-
-    @Override
-    public List<Path> recents() {
-        return new ArrayList<>(recents);
+        return (AppConfig) super.config();
     }
 
 }

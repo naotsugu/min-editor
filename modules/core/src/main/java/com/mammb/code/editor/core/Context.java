@@ -16,7 +16,12 @@
 package com.mammb.code.editor.core;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * The context.
@@ -61,4 +66,67 @@ public interface Context {
         return "unknown";
     }
 
+    /**
+     * AbstractContext.
+     */
+    abstract class AbstractContext implements Context {
+
+        /** The configuration instance. */
+        private final Config config;
+
+        /** The recent path. */
+        private final Set<Path> current = new LinkedHashSet<>();
+
+        /** The recent path. */
+        private final Deque<Path> recents = new ConcurrentLinkedDeque<>();
+
+        /**
+         * Constructor.
+         */
+        public AbstractContext(Config config) {
+            this.config = config;
+        }
+
+        @Override
+        public Config config() {
+            return config;
+        }
+
+        @Override
+        public void opened(Path path) {
+            if (!Files.exists(path)) return;
+            current.add(path);
+            pushRecents(path);
+        }
+
+        @Override
+        public void closed(Path path) {
+            if (!Files.exists(path)) return;
+            current.remove(path);
+        }
+
+        @Override
+        public void pushRecents(Path path) {
+            if (!Files.exists(path)) return;
+            boolean dup = recents.contains(path);
+            recents.addFirst(path);
+            if (dup) {
+                var set = new LinkedHashSet<>(recents);
+                recents.clear();
+                recents.addAll(set);
+            }
+            if (recents.size() > 25) {
+                int rem = recents.size() - 25;
+                for (int i = 0; i < rem; i ++) {
+                    recents.removeLast();
+                }
+            }
+        }
+
+        @Override
+        public List<Path> recents() {
+            return new ArrayList<>(recents);
+        }
+
+    }
 }
