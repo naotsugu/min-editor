@@ -15,7 +15,10 @@
  */
 package com.mammb.code.editor.ui;
 
+import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
+import com.mammb.code.editor.core.Files;
+import java.nio.file.Path;
 
 /**
  * The application context.
@@ -23,16 +26,33 @@ import com.mammb.code.editor.core.Context;
  */
 public class AppContext extends Context.AbstractContext {
 
+    private final Path path = Config.AbstractConfig.configRoot()
+        .resolve(Version.appName, Version.majorAndMinor(), "recents");
+
     /**
      * Constructor.
      */
     public AppContext() {
         super(new AppConfig());
+        load();
+        Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
 
     @Override
     public AppConfig config() {
         return (AppConfig) super.config();
+    }
+
+
+    public void save() {
+        Files.write(path, recents().stream()
+            .map(Path::toString).toList());
+    }
+
+    public void load() {
+        if (!Files.exists(path)) return;
+        Files.readAllLines(path).reversed().stream()
+            .map(Path::of).forEach(super::pushRecents);
     }
 
 }

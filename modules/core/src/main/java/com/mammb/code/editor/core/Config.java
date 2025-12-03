@@ -220,7 +220,7 @@ public interface Config {
          * Get the configuration directory for a platform.
          * @return the configuration directory
          */
-        protected static Path configRoot() {
+        public static Path configRoot() {
             Path home = Path.of(System.getProperty("user.home"));
             return switch (Context.platform) {
                 case "windows" -> home.resolve("AppData", "Local");
