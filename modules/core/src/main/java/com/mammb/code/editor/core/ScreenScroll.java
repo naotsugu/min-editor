@@ -56,4 +56,11 @@ public interface ScreenScroll {
      * @return the current vertical scroll value or position on the y-axis
      */
     int yVal();
+
+    /**
+     * Get the scroll bar width.
+     * @return the scroll bar width
+     */
+    double width();
+
 }

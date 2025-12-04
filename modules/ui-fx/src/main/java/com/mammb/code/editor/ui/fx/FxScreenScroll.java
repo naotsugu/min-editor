@@ -70,6 +70,11 @@ public class FxScreenScroll implements ScreenScroll {
         return (int) vScroll.getValue();
     }
 
+    @Override
+    public double width() {
+        return vScroll.getWidth();
+    }
+
     public ScrollBar vScroll() {
         return vScroll;
     }

@@ -140,14 +140,16 @@ public class Paints {
      * @param marginLeft the margin left
      * @param screenLayout the screen layout
      * @param decorate the decorate
+     * @param scrollWidth the vertical scroll bar width
      */
     static void map(Draw draw,
             double marginTop, double marginLeft,
-            ScreenLayout screenLayout, Decorate decorate) {
+            ScreenLayout screenLayout, Decorate decorate, double scrollWidth) {
+        var width = scrollWidth + 3;
         for (int row : decorate.highlightsRows()) {
             int line = screenLayout.rowToFirstLine(row);
             double y = (screenLayout.screenHeight() - marginTop) * line / (screenLayout.lineSize() + screenLayout.screenLineSize());
-            draw.hLine(screenLayout.screenWidth() + marginLeft - 12, y, 12);
+            draw.hLine(screenLayout.screenWidth() + marginLeft - width, y, width);
         }
     }
 

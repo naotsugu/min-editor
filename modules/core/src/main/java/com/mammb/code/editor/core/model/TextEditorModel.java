@@ -150,7 +150,7 @@ public class TextEditorModel implements EditorModel {
         draw.clear();
         Paints.selection(draw, marginTop, marginLeft, screenLayout, carets);
         Paints.text(draw, marginTop, marginLeft, screenLayout, decorate, carets);
-        Paints.map(draw, marginTop, marginLeft, screenLayout, decorate);
+        Paints.map(draw, marginTop, marginLeft, screenLayout, decorate, scroll.width());
         Paints.caret(draw, marginTop, marginLeft, caretVisible, screenLayout, carets);
         Paints.leftGarter(draw, marginTop, marginLeft, screenLayout, carets);
     }
