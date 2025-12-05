@@ -161,6 +161,7 @@ public class EditorPane extends ContentPane {
                 open(session);
             } else if (session.hasAltPath()) {
                 model = model.with(session);
+                model.setSize(getWidth(), getHeight());
             }
             paint();
         });
