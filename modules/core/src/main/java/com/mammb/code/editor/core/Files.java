@@ -262,10 +262,7 @@ public interface Files {
         Path destinationPath, Charset destinationCharset,
         boolean strict) {
         try (Reader reader = java.nio.file.Files.newBufferedReader(sourcePath, sourceCharset);
-             Writer writer = strict
-                 ? java.nio.file.Files.newBufferedWriter(destinationPath, destinationCharset)
-                 : new BufferedWriter(new OutputStreamWriter(java.nio.file.Files.newOutputStream(destinationPath),
-                    sourceCharset.newEncoder().onMalformedInput(CodingErrorAction.IGNORE).onUnmappableCharacter(CodingErrorAction.IGNORE)))) {
+             Writer writer = newBufferedWriter(destinationPath, destinationCharset, strict)) {
             char[] buffer = new char[8192];
             int charsRead;
             while ((charsRead = reader.read(buffer)) != -1) {
@@ -281,10 +278,7 @@ public interface Files {
         Path destinationPath, Charset destinationCharset, String lineSeparator,
         boolean strict) {
         try (BufferedReader reader = java.nio.file.Files.newBufferedReader(sourcePath, sourceCharset);
-             Writer writer = strict
-                 ? java.nio.file.Files.newBufferedWriter(destinationPath, destinationCharset)
-                 : new BufferedWriter(new OutputStreamWriter(java.nio.file.Files.newOutputStream(destinationPath),
-                    sourceCharset.newEncoder().onMalformedInput(CodingErrorAction.IGNORE).onUnmappableCharacter(CodingErrorAction.IGNORE)))) {
+             Writer writer = newBufferedWriter(destinationPath, destinationCharset, strict)) {
             reader.lines().forEachOrdered(line -> {
                 try {
                     writer.write(line);
@@ -310,4 +304,15 @@ public interface Files {
             throw new RuntimeException(e);
         }
     }
+
+    private static Writer newBufferedWriter(Path path, Charset charset, boolean strict) throws IOException {
+        return strict
+            ? java.nio.file.Files.newBufferedWriter(path, charset)
+            : new BufferedWriter(new OutputStreamWriter(
+            java.nio.file.Files.newOutputStream(path),
+            charset.newEncoder()
+                .onMalformedInput(CodingErrorAction.IGNORE)
+                .onUnmappableCharacter(CodingErrorAction.IGNORE)));
+    }
+
 }

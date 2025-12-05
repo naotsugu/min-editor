@@ -644,6 +644,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void saveWith(Charset charset, String rowEndingSymbol) {
+
         Path path = content.path().orElseThrow();
         Charset currentCharset = content.query(Query.charCode);
         Charset newCharset = (charset == null) ? currentCharset : charset;
