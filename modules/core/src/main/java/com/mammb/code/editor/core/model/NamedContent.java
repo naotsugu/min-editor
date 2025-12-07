@@ -52,7 +52,7 @@ public class NamedContent extends ContentAdapter {
     }
 
     /**
-     * Create a named content with a interim name.
+     * Create a named content with an interim name.
      * @param path the path
      * @param name the name
      * @return {@link NamedContent}

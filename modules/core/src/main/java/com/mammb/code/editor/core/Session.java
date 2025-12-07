@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.model.Sessions;
 import java.io.File;
 import java.nio.charset.Charset;
