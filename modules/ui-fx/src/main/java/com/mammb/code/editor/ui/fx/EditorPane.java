@@ -40,7 +40,6 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;

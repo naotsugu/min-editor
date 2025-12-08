@@ -16,7 +16,9 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Action;
+import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Query;
+import com.mammb.code.editor.ui.AppContext;
 import com.mammb.code.editor.ui.Command;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
@@ -41,7 +43,10 @@ public class AppContextMenu extends FxContextMenu {
     private static MenuItem[] buildMenuItems(EditorPane editorPane) {
 
         boolean textSelected = editorPane.query(Query.selectedCounts) > 0;
-        String style = "-fx-font: normal 11pt System;";
+        String style = switch (Context.platform) {
+            case "windows" -> "-fx-font: normal 9pt System;";
+            default -> "-fx-font: normal 11pt System;";
+        };
 
         var cut = new MenuItem("Cut");
         cut.setStyle(style);
