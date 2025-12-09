@@ -180,25 +180,6 @@ public class TextEditContent implements Content {
     }
 
     @Override
-    public List<Point.Range> replace(List<Point.Range> ranges, Function<String, String> fun) {
-
-        modified = true;
-
-        var requests = ranges.stream()
-            .map(r -> new TextEdit.Replace(
-                Pos.of(r.start().row(), r.start().col()),
-                Pos.of(r.end().row(), r.end().col()),
-                fun::apply))
-            .toList();
-
-        return edit.replace(requests).stream()
-            .map(r -> new Point.Range(
-                Point.of(r.from().row(), r.from().col()),
-                Point.of(r.to().row(), r.to().col())))
-            .toList();
-    }
-
-    @Override
     public List<Point> undo() {
         if (!edit.hasUndoRecord()) return List.of();
         var ret = edit.undo().stream().map(p -> Point.of(p.row(), p.col())).toList();
