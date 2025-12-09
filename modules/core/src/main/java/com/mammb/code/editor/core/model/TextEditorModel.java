@@ -609,8 +609,8 @@ public class TextEditorModel implements EditorModel {
             List<Range> caretRanges = carets.ranges();
             Range rangeMin = Collections.min(caretRanges);
             Range rangeMax = Collections.max(caretRanges);
-            Deque<String> stack = new ArrayDeque<>(Arrays.stream(text.split("\\R")).toList());
-            Function<String, String> fun = _ -> stack.isEmpty() ? "" : stack.pop();
+            Deque<String> deque = new ArrayDeque<>(Arrays.stream(text.split("\\R")).toList());
+            Function<String, String> fun = _ -> deque.isEmpty() ? "" : deque.pollLast();
             var ranges = content.replace(caretRanges, fun);
             carets.at(ranges.stream().map(r -> r.isAsc() ? r.start() : r.end()).toList());
             screenLayout.refreshBuffer(rangeMin.min().row(), rangeMax.max().row());
