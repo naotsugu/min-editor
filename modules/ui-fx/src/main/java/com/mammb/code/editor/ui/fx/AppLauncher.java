@@ -19,6 +19,7 @@ import com.mammb.code.editor.ui.ColorScheme;
 
 /**
  * The application launcher.
+ * This class is a wrapper for the actual JavaFX application launch.
  * @author Naotsugu Kobayashi
  */
 public class AppLauncher {
