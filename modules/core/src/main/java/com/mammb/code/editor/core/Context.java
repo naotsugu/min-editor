@@ -101,13 +101,11 @@ public interface Context {
 
         @Override
         public void closed(Path path) {
-            if (!Files.exists(path)) return;
             current.remove(path);
         }
 
         @Override
         public void pushRecents(Path path) {
-            if (!Files.exists(path)) return;
             boolean dup = recents.contains(path);
             recents.addFirst(path);
             if (dup) {
