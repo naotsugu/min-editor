@@ -77,6 +77,10 @@ public class FxColorDialog extends HBox {
     private Runnable onSelect;
     private Runnable onCancel;
 
+    /**
+     * Constructor.
+     * @param owner the owner
+     */
     public FxColorDialog(Window owner) {
         getStyleClass().add("custom-color-dialog");
         Objects.requireNonNull(owner);
@@ -150,7 +154,6 @@ public class FxColorDialog extends HBox {
             return null;
         }
     }
-
 
     public final ObjectProperty<Color> customColorProperty() {
         return customColorProperty;

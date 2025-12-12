@@ -37,11 +37,19 @@ public class FxContextMenu extends ContextMenu {
 
     private double availableHeight = 0;
 
+    /**
+     * Constructor.
+     * @param modal the modal
+     * @param menuItems the menu items
+     */
     public FxContextMenu(boolean modal, MenuItem... menuItems) {
         super(menuItems);
         if (modal) buildEventHandler();
     }
 
+    /**
+     * Constructor.
+     */
     public FxContextMenu() {
         this(false);
     }
@@ -66,6 +74,7 @@ public class FxContextMenu extends ContextMenu {
         show(anchor, null, dx, dy);
     }
 
+    @Override
     public void show(Window window, double dx, double dy) {
         super.show(window, dx, dy);
         focusFirstItem();

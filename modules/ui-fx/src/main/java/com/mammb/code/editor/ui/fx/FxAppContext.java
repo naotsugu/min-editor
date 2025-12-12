@@ -27,12 +27,21 @@ public class FxAppContext extends AppContext {
     /** The application. */
     private final Application app;
 
+    /**
+     * Constructor.
+     * @param app the application
+     */
     public FxAppContext(Application app) {
         super();
         this.app = app;
     }
 
+    /**
+     * Get the application.
+     * @return the application
+     */
     public Application getApp() {
         return app;
     }
+
 }
