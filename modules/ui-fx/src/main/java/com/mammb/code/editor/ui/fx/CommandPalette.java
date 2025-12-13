@@ -66,6 +66,12 @@ public class CommandPalette extends Dialog<Command> {
     /** The command type. */
     private Class<? extends Command> cmdType;
 
+    /**
+     * Constructor.
+     * @param node the node
+     * @param init the initial command type
+     * @param queryable the queryable
+     */
     public CommandPalette(Node node, Class<? extends Command> init, Query.Queryable queryable) {
         super();
         this.box = new HBox();
