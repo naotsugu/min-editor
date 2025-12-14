@@ -385,7 +385,7 @@ public class EditorPane extends ContentPane {
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> open(Path.of(cmd.path()));
-            case OpenRecent cmd       -> openRecent();
+            case OpenRecent _         -> openRecent();
             case Config _             -> newEdit().open(Session.of(context.config().path()));
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
             case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
@@ -513,6 +513,7 @@ public class EditorPane extends ContentPane {
     void openRecent() {
         var window = getScene().getWindow();
         SelectOneMenu.of(context.recents(), path -> {
+            if (path == null || !canClose()) return;
             open(Session.of(path));
             paint();
         }).show(window, window.getX(), window.getY() + 55);
