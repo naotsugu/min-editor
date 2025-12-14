@@ -302,6 +302,7 @@ public class EditorPane extends ContentPane {
     }
 
     private void handleKeyAction(KeyEvent e) {
+        if (e.isConsumed()) return;
         execute(CommandKeys.of(e));
     }
 

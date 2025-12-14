@@ -101,7 +101,7 @@ public class FxContextMenu extends ContextMenu {
                     if (eventTarget instanceof Node node) {
                         MenuItem menuItem = (MenuItem) node.getProperties().get(MenuItem.class);
                         if (menuItem != null && !menuItem.isDisable() && menuItem.isVisible()) {
-                            menuItem.fire();
+                            Platform.runLater(menuItem::fire);
                         }
                     }
                     Platform.runLater(this::hide);

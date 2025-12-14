@@ -16,8 +16,11 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Theme;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import java.util.Collection;
