@@ -16,7 +16,7 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Session;
-import com.mammb.code.editor.ui.Command;
+import com.mammb.code.editor.ui.base.Command;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;

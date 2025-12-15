@@ -17,7 +17,7 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Theme;
-import com.mammb.code.editor.ui.Command;
+import com.mammb.code.editor.ui.base.Command;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

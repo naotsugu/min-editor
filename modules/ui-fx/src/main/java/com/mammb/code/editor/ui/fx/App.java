@@ -21,7 +21,7 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import com.mammb.code.editor.ui.AppContext;
+import com.mammb.code.editor.ui.base.AppContext;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -30,7 +30,7 @@ import javafx.stage.Stage;
 import com.sun.javafx.tk.Toolkit;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.Files;
-import com.mammb.code.editor.ui.Version;
+import com.mammb.code.editor.ui.base.Version;
 
 /**
  * The App class serves as the entry point for the JavaFX application.

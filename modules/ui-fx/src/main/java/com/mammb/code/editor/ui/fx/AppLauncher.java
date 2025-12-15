@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.editor.ui.ColorScheme;
+import com.mammb.code.editor.ui.base.ColorScheme;
 
 /**
  * The application launcher.

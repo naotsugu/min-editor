@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.editor.ui;
+package com.mammb.code.editor.ui.base;
 
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Rgba;

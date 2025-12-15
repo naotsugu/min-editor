@@ -4,6 +4,6 @@ plugins {
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":ui"))
+    implementation(project(":ui-base"))
     implementation(project(":javafx"))
 }

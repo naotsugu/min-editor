@@ -18,8 +18,7 @@ package com.mammb.code.editor.ui.fx;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Query;
-import com.mammb.code.editor.ui.AppContext;
-import com.mammb.code.editor.ui.Command;
+import com.mammb.code.editor.ui.base.Command;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 

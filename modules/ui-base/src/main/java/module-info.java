@@ -18,8 +18,8 @@
  * The code editor ui module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui {
+module code.editor.ui.base {
     requires code.editor.core;
     requires java.desktop;
-    exports com.mammb.code.editor.ui;
+    exports com.mammb.code.editor.ui.base;
 }

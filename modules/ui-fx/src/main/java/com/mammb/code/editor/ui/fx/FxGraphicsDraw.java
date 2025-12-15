@@ -17,7 +17,7 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.FontMetrics;
 import com.mammb.code.editor.core.Rgba;
-import com.mammb.code.editor.ui.GraphicsDraw;
+import com.mammb.code.editor.ui.base.GraphicsDraw;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;

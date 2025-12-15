@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.editor.ui.AppContext;
+import com.mammb.code.editor.ui.base.AppContext;
 import javafx.application.Application;
 
 /**
