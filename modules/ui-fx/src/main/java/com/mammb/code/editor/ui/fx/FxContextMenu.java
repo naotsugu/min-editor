@@ -91,6 +91,9 @@ public class FxContextMenu extends ContextMenu {
         }
     }
 
+    /**
+     * Build event handler.
+     */
     private void buildEventHandler() {
         final EventHandler<KeyEvent> blockKeyPressed = keyEvent -> {
             switch (keyEvent.getCode()) {

@@ -99,6 +99,11 @@ public class App extends Application {
         return path;
     }
 
+    /**
+     * Load fonts.
+     * @param pathString the path
+     * @return the font name or {@code Optional.empty()}
+     */
     private Optional<String> loadFonts(String pathString) {
         if (pathString == null || pathString.isBlank()) return Optional.empty();
         Path path = Path.of(pathString);

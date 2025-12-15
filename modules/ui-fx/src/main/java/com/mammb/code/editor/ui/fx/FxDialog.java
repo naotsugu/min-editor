@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.editor.ui.AppContext;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
