@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.fx;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import com.mammb.code.editor.core.TabStop;
 import javafx.scene.text.Font;
 import com.mammb.code.editor.core.FontMetrics;
 import com.sun.javafx.font.CharToGlyphMapper;
@@ -48,6 +49,8 @@ public class FxFontMetrics implements FontMetrics {
     private final CharToGlyphMapper mapper;
     /** The cache of advance. */
     private final Map<Integer, Float> advanceCache = new ConcurrentHashMap<>();
+    /** The tab stop. */
+    private TabStop tabStop = TabStop.DEFAULT;
 
     /**
      * Constructor.
@@ -125,6 +128,11 @@ public class FxFontMetrics implements FontMetrics {
     public double getAdvance(int codePoint) {
         return advanceCache.computeIfAbsent(codePoint,
                 cp -> resource.getAdvance(mapper.charToGlyph(cp), strike.getSize()));
+    }
+
+    @Override
+    public int getTabSize() {
+        return tabStop.value();
     }
 
 }

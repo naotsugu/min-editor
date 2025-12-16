@@ -71,4 +71,9 @@ public class FontMetricsTestImpl implements FontMetrics {
         return codePoint < 1024 ? 1 : 2;
     }
 
+    @Override
+    public int getTabSize() {
+        return 4;
+    }
+
 }

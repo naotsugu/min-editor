@@ -22,6 +22,6 @@ package com.mammb.code.editor.core;
 public record TabStop(int value) {
 
     /** The default tab stop. */
-    static final TabStop DEFAULT = new TabStop(4);
+    public static final TabStop DEFAULT = new TabStop(4);
 
 }

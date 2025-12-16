@@ -117,7 +117,6 @@ public interface FontMetrics {
      * Get the tab size.
      * @return the tab size
      */
-    default int getTabSize() {
-        return 4;
-    }
+    int getTabSize();
+
 }
