@@ -122,7 +122,6 @@ public class EditorPane extends ContentPane {
         canvas.setOnMouseMoved(this::handleMouseMoved);
 
         draw = new DrawImpl(new FxGraphicsDraw(canvas.getGraphicsContext2D(), font));
-        //draw = new FxDraw(canvas.getGraphicsContext2D(), font);
         model = EditorModel.of(draw.fontMetrics(), scroll, context);
         scroll.vScroll().setOrientation(Orientation.VERTICAL);
         scroll.hScroll().setOrientation(Orientation.HORIZONTAL);
