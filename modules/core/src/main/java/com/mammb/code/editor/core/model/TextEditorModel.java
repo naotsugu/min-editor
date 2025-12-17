@@ -713,6 +713,10 @@ public class TextEditorModel implements EditorModel {
         scrollToCaret();
     }
 
+    private void tabSize(int size) {
+        screenLayout.tabStop(size);
+    }
+
     /**
      * Toggle layout.
      */
@@ -849,6 +853,7 @@ public class TextEditorModel implements EditorModel {
             case Paste a        -> aroundEdit(() -> pasteFromClipboard(a.attr(), a.withOpt()));
             case SelectAll _    -> selectAll();
             case WrapLine a     -> wrap(a.attr());
+            case SetTabStop a      -> tabSize(a.attr());
             case ToggleLayout _ -> toggleLayout();
             case Goto a         -> moveTo(a.attr());
             case FindNext a     -> findNext(a.attr());

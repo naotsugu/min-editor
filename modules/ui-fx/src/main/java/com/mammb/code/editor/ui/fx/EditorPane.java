@@ -398,6 +398,7 @@ public class EditorPane extends ContentPane {
             case SelectRegex cmd      -> apply(Action.selectRegex(cmd.str()));
             case GoTo cmd             -> apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd         -> model().apply(Action.wrapLine(cmd.width()));
+            case SetTabStop cmd       -> model().apply(Action.setTabStop(cmd.size()));
             case ToggleLayout _       -> model().apply(Action.toggleLayout());
             case ToLowerCase _        -> model().apply(Action.replace(EditingFunctions.toLower, true));
             case ToUpperCase _        -> model().apply(Action.replace(EditingFunctions.toUpper, true));

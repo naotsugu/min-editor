@@ -24,4 +24,14 @@ public record TabStop(int value) {
     /** The default tab stop. */
     public static final TabStop DEFAULT = new TabStop(4);
 
+    /**
+     * Constructor.
+     * @param value the value
+     */
+    public TabStop {
+        if (value <= 0) {
+            throw new IllegalArgumentException("value must be positive");
+        }
+    }
+
 }

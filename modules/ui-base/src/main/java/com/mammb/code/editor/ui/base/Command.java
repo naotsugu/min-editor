@@ -143,6 +143,8 @@ public sealed interface Command {
 
     record WrapLine(Integer width) implements Command, RequireArgs1<Integer> { }
 
+    record SetTabStop(Integer size) implements Command, RequireArgs1<Integer> { }
+
     record ToggleLayout() implements Command { }
 
     record Open(String path) implements Command, RequireArgs1<String> { }
@@ -183,6 +185,7 @@ public sealed interface Command {
             case Class<?> c when c == SelectRegex.class -> "[regex to select]";
             case Class<?> c when c == GoTo.class -> "[line number]";
             case Class<?> c when c == WrapLine.class -> "[wrap width(number of characters)]";
+            case Class<?> c when c == SetTabStop.class -> "[tab stop size]";
             case Class<?> c when c == SaveWith.class -> "[charset name (e.g. utf-8 | sjis)]";
             case Class<?> c when c == ReloadWith.class -> "[charset name (e.g. utf-8 | sjis)]";
             case Class<?> c when c == DiffWith.class -> "[path to diff target]";
@@ -236,6 +239,7 @@ public sealed interface Command {
             case Class<?> c when c == SelectRegex.class -> "selects for the specified regex";
             case Class<?> c when c == GoTo.class -> "go to the specified number of row";
             case Class<?> c when c == WrapLine.class -> "wraps a line with a specified number of characters";
+            case Class<?> c when c == SetTabStop.class -> "sets the tab stop size";
             case Class<?> c when c == ToggleLayout.class -> "toggle context layout";
             case Class<?> c when c == Open.class -> "open the file at the specified path";
             case Class<?> c when c == OpenRecent.class -> "open the file from recent list";

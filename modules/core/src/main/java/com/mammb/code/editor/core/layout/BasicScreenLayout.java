@@ -356,6 +356,11 @@ class BasicScreenLayout implements ScreenLayout {
     }
 
     @Override
+    public void tabStop(int size) {
+        fontMetrics().setTabSize(size);
+    }
+
+    @Override
     public int charsInLine() {
         return layout.charsInLine();
     }

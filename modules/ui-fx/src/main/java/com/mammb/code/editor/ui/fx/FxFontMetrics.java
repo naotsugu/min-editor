@@ -135,4 +135,9 @@ public class FxFontMetrics implements FontMetrics {
         return tabStop.value();
     }
 
+    @Override
+    public void setTabSize(int size) {
+        tabStop = new TabStop(size);
+    }
+
 }

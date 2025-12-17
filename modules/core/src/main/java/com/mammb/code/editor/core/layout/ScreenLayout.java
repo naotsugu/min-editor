@@ -176,6 +176,12 @@ public interface ScreenLayout extends LineLayout {
     void toggleLayout(String layoutName);
 
     /**
+     * Sets the tab stop size for the layout.
+     * @param size the size of the tab stop, typically measured in spaces
+     */
+    void tabStop(int size);
+
+    /**
      * Get the number of half-lines on the screen.
      * @return the number of half-lines on the screen
      */

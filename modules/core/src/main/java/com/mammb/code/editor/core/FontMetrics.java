@@ -114,9 +114,16 @@ public interface FontMetrics {
     }
 
     /**
-     * Get the tab size.
-     * @return the tab size
+     * Retrieves the current tab size, which represents the number of spaces
+     * used for rendering a tab character.
+     * @return the number of spaces per tab
      */
     int getTabSize();
+
+    /**
+     * Sets the tab size.
+     * @param size the number of spaces per tab
+     */
+    void setTabSize(int size);
 
 }

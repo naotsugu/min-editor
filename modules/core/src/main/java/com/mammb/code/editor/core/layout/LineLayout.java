@@ -152,7 +152,15 @@ public interface LineLayout {
      */
     int xToCol(int line, double x);
 
-
+    /**
+     * Converts the specified x-coordinate on a given line to the corresponding caret column.
+     * This method is used to determine the column in a line of text that corresponds to a given
+     * horizontal pixel position.
+     *
+     * @param line the line number for which the column needs to be determined
+     * @param x the x-coordinate in pixels on the specified line
+     * @return the caret column corresponding to the given x-coordinate
+     */
     int xToCaretCol(int line, double x);
 
     /**

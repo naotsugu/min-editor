@@ -76,4 +76,9 @@ public class FontMetricsTestImpl implements FontMetrics {
         return 4;
     }
 
+    @Override
+    public void setTabSize(int size) {
+
+    }
+
 }
