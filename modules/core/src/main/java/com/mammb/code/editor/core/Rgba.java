@@ -110,6 +110,16 @@ public record Rgba(int r, int g, int b, int a) {
         return new Rgba(r, g, b, alpha);
     }
 
+    /**
+     * Parses a web color string and converts it into an array of integer values
+     * representing the color components.
+     *
+     * @param webColor the web color string (e.g., "#RRGGBB", "#RGB", "#RRGGBBAA").
+     *                 It must not be null. The "#" prefix is optional.
+     * @return an array of integers representing the red, green, blue, and optionally
+     *         alpha components of the color. If the input format is invalid, it returns
+     *         a default array [0, 0, 0].
+     */
     private static int[] parseWebColor(String webColor) {
         Objects.requireNonNull(webColor, "webColor must not be null");
         String hex = webColor.replace("#", "");

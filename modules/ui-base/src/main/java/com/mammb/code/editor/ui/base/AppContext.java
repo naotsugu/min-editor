@@ -43,12 +43,32 @@ public class AppContext extends Context.AbstractContext {
         return (AppConfig) super.config();
     }
 
-
+    /**
+     * Persists the recent file paths to a predefined location on the filesystem.
+     * The file paths are retrieved from the list of recent entries, converted to their
+     * string representations, and then written to a file.
+     * <p>
+     * The data is stored at a location defined by the application configuration, ensuring
+     * the recents list can be persisted across different application sessions.
+     * <p>
+     * This method is typically invoked during an application shutdown to save the current state.
+     * It overwrites the existing file if it already exists.
+     */
     public void save() {
         Files.write(path, recents().stream()
             .map(Path::toString).toList());
     }
 
+    /**
+     * Loads the list of recent file paths from a predefined location on the filesystem.
+     * If the file at the specified location does not exist, the method exits without any action.
+     * <p>
+     * The method reads the content of the file line by line, processes each line into a {@link Path} object,
+     * and adds it to the list of recent entries in reverse order of appearance in the file.
+     * <p>
+     * This functionality is typically used to restore the list of recently accessed files
+     * when the application starts, ensuring that the application can resume with the previous state.
+     */
     public void load() {
         if (!Files.exists(path)) return;
         Files.readAllLines(path).reversed().stream()
