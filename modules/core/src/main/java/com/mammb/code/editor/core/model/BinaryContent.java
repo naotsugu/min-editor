@@ -38,11 +38,24 @@ public class BinaryContent extends ContentAdapter {
     /** The binary source. */
     private Path source;
 
+    /**
+     * Constructs a new BinaryContent instance.
+     * @param source the binary source path
+     * @param pear the content representation for editing
+     */
     private BinaryContent(Path source, Content pear) {
         this.pear = pear;
         this.source = source;
     }
 
+    /**
+     * Creates a new instance of BinaryContent by processing the provided source path.
+     * A temporary file is generated with a transformed view of the source content,
+     * and a representation for editing is created to associate with the binary content.
+     *
+     * @param source the binary source path which is used to create the binary content instance
+     * @return a new BinaryContent instance based on the given source path
+     */
     public static BinaryContent of(Path source) {
         Path temp = Files.createTempFile(null, source.getFileName().toString(), "");
         temp.toFile().deleteOnExit();

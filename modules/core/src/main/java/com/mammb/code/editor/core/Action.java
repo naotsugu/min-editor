@@ -58,6 +58,11 @@ public sealed interface Action
      */
     interface Repeatable { }
 
+    /**
+     * Represents an action or capability that includes a selection operation.
+     * Classes implementing this interface can specify whether a particular action
+     * involves a selection or not.
+     */
     interface WithSelect {
         boolean withSelect();
     }
