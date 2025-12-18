@@ -71,7 +71,7 @@ public class DrawImpl implements Draw {
             gd.strokeLine(underColor, 2, x, y + fontMetrics.getLineHeight() - 2, x + w, y + fontMetrics.getLineHeight() - 2);
         }
         if (aroundColor != null) {
-            gd.strokeRect(aroundColor, 0.5, x, y, w, fontMetrics.getLineHeight());
+            gd.strokeRect(aroundColor, 0.4, x + 0.4, y, w - 0.4 * 2, fontMetrics.getLineHeight());
         }
 
         gd.fillText(textColor, text, x, y + fontMetrics.getAscent());
