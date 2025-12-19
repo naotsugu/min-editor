@@ -234,7 +234,7 @@ public class CommandPalette extends Dialog<Command> {
                 text.setFill(textColor);
                 var note = new Text("  " +  Command.noteText(entry.getValue()));
                 note.setFont(Font.font(13));
-                note.setFill(textColor.darker().darker());
+                note.setFill(textColor.darker());
                 var noteBox = new HBox(note);
                 noteBox.setSpacing(0.0);
 
