@@ -26,7 +26,8 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of()),
             Source.of(List.of()));
-        var changeSet = (ChangeSet<String>) Diff.run(source);
+        @SuppressWarnings("unchecked")
+        ChangeSet<String> changeSet = (ChangeSet<String>) Diff.run(source);
         assertTrue(changeSet.changes().isEmpty());
     }
 
@@ -35,6 +36,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c")),
             Source.of(List.of("a", "b", "c")));
+        @SuppressWarnings("unchecked")
         var changeSet = (ChangeSet<String>) Diff.run(source);
         assertTrue(changeSet.changes().isEmpty());
     }
@@ -44,6 +46,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "c")),
             Source.of(List.of("a", "b", "c")));
+        @SuppressWarnings("unchecked")
         var changeSet = (ChangeSet<String>) Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -59,6 +62,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c")),
             Source.of(List.of("a", "c")));
+        @SuppressWarnings("unchecked")
         var changeSet = (ChangeSet<String>) Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -74,6 +78,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c")),
             Source.of(List.of("a", "x", "c")));
+        @SuppressWarnings("unchecked")
         var changeSet = (ChangeSet<String>) Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
@@ -89,6 +94,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c", "d", "f", "g")),
             Source.of(List.of("a", "x", "c", "e", "f", "h")));
+        @SuppressWarnings("unchecked")
         var changeSet = (ChangeSet<String>) Diff.run(source);
         var changes = changeSet.changes();
         assertEquals(3, changes.size());
@@ -120,6 +126,7 @@ class DiffTest {
         var source = new SourcePair<>(
             Source.of(List.of("a", "b", "c")),
             Source.of(List.of("d", "e", "f")));
+        @SuppressWarnings("unchecked")
         var changeSet = (ChangeSet<String>) Diff.run(source);
         assertEquals(1, changeSet.changes().size());
         var change = changeSet.changes().getFirst();
