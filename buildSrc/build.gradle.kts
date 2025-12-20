@@ -7,5 +7,5 @@ repositories {
 }
 
 dependencies {
-    implementation("org.openrewrite.rewrite:org.openrewrite.rewrite.gradle.plugin:7.0.3")
+    implementation("org.openrewrite.rewrite:org.openrewrite.rewrite.gradle.plugin:7.23.0")
 }
