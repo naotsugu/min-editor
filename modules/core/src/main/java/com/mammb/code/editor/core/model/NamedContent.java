@@ -95,6 +95,8 @@ public class NamedContent extends ContentAdapter {
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
+            case QueryRecords.Modified _ when !synced ->
+                (R) Boolean.TRUE;
             case QueryRecords.ModelName _ ->
                 (R) Name.of(synced ? pear.path().orElse(null) : null, pear.query(Query.modified), name);
             default -> super.query(query);
