@@ -38,8 +38,16 @@ public interface Context {
      */
     Config config();
 
+    /**
+     * Handles the event of opening a specified file path.
+     * @param path the file path that has been opened
+     */
     void opened(Path path);
 
+    /**
+     * Handles the event of closing a specified file path.
+     * @param path the file path that has been closed
+     */
     void closed(Path path);
 
     /**
