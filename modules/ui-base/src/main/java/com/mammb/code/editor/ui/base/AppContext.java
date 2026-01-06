@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.base;
 
-import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
 import java.nio.file.Path;
@@ -25,6 +24,8 @@ import java.nio.file.Path;
  * @author Naotsugu Kobayashi
  */
 public class AppContext extends Context.AbstractContext {
+
+    private static final Path recentsConfPath = AppConfig.appConfDirPath().resolve("recents");
 
     /**
      * Constructor.
@@ -52,7 +53,7 @@ public class AppContext extends Context.AbstractContext {
      * It overwrites the existing file if it already exists.
      */
     public void save() {
-        Files.write(recentsConfPath(), recents().stream()
+        Files.write(recentsConfPath, recents().stream()
             .map(Path::toString).toList());
     }
 
@@ -67,13 +68,9 @@ public class AppContext extends Context.AbstractContext {
      * when the application starts, ensuring that the application can resume with the previous state.
      */
     public void load() {
-        if (!Files.exists(recentsConfPath())) return;
-        Files.readAllLines(recentsConfPath()).reversed().stream()
+        if (!Files.exists(recentsConfPath)) return;
+        Files.readAllLines(recentsConfPath).reversed().stream()
             .map(Path::of).forEach(super::pushRecents);
-    }
-
-    private Path recentsConfPath() {
-        return AppConfig.appConfDirPath().resolve("recents");
     }
 
 }
