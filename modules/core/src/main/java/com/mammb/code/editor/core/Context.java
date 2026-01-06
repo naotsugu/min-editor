@@ -134,10 +134,6 @@ public interface Context {
             return new ArrayList<>(recents);
         }
 
-        public Path appConfPath() {
-
-        }
-
     }
 
 }
