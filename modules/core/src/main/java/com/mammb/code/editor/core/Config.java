@@ -135,6 +135,10 @@ public interface Config {
             return Double.parseDouble(props.getOrDefault("fontSize", defaultFontSize).toString());
         }
 
+        /**
+         * Sets the font size in the configuration.
+         * @param fontSize the font size to be set
+         */
         public void fontSize(double fontSize) {
             put("fontSize", fontSize);
         }
@@ -199,6 +203,12 @@ public interface Config {
             }
         }
 
+        /**
+         * Deletes the configuration file located at the path specified by `propsPath`.
+         * If the deletion is successful, an informational log message is recorded.
+         * If an exception occurs during the deletion process, the exception is logged
+         * at the error level and silently ignored.
+         */
         public void clear() {
             try {
                 Files.delete(propsPath);
@@ -208,10 +218,22 @@ public interface Config {
             }
         }
 
+        /**
+         * Retrieves the value associated with the given key from the configuration properties.
+         * If the key does not exist, the specified default value is returned.
+         * @param key the key whose associated value is to be returned
+         * @param defaultValue the value to return if the key is not found in the properties
+         * @return the value associated with the provided key, or the default value if the key is not present
+         */
         protected String get(String key, String defaultValue) {
             return props.getOrDefault(key, defaultValue).toString();
         }
 
+        /**
+         * Adds or updates a key-value pair in the configuration properties.
+         * @param key the key associated with the value to be added or updated
+         * @param value the value to be stored, which will be converted to a String before storage
+         */
         protected void put(String key, Object value) {
             props.put(key, value.toString());
         }
