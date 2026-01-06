@@ -26,7 +26,7 @@ import java.nio.file.Path;
  */
 public class AppContext extends Context.AbstractContext {
 
-    private final Path path = Config.AbstractConfig.configRoot()
+    private final Path recentsConfPath = Config.AbstractConfig.configRoot()
         .resolve(Version.appName, Version.majorAndMinor(), "recents");
 
     /**
@@ -55,7 +55,7 @@ public class AppContext extends Context.AbstractContext {
      * It overwrites the existing file if it already exists.
      */
     public void save() {
-        Files.write(path, recents().stream()
+        Files.write(recentsConfPath, recents().stream()
             .map(Path::toString).toList());
     }
 
@@ -70,8 +70,8 @@ public class AppContext extends Context.AbstractContext {
      * when the application starts, ensuring that the application can resume with the previous state.
      */
     public void load() {
-        if (!Files.exists(path)) return;
-        Files.readAllLines(path).reversed().stream()
+        if (!Files.exists(recentsConfPath)) return;
+        Files.readAllLines(recentsConfPath).reversed().stream()
             .map(Path::of).forEach(super::pushRecents);
     }
 
