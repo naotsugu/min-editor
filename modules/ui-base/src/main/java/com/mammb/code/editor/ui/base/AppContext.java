@@ -25,6 +25,7 @@ import java.nio.file.Path;
  */
 public class AppContext extends Context.AbstractContext {
 
+    /** The path where the application's "recents" configuration is stored. */
     private static final Path recentsConfPath = AppConfig.appConfDirPath().resolve("recents");
 
     /**
