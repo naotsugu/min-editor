@@ -20,6 +20,7 @@ import com.mammb.code.editor.core.Session;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -38,8 +39,7 @@ public class AppConfig extends Config.AbstractConfig {
      * Constructor.
      */
     public AppConfig() {
-        super(AbstractConfig.configRoot()
-            .resolve(Version.appName, Version.majorAndMinor(), "config.properties"));
+        super(appConfDirPath().resolve("config.properties"));
         load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
@@ -142,4 +142,14 @@ public class AppConfig extends Config.AbstractConfig {
             log.log(System.Logger.Level.WARNING, ignore.getMessage(), ignore);
         }
     }
+
+    /**
+     * Resolves and returns the path to the application configuration directory.
+     * The path is determined based on the application's name and version.
+     * @return the path to the application configuration directory
+     */
+    public static Path appConfDirPath() {
+        return AbstractConfig.configRoot().resolve(Version.appName, Version.majorAndMinor());
+    }
+
 }
