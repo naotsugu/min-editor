@@ -475,7 +475,7 @@ public class EditorPane extends ContentPane {
         int foundCounts = model.query(Query.foundCounts);
         floatBar.setText(
             selectedCounts > 0 ? String.format("%,d", selectedCounts) + " selected" : "",
-            foundCounts > 0 ? String.format("%,d", foundCounts) + " found" : "",
+            foundCounts > 0 ? String.format("%,d", foundCounts) + "rows found" : "",
             String.format("%,d", p.row() + 1) + ":" + String.format("%,d", p.col()),
             HexFormat.of().formatHex(model.query(Query.bytesAtCaret)),
             model.query(Query.rowEndingSymbol),
