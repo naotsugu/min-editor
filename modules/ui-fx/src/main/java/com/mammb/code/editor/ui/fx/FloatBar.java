@@ -72,11 +72,11 @@ public class FloatBar extends HBox {
      * @param strings information texts
      */
     public void setText(String... strings) {
-        String joined = String.join(" ", strings);
+        String joined = String.join("  ", strings);
         if (Objects.equals(text.getText(), joined)) {
             return;
         }
-        text.setText(String.join(" ", strings));
+        text.setText(joined);
         layoutSize();
     }
 
