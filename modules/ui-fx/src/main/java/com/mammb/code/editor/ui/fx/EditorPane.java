@@ -387,13 +387,13 @@ public class EditorPane extends ContentPane {
             case Open cmd             -> open(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
             case Config _             -> newEdit().open(Session.of(context.config().path()));
-            case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseSensitive()));
-            case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseSensitive()));
-            case FindAll cmd          -> apply(Action.findAll(cmd.str(), cmd.caseSensitive()));
+            case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
+            case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseInsensitive()));
+            case FindAll cmd          -> apply(Action.findAll(cmd.str(), cmd.caseInsensitive()));
             case FindNextRegex cmd    -> apply(Action.findNextRegex(cmd.str()));
             case FindPrevRegex cmd    -> apply(Action.findPrevRegex(cmd.str()));
             case FindAllRegex cmd     -> apply(Action.findAllRegex(cmd.str()));
-            case Select cmd           -> apply(Action.select(cmd.str(), cmd.caseSensitive()));
+            case Select cmd           -> apply(Action.select(cmd.str(), cmd.caseInsensitive()));
             case SelectRegex cmd      -> apply(Action.selectRegex(cmd.str()));
             case GoTo cmd             -> apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd         -> model().apply(Action.wrapLine(cmd.width()));

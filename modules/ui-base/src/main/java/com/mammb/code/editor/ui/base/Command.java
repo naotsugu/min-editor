@@ -123,11 +123,11 @@ public sealed interface Command {
 
     record ZoomOut() implements Command {}
 
-    record FindNext(String str, Boolean caseSensitive) implements Command, RequireArgs2<String, Boolean> { }
+    record FindNext(String str, Boolean caseInsensitive) implements Command, RequireArgs2<String, Boolean> { }
 
-    record FindPrev(String str, Boolean caseSensitive) implements Command, RequireArgs2<String, Boolean> { }
+    record FindPrev(String str, Boolean caseInsensitive) implements Command, RequireArgs2<String, Boolean> { }
 
-    record FindAll(String str, Boolean caseSensitive) implements Command, RequireArgs2<String, Boolean> { }
+    record FindAll(String str, Boolean caseInsensitive) implements Command, RequireArgs2<String, Boolean> { }
 
     record FindNextRegex(String str) implements Command, RequireArgs1<String> { }
 
@@ -135,7 +135,7 @@ public sealed interface Command {
 
     record FindAllRegex(String str) implements Command, RequireArgs1<String> { }
 
-    record Select(String str, Boolean caseSensitive) implements Command, RequireArgs2<String, Boolean> { }
+    record Select(String str, Boolean caseInsensitive) implements Command, RequireArgs2<String, Boolean> { }
 
     record SelectRegex(String str) implements Command, RequireArgs1<String> { }
 

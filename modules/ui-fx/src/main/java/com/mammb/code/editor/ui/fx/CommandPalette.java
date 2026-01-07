@@ -179,7 +179,22 @@ public class CommandPalette extends Dialog<Command> {
             setResult(new Command.Empty());
         } else {
             if (Command.RequireArgs.class.isAssignableFrom(cmdType)) {
-                setResult(Command.newInstance(cmdType, textField.getText()));
+                String[] args;
+                if (Command.RequireArgs1.class.isAssignableFrom(cmdType)) {
+                    args = new String[] { textField.getText() };
+                } else if (Command.RequireArgs2.class.isAssignableFrom(cmdType)) {
+                    int idx = textField.getText().lastIndexOf(" ");
+                    if (idx > 0) {
+                        args = new String[]{
+                            textField.getText().substring(0, idx),
+                            textField.getText().substring(Math.min(idx + 1, textField.getText().length()))};
+                    } else {
+                        args = new String[] { textField.getText() };
+                    }
+                } else {
+                    throw new RuntimeException(cmdType.getName());
+                }
+                setResult(Command.newInstance(cmdType, args));
             } else {
                 setResult(Command.newInstance(cmdType));
             }

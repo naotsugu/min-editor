@@ -115,14 +115,14 @@ public sealed interface Action
     static Action goTo(int row) {
         return new Goto(row, System.currentTimeMillis());
     }
-    static Action findAll(String str, boolean caseSensitive) {
-        return new FindAll(Find.specOf(str, caseSensitive), System.currentTimeMillis());
+    static Action findAll(String str, boolean caseInsensitive) {
+        return new FindAll(Find.specOf(str, caseInsensitive), System.currentTimeMillis());
     }
-    static Action findNext(String str, boolean caseSensitive) {
-        return new FindNext(Find.specOf(str, caseSensitive), System.currentTimeMillis());
+    static Action findNext(String str, boolean caseInsensitive) {
+        return new FindNext(Find.specOf(str, caseInsensitive), System.currentTimeMillis());
     }
-    static Action findPrev(String str, boolean caseSensitive) {
-        return new FindPrev(Find.specOf(str, caseSensitive), System.currentTimeMillis());
+    static Action findPrev(String str, boolean caseInsensitive) {
+        return new FindPrev(Find.specOf(str, caseInsensitive), System.currentTimeMillis());
     }
     static Action findNext() {
         return new FindNext(Find.emptySpecOf(), System.currentTimeMillis());
@@ -133,8 +133,8 @@ public sealed interface Action
     static Action findAllRegex(String str) {
         return new FindAll(Find.regexSpecOf(str), System.currentTimeMillis());
     }
-    static Action select(String str, boolean caseSensitive) {
-        return new Select(Find.specOf(str, caseSensitive), System.currentTimeMillis());
+    static Action select(String str, boolean caseInsensitive) {
+        return new Select(Find.specOf(str, caseInsensitive), System.currentTimeMillis());
     }
     static Action selectRegex(String str) {
         return new Select(Find.regexSpecOf(str), System.currentTimeMillis());

@@ -104,12 +104,12 @@ public interface Find {
      * based on the case sensitivity flag.
      *
      * @param pattern the pattern string to be used for the {@link Spec}
-     * @param caseSensitive a flag to indicate if the pattern is case-sensitive;
-     *                      if false, the pattern type will be case-insensitive
+     * @param caseInsensitive a flag to indicate if the pattern is case-sensitive;
+     *                      if {@code true}, the pattern type will be case-insensitive
      * @return a new {@link Spec} initialized with the given pattern and corresponding pattern type
      */
-    static Spec specOf(String pattern, boolean caseSensitive) {
-        return new Spec(pattern, caseSensitive ? PatternType.LITERAL : PatternType.CASE_INSENSITIVE);
+    static Spec specOf(String pattern, boolean caseInsensitive) {
+        return new Spec(pattern, caseInsensitive ?  PatternType.CASE_INSENSITIVE : PatternType.LITERAL);
     }
 
     /**
