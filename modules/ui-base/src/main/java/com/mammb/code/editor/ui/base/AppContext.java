@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.base;
 
+import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
 import java.nio.file.Path;
@@ -26,13 +27,13 @@ import java.nio.file.Path;
 public class AppContext extends Context.AbstractContext {
 
     /** The path where the application's "recents" configuration is stored. */
-    private static final Path recentsConfPath = AppConfig.appConfDirPath().resolve("recents");
+    private static final Path recentsConfPath = appConfDir().resolve("recents");
 
     /**
      * Constructor.
      */
     public AppContext() {
-        super(new AppConfig());
+        super(new AppConfig(appConfDir()));
         load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
@@ -72,6 +73,15 @@ public class AppContext extends Context.AbstractContext {
         if (!Files.exists(recentsConfPath)) return;
         Files.readAllLines(recentsConfPath).reversed().stream()
             .map(Path::of).forEach(super::pushRecents);
+    }
+
+    /**
+     * Resolves and returns the path to the application configuration directory.
+     * The path is determined based on the application's name and version.
+     * @return the path to the application configuration directory
+     */
+    public static Path appConfDir() {
+        return Config.AbstractConfig.configRoot().resolve(Version.appName, Version.majorAndMinor());
     }
 
 }

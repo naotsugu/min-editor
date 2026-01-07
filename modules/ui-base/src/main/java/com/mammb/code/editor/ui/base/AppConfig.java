@@ -36,10 +36,11 @@ public class AppConfig extends Config.AbstractConfig {
     private static final System.Logger log = System.getLogger(AppConfig.class.getName());
 
     /**
-     * Constructor.
+     * Constructs an instance of AppConfig that manages application configuration.
+     * @param appConfDir the directory where the configuration file is located
      */
-    public AppConfig() {
-        super(appConfDirPath().resolve("config.properties"));
+    public AppConfig(Path appConfDir) {
+        super(appConfDir.resolve("config.properties"));
         load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
@@ -141,15 +142,6 @@ public class AppConfig extends Config.AbstractConfig {
         } catch (IOException ignore) {
             log.log(System.Logger.Level.WARNING, ignore.getMessage(), ignore);
         }
-    }
-
-    /**
-     * Resolves and returns the path to the application configuration directory.
-     * The path is determined based on the application's name and version.
-     * @return the path to the application configuration directory
-     */
-    public static Path appConfDirPath() {
-        return AbstractConfig.configRoot().resolve(Version.appName, Version.majorAndMinor());
     }
 
 }

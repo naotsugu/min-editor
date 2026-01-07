@@ -17,7 +17,11 @@ package com.mammb.code.editor.bootstrap;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.Locale;
@@ -37,7 +41,7 @@ public class Main {
      * Launch application.
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
 
         // output logs and button names in English
         Locale.setDefault(Locale.US);
@@ -123,6 +127,17 @@ public class Main {
             log.log(System.Logger.Level.ERROR, "Failed to convert URL to URI.", e);
             return null;
         }
+    }
+
+    private static void lock() throws Exception {
+        Path lockFile = Path.of("lock");
+        FileChannel fc = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        FileLock lock = fc.tryLock();
+        if (lock == null) {
+            System.exit(1);
+        }
+        long pid = ProcessHandle.current().pid();
+        fc.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
     }
 
 }
