@@ -368,6 +368,14 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
+    private void moveCaretTop(boolean withSelect) {
+        // TODO
+    }
+
+    private void moveCaretBottom(boolean withSelect) {
+        // TODO
+    }
+
     private void selectAll() {
         carets.unique().markTo(0, 0,
             screenLayout.rowSize() - 1,
@@ -848,6 +856,8 @@ public class TextEditorModel implements EditorModel {
             case CaretDown a    -> moveCaretDown(a.withSelect(), a.withShortcut());
             case PageUp a       -> moveCaretPageUp(a.withSelect(), a.withShortcut());
             case PageDown a     -> moveCaretPageDown(a.withSelect(), a.withShortcut());
+            case Top a          -> moveCaretTop(a.withSelect());
+            case Bottom a       -> moveCaretBottom(a.withSelect());
             case Copy a         -> copyToClipboard(a.attr());
             case Cut a          -> aroundEdit(() -> cutToClipboard(a.attr()));
             case Paste a        -> aroundEdit(() -> pasteFromClipboard(a.attr(), a.withOpt()));

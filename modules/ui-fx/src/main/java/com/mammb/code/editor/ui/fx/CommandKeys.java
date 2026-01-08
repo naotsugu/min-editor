@@ -78,6 +78,8 @@ public class CommandKeys {
         else if (SC_FW.match(e)) return new Command.Forward();
         else if (SC_BW.match(e)) return new Command.Backward();
         else if (SC_P.match(e) || SC_R.match(e)) return new Command.Palette(null);
+        else if (SC_TOP.match(e)) return of(Action.top(e.isShiftDown()));
+        else if (SC_BOTTOM.match(e)) return of(Action.bottom(e.isShiftDown()));
 
         else {
             if (keyInput.test(e)) {
@@ -118,6 +120,8 @@ public class CommandKeys {
     static final KeyCombination SC_SZ= new KeyCharacterCombination("z", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_DOWN);
     static final KeyCombination SC_END  = new KeyCodeCombination(KeyCode.RIGHT, KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_HOME = new KeyCodeCombination(KeyCode.LEFT, KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_TOP = new KeyCodeCombination(KeyCode.HOME, KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_BOTTOM = new KeyCodeCombination(KeyCode.END, KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_N = new KeyCharacterCombination("n", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_O = new KeyCharacterCombination("o", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_S = new KeyCharacterCombination("s", KeyCombination.SHORTCUT_DOWN);

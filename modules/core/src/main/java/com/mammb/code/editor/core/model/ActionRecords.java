@@ -77,6 +77,10 @@ public interface ActionRecords {
 
     record End(boolean withSelect, long occurredAt) implements Action, WithSelect, Repeatable { }
 
+    record Top(boolean withSelect, long occurredAt) implements Action, WithSelect, Repeatable { }
+
+    record Bottom(boolean withSelect, long occurredAt) implements Action, WithSelect, Repeatable { }
+
     record Tab(boolean withSelect, long occurredAt) implements Action, WithSelect, Repeatable { }
 
     record CaretRight(boolean withSelect, boolean withShortcut, long occurredAt) implements Action, WithSelect, Repeatable { }
