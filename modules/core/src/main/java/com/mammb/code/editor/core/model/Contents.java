@@ -31,7 +31,6 @@ class Contents {
     /**
      * Combines text from the specified ranges within the content into a single string,
      * separating each range's text with a line separator.
-     *
      * @param content the content from which text will be retrieved
      * @param range a list of ranges specifying the start and end positions to extract text from
      * @return a combined string of the text from the specified ranges, separated by system line separators
@@ -43,10 +42,10 @@ class Contents {
     }
 
     /**
-     * TODO
-     * @param content
-     * @param range
-     * @return
+     * Retrieves text from the specified ranges within the content.
+     * @param content the content from which text will be retrieved
+     * @param range a list of ranges specifying the start and end positions to extract text from
+     * @return a list of strings, where each string corresponds to the text extracted from the respective range
      */
     static List<String> textAt(Content content, List<Point.Range> range) {
         return range.stream()
@@ -56,7 +55,6 @@ class Contents {
 
     /**
      * Counts the number of Unicode code points in the text from the specified range within the content.
-     *
      * @param content the content from which text will be retrieved
      * @param range a list of ranges specifying the text area, with only the first range being processed
      *              if it meets the constraints
@@ -74,7 +72,6 @@ class Contents {
     /**
      * Retrieves the left and right text characters relative to the specified column position
      * in the row of the given content. The left text accounts for surrogate pairs if they exist.
-     *
      * @param content the content to retrieve the text from
      * @param p the position represented as a point, where the row specifies the line
      *          and the column specifies the character index within that line
@@ -106,7 +103,6 @@ class Contents {
     /**
      * Converts the right text at a specified point within the content into a byte array
      * using the character set defined in the content query.
-     *
      * @param content the content from which the text will be retrieved
      * @param p the position represented as a point, where the row specifies the line
      *          and the column specifies the character index within that line

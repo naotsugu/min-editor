@@ -886,7 +886,8 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.CaretPoint _        -> (R) carets.getOne().point();
             case QueryRecords.CaretCount _        -> (R) Integer.valueOf(carets.size());
             case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
-            case QueryRecords.FoundCounts _       -> (R) Integer.valueOf(decorate.highlightCounts());
+            case QueryRecords.FoundCounts _       -> (R) Integer.valueOf(decorate.highlightPointCounts());
+            case QueryRecords.FoundRowCounts _    -> (R) Integer.valueOf(decorate.highlightRowCounts());
             case QueryRecords.SelectedCounts _    -> (R) Contents.countCodePoints(content, carets.marked());
             case QueryRecords.LineSize _          -> (R) Integer.valueOf(screenLayout.lineSize());
             case QueryRecords.RowSize _           -> (R) Integer.valueOf(screenLayout.rowSize());

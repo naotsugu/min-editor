@@ -56,6 +56,7 @@ public interface Query<R> {
 
     Query<Integer> widthAsCharacters = new WidthAsCharacters();
     Query<Integer> foundCounts = new FoundCounts();
+    Query<Integer> foundRowCounts = new FoundRowCounts();
     Query<Integer> selectedCounts = new SelectedCounts();
     Query<Integer> lineSize = new LineSize();
     Query<Integer> rowSize = new RowSize();

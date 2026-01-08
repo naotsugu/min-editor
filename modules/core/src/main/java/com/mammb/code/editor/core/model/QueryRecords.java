@@ -55,6 +55,8 @@ public interface QueryRecords {
     record WidthAsCharacters() implements Query<Integer> { }
     /** The query of founded count. */
     record FoundCounts() implements Query<Integer> { }
+    /** The query of founded row count. */
+    record FoundRowCounts() implements Query<Integer> { }
     /** The query of the selected count. */
     record SelectedCounts() implements Query<Integer> { }
     /** The query of line size. */

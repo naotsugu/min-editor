@@ -472,10 +472,11 @@ public class EditorPane extends ContentPane {
         model.paint(draw);
         Point p = model.query(Query.caretPoint);
         int selectedCounts = model.query(Query.selectedCounts);
-        int foundCounts = model.query(Query.foundCounts);
+        int foundRowCounts = model.query(Query.foundRowCounts);
+        int foundCounts = (foundRowCounts > 0) ? model.query(Query.foundCounts) : 0;
         floatBar.setText(
-            selectedCounts > 0 ? String.format("%,d", selectedCounts) + " selected" : "",
-            foundCounts > 0 ? String.format("%,d", foundCounts) + "rows found" : "",
+            selectedCounts > 0 ? String.format("%,d selected", selectedCounts): "",
+            foundRowCounts > 0 ? String.format("%,d found(%,d rows)", foundCounts, foundRowCounts) : "",
             String.format("%,d", p.row() + 1) + ":" + String.format("%,d", p.col()),
             HexFormat.of().formatHex(model.query(Query.bytesAtCaret)),
             model.query(Query.rowEndingSymbol),

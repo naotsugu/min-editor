@@ -72,10 +72,16 @@ public interface Decorate {
     Set<Integer> highlightsRows();
 
     /**
-     * Get the highlight counts.
-     * @return the highlight counts
+     * Get the highlight point counts.
+     * @return the highlight point counts
      */
-    int highlightCounts();
+    int highlightPointCounts();
+
+    /**
+     * Get the highlight row counts.
+     * @return the highlight row counts
+     */
+    int highlightRowCounts();
 
     boolean isBlockScoped();
 
@@ -123,6 +129,8 @@ public interface Decorate {
 
         /** The flush style spans. */
         private final Map<Integer, List<StyleSpan>> flushes = new HashMap<>();
+
+        private int highlightCount = 0;
 
         /**
          * Constructor.
@@ -177,6 +185,7 @@ public interface Decorate {
         @Override
         public void addHighlights(int row, StyleSpan span) {
             highlights.computeIfAbsent(row, _ -> new ArrayList<>()).add(span);
+            highlightCount++;
         }
 
         @Override
@@ -188,6 +197,7 @@ public interface Decorate {
         public void clear() {
             highlights.clear();
             flushes.clear();
+            highlightCount = 0;
         }
 
         @Override
@@ -201,7 +211,12 @@ public interface Decorate {
         }
 
         @Override
-        public int highlightCounts() {
+        public int highlightPointCounts() {
+            return highlightCount;
+        }
+
+        @Override
+        public int highlightRowCounts() {
             return highlights.size();
         }
 
