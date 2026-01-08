@@ -32,6 +32,13 @@ import static javafx.scene.input.KeyCode.*;
  */
 public class CommandKeys {
 
+    /**
+     * Creates a {@link Command} object based on the given {@link KeyEvent}.
+     * This method processes the key event, matches it against predefined keybindings,
+     * and returns the corresponding {@code Command} instance.
+     * @param e the {@link KeyEvent} to process
+     * @return a {@link Command} instance corresponding to the processed key event
+     */
     public static Command of(KeyEvent e) {
         e.consume();
 
@@ -92,6 +99,11 @@ public class CommandKeys {
         return of(Action.empty());
     }
 
+    /**
+     * Creates a new {@code Command.ActionCommand} instance from the given {@code Action}.
+     * @param action the {@code Action} to be used for creating the {@code Command.ActionCommand}
+     * @return a new {@code Command.ActionCommand} corresponding to the provided {@code Action}
+     */
     public static Command.ActionCommand of(Action action) {
         return new Command.ActionCommand(action);
     }

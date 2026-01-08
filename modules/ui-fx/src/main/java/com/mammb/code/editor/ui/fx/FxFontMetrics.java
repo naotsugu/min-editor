@@ -38,7 +38,7 @@ public class FxFontMetrics implements FontMetrics {
 
     /** The font metrics. */
     private final com.sun.javafx.tk.FontMetrics fontMetrics;
-    /** The standard a character width. */
+    /** The standard character width. */
     private final double standardCharWidth;
 
     /** The font strike. */
