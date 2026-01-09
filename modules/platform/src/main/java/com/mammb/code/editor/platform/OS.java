@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor.platform;
 
-import java.nio.file.Path;
-
 /**
  * The OS.
  * @author Naotsugu Kobayashi
@@ -32,27 +30,6 @@ public enum OS {
      */
     public static final OS CURRENT = current();
 
-    /**
-     * Retrieves the name of the current operating system in lowercase.
-     * @return the lowercase name of the current operating system
-     */
-    public static String currentName() {
-        return current().name().toLowerCase();
-    }
-
-    /**
-     * Get the configuration directory for a platform.
-     * @return the configuration directory
-     */
-    public static Path confRoot() {
-        Path home = Path.of(System.getProperty("user.home"));
-        return switch (CURRENT) {
-            case WINDOWS -> home.resolve("AppData", "Local");
-            case MAC -> home.resolve("Library", "Application Support");
-            case LINUX -> home.resolve(".config");
-            default -> home;
-        };
-    }
 
     /**
      * Get the platform.

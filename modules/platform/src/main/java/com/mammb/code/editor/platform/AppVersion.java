@@ -85,12 +85,12 @@ public interface AppVersion {
          * @return the combined major and minor version numbers as a string
          */
         public String majorAndMinor() {
-            return major + "." + minor;
+            return String.join(".", major, minor);
         }
 
         @Override
         public String toString() {
-            return major + "." + minor + "." + patch;
+            return String.join(".", major, minor, patch);
         }
 
     }

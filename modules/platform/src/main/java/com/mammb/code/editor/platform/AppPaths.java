@@ -26,10 +26,38 @@ import java.util.Objects;
  * The AppPath.
  * @author Naotsugu Kobayashi
  */
-public class AppPath {
+public abstract class AppPaths {
 
     /** The logger. */
-    private static final System.Logger log = System.getLogger(AppPath.class.getName());
+    private static final System.Logger log = System.getLogger(AppPaths.class.getName());
+
+    /**
+     * Provides the path to the application configuration directory,
+     * which is determined based on the root configuration directory and the
+     * application's version information.
+     * <p>
+     * The resulting path is resolved using the application's name and the
+     * major and minor version numbers of the application.
+     *
+     * @return the application configuration path
+     */
+    public static Path applicationConfPath() {
+        return confRoot().resolve(AppVersion.appName, AppVersion.val.majorAndMinor());
+    }
+
+    /**
+     * Get the configuration directory for a platform.
+     * @return the configuration directory
+     */
+    public static Path confRoot() {
+        Path home = Path.of(System.getProperty("user.home"));
+        return switch (OS.CURRENT) {
+            case WINDOWS -> home.resolve("AppData", "Local");
+            case MAC -> home.resolve("Library", "Application Support");
+            case LINUX -> home.resolve(".config");
+            default -> home;
+        };
+    }
 
     /**
      * Gets the base path of the application, regardless of the execution environment (JAR, IDE, or jlink).
@@ -40,7 +68,7 @@ public class AppPath {
         try {
 
             // Get the CodeSource of the current class.
-            ProtectionDomain domain = AppPath.class.getProtectionDomain();
+            ProtectionDomain domain = AppPaths.class.getProtectionDomain();
             CodeSource source = domain.getCodeSource();
 
             if (source == null) {

@@ -21,6 +21,7 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import com.mammb.code.editor.platform.AppPaths;
 import com.mammb.code.editor.ui.base.AppContext;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -49,7 +50,7 @@ public class App extends Application {
 
         // if additional fonts are added, set them as the default font
         ctx.config().defaultFontName(
-            loadFonts(System.getProperty("app.home")).orElse(null));
+            loadFonts(AppPaths.applicationHomePath()).orElse(null));
 
         double posX = ctx.config().windowPositionX();
         double posY = ctx.config().windowPositionY();
@@ -101,12 +102,11 @@ public class App extends Application {
 
     /**
      * Load fonts.
-     * @param pathString the path
+     * @param path the application path
      * @return the font name or {@code Optional.empty()}
      */
-    private Optional<String> loadFonts(String pathString) {
-        if (pathString == null || pathString.isBlank()) return Optional.empty();
-        Path path = Path.of(pathString);
+    private Optional<String> loadFonts(Path path) {
+        if (path == null) return Optional.empty();
         if (!Files.exists(path)) return Optional.empty();
         return Files.list(path).filter(Files::isReadableFile)
             .filter(p -> p.getFileName().toString().endsWith(".ttf"))

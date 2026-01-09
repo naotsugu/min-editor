@@ -21,7 +21,6 @@ import java.nio.channels.FileLock;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Locale;
-import com.mammb.code.editor.platform.AppPath;
 import com.mammb.code.editor.ui.fx.AppLauncher;
 
 /**
@@ -49,14 +48,6 @@ public class Main {
                 "java.util.logging.SimpleFormatter.format",
                 "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %2$s %5$s%6$s%n");
 
-        // set up an application home directory
-        if (System.getProperty("app.home") == null) {
-            Path home = AppPath.applicationHomePath();
-            if (home != null) {
-                System.setProperty("app.home", home.toString());
-            }
-        }
-
         // set up piecetable config
         System.setProperty("com.mammb.code.piecetable.core.gcInterval", "100");
 
@@ -75,5 +66,4 @@ public class Main {
         long pid = ProcessHandle.current().pid();
         fc.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
     }
-
 }

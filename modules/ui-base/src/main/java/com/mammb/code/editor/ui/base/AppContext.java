@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2025 the original author or authors.
+ * Copyright 2023-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
  */
 package com.mammb.code.editor.ui.base;
 
-import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
-import com.mammb.code.editor.platform.AppVersion;
+import com.mammb.code.editor.platform.AppPaths;
 import java.nio.file.Path;
 
 /**
@@ -27,14 +26,11 @@ import java.nio.file.Path;
  */
 public class AppContext extends Context.AbstractContext {
 
-    /** The path where the application's "recents" configuration is stored. */
-    private static final Path recentsConfPath = appConfDir().resolve("recents");
-
     /**
      * Constructor.
      */
     public AppContext() {
-        super(new AppConfig(appConfDir()));
+        super(new AppConfig(AppPaths.applicationConfPath()));
         load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
@@ -56,7 +52,7 @@ public class AppContext extends Context.AbstractContext {
      * It overwrites the existing file if it already exists.
      */
     public void save() {
-        Files.write(recentsConfPath, recents().stream()
+        Files.write(recentsConfPath(), recents().stream()
             .map(Path::toString).toList());
     }
 
@@ -71,18 +67,21 @@ public class AppContext extends Context.AbstractContext {
      * when the application starts, ensuring that the application can resume with the previous state.
      */
     public void load() {
-        if (!Files.exists(recentsConfPath)) return;
-        Files.readAllLines(recentsConfPath).reversed().stream()
+        var path = recentsConfPath();
+        if (!Files.exists(path)) return;
+        Files.readAllLines(path).reversed().stream()
             .map(Path::of).forEach(super::pushRecents);
     }
 
     /**
-     * Resolves and returns the path to the application configuration directory.
-     * The path is determined based on the application's name and version.
-     * @return the path to the application configuration directory
+     * Retrieves the path to the application's "recents" configuration file.
+     * The path is determined by appending the "recents" sub-directory to the
+     * base application configuration directory.
+     *
+     * @return the path to the "recents" configuration file
      */
-    public static Path appConfDir() {
-        return Config.AbstractConfig.configRoot().resolve(AppVersion.appName, AppVersion.val.majorAndMinor());
+    private static Path recentsConfPath() {
+        return AppPaths.applicationConfPath().resolve("recents");
     }
 
 }
