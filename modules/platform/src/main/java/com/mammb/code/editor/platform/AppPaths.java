@@ -51,12 +51,9 @@ public abstract class AppPaths {
      */
     public static Path confRoot() {
         Path home = Path.of(System.getProperty("user.home"));
-        return switch (OS.CURRENT) {
-            case WINDOWS -> home.resolve("AppData", "Local");
-            case MAC -> home.resolve("Library", "Application Support");
-            case LINUX -> home.resolve(".config");
-            default -> home;
-        };
+        if (OS.isMac()) return home.resolve("Library", "Application Support");
+        if (OS.isWindows()) return home.resolve("AppData", "Local");
+        return home.resolve(".config");
     }
 
     /**
@@ -94,23 +91,18 @@ public abstract class AppPaths {
                     // executed from the IMAGE: min-editor/modules/bootstrap/build/image
                     return path;
                 }
-                return switch (OS.CURRENT) {
-                    // executed from the Mac app: min-editor.app/Contents/runtime/Contents/Home
-                    case MAC -> path.getParent().getParent().getParent().getParent();
-                    // executed from the Win app: min-editor/runtime
-                    case WINDOWS -> path.getParent();
-                    // executed from the Linux app: min-editor/lib/runtime
-                    case LINUX -> path.getParent().getParent();
-                    default -> null;
-                };
-            } else {
-                return null;
-            }
 
+                // executed from the Mac app: min-editor.app/Contents/runtime/Contents/Home
+                if (OS.isMac()) return path.getParent().getParent().getParent().getParent();
+                // executed from the Win app: min-editor/runtime
+                if (OS.isWindows()) return path.getParent();
+                // executed from the Linux app: min-editor/lib/runtime
+                if (OS.isLinux()) return path.getParent().getParent();
+            }
         } catch (URISyntaxException e) {
             log.log(System.Logger.Level.ERROR, "Failed to convert URL to URI.", e);
-            return null;
         }
+        return null;
     }
 
 }
