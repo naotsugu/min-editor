@@ -31,8 +31,8 @@ public class Updater {
 
     private static final String latest_releases_url = "https://github.com/naotsugu/min-editor/releases/latest/";
 
-    public void checkUpdate() {
-
+    public boolean isUpdateAvailable() {
+        return AppVersion.Version.of(getLatestReleasesVersion()).isNewerThan(AppVersion.val);
     }
 
     /**

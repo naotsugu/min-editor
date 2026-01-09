@@ -45,7 +45,15 @@ public interface AppVersion {
          * @throws ArrayIndexOutOfBoundsException if the input string does not contain exactly three parts separated by dots
          */
         public static Version of(String version) {
-            return new Version(version.split("\\.")[0], version.split("\\.")[1], version.split("\\.")[2]);
+            String major = "0", minor = "0", patch = "0";
+            if (version != null && !version.isBlank()) {
+                var dots = version.chars().filter(ch -> ch == '.').count();
+                if (dots < 1) major = version;
+                if (dots >= 1) major = version.split("\\.")[0];
+                if (dots > 1)  minor = version.split("\\.")[1];
+                if (dots >= 2) patch = version.split("\\.")[2];
+            }
+            return new Version(major, minor, patch);
         }
 
         /**
