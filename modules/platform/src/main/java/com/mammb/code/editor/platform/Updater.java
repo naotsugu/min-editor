@@ -31,8 +31,15 @@ public class Updater {
 
     private static final String latest_releases_url = "https://github.com/naotsugu/min-editor/releases/latest/";
 
+    /**
+     * Checks whether a newer version of the application is available by comparing
+     * the latest release version retrieved from a remote source with the current
+     * application version.
+     * @return {@code true} if a newer version is available, false otherwise
+     */
     public boolean isUpdateAvailable() {
-        return AppVersion.Version.of(getLatestReleasesVersion()).isNewerThan(AppVersion.val);
+        return AppVersion.Version.of(getLatestReleasesVersion())
+            .isNewerThan(AppVersion.val);
     }
 
     /**
