@@ -26,10 +26,10 @@ import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
+import com.mammb.code.editor.platform.AppVersion;
 import com.mammb.code.editor.ui.base.Command;
 import com.mammb.code.editor.ui.base.DrawImpl;
 import com.mammb.code.editor.ui.base.Command.*;
-import com.mammb.code.editor.ui.base.Version;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -668,7 +668,7 @@ public class EditorPane extends ContentPane {
         Scene scene = new Scene(editorPane, current.getWidth(), current.getHeight());
         scene.getStylesheets().addAll(getScene().getStylesheets());
         stage.setScene(scene);
-        stage.setTitle(Version.appName);
+        stage.setTitle(AppVersion.appName);
         stage.show();
         return editorPane;
     }

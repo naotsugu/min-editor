@@ -20,7 +20,7 @@
  */
 module code.editor.ui.base {
     requires code.editor.core;
-    requires static code.editor.platform;
+    requires transitive code.editor.platform;
     requires java.desktop;
     exports com.mammb.code.editor.ui.base;
 }

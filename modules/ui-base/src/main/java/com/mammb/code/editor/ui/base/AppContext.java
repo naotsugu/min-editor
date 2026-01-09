@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.base;
 import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
+import com.mammb.code.editor.platform.AppVersion;
 import java.nio.file.Path;
 
 /**
@@ -81,7 +82,7 @@ public class AppContext extends Context.AbstractContext {
      * @return the path to the application configuration directory
      */
     public static Path appConfDir() {
-        return Config.AbstractConfig.configRoot().resolve(Version.appName, Version.majorAndMinor());
+        return Config.AbstractConfig.configRoot().resolve(AppVersion.appName, AppVersion.val.majorAndMinor());
     }
 
 }

@@ -23,7 +23,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
-import com.mammb.code.editor.ui.base.Version;
+import com.mammb.code.editor.platform.AppVersion;
 
 /**
  * The BasicDialog.
@@ -54,8 +54,8 @@ public class FxDialog extends Dialog<ButtonType> {
      * @return the about dialog
      */
     public static FxDialog about(Window owner, FxAppContext ctx) {
-        FxDialog dialog = new FxDialog(owner, "About", Version.appName + " " + Version.val, ButtonType.CLOSE);
-        var label = new Label(Version.appName + " " + Version.val);
+        FxDialog dialog = new FxDialog(owner, "About", AppVersion.appName + " " + AppVersion.val, ButtonType.CLOSE);
+        var label = new Label(AppVersion.appName + " " + AppVersion.val);
         label.setPrefWidth(300);
         var link = new Hyperlink("Keyboard Shortcut");
         link.setOnAction(_ ->

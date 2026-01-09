@@ -30,7 +30,7 @@ import javafx.stage.Stage;
 import com.sun.javafx.tk.Toolkit;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.Files;
-import com.mammb.code.editor.ui.base.Version;
+import com.mammb.code.editor.platform.AppVersion;
 
 /**
  * The App class serves as the entry point for the JavaFX application.
@@ -66,7 +66,7 @@ public class App extends Application {
 
         scene.getStylesheets().add(css);
         stage.setScene(scene);
-        stage.setTitle(Version.appName);
+        stage.setTitle(AppVersion.appName);
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
         buildConfigPropertyListener(stage, scene, ctx);

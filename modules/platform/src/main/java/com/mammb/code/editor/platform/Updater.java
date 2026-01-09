@@ -35,7 +35,13 @@ public class Updater {
 
     }
 
-    String latestReleasesVersion() {
+    /**
+     * Retrieves the latest release version of the application from a specified remote URL.
+     * This method sends an HTTP request to the provided URL, checks for redirection responses,
+     * extracts the version tag from the "Location" header, and returns it as a string.
+     * @return the latest release version as a string, or an empty string if the version could not be determined
+     */
+    String getLatestReleasesVersion() {
         try (var client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NEVER).build()) {
             var request = HttpRequest.newBuilder(URI.create(latest_releases_url)).build();
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());

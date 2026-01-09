@@ -20,12 +20,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * The unit test of the {@code Updater} class.
+ * @author Naotsugu Kobayashi
+ */
 class UpdaterTest {
 
     @Test
     @Disabled("because, network access is required")
-    void latestReleasesVersion() {
-        var version = new Updater().latestReleasesVersion();
+    void getLatestReleasesVersion() {
+        var version = new Updater().getLatestReleasesVersion();
         assertTrue(version.length() >= 5);
         assertEquals("0.5.0", version);
     }
