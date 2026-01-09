@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2025 the original author or authors.
+ * Copyright 2023-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,10 @@
  */
 
 /**
- * The code editor ui module.
+ * The code editor platform module.
  * @author Naotsugu Kobayashi
  */
-module code.editor.ui.base {
-    requires code.editor.core;
-    requires static code.editor.platform;
-    requires java.desktop;
-    exports com.mammb.code.editor.ui.base;
+module code.editor.platform {
+    requires java.net.http;
+    exports com.mammb.code.editor.platform;
 }

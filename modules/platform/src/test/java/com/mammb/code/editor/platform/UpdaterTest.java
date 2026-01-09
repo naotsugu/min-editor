@@ -1,5 +1,5 @@
 /*
- * Copyright 2023-2025 the original author or authors.
+ * Copyright 2023-2026 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.mammb.code.editor.platform;
 
-/**
- * The code editor ui module.
- * @author Naotsugu Kobayashi
- */
-module code.editor.ui.base {
-    requires code.editor.core;
-    requires static code.editor.platform;
-    requires java.desktop;
-    exports com.mammb.code.editor.ui.base;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class UpdaterTest {
+
+    @Test
+    @Disabled("because, network access is required")
+    void latestReleasesVersion() {
+        var version = new Updater().latestReleasesVersion();
+        assertTrue(version.length() >= 5);
+        assertEquals("0.5.0", version);
+    }
+
 }
