@@ -15,12 +15,15 @@
  */
 package com.mammb.code.editor.bootstrap;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Locale;
+import com.mammb.code.editor.platform.AppPaths;
 import com.mammb.code.editor.ui.fx.AppLauncher;
 
 /**
@@ -37,6 +40,13 @@ public class Main {
      * @param args the command line arguments
      */
     static void main(String[] args) {
+
+        try {
+            lock();
+        } catch (Exception e) {
+            log.log(System.Logger.Level.ERROR, e);
+            System.exit(1);
+        }
 
         // output logs and button names in English
         Locale.setDefault(Locale.US);
@@ -57,13 +67,23 @@ public class Main {
     }
 
     private static void lock() throws Exception {
-        Path lockFile = Path.of("lock");
+        Path lockFile = AppPaths.applicationConfPath.resolve("lock");
         FileChannel fc = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
         FileLock lock = fc.tryLock();
         if (lock == null) {
-            System.exit(1);
+            throw new IllegalStateException("another instance of the application is already running.");
         }
         long pid = ProcessHandle.current().pid();
         fc.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                Files.deleteIfExists(lockFile);
+                lock.close();
+                fc.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+         }));
     }
+
 }

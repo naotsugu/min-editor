@@ -30,7 +30,7 @@ public class AppContext extends Context.AbstractContext {
      * Constructor.
      */
     public AppContext() {
-        super(new AppConfig(AppPaths.applicationConfPath()));
+        super(new AppConfig(AppPaths.applicationConfPath));
         load();
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
@@ -81,7 +81,7 @@ public class AppContext extends Context.AbstractContext {
      * @return the path to the "recents" configuration file
      */
     private static Path recentsConfPath() {
-        return AppPaths.applicationConfPath().resolve("recents");
+        return AppPaths.applicationConfPath.resolve("recents");
     }
 
 }

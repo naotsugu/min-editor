@@ -369,11 +369,22 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void moveCaretTop(boolean withSelect) {
-        // TODO
+        var c = carets.unique();
+        if (withSelect) {
+            c.markTo(c.row(), c.col(), 0, 0);
+        } else {
+            c.at(0, 0);
+        }
     }
 
     private void moveCaretBottom(boolean withSelect) {
-        // TODO
+        int row = screenLayout.rowSize() - 1, col = screenLayout.endColOnRow(row);
+        var c = carets.unique();
+        if (withSelect) {
+            c.markTo(c.row(), c.col(), row, col);
+        } else {
+            c.at(row, col);
+        }
     }
 
     private void selectAll() {
@@ -863,7 +874,7 @@ public class TextEditorModel implements EditorModel {
             case Paste a        -> aroundEdit(() -> pasteFromClipboard(a.attr(), a.withOpt()));
             case SelectAll _    -> selectAll();
             case WrapLine a     -> wrap(a.attr());
-            case SetTabStop a      -> tabSize(a.attr());
+            case SetTabStop a   -> tabSize(a.attr());
             case ToggleLayout _ -> toggleLayout();
             case Goto a         -> moveTo(a.attr());
             case FindNext a     -> findNext(a.attr());

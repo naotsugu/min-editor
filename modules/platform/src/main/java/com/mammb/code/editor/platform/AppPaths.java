@@ -15,8 +15,10 @@
  */
 package com.mammb.code.editor.platform;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.CodeSource;
 import java.security.ProtectionDomain;
@@ -31,6 +33,9 @@ public abstract class AppPaths {
     /** The logger. */
     private static final System.Logger log = System.getLogger(AppPaths.class.getName());
 
+    /** The application configuration path. */
+    public static final Path applicationConfPath = applicationConfPath();
+
     /**
      * Provides the path to the application configuration directory,
      * which is determined based on the root configuration directory and the
@@ -41,8 +46,19 @@ public abstract class AppPaths {
      *
      * @return the application configuration path
      */
-    public static Path applicationConfPath() {
-        return confRoot().resolve(AppVersion.appName, AppVersion.val.majorAndMinor());
+    private static Path applicationConfPath() {
+        var path = confRoot().resolve(AppVersion.appName, AppVersion.val.majorAndMinor());
+        if (!Files.exists(path)) {
+            try {
+                Files.createDirectories(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (!Files.isDirectory(path)) {
+            throw new RuntimeException("not a directory: " + path);
+        }
+        return path;
     }
 
     /**
