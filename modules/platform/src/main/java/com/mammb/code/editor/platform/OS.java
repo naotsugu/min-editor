@@ -23,7 +23,7 @@ public class OS {
 
     /** The OS name. */
     static final Name name = current();
-
+    /** The OS arch. */
     static final Arch arch = arch();
 
     /**
@@ -107,7 +107,9 @@ public class OS {
         return Arch.UNKNOWN;
     }
 
+    /** The OS name. */
     enum Name { MAC, WINDOWS, LINUX, UNKNOWN }
+    /** The Arch type. */
     enum Arch { X32, X64, ARM32, ARM64, UNKNOWN }
 
 }
