@@ -32,14 +32,27 @@ public class Updater {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(Updater.class.getName());
-
+    /** The releases url. */
     private static final String RELEASES_URL = "https://github.com/naotsugu/min-editor/releases/latest/";
-
+    /** The download url. */
     private static final String DOWNLOAD_URL = RELEASES_URL + "download/";
-
+    /** The update log file name. */
     private static final String UPDATE_LOG = "update.log";
 
-
+    /**
+     * Executes the update process by creating and running an update script based on the operating system.
+     * <ul>
+     *     <li>Generates a platform-specific update script using {@code writeScript()}.</li>
+     *     <li>Determines the appropriate command to execute the script depending on the OS
+     *         (PowerShell for Windows, Bash for others).</li>
+     *     <li>Redirects the process output to a log file and starts the process in the script's directory.</li>
+     *     <li>Terminates the application using {@code System.exit(0)} after starting the process.</li>
+     * </ul>
+     * If any exception occurs during the script generation or execution, a {@code RuntimeException}
+     * is thrown, wrapping the original exception.
+     *
+     * @throws RuntimeException if an error occurs during the update script creation or execution
+     */
     public static void run() {
 
         try {
@@ -64,6 +77,23 @@ public class Updater {
         }
     }
 
+    /**
+     * Writes a platform-specific update script to the application's home directory.
+     * The script is generated based on the current operating system: a PowerShell script
+     * for Windows or a Shell script for other operating systems.
+     *
+     * The method performs the following steps:
+     * 1. Determines the application home path.
+     * 2. Creates the script name and content specific to the operating system.
+     * 3. Writes the script content to a file in the home directory.
+     *
+     * If the application home path is null or an I/O error occurs during the script
+     * writing process, the method either returns null or throws a {@code RuntimeException}.
+     *
+     * @return the {@code Path} to the generated script file, or {@code null} if the
+     *         home path is not determined.
+     * @throws RuntimeException if an I/O error occurs while writing the script.
+     */
     static Path writeScript() {
         var homePath = AppPaths.applicationHomePath();
         if (homePath == null) return null;
