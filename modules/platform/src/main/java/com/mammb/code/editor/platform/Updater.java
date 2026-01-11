@@ -226,7 +226,7 @@ public class Updater {
         } else if (OS.isWindows()) {
             return "min-editor-win.zip";
         } else {
-            return "min-editor-linux.zip";
+            return OS.isArm64() ? "min-editor-linux-aarch64" : "min-editor-linux.zip";
         }
     }
 
