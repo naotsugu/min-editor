@@ -151,6 +151,9 @@ public class Updater {
         chmod +x "$APP_PATH"
         nohup "./$APP_PATH" > /dev/null 2>&1 &
         echo "Complete."
+
+        rm -f update.log > /dev/null 2>&1
+        exec rm -- "$0" > /dev/null 2>&1
         """
         .replaceAll("\\$URL", DOWNLOAD_URL)
         .replaceAll("\\$ARCHIVE_FILE", archiveName()) // min-editor-mac-aarch64.zip | min-editor-mac.zip
@@ -178,6 +181,8 @@ public class Updater {
             Write-Error "Failed: $_"
             exit 1
         }
+        Remove-Item -Path update.log -Force *>$null
+        Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force *>$null
         """
         .replaceAll("\\$URL", DOWNLOAD_URL)
         .replaceAll("\\$ARCHIVE_FILE", archiveName()) // min-editor-win.zip
