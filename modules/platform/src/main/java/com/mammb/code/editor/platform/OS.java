@@ -24,6 +24,8 @@ public class OS {
     /** The OS name. */
     static final Name name = current();
 
+    static final Arch arch = arch();
+
     /**
      * Determines if the current operating system is macOS.
      * @return {@code true} if the current operating system is macOS, {@code false} otherwise
@@ -46,6 +48,38 @@ public class OS {
      */
     public static boolean isWindows() {
         return name == Name.WINDOWS;
+    }
+
+    /**
+     * Determines if the current system architecture is ARM64.
+     * @return {@code true} if the system architecture is ARM64, {@code false} otherwise
+     */
+    public static boolean isArm64() {
+        return arch == Arch.ARM64;
+    }
+
+    /**
+     * Determines if the current system architecture is ARM32.
+     * @return {@code true} if the system architecture is ARM32, {@code false} otherwise
+     */
+    public static boolean isArm32() {
+        return arch == Arch.ARM32;
+    }
+
+    /**
+     * Determines if the current system architecture is x86_64 (64-bit).
+     * @return {@code true} if the system architecture is x86_64, {@code false} otherwise
+     */
+    public static boolean isX64() {
+        return arch == Arch.X64;
+    }
+
+    /**
+     * Determines if the current system architecture is x86 (32-bit).
+     * @return {@code true} if the system architecture is x86 (32-bit), {@code false} otherwise
+     */
+    public static boolean isX32() {
+        return arch == Arch.X32;
     }
 
     /**

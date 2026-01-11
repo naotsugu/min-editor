@@ -29,7 +29,7 @@ class UpdaterTest {
     @Test
     @Disabled("because, network access is required")
     void getLatestReleasesVersion() {
-        var version = new Updater().getLatestReleasesVersion();
+        var version = Updater.getLatestReleasesVersion();
         assertTrue(version.length() >= 5);
         assertEquals("0.5.0", version);
     }

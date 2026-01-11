@@ -73,15 +73,46 @@ public abstract class AppPaths {
     }
 
     /**
-     * Gets the base path of the application, regardless of the execution environment (JAR, IDE, or jlink).
-     * @return A Path object. Instead of returning null if resolution fails, this method throws an exception.
-     * @throws IllegalStateException if the path could not be determined.
+     * Initializes the application home path by determining its location based on the provided class
+     * and setting the "app.home" system property accordingly.
+     * @param clazz the class whose code source determines the root directory of the application
+     * @return the initialized application home path, or {@code null} if the path cannot be determined
+     */
+    public static Path initApplicationHomePath(Class<?> clazz) {
+        var home = applicationHomePath(clazz);
+        if (home != null) {
+            System.setProperty("app.home", home.toString());
+        }
+        return home;
+    }
+
+    /**
+     * Retrieves the application's home directory path by checking the "app.home" system property.
+     * If the property is not set, the method initializes the application home path using the
+     * provided class and sets the "app.home" property accordingly.
+     *
+     * @return the path to the application's home directory, or {@code null} if it cannot be determined
      */
     public static Path applicationHomePath() {
+        var home = System.getProperty("app.home");
+        return (home != null)
+            ? Path.of(home)
+            : initApplicationHomePath(AppPaths.class);
+    }
+
+    /**
+     * Determines the application home path based on the location of the provided class.
+     * The method evaluates different execution environments (e.g., running from a JAR,
+     * from the IDE, or from a modular runtime image) and computes the application's
+     * home directory accordingly.
+     * @param clazz the class whose code source determines the root directory
+     * @return the path to the application home directory, or {@code null} if it cannot be determined
+     */
+    private static Path applicationHomePath(Class<?> clazz) {
         try {
 
             // Get the CodeSource of the current class.
-            ProtectionDomain domain = AppPaths.class.getProtectionDomain();
+            ProtectionDomain domain = clazz.getProtectionDomain();
             CodeSource source = domain.getCodeSource();
 
             if (source == null) {

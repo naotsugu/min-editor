@@ -15,10 +15,14 @@
  */
 package com.mammb.code.editor.platform;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 /**
  * The Updater.
@@ -29,7 +33,59 @@ public class Updater {
     /** The logger. */
     private static final System.Logger log = System.getLogger(Updater.class.getName());
 
-    private static final String latest_releases_url = "https://github.com/naotsugu/min-editor/releases/latest/";
+    private static final String RELEASES_URL = "https://github.com/naotsugu/min-editor/releases/latest/";
+
+    private static final String DOWNLOAD_URL = RELEASES_URL + "download/";
+
+    private static final String UPDATE_LOG = "update.log";
+
+
+    public static void run() {
+
+        try {
+            var scriptPath = writeScript();
+            if (scriptPath == null) return;
+
+            var command = OS.isWindows() ? ps1Command() : shCommand();
+
+            ProcessBuilder pb = new ProcessBuilder(command);
+            pb.redirectErrorStream(true);
+            pb.directory(scriptPath.getParent().toFile());
+
+            var logFile = scriptPath.resolveSibling(UPDATE_LOG);
+            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(logFile.toFile()));
+            //pb.redirectInput(ProcessBuilder.Redirect.DISCARD);
+            pb.start();
+
+            System.exit(0);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static Path writeScript() {
+        var homePath = AppPaths.applicationHomePath();
+        if (homePath == null) return null;
+        var scriptName = OS.isWindows() ? "update.ps1" : "update.sh";
+        var scriptBody = OS.isWindows() ? psScript() : shScript();
+        try {
+            var path = homePath.resolve(scriptName);
+            log.log(System.Logger.Level.INFO, "Writing update script to {0}", path);
+            Files.write(path, scriptBody.getBytes());
+            return path;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static List<String> ps1Command() {
+        return List.of("powershell.exe", "-ExecutionPolicy", "Bypass", "-File", "update.ps1");
+    }
+
+    private static List<String> shCommand() {
+        return List.of("/bin/bash", "update.sh");
+    }
 
     /**
      * Checks whether a newer version of the application is available by comparing
@@ -37,7 +93,7 @@ public class Updater {
      * application version.
      * @return {@code true} if a newer version is available, false otherwise
      */
-    public boolean isUpdateAvailable() {
+    public static boolean isUpdateAvailable() {
         return AppVersion.Version.of(getLatestReleasesVersion())
             .isNewerThan(AppVersion.val);
     }
@@ -48,12 +104,16 @@ public class Updater {
      * extracts the version tag from the "Location" header, and returns it as a string.
      * @return the latest release version as a string, or an empty string if the version could not be determined
      */
-    String getLatestReleasesVersion() {
+    static String getLatestReleasesVersion() {
         try (var client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NEVER).build()) {
-            var request = HttpRequest.newBuilder(URI.create(latest_releases_url)).build();
+
+            var request = HttpRequest.newBuilder(URI.create(RELEASES_URL)).build();
+
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 302 || response.statusCode() == 301) {
+
                 var location = response.headers().firstValue("Location").orElse("");
+
                 var index = location.lastIndexOf('/');
                 if (index > 0 && index< location.length() - 2) {
                     var versionTag = location.substring(index + 1);
@@ -61,6 +121,7 @@ public class Updater {
                         return versionTag.substring(1);
                     }
                 }
+
             }
         } catch (Exception e) {
             log.log(System.Logger.Level.ERROR, e);
@@ -69,68 +130,92 @@ public class Updater {
     }
 
 
-
-    private static final String mac = """
+    private static String shScript() {
+        return """
         #!/bin/bash
-
-        ZIP_FILE="min-editor-mac.zip"
-        URL="https://github.com/naotsugu/min-editor/releases/latest/download/$ZIP_FILE"
-        EXPAND_ROOT="min-editor"
-        APP="min-editor"
-
         cd "$(dirname "$0")"
         set -e
-        trap 'echo "Failed: Command failed on line $LINENO"; exit 1' ERR
 
-        echo "Downloading from $URL ..."
-        curl -L -o "$ZIP_FILE" "$URL"
-
-        echo "Extracting update..."
-        unzip -o "$ZIP_FILE"
+        echo "Downloading from $URL$ARCHIVE_FILE ..."
+        curl -L -o "$ARCHIVE_FILE" "$URL$ARCHIVE_FILE"
+        unzip -o "$ARCHIVE_FILE"
 
         if [ -d "$EXPAND_ROOT" ]; then
             shopt -s dotglob nullglob
             cp -rf "$EXPAND_ROOT"/* .
             rm -rf "$EXPAND_ROOT"
         fi
-        rm -f "$ZIP_FILE"
+        rm -f "ARCHIVE_FILE"
 
         echo "Starting application..."
-        chmod +x "$APP"
-        nohup "./$APP" > /dev/null 2>&1 &
-
+        chmod +x "$APP_PATH"
+        nohup "./$APP_PATH" > /dev/null 2>&1 &
         echo "Complete."
-        """;
+        """
+        .replaceAll("\\$URL", DOWNLOAD_URL)
+        .replaceAll("\\$ARCHIVE_FILE", archiveName()) // min-editor-mac-aarch64.zip | min-editor-mac.zip
+        .replaceAll("\\$EXPAND_ROOT", expandRoot())   // min-editor.app
+        .replaceAll("\\$APP_PATH", appPath());        // Contents/MacOS/min-editor
+    }
 
-    private static final String ps1 = """
-        $zipFile = "min-editor-win.zip"
-        $url = "https://github.com/naotsugu/min-editor/releases/latest/download/$zipFile"
-        $expandRoot = "min-editor"
-        $app = "min-editor.exe"
-
+    private static String psScript() {
+        return """
         Set-Location -Path $PSScriptRoot
         $ErrorActionPreference = "Stop"
-
         try {
+            Write-Output "Downloading from $URL$ARCHIVE_FILE ..."
+            Invoke-WebRequest -Uri $URL$ARCHIVE_FILE -OutFile $ARCHIVE_FILE -UseBasicParsing
+            Expand-Archive -Path $ARCHIVE_FILE -DestinationPath . -Force
+            Move-Item -Path "$EXPAND_ROOT/*" -Destination . -Force
 
-            Write-Output "Downloading from $url ..."
-            Invoke-WebRequest -Uri $url -OutFile $zipFile -UseBasicParsing
-
-            Write-Output "Extracting update..."
-            Expand-Archive -Path $zipFile -DestinationPath . -Force
-            Move-Item -Path "$expandRoot/*" -Destination . -Force
-
-            Remove-Item -Path $zipFile -Force
-            Remove-Item -Path $expandRoot -Force
+            Remove-Item -Path $ARCHIVE_FILE -Force
+            Remove-Item -Path $EXPAND_ROOT -Force
 
             Write-Output "Starting application..."
-            Start-Process -FilePath $app
-
+            Start-Process -FilePath $APP_PATH
             Write-Output "Complete."
-
         } catch {
             Write-Error "Failed: $_"
             exit 1
         }
-        """;
+        """
+        .replaceAll("\\$URL", DOWNLOAD_URL)
+        .replaceAll("\\$ARCHIVE_FILE", archiveName()) // min-editor-win.zip
+        .replaceAll("\\$EXPAND_ROOT", expandRoot())   // min-editor
+        .replaceAll("\\$APP_PATH", appPath());        // min-editor.exe
+    }
+
+    private static String archiveName() {
+        if (OS.isMac()) {
+            return OS.isArm64() ? "min-editor-mac-aarch64.zip" : "min-editor-mac.zip";
+        } else if (OS.isWindows()) {
+            return "min-editor-win.zip";
+        } else {
+            return "min-editor-linux.zip";
+        }
+    }
+
+    private static String expandRoot() {
+        if (OS.isMac()) {
+            return "min-editor.app";
+        } else if (OS.isWindows()) {
+            return "min-editor";
+        } else {
+            return "min-editor";
+        }
+    }
+
+    private static String appPath() {
+        if (OS.isMac()) {
+            // min-editor.app/Contents/MacOS/min-editor
+            return "Contents/MacOS/min-editor";
+        } else if (OS.isWindows()) {
+            // min-editor/min-editor.exe
+            return "min-editor.exe";
+        } else {
+            // min-editor/bin/min-editor
+            return "bin/min-editor";
+        }
+    }
+
 }

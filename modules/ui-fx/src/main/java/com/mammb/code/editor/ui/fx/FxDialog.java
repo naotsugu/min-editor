@@ -15,7 +15,9 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.platform.Updater;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -55,12 +57,20 @@ public class FxDialog extends Dialog<ButtonType> {
      */
     public static FxDialog about(Window owner, FxAppContext ctx) {
         FxDialog dialog = new FxDialog(owner, "About", AppVersion.appName + " " + AppVersion.val, ButtonType.CLOSE);
+
         var label = new Label(AppVersion.appName + " " + AppVersion.val);
         label.setPrefWidth(300);
+
         var link = new Hyperlink("Keyboard Shortcut");
         link.setOnAction(_ ->
-            ctx.getApp().getHostServices().showDocument("https://github.com/naotsugu/min-editor/blob/main/docs/keyboard-shortcut.md"));
-        var box = new VBox(label, link);
+            ctx.getApp().getHostServices().showDocument("https://github.com/naotsugu/min-editor/blob/main/docs/keyboard-shortcut.md")
+        );
+
+        var updateButton = new Button("Update");
+        updateButton.setDisable(true);
+        updateButton.setOnAction(_ -> Updater.run());
+
+        var box = new VBox(label, link, updateButton);
         box.setAlignment(Pos.BASELINE_LEFT);
         dialog.getDialogPane().setContent(box);
         return dialog;
