@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.platform.Updater;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -69,6 +70,11 @@ public class FxDialog extends Dialog<ButtonType> {
         var updateButton = new Button("Update");
         updateButton.setDisable(true);
         updateButton.setOnAction(_ -> Updater.run());
+        var thread = new Thread(() -> {
+            if (Updater.isUpdateAvailable()) Platform.runLater(() -> updateButton.setDisable(false));
+        });
+        thread.setDaemon(true);
+        thread.start();
 
         var box = new VBox(label, link, updateButton);
         box.setAlignment(Pos.BASELINE_LEFT);
