@@ -238,6 +238,12 @@ public interface Caret extends Comparable<Caret> {
         return new CaretImpl(row, col);
     }
 
+    /**
+     * Represents a position with an optional virtual position.
+     * @param row the row index
+     * @param col the column index
+     * @param vPos the virtual position along the x-axis
+     */
     record At(int row, int col, double vPos) {
         public static final At EMPTY = new At(-1, -1, -1);
         public boolean isEmpty() {
