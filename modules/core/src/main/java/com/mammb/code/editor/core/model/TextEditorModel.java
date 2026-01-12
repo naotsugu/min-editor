@@ -285,13 +285,15 @@ public class TextEditorModel implements EditorModel {
         if (withShortcut) {
             List<Point> points = new ArrayList<>();
             for (Caret c : carets.carets()) {
-                acceptDown(c, (row, col, _) -> points.add(Point.of(row, col)));
+                var at = down(c);
+                if (!at.isEmpty()) points.add(Point.of(at.row(), at.col()));
             }
             carets.add(points);
         } else {
             for (Caret c : carets.carets()) {
                 c.markIf(withSelect);
-                acceptDown(c, c::at);
+                var at = down(c);
+                if (!at.isEmpty()) c.at(at.row(), at.col(), at.vPos());
             }
         }
     }
@@ -300,40 +302,42 @@ public class TextEditorModel implements EditorModel {
         if (withShortcut) {
             List<Point> points = new ArrayList<>();
             for (Caret c : carets.carets()) {
-                acceptUp(c, (row, col, _) -> points.add(Point.of(row, col)));
+                var at = up(c);
+                if (!at.isEmpty()) points.add(Point.of(at.row(), at.col()));
             }
             carets.add(points);
         } else {
             for (Caret c : carets.carets()) {
                 c.markIf(withSelect);
-                acceptUp(c, c::at);
+                var at = up(c);
+                if (!at.isEmpty()) c.at(at.row(), at.col(), at.vPos());
             }
         }
     }
 
-    private void acceptDown(Caret c, Caret.AtConsumer atConsumer) {
+    private Caret.At down(Caret c) {
         int line = screenLayout.rowToLine(c.row(), c.col());
         int max = screenLayout.lineSize() - 1;
-        if (line >= max) return;
+        if (line >= max) return Caret.At.EMPTY;
         double x = (c.vPos() < 0)
             ? screenLayout.xOnLayout(line, c.col())
             : c.vPos();
         line = Math.min(line + 1, max);
         int row = screenLayout.lineToRow(line);
         int col = screenLayout.xToCaretCol(line, x);
-        atConsumer.accept(row, col, x);
+        return new Caret.At(row, col, x);
     }
 
-    private void acceptUp(Caret c, Caret.AtConsumer atConsumer) {
+    private Caret.At up(Caret c) {
         int line = screenLayout.rowToLine(c.row(), c.col());
-        if (line == 0) return;
+        if (line == 0) return Caret.At.EMPTY;;
         double x = (c.vPos() < 0)
             ? screenLayout.xOnLayout(line, c.col())
             : c.vPos();
         line = Math.max(line - 1, 0);
         int row = screenLayout.lineToRow(line);
         int col = screenLayout.xToCaretCol(line, x);
-        atConsumer.accept(row, col, x);
+        return new Caret.At(row, col, x);
     }
 
     private void moveCaretHome(boolean withSelect) {

@@ -238,10 +238,12 @@ public interface Caret extends Comparable<Caret> {
         return new CaretImpl(row, col);
     }
 
-    /**
-     * At consumer.
-     */
-    interface AtConsumer { void accept(int row, int col, double vPos); }
+    record At(int row, int col, double vPos) {
+        public static final At EMPTY = new At(-1, -1, -1);
+        public boolean isEmpty() {
+            return this == EMPTY || row < 0 || col < 0;
+        }
+    }
 
     /**
      * The implementation of {@link Caret}.
