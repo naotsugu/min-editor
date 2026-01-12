@@ -239,6 +239,11 @@ public interface Caret extends Comparable<Caret> {
     }
 
     /**
+     * At consumer.
+     */
+    interface AtConsumer { void accept(int row, int col, double vPos); }
+
+    /**
      * The implementation of {@link Caret}.
      */
     class CaretImpl implements Caret {

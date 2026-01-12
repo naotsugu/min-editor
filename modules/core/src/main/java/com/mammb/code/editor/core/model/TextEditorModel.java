@@ -237,7 +237,7 @@ public class TextEditorModel implements EditorModel {
         double right = left + screenLayout.screenWidth();
         double gap = screenLayout.standardCharWidth();
         if (!(left <= caretX && caretX <= (right - gap))) {
-            // caret present off-screen
+            // caret presents off-screen
             double margin = screenLayout.screenWidth() / 6;
             if (caretX > (right - gap)) {
                 screenLayout.scrollX(left + (caretX - right) + margin);
@@ -282,46 +282,58 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void moveCaretDown(boolean withSelect, boolean withShortcut) {
-        List<Point> points = new ArrayList<>();
-        for (Caret c : carets.carets()) {
-            c.markIf(withSelect);
-            int line = screenLayout.rowToLine(c.row(), c.col());
-            int max = screenLayout.lineSize() - 1;
-            if (line >= max) continue;
-            double x = (c.vPos() < 0)
-                    ? screenLayout.xOnLayout(line, c.col())
-                    : c.vPos();
-            line = Math.min(line + 1, max);
-            int row = screenLayout.lineToRow(line);
-            int col = screenLayout.xToCaretCol(line, x);
-            if (withShortcut) {
-                points.add(Point.of(row, col));
-            } else {
-                c.at(row, col, x);
+        if (withShortcut) {
+            List<Point> points = new ArrayList<>();
+            for (Caret c : carets.carets()) {
+                acceptDown(c, (row, col, _) -> points.add(Point.of(row, col)));
+            }
+            carets.add(points);
+        } else {
+            for (Caret c : carets.carets()) {
+                c.markIf(withSelect);
+                acceptDown(c, c::at);
             }
         }
-        carets.add(points);
     }
 
     private void moveCaretUp(boolean withSelect, boolean withShortcut) {
-        List<Point> points = new ArrayList<>();
-        for (Caret c : carets.carets()) {
-            c.markIf(withSelect);
-            int line = screenLayout.rowToLine(c.row(), c.col());
-            if (line == 0) continue;
-            double x = (c.vPos() < 0)
-                    ? screenLayout.xOnLayout(line, c.col())
-                    : c.vPos();
-            line = Math.max(line - 1, 0);
-            int row = screenLayout.lineToRow(line);
-            int col = screenLayout.xToCaretCol(line, x);
-            if (withShortcut) {
-                points.add(Point.of(row, col));
-            } else {
-                c.at(row, col, x);
+        if (withShortcut) {
+            List<Point> points = new ArrayList<>();
+            for (Caret c : carets.carets()) {
+                acceptUp(c, (row, col, _) -> points.add(Point.of(row, col)));
+            }
+            carets.add(points);
+        } else {
+            for (Caret c : carets.carets()) {
+                c.markIf(withSelect);
+                acceptUp(c, c::at);
             }
         }
-        carets.add(points);
+    }
+
+    private void acceptDown(Caret c, Caret.AtConsumer atConsumer) {
+        int line = screenLayout.rowToLine(c.row(), c.col());
+        int max = screenLayout.lineSize() - 1;
+        if (line >= max) return;
+        double x = (c.vPos() < 0)
+            ? screenLayout.xOnLayout(line, c.col())
+            : c.vPos();
+        line = Math.min(line + 1, max);
+        int row = screenLayout.lineToRow(line);
+        int col = screenLayout.xToCaretCol(line, x);
+        atConsumer.accept(row, col, x);
+    }
+
+    private void acceptUp(Caret c, Caret.AtConsumer atConsumer) {
+        int line = screenLayout.rowToLine(c.row(), c.col());
+        if (line == 0) return;
+        double x = (c.vPos() < 0)
+            ? screenLayout.xOnLayout(line, c.col())
+            : c.vPos();
+        line = Math.max(line - 1, 0);
+        int row = screenLayout.lineToRow(line);
+        int col = screenLayout.xToCaretCol(line, x);
+        atConsumer.accept(row, col, x);
     }
 
     private void moveCaretHome(boolean withSelect) {
