@@ -187,6 +187,10 @@ public interface Caret extends Comparable<Caret> {
         at(point.row(), point.col());
     }
 
+    default void at(At at) {
+        if (!at.isEmpty()) at(at.row, at.col, at.vPos);
+    }
+
     /**
      * Set the caret at the specified position and also sets it flush.
      * @param point the caret position

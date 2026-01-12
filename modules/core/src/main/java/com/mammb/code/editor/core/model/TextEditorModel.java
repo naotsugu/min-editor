@@ -292,8 +292,7 @@ public class TextEditorModel implements EditorModel {
         } else {
             for (Caret c : carets.carets()) {
                 c.markIf(withSelect);
-                var at = down(c);
-                if (!at.isEmpty()) c.at(at.row(), at.col(), at.vPos());
+                c.at(down(c));
             }
         }
     }
@@ -309,8 +308,7 @@ public class TextEditorModel implements EditorModel {
         } else {
             for (Caret c : carets.carets()) {
                 c.markIf(withSelect);
-                var at = up(c);
-                if (!at.isEmpty()) c.at(at.row(), at.col(), at.vPos());
+                c.at(up(c));
             }
         }
     }
