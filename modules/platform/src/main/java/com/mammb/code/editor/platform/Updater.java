@@ -195,14 +195,15 @@ public class Updater {
         return """
         Set-Location -Path $PSScriptRoot
         $ErrorActionPreference = "Stop"
+        $ProgressPreference = "SilentlyContinue"
         try {
             Write-Output "Downloading from $URL$ARCHIVE_FILE ..."
             Invoke-WebRequest -Uri $URL$ARCHIVE_FILE -OutFile $ARCHIVE_FILE -UseBasicParsing
             Expand-Archive -Path $ARCHIVE_FILE -DestinationPath . -Force
-            Move-Item -Path "$EXPAND_ROOT/*" -Destination . -Force
+            Copy-Item -Path "$EXPAND_ROOT/*" -Destination . -Recurse -Force
 
             Remove-Item -Path $ARCHIVE_FILE -Force
-            Remove-Item -Path $EXPAND_ROOT -Force
+            Remove-Item -Path $EXPAND_ROOT -Recurse -Force
 
             Write-Output "Starting application..."
             Start-Process -FilePath $APP_PATH
@@ -211,7 +212,6 @@ public class Updater {
             Write-Error "Failed: $_"
             exit 1
         }
-        Remove-Item -Path update.log -Force *>$null
         Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force *>$null
         """
         .replaceAll("\\$URL", DOWNLOAD_URL)
