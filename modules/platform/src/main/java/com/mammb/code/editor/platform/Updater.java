@@ -167,15 +167,15 @@ public class Updater {
         set -e
 
         echo "Downloading from $URL$ARCHIVE_FILE ..."
-        curl -L -o "$ARCHIVE_FILE" "$URL$ARCHIVE_FILE"
-        unzip -o "$ARCHIVE_FILE"
+        curl -s -L -o "$ARCHIVE_FILE" "$URL$ARCHIVE_FILE"
+        unzip -q -o "$ARCHIVE_FILE"
 
         if [ -d "$EXPAND_ROOT" ]; then
             shopt -s dotglob nullglob
             cp -rf "$EXPAND_ROOT"/* .
             rm -rf "$EXPAND_ROOT"
         fi
-        rm -f "ARCHIVE_FILE"
+        rm -f "$ARCHIVE_FILE"
 
         echo "Starting application..."
         chmod +x "$APP_PATH"
