@@ -67,7 +67,7 @@ public class FxDialog extends Dialog<ButtonType> {
             ctx.getApp().getHostServices().showDocument("https://github.com/naotsugu/min-editor/blob/main/docs/keyboard-shortcut.md")
         );
 
-        var updateButton = new Button("Update");
+        var updateButton = new Button("Update And Restart");
         updateButton.setDisable(true);
         updateButton.setOnAction(_ -> Updater.run());
         var thread = new Thread(() -> {
