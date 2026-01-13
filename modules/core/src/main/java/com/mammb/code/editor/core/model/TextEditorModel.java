@@ -281,6 +281,19 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
+    private CaretAlterGroup caretAlterGroup;
+    private void caretAlterDown() {
+        if (caretAlterGroup == null) {
+            caretAlterGroup = CaretAlterGroup.down(carets.carets());
+        }
+        caretAlterGroup.down(carets, this::down);
+    }
+    private void caretAlterUp() {
+        if (caretAlterGroup == null) {
+            caretAlterGroup = CaretAlterGroup.up(carets.carets());
+        }
+        caretAlterGroup.up(carets, this::up);
+    }
     private void moveCaretDown(boolean withSelect, boolean withShortcut) {
         if (withShortcut) {
             List<Point> points = new ArrayList<>();

@@ -16,9 +16,12 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Caret;
+import com.mammb.code.editor.core.CaretGroup;
+import com.mammb.code.editor.core.Point;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -46,5 +49,40 @@ public class CaretAlterGroup {
         return new CaretAlterGroup(carets, false);
     }
 
+    void down(CaretGroup caretGroup, Function<Caret, Caret.At> fun) {
+        if (isDown) {
+            push(caretGroup, fun);
+        } else {
+            for (Deque<Caret> stack : stacks) {
+                if (stack.size() > 1) {
+                    var c = stack.pop();
+                } else {
+                    isDown = false;
+                }
+            }
+        }
+    }
+
+    void up(CaretGroup caretGroup, Function<Caret, Caret.At> fun) {
+        if (isUp()) {
+            push(caretGroup, fun);
+        }
+    }
+
+    private void push(CaretGroup caretGroup, Function<Caret, Caret.At> fun) {
+        for (Deque<Caret> stack : stacks) {
+            var at = fun.apply(stack.peek());
+            if (at.isEmpty()) continue;
+            var caret = caretGroup.add(at.row(), at.col());
+            stack.push(caret);
+        }
+    }
+
+    boolean isDown() {
+        return isDown;
+    }
+    boolean isUp() {
+        return !isDown;
+    }
 
 }
