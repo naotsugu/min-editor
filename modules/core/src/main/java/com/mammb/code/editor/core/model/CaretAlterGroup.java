@@ -30,59 +30,93 @@ import java.util.stream.Collectors;
  */
 public class CaretAlterGroup {
 
-    private List<Deque<Caret>> stacks;
+    private List<DirectedStack> stacks;
 
-    private boolean isDown;
 
-    private CaretAlterGroup(List<Caret> carets, boolean isDown) {
-        this.stacks = carets.stream()
-            .map(c -> new ArrayDeque<>(List.of(c)))
-            .collect(Collectors.toList());
-        this.isDown = isDown;
+    public CaretAlterGroup(List<Caret> carets) {
+        stacks = carets.stream().map(DirectedStack::of).collect(Collectors.toList());
     }
 
-    static CaretAlterGroup down(List<Caret> carets) {
-        return new CaretAlterGroup(carets, true);
-    }
-
-    static CaretAlterGroup up(List<Caret> carets) {
-        return new CaretAlterGroup(carets, false);
-    }
-
-    void down(CaretGroup caretGroup, Function<Caret, Caret.At> fun) {
-        if (isDown) {
-            push(caretGroup, fun);
-        } else {
-            for (Deque<Caret> stack : stacks) {
-                if (stack.size() > 1) {
-                    var c = stack.pop();
-                } else {
-                    isDown = false;
-                }
+    public void down(CaretGroup caretGroup, Function<Caret, Caret.At> nextAt) {
+        for (DirectedStack stack : stacks) {
+            var result = stack.down(nextAt);
+            if (result.caret == null) continue;
+            if (result.grow) {
+                // TODO
+            } else {
+                // TODO
             }
         }
     }
 
-    void up(CaretGroup caretGroup, Function<Caret, Caret.At> fun) {
-        if (isUp()) {
-            push(caretGroup, fun);
+    public void up(CaretGroup caretGroup, Function<Caret, Caret.At> nextAt) {
+        for (DirectedStack stack : stacks) {
+            var result = stack.up(nextAt);
+            if (result.caret == null) continue;
+            if (result.grow) {
+                // TODO
+            } else {
+                // TODO
+            }
         }
     }
 
-    private void push(CaretGroup caretGroup, Function<Caret, Caret.At> fun) {
-        for (Deque<Caret> stack : stacks) {
-            var at = fun.apply(stack.peek());
-            if (at.isEmpty()) continue;
-            var caret = caretGroup.add(at.row(), at.col());
+    static class DirectedStack {
+
+        private Deque<Caret> stack;
+        private Direction direction;
+
+        private DirectedStack(Deque<Caret> stack, Direction direction) {
+            this.stack = stack;
+            this.direction = direction;
+        }
+
+        public static DirectedStack of(Caret caret) {
+            return new DirectedStack(new ArrayDeque<>(List.of(caret)), Direction.NEUTRAL);
+        }
+
+        public Result down(Function<Caret, Caret.At> nextAt) {
+            return switch (direction) {
+                case NEUTRAL, DOWN -> push(nextAt);
+                case UP -> pop();
+            };
+        }
+
+        public Result up(Function<Caret, Caret.At> nextAt) {
+            return switch (direction) {
+                case NEUTRAL, UP -> push(nextAt);
+                case DOWN -> pop();
+            };
+        }
+
+        private Result push(Function<Caret, Caret.At> nextAt) {
+            var at = nextAt.apply(stack.peek());
+            if (at.isEmpty()) return new Result(null, false);
+            var caret = Caret.of(at.row(), at.col());
             stack.push(caret);
+            return new Result(caret, true);
         }
+
+        private Result pop() {
+            var caret = stack.pop();
+            if (stack.size() == 1) {
+                direction = Direction.NEUTRAL;
+            }
+            if (stack.isEmpty()) throw new IllegalStateException();
+            return new Result(caret, false);
+        }
+
+        public Caret root() {
+            return stack.getFirst();
+        }
+
+        public boolean isDown() { return direction == Direction.DOWN; }
+        public boolean isUp() { return direction == Direction.UP; }
+        public boolean isNeutral() { return direction == Direction.NEUTRAL; }
+
+        enum Direction { UP, DOWN, NEUTRAL }
     }
 
-    boolean isDown() {
-        return isDown;
-    }
-    boolean isUp() {
-        return !isDown;
-    }
+    record Result(Caret caret, boolean grow) { }
 
 }

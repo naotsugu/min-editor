@@ -284,13 +284,13 @@ public class TextEditorModel implements EditorModel {
     private CaretAlterGroup caretAlterGroup;
     private void caretAlterDown() {
         if (caretAlterGroup == null) {
-            caretAlterGroup = CaretAlterGroup.down(carets.carets());
+            caretAlterGroup = new CaretAlterGroup(carets.carets());
         }
         caretAlterGroup.down(carets, this::down);
     }
     private void caretAlterUp() {
         if (caretAlterGroup == null) {
-            caretAlterGroup = CaretAlterGroup.up(carets.carets());
+            caretAlterGroup = new CaretAlterGroup(carets.carets());
         }
         caretAlterGroup.up(carets, this::up);
     }
