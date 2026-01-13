@@ -17,7 +17,6 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Caret;
 import com.mammb.code.editor.core.CaretGroup;
-import com.mammb.code.editor.core.Point;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
