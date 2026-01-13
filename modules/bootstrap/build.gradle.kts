@@ -99,6 +99,7 @@ tasks.register<Exec>("jpackage") {
 
 tasks.register<Zip>("pkg") {
     dependsOn("jpackage")
+    isPreserveFileTimestamps = true
     archiveFileName = "min-editor-${platform}.zip"
     from(layout.buildDirectory.dir("jpackage"))
 }
