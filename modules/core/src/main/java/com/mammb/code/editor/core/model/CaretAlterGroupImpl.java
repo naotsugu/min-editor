@@ -17,7 +17,6 @@ package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Caret;
 import com.mammb.code.editor.core.CaretAlterGroup;
-import com.mammb.code.editor.core.CaretGroup;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
@@ -32,31 +31,33 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
 
     private List<DirectedStack> stacks;
 
+    private List<Caret> peer;
 
     public CaretAlterGroupImpl(List<Caret> carets) {
+        peer = carets;
         stacks = carets.stream().map(DirectedStack::of).collect(Collectors.toList());
     }
 
-    public void down(CaretGroup caretGroup, Function<Caret, Caret> nextAt) {
+    public void down(Function<Caret, Caret> nextAt) {
         for (DirectedStack stack : stacks) {
             var result = stack.down(nextAt);
             if (result.caret == null) continue;
             if (result.grow) {
-                // TODO
+                peer.add(result.caret);
             } else {
-                // TODO
+                peer.remove(result.caret);
             }
         }
     }
 
-    public void up(CaretGroup caretGroup, Function<Caret, Caret> nextAt) {
+    public void up(Function<Caret, Caret> nextAt) {
         for (DirectedStack stack : stacks) {
             var result = stack.up(nextAt);
             if (result.caret == null) continue;
             if (result.grow) {
-                // TODO
+                peer.add(result.caret);
             } else {
-                // TODO
+                peer.remove(result.caret);
             }
         }
     }
@@ -106,15 +107,8 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
             return new Result(caret, false);
         }
 
-        public Caret root() {
-            return stack.getFirst();
-        }
-
-        public boolean isDown() { return direction == Direction.DOWN; }
-        public boolean isUp() { return direction == Direction.UP; }
-        public boolean isNeutral() { return direction == Direction.NEUTRAL; }
-
         enum Direction { UP, DOWN, NEUTRAL }
+
     }
 
     record Result(Caret caret, boolean grow) { }

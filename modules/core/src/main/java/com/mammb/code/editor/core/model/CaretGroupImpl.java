@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Caret;
+import com.mammb.code.editor.core.CaretAlterGroup;
 import com.mammb.code.editor.core.CaretGroup;
 import com.mammb.code.editor.core.Point;
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public class CaretGroupImpl implements CaretGroup {
 
     /** The carets. */
     private final List<Caret> carets = new ArrayList<>();
+
+    /** The CaretAlterGroup. */
+    private CaretAlterGroup alterGroup;
 
     /**
      * Constructor.
@@ -131,6 +135,15 @@ public class CaretGroupImpl implements CaretGroup {
     @Override
     public int size() {
         return carets.size();
+    }
+
+    @Override
+    public CaretAlterGroup alterGroup() {
+        var ret = alterGroup;
+        if (ret == null) {
+            ret = alterGroup = new CaretAlterGroupImpl(carets);
+        }
+        return ret;
     }
 
     void normalize() {

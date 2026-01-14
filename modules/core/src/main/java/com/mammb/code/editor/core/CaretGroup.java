@@ -103,6 +103,12 @@ public interface CaretGroup {
     int size();
 
     /**
+     * Get the caret alter group.
+     * @return the caret alter group
+     */
+    CaretAlterGroup alterGroup();
+
+    /**
      * Create a new {@link CaretGroup}.
      * @return a new {@link CaretGroup}
      */
