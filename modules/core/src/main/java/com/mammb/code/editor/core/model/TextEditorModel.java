@@ -281,16 +281,16 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    private CaretAlterGroup caretAlterGroup;
+    private CaretAlterGroupImpl caretAlterGroup;
     private void caretAlterDown() {
         if (caretAlterGroup == null) {
-            caretAlterGroup = new CaretAlterGroup(carets.carets());
+            caretAlterGroup = new CaretAlterGroupImpl(carets.carets());
         }
         caretAlterGroup.down(carets, this::down);
     }
     private void caretAlterUp() {
         if (caretAlterGroup == null) {
-            caretAlterGroup = new CaretAlterGroup(carets.carets());
+            caretAlterGroup = new CaretAlterGroupImpl(carets.carets());
         }
         caretAlterGroup.up(carets, this::up);
     }

@@ -16,6 +16,7 @@
 package com.mammb.code.editor.core.model;
 
 import com.mammb.code.editor.core.Caret;
+import com.mammb.code.editor.core.CaretAlterGroup;
 import com.mammb.code.editor.core.CaretGroup;
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -27,12 +28,12 @@ import java.util.stream.Collectors;
  * The CaretAlterGroup.
  * @author Naotsugu Kobayashi
  */
-public class CaretAlterGroup {
+public class CaretAlterGroupImpl implements CaretAlterGroup {
 
     private List<DirectedStack> stacks;
 
 
-    public CaretAlterGroup(List<Caret> carets) {
+    public CaretAlterGroupImpl(List<Caret> carets) {
         stacks = carets.stream().map(DirectedStack::of).collect(Collectors.toList());
     }
 
