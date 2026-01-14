@@ -187,8 +187,20 @@ public interface Caret extends Comparable<Caret> {
         at(point.row(), point.col());
     }
 
+    /**
+     * Sets the caret position to the specified {@link At} object.
+     * @param at the {@link At} object specifying the row, column, and virtual position
+     */
     default void at(At at) {
         if (!at.isEmpty()) at(at.row, at.col, at.vPos);
+    }
+
+    /**
+     * Retrieves the position of the caret as an {@link At} object.
+     * @return the {@link At} object representing the current caret position
+     */
+    default At at() {
+        return new At(row(), col(), vPos());
     }
 
     /**
