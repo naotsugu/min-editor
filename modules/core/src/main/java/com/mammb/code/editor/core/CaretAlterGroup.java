@@ -23,8 +23,8 @@ import java.util.function.Function;
  */
 public interface CaretAlterGroup {
 
-    void down(CaretGroup caretGroup, Function<Caret, Caret.At> nextAt);
+    void down(CaretGroup caretGroup, Function<Caret, Caret> nextAt);
 
-    void up(CaretGroup caretGroup, Function<Caret, Caret.At> nextAt);
+    void up(CaretGroup caretGroup, Function<Caret, Caret> nextAt);
 
 }

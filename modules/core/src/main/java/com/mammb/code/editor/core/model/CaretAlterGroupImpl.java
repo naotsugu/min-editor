@@ -37,7 +37,7 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
         stacks = carets.stream().map(DirectedStack::of).collect(Collectors.toList());
     }
 
-    public void down(CaretGroup caretGroup, Function<Caret, Caret.At> nextAt) {
+    public void down(CaretGroup caretGroup, Function<Caret, Caret> nextAt) {
         for (DirectedStack stack : stacks) {
             var result = stack.down(nextAt);
             if (result.caret == null) continue;
@@ -49,7 +49,7 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
         }
     }
 
-    public void up(CaretGroup caretGroup, Function<Caret, Caret.At> nextAt) {
+    public void up(CaretGroup caretGroup, Function<Caret, Caret> nextAt) {
         for (DirectedStack stack : stacks) {
             var result = stack.up(nextAt);
             if (result.caret == null) continue;
@@ -75,23 +75,23 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
             return new DirectedStack(new ArrayDeque<>(List.of(caret)), Direction.NEUTRAL);
         }
 
-        public Result down(Function<Caret, Caret.At> nextAt) {
+        public Result down(Function<Caret, Caret> nextAt) {
             return switch (direction) {
                 case NEUTRAL, DOWN -> push(nextAt);
                 case UP -> pop();
             };
         }
 
-        public Result up(Function<Caret, Caret.At> nextAt) {
+        public Result up(Function<Caret, Caret> nextAt) {
             return switch (direction) {
                 case NEUTRAL, UP -> push(nextAt);
                 case DOWN -> pop();
             };
         }
 
-        private Result push(Function<Caret, Caret.At> nextAt) {
+        private Result push(Function<Caret, Caret> nextAt) {
             var at = nextAt.apply(stack.peek());
-            if (at.isEmpty()) return new Result(null, false);
+            if (at == null) return new Result(null, false);
             var caret = Caret.of(at.row(), at.col());
             stack.push(caret);
             return new Result(caret, true);

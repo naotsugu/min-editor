@@ -184,23 +184,19 @@ public interface Caret extends Comparable<Caret> {
      * @param point the caret position
      */
     default void at(Point point) {
-        at(point.row(), point.col());
+        if (point != null) {
+            at(point.row(), point.col());
+        }
     }
 
     /**
-     * Sets the caret position to the specified {@link At} object.
-     * @param at the {@link At} object specifying the row, column, and virtual position
+     * Set the caret position with a virtual position.
+     * @param caret the caret position
      */
-    default void at(At at) {
-        if (!at.isEmpty()) at(at.row, at.col, at.vPos);
-    }
-
-    /**
-     * Retrieves the position of the caret as an {@link At} object.
-     * @return the {@link At} object representing the current caret position
-     */
-    default At at() {
-        return new At(row(), col(), vPos());
+    default void at(Caret caret) {
+        if (caret != null) {
+            at(caret.row(), caret.col(), caret.vPos());
+        }
     }
 
     /**
@@ -255,16 +251,14 @@ public interface Caret extends Comparable<Caret> {
     }
 
     /**
-     * Represents a position with an optional virtual position.
-     * @param row the row index
-     * @param col the column index
-     * @param vPos the virtual position along the x-axis
+     * Create a new {@link Caret} by specifying its position on the content.
+     * @param row the number of rows
+     * @param col the number of columns
+     * @param vPos virtual x-coordinate position of the caret
+     * @return a new {@link Caret}.
      */
-    record At(int row, int col, double vPos) {
-        public static final At EMPTY = new At(-1, -1, -1);
-        public boolean isEmpty() {
-            return this == EMPTY || row < 0 || col < 0;
-        }
+    static Caret of(int row, int col, double vPos) {
+        return new CaretImpl(row, col, vPos);
     }
 
     /**
@@ -279,11 +273,16 @@ public interface Caret extends Comparable<Caret> {
         private Point flush;
 
         public CaretImpl() {
-            this.point = new PointMut(0, 0);
+            this(0, 0);
         }
 
         public CaretImpl(int row, int col) {
+            this(row, col, -1);
+        }
+
+        public CaretImpl(int row, int col, double vPos) {
             this.point = new PointMut(row, col);
+            this.vPos = vPos;
         }
 
         @Override

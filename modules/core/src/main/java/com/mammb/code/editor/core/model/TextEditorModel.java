@@ -281,25 +281,12 @@ public class TextEditorModel implements EditorModel {
         scrollToCaretX();
     }
 
-    private CaretAlterGroupImpl caretAlterGroup;
-    private void caretAlterDown() {
-        if (caretAlterGroup == null) {
-            caretAlterGroup = new CaretAlterGroupImpl(carets.carets());
-        }
-        caretAlterGroup.down(carets, this::down);
-    }
-    private void caretAlterUp() {
-        if (caretAlterGroup == null) {
-            caretAlterGroup = new CaretAlterGroupImpl(carets.carets());
-        }
-        caretAlterGroup.up(carets, this::up);
-    }
     private void moveCaretDown(boolean withSelect, boolean withShortcut) {
         if (withShortcut) {
             List<Point> points = new ArrayList<>();
             for (Caret c : carets.carets()) {
                 var at = down(c);
-                if (!at.isEmpty()) points.add(Point.of(at.row(), at.col()));
+                if (at != null) points.add(Point.of(at.row(), at.col()));
             }
             carets.add(points);
         } else {
@@ -315,7 +302,7 @@ public class TextEditorModel implements EditorModel {
             List<Point> points = new ArrayList<>();
             for (Caret c : carets.carets()) {
                 var at = up(c);
-                if (!at.isEmpty()) points.add(Point.of(at.row(), at.col()));
+                if (at != null) points.add(Point.of(at.row(), at.col()));
             }
             carets.add(points);
         } else {
@@ -326,29 +313,29 @@ public class TextEditorModel implements EditorModel {
         }
     }
 
-    private Caret.At down(Caret c) {
+    private Caret down(Caret c) {
         int line = screenLayout.rowToLine(c.row(), c.col());
         int max = screenLayout.lineSize() - 1;
-        if (line >= max) return Caret.At.EMPTY;
+        if (line >= max) return null;
         double x = (c.vPos() < 0)
             ? screenLayout.xOnLayout(line, c.col())
             : c.vPos();
         line = Math.min(line + 1, max);
         int row = screenLayout.lineToRow(line);
         int col = screenLayout.xToCaretCol(line, x);
-        return new Caret.At(row, col, x);
+        return Caret.of(row, col, x);
     }
 
-    private Caret.At up(Caret c) {
+    private Caret up(Caret c) {
         int line = screenLayout.rowToLine(c.row(), c.col());
-        if (line == 0) return Caret.At.EMPTY;;
+        if (line == 0) return null;
         double x = (c.vPos() < 0)
             ? screenLayout.xOnLayout(line, c.col())
             : c.vPos();
         line = Math.max(line - 1, 0);
         int row = screenLayout.lineToRow(line);
         int col = screenLayout.xToCaretCol(line, x);
-        return new Caret.At(row, col, x);
+        return Caret.of(row, col, x);
     }
 
     private void moveCaretHome(boolean withSelect) {
