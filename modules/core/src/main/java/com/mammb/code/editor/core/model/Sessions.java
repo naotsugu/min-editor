@@ -48,7 +48,7 @@ public class Sessions {
         public Session.Transformer as(ScreenLayout screenLayout, CaretGroup carets) {
             return as(Session.Viewport.of(
                 screenLayout.topLine(), screenLayout.charsInLine(),
-                carets.getOne().row(), carets.getOne().col()));
+                carets.getPrimaryOne().row(), carets.getPrimaryOne().col()));
         }
     }
 

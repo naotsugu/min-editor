@@ -29,7 +29,7 @@ public interface CaretGroup {
      * Get the caret first one.
      * @return the caret first one
      */
-    Caret getOne();
+    Caret getPrimaryOne();
 
     /**
      * Get unique processed caret.

@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class CaretGroupTest {
 
     @Test
-    void getOne() {
+    void getPrimaryOne() {
         var carets = CaretGroup.of();
-        assertEquals(Caret.of(), carets.getOne());
+        assertEquals(Caret.of(), carets.getPrimaryOne());
     }
 }

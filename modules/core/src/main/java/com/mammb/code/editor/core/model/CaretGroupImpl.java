@@ -44,7 +44,7 @@ public class CaretGroupImpl implements CaretGroup {
     }
 
     @Override
-    public Caret getOne() {
+    public Caret getPrimaryOne() {
         return primary;
     }
 

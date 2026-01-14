@@ -190,7 +190,7 @@ public class TextEditorModel implements EditorModel {
         } else {
             scrollAt(screenLayout.rowToFirstLine(row));
         }
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         c.at(row, 0);
     }
 
@@ -215,7 +215,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void scrollToCaretY(int gap) {
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         int caretLine = screenLayout.rowToLine(c.row(), c.col());
         if (caretLine - screenLayout.topLine() < 0) {
             int nLine = Math.max(0, caretLine - gap);
@@ -230,7 +230,7 @@ public class TextEditorModel implements EditorModel {
      * Scroll to the caret position x.
      */
     public void scrollToCaretX() {
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         int line = screenLayout.rowToLine(c.row(), c.col());
         double caretX = screenLayout.xOnLayout(line, c.col());
         double left = screenLayout.xShift();
@@ -374,7 +374,7 @@ public class TextEditorModel implements EditorModel {
         scrollPrev(n);
         if (withSelect && carets.size() > 1) carets.unique();
         if (carets.size() == 1) {
-            Caret c = carets.getOne();
+            Caret c = carets.getPrimaryOne();
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
             double x = screenLayout.xOnLayout(line, c.col());
@@ -387,7 +387,7 @@ public class TextEditorModel implements EditorModel {
         scrollNext(n);
         if (withSelect && carets.size() > 1) carets.unique();
         if (carets.size() == 1) {
-            Caret c = carets.getOne();
+            Caret c = carets.getPrimaryOne();
             c.markIf(withSelect);
             int line = screenLayout.rowToLine(c.row(), c.col());
             double x = screenLayout.xOnLayout(line, c.col());
@@ -422,7 +422,7 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void mousePressed(double x, double y) {
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         if (c.isFloating()) {
             c.clearFloat();
         }
@@ -475,7 +475,7 @@ public class TextEditorModel implements EditorModel {
         double xp = 0;
         for (var word : text.words()) {
             if (xp + word.width() > x - marginLeft + screenLayout.xShift()) {
-                Caret c = carets.getOne();
+                Caret c = carets.getPrimaryOne();
                 int row = screenLayout.lineToRow(line);
                 c.markTo(row, screenLayout.xToCol(line, xp),
                         row, screenLayout.xToCol(line, xp + word.width()));
@@ -498,7 +498,7 @@ public class TextEditorModel implements EditorModel {
         int line = screenLayout.yToLineOnScreen(y - marginTop);
         int row = screenLayout.lineToRow(line);
         int col = screenLayout.xToMidCol(line, x - marginLeft + screenLayout.xShift());
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         c.floatAt(row, col);
         c.markIf(true);
         scrollToCaret();
@@ -516,7 +516,7 @@ public class TextEditorModel implements EditorModel {
 
     private void input(String text) {
         if (carets.size() == 1) {
-            Caret c = carets.getOne();
+            Caret c = carets.getPrimaryOne();
             if (c.isMarked()) {
                 selectionReplace(c, text);
             } else {
@@ -536,7 +536,7 @@ public class TextEditorModel implements EditorModel {
 
     private void delete() {
         if (carets.size() == 1) {
-            Caret c = carets.getOne();
+            Caret c = carets.getPrimaryOne();
             if (c.isMarked()) {
                 selectionReplace(c, "");
             } else {
@@ -556,7 +556,7 @@ public class TextEditorModel implements EditorModel {
 
     private void backspace() {
         if (carets.size() == 1) {
-            Caret c = carets.getOne();
+            Caret c = carets.getPrimaryOne();
             if (c.isMarked()) {
                 selectionReplace(c, "");
             } else {
@@ -778,13 +778,13 @@ public class TextEditorModel implements EditorModel {
 
     @Override
     public void imeOn() {
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         c.imeFlushAt(c.point());
     }
 
     @Override
     public Optional<Loc> imeLoc() {
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         return screenLayout.locationOn(c.row(), c.col())
             .map(top -> new Loc(
                 top.x() + marginLeft - screenLayout.xShift(),
@@ -794,17 +794,17 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void imeOff() {
         content.clearFlush();
-        carets.getOne().clearImeFlush();
+        carets.getPrimaryOne().clearImeFlush();
     }
 
     @Override
     public boolean isImeOn() {
-        return carets.getOne().hasImeFlush();
+        return carets.getPrimaryOne().hasImeFlush();
     }
 
     @Override
     public void imeComposed(String text) {
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         content.clearFlush();
         var pos = content.insertFlush(c.point(), text);
         screenLayout.refreshBuffer(c.row(), pos.row());
@@ -829,7 +829,7 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void findAll(Find.Spec spec) {
-        Caret c = carets.getOne();
+        Caret c = carets.getPrimaryOne();
         Style style = new Style.UnderColor(Theme.current.cautionColor());
         find.all(spec).forEach(p -> {
             if (!c.isMarked()) {
@@ -869,7 +869,7 @@ public class TextEditorModel implements EditorModel {
         // init scroll and caret position
         model.scrollAt(Math.clamp(session.topLine(), 0, model.screenLayout.lineSize() - 1));
         int row = Math.clamp(session.caretRow(), 0, model.screenLayout.rowSize() - 1);
-        model.carets.getOne().at(row, Math.clamp(session.caretCol(), 0, model.screenLayout.rowTextAt(row).textLength()));
+        model.carets.getPrimaryOne().at(row, Math.clamp(session.caretCol(), 0, model.screenLayout.rowTextAt(row).textLength()));
 
         return model;
     }
@@ -923,7 +923,7 @@ public class TextEditorModel implements EditorModel {
 
         // add bracket highlights if exists
         decorate.clearFlushMarks();
-        BracketFind.apply(carets.getOne().point(), query(Query.charAtCaret), screenLayout.screenRows()).forEach(p ->
+        BracketFind.apply(carets.getPrimaryOne().point(), query(Query.charAtCaret), screenLayout.screenRows()).forEach(p ->
             decorate.addFlushMark(p.row(), new StyleSpan(new Style.AroundSq(Theme.current.cautionColor()), p.col(), 1)));
     }
 
@@ -931,7 +931,7 @@ public class TextEditorModel implements EditorModel {
     @SuppressWarnings("unchecked")
     public <R> R query(Query<R> query) {
         return switch (query) {
-            case QueryRecords.CaretPoint _        -> (R) carets.getOne().point();
+            case QueryRecords.CaretPoint _        -> (R) carets.getPrimaryOne().point();
             case QueryRecords.CaretCount _        -> (R) Integer.valueOf(carets.size());
             case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
             case QueryRecords.FoundCounts _       -> (R) Integer.valueOf(decorate.highlightPointCounts());
@@ -942,8 +942,8 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.HasSelected _       -> (R) Boolean.valueOf(carets.hasMarked());
             case QueryRecords.SelectedText _      -> (R) Contents.text(content, carets.marked());
             case QueryRecords.TextAtCarets _      -> (R) Contents.textAt(content, carets.ranges());
-            case QueryRecords.CharAtCaret _       -> (R) Contents.lrTextAt(content, carets.getOne().point());
-            case QueryRecords.BytesAtCaret _      -> (R) Contents.bytesAt(content, carets.getOne().point());
+            case QueryRecords.CharAtCaret _       -> (R) Contents.lrTextAt(content, carets.getPrimaryOne().point());
+            case QueryRecords.BytesAtCaret _      -> (R) Contents.bytesAt(content, carets.getPrimaryOne().point());
             case QueryRecords.ContentPath _       -> (R) content.path();
             case QueryRecords.LastModifiedTime _  -> (R) content.lastModifiedTime();
             case null -> null;
