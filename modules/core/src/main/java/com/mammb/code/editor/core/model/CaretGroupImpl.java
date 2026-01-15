@@ -55,8 +55,8 @@ public class CaretGroupImpl implements CaretGroup {
     @Override
     public Caret unique() {
         carets.clear();
-        carets.add(primary);
         alterGroup = null;
+        carets.add(primary);
         return primary;
     }
 
@@ -93,9 +93,9 @@ public class CaretGroupImpl implements CaretGroup {
     public void at(List<Point> points) {
         if (points.isEmpty()) return;
         carets.clear();
+        alterGroup = null;
         points.forEach(p -> carets.add(Caret.of(p.row(), p.col())));
         primary = carets.getFirst();
-        alterGroup = null;
         normalize();
     }
 
@@ -116,16 +116,19 @@ public class CaretGroupImpl implements CaretGroup {
     public void toggle(final Point point) {
 
         Predicate<Caret> match = (Caret c) -> c.point().compareTo(point) == 0;
-        boolean removed = carets.removeIf(match);
-        if (!removed) {
-            // toggle on
-            carets.add(Caret.of(point.row(), point.col()));
+
+        if (carets.size() == 1 && match.test(carets.getFirst())) {
             return;
         }
 
-        if (carets.isEmpty()) {
-            primary = Caret.of(point.row(), point.col());
-            carets.add(primary);
+        boolean removed = carets.removeIf(match);
+        if (!removed) {
+            // toggle on
+            var c = Caret.of(point.row(), point.col());
+            carets.add(c);
+            if (alterGroup instanceof CaretAlterGroupImpl ag) {
+                ag.add(c);
+            }
             return;
         }
 
@@ -163,7 +166,13 @@ public class CaretGroupImpl implements CaretGroup {
                 merged.add(caret);
             }
         }
+
+        if (merged.size() == carets.size()) {
+            return;
+        }
+
         carets.clear();
+        alterGroup = null;
         carets.addAll(merged);
 
         if (carets.isEmpty()) {

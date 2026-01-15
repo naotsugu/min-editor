@@ -62,6 +62,10 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
         }
     }
 
+    void add(Caret caret) {
+        stacks.add(DirectedStack.of(caret));
+    }
+
     static class DirectedStack {
 
         private Deque<Caret> stack;
