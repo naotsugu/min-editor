@@ -62,6 +62,7 @@ public interface Caret extends Comparable<Caret> {
 
     /**
      * Set the caret at the specified position and also sets it flush.
+     * IME caret position during a conversion process.
      * @param row the number of rows
      * @param col the number of columns
      */
