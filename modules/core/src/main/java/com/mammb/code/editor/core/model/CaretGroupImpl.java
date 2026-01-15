@@ -56,6 +56,7 @@ public class CaretGroupImpl implements CaretGroup {
     public Caret unique() {
         carets.clear();
         carets.add(primary);
+        alterGroup = null;
         return primary;
     }
 
@@ -94,6 +95,7 @@ public class CaretGroupImpl implements CaretGroup {
         carets.clear();
         points.forEach(p -> carets.add(Caret.of(p.row(), p.col())));
         primary = carets.getFirst();
+        alterGroup = null;
         normalize();
     }
 

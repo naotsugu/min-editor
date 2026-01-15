@@ -224,6 +224,11 @@ public interface Caret extends Comparable<Caret> {
         return point().isZero();
     }
 
+    /**
+     * Marks the current caret position if the specified condition is true; otherwise, clears the mark.
+     * If the caret is not already marked, it will be marked when the condition is true.
+     * @param withSelect {@code true} to mark the current caret position, {@code false} to clear the mark
+     */
     default void markIf(boolean withSelect) {
         if (!withSelect) {
             clearMark();
