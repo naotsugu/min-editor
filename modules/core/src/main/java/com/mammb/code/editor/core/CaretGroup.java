@@ -78,12 +78,6 @@ public interface CaretGroup {
 
     /**
      * Add the caret at the specified position.
-     * @param points the specified position
-     */
-    void add(List<Point> points);
-
-    /**
-     * Add the caret at the specified position.
      * @param row the row
      * @param col the col
      * @return the caret

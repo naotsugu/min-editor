@@ -100,12 +100,6 @@ public class CaretGroupImpl implements CaretGroup {
     }
 
     @Override
-    public void add(List<Point> points) {
-        points.forEach(p -> add(p.row(), p.col()));
-        normalize();
-    }
-
-    @Override
     public Caret add(int row, int col) {
         var c = Caret.of(row, col);
         carets.add(c);

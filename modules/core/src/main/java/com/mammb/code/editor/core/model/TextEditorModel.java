@@ -426,16 +426,13 @@ public class TextEditorModel implements EditorModel {
             Caret c = carets.unique();
             int clickLine = screenLayout.yToLineOnScreen(y - marginTop);
             int caretLine = screenLayout.rowToLine(c.row(), c.col());
-            double caretX = screenLayout.xOnLayout(caretLine, c.col());
-            if (clickLine == caretLine) return;
-            IntStream stream = (clickLine < caretLine)
-                    ? IntStream.rangeClosed(clickLine, caretLine - 1)
-                    : IntStream.rangeClosed(caretLine + 1, clickLine);
-            carets.add(stream
-                    .mapToObj(line -> Point.of(
-                            screenLayout.lineToRow(line),
-                            screenLayout.xToCaretCol(line, caretX)))
-                    .toList());
+            if (clickLine > caretLine) {
+                IntStream.rangeClosed(caretLine + 1, clickLine)
+                    .forEach(_ -> carets.alterGroup().down(this::down));
+            } else if (clickLine < caretLine) {
+                IntStream.rangeClosed(clickLine, caretLine - 1)
+                    .forEach(_ -> carets.alterGroup().up(this::up));
+            }
         } else {
             int line = screenLayout.yToLineOnScreen(y - marginTop);
             var point = Point.of(
