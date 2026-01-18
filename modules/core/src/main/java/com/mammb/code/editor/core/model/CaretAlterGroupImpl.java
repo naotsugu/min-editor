@@ -29,15 +29,16 @@ import java.util.stream.Collectors;
  */
 public class CaretAlterGroupImpl implements CaretAlterGroup {
 
-    private List<DirectedStack> stacks;
+    private final List<DirectedStack> stacks;
 
-    private List<Caret> peer;
+    private final List<Caret> peer;
 
-    public CaretAlterGroupImpl(List<Caret> carets) {
+    CaretAlterGroupImpl(List<Caret> carets) {
         peer = carets;
         stacks = carets.stream().map(DirectedStack::of).collect(Collectors.toList());
     }
 
+    @Override
     public void down(Function<Caret, Caret> nextAt) {
         for (DirectedStack stack : stacks) {
             var result = stack.down(nextAt);
@@ -50,6 +51,7 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
         }
     }
 
+    @Override
     public void up(Function<Caret, Caret> nextAt) {
         for (DirectedStack stack : stacks) {
             var result = stack.up(nextAt);
@@ -57,7 +59,8 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
             if (result.grow) {
                 peer.add(result.caret);
             } else {
-                peer.remove(result.caret);
+                var r = peer.remove(result.caret);
+
             }
         }
     }
@@ -68,7 +71,7 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
 
     static class DirectedStack {
 
-        private Deque<Caret> stack;
+        private final Deque<Caret> stack;
         private Direction direction;
 
         private DirectedStack(Deque<Caret> stack, Direction direction) {
@@ -76,20 +79,26 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
             this.direction = direction;
         }
 
-        public static DirectedStack of(Caret caret) {
+        static DirectedStack of(Caret caret) {
             return new DirectedStack(new ArrayDeque<>(List.of(caret)), Direction.NEUTRAL);
         }
 
-        public Result down(Function<Caret, Caret> nextAt) {
+        Result down(Function<Caret, Caret> nextAt) {
             return switch (direction) {
-                case NEUTRAL, DOWN -> push(nextAt);
+                case NEUTRAL, DOWN -> {
+                    direction = Direction.DOWN;
+                    yield push(nextAt);
+                }
                 case UP -> pop();
             };
         }
 
-        public Result up(Function<Caret, Caret> nextAt) {
+        Result up(Function<Caret, Caret> nextAt) {
             return switch (direction) {
-                case NEUTRAL, UP -> push(nextAt);
+                case NEUTRAL, UP -> {
+                    direction = Direction.UP;
+                    yield push(nextAt);
+                }
                 case DOWN -> pop();
             };
         }

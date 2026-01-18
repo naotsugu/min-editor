@@ -283,12 +283,7 @@ public class TextEditorModel implements EditorModel {
 
     private void moveCaretDown(boolean withSelect, boolean withShortcut) {
         if (withShortcut) {
-            List<Point> points = new ArrayList<>();
-            for (Caret c : carets.carets()) {
-                var at = down(c);
-                if (at != null) points.add(Point.of(at.row(), at.col()));
-            }
-            carets.add(points);
+            carets.alterGroup().down(this::down);
         } else {
             for (Caret c : carets.carets()) {
                 c.markIf(withSelect);
@@ -299,12 +294,7 @@ public class TextEditorModel implements EditorModel {
 
     private void moveCaretUp(boolean withSelect, boolean withShortcut) {
         if (withShortcut) {
-            List<Point> points = new ArrayList<>();
-            for (Caret c : carets.carets()) {
-                var at = up(c);
-                if (at != null) points.add(Point.of(at.row(), at.col()));
-            }
-            carets.add(points);
+            carets.alterGroup().up(this::up);
         } else {
             for (Caret c : carets.carets()) {
                 c.markIf(withSelect);
