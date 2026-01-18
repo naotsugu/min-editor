@@ -31,7 +31,7 @@ class UpdaterTest {
     void getLatestReleasesVersion() {
         var version = Updater.getLatestReleasesVersion();
         assertTrue(version.length() >= 5);
-        assertEquals("0.5.0", version);
+        assertEquals("0.5.1", version);
     }
 
 }
