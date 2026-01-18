@@ -92,7 +92,10 @@ public class Sessions {
         }
     }
 
-
+    /**
+     * The Diff class is a static nested class of Sessions that extends the Transformer class.
+     * It is responsible for computing and storing a diff representation of the given content.
+     */
     public static class Diff extends Transformer {
         private final Path path;
         private final boolean withoutFold;
@@ -117,6 +120,11 @@ public class Sessions {
         }
     }
 
+    /**
+     * The Binary class extends the Transformer class and represents a specific type
+     * of transformation operation that processes binary content. This transformation
+     * involves creating a binary view of the input and saving it to a specified path.
+     */
     public static class Binary extends Transformer {
         private final Path path;
         public Binary(Path path) {
@@ -143,6 +151,15 @@ public class Sessions {
                 StandardCharsets.UTF_8,
                 false,
                 viewport.topLine(), viewport.lineWidth(), viewport.caretRow(), viewport.caretCol());
+        }
+    }
+
+    public static class SelectedFilter extends Transformer {
+
+        @Override
+        public Session apply(Context ctx, Content content) {
+            // TODO
+            return null;
         }
     }
 
