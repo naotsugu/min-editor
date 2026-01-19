@@ -24,8 +24,11 @@ import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.tools.BinaryView;
 import com.mammb.code.editor.core.tools.Source16;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -154,11 +157,9 @@ public class Sessions {
         }
     }
 
-    public static class SelectedFilter extends Transformer {
-
+    public static class RowFilter extends Transformer {
         @Override
         public Session apply(Context ctx, Content content) {
-            // TODO
             return null;
         }
     }

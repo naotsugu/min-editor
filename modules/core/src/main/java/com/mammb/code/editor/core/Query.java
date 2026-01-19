@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import com.mammb.code.editor.core.model.QueryRecords.*;
 
 /**
@@ -57,6 +58,7 @@ public interface Query<R> {
     Query<Integer> widthAsCharacters = new WidthAsCharacters();
     Query<Integer> foundCounts = new FoundCounts();
     Query<Integer> foundRowCounts = new FoundRowCounts();
+    Query<Set<Integer>> foundRows = new FoundRows();
     Query<Integer> selectedCounts = new SelectedCounts();
     Query<Integer> lineSize = new LineSize();
     Query<Integer> rowSize = new RowSize();
