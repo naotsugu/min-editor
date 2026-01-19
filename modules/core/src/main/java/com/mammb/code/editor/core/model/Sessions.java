@@ -142,7 +142,7 @@ public class Sessions {
             if (path == null) {
                 return Session.empty();
             }
-
+            // TODO from current content
             String name = content.query(Query.modelName).plain() + ".binary";
             Path outPath = ctx.config().stashPath().resolve(String.join(
                 "_", UUID.randomUUID().toString(), name));
