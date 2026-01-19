@@ -20,6 +20,7 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -318,4 +319,7 @@ public interface Session {
         return new Sessions.Binary(path);
     }
 
+    static Transformer rowFilter(Collection<Integer> rows) {
+        return new Sessions.RowFilter(rows);
+    }
 }

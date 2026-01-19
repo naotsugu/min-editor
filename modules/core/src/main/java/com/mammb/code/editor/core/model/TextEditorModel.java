@@ -910,6 +910,7 @@ public class TextEditorModel implements EditorModel {
             case QueryRecords.WidthAsCharacters _ -> (R) Integer.valueOf(screenLayout.screenColSize());
             case QueryRecords.FoundCounts _       -> (R) Integer.valueOf(decorate.highlightPointCounts());
             case QueryRecords.FoundRowCounts _    -> (R) Integer.valueOf(decorate.highlightRowCounts());
+            case QueryRecords.FoundRows _         -> (R) decorate.highlightsRows();
             case QueryRecords.SelectedCounts _    -> (R) Contents.countCodePoints(content, carets.marked());
             case QueryRecords.LineSize _          -> (R) Integer.valueOf(screenLayout.lineSize());
             case QueryRecords.RowSize _           -> (R) Integer.valueOf(screenLayout.rowSize());

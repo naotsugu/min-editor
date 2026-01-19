@@ -27,6 +27,7 @@ import com.mammb.code.editor.core.tools.Source16;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -158,6 +159,10 @@ public class Sessions {
     }
 
     public static class RowFilter extends Transformer {
+        private final List<Integer> rows;
+        public RowFilter(Collection<Integer> rows) {
+            this.rows = rows.stream().sorted().toList();
+        }
         @Override
         public Session apply(Context ctx, Content content) {
             return null;

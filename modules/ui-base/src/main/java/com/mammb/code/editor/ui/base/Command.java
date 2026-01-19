@@ -161,6 +161,8 @@ public sealed interface Command {
 
     record BinaryView() implements Command { }
 
+    record FoundView() implements Command { }
+
     record OpenInFiler() implements Command { }
 
     record SearchInBrowser() implements Command { }
@@ -248,6 +250,7 @@ public sealed interface Command {
             case Class<?> c when c == DiffWith.class -> "diff with the specified file";
             case Class<?> c when c == Duplicate.class -> "duplicate content as read-only";
             case Class<?> c when c == BinaryView.class -> "open the current content as a binary view";
+            case Class<?> c when c == FoundView.class -> "open the current found content as a found view";
             case Class<?> c when c == OpenInFiler.class -> which("open in the Finder", "open in the Explorer", "open in the FileManager");
             case Class<?> c when c == SearchInBrowser.class -> "search in the browser web";
             case Class<?> c when c == TranslateInBrowser.class -> "translate in the browser web";
