@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Function;
 
 /**
  * The session utilities for the model.
@@ -165,7 +166,29 @@ public class Sessions {
         }
         @Override
         public Session apply(Context ctx, Content content) {
-            return null;
+            if (rows.isEmpty()) return Session.empty();
+
+            String name = content.query(Query.modelName).plain() + ".filtered";
+            Path outPath = ctx.config().stashPath().resolve(String.join(
+                "_", UUID.randomUUID().toString(), name));
+
+            var format = "%" + String.valueOf(rows.getLast()).length() + "d";
+            Function<Integer, String> pad = n -> String.format(format, n + 1);
+
+            Iterable<String> iterable = () -> rows.stream()
+                .map(i -> pad.apply(i) + " | " + content.getText(i).replace("\r", "").replace("\n", ""))
+                .iterator();
+
+            Path view = Files.write(outPath, iterable);
+
+            return Session.of(
+                null,
+                null,
+                view,
+                name,
+                StandardCharsets.UTF_8,
+                false,
+                viewport.topLine(), viewport.lineWidth(), viewport.caretRow(), viewport.caretCol());
         }
     }
 
