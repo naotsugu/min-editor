@@ -553,7 +553,16 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void replace(List<Function<String, String>> fun, boolean keepSelection) {
+
         List<Range> caretRanges = carets.ranges();
+        if (caretRanges.size() == 1 && caretRanges.getFirst().isZeroLength()) {
+            // if no range is selected, the caret row is targeted.
+            var row = caretRanges.getFirst().start().row();
+            caretRanges = List.of(new Range(
+                Point.of(row, 0),
+                Point.of(row, screenLayout.endColOnRowAt(row))));
+        }
+
         List<Range> ranges = content.replace(caretRanges, fun);
         Range rangeMin = Collections.min(caretRanges);
         Range rangeMax = Collections.max(caretRanges);

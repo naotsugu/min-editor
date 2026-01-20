@@ -87,7 +87,7 @@ public sealed interface Command {
 
     record Unique() implements Command, RequireSelection {}
 
-    record Calc() implements Command, RequireSelection {}
+    record Calc() implements Command {}
 
     record Pwd() implements Command {}
 
