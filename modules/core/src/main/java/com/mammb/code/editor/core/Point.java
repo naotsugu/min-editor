@@ -152,6 +152,14 @@ public interface Point extends Comparable<Point> {
             return start.compareTo(end) >= 0;
         }
 
+        /**
+         * Get whether this range is zero length.
+         * @return {@code true}, if this range is zero length
+         */
+        public boolean isZeroLength() {
+            return start.equals(end);
+        }
+
         @Override
         public int compareTo(Range o) {
             return min().compareTo(o.min());
