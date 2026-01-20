@@ -161,7 +161,7 @@ public sealed interface Command {
 
     record BinaryView() implements Command { }
 
-    record FoundView() implements Command { }
+    record FoundFilterView(Integer contextSize) implements Command { }
 
     record OpenInFiler() implements Command { }
 
@@ -250,7 +250,7 @@ public sealed interface Command {
             case Class<?> c when c == DiffWith.class -> "diff with the specified file";
             case Class<?> c when c == Duplicate.class -> "duplicate content as read-only";
             case Class<?> c when c == BinaryView.class -> "open the current content as a binary view";
-            case Class<?> c when c == FoundView.class -> "open the current found content as a found view";
+            case Class<?> c when c == FoundFilterView.class -> "open the current found content as a found view";
             case Class<?> c when c == OpenInFiler.class -> which("open in the Finder", "open in the Explorer", "open in the FileManager");
             case Class<?> c when c == SearchInBrowser.class -> "search in the browser web";
             case Class<?> c when c == TranslateInBrowser.class -> "translate in the browser web";
@@ -318,8 +318,8 @@ public sealed interface Command {
                     argTypes[1].cast(argObj(argTypes[1], args, 1)));
             }
 
-        } catch (Exception ignore) {
-            log.log(ERROR, ignore);
+        } catch (Exception e) {
+            log.log(ERROR, e);
         }
         return new Empty();
     }
@@ -331,7 +331,8 @@ public sealed interface Command {
             .map(type -> type.getActualTypeArguments()[index])
             .filter(Class.class::isInstance)
             .map(Class.class::cast)
-            .findFirst().get();
+            .findFirst()
+            .orElse(null);
     }
 
     private static Object argObj(Class<?> argType, String[] args, int index) {
