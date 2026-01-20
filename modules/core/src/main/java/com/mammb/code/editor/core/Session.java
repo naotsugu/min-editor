@@ -319,7 +319,7 @@ public interface Session {
         return new Sessions.Binary(path);
     }
 
-    static Transformer rowFilter(Collection<Integer> rows) {
-        return new Sessions.RowFilter(rows);
+    static Transformer rowFilter(Collection<Integer> rows, int contextSize) {
+        return new Sessions.RowFilter(rows, contextSize);
     }
 }

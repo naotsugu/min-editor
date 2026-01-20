@@ -160,9 +160,11 @@ public class Sessions {
     }
 
     public static class RowFilter extends Transformer {
+        private final int contextSize;
         private final List<Integer> rows;
-        public RowFilter(Collection<Integer> rows) {
+        public RowFilter(Collection<Integer> rows, int contextSize) {
             this.rows = rows.stream().sorted().toList();
+            this.contextSize = contextSize;
         }
         @Override
         public Session apply(Context ctx, Content content) {
