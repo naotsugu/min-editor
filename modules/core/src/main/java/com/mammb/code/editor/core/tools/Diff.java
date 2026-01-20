@@ -27,6 +27,10 @@ import java.util.List;
  */
 public final class Diff {
 
+    /**
+     * Represents the result of a diff operation, which provides unified text representations
+     * of changes or differences between sources.
+     */
     public interface Result {
         Iterable<? extends CharSequence> asUnifyTexts();
         Iterable<? extends CharSequence> asUnifiedFormText(int contextSize);
