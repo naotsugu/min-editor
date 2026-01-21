@@ -27,6 +27,7 @@ import com.mammb.code.editor.core.model.QueryRecords.CharCodeSymbol;
 import com.mammb.code.editor.core.model.QueryRecords.ModelName;
 import com.mammb.code.editor.core.model.QueryRecords.Modified;
 import com.mammb.code.editor.core.model.QueryRecords.RowEndingSymbol;
+import com.mammb.code.editor.core.model.QueryRecords.RowEndingChars;
 import com.mammb.code.editor.core.model.QueryRecords.Size;
 import com.mammb.code.piecetable.CharsetMatch;
 import com.mammb.code.piecetable.Pos;
@@ -298,6 +299,7 @@ public class TextEditContent implements Content {
     public <R> R query(Query<R> query) {
         return switch (query) {
             case RowEndingSymbol _  -> (R) edit.rowEnding().toString();
+            case RowEndingChars _   -> (R) edit.rowEnding().str();
             case CharCode _         -> (R) edit.charset();
             case CharCodeSymbol _   -> (R) charsetName();
             case Modified _         -> (R) (Boolean) modified;

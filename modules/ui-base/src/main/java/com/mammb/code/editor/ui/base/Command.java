@@ -161,7 +161,7 @@ public sealed interface Command {
 
     record BinaryView() implements Command { }
 
-    record FoundFilterView(Integer contextSize) implements Command { }
+    record FoundFilterView(Integer contextSize) implements Command, RequireArgs1<Integer> { }
 
     record OpenInFiler() implements Command { }
 
@@ -191,6 +191,7 @@ public sealed interface Command {
             case Class<?> c when c == SaveWith.class -> "[charset name (e.g. utf-8 | sjis)]";
             case Class<?> c when c == ReloadWith.class -> "[charset name (e.g. utf-8 | sjis)]";
             case Class<?> c when c == DiffWith.class -> "[path to diff target]";
+            case Class<?> c when c == FoundFilterView.class -> "[context size]";
             case null, default -> "";
         };
     }

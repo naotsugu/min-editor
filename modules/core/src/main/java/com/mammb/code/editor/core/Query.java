@@ -45,6 +45,7 @@ public interface Query<R> {
     }
 
     Query<String> rowEndingSymbol = new RowEndingSymbol();
+    Query<String> rowEndingChars = new RowEndingChars();
     Query<Charset> charCode = new CharCode();
     Query<String> charCodeSymbol = new CharCodeSymbol();
     Query<Boolean> modified = new Modified();

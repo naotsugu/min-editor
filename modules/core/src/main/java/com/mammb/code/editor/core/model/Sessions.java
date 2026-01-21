@@ -23,6 +23,7 @@ import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.tools.BinaryView;
+import com.mammb.code.editor.core.tools.HunkGatherer;
 import com.mammb.code.editor.core.tools.Source16;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -162,10 +163,10 @@ public class Sessions {
     public static class RowFilter extends Transformer {
 
         private final int contextSize;
-        private final List<Integer> rows;
+        private final Collection<Integer> rows;
 
         public RowFilter(Collection<Integer> rows, int contextSize) {
-            this.rows = rows.stream().sorted().toList();
+            this.rows = rows;
             this.contextSize = contextSize;
         }
 
@@ -178,14 +179,22 @@ public class Sessions {
             Path outPath = ctx.config().stashPath().resolve(String.join(
                 "_", UUID.randomUUID().toString(), name));
 
-            var format = "%" + String.valueOf(rows.getLast()).length() + "d";
-            Function<Integer, String> pad = n -> String.format(format, n + 1);
+            var hunkRows = rows.stream()
+                .sorted()
+                .gather(HunkGatherer.of(contextSize, content.rows(), -1))
+                .toList();
 
-            Iterable<String> iterable = () -> rows.stream()
-                .map(i -> pad.apply(i) + " | " + content.getText(i).replace("\r", "").replace("\n", ""))
+            var format = "%" + String.valueOf(hunkRows.getLast()).length() + "d";
+            var nl = content.query(Query.rowEndingChars);
+
+            Iterable<String> iterable = () -> hunkRows.stream()
+                .map(i -> {
+                    if (i < 0) return nl;
+                    return String.format(format, i + 1) + " | " + content.getText(i);
+                })
                 .iterator();
 
-            Path view = Files.write(outPath, iterable);
+            Path view = Files.write(outPath, iterable, StandardCharsets.UTF_8, "");
 
             return Session.of(
                 null,

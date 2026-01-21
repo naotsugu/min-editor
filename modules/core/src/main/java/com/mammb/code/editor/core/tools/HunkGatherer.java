@@ -18,7 +18,17 @@ package com.mammb.code.editor.core.tools;
 import java.util.stream.Gatherer;
 
 /**
- * The HunkGatherer.
+ * Utility class for creating and managing {@code Gatherer} instances tailored for
+ * collecting sequences of integers within a specified range and context size.
+ * The {@code HunkGatherer} provides static methods to generate {@code Gatherer}
+ * configurations and process integer sequences effectively. This class ensures that
+ * integers are collected with a definable context size, optional delimiter marker,
+ * and upper bound limit.
+ * <p>
+ * The resulting {@code Gatherer} can be used to process series of integers and
+ * aggregate them into coherent blocks based on the specified context size.
+ * Additionally, an optional separator marker can be inserted between ranges
+ * to signal the boundary between distinct groups of integers.
  * @author Naotsugu Kobayashi
  */
 public final class HunkGatherer {

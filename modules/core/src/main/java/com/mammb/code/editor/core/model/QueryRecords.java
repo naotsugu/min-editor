@@ -34,6 +34,8 @@ public interface QueryRecords {
 
     /** The query of a row ending symbol. */
     record RowEndingSymbol() implements Query<String> { }
+    /** The query of a row ending chars. */
+    record RowEndingChars() implements Query<String> { }
     /** The query of a charset. */
     record CharCode() implements Query<Charset> { }
     /** The query of a charset symbol. */
