@@ -27,10 +27,36 @@ public final class HunkGatherer {
         // This class is not intended to be instantiated
     }
 
+    /**
+     * Creates a new {@code Gatherer} instance for managing a sequence of integers
+     * within a specified context size and upper bound.
+     *
+     * @param contextSize the number of contextual elements to include on either side
+     *                    of a central value within the range. Must be a positive value.
+     * @param max the maximum value in the range of integers. Defines the upper limit
+     *            for the gathered data.
+     * @return a {@code Gatherer} instance configured to collect integers based on
+     *         the provided context size and maximum value.
+     */
     public static Gatherer<Integer, ?, Integer> of(int contextSize, int max) {
         return of(contextSize, max, null);
     }
 
+    /**
+     * Creates a new {@code Gatherer} instance for managing a sequence of integers
+     * within a specified context size and upper bound. Optionally, a separate
+     * marker can be provided to insert a delimiter between distinct ranges of
+     * integers.
+     *
+     * @param contextSize the number of contextual elements to include on either side
+     *                    of a central value within the range. Must be a positive value.
+     * @param max the maximum value in the range of integers. Defines the upper limit
+     *            for the gathered data.
+     * @param separateMarker an optional marker value to be inserted between separate
+     *                       blocks of collected integers. Can be {@code null}.
+     * @return a {@code Gatherer} instance configured to collect integers based on
+     *         the provided context size, maximum value, and optional separate marker.
+     */
     public static Gatherer<Integer, ?, Integer> of(int contextSize, int max, Integer separateMarker) {
         return Gatherer.<Integer, State, Integer>ofSequential(
             () -> new State(contextSize, max, separateMarker),
