@@ -221,6 +221,7 @@ public class EditorPane extends ContentPane {
     }
 
     private EditorPane foundFilter(int contextSize) {
+        // TODO find select in new pane
         return new EditorPane(context)
             .with(model().getSession(Session.rowFilter(model().query(Query.foundRows), contextSize)));
     }
