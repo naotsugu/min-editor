@@ -247,7 +247,7 @@ public class EditorPane extends ContentPane {
         var d = new FxColorDialog(getScene().getWindow());
         try {
             d.setColor(Color.valueOf(model().query(Query.selectedText)));
-        } catch (Exception e) { }
+        } catch (Exception ignore) { }
         d.setOnSelect(() -> execute(CommandKeys.of(Action.input(d.getSelectedWebColor()))));
         d.show();
     }
@@ -468,8 +468,8 @@ public class EditorPane extends ContentPane {
             Object obj = supplier.get();
             if (obj == null) return;
             model().apply(Action.input(obj.toString()));
-        } catch (Exception ignore) {
-            log.log(System.Logger.Level.WARNING, "failed to input text", ignore);
+        } catch (Exception e) {
+            log.log(System.Logger.Level.WARNING, "failed to input text", e);
         }
     }
 
