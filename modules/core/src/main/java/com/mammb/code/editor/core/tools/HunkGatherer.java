@@ -23,7 +23,7 @@ import java.util.stream.Gatherer;
  * processes a sequence of integer inputs and integrates them into continuous
  * blocks of integers, optionally inserting a separator marker between distinct
  * gathered blocks.
- *
+ * <p>
  * Instances of this class are created indirectly via the {@code of} factory
  * methods and are used internally in conjunction with the {@code Gatherer}
  * framework.
