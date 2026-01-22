@@ -18,23 +18,30 @@ package com.mammb.code.editor.core.tools;
 import java.util.stream.Gatherer;
 
 /**
- * Utility class for creating and managing {@code Gatherer} instances tailored for
- * collecting sequences of integers within a specified range and context size.
- * The {@code HunkGatherer} provides static methods to generate {@code Gatherer}
- * configurations and process integer sequences effectively. This class ensures that
- * integers are collected with a definable context size, optional delimiter marker,
- * and upper bound limit.
- * <p>
- * The resulting {@code Gatherer} can be used to process series of integers and
- * aggregate them into coherent blocks based on the specified context size.
- * Additionally, an optional separator marker can be inserted between ranges
- * to signal the boundary between distinct groups of integers.
+ * A final class that serves as an implementation detail for gathering ranges
+ * of integers within a defined context size and upper bound. Specifically, it
+ * processes a sequence of integer inputs and integrates them into continuous
+ * blocks of integers, optionally inserting a separator marker between distinct
+ * gathered blocks.
+ *
+ * Instances of this class are created indirectly via the {@code of} factory
+ * methods and are used internally in conjunction with the {@code Gatherer}
+ * framework.
  * @author Naotsugu Kobayashi
  */
 public final class HunkGatherer {
 
-    private HunkGatherer() {
-        // This class is not intended to be instantiated
+    private final Integer separateMarker;
+    private final int contextSize;
+    private final int min = 0;
+    private final int max;
+    private Integer start = null;
+    private Integer end = null;
+
+    private HunkGatherer(int contextSize, int max, Integer separateMarker) {
+        this.contextSize = contextSize;
+        this.max = max;
+        this.separateMarker = separateMarker;
     }
 
     /**
@@ -53,70 +60,52 @@ public final class HunkGatherer {
     }
 
     /**
-     * Creates a new {@code Gatherer} instance for managing a sequence of integers
-     * within a specified context size and upper bound. Optionally, a separate
-     * marker can be provided to insert a delimiter between distinct ranges of
-     * integers.
+     * Creates a new {@code Gatherer} instance tailored for processing a sequence of integers
+     * within a specified context size and maximum value, with an optional separate marker
+     * for distinguishing segments or groups.
      *
-     * @param contextSize the number of contextual elements to include on either side
-     *                    of a central value within the range. Must be a positive value.
-     * @param max the maximum value in the range of integers. Defines the upper limit
+     * @param contextSize the number of contextual elements to include on either side of a
+     *                    central value within the range. Must be a positive integer.
+     * @param max the maximum value in the range of integers. Defines the highest limit
      *            for the gathered data.
-     * @param separateMarker an optional marker value to be inserted between separate
-     *                       blocks of collected integers. Can be {@code null}.
-     * @return a {@code Gatherer} instance configured to collect integers based on
-     *         the provided context size, maximum value, and optional separate marker.
+     * @param separateMarker an optional marker used to separate or define discrete sections
+     *                       within the gathered sequence. Can be {@code null} if not needed.
+     * @return a {@code Gatherer} instance configured to collect integers based on the provided
+     *         context size, maximum value, and separate marker.
      */
     public static Gatherer<Integer, ?, Integer> of(int contextSize, int max, Integer separateMarker) {
-        return Gatherer.<Integer, State, Integer>ofSequential(
-            () -> new State(contextSize, max, separateMarker),
+        return Gatherer.<Integer, HunkGatherer, Integer>ofSequential(
+            () -> new HunkGatherer(contextSize, max, separateMarker),
             HunkGatherer::integrate,
             HunkGatherer::finish
         );
     }
 
-    private static class State {
-        final Integer separateMarker;
-        final int contextSize;
-        Integer start = null;
-        Integer end = null;
-        final int min = 0;
-        final int max;
-        State(int contextSize, int max, Integer separateMarker) {
-            this.contextSize = contextSize;
-            this.max = max;
-            this.separateMarker = separateMarker;
-        }
-    }
+    private boolean integrate(Integer line, Gatherer.Downstream<? super Integer> downstream) {
 
-    private static boolean integrate(State state, Integer line, Gatherer.Downstream<? super Integer> downstream) {
-        int nextStart = Math.clamp(line - state.contextSize, state.min, state.max);
-        int nextEnd   = Math.clamp(line + state.contextSize, state.min, state.max);
+        int nextStart = Math.clamp(line - contextSize, min, max);
+        int nextEnd   = Math.clamp(line + contextSize, min, max);
 
-        if (state.start == null) {
-            state.start = nextStart;
-            state.end = nextEnd;
-            return true;        }
-
-        if (nextStart <= state.end + 1) {
-            state.end = Math.max(state.end, nextEnd);
+        if (start == null) {
+            start = nextStart;
+            end = nextEnd;
+        } else if (nextStart <= end + 1) {
+            end = Math.max(end, nextEnd);
         } else {
-            emitBlock(state, downstream, state.start, state.end);
-            state.start = nextStart;
-            state.end = nextEnd;
+            emitBlock(downstream, start, end);
+            start = nextStart;
+            end = nextEnd;
         }
         return true;
     }
 
-    private static void finish(State state, Gatherer.Downstream<? super Integer> downstream) {
-        if (state.start != null) {
-            emitBlock(state, downstream, state.start, state.end);
-        }
+    private void finish(Gatherer.Downstream<? super Integer> downstream) {
+        emitBlock(downstream, start, end);
     }
 
-    private static void emitBlock(State state, Gatherer.Downstream<? super Integer> downstream, int start, int end) {
-        if (state.contextSize > 0 && state.separateMarker != null) {
-            downstream.push(state.separateMarker);
+    private void emitBlock(Gatherer.Downstream<? super Integer> downstream, int start, int end) {
+        if (contextSize > 0 && separateMarker != null) {
+            downstream.push(separateMarker);
         }
         for (int i = start; i <= end; i++) {
             downstream.push(i);
