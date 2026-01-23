@@ -31,7 +31,7 @@ application {
         //"-XX:+UseCompactObjectHeaders",
         "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
         //"-XX:G1PeriodicGCInterval=5000"
-        "-XX:AOTCacheOutput=${File(projectDir, "aot/app-$platform.aot").absolutePath}",
+        //"-XX:AOTCacheOutput=${File(projectDir, "aot/app-$platform.aot").absolutePath}",
     )
     if (providers.systemProperty("debug").isPresent) {
         applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"))
@@ -71,16 +71,15 @@ tasks.register<Exec>("jpackage") {
     val outputDir = project.layout.buildDirectory.dir("jpackage").get().asFile
     doFirst { delete(outputDir) }
 
-    // copy aot cache into the jpackage input directory
+    // copy aot cache into the jpackage input directory if it exists
     val inputDir = project.layout.buildDirectory.dir("jpackage-input").get().asFile
     val aotCache = File(projectDir, "aot/app-$platform.aot")
-    if (aotCache.exists()) {
+    val aotEnabled = aotCache.exists();
+    if (aotEnabled) {
         copy {
             from(aotCache)
             into(inputDir)
         }
-    } else {
-        inputDir.mkdirs()
     }
 
     val jarFileProvider = tasks.named<Jar>("jar").flatMap { it.archiveFile }
@@ -91,7 +90,8 @@ tasks.register<Exec>("jpackage") {
     val iconType = if (os.isWindows) "icon.ico" else if (os.isMacOsX) "icon.icns" else "icon.png"
     val iconPath = "${project.rootDir}/docs/icon/${iconType}"
 
-    commandLine(commandPath,
+    val args = mutableListOf(
+        commandPath,
         "--type", "app-image",
         "--name", "min-editor",
         "--module-path", jarFileProvider.get().asFile.absolutePath,
@@ -99,6 +99,7 @@ tasks.register<Exec>("jpackage") {
         "--module", "${application.mainModule.get()}/${application.mainClass.get()}",
         "--dest", outputDir.absolutePath,
         "--icon", iconPath,
+        "--input", inputDir.absolutePath,
 
         "--jlink-options", "--strip-debug",
         "--jlink-options", "--compress=zip-0",
@@ -112,13 +113,15 @@ tasks.register<Exec>("jpackage") {
         "--java-options", "-XX:ZUncommitDelay=64m",
         //"--java-options", "-XX:+UseCompactObjectHeaders",
         "--java-options", "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
-
-        // Ahead-of-Time Class Loading & Linking
-        "--input", inputDir.absolutePath,
-        "--java-options", "-XX:AOTCache=app-$platform.aot",
     )
 
-
+    if (aotEnabled) {
+        args.addAll(listOf(
+            // Ahead-of-Time Class Loading & Linking
+            "--java-options", "-XX:AOTCache=app-$platform.aot",
+        ))
+    }
+    commandLine(args)
 }
 
 tasks.register<Zip>("pkg") {
