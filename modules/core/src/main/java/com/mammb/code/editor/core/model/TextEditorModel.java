@@ -423,6 +423,7 @@ public class TextEditorModel implements EditorModel {
     @Override
     public void ctrlClick(double x, double y) {
         if (x < marginLeft) {
+            // TODO remove this op
             Caret c = carets.unique();
             int clickLine = screenLayout.yToLineOnScreen(y - marginTop);
             int caretLine = screenLayout.rowToLine(c.row(), c.col());

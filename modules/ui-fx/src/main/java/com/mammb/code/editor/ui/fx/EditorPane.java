@@ -30,6 +30,7 @@ import com.mammb.code.editor.platform.AppVersion;
 import com.mammb.code.editor.ui.base.Command;
 import com.mammb.code.editor.ui.base.DrawImpl;
 import com.mammb.code.editor.ui.base.Command.*;
+import com.mammb.code.editor.ui.base.LruList;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -101,6 +102,8 @@ public class EditorPane extends ContentPane {
     private final FloatBar floatBar = new FloatBar(scroll.vScroll(), scroll.hScroll());
     /** The session history. */
     private final SessionHistory sessionHistory = new SessionHistory();
+    /** The find command history. */
+    private final LruList<FindCommand> findCommandHistory = new LruList<>(15);
     /** The file path property. */
     private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.EMPTY);
 
@@ -221,9 +224,13 @@ public class EditorPane extends ContentPane {
     }
 
     private EditorPane foundFilter(int contextSize) {
-        // TODO find select in new pane
-        return new EditorPane(context)
+        var editorPane = new EditorPane(context)
             .with(model().getSession(Session.rowFilter(model().query(Query.foundRows), contextSize)));
+        var lastCmd = findCommandHistory.peek();
+        if (lastCmd != null) {
+            editorPane.execute(lastCmd);
+        }
+        return editorPane;
     }
 
     private void openInFiler(Path path) {
@@ -442,6 +449,9 @@ public class EditorPane extends ContentPane {
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
             case Empty _              -> { }
         }
+        if (command instanceof FindCommand cmd) {
+            findCommandHistory.push(cmd);
+        }
         paint();
     }
 
@@ -658,7 +668,8 @@ public class EditorPane extends ContentPane {
 
     private EditorPane newEdit() {
         var editorPane = new EditorPane(context);
-        tabContainer().add(editorPane);
+        var tabContainer = tabContainer();
+        if (tabContainer != null) tabContainer.add(editorPane);
         return editorPane;
     }
 
@@ -719,7 +730,10 @@ public class EditorPane extends ContentPane {
         var contentPath = query(Query.contentPath);
         if (contentPath.isPresent()) {
             var current = Files.lastModifiedTime(contentPath.get());
-            return current.compareTo(query(Query.lastModifiedTime).get()) != 0;
+            if (current != null) {
+                return query(Query.lastModifiedTime)
+                    .map(m -> m.compareTo(current) != 0).orElse(false);
+            }
         }
         return false;
     }
