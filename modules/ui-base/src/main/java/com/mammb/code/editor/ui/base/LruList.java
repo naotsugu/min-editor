@@ -22,14 +22,15 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * A class that represents a list with a fixed maximum size, maintaining
- * the most recently accessed or added elements. When the list exceeds
- * the specified maximum size, the least recently added element is removed.
+ * A list implementation that maintains elements based on their recency of usage or addition.
+ * This list enforces a maximum size, and when the size exceeds the defined limit, the
+ * least recently added element is removed. The list is ordered from most recent to a least
+ * recent element.
  *
- * @param <E> The type of elements stored in the list.
+ * @param <E> the type of elements in this list
  * @author Naotsugu Kobayashi
  */
-public class RecentList<E> implements Iterable<E> {
+public class LruList<E> implements Iterable<E> {
 
     private final int maxSize;
     private final List<E> list;
@@ -43,7 +44,7 @@ public class RecentList<E> implements Iterable<E> {
      * @param maxSize the maximum number of elements the list can hold; must be greater than 0
      * @throws IllegalArgumentException if maxSize is less than or equal to 0
      */
-    public RecentList(int maxSize) {
+    public LruList(int maxSize) {
         if (maxSize <= 0) {
             throw new IllegalArgumentException("maxSize must be > 0");
         }
