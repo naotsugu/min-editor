@@ -29,11 +29,15 @@ application {
         "--enable-preview",
         "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m",
         //"-XX:+UseCompactObjectHeaders",
-        "--enable-native-access=javafx.graphics") // Restricted methods will be blocked in a future release unless native access is enabled
-        //"-XX:G1PeriodicGCInterval=5000")
+        "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
+        //"-XX:G1PeriodicGCInterval=5000"
+        "-XX:AOTCacheOutput=${File(projectDir, "aot/app-$platform.aot").absolutePath}",
+    )
     if (providers.systemProperty("debug").isPresent) {
         applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"))
     }
+
+
 }
 
 tasks.register<Jar>("uberJar") {
@@ -58,12 +62,26 @@ tasks.register<Exec>("jpackage") {
 
     dependsOn(tasks.jar)
 
+    // get the path to the jpackage command from the toolchain
     val javaToolchainService = project.extensions.getByType(JavaToolchainService::class.java)
     val jdkPath = javaToolchainService.launcherFor(java.toolchain).get().executablePath
     val commandPath = File(jdkPath.asFile.parentFile, "jpackage").absolutePath
 
+    // output directory for runtime images
     val outputDir = project.layout.buildDirectory.dir("jpackage").get().asFile
     doFirst { delete(outputDir) }
+
+    // copy aot cache into the jpackage input directory
+    val inputDir = project.layout.buildDirectory.dir("jpackage-input").get().asFile
+    val aotCache = File(projectDir, "aot/app-$platform.aot")
+    if (aotCache.exists()) {
+        copy {
+            from(aotCache)
+            into(inputDir)
+        }
+    } else {
+        inputDir.mkdirs()
+    }
 
     val jarFileProvider = tasks.named<Jar>("jar").flatMap { it.archiveFile }
     val modulePath = configurations.runtimeClasspath.get().joinToString(separator = File.pathSeparator) {
@@ -94,7 +112,13 @@ tasks.register<Exec>("jpackage") {
         "--java-options", "-XX:ZUncommitDelay=64m",
         //"--java-options", "-XX:+UseCompactObjectHeaders",
         "--java-options", "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
+
+        // Ahead-of-Time Class Loading & Linking
+        "--input", inputDir.absolutePath,
+        "--java-options", "-XX:AOTCache=app-$platform.aot",
     )
+
+
 }
 
 tasks.register<Zip>("pkg") {
