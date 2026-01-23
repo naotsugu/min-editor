@@ -228,7 +228,7 @@ public class EditorPane extends ContentPane {
             .with(model().getSession(Session.rowFilter(model().query(Query.foundRows), contextSize)));
         var lastCmd = findCommandHistory.peek();
         if (lastCmd != null) {
-            editorPane.execute(lastCmd);
+            Platform.runLater(() -> editorPane.execute(lastCmd));
         }
         return editorPane;
     }

@@ -292,6 +292,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             initTab(tab);
             tabPane.getTabs().add(tab);
             tabPane.getSelectionModel().select(tab);
+            node.focus();
             tabPane.getSelectionModel().selectedItemProperty().addListener(this::handleSelectedTabItem);
             node.setCloseListener(e -> {
                 if (e.canClose()) {
