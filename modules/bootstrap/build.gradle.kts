@@ -30,14 +30,16 @@ application {
         "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m",
         //"-XX:+UseCompactObjectHeaders",
         "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
-        //"-XX:G1PeriodicGCInterval=5000"
-        //"-XX:AOTCacheOutput=${File(projectDir, "aot/app-$platform.aot").absolutePath}",
+        //"-XX:G1PeriodicGCInterval=5000",
     )
-    if (providers.systemProperty("debug").isPresent) {
-        applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"))
+    if (providers.systemProperty("aot").isPresent) {
+        applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf(
+            "-XX:AOTCacheOutput=${File(projectDir, "aot/app-$platform.aot").absolutePath}"))
     }
-
-
+    if (providers.systemProperty("debug").isPresent) {
+        applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf(
+            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"))
+    }
 }
 
 tasks.register<Jar>("uberJar") {
