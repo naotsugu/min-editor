@@ -1,40 +1,39 @@
 # Min Editor
 
-Minimal text editor, **under development**.
+A minimal text editor, currently **under development**.
 
-* A minimal text editor, not an IDE
-* Implementation with JavaFX, because there is no choice in languages with a standard multiplatform UI toolkit
-* Uses piecetable data structure, so large files can be handled without large memory allocation
-
+- A minimal text editor, not an IDE.
+- Implemented with JavaFX, as it is one of the few languages with a standard multi-platform UI toolkit.
+- It uses a piece table data structure, allowing it to handle large files without significant memory allocation.
 
 ![screenshot1](docs/images/screenshot-01.png)
 
 
 ## Features
 
-* Syntax highlighting
-* Line wrapping
-* Multiple tab panes
-* Multiple carets and selections
-* Handles huge documents
-* CSV/TSV layout mode
-* Various editing commands (to open command pallet: `⌘-P` or `Ctrl-P`)
+- Syntax highlighting
+- Line wrapping
+- Multiple tab support
+- Multiple carets and selections
+- Handles large files efficiently
+- CSV/TSV layout mode
+- Various editing commands (Open the command palette with `⌘-P` or `Ctrl-P`)
 
 
 ## Installing
 
-Download the latest [min-editor release](https://github.com/naotsugu/min-editor/releases) and unzip.
-You can use the application by launching the executable file.
+Download the latest [min-editor release](https://github.com/naotsugu/min-editor/releases) and unzip it.
+Launch the application by running the executable file.
 
-### Launching app on macOS
+### Launching on macOS
 
-By default, macOS allows you to open apps from the official Mac App Store only.
+By default, macOS only allows applications from the official App Store.
 
-If you are unable to run the downloaded file, you can try to remove the quarantine attribute from the application.
-This will allow you to open the application without seeing the security warning.
+If you can't run the downloaded application, you may need to remove the quarantine attribute.
+This will bypass the security warning.
 
-1. Open a Terminal window.
-2. Type the following command
+1.  Open a Terminal window.
+2.  Run the following command:
 
 ```shell
 sudo xattr -r -d com.apple.quarantine /Applications/min-editor.app
@@ -42,9 +41,9 @@ sudo xattr -r -d com.apple.quarantine /Applications/min-editor.app
 
 ## Uninstalling
 
-Delete executable files and configuration files.
+To uninstall, simply delete the application and its configuration files.
 
-The configuration files for each platform exist in the following
+Configuration files are located in the following directories for each platform:
 
 | platform | location                                    |
 |----------|---------------------------------------------|
@@ -55,43 +54,41 @@ The configuration files for each platform exist in the following
 
 ## Building
 
-To create the distribution, run the following command.
+To build the application from source, run the following commands:
 
 ```shell
 git clone --recursive https://github.com/naotsugu/min-editor.git
 cd min-editor
 ./gradlew clean pkg
 ```
-The generated binary can be executed with the following command.
+
+You can run the generated binary with the following command:
 
 ```shell
 ./modules/bootstrap/build/jpackage/min-editor/min-editor
 ```
-
-
 The distribution archive will be created in the `/modules/bootstrap/build/distributions/` directories.
 
-
-To run the application directly, execute the following command.
+To run the application directly from the source, use:
 
 ```shell
 ./gradlew run
 ```
 
-If a debug run is required, execute the following command.
+To run in debug mode:
 
 ```shell
 ./gradlew run -Ddebug
 ```
 
 This repository contains git submodules.
-Therefore, to update a submodule, do the following.
+To update them, run:
 
 ```shell
 git submodule update --remote --merge
 ```
 
-To format the code, execute the following command.
+To format the code, run:
 
 ```shell
 ./gradlew rewriteRun
