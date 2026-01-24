@@ -25,6 +25,9 @@ A minimal text editor, currently **under development**.
 Download the latest [min-editor release](https://github.com/naotsugu/min-editor/releases) and unzip it.
 Launch the application by running the executable file.
 
+After installation, you can update the application from the Help dialog (press `⌘-P` or `Ctrl-P`, and select help).
+
+
 ### Launching on macOS
 
 By default, macOS only allows applications from the official App Store.
