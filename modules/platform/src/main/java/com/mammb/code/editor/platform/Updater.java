@@ -81,12 +81,12 @@ public class Updater {
      * Writes a platform-specific update script to the application's home directory.
      * The script is generated based on the current operating system: a PowerShell script
      * for Windows or a Shell script for other operating systems.
-     *
+     * <p>
      * The method performs the following steps:
      * 1. Determines the application home path.
      * 2. Creates the script name and content specific to the operating system.
      * 3. Writes the script content to a file in the home directory.
-     *
+     * <p>
      * If the application home path is null or an I/O error occurs during the script
      * writing process, the method either returns null or throws a {@code RuntimeException}.
      *

@@ -35,6 +35,9 @@ public class Main {
     /** The logger. */
     private static final System.Logger log = System.getLogger(Main.class.getName());
 
+    private static FileChannel channel;
+    private static FileLock lock;
+
     /**
      * Launch application.
      * @param args the command line arguments
@@ -71,18 +74,22 @@ public class Main {
 
     private static void lock() throws Exception {
         Path lockFile = AppPaths.applicationConfPath.resolve("lock");
-        FileChannel fc = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-        FileLock lock = fc.tryLock();
+        channel = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        lock = channel.tryLock(0, 1, false);
         if (lock == null) {
             throw new IllegalStateException("another instance of the application is already running.");
         }
         long pid = ProcessHandle.current().pid();
-        fc.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
+        channel.position(1);
+        channel.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
+        channel.truncate(channel.position());
+        channel.force(true);
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
+                if (lock != null) lock.close();
+                if (channel != null) channel.close();
                 Files.deleteIfExists(lockFile);
-                lock.close();
-                fc.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
