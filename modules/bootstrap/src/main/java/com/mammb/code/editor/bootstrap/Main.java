@@ -24,6 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import com.mammb.code.editor.platform.AppPaths;
+import com.mammb.code.editor.platform.AppVersion;
+import com.mammb.code.editor.platform.OS;
 import com.mammb.code.editor.ui.fx.AppLauncher;
 
 /**
@@ -34,6 +36,9 @@ public class Main {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(Main.class.getName());
+
+    private static FileChannel channel;
+    private static FileLock lock;
 
     /**
      * Launch application.
@@ -71,22 +76,55 @@ public class Main {
 
     private static void lock() throws Exception {
         Path lockFile = AppPaths.applicationConfPath.resolve("lock");
-        FileChannel fc = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
-        FileLock lock = fc.tryLock();
+        channel = FileChannel.open(lockFile,
+                StandardOpenOption.CREATE,
+                StandardOpenOption.WRITE,
+                StandardOpenOption.READ);
+        lock = channel.tryLock();
         if (lock == null) {
-            throw new IllegalStateException("another instance of the application is already running.");
+            if (OS.isWindows()) {
+                activate(lockFile);
+            }
+            System.exit(0);
         }
         long pid = ProcessHandle.current().pid();
-        fc.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
+        channel.position(0);
+        channel.truncate(0);
+        channel.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
+        channel.force(true);
+
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
+                if (lock != null) lock.close();
+                if (channel != null) channel.close();
                 Files.deleteIfExists(lockFile);
-                lock.close();
-                fc.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
          }));
+    }
+
+    private static void activate(Path lockFile) {
+        String script = """
+            $p = $null;
+            try {
+                $f = [System.IO.File]::Open('%s', [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite);
+                $r = New-Object System.IO.StreamReader($f);
+                $p = $r.ReadLine();
+                $r.Close(); $f.Close();
+            } catch {}
+            $w = New-Object -ComObject WScript.Shell;
+            if ($p -and $p.Trim() -match '^\\d+$') {
+                if (-not $w.AppActivate([int]$p.Trim())) { $w.AppActivate('%s') }
+            } else {
+                $w.AppActivate('%s')
+            }
+            """.formatted(lockFile.toAbsolutePath(), AppVersion.appName, AppVersion.appName);
+        try {
+            new ProcessBuilder("powershell", "-Command", script).start();
+        } catch (IOException e) {
+            // ignore
+        }
     }
 
 }
