@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -80,17 +81,21 @@ public class Main {
                 StandardOpenOption.CREATE,
                 StandardOpenOption.WRITE,
                 StandardOpenOption.READ);
-        lock = channel.tryLock();
+        lock = channel.tryLock(0, 1, false);
         if (lock == null) {
             if (OS.isWindows()) {
-                activate(lockFile);
+                ByteBuffer buf = ByteBuffer.allocate(64);
+                channel.read(buf, 1);
+                buf.flip();
+                String pid = StandardCharsets.UTF_8.decode(buf).toString().trim();
+                activate(pid);
             }
             System.exit(0);
         }
         long pid = ProcessHandle.current().pid();
-        channel.position(0);
-        channel.truncate(0);
-        channel.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
+        channel.position(1);
+        channel.write(ByteBuffer.wrap(String.valueOf(pid).getBytes(StandardCharsets.UTF_8)));
+        channel.truncate(channel.position());
         channel.force(true);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -104,22 +109,19 @@ public class Main {
          }));
     }
 
-    private static void activate(Path lockFile) {
+    private static void activate(String pid) {
+        if (pid == null || !pid.matches("\\d+")) {
+            pid = "";
+        }
+        String appName = AppVersion.appName.replace("'", "''");
         String script = """
-            $p = $null;
-            try {
-                $f = [System.IO.File]::Open('%s', [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite);
-                $r = New-Object System.IO.StreamReader($f);
-                $p = $r.ReadLine();
-                $r.Close(); $f.Close();
-            } catch {}
             $w = New-Object -ComObject WScript.Shell;
-            if ($p -and $p.Trim() -match '^\\d+$') {
-                if (-not $w.AppActivate([int]$p.Trim())) { $w.AppActivate('%s') }
+            if ('%s' -match '^\\d+$') {
+                if (-not $w.AppActivate([int]'%s')) { $w.AppActivate('%s') }
             } else {
                 $w.AppActivate('%s')
             }
-            """.formatted(lockFile.toAbsolutePath(), AppVersion.appName, AppVersion.appName);
+            """.formatted(pid, pid, appName, appName);
         try {
             new ProcessBuilder("powershell", "-Command", script).start();
         } catch (IOException e) {
