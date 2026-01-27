@@ -76,12 +76,12 @@ tasks.register<Exec>("jpackage") {
     // copy aot cache into the jpackage input directory if it exists
     val inputDir = project.layout.buildDirectory.dir("jpackage-input").get().asFile
     val aotCache = File(projectDir, "aot/app-$platform.aot")
-    val aotEnabled = aotCache.exists();
+    val aotEnabled = aotCache.exists()
     if (aotEnabled) {
-        copy {
+        doFirst { copy {
             from(aotCache)
             into(inputDir)
-        }
+        } }
     }
 
     val jarFileProvider = tasks.named<Jar>("jar").flatMap { it.archiveFile }
