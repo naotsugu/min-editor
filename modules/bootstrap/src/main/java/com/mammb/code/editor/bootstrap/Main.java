@@ -25,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import com.mammb.code.editor.platform.AppPaths;
-import com.mammb.code.editor.platform.AppVersion;
 import com.mammb.code.editor.platform.OS;
 import com.mammb.code.editor.ui.fx.AppLauncher;
 
@@ -111,17 +110,22 @@ public class Main {
 
     private static void activate(String pid) {
         if (pid == null || !pid.matches("\\d+")) {
-            pid = "";
+            return;
         }
-        String appName = AppVersion.appName.replace("'", "''");
         String script = """
-            $w = New-Object -ComObject WScript.Shell;
-            if ('%s' -match '^\\d+$') {
-                if (-not $w.AppActivate([int]'%s')) { $w.AppActivate('%s') }
-            } else {
-                $w.AppActivate('%s')
+            $signature = @'
+            [DllImport("user32.dll")]
+            public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+            [DllImport("user32.dll")]
+            public static extern bool SetForegroundWindow(IntPtr hWnd);
+            '@
+            $type = Add-Type -MemberDefinition $signature -Name "Win32ShowWindowAsync" -Namespace "Win32" -PassThru
+            $process = Get-Process -Id %s -ErrorAction SilentlyContinue
+            if ($process -and $process.MainWindowHandle -ne [IntPtr]::Zero) {
+                $type::ShowWindowAsync($process.MainWindowHandle, 9)
+                $type::SetForegroundWindow($process.MainWindowHandle)
             }
-            """.formatted(pid, pid, appName, appName);
+            """.formatted(pid);
         try {
             new ProcessBuilder("powershell", "-Command", script).start();
         } catch (IOException e) {
