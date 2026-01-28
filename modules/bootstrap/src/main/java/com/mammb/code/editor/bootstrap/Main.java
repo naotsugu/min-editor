@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import com.mammb.code.editor.platform.AppPaths;
+import com.mammb.code.editor.platform.Processes;
 import com.mammb.code.editor.ui.fx.AppLauncher;
 
 /**
@@ -47,6 +49,7 @@ public class Main {
         try {
             lock();
         } catch (Exception e) {
+            e.printStackTrace();
             log.log(System.Logger.Level.ERROR, e);
             System.exit(1);
         }
@@ -74,16 +77,23 @@ public class Main {
 
     private static void lock() throws Exception {
         Path lockFile = AppPaths.applicationConfPath.resolve("lock");
-        channel = FileChannel.open(lockFile, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+        channel = FileChannel.open(lockFile,
+            StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.READ);
+        // | |PID|
+        //  └ lock
         lock = channel.tryLock(0, 1, false);
         if (lock == null) {
+            channel.position(1);
+
+            ByteBuffer buf = ByteBuffer.allocate(64);
+            channel.read(buf, 1);
+            buf.flip();
+            String pid = StandardCharsets.UTF_8.decode(buf).toString().trim();
+
+            Processes.activateWindow(pid);
             throw new IllegalStateException("another instance of the application is already running.");
         }
-        long pid = ProcessHandle.current().pid();
-        channel.position(1);
-        channel.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
-        channel.truncate(channel.position());
-        channel.force(true);
+        writePid(channel);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -94,6 +104,14 @@ public class Main {
                 e.printStackTrace();
             }
          }));
+    }
+
+    private static void writePid(FileChannel ch) throws IOException {
+        long pid = ProcessHandle.current().pid();
+        channel.position(1);
+        channel.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
+        channel.truncate(channel.position());
+        channel.force(true);
     }
 
 }
