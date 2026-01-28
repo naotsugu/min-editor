@@ -1,5 +1,6 @@
-
 # Contributor Quickstart Guide
+
+This document provides a quick guide for contributors to the Min-Editor project, a cross-platform text editor application.
 
 ## Repository Layout
 
@@ -14,7 +15,8 @@ The project is a multi-module Gradle project. Here is a brief overview of the ke
 
 ## General Guidance
 
-- The SDK code is written for Java 25.
+- The project is written in Java 25.
+- Do not introduce any external library dependencies other than JavaFX.
 
 ## Building and Testing
 
