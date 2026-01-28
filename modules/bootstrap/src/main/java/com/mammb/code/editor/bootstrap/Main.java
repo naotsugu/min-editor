@@ -15,17 +15,9 @@
  */
 package com.mammb.code.editor.bootstrap;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileLock;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Locale;
 import com.mammb.code.editor.platform.AppPaths;
-import com.mammb.code.editor.platform.Processes;
+import com.mammb.code.editor.platform.LockFile;
 import com.mammb.code.editor.ui.fx.AppLauncher;
 
 /**
@@ -36,9 +28,8 @@ public class Main {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(Main.class.getName());
-
-    private static FileChannel channel;
-    private static FileLock lock;
+    /** The lock file. */
+    private static LockFile lockFile;
 
     /**
      * Launch application.
@@ -47,9 +38,9 @@ public class Main {
     static void main(String[] args) {
 
         try {
-            lock();
+            lockFile = new LockFile(AppPaths.applicationConfPath.resolve("lock"));
+            lockFile.tryLock();
         } catch (Exception e) {
-            e.printStackTrace();
             log.log(System.Logger.Level.ERROR, e);
             System.exit(1);
         }
@@ -73,45 +64,6 @@ public class Main {
         // launch application
         new AppLauncher().launch(args);
 
-    }
-
-    private static void lock() throws Exception {
-        Path lockFile = AppPaths.applicationConfPath.resolve("lock");
-        channel = FileChannel.open(lockFile,
-            StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.READ);
-        // | |PID|
-        //  └ lock
-        lock = channel.tryLock(0, 1, false);
-        if (lock == null) {
-            channel.position(1);
-
-            ByteBuffer buf = ByteBuffer.allocate(64);
-            channel.read(buf, 1);
-            buf.flip();
-            String pid = StandardCharsets.UTF_8.decode(buf).toString().trim();
-
-            Processes.activateWindow(pid);
-            throw new IllegalStateException("another instance of the application is already running.");
-        }
-        writePid(channel);
-
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                if (lock != null) lock.close();
-                if (channel != null) channel.close();
-                Files.deleteIfExists(lockFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-         }));
-    }
-
-    private static void writePid(FileChannel ch) throws IOException {
-        long pid = ProcessHandle.current().pid();
-        channel.position(1);
-        channel.write(ByteBuffer.wrap(String.valueOf(pid).getBytes()));
-        channel.truncate(channel.position());
-        channel.force(true);
     }
 
 }

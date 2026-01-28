@@ -22,10 +22,10 @@ import java.util.Base64;
  * The processes.
  * @author Naotsugu Kobayashi
  */
-public class Processes {
+public class Host {
 
     /** The logger. */
-    private static final System.Logger log = System.getLogger(Processes.class.getName());
+    private static final System.Logger log = System.getLogger(Host.class.getName());
 
     /**
      * Activates the window of a process specified by a process ID (PID).
