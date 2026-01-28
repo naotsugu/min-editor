@@ -15,6 +15,8 @@
  */
 package com.mammb.code.editor.platform;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -45,6 +47,8 @@ public class Host {
             activateOnMac(pid);
         } else if (OS.isWindows()) {
             activateOnWindows(pid);
+        } else if (OS.isLinux()) {
+            activateOnLinux(pid);
         }
 
     }
@@ -91,6 +95,41 @@ public class Host {
             log.log(System.Logger.Level.DEBUG, "Process exited with code {0}.", ret);
         } catch (Exception e) {
             log.log(System.Logger.Level.ERROR, "Failed to activate window.", e);
+        }
+    }
+
+    private static void activateOnLinux(String pid) {
+        try {
+            var pb = new ProcessBuilder("wmctrl", "-lp");
+            var process = pb.start();
+            String windowId = null;
+            try (var reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.trim().split("\\s+");
+                    if (parts.length >= 3 && parts[2].equals(pid)) {
+                        windowId = parts[0];
+                        break;
+                    }
+                }
+            }
+            process.waitFor();
+            if (windowId != null) {
+                var pbActivate = new ProcessBuilder("wmctrl", "-i", "-a", windowId);
+                int ret = pbActivate.start().waitFor();
+                log.log(System.Logger.Level.DEBUG, "wmctrl -i -a exited with code {0}.", ret);
+                return;
+            }
+        } catch (Exception e) {
+            log.log(System.Logger.Level.DEBUG, "Failed to activate window using wmctrl.", e);
+        }
+
+        try {
+            var pb = new ProcessBuilder("xdotool", "search", "--pid", pid, "windowactivate");
+            int ret = pb.start().waitFor();
+            log.log(System.Logger.Level.DEBUG, "xdotool exited with code {0}.", ret);
+        } catch (Exception e) {
+            log.log(System.Logger.Level.DEBUG, "Failed to activate window using xdotool.", e);
         }
     }
 
