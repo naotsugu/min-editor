@@ -101,7 +101,6 @@ tasks.register<Exec>("jpackage") {
         "--module", "${application.mainModule.get()}/${application.mainClass.get()}",
         "--dest", outputDir.absolutePath,
         "--icon", iconPath,
-        "--input", inputDir.absolutePath,
 
         "--jlink-options", "--strip-debug",
         "--jlink-options", "--compress=zip-0",
@@ -121,6 +120,7 @@ tasks.register<Exec>("jpackage") {
         args.addAll(listOf(
             // Ahead-of-Time Class Loading & Linking
             "--java-options", "-XX:AOTCache=app-$platform.aot",
+            "--input", inputDir.absolutePath,
         ))
     }
     commandLine(args)
