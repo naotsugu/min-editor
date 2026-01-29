@@ -64,7 +64,7 @@ public class LockFile {
             StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.READ);
         lock = channel.tryLock(0, OFFSET, false);
         if (lock == null) {
-            Host.activateWindow(readPid());
+            HostRun.activateWindow(readPid());
             throw new IllegalStateException("another instance of the application is already running.");
         }
         writePid();

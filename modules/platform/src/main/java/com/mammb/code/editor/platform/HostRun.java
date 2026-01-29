@@ -21,13 +21,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * The processes.
+ * The HostRun.
  * @author Naotsugu Kobayashi
  */
-public class Host {
+public class HostRun {
 
     /** The logger. */
-    private static final System.Logger log = System.getLogger(Host.class.getName());
+    private static final System.Logger log = System.getLogger(HostRun.class.getName());
 
     /**
      * Activates the window of a process specified by a process ID (PID).
