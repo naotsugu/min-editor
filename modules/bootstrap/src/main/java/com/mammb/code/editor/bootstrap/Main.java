@@ -28,8 +28,9 @@ public class Main {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(Main.class.getName());
+
     /** The lock file. */
-    private static LockFile lockFile;
+    private static final LockFile lockFile = new LockFile(AppPaths.applicationConfPath.resolve("lock"));
 
     /**
      * Launch application.
@@ -38,7 +39,6 @@ public class Main {
     static void main(String[] args) {
 
         try {
-            lockFile = new LockFile(AppPaths.applicationConfPath.resolve("lock"));
             lockFile.tryLock();
         } catch (Exception e) {
             log.log(System.Logger.Level.ERROR, e);
