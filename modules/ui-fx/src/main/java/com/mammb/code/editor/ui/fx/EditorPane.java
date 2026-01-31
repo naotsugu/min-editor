@@ -270,7 +270,8 @@ public class EditorPane extends ContentPane {
     private void openRightWithFocus(ContentPane contentPane) {
         var container = tabContainer();
         if (container != null && contentPane != null) {
-            container.parent().addRight(contentPane);
+            var pane = container.parent().addRight(contentPane);
+            Platform.runLater(pane::focus);
         }
     }
 

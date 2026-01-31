@@ -325,7 +325,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
             if (focused) focus();
         }
-        private void focus() {
+        void focus() {
             var active = activePane.get();
             if (active != null) {
                 active.getStyleClass().remove("app-tab-pane-active");
