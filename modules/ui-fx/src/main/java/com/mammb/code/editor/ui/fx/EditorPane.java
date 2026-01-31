@@ -267,6 +267,13 @@ public class EditorPane extends ContentPane {
         }
     }
 
+    private void openRightWithFocus(ContentPane contentPane) {
+        var container = tabContainer();
+        if (container != null && contentPane != null) {
+            container.parent().addRight(contentPane);
+        }
+    }
+
     private SplitTabPane.DndTabPane tabContainer() {
         Node node = getParent();
         for (;;) {
@@ -441,9 +448,9 @@ public class EditorPane extends ContentPane {
             case Diff _               -> openRight(diff(null, false));
             case DiffFoldOff _        -> openRight(diff(null, true));
             case DiffWith cmd         -> openRight(diff(cmd.path(), false));
-            case Duplicate _          -> openRight(duplicate());
+            case Duplicate _          -> openRightWithFocus(duplicate());
             case BinaryView _         -> openRight(binary());
-            case FoundFilterView cmd  -> openRight(foundFilter(cmd.contextSize()));
+            case FoundFilterView cmd  -> openRightWithFocus(foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
