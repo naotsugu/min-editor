@@ -31,7 +31,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -78,24 +80,29 @@ public class FindInFiles {
      * @param dir        the root directory to recursively search files in
      * @param patternStr the regular expression pattern as a string for matching file contents
      * @param consumer   a consumer that processes a list of {@code Found} objects representing the matches
-     *
-     * @throws RuntimeException if an I/O error occurs while traversing the directory or processing files
+     * @return a {@code Future} representing the completion of the search task
      */
-    public static void run(Path dir, String patternStr, Consumer<List<Found>> consumer) {
+    public static Future<?> run(Path dir, String patternStr, Consumer<List<Found>> consumer) {
 
         final var pattern = Pattern.compile(patternStr);
+        final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
 
-        try (final var executor = Executors.newVirtualThreadPerTaskExecutor();
-             final Stream<Path> stream = Files.walk(dir)) {
-
-            stream.filter(Files::isReadable)
-                .filter(Files::isRegularFile)
-                .forEach(path -> executor.submit(() -> consumer.accept(processFile(path, pattern))));
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        return executor.submit(() -> {
+            try (Stream<Path> stream = Files.walk(dir)) {
+                stream.filter(Files::isReadable)
+                    .filter(Files::isRegularFile)
+                    .forEach(path -> {
+                        if (Thread.currentThread().isInterrupted()) {
+                            return;
+                        }
+                        consumer.accept(processFile(path, pattern));
+                    });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                executor.shutdown();
+            }
+        });
     }
 
     private static List<Found> processFile(Path path, Pattern pattern) {
@@ -116,6 +123,11 @@ public class FindInFiles {
             List<Found> list = null;
 
             while (filePosition < fileSize) {
+
+                if (Thread.currentThread().isInterrupted()) {
+                    return list == null ? List.of() : list;
+                }
+
                 long remaining = fileSize - filePosition;
                 long mapSize = Math.min(CHUNK_SIZE, remaining);
 
@@ -154,6 +166,9 @@ public class FindInFiles {
                 Matcher matcher = pattern.matcher(cb);
                 int lastScanPos = 0;
                 while (matcher.find()) {
+                    if (Thread.currentThread().isInterrupted()) {
+                        return list == null ? List.of() : list;
+                    }
                     int start = matcher.start();
                     if (start < overlapSkipChars) {
                         continue; // skip duplicate range
@@ -227,7 +242,7 @@ public class FindInFiles {
         var prefix = (contextStart > 0 && cb.charAt(contextStart - 1) != '\n') ? "..." : "";
         var suffix = (contextEnd < cb.length() && cb.charAt(contextEnd) != '\n') ? "..." : "";
 
-        return prefix + cb.subSequence(contextStart, contextEnd).toString() + suffix;
+        return prefix + cb.subSequence(contextStart, contextEnd) + suffix;
     }
 
 
