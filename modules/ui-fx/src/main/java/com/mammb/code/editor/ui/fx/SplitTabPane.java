@@ -325,6 +325,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
             if (focused) focus();
         }
+
         void focus() {
             var active = activePane.get();
             if (active != null) {
@@ -338,6 +339,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 contentPane.focus();
             }
         }
+
         private void handleSelectedTabItem(ObservableValue<? extends Tab> ob, Tab o, Tab tab) {
             if (tab != null) {
                 ((ContentPane) tab.getContent()).focus();

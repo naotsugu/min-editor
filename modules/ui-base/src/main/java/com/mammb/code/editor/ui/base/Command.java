@@ -138,6 +138,8 @@ public sealed interface Command {
 
     record FindAllRegex(String str) implements FindCommand, RequireArgs1<String> { }
 
+    record FindInFiles() implements Command { }
+
     record Select(String str, Boolean caseInsensitive) implements FindCommand, RequireArgs2<String, Boolean> { }
 
     record SelectRegex(String str) implements FindCommand, RequireArgs1<String> { }
@@ -241,6 +243,7 @@ public sealed interface Command {
             case Class<?> c when c == FindNextRegex.class -> "searches for the next occurrence";
             case Class<?> c when c == FindPrevRegex.class -> "searches for the previous occurrence";
             case Class<?> c when c == FindAllRegex.class -> "searches for the specified regex";
+            case Class<?> c when c == FindInFiles.class -> "open find in files dialog";
             case Class<?> c when c == Select.class -> "selects for the specified text";
             case Class<?> c when c == SelectRegex.class -> "selects for the specified regex";
             case Class<?> c when c == GoTo.class -> "go to the specified number of row";
