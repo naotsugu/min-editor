@@ -126,23 +126,23 @@ public sealed interface Command {
 
     record ZoomOut() implements Command {}
 
-    record FindNext(String str, Boolean caseInsensitive) implements FindCommand, RequireArgs2<String, Boolean> { }
+    record FindNext(String str, Boolean caseInsensitive) implements Command, FindCommand, RequireArgs2<String, Boolean> { }
 
-    record FindPrev(String str, Boolean caseInsensitive) implements FindCommand, RequireArgs2<String, Boolean> { }
+    record FindPrev(String str, Boolean caseInsensitive) implements Command, FindCommand, RequireArgs2<String, Boolean> { }
 
-    record FindAll(String str, Boolean caseInsensitive) implements FindCommand, RequireArgs2<String, Boolean> { }
+    record FindAll(String str, Boolean caseInsensitive) implements Command, FindCommand, RequireArgs2<String, Boolean> { }
 
-    record FindNextRegex(String str) implements FindCommand, RequireArgs1<String> { }
+    record FindNextRegex(String str) implements Command, FindCommand, RequireArgs1<String> { }
 
-    record FindPrevRegex(String str) implements FindCommand, RequireArgs1<String> { }
+    record FindPrevRegex(String str) implements Command, FindCommand, RequireArgs1<String> { }
 
-    record FindAllRegex(String str) implements FindCommand, RequireArgs1<String> { }
+    record FindAllRegex(String str) implements Command, FindCommand, RequireArgs1<String> { }
 
     record FindInFiles() implements Command { }
 
-    record Select(String str, Boolean caseInsensitive) implements FindCommand, RequireArgs2<String, Boolean> { }
+    record Select(String str, Boolean caseInsensitive) implements Command, FindCommand, RequireArgs2<String, Boolean> { }
 
-    record SelectRegex(String str) implements FindCommand, RequireArgs1<String> { }
+    record SelectRegex(String str) implements Command, FindCommand, RequireArgs1<String> { }
 
     record GoTo(Integer rowNumber) implements Command, RequireArgs1<Integer> { }
 
@@ -295,6 +295,7 @@ public sealed interface Command {
         var permitted = (Class<? extends Command>[]) Command.class.getPermittedSubclasses();
         return Arrays.stream(permitted)
             .filter(not(Hidden.class::isAssignableFrom))
+            .filter(not(Class::isInterface))
             .collect(Collectors.toMap(
                 Command::commandName,
                 UnaryOperator.identity(),
