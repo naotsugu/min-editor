@@ -68,6 +68,7 @@ tasks.register<Exec>("jpackage") {
     val javaToolchainService = project.extensions.getByType(JavaToolchainService::class.java)
     val jdkPath = javaToolchainService.launcherFor(java.toolchain).get().executablePath
     val commandPath = File(jdkPath.asFile.parentFile, "jpackage").absolutePath
+    doLast { println("jpackage jdkPath: $jdkPath") }
 
     // output directory for runtime images
     val outputDir = project.layout.buildDirectory.dir("jpackage").get().asFile
