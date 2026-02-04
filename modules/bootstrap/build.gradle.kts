@@ -27,10 +27,10 @@ application {
     applicationDefaultJvmArgs = listOf(
         "-Xms32m",
         "--enable-preview",
-        "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=64m",
+        //"-XX:+UseParallelGC", "-XX:MinHeapFreeRatio=20", "-XX:MaxHeapFreeRatio=40", "-XX:-ShrinkHeapInSteps", "-XX:GCTimeRatio=20",
+        "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=30", "-XX:SoftMaxHeapSize=64m",
         //"-XX:+UseCompactObjectHeaders",
         "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
-        //"-XX:G1PeriodicGCInterval=5000",
     )
     if (providers.systemProperty("aot").isPresent) {
         applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf(
@@ -110,9 +110,12 @@ tasks.register<Exec>("jpackage") {
 
         "--java-options", "-Xms32m",
         "--java-options", "--enable-preview",
+
         "--java-options", "-XX:+UseZGC",
         "--java-options", "-XX:+ZUncommit",
-        "--java-options", "-XX:ZUncommitDelay=64m",
+        "--java-options", "-XX:ZUncommitDelay=30",
+        "--java-options", "-XX:SoftMaxHeapSize=64m",
+
         //"--java-options", "-XX:+UseCompactObjectHeaders",
         "--java-options", "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
     )
