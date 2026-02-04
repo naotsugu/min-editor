@@ -25,7 +25,7 @@ public interface AppVersion {
     String appName = "min-editor";
 
     /** The version value. */
-    Version val = Version.of("0.5.3");
+    Version val = Version.of("0.5.4");
 
     /**
      * An immutable representation of a version number consisting of three parts:
