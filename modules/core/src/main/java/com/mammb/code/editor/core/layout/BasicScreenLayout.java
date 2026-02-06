@@ -42,7 +42,7 @@ class BasicScreenLayout implements ScreenLayout {
     /** The line number at the top of the screen (not a row number). */
     private int topLine = 0;
     /** The screen buffer of text. */
-    private final List<Text> buffer = new ArrayList<>();
+    private volatile List<Text> buffer = new ArrayList<>();
     /** The content layout. */
     private ContentLayout layout;
 
@@ -84,20 +84,23 @@ class BasicScreenLayout implements ScreenLayout {
             List<? extends Text> texts;
             if (delta > 0) {
                 // scroll next
-                buffer.subList(0, delta).clear();
-                int startLine = line + buffer.size();
+                List<Text> newBuf = new ArrayList<>(buffer.subList(delta, buffer.size()));
+                int startLine = line + newBuf.size();
                 texts = layout.texts(startLine, startLine + delta);
-                buffer.addAll(texts);
+                newBuf.addAll(texts);
+                buffer = newBuf;
             } else {
                 // scroll prev
                 texts = layout.texts(line, line - delta);
-                buffer.addAll(0, texts);
-                if (buffer.size() > screenLineSize) {
-                    buffer.subList(
-                        buffer.size() + screenLineSize - buffer.size(),
-                        buffer.size()
+                List<Text> newBuf = new ArrayList<>(buffer);
+                newBuf.addAll(0, texts);
+                if (newBuf.size() > screenLineSize) {
+                    newBuf.subList(
+                        newBuf.size() + screenLineSize - newBuf.size(),
+                        newBuf.size()
                     ).clear();
                 }
+                buffer = newBuf;
             }
             texts.stream().mapToDouble(Text::width)
                 .filter(w -> w > xMax).max()
@@ -377,8 +380,7 @@ class BasicScreenLayout implements ScreenLayout {
     private void fillBuffer() {
         topLine = Math.clamp(topLine, 0, layout.lineSize() - 1);
         xMax = 0;
-        buffer.clear();
-        buffer.addAll(layout.texts(topLine, topLine + screenLineSize()));
+        buffer = new ArrayList<>(layout.texts(topLine, topLine + screenLineSize()));
         buffer.stream().mapToDouble(Text::width)
             .filter(w -> w > xMax).max()
             .ifPresent(w -> xMax = w);
