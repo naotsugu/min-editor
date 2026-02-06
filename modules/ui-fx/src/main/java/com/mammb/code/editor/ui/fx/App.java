@@ -143,9 +143,12 @@ public class App extends Application {
         PauseTransition timer = new PauseTransition(Duration.millis(delayMillis));
         timer.setOnFinished(_ -> {
             Thread gcThread = new Thread(() -> {
-                long before = Runtime.getRuntime().totalMemory();
+                long beforeTotal = Runtime.getRuntime().totalMemory();
+                long beforeFree = Runtime.getRuntime().freeMemory();
                 System.gc();
-                log.log(System.Logger.Level.INFO, "GC: {0} -> {1}", before, Runtime.getRuntime().totalMemory());
+                log.log(System.Logger.Level.INFO, "GC: {0}/{1} -> {2}/{3}",
+                    beforeFree, beforeTotal,
+                    Runtime.getRuntime().freeMemory(), Runtime.getRuntime().totalMemory());
             });
             gcThread.setDaemon(true);
             gcThread.setName("Idle-GC-Thread");
