@@ -131,6 +131,14 @@ public class App extends Application {
             .sorted().findFirst();
     }
 
+    /**
+     * Binds a garbage collection timer to the provided stage. The timer triggers
+     * garbage collection after the specified delay when the stage loses focus and stops
+     * when the stage regains focus.
+     *
+     * @param stage the stage to which the garbage collection timer is bound
+     * @param delayMillis the delay in milliseconds before garbage collection is triggered
+     */
     public static void bindGcTimer(Stage stage, double delayMillis) {
         PauseTransition timer = new PauseTransition(Duration.millis(delayMillis));
         timer.setOnFinished(_ -> {
