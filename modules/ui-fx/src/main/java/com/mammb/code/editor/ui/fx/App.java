@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import com.mammb.code.editor.platform.AppPaths;
 import com.mammb.code.editor.ui.base.AppContext;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -32,6 +33,7 @@ import com.sun.javafx.tk.Toolkit;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.platform.AppVersion;
+import javafx.util.Duration;
 
 /**
  * The App class serves as the entry point for the JavaFX application.
@@ -72,6 +74,11 @@ public class App extends Application {
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
         buildConfigPropertyListener(stage, scene, ctx);
         stage.show();
+
+        // -DidleGcDelayMillis=3000
+        if (System.getProperty("idleGcDelayMillis") != null) {
+            bindGcTimer(stage, Double.parseDouble(System.getProperty("idleGcDelayMillis")));
+        }
 
     }
 
@@ -122,6 +129,27 @@ public class App extends Application {
             .flatMap(Stream::of)
             .map(Font::getName)
             .sorted().findFirst();
+    }
+
+    public static void bindGcTimer(Stage stage, double delayMillis) {
+        PauseTransition timer = new PauseTransition(Duration.millis(delayMillis));
+        timer.setOnFinished(_ -> {
+            Thread gcThread = new Thread(() -> {
+                long before = Runtime.getRuntime().totalMemory();
+                System.gc();
+                log.log(System.Logger.Level.INFO, "GC: {0} -> {1}", before, Runtime.getRuntime().totalMemory());
+            });
+            gcThread.setDaemon(true);
+            gcThread.setName("Idle-GC-Thread");
+            gcThread.start();
+        });
+        stage.focusedProperty().addListener((_, _, focused) -> {
+            if (focused) {
+                timer.stop();
+            } else {
+                timer.playFromStart();
+            }
+        });
     }
 
     /** The app css. */

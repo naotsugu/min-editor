@@ -8,6 +8,6 @@ repositories {
 }
 
 javafx {
-    version = "26-ea+22"
+    version = "26-ea+23"
     modules("javafx.web")
 }

@@ -27,9 +27,10 @@ application {
     applicationDefaultJvmArgs = listOf(
         "-Xms32m",
         "--enable-preview",
-        //"-XX:+UseParallelGC", "-XX:MinHeapFreeRatio=20", "-XX:MaxHeapFreeRatio=40", "-XX:-ShrinkHeapInSteps", "-XX:GCTimeRatio=20",
-        "-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=30", "-XX:SoftMaxHeapSize=64m",
-        //"-XX:+UseCompactObjectHeaders",
+        "-XX:+UseSerialGC", "-XX:MinHeapFreeRatio=5", "-XX:MaxHeapFreeRatio=10", "-XX:-ShrinkHeapInSteps", "-DidleGcDelayMillis=3000",
+        //"-XX:+UseParallelGC", "-XX:MinHeapFreeRatio=5", "-XX:MaxHeapFreeRatio=10", "-XX:-ShrinkHeapInSteps", "-XX:GCTimeRatio=20",
+        //"-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=30", "-XX:SoftMaxHeapSize=32m",
+        "-XX:+UseCompactObjectHeaders",
         "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
     )
     if (providers.systemProperty("aot").isPresent) {
@@ -111,12 +112,18 @@ tasks.register<Exec>("jpackage") {
         "--java-options", "-Xms32m",
         "--java-options", "--enable-preview",
 
-        "--java-options", "-XX:+UseZGC",
-        "--java-options", "-XX:+ZUncommit",
-        "--java-options", "-XX:ZUncommitDelay=30",
-        "--java-options", "-XX:SoftMaxHeapSize=64m",
+        "--java-options", "-XX:+UseSerialGC",
+        "--java-options", "-XX:MinHeapFreeRatio=5",
+        "--java-options", "-XX:MaxHeapFreeRatio=10",
+        "--java-options", "-XX:-ShrinkHeapInSteps",
+        "--java-options", "-DidleGcDelayMillis=3000",
 
-        //"--java-options", "-XX:+UseCompactObjectHeaders",
+        //"--java-options", "-XX:+UseZGC",
+        //"--java-options", "-XX:+ZUncommit",
+        //"--java-options", "-XX:ZUncommitDelay=30",
+        //"--java-options", "-XX:SoftMaxHeapSize=32m",
+
+        "--java-options", "-XX:+UseCompactObjectHeaders",
         "--java-options", "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
     )
 
