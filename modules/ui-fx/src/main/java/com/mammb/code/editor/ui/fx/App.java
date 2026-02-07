@@ -146,7 +146,7 @@ public class App extends Application {
                 long beforeTotal = Runtime.getRuntime().totalMemory();
                 long beforeFree = Runtime.getRuntime().freeMemory();
                 System.gc();
-                log.log(System.Logger.Level.INFO, "GC: {0}/{1} -> {2}/{3}",
+                log.log(System.Logger.Level.INFO, "GC: {0,number,#,###}/{1,number,#,###} -> {2,number,#,###}/{3,number,#,###}",
                     beforeFree, beforeTotal,
                     Runtime.getRuntime().freeMemory(), Runtime.getRuntime().totalMemory());
             });
