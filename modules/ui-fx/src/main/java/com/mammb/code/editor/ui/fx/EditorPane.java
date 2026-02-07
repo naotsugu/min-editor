@@ -347,11 +347,14 @@ public class EditorPane extends ContentPane {
             var paths = board.getFiles().stream().map(File::toPath).toList();
             var path = paths.stream().filter(Files::isReadableFile).findFirst();
             if (path.isPresent()) {
-                if (!canClose()) return;
                 e.setDropCompleted(true);
                 e.consume();
-                open(Session.of(path.get()));
-                paint();
+                if (model().query(Query.modified)) {
+                    newEdit().open(Session.of(path.get()));
+                } else {
+                    open(Session.of(path.get()));
+                    paint();
+                }
                 return;
             }
             var list = EditingFunctions.list.apply(paths);
