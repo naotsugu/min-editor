@@ -416,7 +416,7 @@ public class EditorPane extends ContentPane {
             case FindAllRegex cmd     -> apply(Action.findAllRegex(cmd.str()));
             case Select cmd           -> apply(Action.select(cmd.str(), cmd.caseInsensitive()));
             case SelectRegex cmd      -> apply(Action.selectRegex(cmd.str()));
-            case FindInFiles cmd      -> { /* TODO */ }
+            case FindInFiles cmd      -> { new FindInFilesPane().openAsWindow(getScene().getWindow()); /* TODO */ }
             case GoTo cmd             -> apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd         -> model().apply(Action.wrapLine(cmd.width()));
             case SetTabStop cmd       -> model().apply(Action.setTabStop(cmd.size()));
