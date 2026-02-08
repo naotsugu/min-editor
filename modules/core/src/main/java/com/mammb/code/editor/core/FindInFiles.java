@@ -67,7 +67,7 @@ public class FindInFiles {
 
     private static final List<Charset> CHARSET_CANDIDATES = charsetCandidates();
 
-    public record Found(Path path, Charset charset, long line, String snippet) { }
+    public record Found(Path path, Charset charset, long line, String text, String snippet) { }
 
     /**
      * Executes a search operation on readable, regular files within the specified directory, using a given
@@ -178,7 +178,7 @@ public class FindInFiles {
                     if (list == null) {
                         list = new ArrayList<>();
                     }
-                    list.add(new Found(path, cs, currentLine, snippet(cb, matcher)));
+                    list.add(new Found(path, cs, currentLine, matcher.group(), snippet(cb, matcher)));
                 }
                 // count remaining lines
                 currentLine += countlines(cb, lastScanPos, cb.length());
@@ -279,8 +279,10 @@ public class FindInFiles {
     private static List<Charset> charsetCandidates() {
         LinkedHashSet<Charset> set = new LinkedHashSet<>();
         set.add(StandardCharsets.UTF_8);
-        set.add(Charset.forName("Windows-31J"));
-        set.add(Charset.forName("EUC-JP"));
+        try {
+            set.add(Charset.forName("Windows-31J"));
+            set.add(Charset.forName("EUC-JP"));
+        } catch (Exception ignore) { }
         set.addAll(Charset.availableCharsets().values());
         return List.copyOf(set);
     }

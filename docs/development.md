@@ -1,4 +1,11 @@
 
+## Create aot cache
+
+```shell
+./gradlew run -Daot
+```
+
+
 ## Update version
 
 Update the version numbers of the following files.

@@ -18,7 +18,6 @@ package com.mammb.code.editor.ui.fx;
 import com.mammb.code.editor.core.FindInFiles;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -131,7 +130,7 @@ public class FindInFilesPane extends BorderPane {
         findButton.setText("Stop");
         searchFuture = FindInFiles.run(root, pattern, list -> {
             var ret = list.stream()
-                .map(r -> new SearchResult(r.path(), r.line(), r.snippet()))
+                .map(r -> new SearchResult(r.path(), r.line(), r.text(), r.snippet()))
                 .toList();
             Platform.runLater(() -> results.addAll(ret));
         });
@@ -180,19 +179,24 @@ public class FindInFilesPane extends BorderPane {
         line.setPrefWidth(50);
         table.getColumns().add(line);
 
+        TableColumn<SearchResult, String> text = new TableColumn<>("Text");
+        text.setCellValueFactory(cell -> cell.getValue().text);
+        text.setPrefWidth(100);
+        table.getColumns().add(text);
+
         TableColumn<SearchResult, String> snippet = new TableColumn<>("Snippet");
         snippet.setCellValueFactory(cell -> cell.getValue().snippet);
         snippet.setPrefWidth(400);
         table.getColumns().add(snippet);
 
         // handle row double-click
-        table.setRowFactory(tv -> {
+        table.setRowFactory(_ -> {
             TableRow<SearchResult> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     if (onOpenFileRequest != null) {
                         onOpenFileRequest.accept(
-                            new OpenFileRequest(row.getItem().path(), row.getItem().line.get()));
+                            new OpenFileRequest(row.getItem().path(), row.getItem().text.get(), row.getItem().line.get()));
                     }
                 }
             });
@@ -206,17 +210,19 @@ public class FindInFilesPane extends BorderPane {
             SimpleStringProperty name,
             SimpleStringProperty fullPath,
             SimpleIntegerProperty line,
+            SimpleStringProperty text,
             SimpleStringProperty snippet) {
-        public SearchResult(Path path, long line, String snippet) {
+        public SearchResult(Path path, long line, String text, String snippet) {
             this(new SimpleStringProperty(path.getFileName().toString()),
                  new SimpleStringProperty(path.toString()),
                  new SimpleIntegerProperty((int) line),
+                 new SimpleStringProperty(text),
                  new SimpleStringProperty(snippet));
         }
         public Path path() { return Path.of(fullPath.get()); }
     }
 
-    record OpenFileRequest(Path path, int line) {}
+    public record OpenFileRequest(Path path, String text, int line) {}
 
     private String choseDirectory(String initial) {
 
