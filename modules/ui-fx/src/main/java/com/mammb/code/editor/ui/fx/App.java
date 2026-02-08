@@ -172,8 +172,8 @@ public class App extends Application {
           -fx-background:-fx-base;
           -fx-control-inner-background:app-back;
           -fx-control-inner-background-alt: derive(-fx-control-inner-background,-2%);
-          -fx-focus-color: -fx-accent;
-          -fx-faint-focus-color:app-accent;
+          -fx-focus-color: derive(-fx-control-inner-background,20%);
+          -fx-faint-focus-color: -fx-focus-color;
           -fx-light-text-color:app-text;
           -fx-dark-text-color:app-text;
           -fx-mid-text-color: #333;
@@ -184,6 +184,9 @@ public class App extends Application {
         }
         .text-input, .label {
           -fx-font: 14px "Consolas";
+        }
+        .text-input:focused {
+          -fx-background-color: -fx-focus-color, -fx-control-inner-background;
         }
         .button {
           -fx-background-color: -fx-body-color;

@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.FindInFiles;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -59,10 +60,10 @@ public class FindInFilesPane extends BorderPane {
     private final TableView<SearchResult> resultsTable;
     private final ObservableList<SearchResult> results = FXCollections.observableArrayList();
 
-    private final Consumer<Path> onOpenFileRequest;
+    private final Consumer<OpenFileRequest> onOpenFileRequest;
     private Future<?> searchFuture;
 
-    private FindInFilesPane(Path path, Consumer<Path> onOpenFileRequest) {
+    private FindInFilesPane(Path path, Consumer<OpenFileRequest> onOpenFileRequest) {
 
         this.onOpenFileRequest = onOpenFileRequest;
 
@@ -101,7 +102,7 @@ public class FindInFilesPane extends BorderPane {
         });
     }
 
-    public static FindInFilesPane of(Path path, Consumer<Path> onOpenFileRequest) {
+    public static FindInFilesPane of(Path path, Consumer<OpenFileRequest> onOpenFileRequest) {
         return new FindInFilesPane(path, onOpenFileRequest);
     }
 
@@ -190,7 +191,8 @@ public class FindInFilesPane extends BorderPane {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     if (onOpenFileRequest != null) {
-                        onOpenFileRequest.accept(row.getItem().path());
+                        onOpenFileRequest.accept(
+                            new OpenFileRequest(row.getItem().path(), row.getItem().line.get()));
                     }
                 }
             });
@@ -203,16 +205,18 @@ public class FindInFilesPane extends BorderPane {
     record SearchResult(
             SimpleStringProperty name,
             SimpleStringProperty fullPath,
-            SimpleLongProperty line,
+            SimpleIntegerProperty line,
             SimpleStringProperty snippet) {
         public SearchResult(Path path, long line, String snippet) {
             this(new SimpleStringProperty(path.getFileName().toString()),
                  new SimpleStringProperty(path.toString()),
-                 new SimpleLongProperty(line),
+                 new SimpleIntegerProperty((int) line),
                  new SimpleStringProperty(snippet));
         }
         public Path path() { return Path.of(fullPath.get()); }
     }
+
+    record OpenFileRequest(Path path, int line) {}
 
     private String choseDirectory(String initial) {
 

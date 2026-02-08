@@ -263,7 +263,9 @@ public class EditorPane extends ContentPane {
     private void openFindInFiles() {
         var path = model().query(Query.contentPath).map(Path::getParent)
             .orElse(Path.of(System.getProperty("user.home")));
-        FindInFilesPane.of(path, this::openOrNewEdit).openWithWindow(getScene().getWindow());
+        var fif = FindInFilesPane.of(path, ofr ->
+            openOrNewEdit(ofr.path()).execute(new GoTo(ofr.line())));
+        fif.openWithWindow(getScene().getWindow());
     }
 
     private void openRight(ContentPane contentPane) {
@@ -549,13 +551,16 @@ public class EditorPane extends ContentPane {
             .show(window, window.getX(), window.getY() + 55);
     }
 
-    private void openOrNewEdit(Path path) {
-        if (path == null) return;
+    private EditorPane openOrNewEdit(Path path) {
+        if (path == null) return this;
         if (model().query(Query.modified)) {
-            newEdit().open(Session.of(path));
+            var newEdit = newEdit();
+            newEdit.open(Session.of(path));
+            return newEdit;
         } else {
             open(Session.of(path));
             paint();
+            return this;
         }
     }
 
