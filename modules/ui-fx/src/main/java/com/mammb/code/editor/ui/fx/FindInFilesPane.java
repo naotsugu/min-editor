@@ -15,23 +15,35 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import javafx.beans.property.SimpleIntegerProperty;
+import com.mammb.code.editor.core.FindInFiles;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 /**
  * FindInFilesPane.
@@ -45,25 +57,52 @@ public class FindInFilesPane extends BorderPane {
     private final TableView<SearchResult> resultsTable;
     private final ObservableList<SearchResult> results = FXCollections.observableArrayList();
 
-    public FindInFilesPane() {
+    private final Consumer<Path> onOpenFileRequest;
+    private Future<?> searchFuture;
+
+    private FindInFilesPane(Path path, Consumer<Path> onOpenFileRequest) {
+
+        this.onOpenFileRequest = onOpenFileRequest;
 
         searchField = new TextField();
-        dirField = new TextField();
+        dirField = new TextField(path.toString());
         findButton = new Button("Find");
         findButton.setDefaultButton(true);
         resultsTable = buildResultsTable();
 
-        HBox inputBox = new HBox(2, dirField, searchField, findButton);
+        HBox inputBox = new HBox(2, searchField, dirField, findButton);
         inputBox.setPadding(new Insets(2));
-        HBox.setHgrow(searchField, Priority.ALWAYS);
-        HBox.setHgrow(dirField, Priority.SOMETIMES);
+        HBox.setHgrow(searchField, Priority.SOMETIMES);
+        HBox.setHgrow(dirField, Priority.ALWAYS);
 
         setTop(inputBox);
         setCenter(resultsTable);
 
+        dirField.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
+                dirField.setText(choseDirectory(dirField.getText()));
+            }
+        });
+        findButton.setOnAction(event -> {
+            if (searchFuture == null || searchFuture.isDone()) {
+                String pathText = dirField.getText();
+                String pattern = searchField.getText();
+                if (pathText.isBlank() || pattern.isBlank()) {
+                    return;
+                }
+                startSearchTask(pathText, pattern);
+            } else {
+                searchFuture.cancel(true);
+                reset();
+            }
+        });
     }
 
-    public void openAsWindow(Window owner) {
+    public static FindInFilesPane of(Path path, Consumer<Path> onOpenFileRequest) {
+        return new FindInFilesPane(path, onOpenFileRequest);
+    }
+
+    public void openWithWindow(Window owner) {
 
         var stage = new Stage();
         stage.setTitle("Find In Files");
@@ -77,7 +116,44 @@ public class FindInFilesPane extends BorderPane {
         stage.show();
     }
 
+    private void startSearchTask(String path, String pattern) {
+
+        Path root = Path.of(path);
+        if (!Files.exists(root) || !Files.isDirectory(root)) {
+            return;
+        }
+
+        results.clear();
+        findButton.setText("Stop");
+
+        searchFuture = FindInFiles.run(root, pattern, list -> {
+            var ret = list.stream()
+                .map(r -> new SearchResult(r.path(), r.line(), r.snippet()))
+                .toList();
+            Platform.runLater(() -> results.addAll(ret));
+        });
+
+        try {
+            searchFuture.get();
+        } catch (Exception e) {
+        }
+        reset();
+
+    }
+
+    private void reset() {
+        findButton.setText("Find");
+        if (results.isEmpty()) {
+            resultsTable.setPlaceholder(new Label("No results found."));
+        }
+        searchFuture = null;
+    }
+
     private void cancelCurrentTask(WindowEvent e) {
+        Future<?> future = searchFuture;
+        if (future != null) {
+            future.cancel(true);
+        }
     }
 
     private TableView<SearchResult> buildResultsTable() {
@@ -97,11 +173,38 @@ public class FindInFilesPane extends BorderPane {
 
         TableColumn<SearchResult, String> snippet = new TableColumn<>("Snippet");
         snippet.setCellValueFactory(cell -> cell.getValue().snippet);
-        snippet.setPrefWidth(100);
+        snippet.setPrefWidth(400);
         table.getColumns().add(snippet);
 
         return table;
     }
 
-    record SearchResult(SimpleStringProperty path, SimpleIntegerProperty line, SimpleStringProperty snippet) { }
+    record SearchResult(SimpleStringProperty path, SimpleLongProperty line, SimpleStringProperty snippet) {
+        public SearchResult(Path path, long line, String snippet) {
+            this(new SimpleStringProperty(path.toString()),
+                new SimpleLongProperty(line),
+                new SimpleStringProperty(snippet));
+        }
+    }
+
+    private String choseDirectory(String initial) {
+
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Select a directory path");
+
+        var path = Path.of(initial);
+        if (Files.exists(path)) {
+            var dir = Files.isDirectory(path)
+                ? path.toFile()
+                : path.getParent().toFile();
+            chooser.setInitialDirectory(dir);
+        }
+
+        File selectedDirectory = chooser.showDialog(getScene().getWindow());
+
+        return (selectedDirectory == null)
+            ? initial
+            : selectedDirectory.toPath().toString();
+    }
+
 }

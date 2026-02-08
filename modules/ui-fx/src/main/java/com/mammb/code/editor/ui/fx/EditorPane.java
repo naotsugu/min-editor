@@ -260,6 +260,13 @@ public class EditorPane extends ContentPane {
         d.show();
     }
 
+    private void openFindInFiles() {
+        var path = model().query(Query.contentPath).map(Path::getParent)
+            .orElse(Path.of(System.getProperty("user.home")));
+        FindInFilesPane.of(path, p -> open(Session.of(p)))
+            .openWithWindow(getScene().getWindow());
+    }
+
     private void openRight(ContentPane contentPane) {
         var container = tabContainer();
         if (container != null && contentPane != null) {
@@ -419,7 +426,6 @@ public class EditorPane extends ContentPane {
             case FindAllRegex cmd     -> apply(Action.findAllRegex(cmd.str()));
             case Select cmd           -> apply(Action.select(cmd.str(), cmd.caseInsensitive()));
             case SelectRegex cmd      -> apply(Action.selectRegex(cmd.str()));
-            case FindInFiles cmd      -> { new FindInFilesPane().openAsWindow(getScene().getWindow()); /* TODO */ }
             case GoTo cmd             -> apply(Action.goTo(cmd.rowNumber() - 1));
             case WrapLine cmd         -> model().apply(Action.wrapLine(cmd.width()));
             case SetTabStop cmd       -> model().apply(Action.setTabStop(cmd.size()));
@@ -459,6 +465,7 @@ public class EditorPane extends ContentPane {
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
+            case FindInFiles _        -> openFindInFiles();
             case Empty _              -> { }
         }
         if (command instanceof FindCommand cmd) {
@@ -660,10 +667,8 @@ public class EditorPane extends ContentPane {
     private void saveAs() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Save As...");
-        var current = model().query(Query.contentPath);
-        fc.setInitialDirectory(current
-            .map(value -> value.toAbsolutePath().getParent().toFile())
-            .orElseGet(() -> Path.of(System.getProperty("user.home")).toFile()));
+        fc.setInitialDirectory(model().query(Query.contentPath).map(Path::getParent)
+            .orElse(Path.of(System.getProperty("user.home"))).toFile());
         File file = fc.showSaveDialog(getScene().getWindow());
         if (file == null) return;
         Path path = file.toPath();
