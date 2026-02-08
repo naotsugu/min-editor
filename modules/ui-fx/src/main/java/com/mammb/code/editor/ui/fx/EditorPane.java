@@ -263,8 +263,7 @@ public class EditorPane extends ContentPane {
     private void openFindInFiles() {
         var path = model().query(Query.contentPath).map(Path::getParent)
             .orElse(Path.of(System.getProperty("user.home")));
-        FindInFilesPane.of(path, p -> open(Session.of(p)))
-            .openWithWindow(getScene().getWindow());
+        FindInFilesPane.of(path, this::openOrNewEdit).openWithWindow(getScene().getWindow());
     }
 
     private void openRight(ContentPane contentPane) {
@@ -356,12 +355,7 @@ public class EditorPane extends ContentPane {
             if (path.isPresent()) {
                 e.setDropCompleted(true);
                 e.consume();
-                if (model().query(Query.modified)) {
-                    newEdit().open(Session.of(path.get()));
-                } else {
-                    open(Session.of(path.get()));
-                    paint();
-                }
+                openOrNewEdit(path.get());
                 return;
             }
             var list = EditingFunctions.list.apply(paths);
@@ -536,10 +530,11 @@ public class EditorPane extends ContentPane {
         open(Session.of(file.toPath()));
     }
 
+
     void open(Path path) {
         if (path == null || !canClose()) return;
         if (Files.isReadableFile(path)) {
-            open(Session.of(path));
+            openOrNewEdit(path);
         } else if (Files.isReadableDirectory(path)) {
             String list = String.join("\n", Files.listAbsolutePath(path));
             newEdit().inputText(() -> list.isEmpty() ? path.toAbsolutePath().toString() : list);
@@ -550,11 +545,18 @@ public class EditorPane extends ContentPane {
 
     void openRecent() {
         var window = getScene().getWindow();
-        SelectOneMenu.of(context.recents(), path -> {
-            if (path == null || !canClose()) return;
+        SelectOneMenu.of(context.recents(), this::openOrNewEdit)
+            .show(window, window.getX(), window.getY() + 55);
+    }
+
+    private void openOrNewEdit(Path path) {
+        if (path == null) return;
+        if (model().query(Query.modified)) {
+            newEdit().open(Session.of(path));
+        } else {
             open(Session.of(path));
             paint();
-        }).show(window, window.getX(), window.getY() + 55);
+        }
     }
 
     private void open(Session session) {

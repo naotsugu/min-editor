@@ -21,13 +21,12 @@ import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
@@ -51,6 +50,9 @@ import java.util.function.Consumer;
  */
 public class FindInFilesPane extends BorderPane {
 
+    /** The logger. */
+    private static final System.Logger log = System.getLogger(FindInFilesPane.class.getName());
+
     private final TextField searchField;
     private final TextField dirField;
     private final Button findButton;
@@ -65,6 +67,7 @@ public class FindInFilesPane extends BorderPane {
         this.onOpenFileRequest = onOpenFileRequest;
 
         searchField = new TextField();
+        searchField.setPromptText("regexp");
         dirField = new TextField(path.toString());
         findButton = new Button("Find");
         findButton.setDefaultButton(true);
@@ -83,7 +86,7 @@ public class FindInFilesPane extends BorderPane {
                 dirField.setText(choseDirectory(dirField.getText()));
             }
         });
-        findButton.setOnAction(event -> {
+        findButton.setOnAction(_ -> {
             if (searchFuture == null || searchFuture.isDone()) {
                 String pathText = dirField.getText();
                 String pattern = searchField.getText();
@@ -125,7 +128,6 @@ public class FindInFilesPane extends BorderPane {
 
         results.clear();
         findButton.setText("Stop");
-
         searchFuture = FindInFiles.run(root, pattern, list -> {
             var ret = list.stream()
                 .map(r -> new SearchResult(r.path(), r.line(), r.snippet()))
@@ -136,6 +138,7 @@ public class FindInFilesPane extends BorderPane {
         try {
             searchFuture.get();
         } catch (Exception e) {
+            log.log(System.Logger.Level.WARNING, e);
         }
         reset();
 
@@ -161,8 +164,13 @@ public class FindInFilesPane extends BorderPane {
         TableView<SearchResult> table = new TableView<>();
         table.setItems(results);
 
+        TableColumn<SearchResult, String> name = new TableColumn<>("File");
+        name.setCellValueFactory(cell -> cell.getValue().name);
+        name.setPrefWidth(150);
+        table.getColumns().add(name);
+
         TableColumn<SearchResult, String> path = new TableColumn<>("Path");
-        path.setCellValueFactory(cell -> cell.getValue().path);
+        path.setCellValueFactory(cell -> cell.getValue().fullPath);
         path.setPrefWidth(200);
         table.getColumns().add(path);
 
@@ -176,15 +184,34 @@ public class FindInFilesPane extends BorderPane {
         snippet.setPrefWidth(400);
         table.getColumns().add(snippet);
 
+        // handle row double-click
+        table.setRowFactory(tv -> {
+            TableRow<SearchResult> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    if (onOpenFileRequest != null) {
+                        onOpenFileRequest.accept(row.getItem().path());
+                    }
+                }
+            });
+            return row;
+        });
+
         return table;
     }
 
-    record SearchResult(SimpleStringProperty path, SimpleLongProperty line, SimpleStringProperty snippet) {
+    record SearchResult(
+            SimpleStringProperty name,
+            SimpleStringProperty fullPath,
+            SimpleLongProperty line,
+            SimpleStringProperty snippet) {
         public SearchResult(Path path, long line, String snippet) {
-            this(new SimpleStringProperty(path.toString()),
-                new SimpleLongProperty(line),
-                new SimpleStringProperty(snippet));
+            this(new SimpleStringProperty(path.getFileName().toString()),
+                 new SimpleStringProperty(path.toString()),
+                 new SimpleLongProperty(line),
+                 new SimpleStringProperty(snippet));
         }
+        public Path path() { return Path.of(fullPath.get()); }
     }
 
     private String choseDirectory(String initial) {
