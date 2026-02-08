@@ -252,12 +252,12 @@ public class EditorPane extends ContentPane {
     }
 
     private void colorPick() {
-        var d = new FxColorDialog(getScene().getWindow());
+        var dialog = new FxColorDialog(getScene().getWindow());
         try {
-            d.setColor(Color.valueOf(model().query(Query.selectedText)));
+            dialog.setColor(Color.valueOf(model().query(Query.selectedText)));
         } catch (Exception ignore) { }
-        d.setOnSelect(() -> execute(CommandKeys.of(Action.input(d.getSelectedWebColor()))));
-        d.show();
+        dialog.setOnSelect(() -> execute(CommandKeys.of(Action.input(dialog.getSelectedWebColor()))));
+        dialog.show();
     }
 
     private void openFindInFiles() {
@@ -266,6 +266,7 @@ public class EditorPane extends ContentPane {
         var fif = FindInFilesPane.of(path, r -> {
             var p = openOrNewEdit(r.path());
             p.execute(new GoTo(r.line()));
+            p.model().scrollPrev(3);
             p.execute(new FindNext(r.text(), true));
         });
         fif.openWithWindow(getScene().getWindow());
