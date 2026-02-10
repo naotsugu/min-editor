@@ -217,7 +217,7 @@ public class FindInFilesPane extends BorderPane {
                  new SimpleStringProperty(path.toString()),
                  new SimpleIntegerProperty((int) line),
                  new SimpleStringProperty(text),
-                 new SimpleStringProperty(snippet));
+                 new SimpleStringProperty(snippet.trim()));
         }
         public Path path() { return Path.of(fullPath.get()); }
     }
