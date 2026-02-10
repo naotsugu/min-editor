@@ -30,6 +30,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,8 +59,8 @@ public class FindInFiles {
 
     private static final Set<String> BIN_EXTENSIONS = Set.of(
         "class", "jar", "war", "ear",
-        "zip", ".7z", ".rar", "gz", "tar", "tgz", "lzh", "sit",
-        "exe", "app", "elf", "ico", "cur",
+        "zip", "7z", "rar", "gz", "tar", "tgz", "lzh", "sit",
+        "exe", "app", "bin", "elf", "ico", "cur",
         "png", "jpg", "jpeg", "gif", "bmp", "iso",
         "aac", "mp4", "mp3", "wav", "avi", "mpg",
         "doc", "docx", "xls", "xlsx", "ppt", "pptx", "pdf"
@@ -115,7 +116,9 @@ public class FindInFiles {
             if (fileSize == 0) return List.of();
 
             // detect charset using the beginning of the file
-            var cs = detectCharset(fc);
+            var maybeCs = detectCharset(fc);
+            if (maybeCs.isEmpty()) return List.of();
+            var cs = maybeCs.get();
 
             long filePosition = 0;
             long currentLine = 1;
@@ -246,13 +249,56 @@ public class FindInFiles {
     }
 
 
-    private static Charset detectCharset(FileChannel fc) throws IOException {
+    private static Optional<Charset> detectCharset(FileChannel fc) throws IOException {
+
         long size = Math.min(fc.size(), 4096);
         MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, size);
-        for (Charset cs : CHARSET_CANDIDATES) {
-            if (tryDecode(bb.duplicate(), cs)) return cs;
+
+        if (hasNullByte(bb.duplicate())) {
+            // maybe binary
+            return Optional.empty();
         }
-        return StandardCharsets.UTF_8;
+        for (Charset cs : CHARSET_CANDIDATES) {
+            if (tryDecode(bb.duplicate(), cs)) {
+                return Optional.of(cs);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Checks if the ByteBuffer contains a NULL byte (0x00).
+     * This implementation uses bitwise operations to scan 8 bytes at a time,
+     * which is significantly faster than a byte-by-byte search for large buffers.
+     */
+    public static boolean hasNullByte(ByteBuffer bb) {
+
+        int pos = bb.position();
+        int limit = bb.limit();
+
+        // scan using 8-byte (long) chunks
+        while (pos <= limit - 8) {
+            long val = bb.getLong(pos);
+
+            // SWAR (SIMD Within A Register) trick to detect a zero byte:
+            // 1. (val - 0x01...) sets the high bit if a byte is 0x00 or 0x81-0xFF
+            // 2. (~val & 0x80...) isolates bytes where the original high bit was 0
+            // 3. The combination identifies only 0x00 bytes
+            if (((val - 0x0101010101010101L) & ~val & 0x8080808080808080L) != 0) {
+                // Potential zero detected; perform exact check for these 8 bytes
+                for (int i = 0; i < 8; i++) {
+                    if (bb.get(pos + i) == 0) return true;
+                }
+            }
+            pos += 8;
+        }
+
+        // check remaining bytes (less than 8 bytes)
+        for (; pos < limit; pos++) {
+            if (bb.get(pos) == 0) return true;
+        }
+
+        return false;
     }
 
     private static boolean tryDecode(ByteBuffer buffer, Charset cs) {
