@@ -21,6 +21,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,10 +30,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -58,9 +61,10 @@ public class FindInFilesPane extends BorderPane {
     private final Button findButton;
     private final TableView<SearchResult> resultsTable;
     private final ObservableList<SearchResult> results = FXCollections.observableArrayList();
+    private final ProgressBar progressBar;
 
     private final Consumer<OpenFileRequest> onOpenFileRequest;
-    private Future<?> searchFuture;
+    private Task<Void> curentTask;
 
     private FindInFilesPane(Path path, Consumer<OpenFileRequest> onOpenFileRequest) {
 
@@ -72,13 +76,22 @@ public class FindInFilesPane extends BorderPane {
         findButton = new Button("Find");
         findButton.setDefaultButton(true);
         resultsTable = buildResultsTable();
+        progressBar = new ProgressBar(0);
+        progressBar.setVisible(false);
+        progressBar.setMaxWidth(Double.MAX_VALUE);
 
         HBox inputBox = new HBox(2, searchField, dirField, findButton);
-        inputBox.setPadding(new Insets(2));
+        inputBox.setPadding(new Insets(0, 2, 0, 2));
         HBox.setHgrow(searchField, Priority.SOMETIMES);
         HBox.setHgrow(dirField, Priority.ALWAYS);
 
-        setTop(inputBox);
+        HBox progressBox = new HBox(progressBar);
+        progressBox.setPadding(new Insets(0));
+        HBox.setHgrow(progressBar, Priority.ALWAYS);
+        progressBox.setPrefHeight(1);
+        VBox topBox = new VBox(inputBox, progressBox);
+
+        setTop(topBox);
         setCenter(resultsTable);
 
         dirField.setOnMouseClicked(event -> {
@@ -87,16 +100,16 @@ public class FindInFilesPane extends BorderPane {
             }
         });
         findButton.setOnAction(_ -> {
-            if (searchFuture == null || searchFuture.isDone()) {
+            if (curentTask != null && curentTask.isRunning()) {
+                curentTask.cancel();
+                reset();
+            } else {
                 String pathText = dirField.getText();
                 String pattern = searchField.getText();
                 if (pathText.isBlank() || pattern.isBlank()) {
                     return;
                 }
                 startSearchTask(pathText, pattern);
-            } else {
-                searchFuture.cancel(true);
-                reset();
             }
         });
     }
@@ -117,6 +130,7 @@ public class FindInFilesPane extends BorderPane {
         scene.getStylesheets().addAll(owner.getScene().getStylesheets());
         stage.setOnHidden(this::cancelCurrentTask);
         stage.show();
+
     }
 
     private void startSearchTask(String path, String pattern) {
@@ -128,34 +142,46 @@ public class FindInFilesPane extends BorderPane {
 
         results.clear();
         findButton.setText("Stop");
-        searchFuture = FindInFiles.run(root, pattern, list -> {
+        progressBar.setProgress(-1);
+        progressBar.setVisible(true);
+
+        Future<?> future = FindInFiles.run(root, pattern, list -> {
             var ret = list.stream()
                 .map(r -> new SearchResult(r.path(), r.line(), r.text(), r.snippet()))
                 .toList();
             Platform.runLater(() -> results.addAll(ret));
         });
 
-        try {
-            searchFuture.get();
-        } catch (Exception e) {
-            log.log(System.Logger.Level.WARNING, e);
-        }
-        reset();
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                future.get();
+                return null;
+            }
+        };
+        task.setOnSucceeded(_ -> reset());
+        task.setOnCancelled(_ -> reset());
+        task.setOnFailed(_ -> reset());
+        task.setOnCancelled(_ -> future.cancel(true));
 
+        curentTask = task;
+        new Thread(curentTask).start();
     }
 
     private void reset() {
         findButton.setText("Find");
+        progressBar.setVisible(false);
+        progressBar.setProgress(0);
         if (results.isEmpty()) {
             resultsTable.setPlaceholder(new Label("No results found."));
         }
-        searchFuture = null;
+        curentTask = null;
     }
 
     private void cancelCurrentTask(WindowEvent e) {
-        Future<?> future = searchFuture;
-        if (future != null) {
-            future.cancel(true);
+        var task = curentTask;
+        if (task != null) {
+            task.cancel();
         }
     }
 
