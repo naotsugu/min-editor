@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,12 +84,13 @@ public class FindInFiles {
      * @param consumer   a consumer that processes a list of {@code Found} objects representing the matches
      * @return a {@code Future} representing the completion of the search task
      */
-    public static Future<?> run(Path dir, String patternStr, Consumer<List<Found>> consumer) {
+    public static Future<Number> run(Path dir, String patternStr, Consumer<List<Found>> consumer) {
 
         final var pattern = Pattern.compile(patternStr);
         final ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor();
-
+        final var n = new LongAdder();
         return executor.submit(() -> {
+
             try (Stream<Path> stream = Files.walk(dir)) {
                 stream.filter(Files::isReadable)
                     .filter(Files::isRegularFile)
@@ -96,14 +98,17 @@ public class FindInFiles {
                         if (Thread.currentThread().isInterrupted()) {
                             return;
                         }
-                        consumer.accept(processFile(path, pattern));
+                        List<Found> founds = processFile(path, pattern);
+                        n.add(founds.size());
+                        consumer.accept(founds);
                     });
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } finally {
                 executor.shutdown();
             }
-        });
+
+        }, n);
     }
 
     private static List<Found> processFile(Path path, Pattern pattern) {
