@@ -117,27 +117,28 @@ public class FindInFiles {
 
     private static List<Found> processFile(Path path, Pattern pattern) {
 
-        if (isBinaryLike(path)) return List.of();
+        List<Found> founds = new ArrayList<>();
+
+        if (isBinaryLike(path)) return founds;
 
         try (var fc = FileChannel.open(path, StandardOpenOption.READ)) {
 
             long fileSize = fc.size();
-            if (fileSize == 0) return List.of();
+            if (fileSize == 0) return founds;
 
             // detect charset using the beginning of the file
             var maybeCs = detectCharset(fc);
-            if (maybeCs.isEmpty()) return List.of();
+            if (maybeCs.isEmpty()) return founds;
             var cs = maybeCs.get();
 
             long filePosition = 0;
             long currentLine = 1;
             int overlapSkipChars = 0;
-            List<Found> list = null;
 
             while (filePosition < fileSize) {
 
                 if (Thread.currentThread().isInterrupted()) {
-                    return list == null ? List.of() : list;
+                    return founds;
                 }
 
                 long remaining = fileSize - filePosition;
@@ -179,7 +180,7 @@ public class FindInFiles {
                 int lastScanPos = 0;
                 while (matcher.find()) {
                     if (Thread.currentThread().isInterrupted()) {
-                        return list == null ? List.of() : list;
+                        return founds;
                     }
                     int start = matcher.start();
                     if (start < overlapSkipChars) {
@@ -187,10 +188,7 @@ public class FindInFiles {
                     }
                     currentLine += countlines(cb, lastScanPos, start);
                     lastScanPos = start;
-                    if (list == null) {
-                        list = new ArrayList<>();
-                    }
-                    list.add(new Found(path, cs, currentLine, matcher.group(), snippet(cb, matcher)));
+                    founds.add(new Found(path, cs, currentLine, matcher.group(), snippet(cb, matcher)));
                 }
                 // count remaining lines
                 currentLine += countlines(cb, lastScanPos, cb.length());
@@ -200,11 +198,9 @@ public class FindInFiles {
                 bb = null; // unmap hint
             }
 
-            return (list == null) ? List.of() : list;
-
         } catch (IOException ignore) { }
 
-        return List.of();
+        return founds;
     }
 
     private static int findLastLineBreak(ByteBuffer bb, int limit) {

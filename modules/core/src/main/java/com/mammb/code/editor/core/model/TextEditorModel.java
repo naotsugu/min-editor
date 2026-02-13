@@ -347,7 +347,9 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void moveCaretPageUp(boolean withSelect, boolean withShortcut) {
-        int n = withShortcut ? screenLayout.screenLineSize() / 2 : screenLayout.screenLineSize() - 1;
+        int n = withShortcut
+            ? screenLayout.screenLineSize() / 2
+            : screenLayout.screenLineSize() - 1;
         scrollPrev(n);
         if (withSelect && carets.size() > 1) carets.unique();
         if (carets.size() == 1) {
@@ -360,7 +362,9 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void moveCaretPageDown(boolean withSelect, boolean withShortcut) {
-        int n = withShortcut ? screenLayout.screenLineSize() / 2 : screenLayout.screenLineSize() - 1;
+        int n = withShortcut
+            ? screenLayout.screenLineSize() / 2
+            : screenLayout.screenLineSize() - 1;
         scrollNext(n);
         if (withSelect && carets.size() > 1) carets.unique();
         if (carets.size() == 1) {
@@ -382,7 +386,8 @@ public class TextEditorModel implements EditorModel {
     }
 
     private void moveCaretBottom(boolean withSelect) {
-        int row = screenLayout.rowSize() - 1, col = screenLayout.endColOnRow(row);
+        int row = screenLayout.rowSize() - 1;
+        int col = screenLayout.endColOnRow(row);
         var c = carets.unique();
         if (withSelect) {
             c.markTo(c.row(), c.col(), row, col);
