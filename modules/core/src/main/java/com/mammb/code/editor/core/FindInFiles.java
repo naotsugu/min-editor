@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.core;
 
+import com.mammb.code.editor.core.model.TextEditorModel;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -53,6 +54,9 @@ import java.util.stream.Stream;
  * @author Naotsugu Kobayashi
  */
 public class FindInFiles {
+
+    /** logger. */
+    private static final System.Logger log = System.getLogger(FindInFiles.class.getName());
 
     private static final long CHUNK_SIZE = 128 * 1024 * 1024;
     private static final int OVERLAP_BYTES = 8192;
@@ -102,8 +106,8 @@ public class FindInFiles {
                         n.add(founds.size());
                         consumer.accept(founds);
                     });
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (IOException _) {
+                log.log(System.Logger.Level.ERROR, "Failed to search files in {0}", dir);
             } finally {
                 executor.shutdown();
             }
