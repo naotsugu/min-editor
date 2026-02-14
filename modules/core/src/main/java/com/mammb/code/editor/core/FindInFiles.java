@@ -73,7 +73,7 @@ public class FindInFiles {
 
     private static final List<Charset> CHARSET_CANDIDATES = charsetCandidates();
 
-    public record Found(Path path, Charset charset, long line, String text, String snippet) { }
+    public record Found(Path path, Charset charset, long line, int col, String text, String snippet) { }
 
     /**
      * Executes a search operation on readable, regular files within the specified directory, using a given
@@ -178,6 +178,7 @@ public class FindInFiles {
                 // searchInChunk
                 Matcher matcher = pattern.matcher(cb);
                 int lastScanPos = 0;
+                int lastLineBreak = -1;
                 while (matcher.find()) {
                     if (Thread.currentThread().isInterrupted()) {
                         return founds;
@@ -186,12 +187,17 @@ public class FindInFiles {
                     if (start < overlapSkipChars) {
                         continue; // skip duplicate range
                     }
-                    currentLine += countlines(cb, lastScanPos, start);
+                    int[] lineInfo = countlines(cb, lastScanPos, start);
+                    currentLine += lineInfo[0];
+                    if (lineInfo[0] > 0) {
+                        lastLineBreak = lastScanPos + lineInfo[1];
+                    }
                     lastScanPos = start;
-                    founds.add(new Found(path, cs, currentLine, matcher.group(), snippet(cb, matcher)));
+                    int col = start - lastLineBreak;
+                    founds.add(new Found(path, cs, currentLine, col, matcher.group(), snippet(cb, matcher)));
                 }
                 // count remaining lines
-                currentLine += countlines(cb, lastScanPos, cb.length());
+                currentLine += countlines(cb, lastScanPos, cb.length())[0];
 
                 filePosition += nextPosDelta;
                 overlapSkipChars = nextOverlapSkipChars;
@@ -213,14 +219,16 @@ public class FindInFiles {
         return 0; // not found
     }
 
-    private static int countlines(CharBuffer cb, int start, int end) {
+    private static int[] countlines(CharBuffer cb, int start, int end) {
         int count = 0;
+        int lastLineBreak = -1;
         for (int i = start; i < end; i++) {
             if (cb.charAt(i) == '\n') {
                 count++;
+                lastLineBreak = i;
             }
         }
-        return count;
+        return new int[]{count, lastLineBreak};
     }
 
     private static String snippet(CharBuffer cb, Matcher matcher) {
