@@ -147,7 +147,7 @@ public class FindInFilesPane extends BorderPane {
 
         Future<?> future = FindInFiles.run(root, pattern, list -> {
             var ret = list.stream()
-                .map(r -> new SearchResult(r.path(), r.line(), r.text(), r.snippet()))
+                .map(r -> new SearchResult(r.path(), r.line(), r.col(), r.text(), r.snippet()))
                 .toList();
             Platform.runLater(() -> results.addAll(ret));
         });
@@ -205,6 +205,11 @@ public class FindInFilesPane extends BorderPane {
         line.setPrefWidth(50);
         table.getColumns().add(line);
 
+        TableColumn<SearchResult, Number> col = new TableColumn<>("Col");
+        col.setCellValueFactory(cell -> cell.getValue().col);
+        col.setPrefWidth(50);
+        table.getColumns().add(col);
+
         TableColumn<SearchResult, String> text = new TableColumn<>("Text");
         text.setCellValueFactory(cell -> cell.getValue().text);
         text.setPrefWidth(100);
@@ -222,7 +227,11 @@ public class FindInFilesPane extends BorderPane {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
                     if (onOpenFileRequest != null) {
                         onOpenFileRequest.accept(
-                            new OpenFileRequest(row.getItem().path(), row.getItem().text.get(), row.getItem().line.get()));
+                            new OpenFileRequest(
+                                row.getItem().path(),
+                                row.getItem().text.get(),
+                                row.getItem().line.get(),
+                                row.getItem().col.get()));
                     }
                 }
             });
@@ -236,19 +245,21 @@ public class FindInFilesPane extends BorderPane {
             SimpleStringProperty name,
             SimpleStringProperty fullPath,
             SimpleIntegerProperty line,
+            SimpleIntegerProperty col,
             SimpleStringProperty text,
             SimpleStringProperty snippet) {
-        public SearchResult(Path path, long line, String text, String snippet) {
+        public SearchResult(Path path, long line, int col, String text, String snippet) {
             this(new SimpleStringProperty(path.getFileName().toString()),
                  new SimpleStringProperty(path.toString()),
                  new SimpleIntegerProperty((int) line),
+                 new SimpleIntegerProperty(col),
                  new SimpleStringProperty(text),
                  new SimpleStringProperty(snippet.trim()));
         }
         public Path path() { return Path.of(fullPath.get()); }
     }
 
-    public record OpenFileRequest(Path path, String text, int line) {}
+    public record OpenFileRequest(Path path, String text, int line, int col) {}
 
     private String choseDirectory(String initial) {
 

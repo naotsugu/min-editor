@@ -557,12 +557,16 @@ public class EditorPane extends ContentPane {
 
     private EditorPane openOrNewEdit(Path path) {
         if (path == null) return this;
+        return openOrNewEdit(Session.of(path));
+    }
+
+    private EditorPane openOrNewEdit(Session session) {
         if (model().query(Query.modified)) {
             var newEdit = newEdit();
-            newEdit.open(Session.of(path));
+            newEdit.open(session);
             return newEdit;
         } else {
-            open(Session.of(path));
+            open(session);
             paint();
             return this;
         }
