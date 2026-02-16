@@ -178,7 +178,7 @@ public class FindInFiles {
                 // searchInChunk
                 Matcher matcher = pattern.matcher(cb);
                 int lastScanPos = 0;
-                int lastLineBreak = -1;
+                int headOfLine = 0;
                 while (matcher.find()) {
                     if (Thread.currentThread().isInterrupted()) {
                         return founds;
@@ -190,10 +190,10 @@ public class FindInFiles {
                     int[] lineInfo = countlines(cb, lastScanPos, start);
                     currentLine += lineInfo[0];
                     if (lineInfo[0] > 0) {
-                        lastLineBreak = lastScanPos + lineInfo[1];
+                        headOfLine = lineInfo[1];
                     }
                     lastScanPos = start;
-                    int col = start - lastLineBreak;
+                    int col = start - headOfLine;
                     founds.add(new Found(path, cs, currentLine, col, matcher.group(), snippet(cb, matcher)));
                 }
                 // count remaining lines
@@ -221,14 +221,14 @@ public class FindInFiles {
 
     private static int[] countlines(CharBuffer cb, int start, int end) {
         int count = 0;
-        int lastLineBreak = -1;
+        int hol = -1;
         for (int i = start; i < end; i++) {
             if (cb.charAt(i) == '\n') {
                 count++;
-                lastLineBreak = i;
+                hol = i + 1;
             }
         }
-        return new int[]{count, lastLineBreak};
+        return new int[] { count, hol };
     }
 
     private static String snippet(CharBuffer cb, Matcher matcher) {

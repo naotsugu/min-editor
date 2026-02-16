@@ -264,10 +264,7 @@ public class EditorPane extends ContentPane {
         var path = model().query(Query.contentPath).map(Path::getParent)
             .orElse(Path.of(System.getProperty("user.home")));
         var fif = FindInFilesPane.of(path, r -> {
-            var p = openOrNewEdit(r.path());
-            p.execute(new GoTo(r.line()));
-            p.model().scrollPrev(3);
-            p.execute(new FindNext(r.text(), true));
+            openOrNewEdit(Session.of(r.path(), Math.max(0, r.line() - 5), r.line() - 1, r.col()));
         });
         fif.openWithWindow(getScene().getWindow());
     }

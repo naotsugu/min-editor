@@ -45,10 +45,10 @@ class FindInFilesTest {
         assertEquals(2, results.size());
         assertEquals("hello world", results.get(0).snippet());
         assertEquals(1, results.get(0).line());
-        assertEquals(1, results.get(0).col());
+        assertEquals(0, results.get(0).col());
         assertEquals("hello java", results.get(1).snippet());
         assertEquals(2, results.get(1).line());
-        assertEquals(1, results.get(1).col());
+        assertEquals(0, results.get(1).col());
     }
 
     @Test

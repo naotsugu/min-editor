@@ -233,6 +233,26 @@ public interface Session {
     /**
      * Create a new {@link Session}.
      * @param path the path
+     * @param topLine the line number at the top of the screen
+     * @param caretRow the row index at the caret
+     * @param caretCol the column index at the caret
+     * @return a new {@link Session}
+     */
+    static Session of(Path path, int topLine, int caretRow, int caretCol) {
+        return record(
+            Files.exists(path) ? path : null,
+            Files.lastModifiedTime(path),
+            null,
+            "",
+            null,
+            false,
+            topLine, 0, caretRow, caretCol,
+            System.currentTimeMillis());
+    }
+
+    /**
+     * Create a new {@link Session}.
+     * @param path the path
      * @param lastModifiedTime the last modified time
      * @param altPath the alt path
      * @param altName the alt name
