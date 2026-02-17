@@ -58,6 +58,7 @@ public class FindInFilesPane extends BorderPane {
 
     private final TextField searchField;
     private final TextField dirField;
+    private final Button choseDirButton;
     private final Button findButton;
     private final TableView<SearchResult> resultsTable;
     private final ObservableList<SearchResult> results = FXCollections.observableArrayList();
@@ -73,6 +74,7 @@ public class FindInFilesPane extends BorderPane {
         searchField = new TextField();
         searchField.setPromptText("regexp");
         dirField = new TextField(path.toString());
+        choseDirButton = new Button("...");
         findButton = new Button("Find");
         findButton.setDefaultButton(true);
         resultsTable = buildResultsTable();
@@ -80,10 +82,13 @@ public class FindInFilesPane extends BorderPane {
         progressBar.setVisible(false);
         progressBar.setMaxWidth(Double.MAX_VALUE);
 
-        HBox inputBox = new HBox(2, searchField, dirField, findButton);
+        HBox difBox = new HBox(dirField, choseDirButton);
+        HBox.setHgrow(dirField, Priority.ALWAYS);
+
+        HBox inputBox = new HBox(2, searchField, difBox, findButton);
         inputBox.setPadding(new Insets(0, 2, 0, 2));
         HBox.setHgrow(searchField, Priority.SOMETIMES);
-        HBox.setHgrow(dirField, Priority.ALWAYS);
+        HBox.setHgrow(difBox, Priority.ALWAYS);
 
         HBox progressBox = new HBox(progressBar);
         progressBox.setPadding(new Insets(0));
@@ -94,11 +99,7 @@ public class FindInFilesPane extends BorderPane {
         setTop(topBox);
         setCenter(resultsTable);
 
-        dirField.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
-                dirField.setText(choseDirectory(dirField.getText()));
-            }
-        });
+        choseDirButton.setOnAction(_ -> dirField.setText(choseDirectory(dirField.getText())));
         findButton.setOnAction(_ -> {
             if (curentTask != null && curentTask.isRunning()) {
                 curentTask.cancel();
@@ -231,7 +232,8 @@ public class FindInFilesPane extends BorderPane {
                                 row.getItem().path(),
                                 row.getItem().text.get(),
                                 row.getItem().line.get(),
-                                row.getItem().col.get()));
+                                row.getItem().col.get(),
+                                event.isShortcutDown()));
                     }
                 }
             });
@@ -259,7 +261,7 @@ public class FindInFilesPane extends BorderPane {
         public Path path() { return Path.of(fullPath.get()); }
     }
 
-    public record OpenFileRequest(Path path, String text, int line, int col) {}
+    public record OpenFileRequest(Path path, String text, int line, int col, boolean withShortcut) {}
 
     private String choseDirectory(String initial) {
 
