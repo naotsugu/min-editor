@@ -264,7 +264,7 @@ public class EditorPane extends ContentPane {
         var path = model().query(Query.contentPath).map(Path::getParent)
             .orElse(Path.of(System.getProperty("user.home")));
         var fif = FindInFilesPane.of(path, r -> {
-            openOrNewEdit(Session.of(r.path(), Math.max(0, r.line() - 5), r.line() - 1, r.col()));
+            openOrNewEdit(Session.of(r.path(), Math.max(0, r.line() - 5), r.line() - 1, r.col()), r.withShortcut());
         });
         fif.openWithWindow(getScene().getWindow());
     }
@@ -554,11 +554,11 @@ public class EditorPane extends ContentPane {
 
     private EditorPane openOrNewEdit(Path path) {
         if (path == null) return this;
-        return openOrNewEdit(Session.of(path));
+        return openOrNewEdit(Session.of(path), true);
     }
 
-    private EditorPane openOrNewEdit(Session session) {
-        if (model().query(Query.modified)) {
+    private EditorPane openOrNewEdit(Session session, boolean forceNewEdit) {
+        if (forceNewEdit || model().query(Query.modified)) {
             var newEdit = newEdit();
             newEdit.open(session);
             return newEdit;
