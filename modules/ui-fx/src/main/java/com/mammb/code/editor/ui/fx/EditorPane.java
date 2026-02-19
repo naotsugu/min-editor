@@ -554,7 +554,7 @@ public class EditorPane extends ContentPane {
 
     private EditorPane openOrNewEdit(Path path) {
         if (path == null) return this;
-        return openOrNewEdit(Session.of(path), true);
+        return openOrNewEdit(Session.of(path), false);
     }
 
     private EditorPane openOrNewEdit(Session session, boolean forceNewEdit) {
