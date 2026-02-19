@@ -25,7 +25,7 @@ application {
     mainClass = "com.mammb.code.editor.bootstrap.Main"
     mainModule = "code.editor.bootstrap"
     applicationDefaultJvmArgs = listOf(
-        "-Xms32m",
+        "-Xms16m",
         "--enable-preview",
         "-XX:+UseSerialGC", "-XX:MinHeapFreeRatio=5", "-XX:MaxHeapFreeRatio=10", "-XX:-ShrinkHeapInSteps", "-DidleGcDelayMillis=3000",
         //"-XX:+UseParallelGC", "-XX:MinHeapFreeRatio=5", "-XX:MaxHeapFreeRatio=10", "-XX:-ShrinkHeapInSteps", "-XX:GCTimeRatio=20",
@@ -109,7 +109,7 @@ tasks.register<Exec>("jpackage") {
         "--jlink-options", "--no-header-files",
         "--jlink-options", "--no-man-pages",
 
-        "--java-options", "-Xms32m",
+        "--java-options", "-Xms16m",
         "--java-options", "--enable-preview",
 
         "--java-options", "-XX:+UseSerialGC",
