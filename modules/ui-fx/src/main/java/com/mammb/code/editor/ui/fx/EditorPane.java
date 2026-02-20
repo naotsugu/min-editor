@@ -269,30 +269,6 @@ public class EditorPane extends ContentPane {
         fif.openWithWindow(getScene().getWindow());
     }
 
-    private void openRight(ContentPane contentPane) {
-        var container = tabContainer();
-        if (container != null && contentPane != null) {
-            container.parent().addRight(contentPane);
-        }
-    }
-
-    private void openRightWithFocus(ContentPane contentPane) {
-        var container = tabContainer();
-        if (container != null && contentPane != null) {
-            var pane = container.parent().addRight(contentPane);
-            Platform.runLater(pane::focus);
-        }
-    }
-
-    private SplitTabPane.DndTabPane tabContainer() {
-        Node node = getParent();
-        for (;;) {
-            if (node == null) return null;
-            if (node instanceof SplitTabPane.DndTabPane pane) return pane;
-            node = node.getParent();
-        }
-    }
-
     private void handleMouseMoved(MouseEvent e) {
         switch (model().hoverOn(e.getX(), e.getY())) {
             case HoverOn.GarterRegion _ -> canvas.setCursor(Cursor.DEFAULT);
@@ -697,8 +673,8 @@ public class EditorPane extends ContentPane {
 
     private EditorPane newEdit() {
         var editorPane = new EditorPane(context);
-        var tabContainer = tabContainer();
-        if (tabContainer != null) tabContainer.add(editorPane);
+        var container = container();
+        if (container != null) container.add(editorPane);
         return editorPane;
     }
 
@@ -782,6 +758,29 @@ public class EditorPane extends ContentPane {
     private EditorPane with(Session session) {
         model = model.with(session);
         return this;
+    }
+
+    private void openRightWithFocus(ContentPane contentPane) {
+        openRight(contentPane, true);
+    }
+    private void openRight(ContentPane contentPane) {
+        openRight(contentPane, false);
+    }
+    private void openRight(ContentPane contentPane, boolean focus) {
+        var container = container();
+        if (container != null && contentPane != null) {
+            var pane = container.parent().addRight(contentPane);
+            if (focus) Platform.runLater(pane::focus);
+        }
+    }
+
+    private SplitTabPane.DndTabPane container() {
+        Node node = getParent();
+        for (;;) {
+            if (node == null) return null;
+            if (node instanceof SplitTabPane.DndTabPane pane) return pane;
+            node = node.getParent();
+        }
     }
 
 }
