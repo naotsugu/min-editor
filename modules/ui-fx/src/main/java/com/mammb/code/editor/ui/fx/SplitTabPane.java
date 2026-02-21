@@ -120,67 +120,33 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     DndTabPane addRight(ContentPane node) {
-        if (pane.getItems().isEmpty()) {
-            return add(node);
-        } else {
-            var item = (DndTabPane) pane.getItems().getFirst();
-            pane.getItems().clear();
-            pane.setOrientation(Orientation.HORIZONTAL);
-            var left  = new SplitTabPane(item, this);
-            var right = new SplitTabPane(node, this);
-            pane.getItems().addAll(left, right);
-            pane.setDividerPositions(0.5);
-            pane.layout();
-            return (DndTabPane) right.pane.getItems().getFirst();
-        }
+        return add(node, Orientation.HORIZONTAL, true);
     }
-
     private DndTabPane addLeft(ContentPane node) {
-        if (pane.getItems().isEmpty()) {
-            return add(node);
-        } else {
-            var item = (DndTabPane) pane.getItems().getFirst();
-            pane.getItems().clear();
-            pane.setOrientation(Orientation.HORIZONTAL);
-            var left  = new SplitTabPane(node, this);
-            var right = new SplitTabPane(item, this);
-            pane.getItems().addAll(left, right);
-            pane.setDividerPositions(0.5);
-            pane.layout();
-            return (DndTabPane) left.pane.getItems().getFirst();
-        }
+        return add(node, Orientation.HORIZONTAL, false);
     }
-
     private DndTabPane addTop(ContentPane node) {
-        if (pane.getItems().isEmpty()) {
-            return add(node);
-        } else {
-            var item = (DndTabPane) pane.getItems().getFirst();
-            pane.getItems().clear();
-            pane.setOrientation(Orientation.VERTICAL);
-            var top = new SplitTabPane(node, this);
-            var bottom = new SplitTabPane(item, this);
-            pane.getItems().addAll(top, bottom);
-            pane.setDividerPositions(0.5);
-            pane.layout();
-            return (DndTabPane) top.pane.getItems().getFirst();
-        }
+        return add(node, Orientation.VERTICAL, false);
     }
-
     private DndTabPane addBottom(ContentPane node) {
+        return add(node, Orientation.VERTICAL, true);
+    }
+    private DndTabPane add(ContentPane node, Orientation orientation, boolean forward) {
         if (pane.getItems().isEmpty()) {
             return add(node);
-        } else {
-            var item = (DndTabPane) pane.getItems().getFirst();
-            pane.getItems().clear();
-            pane.setOrientation(Orientation.VERTICAL);
-            var top = new SplitTabPane(item, this);
-            var bottom = new SplitTabPane(node, this);
-            pane.getItems().addAll(top, bottom);
-            pane.setDividerPositions(0.5);
-            pane.layout();
-            return (DndTabPane) bottom.pane.getItems().getFirst();
         }
+        var item = (DndTabPane) pane.getItems().getFirst();
+        var p1 = new SplitTabPane(item, this);
+        var p2 = new SplitTabPane(node, this);
+        var panes = forward
+            ? new SplitTabPane[] { p1, p2 }
+            : new SplitTabPane[] { p2, p1 };
+        pane.getItems().clear();
+        pane.setOrientation(orientation);
+        pane.getItems().addAll(panes);
+        pane.setDividerPositions(0.5);
+        pane.layout();
+        return (DndTabPane) p2.pane.getItems().getFirst();
     }
 
     private List<TabAndPane> tabAndPanes() {
