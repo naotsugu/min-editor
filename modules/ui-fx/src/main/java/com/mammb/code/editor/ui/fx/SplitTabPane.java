@@ -447,7 +447,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     .filter(t -> t.pane().nameProperty().get().canonical().equals(path.toString()))
                     .findFirst();
                 if (tap.isPresent()) {
-                    tap.get().select();
+                    Platform.runLater(() -> tap.get().select());
                 } else {
                     addNewEdit().open(path);
                 }

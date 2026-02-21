@@ -672,10 +672,7 @@ public class EditorPane extends ContentPane {
     }
 
     private EditorPane newEdit() {
-        var editorPane = new EditorPane(context);
-        var container = container();
-        if (container != null) container.add(editorPane);
-        return editorPane;
+        return openNextTab(new EditorPane(context));
     }
 
     private void reload(Charset charset) {
@@ -760,25 +757,30 @@ public class EditorPane extends ContentPane {
         return this;
     }
 
-    private void openRightWithFocus(ContentPane contentPane) {
-        openRight(contentPane, true);
-    }
-    private void openRight(ContentPane contentPane) {
-        openRight(contentPane, false);
-    }
-    private void openRight(ContentPane contentPane, boolean focus) {
-        var container = container();
-        if (container != null && contentPane != null) {
-            var pane = container.parent().addRight(contentPane);
-            if (focus) Platform.runLater(pane::focus);
-        }
-    }
+    // -- tab container action --
 
-    private SplitTabPane.DndTabPane container() {
+    private <T extends ContentPane> T openNextTab(T pane) {
+        container().ifPresent(c -> c.add(pane));
+        return pane;
+    }
+    private <T extends ContentPane> T openRightWithFocus(T pane) {
+        return openRight(pane, true);
+    }
+    private <T extends ContentPane> T openRight(T pane) {
+        return openRight(pane, false);
+    }
+    private <T extends ContentPane> T openRight(T pane, boolean focus) {
+        container().ifPresent(c -> {
+            var tabPane = c.parent().addRight(pane);
+            if (focus) Platform.runLater(tabPane::focus);
+        });
+        return pane;
+    }
+    private Optional<SplitTabPane.DndTabPane> container() {
         Node node = getParent();
         for (;;) {
-            if (node == null) return null;
-            if (node instanceof SplitTabPane.DndTabPane pane) return pane;
+            if (node == null) return Optional.empty();
+            if (node instanceof SplitTabPane.DndTabPane pane) return Optional.of(pane);
             node = node.getParent();
         }
     }
