@@ -44,6 +44,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import java.io.File;
 import java.lang.System.Logger;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -247,11 +248,12 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 Node headerArea = tabPane.lookup(".tab-header-area");
                 if (headerArea != null) {
                     headerArea.setOnMouseClicked(e -> {
-                        if (e.getClickCount() == 2) addNewEdit();
+                        if (e.getClickCount() == 2) add(new EditorPane(parent.context));
                     });
                 }
             });
         }
+
         void add(ContentPane node) {
             var tab = new Tab();
             tab.setContent(node);
@@ -267,6 +269,21 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 }
             });
         }
+
+        void selectOrOpen(Path path) {
+            if (path == null) return;
+            var tap = parent.tabAndPanes().stream()
+                .filter(t -> t.pane().nameProperty().get().canonical().equals(path.toString()))
+                .findFirst();
+            if (tap.isPresent()) {
+                Platform.runLater(() -> tap.get().select());
+            } else {
+                EditorPane pane = new EditorPane(parent.context);
+                add(pane);
+                pane.open(path);
+            }
+        }
+
         private void initTab(Tab tab) {
             var pane = (ContentPane) tab.getContent();
             var label = new Label(pane.nameProperty().get().contextual());
@@ -280,12 +297,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 label.setText(name.contextual());
                 tab.setTooltip(new Tooltip(name.canonical()));
             });
-        }
-
-        private EditorPane addNewEdit() {
-            EditorPane pane = new EditorPane(parent.context);
-            add(pane);
-            return pane;
         }
 
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
@@ -403,20 +414,13 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             }
             e.consume();
         }
+
         private void handleDragDropped(DragEvent e) {
             // TODO if dropped outside window, open a new window
             var db = e.getDragboard();
             if (db.hasFiles() && dropPoint(this, e) == DropPoint.HEADER) {
                 var path = db.getFiles().stream().findFirst().map(File::toPath).orElse(null);
-                if (path == null) return;
-                var tap = parent.tabAndPanes().stream()
-                    .filter(t -> t.pane().nameProperty().get().canonical().equals(path.toString()))
-                    .findFirst();
-                if (tap.isPresent()) {
-                    Platform.runLater(() -> tap.get().select());
-                } else {
-                    addNewEdit().open(path);
-                }
+                selectOrOpen(path);
                 e.setDropCompleted(false);
                 return;
             }
@@ -539,9 +543,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private static Node tabNode(Node node) {
             for (;;) {
                 node = node.getParent();
-                if (Objects.equals(
-                    node.getClass().getSimpleName(),
-                    "TabHeaderSkin")) return node;
+                if (Objects.equals(node.getClass().getSimpleName(), "TabHeaderSkin"))
+                    return node;
             }
         }
 
@@ -598,7 +601,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 return DropPoint.ANY;
             }
         }
-
     }
 
 }

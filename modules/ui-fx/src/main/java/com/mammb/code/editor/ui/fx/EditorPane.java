@@ -757,7 +757,7 @@ public class EditorPane extends ContentPane {
         return this;
     }
 
-    // -- tab container action --
+    // ---- tab container action ----
 
     private <T extends ContentPane> T openOnNextTab(T pane) {
         getContainer().ifPresent(c -> c.add(pane));
