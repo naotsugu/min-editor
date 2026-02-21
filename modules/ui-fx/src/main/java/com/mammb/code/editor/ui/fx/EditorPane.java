@@ -429,12 +429,12 @@ public class EditorPane extends ContentPane {
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff _               -> openRight(diff(null, false));
-            case DiffFoldOff _        -> openRight(diff(null, true));
-            case DiffWith cmd         -> openRight(diff(cmd.path(), false));
-            case Duplicate _          -> openRightWithFocus(duplicate());
-            case BinaryView _         -> openRight(binary());
-            case FoundFilterView cmd  -> openRightWithFocus(foundFilter(cmd.contextSize()));
+            case Diff _               -> openOnRightPane(diff(null, false));
+            case DiffFoldOff _        -> openOnRightPane(diff(null, true));
+            case DiffWith cmd         -> openOnRightPane(diff(cmd.path(), false));
+            case Duplicate _          -> openOnRightPaneWithFocus(duplicate());
+            case BinaryView _         -> openOnRightPane(binary());
+            case FoundFilterView cmd  -> openOnRightPaneWithFocus(foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
@@ -672,7 +672,7 @@ public class EditorPane extends ContentPane {
     }
 
     private EditorPane newEdit() {
-        return openNextTab(new EditorPane(context));
+        return openOnNextTab(new EditorPane(context));
     }
 
     private void reload(Charset charset) {
@@ -759,24 +759,24 @@ public class EditorPane extends ContentPane {
 
     // -- tab container action --
 
-    private <T extends ContentPane> T openNextTab(T pane) {
-        container().ifPresent(c -> c.add(pane));
+    private <T extends ContentPane> T openOnNextTab(T pane) {
+        getContainer().ifPresent(c -> c.add(pane));
         return pane;
     }
-    private <T extends ContentPane> T openRightWithFocus(T pane) {
-        return openRight(pane, true);
+    private <T extends ContentPane> T openOnRightPaneWithFocus(T pane) {
+        return openOnRightPane(pane, true);
     }
-    private <T extends ContentPane> T openRight(T pane) {
-        return openRight(pane, false);
+    private <T extends ContentPane> T openOnRightPane(T pane) {
+        return openOnRightPane(pane, false);
     }
-    private <T extends ContentPane> T openRight(T pane, boolean focus) {
-        container().ifPresent(c -> {
+    private <T extends ContentPane> T openOnRightPane(T pane, boolean focus) {
+        getContainer().ifPresent(c -> {
             var tabPane = c.parent().addRight(pane);
             if (focus) Platform.runLater(tabPane::focus);
         });
         return pane;
     }
-    private Optional<SplitTabPane.DndTabPane> container() {
+    private Optional<SplitTabPane.DndTabPane> getContainer() {
         Node node = getParent();
         for (;;) {
             if (node == null) return Optional.empty();
