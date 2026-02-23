@@ -384,13 +384,13 @@ public class EditorPane extends ContentPane {
             case SaveWithLF _         -> saveWith(null, "LF");
             case SaveWithCRLF _       -> saveWith(null, "CRLF");
             case SaveWith cmd         -> saveWith(cmd.charset(), null);
-            case New _                -> newEdit();
+            case New _                -> openOnNextTab(new EditorPane(context));
             case ReloadWith cmd       -> reload(cmd.charset());
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> open(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
-            case Config _             -> newEdit().open(Session.of(context.config().path()));
+            case Config _             -> openOnNextTab(new EditorPane(context)).open(Session.of(context.config().path()));
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
             case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseInsensitive()));
             case FindAll cmd          -> apply(Action.findAll(cmd.str(), cmd.caseInsensitive()));
@@ -516,9 +516,10 @@ public class EditorPane extends ContentPane {
             openOrNewEdit(path);
         } else if (Files.isReadableDirectory(path)) {
             String list = String.join("\n", Files.listAbsolutePath(path));
-            newEdit().inputText(() -> list.isEmpty() ? path.toAbsolutePath().toString() : list);
+            openOnNextTab(new EditorPane(context))
+                .inputText(() -> list.isEmpty() ? path.toAbsolutePath().toString() : list);
         } else {
-            newEdit().inputText(path::toString);
+            openOnNextTab(new EditorPane(context)).inputText(path::toString);
         }
     }
 
@@ -535,7 +536,7 @@ public class EditorPane extends ContentPane {
 
     private EditorPane openOrNewEdit(Session session, boolean forceNewEdit) {
         if (forceNewEdit || model().query(Query.modified)) {
-            var newEdit = newEdit();
+            var newEdit = openOnNextTab(new EditorPane(context));
             newEdit.open(session);
             return newEdit;
         } else {
@@ -669,10 +670,6 @@ public class EditorPane extends ContentPane {
             saveAs();
         }
         model().saveWith(charset, endingSymbol);
-    }
-
-    private EditorPane newEdit() {
-        return openOnNextTab(new EditorPane(context));
     }
 
     private void reload(Charset charset) {
