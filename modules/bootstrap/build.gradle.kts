@@ -31,6 +31,7 @@ application {
         //"-XX:+UseParallelGC", "-XX:MinHeapFreeRatio=5", "-XX:MaxHeapFreeRatio=10", "-XX:-ShrinkHeapInSteps", "-XX:GCTimeRatio=20",
         //"-XX:+UseZGC", "-XX:+ZUncommit", "-XX:ZUncommitDelay=30", "-XX:SoftMaxHeapSize=32m",
         "-XX:+UseCompactObjectHeaders",
+        "-Xshare:off",
         "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
     )
     if (providers.systemProperty("aot").isPresent) {
@@ -124,6 +125,7 @@ tasks.register<Exec>("jpackage") {
         //"--java-options", "-XX:SoftMaxHeapSize=32m",
 
         "--java-options", "-XX:+UseCompactObjectHeaders",
+        "--java-options", "-Xshare:off",
         "--java-options", "--enable-native-access=javafx.graphics", // Restricted methods will be blocked in a future release unless native access is enabled
     )
 
