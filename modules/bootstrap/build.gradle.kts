@@ -40,7 +40,8 @@ application {
     }
     if (providers.systemProperty("debug").isPresent) {
         applicationDefaultJvmArgs = applicationDefaultJvmArgs.plus(listOf(
-            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"))
+            "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005",
+            "-XX:NativeMemoryTracking=summary"))
     }
 }
 
