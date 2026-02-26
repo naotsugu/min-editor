@@ -298,7 +298,7 @@ public class EditorPane extends ContentPane {
             if (path.isPresent()) {
                 e.setDropCompleted(true);
                 e.consume();
-                openOrNewEdit(path.get());
+                selectOrOpen(path.get());
                 return;
             }
             var list = EditingFunctions.list.apply(paths);
@@ -352,7 +352,7 @@ public class EditorPane extends ContentPane {
             case ReloadWith cmd       -> reload(cmd.charset());
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd          -> showCommandPalette(cmd.initial());
-            case Open cmd             -> openOrSelect(Path.of(cmd.path()));
+            case Open cmd             -> selectOrNewEdit(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
             case Config _             -> openOnNextTab(new EditorPane(context)).open(Session.of(context.config().path()));
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
@@ -486,25 +486,23 @@ public class EditorPane extends ContentPane {
         paint();
     }
 
-    private void openOrSelect(Path path) {
+    private void selectOrNewEdit(Path path) {
         if (path == null || !Files.exists(path)) return;
-        var container = getContainer();
-        if (container.isPresent() && container.get().selectExistingTab(path)) {
-            return;
-        }
+        if (selectExisting(path)) return;
         var newEdit = openOnNextTab(new EditorPane(context));
         Platform.runLater(() -> newEdit.open(path));
     }
 
     void openRecent() {
         var window = getScene().getWindow();
-        SelectOneMenu.of(context.recents(), this::openOrNewEdit)
+        SelectOneMenu.of(context.recents(), this::selectOrOpen)
             .show(window, window.getX(), window.getY() + 55);
     }
 
-    private EditorPane openOrNewEdit(Path path) {
-        if (path == null) return this;
-        return openOrNewEdit(Session.of(path), false);
+    private void selectOrOpen(Path path) {
+        if (path == null || !Files.exists(path)) return;
+        if (selectExisting(path)) return;
+        openOrNewEdit(Session.of(path), false);
     }
 
     private EditorPane openOrNewEdit(Session session, boolean forceNewEdit) {
@@ -728,6 +726,15 @@ public class EditorPane extends ContentPane {
     }
 
     // ---- tab container action ----
+
+    private boolean selectExisting(Path path) {
+        if (path == null || !Files.exists(path)) return false;
+        var container = getContainer();
+        if (container.isPresent() && container.get().selectExistingTab(path)) {
+            return true;
+        }
+        return false;
+    }
 
     private <T extends ContentPane> T openOnNextTab(T pane) {
         getContainer().ifPresent(c -> c.add(pane));
