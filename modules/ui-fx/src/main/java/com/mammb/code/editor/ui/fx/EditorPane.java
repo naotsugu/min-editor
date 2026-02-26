@@ -493,12 +493,6 @@ public class EditorPane extends ContentPane {
         Platform.runLater(() -> newEdit.open(path));
     }
 
-    void openRecent() {
-        var window = getScene().getWindow();
-        SelectOneMenu.of(context.recents(), this::selectOrOpen)
-            .show(window, window.getX(), window.getY() + 55);
-    }
-
     private void selectOrOpen(Path path) {
         if (path == null || !Files.exists(path)) return;
         if (selectExisting(path)) return;
@@ -778,6 +772,12 @@ public class EditorPane extends ContentPane {
     private EditorPane binary() {
         return new EditorPane(context)
             .with(model().getSession(Session.binary(model().stash().altPath())));
+    }
+
+    void openRecent() {
+        var window = getScene().getWindow();
+        SelectOneMenu.of(context.recents(), this::selectOrOpen)
+            .show(window, window.getX(), window.getY() + 55);
     }
 
     private void searchInBrowser(String query) {
