@@ -43,7 +43,7 @@ public class AppContextMenu extends FxContextMenu {
 
         boolean textSelected = editorPane.query(Query.selectedCounts) > 0;
         String style = switch (Context.platform) {
-            case "windows" -> "-fx-font: normal 9pt System;";
+            case "windows" -> "-fx-font: normal 10pt System;";
             default -> "-fx-font: normal 11pt System;";
         };
 
