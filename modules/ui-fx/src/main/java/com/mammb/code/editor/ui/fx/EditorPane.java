@@ -71,6 +71,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HexFormat;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
@@ -207,22 +208,6 @@ public class EditorPane extends ContentPane {
         model().updateFonts(draw.fontMetrics());
     }
 
-    private EditorPane diff(String pathString, boolean withoutFold) {
-        Path path = (pathString == null || pathString.isBlank()) ? null : Path.of(pathString);
-        return new EditorPane(context)
-            .with(model().getSession(Session.diff(path, withoutFold)));
-    }
-
-    private EditorPane duplicate() {
-        return session().map(session -> new EditorPane(context)
-            .with(session.asReadonly())).orElse(null);
-    }
-
-    private EditorPane binary() {
-        return new EditorPane(context)
-            .with(model().getSession(Session.binary(model().stash().altPath())));
-    }
-
     private EditorPane foundFilter(int contextSize) {
         var editorPane = new EditorPane(context)
             .with(model().getSession(Session.rowFilter(model().query(Query.foundRows), contextSize)));
@@ -237,27 +222,6 @@ public class EditorPane extends ContentPane {
         if (path != null && Files.isReadableDirectory(path.getParent())) {
             context.getApp().getHostServices().showDocument(path.getParent().toUri().toString());
         }
-    }
-
-    private void searchInBrowser(String query) {
-        if (query == null || query.isBlank()) return;
-        context.getApp().getHostServices().showDocument("https://www.google.com/search?q="
-            + URLEncoder.encode(query, StandardCharsets.UTF_8));
-    }
-
-    private void translateInBrowser(String text) {
-        if (text == null || text.isBlank()) return;
-        context.getApp().getHostServices().showDocument("https://translate.google.com/?op=translate&text="
-            + URLEncoder.encode(text, StandardCharsets.UTF_8));
-    }
-
-    private void colorPick() {
-        var dialog = new FxColorDialog(getScene().getWindow());
-        try {
-            dialog.setColor(Color.valueOf(model().query(Query.selectedText)));
-        } catch (Exception ignore) { }
-        dialog.setOnSelect(() -> execute(CommandKeys.of(Action.input(dialog.getSelectedWebColor()))));
-        dialog.show();
     }
 
     private void openFindInFiles() {
@@ -509,8 +473,20 @@ public class EditorPane extends ContentPane {
         open(Session.of(file.toPath()));
     }
 
+    void openPath(Path path) {
+        Objects.requireNonNull(path);
+        if (Files.isReadableFile(path)) {
+            open(Session.of(path));
+        } else if (Files.isReadableDirectory(path)) {
+            String ls = String.join("\n", Files.listAbsolutePath(path));
+            inputText(() -> ls.isBlank() ? path.toAbsolutePath().toString() : ls);
+        } else {
+            inputText(path::toString);
+        }
+        paint();
+    }
 
-    void open(Path path) {
+    private void open(Path path) {
         if (path == null || !canClose()) return;
         if (Files.isReadableFile(path)) {
             openOrNewEdit(path);
@@ -780,6 +756,45 @@ public class EditorPane extends ContentPane {
             if (node instanceof SplitTabPane.DndTabPane pane) return Optional.of(pane);
             node = node.getParent();
         }
+    }
+
+    // ---- utility action ----
+
+    private EditorPane diff(String pathString, boolean withoutFold) {
+        Path path = (pathString == null || pathString.isBlank()) ? null : Path.of(pathString);
+        return new EditorPane(context)
+            .with(model().getSession(Session.diff(path, withoutFold)));
+    }
+
+    private EditorPane duplicate() {
+        return session().map(session -> new EditorPane(context)
+            .with(session.asReadonly())).orElse(null);
+    }
+
+    private EditorPane binary() {
+        return new EditorPane(context)
+            .with(model().getSession(Session.binary(model().stash().altPath())));
+    }
+
+    private void searchInBrowser(String query) {
+        if (query == null || query.isBlank()) return;
+        context.getApp().getHostServices().showDocument("https://www.google.com/search?q="
+            + URLEncoder.encode(query, StandardCharsets.UTF_8));
+    }
+
+    private void translateInBrowser(String text) {
+        if (text == null || text.isBlank()) return;
+        context.getApp().getHostServices().showDocument("https://translate.google.com/?op=translate&text="
+            + URLEncoder.encode(text, StandardCharsets.UTF_8));
+    }
+
+    private void colorPick() {
+        var dialog = new FxColorDialog(getScene().getWindow());
+        try {
+            dialog.setColor(Color.valueOf(model().query(Query.selectedText)));
+        } catch (Exception ignore) { }
+        dialog.setOnSelect(() -> execute(CommandKeys.of(Action.input(dialog.getSelectedWebColor()))));
+        dialog.show();
     }
 
 }

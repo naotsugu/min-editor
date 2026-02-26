@@ -280,7 +280,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             } else {
                 EditorPane pane = new EditorPane(parent.context);
                 add(pane);
-                pane.open(path);
+                Platform.runLater(() -> pane.openPath(path));
             }
         }
 
