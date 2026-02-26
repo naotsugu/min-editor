@@ -352,7 +352,7 @@ public class EditorPane extends ContentPane {
             case ReloadWith cmd       -> reload(cmd.charset());
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd          -> showCommandPalette(cmd.initial());
-            case Open cmd             -> open(Path.of(cmd.path()));
+            case Open cmd             -> openOrSelect(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
             case Config _             -> openOnNextTab(new EditorPane(context)).open(Session.of(context.config().path()));
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
@@ -473,7 +473,7 @@ public class EditorPane extends ContentPane {
         open(Session.of(file.toPath()));
     }
 
-    void openPath(Path path) {
+    void open(Path path) {
         Objects.requireNonNull(path);
         if (Files.isReadableFile(path)) {
             open(Session.of(path));
@@ -486,17 +486,14 @@ public class EditorPane extends ContentPane {
         paint();
     }
 
-    private void open(Path path) {
-        if (path == null || !canClose()) return;
-        if (Files.isReadableFile(path)) {
-            openOrNewEdit(path);
-        } else if (Files.isReadableDirectory(path)) {
-            String list = String.join("\n", Files.listAbsolutePath(path));
-            openOnNextTab(new EditorPane(context))
-                .inputText(() -> list.isEmpty() ? path.toAbsolutePath().toString() : list);
-        } else {
-            openOnNextTab(new EditorPane(context)).inputText(path::toString);
+    private void openOrSelect(Path path) {
+        if (path == null || !Files.exists(path)) return;
+        var container = getContainer();
+        if (container.isPresent() && container.get().selectExistingTab(path)) {
+            return;
         }
+        var newEdit = openOnNextTab(new EditorPane(context));
+        Platform.runLater(() -> newEdit.open(path));
     }
 
     void openRecent() {

@@ -200,6 +200,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     record TabAndPane(Tab tab, TabPane tabPane, ContentPane pane) {
         void select() {
             if (tabPane != null) {
+                tabPane.requestFocus();
                 tabPane.getSelectionModel().select(tab);
                 pane.focus();
             }
@@ -270,17 +271,24 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             });
         }
 
-        void selectOrOpen(Path path) {
-            if (path == null) return;
+        boolean selectExistingTab(Path path) {
             var tap = parent.tabAndPanes().stream()
                 .filter(t -> t.pane().nameProperty().get().canonical().equals(path.toString()))
                 .findFirst();
             if (tap.isPresent()) {
                 Platform.runLater(() -> tap.get().select());
+                return true;
             } else {
+                return false;
+            }
+        }
+
+        private void selectOrOpen(Path path) {
+            if (path == null) return;
+            if (!selectExistingTab(path)) {
                 EditorPane pane = new EditorPane(parent.context);
                 add(pane);
-                Platform.runLater(() -> pane.openPath(path));
+                Platform.runLater(() -> pane.open(path));
             }
         }
 
