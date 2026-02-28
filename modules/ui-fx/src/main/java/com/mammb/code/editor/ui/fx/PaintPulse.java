@@ -44,7 +44,7 @@ public class PaintPulse extends AnimationTimer {
     }
 
     @Override
-    public void handle(long l) {
+    public void handle(long now) {
         if (dirty) {
             paint.run();
             dirty = false;

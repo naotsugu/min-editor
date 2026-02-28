@@ -108,6 +108,8 @@ public class EditorPane extends ContentPane {
     /** The file path property. */
     private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.EMPTY);
 
+    private final PaintPulse paintPulse;
+
     /** The close listener. */
     private Consumer<ContentPane> closeListener;
 
@@ -155,6 +157,9 @@ public class EditorPane extends ContentPane {
         //     paint(); // TODO only caret draw
         // });
         nameProperty.setValue(model.query(Query.modelName));
+
+        paintPulse = new PaintPulse(this::paint);
+        paintPulse.start();
     }
 
     public EditorPane bindLater(Session session) {
@@ -165,7 +170,7 @@ public class EditorPane extends ContentPane {
                 model = model.with(session);
                 model.setSize(getWidth(), getHeight());
             }
-            paint();
+            paintPulse.request();
         });
         return this;
     }
@@ -173,7 +178,6 @@ public class EditorPane extends ContentPane {
     @Override
     public void focus() {
         canvas.requestFocus();
-        paint();
     }
 
     private void handleContextMenuRequested(ContextMenuEvent e) {
@@ -185,7 +189,7 @@ public class EditorPane extends ContentPane {
         canvas.setWidth(n.getWidth());
         canvas.setHeight(n.getHeight());
         model().setSize(n.getWidth(), n.getHeight());
-        paint();
+        paintPulse.request();
     }
 
     private void handleScroll(ScrollEvent e) {
@@ -199,7 +203,7 @@ public class EditorPane extends ContentPane {
                     model().scrollPrev((int) Math.min(5, e.getDeltaY()));
                 }
             }
-            paint();
+            paintPulse.request();
         }
     }
 
@@ -216,12 +220,6 @@ public class EditorPane extends ContentPane {
             Platform.runLater(() -> editorPane.execute(lastCmd));
         }
         return editorPane;
-    }
-
-    private void openInFiler(Path path) {
-        if (path != null && Files.isReadableDirectory(path.getParent())) {
-            context.getApp().getHostServices().showDocument(path.getParent().toUri().toString());
-        }
     }
 
     private void openFindInFiles() {
@@ -259,14 +257,14 @@ public class EditorPane extends ContentPane {
                 case 2 -> model().clickDouble(e.getX(), e.getY());
                 case 3 -> model().clickTriple(e.getX(), e.getY());
             }
-            paint();
+            paintPulse.request();
         }
     }
 
     private void handleMouseDragged(MouseEvent e) {
         if (e.getButton() == MouseButton.PRIMARY) {
             model().moveDragged(e.getX(), e.getY());
-            model().paint(draw);
+            paintPulse.request();
         }
     }
 
@@ -306,7 +304,7 @@ public class EditorPane extends ContentPane {
                 e.setDropCompleted(true);
                 e.consume();
                 inputText(() -> list);
-                paint();
+                paintPulse.request();
                 return;
             }
         }
@@ -315,12 +313,12 @@ public class EditorPane extends ContentPane {
 
     private void handleVerticalScroll(ObservableValue<? extends Number> ob, Number o, Number n) {
         model().scrollAt(n.intValue());
-        paint();
+        model.paint(draw);
     }
 
     private void handleHorizontalScroll(ObservableValue<? extends Number> ob, Number o, Number n) {
         model().scrollX(n.doubleValue());
-        paint();
+        model.paint(draw);
     }
 
     private void handleInputMethodTextChanged(InputMethodEvent e) {
@@ -336,7 +334,7 @@ public class EditorPane extends ContentPane {
             model().imeComposed("");
             model().imeOff();
         }
-        paint();
+        paintPulse.request();
     }
 
     void execute(Command command) {
@@ -408,7 +406,7 @@ public class EditorPane extends ContentPane {
         if (command instanceof FindCommand cmd) {
             findCommandHistory.push(cmd);
         }
-        paint();
+        paintPulse.request();
     }
 
     private void apply(Action action) {
@@ -423,7 +421,7 @@ public class EditorPane extends ContentPane {
                 return null;
             }
         };
-        task.setOnSucceeded(_ -> paint());
+        task.setOnSucceeded(_ -> paintPulse.request());
         floatBar.handleProgress(task);
         var thread = new Thread(task);
         thread.setDaemon(true);
@@ -483,7 +481,7 @@ public class EditorPane extends ContentPane {
         } else {
             inputText(path::toString);
         }
-        paint();
+        paintPulse.request();
     }
 
     private void selectOrNewEdit(Path path) {
@@ -506,7 +504,7 @@ public class EditorPane extends ContentPane {
             return newEdit;
         } else {
             open(session);
-            paint();
+            paintPulse.request();
             return this;
         }
     }
@@ -606,6 +604,7 @@ public class EditorPane extends ContentPane {
             restorableSession = session.isEmpty() ? Optional.empty() : Optional.of(session);
         }
         m.close();
+        if (force) paintPulse.stop();
         return restorableSession;
     }
 
@@ -778,6 +777,12 @@ public class EditorPane extends ContentPane {
         var window = getScene().getWindow();
         SelectOneMenu.of(context.recents(), this::selectOrOpen)
             .show(window, window.getX(), window.getY() + 55);
+    }
+
+    private void openInFiler(Path path) {
+        if (path != null && Files.isReadableDirectory(path.getParent())) {
+            context.getApp().getHostServices().showDocument(path.getParent().toUri().toString());
+        }
     }
 
     private void searchInBrowser(String query) {
