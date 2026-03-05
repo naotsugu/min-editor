@@ -18,7 +18,11 @@ package com.mammb.code.editor.ui.fx;
 import javafx.animation.AnimationTimer;
 
 /**
- * PaintTimer.
+ * The PaintPulse class is an extension of AnimationTimer that is used
+ * to optimize and control rendering operations during an animation cycle.
+ * It ensures that a specified paint action is executed when requested
+ * and only runs the paint operation if marked as dirty, avoiding unnecessary
+ * execution of redundant operations.
  * @author Naotsugu Kobayashi
  */
 public class PaintPulse extends AnimationTimer {

@@ -97,6 +97,8 @@ public class EditorPane extends ContentPane {
     private final Draw draw;
     /** The editor model. */
     private EditorModel model;
+    /** The paint pulse. */
+    private final PaintPulse paintPulse;
     /** The screen scroll. */
     private final FxScreenScroll scroll = new FxScreenScroll(new ScrollBar(), new ScrollBar());
     /** The float bar. */
@@ -107,8 +109,6 @@ public class EditorPane extends ContentPane {
     private final LruList<FindCommand> findCommandHistory = new LruList<>(15);
     /** The file path property. */
     private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.EMPTY);
-
-    private final PaintPulse paintPulse;
 
     /** The close listener. */
     private Consumer<ContentPane> closeListener;
@@ -175,10 +175,7 @@ public class EditorPane extends ContentPane {
         return this;
     }
 
-    @Override
-    public void focus() {
-        canvas.requestFocus();
-    }
+    // ---- event handler ----
 
     private void handleContextMenuRequested(ContextMenuEvent e) {
         new AppContextMenu(this)
@@ -205,30 +202,6 @@ public class EditorPane extends ContentPane {
             }
             paintPulse.request();
         }
-    }
-
-    private void zoom(double n) {
-        draw.increaseFontSize(Math.clamp(n, -1, 1));
-        model().updateFonts(draw.fontMetrics());
-    }
-
-    private EditorPane foundFilter(int contextSize) {
-        var editorPane = new EditorPane(context)
-            .with(model().getSession(Session.rowFilter(model().query(Query.foundRows), contextSize)));
-        var lastCmd = findCommandHistory.peek();
-        if (lastCmd != null) {
-            Platform.runLater(() -> editorPane.execute(lastCmd));
-        }
-        return editorPane;
-    }
-
-    private void openFindInFiles() {
-        var path = model().query(Query.contentPath).map(Path::getParent)
-            .orElse(Path.of(System.getProperty("user.home")));
-        var fif = FindInFilesPane.of(path, r -> {
-            openOrNewEdit(Session.of(r.path(), Math.max(0, r.line() - 5), r.line() - 1, r.col()), r.withShortcut());
-        });
-        fif.openWithWindow(getScene().getWindow());
     }
 
     private void handleMouseMoved(MouseEvent e) {
@@ -414,6 +387,7 @@ public class EditorPane extends ContentPane {
             model().apply(action);
             return;
         }
+
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
@@ -428,11 +402,15 @@ public class EditorPane extends ContentPane {
         thread.start();
     }
 
+    @Override
+    public void focus() {
+        canvas.requestFocus();
+    }
+
     private void inputText(Supplier<Object> supplier) {
         try {
             Object obj = supplier.get();
-            if (obj == null) return;
-            model().apply(Action.input(obj.toString()));
+            if (obj != null) model().apply(Action.input(obj.toString()));
         } catch (Exception e) {
             log.log(System.Logger.Level.WARNING, "failed to input text", e);
         }
@@ -441,19 +419,23 @@ public class EditorPane extends ContentPane {
     private void paint() {
         var model = model();
         model.paint(draw);
+        floatBar.setText(stateTexts(model));
+        nameProperty.setValue(model.query(Query.modelName));
+    }
+
+    private static String[] stateTexts(EditorModel model) {
         Point p = model.query(Query.caretPoint);
         int selectedCounts = model.query(Query.selectedCounts);
         int foundRowCounts = model.query(Query.foundRowCounts);
         int foundCounts = (foundRowCounts > 0) ? model.query(Query.foundCounts) : 0;
-        floatBar.setText(
+        return new String[] {
             selectedCounts > 0 ? String.format("%,d selected", selectedCounts): "",
             foundRowCounts > 0 ? String.format("%,d found(%,d rows)", foundCounts, foundRowCounts) : "",
             String.format("%,d", p.row() + 1) + ":" + String.format("%,d", p.col()),
             HexFormat.of().formatHex(model.query(Query.bytesAtCaret)),
             model.query(Query.rowEndingSymbol),
-            model.query(Query.charCodeSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : ""));
-
-        nameProperty.setValue(model.query(Query.modelName));
+            model.query(Query.charCodeSymbol) + ((model.query(Query.bom).length > 0) ? "(BOM)" : "")
+        };
     }
 
     private void openWithChooser() {
@@ -477,9 +459,9 @@ public class EditorPane extends ContentPane {
             open(Session.of(path));
         } else if (Files.isReadableDirectory(path)) {
             String ls = String.join("\n", Files.listAbsolutePath(path));
-            inputText(() -> ls.isBlank() ? path.toAbsolutePath().toString() : ls);
+            inputText(() -> ls.isBlank() ? path.toAbsolutePath() : ls);
         } else {
-            inputText(path::toString);
+            inputText(() -> path);
         }
         paintPulse.request();
     }
@@ -555,7 +537,7 @@ public class EditorPane extends ContentPane {
 
     @Override
     boolean needsCloseConfirmation() {
-        return model().query(Query.modified) && query(Query.contentPath).isPresent();
+        return model().query(Query.modified) && model().query(Query.contentPath).isPresent();
     }
 
     @Override
@@ -571,16 +553,32 @@ public class EditorPane extends ContentPane {
         return canDiscard;
     }
 
+    @Override
+    Optional<Session> close(boolean force) {
+        EditorModel model = model();
+        if (model == null) return Optional.empty();
+        Optional<Session> restorableSession;
+        var contentPath = model.query(Query.contentPath);
+        if (contentPath.isPresent()) {
+            context.closed(contentPath.get());
+            restorableSession = force || canClose()
+                ? Optional.of(model.getSession())
+                : Optional.empty();
+        } else {
+            var session = model.stash();
+            restorableSession = session.isEmpty() ? Optional.empty() : Optional.of(session);
+        }
+        model.close();
+        if (force) paintPulse.stop();
+        return restorableSession;
+    }
+
     void forward() {
-        sessionHistory.forward().ifPresent(session -> {
-            if (canClose()) open(session);
-        });
+        sessionHistory.forward().ifPresent(session -> { if (canClose()) open(session); });
     }
 
     void backward() {
-        sessionHistory.backward().ifPresent(session -> {
-            if (canClose()) open(session);
-        });
+        sessionHistory.backward().ifPresent(session -> { if (canClose()) open(session); });
     }
 
     Optional<Session> session() {
@@ -588,25 +586,6 @@ public class EditorPane extends ContentPane {
         return session.isEmpty() ? Optional.empty() : Optional.of(session);
     }
 
-    @Override
-    Optional<Session> close(boolean force) {
-        EditorModel m = model();
-        if (m == null) return Optional.empty();
-        Optional<Session> restorableSession;
-        var contentPath = m.query(Query.contentPath);
-        if (contentPath.isPresent()) {
-            context.closed(contentPath.get());
-            restorableSession = force || canClose()
-                ? Optional.of(m.getSession())
-                : Optional.empty();
-        } else {
-            var session = m.stash();
-            restorableSession = session.isEmpty() ? Optional.empty() : Optional.of(session);
-        }
-        m.close();
-        if (force) paintPulse.stop();
-        return restorableSession;
-    }
 
     private void save() {
         // TODO saving large files runs in the background
@@ -654,12 +633,6 @@ public class EditorPane extends ContentPane {
         return editorPane;
     }
 
-    private void showCommandPalette(Class<? extends Command> clazz) {
-        new CommandPalette(this, clazz, model())
-            .showAndWait()
-            .ifPresent(this::execute);
-    }
-
     private InputMethodRequests inputMethodRequests() {
         return new InputMethodRequests() {
             @Override
@@ -684,17 +657,19 @@ public class EditorPane extends ContentPane {
     }
 
     @Override
-    public ReadOnlyObjectProperty<Name> nameProperty() {
-        return nameProperty;
-    }
+    public ReadOnlyObjectProperty<Name> nameProperty() { return nameProperty; }
+
+    SessionHistory sessionHistory() { return sessionHistory; }
+
+    private EditorModel model() { return model; }
 
     @Override
     boolean externalChanged() {
-        var contentPath = query(Query.contentPath);
+        var contentPath = model().query(Query.contentPath);
         if (contentPath.isPresent()) {
             var current = Files.lastModifiedTime(contentPath.get());
             if (current != null) {
-                return query(Query.lastModifiedTime)
+                return model().query(Query.lastModifiedTime)
                     .map(m -> m.compareTo(current) != 0).orElse(false);
             }
         }
@@ -710,9 +685,6 @@ public class EditorPane extends ContentPane {
         return model().query(query);
     }
 
-    SessionHistory sessionHistory() { return sessionHistory; }
-    private EditorModel model() { return model; }
-
     private EditorPane with(Session session) {
         model = model.with(session);
         return this;
@@ -722,11 +694,7 @@ public class EditorPane extends ContentPane {
 
     private boolean selectExisting(Path path) {
         if (path == null || !Files.exists(path)) return false;
-        var container = getContainer();
-        if (container.isPresent() && container.get().selectExistingTab(path)) {
-            return true;
-        }
-        return false;
+        return getContainer().map(c -> c.selectExistingTab(path)).orElse(false);
     }
 
     private <T extends ContentPane> T openOnNextTab(T pane) {
@@ -756,6 +724,36 @@ public class EditorPane extends ContentPane {
     }
 
     // ---- utility action ----
+
+    private void showCommandPalette(Class<? extends Command> clazz) {
+        new CommandPalette(this, clazz, model())
+            .showAndWait()
+            .ifPresent(this::execute);
+    }
+
+    private void zoom(double n) {
+        draw.increaseFontSize(Math.clamp(n, -1, 1));
+        model().updateFonts(draw.fontMetrics());
+    }
+
+    private EditorPane foundFilter(int contextSize) {
+        var editorPane = new EditorPane(context)
+            .with(model().getSession(Session.rowFilter(model().query(Query.foundRows), contextSize)));
+        var lastCmd = findCommandHistory.peek();
+        if (lastCmd != null) {
+            Platform.runLater(() -> editorPane.execute(lastCmd));
+        }
+        return editorPane;
+    }
+
+    private void openFindInFiles() {
+        var path = model().query(Query.contentPath).map(Path::getParent)
+            .orElse(Path.of(System.getProperty("user.home")));
+        var fif = FindInFilesPane.of(path, r ->
+            openOrNewEdit(Session.of(r.path(), Math.max(0, r.line() - 5), r.line() - 1, r.col()), r.withShortcut())
+        );
+        fif.openWithWindow(getScene().getWindow());
+    }
 
     private EditorPane diff(String pathString, boolean withoutFold) {
         Path path = (pathString == null || pathString.isBlank()) ? null : Path.of(pathString);
