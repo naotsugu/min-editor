@@ -151,11 +151,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     private List<TabAndPane> tabAndPanes() {
-        SplitTabPane root = this;
-        while (root.parent != null) {
-            root = root.parent;
-        }
-        return tabs(root).stream()
+        return tabs(root()).stream()
             .filter(tab -> tab.getContent() instanceof ContentPane)
             .map(tab -> new TabAndPane(tab, tab.getTabPane(), (ContentPane) tab.getContent()))
             .toList();
@@ -357,11 +353,11 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
         private void handleOnTabClosed(Event e) {
             if (tabPane.getTabs().isEmpty()) {
-                if (parent.parent == null) {
+                if (parent.isRoot()) {
                     EditorPane pane = new EditorPane(parent.context);
                     add(pane);
                 } else {
-                    parent.parent.remove(parent);
+                    parent.parent().remove(parent);
                 }
             }
         }
@@ -540,10 +536,10 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             }
             return insertion;
         }
-        @Override
-        public void parent(SplitTabPane parent) { this.parent = parent; }
-        @Override
-        public SplitTabPane parent() { return parent; }
+
+        @Override public void parent(SplitTabPane parent) { this.parent = parent; }
+        @Override public SplitTabPane parent() { return parent; }
+
         private TabPane getTabPane() { return tabPane; }
 
         private static Image tabImage(Node node) {
