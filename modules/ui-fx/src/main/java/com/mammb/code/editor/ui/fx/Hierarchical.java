@@ -20,12 +20,40 @@ package com.mammb.code.editor.ui.fx;
  * @param <E> the type of element
  * @author Naotsugu Kobayashi
  */
-public interface Hierarchical<E> {
+public interface Hierarchical<E extends Hierarchical<E>> {
 
     /**
      * Set the parent.
      * @param parent the parent
      */
-    void setParent(E parent);
+    void parent(E parent);
+
+    /**
+     * Get the parent.
+     * @return the parent
+     */
+    E parent();
+
+    /**
+     * Retrieves the root element in the hierarchy.
+     * @return the root element of the hierarchy
+     */
+    default E root() {
+        @SuppressWarnings("unchecked")
+        E root = (E) this;
+        while (!root.isRoot()) {
+            root = root.parent();
+        }
+        return root;
+    }
+
+    /**
+     * Determines whether this element is a root element in the hierarchy.
+     * An element is considered a root if it does not have a parent.
+     * @return {@code true} if this element has no parent, otherwise {@code false}.
+     */
+    default boolean isRoot() {
+        return parent() == null;
+    }
 
 }

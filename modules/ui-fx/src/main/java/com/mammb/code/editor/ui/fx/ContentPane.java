@@ -65,8 +65,8 @@ public abstract class ContentPane extends StackPane {
     abstract ReadOnlyObjectProperty<Name> nameProperty();
 
     /**
-     * Check whether the pane is external changed.
-     * @return {@code true}, if the pane is external changed
+     * Check whether the pane is externally changed.
+     * @return {@code true}, if the pane is externally changed
      */
     abstract boolean externalChanged();
 

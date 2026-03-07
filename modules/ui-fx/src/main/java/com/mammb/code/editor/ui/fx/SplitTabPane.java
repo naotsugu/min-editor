@@ -95,7 +95,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         this(parent.context);
         pane.getItems().add(node);
         this.parent = parent;
-        node.setParent(this);
+        node.parent(this);
     }
 
     private DndTabPane add(ContentPane node) {
@@ -117,7 +117,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         pane.getItems().stream()
             .filter(Hierarchical.class::isInstance)
             .map(Hierarchical.class::cast)
-            .forEach(h -> h.setParent(this));
+            .forEach(h -> h.parent(this));
     }
 
     DndTabPane addRight(ContentPane node) {
@@ -193,8 +193,12 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     }
 
     @Override
-    public void setParent(SplitTabPane parent) {
+    public void parent(SplitTabPane parent) {
         this.parent = parent;
+    }
+    @Override
+    public SplitTabPane parent() {
+        return parent;
     }
 
     record TabAndPane(Tab tab, TabPane tabPane, ContentPane pane) {
@@ -537,8 +541,9 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             return insertion;
         }
         @Override
-        public void setParent(SplitTabPane parent) { this.parent = parent; }
-        SplitTabPane parent() { return parent; }
+        public void parent(SplitTabPane parent) { this.parent = parent; }
+        @Override
+        public SplitTabPane parent() { return parent; }
         private TabPane getTabPane() { return tabPane; }
 
         private static Image tabImage(Node node) {
