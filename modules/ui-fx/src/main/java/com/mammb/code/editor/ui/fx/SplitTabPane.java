@@ -182,10 +182,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     public void reloadExternalChanges() {
         var tabs = tabAndPanes();
         for (TabAndPane tabAndPane : tabs) {
-            if (tabAndPane.pane().externalChanged()
-                && tabAndPane.pane() instanceof EditorPane editorPane) {
-                editorPane.execute(new Command.ReloadWith(null));
-            }
+            tabAndPane.pane().refreshIfNeeded();
         }
     }
 
@@ -256,6 +253,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             });
         }
 
+        @Override
         public void addNext(ContentPane node) {
             var tab = new Tab();
             tab.setContent(node);
@@ -272,13 +270,15 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             });
         }
 
+        @Override
         public void addRightPane(ContentPane pane) { addRight(pane, false); }
+        @Override
         public void addRightPaneWithFocus(ContentPane pane) { addRight(pane, true); }
         private void addRight(ContentPane pane, boolean focus) {
             var tabPane = parent.addRight(pane);
-            if (focus) Platform.runLater(tabPane::focus);
+            if (focus) runLater(tabPane::focus);
         }
-
+        @Override
         public boolean selectExistingTab(Path path) {
             if (path == null || !Files.exists(path)) return false;
             var tap = parent.tabAndPanes().stream()
@@ -363,7 +363,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleOnTabClosed(Event e) {
             if (tabPane.getTabs().isEmpty()) {
                 if (parent.isRoot()) {
-                    EditorPane pane = new EditorPane(parent.context);
+                    ContentPane pane = new EditorPane(parent.context);
                     addNext(pane);
                 } else {
                     parent.parent().remove(parent);

@@ -669,16 +669,15 @@ public class EditorPane extends ContentPane {
     private EditorModel model() { return model; }
 
     @Override
-    boolean externalChanged() {
+    public void refreshIfNeeded() {
         var contentPath = model().query(Query.contentPath);
         if (contentPath.isPresent()) {
             var current = Files.lastModifiedTime(contentPath.get());
-            if (current != null) {
-                return model().query(Query.lastModifiedTime)
-                    .map(m -> m.compareTo(current) != 0).orElse(false);
+            if (current != null && model().query(Query.lastModifiedTime)
+                .map(m -> m.compareTo(current) != 0).orElse(false)) {
+                reload(null);
             }
         }
-        return false;
     }
 
     @Override

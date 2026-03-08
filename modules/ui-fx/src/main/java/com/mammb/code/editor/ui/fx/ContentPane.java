@@ -65,9 +65,10 @@ public abstract class ContentPane extends StackPane {
     abstract ReadOnlyObjectProperty<Name> nameProperty();
 
     /**
-     * Check whether the pane is externally changed.
-     * @return {@code true}, if the pane is externally changed
+     * Refreshes the content of the pane if an update is required.
+     * Implementing classes should define the logic to evaluate whether a refresh
+     * is necessary and perform the appropriate actions to update the pane's state.
      */
-    abstract boolean externalChanged();
+    abstract void refreshIfNeeded();
 
 }
