@@ -42,7 +42,6 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ButtonType;
@@ -319,13 +318,13 @@ public class EditorPane extends ContentPane {
             case SaveWithLF _         -> saveWith(null, "LF");
             case SaveWithCRLF _       -> saveWith(null, "CRLF");
             case SaveWith cmd         -> saveWith(cmd.charset(), null);
-            case New _                -> openOnNextTab(new EditorPane(context));
+            case New _                -> openNewEdit();
             case ReloadWith cmd       -> reload(cmd.charset());
             case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> selectOrNewEdit(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
-            case Config _             -> openOnNextTab(new EditorPane(context)).open(Session.of(context.config().path()));
+            case Config _             -> openNewEdit().open(Session.of(context.config().path()));
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
             case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseInsensitive()));
             case FindAll cmd          -> apply(Action.findAll(cmd.str(), cmd.caseInsensitive()));
@@ -364,12 +363,12 @@ public class EditorPane extends ContentPane {
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff _               -> openOnRightPane(diff(null, false));
-            case DiffFoldOff _        -> openOnRightPane(diff(null, true));
-            case DiffWith cmd         -> openOnRightPane(diff(cmd.path(), false));
-            case Duplicate _          -> openOnRightPaneWithFocus(duplicate());
-            case BinaryView _         -> openOnRightPane(binary());
-            case FoundFilterView cmd  -> openOnRightPaneWithFocus(foundFilter(cmd.contextSize()));
+            case Diff _               -> TabContainer.find(this).addRightPane(diff(null, false));
+            case DiffFoldOff _        -> TabContainer.find(this).addRightPane(diff(null, true));
+            case DiffWith cmd         -> TabContainer.find(this).addRightPane(diff(cmd.path(), false));
+            case Duplicate _          -> TabContainer.find(this).addRightPaneWithFocus(duplicate());
+            case BinaryView _         -> TabContainer.find(this).addRightPane(binary());
+            case FoundFilterView cmd  -> TabContainer.find(this).addRightPaneWithFocus(foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
@@ -468,20 +467,20 @@ public class EditorPane extends ContentPane {
 
     private void selectOrNewEdit(Path path) {
         if (path == null || !Files.exists(path)) return;
-        if (selectExisting(path)) return;
-        var newEdit = openOnNextTab(new EditorPane(context));
+        if (TabContainer.find(this).selectExistingTab(path)) return;
+        var newEdit = openNewEdit();
         Platform.runLater(() -> newEdit.open(path));
     }
 
     private void selectOrOpen(Path path) {
         if (path == null || !Files.exists(path)) return;
-        if (selectExisting(path)) return;
+        if (TabContainer.find(this).selectExistingTab(path)) return;
         openOrNewEdit(Session.of(path), false);
     }
 
     private EditorPane openOrNewEdit(Session session, boolean forceNewEdit) {
         if (forceNewEdit || model().query(Query.modified)) {
-            var newEdit = openOnNextTab(new EditorPane(context));
+            var newEdit = openNewEdit();
             newEdit.open(session);
             return newEdit;
         } else {
@@ -533,6 +532,12 @@ public class EditorPane extends ContentPane {
                 .formatted(model.query(Query.rowSize), System.currentTimeMillis() - start));
         });
         return task;
+    }
+
+    private EditorPane openNewEdit() {
+        var newEdit = new EditorPane(context);
+        TabContainer.find(this).addNext(newEdit);
+        return newEdit;
     }
 
     @Override
@@ -688,39 +693,6 @@ public class EditorPane extends ContentPane {
     private EditorPane with(Session session) {
         model = model.with(session);
         return this;
-    }
-
-    // ---- tab container action ----
-
-    private boolean selectExisting(Path path) {
-        if (path == null || !Files.exists(path)) return false;
-        return getContainer().map(c -> c.selectExistingTab(path)).orElse(false);
-    }
-
-    private <T extends ContentPane> T openOnNextTab(T pane) {
-        getContainer().ifPresent(c -> c.add(pane));
-        return pane;
-    }
-    private <T extends ContentPane> T openOnRightPaneWithFocus(T pane) {
-        return openOnRightPane(pane, true);
-    }
-    private <T extends ContentPane> T openOnRightPane(T pane) {
-        return openOnRightPane(pane, false);
-    }
-    private <T extends ContentPane> T openOnRightPane(T pane, boolean focus) {
-        getContainer().ifPresent(c -> {
-            var tabPane = c.parent().addRight(pane);
-            if (focus) Platform.runLater(tabPane::focus);
-        });
-        return pane;
-    }
-    private Optional<SplitTabPane.DndTabPane> getContainer() {
-        Node node = getParent();
-        for (;;) {
-            if (node == null) return Optional.empty();
-            if (node instanceof SplitTabPane.DndTabPane pane) return Optional.of(pane);
-            node = node.getParent();
-        }
     }
 
     // ---- utility action ----

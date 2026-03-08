@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.ui.base.Command;
 import javafx.application.Platform;
@@ -82,7 +83,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     public SplitTabPane(FxAppContext ctx, ContentPane... panes) {
         this(ctx);
         DndTabPane dndTabPane = add(panes[0]);
-        Arrays.stream(panes).skip(1).forEach(dndTabPane::add);
+        Arrays.stream(panes).skip(1).forEach(dndTabPane::addNext);
     }
 
     private SplitTabPane(ContentPane node, SplitTabPane parent) {
@@ -228,7 +229,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         return list;
     }
 
-    static class DndTabPane extends StackPane implements Hierarchical<SplitTabPane> {
+    static class DndTabPane extends StackPane implements Hierarchical<SplitTabPane>, TabContainer {
         private final TabPane tabPane = new TabPane();
         private final Rectangle marker = new Rectangle();
         private SplitTabPane parent;
@@ -243,19 +244,19 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             setOnDragDropped(this::handleDragDropped);
             setOnDragExited(this::handleDragExited);
             setOnDragDone(this::handleDragDone);
-            add(node);
+            addNext(node);
             runLater(() -> {
                 // double-click in the tab area to open a new tab
                 Node headerArea = tabPane.lookup(".tab-header-area");
                 if (headerArea != null) {
                     headerArea.setOnMouseClicked(e -> {
-                        if (e.getClickCount() == 2) add(new EditorPane(parent.context));
+                        if (e.getClickCount() == 2) addNext(new EditorPane(parent.context));
                     });
                 }
             });
         }
 
-        void add(ContentPane node) {
+        public void addNext(ContentPane node) {
             var tab = new Tab();
             tab.setContent(node);
             initTab(tab);
@@ -271,7 +272,15 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             });
         }
 
-        boolean selectExistingTab(Path path) {
+        public void addRightPane(ContentPane pane) { addRight(pane, false); }
+        public void addRightPaneWithFocus(ContentPane pane) { addRight(pane, true); }
+        private void addRight(ContentPane pane, boolean focus) {
+            var tabPane = parent.addRight(pane);
+            if (focus) Platform.runLater(tabPane::focus);
+        }
+
+        public boolean selectExistingTab(Path path) {
+            if (path == null || !Files.exists(path)) return false;
             var tap = parent.tabAndPanes().stream()
                 .filter(t -> t.pane().nameProperty().get().canonical().equals(path.toString()))
                 .findFirst();
@@ -287,7 +296,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             if (path == null) return;
             if (!selectExistingTab(path)) {
                 EditorPane pane = new EditorPane(parent.context);
-                add(pane);
+                addNext(pane);
                 Platform.runLater(() -> pane.open(path));
             }
         }
@@ -311,7 +320,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             if (focused) focus();
         }
 
-        void focus() {
+        public void focus() {
             var active = activePane.get();
             if (active != null) {
                 active.getStyleClass().remove("app-tab-pane-active");
@@ -355,7 +364,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             if (tabPane.getTabs().isEmpty()) {
                 if (parent.isRoot()) {
                     EditorPane pane = new EditorPane(parent.context);
-                    add(pane);
+                    addNext(pane);
                 } else {
                     parent.parent().remove(parent);
                 }
