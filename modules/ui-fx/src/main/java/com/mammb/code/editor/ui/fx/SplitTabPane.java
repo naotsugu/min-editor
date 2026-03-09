@@ -180,6 +180,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     public void parent(SplitTabPane parent) {
         this.parent = parent;
     }
+
     @Override
     public SplitTabPane parent() {
         return parent;

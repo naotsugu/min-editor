@@ -49,12 +49,14 @@ public class AppPane extends BorderPane {
             sessions.add(Session.empty());
         }
 
+        // restore sessions and create the container
         var panes = sessions.stream()
             .map(session -> new EditorPane(ctx).bindLater(session))
             .toArray(EditorPane[]::new);
         var container = new SplitTabPane(ctx, panes);
         setCenter(container);
 
+        // when focus is gained, reload external changes to the content.
         stage.focusedProperty().addListener((_, _, focused) -> {
             if (focused) container.contentPanes()
                 .forEach(ContentPane::refreshIfNeeded);
