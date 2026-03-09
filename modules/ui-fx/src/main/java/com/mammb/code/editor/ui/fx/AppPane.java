@@ -54,7 +54,7 @@ public class AppPane extends BorderPane {
         setCenter(container);
 
         stage.focusedProperty().addListener((_, _, focused) -> {
-            if (focused) container.reloadExternalChanges();
+            if (focused) container.contentPanes().forEach(ContentPane::refreshIfNeeded);
         });
 
         stage.setOnCloseRequest(e -> {

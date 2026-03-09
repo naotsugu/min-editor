@@ -179,11 +179,12 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         return true;
     }
 
-    public void reloadExternalChanges() {
-        var tabs = tabAndPanes();
-        for (TabAndPane tabAndPane : tabs) {
-            tabAndPane.pane().refreshIfNeeded();
-        }
+    public List<ContentPane> contentPanes() {
+        return tabs(root()).stream()
+            .map(Tab::getContent)
+            .filter(ContentPane.class::isInstance)
+            .map(ContentPane.class::cast)
+            .toList();
     }
 
     @Override
@@ -226,6 +227,9 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         return list;
     }
 
+    /**
+     * The DndTabPane.
+     */
     static class DndTabPane extends StackPane implements Hierarchical<SplitTabPane>, TabContainer {
         private final TabPane tabPane = new TabPane();
         private final Rectangle marker = new Rectangle();
@@ -247,23 +251,23 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 Node headerArea = tabPane.lookup(".tab-header-area");
                 if (headerArea != null) {
                     headerArea.setOnMouseClicked(e -> {
-                        if (e.getClickCount() == 2) addNext(new EditorPane(parent.context));
+                        if (e.getClickCount() == 2) addNext(new EditorPane(parent.context)); // TODO
                     });
                 }
             });
         }
 
         @Override
-        public void addNext(ContentPane node) {
+        public void addNext(ContentPane pane) {
             var tab = new Tab();
-            tab.setContent(node);
+            tab.setContent(pane);
             initTab(tab);
             tabPane.getTabs().add(tab);
             tabPane.getSelectionModel().select(tab);
-            node.focus();
+            pane.focus();
             tabPane.getSelectionModel().selectedItemProperty().addListener(this::handleSelectedTabItem);
-            node.setCloseListener(e -> {
-                if (e.canClose()) {
+            pane.setCloseListener(e -> {
+                if (e.canClose()) { // TODO
                     tab.getTabPane().getTabs().remove(tab);
                     Event.fireEvent(tab, new Event(Tab.CLOSED_EVENT));
                 }
@@ -295,7 +299,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void selectOrOpen(Path path) {
             if (path == null) return;
             if (!selectExistingTab(path)) {
-                EditorPane pane = new EditorPane(parent.context);
+                EditorPane pane = new EditorPane(parent.context); // TODO
                 addNext(pane);
                 Platform.runLater(() -> pane.open(path));
             }
@@ -363,7 +367,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleOnTabClosed(Event e) {
             if (tabPane.getTabs().isEmpty()) {
                 if (parent.isRoot()) {
-                    ContentPane pane = new EditorPane(parent.context);
+                    ContentPane pane = new EditorPane(parent.context); // TODO
                     addNext(pane);
                 } else {
                     parent.parent().remove(parent);
