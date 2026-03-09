@@ -18,6 +18,8 @@ package com.mammb.code.editor.ui.fx;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import com.mammb.code.editor.core.Session;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -54,13 +56,20 @@ public class AppPane extends BorderPane {
         setCenter(container);
 
         stage.focusedProperty().addListener((_, _, focused) -> {
-            if (focused) container.contentPanes().forEach(ContentPane::refreshIfNeeded);
+            if (focused) container.contentPanes()
+                .forEach(ContentPane::refreshIfNeeded);
         });
 
+        // stage close action (save sessions)
         stage.setOnCloseRequest(e -> {
             e.consume();
-            var notExistsUnsaved = container.closeAll();
-            if (notExistsUnsaved) {
+            if (container.canCloseAll()) {
+                ctx.config().clearSessions();
+                ctx.config().sessions(container.contentPanes().stream()
+                    .map(cp -> cp.close(true))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .toList());
                 stage.close();
             }
         });

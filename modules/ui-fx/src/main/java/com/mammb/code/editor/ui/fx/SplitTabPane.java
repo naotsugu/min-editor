@@ -16,8 +16,6 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Files;
-import com.mammb.code.editor.core.Session;
-import com.mammb.code.editor.ui.base.Command;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -51,7 +49,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.System.Logger.Level.ERROR;
@@ -158,7 +155,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             .toList();
     }
 
-    public boolean closeAll() {
+    public boolean canCloseAll() {
         var tabs = tabAndPanes();
         for (TabAndPane tabAndPane : tabs) {
             if (tabAndPane.pane().needsCloseConfirmation()) {
@@ -168,14 +165,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 }
             }
         }
-
-        context.config().clearSessions();
-        List<Session> sessions = tabs.stream()
-            .map(tab -> tab.pane().close(true))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .toList();
-        context.config().sessions(sessions);
         return true;
     }
 
