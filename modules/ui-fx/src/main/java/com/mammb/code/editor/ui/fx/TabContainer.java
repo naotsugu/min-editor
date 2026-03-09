@@ -50,6 +50,8 @@ public interface TabContainer {
      */
     void addRightPaneWithFocus(ContentPane pane);
 
+    void close(ContentPane pane);
+
     /**
      * Searches for the nearest {@code TabContainer} instance in the hierarchy,
      * starting from the given {@code Node} and traversing up through its parents.
@@ -73,6 +75,7 @@ public interface TabContainer {
         @Override public void addNext(ContentPane pane) { }
         @Override public void addRightPane(ContentPane pane) { }
         @Override public void addRightPaneWithFocus(ContentPane pane) { }
+        @Override public void close(ContentPane pane) { }
     };
 
 }

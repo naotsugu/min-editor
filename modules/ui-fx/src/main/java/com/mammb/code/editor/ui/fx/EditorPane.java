@@ -109,9 +109,6 @@ public class EditorPane extends ContentPane {
     /** The file path property. */
     private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.EMPTY);
 
-    /** The close listener. */
-    private Consumer<ContentPane> closeListener;
-
     /**
      * Constructor.
      * @param ctx the application context
@@ -320,7 +317,7 @@ public class EditorPane extends ContentPane {
             case SaveWith cmd         -> saveWith(cmd.charset(), null);
             case New _                -> openNewEdit();
             case ReloadWith cmd       -> reload(cmd.charset());
-            case TabClose _           -> { if (closeListener != null) closeListener.accept(this); }
+            case TabClose _           -> handleCloseRequest();
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> selectOrNewEdit(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
@@ -540,6 +537,10 @@ public class EditorPane extends ContentPane {
         return newEdit;
     }
 
+    private void handleCloseRequest() {
+        if (canClose()) TabContainer.find(this).close(this);
+    }
+
     @Override
     boolean needsCloseConfirmation() {
         return model().query(Query.modified) && model().query(Query.contentPath).isPresent();
@@ -678,11 +679,6 @@ public class EditorPane extends ContentPane {
                 reload(null);
             }
         }
-    }
-
-    @Override
-    void setCloseListener(Consumer<ContentPane> closeListener) {
-        this.closeListener = closeListener;
     }
 
     <R> R query(Query<R> query) {

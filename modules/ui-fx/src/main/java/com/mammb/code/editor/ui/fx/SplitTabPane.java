@@ -256,12 +256,6 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             tabPane.getSelectionModel().select(tab);
             pane.focus();
             tabPane.getSelectionModel().selectedItemProperty().addListener(this::handleSelectedTabItem);
-            pane.setCloseListener(e -> {
-                if (e.canClose()) { // TODO
-                    tab.getTabPane().getTabs().remove(tab);
-                    Event.fireEvent(tab, new Event(Tab.CLOSED_EVENT));
-                }
-            });
         }
 
         @Override
@@ -284,6 +278,15 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             } else {
                 return false;
             }
+        }
+
+        public void close(ContentPane pane) {
+            tabPane.getTabs().stream()
+                .filter(t -> Objects.equals(t.getContent(), pane)).findFirst()
+                .ifPresent(tab -> {
+                    tab.getTabPane().getTabs().remove(tab);
+                    Event.fireEvent(tab, new Event(Tab.CLOSED_EVENT));
+                });
         }
 
         private void selectOrOpen(Path path) {

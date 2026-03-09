@@ -53,12 +53,6 @@ public abstract class ContentPane extends StackPane {
     abstract Optional<Session> close(boolean force);
 
     /**
-     * Set the close listener.
-     * @param closeListener the close listener
-     */
-    abstract void setCloseListener(Consumer<ContentPane> closeListener);
-
-    /**
      * Get the name property.
      * @return the name property
      */
