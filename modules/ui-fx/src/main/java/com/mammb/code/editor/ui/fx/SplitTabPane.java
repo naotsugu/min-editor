@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 import static java.lang.System.Logger.Level.ERROR;
 
@@ -68,29 +69,30 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     private static final AtomicReference<DndTabPane> activePane = new AtomicReference<>();
     private static final DataFormat tabMove = new DataFormat("SplitTabPane:tabMove");
 
-    private final FxAppContext context;
     private SplitPane pane = new SplitPane();
     private SplitTabPane parent = null;
 
-    private SplitTabPane(FxAppContext ctx) {
-        context = ctx;
+    private final Function<Path, ContentPane> defaultContentPaneFactory;
+
+    private SplitTabPane(Function<Path, ContentPane> defaultContentPaneFactory) {
+        this.defaultContentPaneFactory = defaultContentPaneFactory;
         getChildren().add(pane);
     }
 
-    public SplitTabPane(FxAppContext ctx, ContentPane... panes) {
-        this(ctx);
+    public SplitTabPane(Function<Path, ContentPane> defaultContentPaneFactory, ContentPane... panes) {
+        this(defaultContentPaneFactory);
         DndTabPane dndTabPane = add(panes[0]);
         Arrays.stream(panes).skip(1).forEach(dndTabPane::addNext);
     }
 
     private SplitTabPane(ContentPane node, SplitTabPane parent) {
-        this(parent.context);
+        this(parent.defaultContentPaneFactory);
         add(node);
         this.parent = parent;
     }
 
     private SplitTabPane(DndTabPane node, SplitTabPane parent) {
-        this(parent.context);
+        this(parent.defaultContentPaneFactory);
         pane.getItems().add(node);
         this.parent = parent;
         node.parent(this);
@@ -241,7 +243,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 Node headerArea = tabPane.lookup(".tab-header-area");
                 if (headerArea != null) {
                     headerArea.setOnMouseClicked(e -> {
-                        if (e.getClickCount() == 2) addNext(new EditorPane(parent.context)); // TODO
+                        if (e.getClickCount() == 2) addNext(parent.defaultContentPaneFactory.apply(null));
                     });
                 }
             });
@@ -292,9 +294,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void selectOrOpen(Path path) {
             if (path == null) return;
             if (!selectExistingTab(path)) {
-                EditorPane pane = new EditorPane(parent.context); // TODO
-                addNext(pane);
-                Platform.runLater(() -> pane.open(path));
+                addNext(parent.defaultContentPaneFactory.apply(path));
             }
         }
 
@@ -360,8 +360,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private void handleOnTabClosed(Event e) {
             if (tabPane.getTabs().isEmpty()) {
                 if (parent.isRoot()) {
-                    ContentPane pane = new EditorPane(parent.context); // TODO
-                    addNext(pane);
+                    addNext(parent.defaultContentPaneFactory.apply(null));
                 } else {
                     parent.parent().remove(parent);
                 }
@@ -376,8 +375,9 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 Image image = tabImage(label);
                 db.setDragView(image, image.getWidth() / 2, image.getHeight() / 2);
                 db.setContent(cc);
-                Tab tab = getTabPane().getTabs().stream().filter(t -> t.getGraphic().equals(label)).findFirst().get();
-                draggedTab.set(tab);
+                getTabPane().getTabs().stream()
+                    .filter(t -> t.getGraphic().equals(label)).findFirst()
+                    .ifPresent(draggedTab::set);
             }
         }
 

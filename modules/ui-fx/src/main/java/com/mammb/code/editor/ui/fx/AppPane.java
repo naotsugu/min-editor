@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import com.mammb.code.editor.core.Session;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -53,7 +54,7 @@ public class AppPane extends BorderPane {
         var panes = sessions.stream()
             .map(session -> new EditorPane(ctx).bindLater(session))
             .toArray(EditorPane[]::new);
-        var container = new SplitTabPane(ctx, panes);
+        var container = new SplitTabPane(p -> new EditorPane(ctx).bindLater(Session.of(p)), panes);
         setCenter(container);
 
         // when focus is gained, reload external changes to the content.
