@@ -23,13 +23,14 @@ import java.util.Optional;
 import java.util.function.Function;
 import com.mammb.code.editor.core.Session;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**
  * The application main pane.
  * @author Naotsugu Kobayashi
  */
-public class AppPane extends BorderPane {
+public class AppPane extends StackPane {
 
     /**
      * Constructor.
@@ -54,21 +55,23 @@ public class AppPane extends BorderPane {
         var panes = sessions.stream()
             .map(session -> new EditorPane(ctx).bindLater(session))
             .toArray(EditorPane[]::new);
-        var container = new SplitTabPane(p -> new EditorPane(ctx).bindLater(Session.of(p)), panes);
-        setCenter(container);
+        var tabContainer = new SplitTabPane(p -> new EditorPane(ctx).bindLater(Session.of(p)), panes);
+        var mainPane = new BorderPane(tabContainer);
+
+        getChildren().add(mainPane);
 
         // when focus is gained, reload external changes to the content.
         stage.focusedProperty().addListener((_, _, focused) -> {
-            if (focused) container.contentPanes()
+            if (focused) tabContainer.contentPanes()
                 .forEach(ContentPane::refreshIfNeeded);
         });
 
         // stage close action (save sessions)
         stage.setOnCloseRequest(e -> {
             e.consume();
-            if (container.canCloseAll()) {
+            if (tabContainer.canCloseAll()) {
                 ctx.config().clearSessions();
-                ctx.config().sessions(container.contentPanes().stream()
+                ctx.config().sessions(tabContainer.contentPanes().stream()
                     .map(cp -> cp.close(true))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
