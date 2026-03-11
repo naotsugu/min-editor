@@ -600,6 +600,7 @@ public class EditorPane extends ContentPane {
         } else {
             saveAs();
         }
+        context.notifier().notify("saved");
     }
 
     private void saveAs() {

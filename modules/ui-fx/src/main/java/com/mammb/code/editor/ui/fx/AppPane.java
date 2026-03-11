@@ -55,10 +55,14 @@ public class AppPane extends StackPane {
         var panes = sessions.stream()
             .map(session -> new EditorPane(ctx).bindLater(session))
             .toArray(EditorPane[]::new);
-        var tabContainer = new SplitTabPane(p -> new EditorPane(ctx).bindLater(Session.of(p)), panes);
-        var mainPane = new BorderPane(tabContainer);
+        var tabContainer = new SplitTabPane(p ->
+            new EditorPane(ctx).bindLater(Session.of(p)), panes);
 
-        getChildren().add(mainPane);
+        var mainPane = new BorderPane(tabContainer);
+        var notifyListener = new NotificationPane(this);
+        ctx.notifier().addListener(notifyListener);
+
+        getChildren().addAll(mainPane, notifyListener);
 
         // when focus is gained, reload external changes to the content.
         stage.focusedProperty().addListener((_, _, focused) -> {
