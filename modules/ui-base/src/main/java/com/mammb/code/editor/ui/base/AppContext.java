@@ -26,6 +26,9 @@ import java.nio.file.Path;
  */
 public class AppContext extends Context.AbstractContext {
 
+    /** The notifier. */
+    private final Notifier notifier = new Notifier();
+
     /**
      * Constructor.
      */
@@ -38,6 +41,17 @@ public class AppContext extends Context.AbstractContext {
     @Override
     public AppConfig config() {
         return (AppConfig) super.config();
+    }
+
+    /**
+     * Retrieves the {@code Notifier} instance associated with this context.
+     * The {@code Notifier} allows event-driven communication by managing a list
+     * of listeners and notifying them of relevant events as they occur.
+     *
+     * @return the {@code Notifier} instance associated with this context
+     */
+    public Notifier notifier() {
+        return notifier;
     }
 
     /**
@@ -75,7 +89,7 @@ public class AppContext extends Context.AbstractContext {
 
     /**
      * Retrieves the path to the application's "recents" configuration file.
-     * The path is determined by appending the "recents" sub-directory to the
+     * The path is determined by appending the "recents" subdirectory to the
      * base application configuration directory.
      *
      * @return the path to the "recents" configuration file
