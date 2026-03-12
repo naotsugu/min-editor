@@ -24,16 +24,11 @@ package com.mammb.code.editor.ui.base;
 public interface NotifyListener {
 
     /**
-     * Sends a notification with a primary message and optional additional details.
-     * Implementations of the interface are expected to handle the provided
-     * message and details appropriately.
-     * @param message The main message of the notification. It should provide a clear
-     *                and concise description of the event or information being
-     *                communicated.
-     * @param details Optional additional details that provide further context or
-     *                relevant information about the notification. These are
-     *                variable-length arguments and can be omitted.
+     * Sends a notification with a specified headline and text content.
+     *
+     * @param headline the title or headline of the notification
+     * @param text the detailed text content of the notification
      */
-    void notify(String message, String... details);
+    void notify(String headline, String text);
 
 }

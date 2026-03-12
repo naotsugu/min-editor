@@ -597,10 +597,10 @@ public class EditorPane extends ContentPane {
         // TODO saving large files runs in the background
         if (model().query(Query.contentPath).isPresent()) {
             model().save(model().query(Query.contentPath).get());
+            context.notifier().notify("saved");
         } else {
             saveAs();
         }
-        context.notifier().notify("saved");
     }
 
     private void saveAs() {
@@ -612,6 +612,7 @@ public class EditorPane extends ContentPane {
         if (file == null) return;
         Path path = file.toPath();
         model().save(path);
+        context.notifier().notify("saved");
         nameProperty.setValue(model().query(Query.modelName));
     }
 
@@ -620,6 +621,7 @@ public class EditorPane extends ContentPane {
             saveAs();
         }
         model().saveWith(charset, endingSymbol);
+        context.notifier().notify("saved");
     }
 
     private void reload(Charset charset) {

@@ -48,12 +48,22 @@ public class Notifier {
     }
 
     /**
-     * Notifies all registered listeners of an event by invoking their {@code notify} method.
-     * @param message the primary message representing the event or notification.
-     * @param details additional details associated with the event or notification.
+     * Sends a notification to all registered listeners with the provided message and description.
+     * @param message the title or headline of the notification to be sent to the listeners
+     * @param description the detailed description or content of the notification
      */
-    public void notify(String message, String... details) {
-        listeners.forEach(l -> l.notify(message, details));
+    public void notify(String message, String description) {
+        listeners.forEach(l -> l.notify(message, description));
+    }
+
+    /**
+     * Sends a notification to all registered listeners with the specified message.
+     * This method acts as shorthand for sending notifications where
+     * the description is an empty string.
+     * @param message the title or headline of the notification to be sent to the listeners
+     */
+    public void notify(String message) {
+        listeners.forEach(l -> l.notify(message, ""));
     }
 
 }
