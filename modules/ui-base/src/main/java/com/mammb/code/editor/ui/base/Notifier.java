@@ -27,7 +27,7 @@ import java.util.List;
 public class Notifier {
 
     /** The listeners */
-    private List<NotifyListener> listeners = new ArrayList<>();
+    private final List<NotifyListener> listeners = new ArrayList<>();
 
     /**
      * Adds a listener to the list of listeners that will be notified of events.
@@ -52,8 +52,8 @@ public class Notifier {
      * @param message the title or headline of the notification to be sent to the listeners
      * @param description the detailed description or content of the notification
      */
-    public void notify(String message, String description) {
-        listeners.forEach(l -> l.notify(message, description));
+    public void send(String message, String description) {
+        listeners.forEach(l -> l.accept(message, description));
     }
 
     /**
@@ -62,8 +62,8 @@ public class Notifier {
      * the description is an empty string.
      * @param message the title or headline of the notification to be sent to the listeners
      */
-    public void notify(String message) {
-        listeners.forEach(l -> l.notify(message, ""));
+    public void send(String message) {
+        listeners.forEach(l -> l.accept(message, ""));
     }
 
 }

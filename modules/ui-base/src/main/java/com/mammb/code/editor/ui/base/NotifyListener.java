@@ -24,11 +24,10 @@ package com.mammb.code.editor.ui.base;
 public interface NotifyListener {
 
     /**
-     * Sends a notification with a specified headline and text content.
-     *
-     * @param headline the title or headline of the notification
-     * @param text the detailed text content of the notification
+     * Handles a notification event by processing the provided headline and text content.
+     * @param headline the headline or title of the notification
+     * @param text the textual content or body of the notification
      */
-    void notify(String headline, String text);
+    void accept(String headline, String text);
 
 }

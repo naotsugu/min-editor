@@ -73,7 +73,6 @@ import java.util.HexFormat;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -597,7 +596,7 @@ public class EditorPane extends ContentPane {
         // TODO saving large files runs in the background
         if (model().query(Query.contentPath).isPresent()) {
             model().save(model().query(Query.contentPath).get());
-            context.notifier().notify("saved");
+            context.notifier().send("saved");
         } else {
             saveAs();
         }
@@ -612,7 +611,7 @@ public class EditorPane extends ContentPane {
         if (file == null) return;
         Path path = file.toPath();
         model().save(path);
-        context.notifier().notify("saved");
+        context.notifier().send("saved");
         nameProperty.setValue(model().query(Query.modelName));
     }
 
@@ -621,7 +620,7 @@ public class EditorPane extends ContentPane {
             saveAs();
         }
         model().saveWith(charset, endingSymbol);
-        context.notifier().notify("saved");
+        context.notifier().send("saved");
     }
 
     private void reload(Charset charset) {

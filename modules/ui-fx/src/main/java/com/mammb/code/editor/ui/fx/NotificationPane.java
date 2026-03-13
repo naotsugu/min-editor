@@ -66,7 +66,7 @@ public class NotificationPane extends VBox implements NotifyListener {
     }
 
     @Override
-    public void notify(String headline, String text) {
+    public void accept(String headline, String text) {
         var toast = new Toast(this, headline, text);
         getChildren().add(toast);
         toast.play();
