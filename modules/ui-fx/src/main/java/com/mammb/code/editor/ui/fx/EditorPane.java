@@ -384,6 +384,7 @@ public class EditorPane extends ContentPane {
             withAttr.attr() instanceof Find.Spec) ? () -> {
                 int n = model.query(Query.foundCounts);
                 if (n > 1) context.notifier().send(n + " found");
+                if (n == 0) context.notifier().send("not found");
             } : () -> { };
 
         if (model().query(Query.size) < BACKGROUND_THRESHOLD) {
