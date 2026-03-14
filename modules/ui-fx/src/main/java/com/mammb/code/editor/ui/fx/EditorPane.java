@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.fx;
 import com.mammb.code.editor.core.Draw;
 import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Files;
+import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.HoverOn;
 import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
@@ -378,8 +379,16 @@ public class EditorPane extends ContentPane {
     }
 
     private void apply(Action action) {
+
+        Runnable postFind = (action instanceof Action.WithAttr<?> withAttr &&
+            withAttr.attr() instanceof Find.Spec) ? () -> {
+                int n = model.query(Query.foundCounts);
+                if (n > 1) context.notifier().send(n + " found");
+            } : () -> { };
+
         if (model().query(Query.size) < BACKGROUND_THRESHOLD) {
             model().apply(action);
+            postFind.run();
             return;
         }
 
@@ -387,6 +396,7 @@ public class EditorPane extends ContentPane {
             @Override
             protected Void call() {
                 model().apply(action);
+                postFind.run();
                 return null;
             }
         };
@@ -679,6 +689,7 @@ public class EditorPane extends ContentPane {
             if (current != null && model().query(Query.lastModifiedTime)
                 .map(m -> m.compareTo(current) != 0).orElse(false)) {
                 reload(null);
+                context.notifier().send("reload", contentPath.get().getFileName().toString());
             }
         }
     }
