@@ -397,11 +397,13 @@ public class EditorPane extends ContentPane {
             @Override
             protected Void call() {
                 model().apply(action);
-                postFind.run();
                 return null;
             }
         };
-        task.setOnSucceeded(_ -> paintPulse.request());
+        task.setOnSucceeded(_ -> {
+            postFind.run();
+            paintPulse.request();
+        });
         floatBar.handleProgress(task);
         var thread = new Thread(task);
         thread.setDaemon(true);
