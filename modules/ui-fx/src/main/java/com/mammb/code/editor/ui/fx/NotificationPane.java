@@ -93,8 +93,9 @@ public class NotificationPane extends VBox implements NotifyListener {
 
             var headlineText = new Text(headline);
             headlineText.setWrappingWidth(getColumnConstraints().get(1).getPrefWidth());
-            headlineText.setFont(Font.font("Consolas", FontWeight.BOLD, 14));
+            headlineText.setFont(Font.font("Consolas", FontWeight.BOLD, 13));
             headlineText.setFill(Color.web(Theme.current.fgColor().web()));
+            setMargin(headlineText, new Insets(2, 0, 0, 0));
             setConstraints(headlineText, 1, 0);
             setValignment(headlineText, VPos.CENTER);
             setHalignment(headlineText, HPos.LEFT);

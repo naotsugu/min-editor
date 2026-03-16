@@ -25,6 +25,10 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -48,12 +52,19 @@ public class FloatBar extends HBox {
      */
     public FloatBar(ScrollBar vScroll, ScrollBar hScroll) {
 
+        var baseColor = Color.web(Theme.current.baseColor().web());
+
         setManaged(false);
         setAlignment(Pos.BOTTOM_CENTER);
         setBackground(new Background(new BackgroundFill(
-            Color.web(Theme.current.baseColor().web()),
+            baseColor,
             new CornerRadii(2),
             new Insets(2, 0, 0, 2))));
+        setBorder(new Border(new BorderStroke(
+            baseColor.brighter(),
+            BorderStrokeStyle.SOLID,
+            new CornerRadii(2),
+            new BorderWidths(1, 0, 0, 1))));
 
         text.setFont(Font.font("Consolas", 12));
         text.setFill(Color.web(Theme.current.fgColor().web()));
