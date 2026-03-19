@@ -33,8 +33,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -101,13 +104,17 @@ public class NotificationPane extends VBox implements NotifyListener {
             setHalignment(headlineText, HPos.LEFT);
 
             var closeIcon = Icons.close();
-            closeIcon.setOnMouseClicked(_ -> parent.getChildren().remove(this));
-            setMargin(closeIcon, new Insets(8, 8, 8, 8));
-            setConstraints(closeIcon, 2, 0);
-            setValignment(closeIcon, VPos.TOP);
-            setHalignment(closeIcon, HPos.RIGHT);
+            var closeIconColor = (Color) closeIcon.getStroke();
+            var closeButton = new StackPane(closeIcon);
+            closeButton.setOnMouseClicked(_ -> parent.getChildren().remove(this));
+            closeButton.setOnMouseEntered(_ -> closeIcon.setStroke(closeIconColor.brighter()));
+            closeButton.setOnMouseExited(_ -> closeIcon.setStroke(closeIconColor));
+            setMargin(closeButton, new Insets(8, 8, 8, 8));
+            setConstraints(closeButton, 2, 0);
+            setValignment(closeButton, VPos.TOP);
+            setHalignment(closeButton, HPos.RIGHT);
 
-            getChildren().addAll(icon, headlineText, closeIcon);
+            getChildren().addAll(icon, headlineText, closeButton);
 
             if (description != null && !description.isBlank()) {
                 var descriptionText = new Text(description);
