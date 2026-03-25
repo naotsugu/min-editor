@@ -176,6 +176,7 @@ public interface Syntax {
             case "diff", "patch" -> "diff";
             case "rb" -> "ruby";
             case "swift" -> "swift";
+            case "zig", "zon" -> "zig";
             default -> extension;
         };
     }
