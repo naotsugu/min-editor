@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.ui.base.NotifyListener;
+import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
@@ -36,8 +37,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -72,14 +71,16 @@ public class NotificationPane extends VBox implements NotifyListener {
     public void accept(String headline, String text) {
         var toast = new Toast(this, headline, text);
         getChildren().add(toast);
-        toast.play();
+        toast.show();
     }
 
     static class Toast extends GridPane {
 
+        private final Pane parent;
         private final PauseTransition pause = new PauseTransition(Duration.seconds(4));
 
         public Toast(Pane parent, String headline, String description) {
+            this.parent = parent;
             setBackground(new Background(new BackgroundFill(
                 Color.web(Theme.current.baseColor().web()).brighter(),
                 new CornerRadii(4),
@@ -106,7 +107,7 @@ public class NotificationPane extends VBox implements NotifyListener {
             var closeIcon = Icons.close();
             var closeIconColor = (Color) closeIcon.getStroke();
             var closeButton = new StackPane(closeIcon);
-            closeButton.setOnMouseClicked(_ -> parent.getChildren().remove(this));
+            closeButton.setOnMouseClicked(_ -> dismiss());
             closeButton.setOnMouseEntered(_ -> closeIcon.setStroke(closeIconColor.brighter()));
             closeButton.setOnMouseExited(_ -> closeIcon.setStroke(closeIconColor));
             setMargin(closeButton, new Insets(8, 8, 8, 8));
@@ -131,12 +132,26 @@ public class NotificationPane extends VBox implements NotifyListener {
             setOnMouseEntered(_ -> pause.stop());
             setOnMouseExited(_ -> pause.play());
 
-            pause.setOnFinished(_ -> parent.getChildren().remove(this));
+            pause.setOnFinished(_ -> dismiss());
 
         }
 
-        public void play() {
-            pause.play();
+        public void show() {
+            setOpacity(0);
+            var fadeIn = new FadeTransition(Duration.millis(300), this);
+            fadeIn.setFromValue(0);
+            fadeIn.setToValue(1);
+            fadeIn.setOnFinished(_ -> pause.play());
+            fadeIn.play();
+        }
+
+        private void dismiss() {
+            pause.stop();
+            var fadeOut = new FadeTransition(Duration.millis(300), this);
+            fadeOut.setFromValue(getOpacity());
+            fadeOut.setToValue(0);
+            fadeOut.setOnFinished(_ -> parent.getChildren().remove(this));
+            fadeOut.play();
         }
 
     }
