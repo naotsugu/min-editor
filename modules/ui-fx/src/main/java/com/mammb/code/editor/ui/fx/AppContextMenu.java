@@ -16,7 +16,6 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Action;
-import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.ui.base.Command;
 import javafx.scene.control.MenuItem;
@@ -42,59 +41,26 @@ public class AppContextMenu extends FxContextMenu {
     private static MenuItem[] buildMenuItems(EditorPane editorPane) {
 
         boolean textSelected = editorPane.query(Query.selectedCounts) > 0;
-        String style = switch (Context.platform) {
-            case "windows" -> "-fx-font: normal 10pt System;";
-            default -> "-fx-font: normal 11pt System;";
-        };
+        boolean textCopied = FxClipboard.instance.hasContents();
 
-        var cut = new MenuItem("Cut");
-        cut.setStyle(style);
-        cut.setAccelerator(CommandKeys.SC_X);
-        cut.setOnAction(e -> {
-            e.consume();
-            editorPane.execute(new Command.ActionCommand(Action.cut(FxClipboard.instance)));
-        });
-        cut.setDisable(!textSelected);
+        var cut = new FxMenuItem("Cut", CommandKeys.SC_X, !textSelected, _ ->
+            editorPane.execute(new Command.ActionCommand(Action.cut(FxClipboard.instance))));
+        var copy = new FxMenuItem("Copy", CommandKeys.SC_C, !textSelected, _ ->
+            editorPane.execute(new Command.ActionCommand(Action.copy(FxClipboard.instance))));
+        var paste = new FxMenuItem("Paste", CommandKeys.SC_V, !textCopied, _ ->
+            editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, false))));
+        var pasteAs = new FxMenuItem("Paste with context", CommandKeys.SC_SV, !textCopied, _ ->
+            editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, true))));
 
-        var copy = new MenuItem("Copy");
-        copy.setStyle(style);
-        copy.setAccelerator(CommandKeys.SC_C);
-        copy.setOnAction(e -> editorPane.execute(new Command.ActionCommand(Action.copy(FxClipboard.instance))));
-        copy.setDisable(!textSelected);
+        var backward = new FxMenuItem("Backward", CommandKeys.SC_BW, !editorPane.sessionHistory().hasBackward(), _->
+            editorPane.execute(new Command.Backward()));
+        var forward = new FxMenuItem("Forward", CommandKeys.SC_FW, !editorPane.sessionHistory().hasForward(), _ ->
+            editorPane.execute(new Command.Forward()));
 
-        var paste = new MenuItem("Paste");
-        paste.setStyle(style);
-        paste.setAccelerator(CommandKeys.SC_V);
-        paste.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, false))));
-        paste.setDisable(!FxClipboard.instance.hasContents());
-
-        var pasteAs = new MenuItem("Paste with context");
-        pasteAs.setStyle(style);
-        pasteAs.setAccelerator(CommandKeys.SC_SV);
-        pasteAs.setOnAction(_ -> editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, true))));
-        pasteAs.setDisable(!FxClipboard.instance.hasContents());
-
-        var backward = new MenuItem("Backward");
-        backward.setStyle(style);
-        backward.setAccelerator(CommandKeys.SC_BW);
-        backward.setOnAction(_ -> editorPane.execute(new Command.Backward()));
-        backward.setDisable(!editorPane.sessionHistory().hasBackward());
-
-        var forward = new MenuItem("Forward");
-        forward.setStyle(style);
-        forward.setAccelerator(CommandKeys.SC_FW);
-        forward.setOnAction(_ -> editorPane.execute(new Command.Forward()));
-        forward.setDisable(!editorPane.sessionHistory().hasForward());
-
-        var searchInBrowser = new MenuItem("Search In Browser");
-        searchInBrowser.setStyle(style);
-        searchInBrowser.setOnAction(_ -> editorPane.execute(new Command.SearchInBrowser()));
-        searchInBrowser.setDisable(!textSelected);
-
-        var translateInBrowser = new MenuItem("Translate In Browser");
-        translateInBrowser.setStyle(style);
-        translateInBrowser.setOnAction(_ -> editorPane.execute(new Command.TranslateInBrowser()));
-        translateInBrowser.setDisable(!textSelected);
+        var searchInBrowser = new FxMenuItem("Search In Browser", null, !textSelected, _ ->
+            editorPane.execute(new Command.SearchInBrowser()));
+        var translateInBrowser = new FxMenuItem("Translate In Browser", null, !textSelected, _ ->
+            editorPane.execute(new Command.TranslateInBrowser()));
 
         return new MenuItem[] {
             cut, copy, paste, pasteAs,
