@@ -26,6 +26,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -311,6 +312,11 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 label.setText(name.contextual());
                 tab.setTooltip(new Tooltip(name.canonical()));
             });
+
+            var closeTab = new FxMenuItem("Close", CommandKeys.SC_W, _ -> close(pane));
+            var copyPath = new FxMenuItem("Copy Path", null, _ ->
+                FxClipboard.instance.setPlainText(pane.nameProperty().get().canonical()));
+            label.setContextMenu(new FxContextMenu(false, closeTab, new SeparatorMenuItem(), copyPath));
         }
 
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {

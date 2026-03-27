@@ -70,11 +70,6 @@ public class FxContextMenu extends ContextMenu {
     }
 
     @Override
-    public void show(Node anchor, double dx, double dy) {
-        show(anchor, null, dx, dy);
-    }
-
-    @Override
     public void show(Window window, double dx, double dy) {
         super.show(window, dx, dy);
         focusFirstItem();
