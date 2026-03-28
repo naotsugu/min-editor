@@ -27,11 +27,21 @@ import javafx.scene.input.KeyCombination;
  */
 public class FxMenuItem extends MenuItem {
 
+    /** The style. */
     private static final String style = switch (Context.platform) {
         case "windows" -> "-fx-font: normal 10pt System;";
         default -> "-fx-font: normal 11pt System;";
     };
 
+    /**
+     * Constructs a new FxMenuItem with the specified text, accelerator key combination,
+     * disable state, and action event handler.
+     *
+     * @param text the text to display on the menu item
+     * @param accelerator the key combination that serves as a shortcut for the menu item
+     * @param disable a boolean indicating whether the menu item is initially disabled
+     * @param eventHandler the event handler to handle action events for the menu item
+     */
     public FxMenuItem(
             String text,
             KeyCombination accelerator,
@@ -44,6 +54,14 @@ public class FxMenuItem extends MenuItem {
         setStyle(style);
     }
 
+    /**
+     * Constructs a new FxMenuItem with the specified text, accelerator key combination,
+     * and action event handler. The menu item is enabled by default.
+     *
+     * @param text the text to display on the menu item
+     * @param accelerator the key combination that serves as a shortcut for the menu item
+     * @param eventHandler the event handler to handle action events for the menu item
+     */
     public FxMenuItem(
             String text,
             KeyCombination accelerator,
