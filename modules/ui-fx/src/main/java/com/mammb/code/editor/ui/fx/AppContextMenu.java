@@ -42,6 +42,8 @@ public class AppContextMenu extends FxContextMenu {
 
         boolean textSelected = editorPane.query(Query.selectedCounts) > 0;
         boolean textCopied = FxClipboard.instance.hasContents();
+        boolean hasBackward = editorPane.sessionHistory().hasBackward();
+        boolean hasForward = editorPane.sessionHistory().hasForward();
 
         var cut = new FxMenuItem("Cut", CommandKeys.SC_X, !textSelected, _ ->
             editorPane.execute(new Command.ActionCommand(Action.cut(FxClipboard.instance))));
@@ -52,9 +54,9 @@ public class AppContextMenu extends FxContextMenu {
         var pasteAs = new FxMenuItem("Paste with context", CommandKeys.SC_SV, !textCopied, _ ->
             editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, true))));
 
-        var backward = new FxMenuItem("Backward", CommandKeys.SC_BW, !editorPane.sessionHistory().hasBackward(), _->
+        var backward = new FxMenuItem("Backward", CommandKeys.SC_BW, !hasBackward, _->
             editorPane.execute(new Command.Backward()));
-        var forward = new FxMenuItem("Forward", CommandKeys.SC_FW, !editorPane.sessionHistory().hasForward(), _ ->
+        var forward = new FxMenuItem("Forward", CommandKeys.SC_FW, !hasForward, _ ->
             editorPane.execute(new Command.Forward()));
 
         var searchInBrowser = new FxMenuItem("Search In Browser", null, !textSelected, _ ->
