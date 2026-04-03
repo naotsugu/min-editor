@@ -24,13 +24,13 @@ val javafxGraphicsSources: Configuration by configurations.creating
 val javafxControlsSources: Configuration by configurations.creating
 
 dependencies {
-    javafxBase("org.openjfx:javafx-base:26-ea+23:${artifact}")
-    javafxGraphics("org.openjfx:javafx-graphics:26-ea+23:${artifact}")
-    javafxControls("org.openjfx:javafx-controls:26-ea+23:${artifact}")
+    javafxBase("org.openjfx:javafx-base:26:${artifact}")
+    javafxGraphics("org.openjfx:javafx-graphics:26:${artifact}")
+    javafxControls("org.openjfx:javafx-controls:26:${artifact}")
 
-    javafxBaseSources("org.openjfx:javafx-base:26-ea+23:sources")
-    javafxGraphicsSources("org.openjfx:javafx-graphics:26-ea+23:sources")
-    javafxControlsSources("org.openjfx:javafx-controls:26-ea+23:sources")
+    javafxBaseSources("org.openjfx:javafx-base:26:sources")
+    javafxGraphicsSources("org.openjfx:javafx-graphics:26:sources")
+    javafxControlsSources("org.openjfx:javafx-controls:26:sources")
 }
 
 
