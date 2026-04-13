@@ -161,6 +161,7 @@ public class DrawImpl implements Draw {
      * @return the formatted text
      */
     private String formatTab(Text source) {
+        // TODO handle tab
         var tabs = new ArrayList<String>();
         var str = source.value();
         var advances = source.advances();

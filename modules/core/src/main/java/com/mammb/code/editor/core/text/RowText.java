@@ -56,6 +56,14 @@ public interface RowText extends LinedText {
                 width += advances[i] = fm.getAdvance(ch1, text.charAt(i + 1));
                 i++;
             } else if (handleTab && ch1 == '\t') {
+                // TODO handle tab
+                // double tabWidth = fm.getTabSize() * fm.standardCharWidth();
+                // double gap = width % tabWidth;
+                // if (gap == 0) {
+                //     width += advances[i] = tabWidth;
+                // } else {
+                //     width += advances[i] = (tabWidth - gap);
+                // }
                 int ts = fm.getTabSize();
                 int sp = (tabShift < ts)
                     ? ts - tabShift
