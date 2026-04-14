@@ -35,10 +35,9 @@ public interface Draw {
      * @param text the text
      * @param x the position x
      * @param y the position y
-     * @param w the width
      * @param styles the styles
      */
-    void text(Text text, double x, double y, double w, List<Style> styles);
+    void text(Text text, double x, double y, List<Style> styles);
 
     /**
      * Draw the rectangle.

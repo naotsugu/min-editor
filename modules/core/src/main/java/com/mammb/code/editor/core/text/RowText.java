@@ -56,20 +56,21 @@ public interface RowText extends LinedText {
                 width += advances[i] = fm.getAdvance(ch1, text.charAt(i + 1));
                 i++;
             } else if (handleTab && ch1 == '\t') {
-                // TODO handle tab
-                // double tabWidth = fm.getTabSize() * fm.standardCharWidth();
-                // double gap = width % tabWidth;
-                // if (gap == 0) {
-                //     width += advances[i] = tabWidth;
-                // } else {
-                //     width += advances[i] = (tabWidth - gap);
-                // }
-                int ts = fm.getTabSize();
-                int sp = (tabShift < ts)
-                    ? ts - tabShift
-                    : ts - (tabShift % ts);
-                tabShift += (sp - 1);
-                width += advances[i] = fm.standardCharWidth() * sp;
+                // width-based tab
+                double tabWidth = fm.getTabSize() * fm.standardCharWidth();
+                double gap = width % tabWidth;
+                if (0 < gap && gap < fm.standardCharWidth()) {
+                    width += advances[i] = tabWidth + gap;
+                } else {
+                    width += advances[i] = (tabWidth - gap);
+                }
+                // char count based tab
+                // int ts = fm.getTabSize();
+                // int sp = (tabShift < ts)
+                //     ? ts - tabShift
+                //     : ts - (tabShift % ts);
+                // tabShift += (sp - 1);
+                // width += advances[i] = fm.standardCharWidth() * sp;
             } else if (Character.isISOControl(ch1)) {
                 i++;
             } else {
@@ -78,8 +79,7 @@ public interface RowText extends LinedText {
         }
 
         record RowTextRecord(int row, String value, double[] advances, double width, double height)
-            implements RowText {
-        }
+            implements RowText { }
 
         return new RowTextRecord(row, text, advances, width, fm.getLineHeight());
     }

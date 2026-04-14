@@ -50,8 +50,8 @@ public class DrawImpl implements Draw {
     }
 
     @Override
-    public void text(Text sourceText, double x, double y, double w, List<Style> styles) {
-        var text = formatTab(sourceText);
+    public void text(Text sourceText, double x, double y, List<Style> styles) {
+        double w = sourceText.width();
         Rgba textColor = Theme.current.fgColor();
         Rgba bgColor = null;
         Rgba underColor = null;
@@ -74,7 +74,17 @@ public class DrawImpl implements Draw {
             gd.strokeRect(aroundColor, 0.4, x + 0.4, y, w - 0.4 * 2, fontMetrics.getLineHeight());
         }
 
-        gd.fillText(textColor, text, x, y + fontMetrics.getAscent());
+        var text = sourceText.value();
+        double xp = x;
+        for (int i = 0; i < text.length(); i++) {
+            boolean highSurrogate = Character.isHighSurrogate(text.charAt(i));
+            double ad = sourceText.advances()[i];
+            String ch = highSurrogate
+                ? text.substring(i, ++i + 1)
+                : text.substring(i, i + 1);
+            gd.fillText(textColor, ch, xp, y + fontMetrics.getAscent());
+            xp += ad;
+        }
     }
 
     @Override

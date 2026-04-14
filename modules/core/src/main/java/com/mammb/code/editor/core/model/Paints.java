@@ -90,7 +90,7 @@ public class Paints {
             for (StyledText st : StyledText.of(text, spans)) {
                 double px = x + marginLeft - screenLayout.xShift();
                 double py = y + marginTop;
-                draw.text(st, px, py, st.width(), st.styles());
+                draw.text(st, px, py, st.styles());
                 for (var p : carets.points()) {
                     if (st.row() == p.row()) {
                         // draw special symbol
@@ -207,7 +207,6 @@ public class Paints {
                 draw.text(num,
                     marginLeft - 12 - num.width(),
                     y + marginTop,
-                    num.width(),
                     List.of(new Style.TextColor(colorString)));
             }
             prevValue = num.value();
