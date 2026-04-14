@@ -74,7 +74,7 @@ public class DrawImpl implements Draw {
             gd.strokeRect(aroundColor, 0.4, x + 0.4, y, w - 0.4 * 2, fontMetrics.getLineHeight());
         }
 
-        var text = sourceText.value();
+        String text = sourceText.value();
         double xp = x;
         for (int i = 0; i < text.length(); i++) {
             boolean highSurrogate = Character.isHighSurrogate(text.charAt(i));
