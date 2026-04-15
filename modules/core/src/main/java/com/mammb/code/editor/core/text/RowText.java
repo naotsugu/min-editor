@@ -58,11 +58,11 @@ public interface RowText extends LinedText {
             } else if (handleTab && ch1 == '\t') {
                 // width-based tab
                 double tabWidth = fm.getTabSize() * fm.standardCharWidth();
-                double gap = width % tabWidth;
+                double gap = tabWidth - (width % tabWidth);
                 if (0 < gap && gap < fm.standardCharWidth()) {
                     width += advances[i] = tabWidth + gap;
                 } else {
-                    width += advances[i] = (tabWidth - gap);
+                    width += advances[i] = gap;
                 }
                 // char count based tab
                 // int ts = fm.getTabSize();
