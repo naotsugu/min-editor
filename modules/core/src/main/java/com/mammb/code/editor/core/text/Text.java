@@ -65,6 +65,26 @@ public interface Text {
     }
 
     /**
+     * Checks whether all non-zero values in the advance array are uniform.
+     * The method iterates through the advance array to verify if all non-zero
+     * values are equal. If the array contains no non-zero values, the method
+     * returns {@code true}.
+     * @return {@code true} if all non-zero advances are uniform, otherwise {@code false}
+     */
+    default boolean uniformity() {
+        double w = -1;
+        for (double advance : advances()) {
+            if (advance == 0.0) continue;
+            if (w < 0) {
+                w = advance;
+            } else if (w != advance) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Gets whether this text is terminated by an LF.
      * @return {@code true} if this text is terminated by an LF
      */

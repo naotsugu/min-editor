@@ -49,6 +49,7 @@ public interface RowText extends LinedText {
      */
     static RowText of(int row, String text, FontMetrics fm, boolean handleTab) {
         double width = 0;
+        boolean uniformity = true;
         double[] advances = new double[text.length()];
         for (int i = 0, tabShift = 0; i < text.length(); i++, tabShift++) {
             char ch1 = text.charAt(i);
@@ -64,6 +65,7 @@ public interface RowText extends LinedText {
                 } else {
                     width += advances[i] = gap;
                 }
+                uniformity = false;
                 // char count based tab
                 // int ts = fm.getTabSize();
                 // int sp = (tabShift < ts)
@@ -78,10 +80,10 @@ public interface RowText extends LinedText {
             }
         }
 
-        record RowTextRecord(int row, String value, double[] advances, double width, double height)
+        record RowTextRecord(int row, String value, double[] advances, double width, double height, boolean uniformity)
             implements RowText { }
 
-        return new RowTextRecord(row, text, advances, width, fm.getLineHeight());
+        return new RowTextRecord(row, text, advances, width, fm.getLineHeight(), uniformity);
     }
 
 }

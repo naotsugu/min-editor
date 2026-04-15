@@ -75,15 +75,19 @@ public class DrawImpl implements Draw {
         }
 
         String text = sourceText.value();
-        double xp = x;
-        for (int i = 0; i < text.length(); i++) {
-            boolean highSurrogate = Character.isHighSurrogate(text.charAt(i));
-            double ad = sourceText.advances()[i];
-            String ch = highSurrogate
-                ? text.substring(i, ++i + 1)
-                : text.substring(i, i + 1);
-            gd.fillText(textColor, ch, xp, y + fontMetrics.getAscent());
-            xp += ad;
+        if (sourceText.uniformity()) {
+            gd.fillText(textColor, text, x, y + fontMetrics.getAscent());
+        } else {
+            double xp = x;
+            for (int i = 0; i < text.length(); i++) {
+                boolean highSurrogate = Character.isHighSurrogate(text.charAt(i));
+                double ad = sourceText.advances()[i];
+                String ch = highSurrogate
+                    ? text.substring(i, ++i + 1)
+                    : text.substring(i, i + 1);
+                gd.fillText(textColor, ch, xp, y + fontMetrics.getAscent());
+                xp += ad;
+            }
         }
     }
 
