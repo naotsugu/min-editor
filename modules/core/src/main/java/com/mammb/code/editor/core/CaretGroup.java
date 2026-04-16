@@ -32,7 +32,7 @@ public interface CaretGroup {
     Caret getPrimaryOne();
 
     /**
-     * Get unique processed caret.
+     * Get a unique processed caret.
      * @return the caret unique one
      */
     Caret unique();

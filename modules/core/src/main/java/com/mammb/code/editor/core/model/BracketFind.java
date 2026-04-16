@@ -28,7 +28,7 @@ import java.util.List;
 public class BracketFind {
 
     /**
-     * Applies bracket matching logic to find points in a text based on the given caret point
+     * Applies bracket-matching logic to find points in a text based on the given caret point
      * and the characters surrounding it. Depending on the type of bracket and its position,
      * this method searches forwards or backwards across the lines of text to identify matching brackets.
      * @param point the current caret point in the text

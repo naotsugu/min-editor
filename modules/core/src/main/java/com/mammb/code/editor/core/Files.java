@@ -42,7 +42,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * The utility's of file system.
+ * The utility's of a file system.
  * @author Naotsugu Kobayashi
  */
 public interface Files {

@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.core;
 
-import com.mammb.code.editor.core.model.TextEditorModel;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

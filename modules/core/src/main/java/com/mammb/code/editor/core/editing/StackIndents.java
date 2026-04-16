@@ -59,7 +59,7 @@ class StackIndents {
                 if (stack.peek() == s) {
                     stack.pop();
                     sb.append('\n');
-                    sb.append(INDENT.repeat(stack.size()));
+                    sb.repeat(INDENT, stack.size());
                     sb.append(ch);
                     i += skipWhitespace(cs, i);
                 } else {
@@ -70,7 +70,7 @@ class StackIndents {
             }
 
             if (sb.charAt(sb.length() - 1) == '\n') {
-                sb.append(INDENT.repeat(stack.size()));
+                sb.repeat(INDENT, stack.size());
             }
         }
         return sb;
