@@ -25,14 +25,10 @@ import com.mammb.code.editor.core.layout.ScreenLayout;
 import com.mammb.code.editor.core.tools.BinaryView;
 import com.mammb.code.editor.core.tools.HunkGatherer;
 import com.mammb.code.editor.core.tools.Source16;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
-import java.util.function.Function;
 
 /**
  * The session utilities for the model.

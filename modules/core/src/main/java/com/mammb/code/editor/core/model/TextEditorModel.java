@@ -44,7 +44,6 @@ import com.mammb.code.editor.core.text.Style.StyleSpan;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
