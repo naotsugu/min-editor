@@ -515,13 +515,13 @@ public class TextEditorModel implements EditorModel {
 
     private void delete() {
         if (carets.size() == 1) {
-            Caret c = carets.getPrimaryOne();
-            if (c.isMarked()) {
-                selectionReplace(c, "");
+            Caret caret = carets.getPrimaryOne();
+            if (caret.isMarked()) {
+                selectionReplace(caret, "");
             } else {
-                var del = content.delete(c.point());
-                screenLayout.refreshBuffer(c.row(),
-                    c.row() + (int) del.chars().mapToLong(d -> d == '\n' ? 1 : 0).sum());
+                var del = content.delete(caret.point());
+                screenLayout.refreshBuffer(caret.row(),
+                    caret.row() + (int) del.chars().mapToLong(d -> d == '\n' ? 1 : 0).sum());
             }
         } else {
             if (carets.hasMarked()) {
