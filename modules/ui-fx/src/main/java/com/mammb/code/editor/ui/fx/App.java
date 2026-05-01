@@ -28,6 +28,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import com.sun.javafx.tk.Toolkit;
 import com.mammb.code.editor.core.Theme;
@@ -56,7 +57,8 @@ public class App extends Application {
 
         double posX = ctx.config().windowPositionX();
         double posY = ctx.config().windowPositionY();
-        if (posX >= 0 && posY >= 0) {
+        if (posX >= 0 && posY >= 0 && Screen.getScreens().stream().anyMatch(screen ->
+            screen.getVisualBounds().contains(posX, posY))) {
             // init window location
             stage.setX(posX);
             stage.setY(posY);
