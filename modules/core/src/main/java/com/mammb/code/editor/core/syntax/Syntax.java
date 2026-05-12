@@ -114,7 +114,7 @@ public interface Syntax {
             case "cpp" -> new CppSyntax();
             case "go" -> new GoSyntax();
             case "ts" -> new TsSyntax();
-            case "html" -> new HtmlSyntax();
+            case "html", "xml" -> new HtmlSyntax();
             case "yaml" -> new YamlSyntax();
             case "toml" -> new TomlSyntax();
             case "ini" -> new IniSyntax();
@@ -170,6 +170,7 @@ public interface Syntax {
             case "cpp", "c" -> "cpp";
             case "ts", "tsx" -> "ts";
             case "html", "htm", "xhtml" -> "html";
+            case "xml" -> "xml";
             case "yaml", "yml" -> "yaml";
             case "txt" -> "text";
             case "shell", "sh", "bash" -> "shell";
