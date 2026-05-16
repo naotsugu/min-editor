@@ -147,11 +147,12 @@ public class EditorPane extends ContentPane {
         scroll.hScroll().valueProperty().addListener(this::handleHorizontalScroll);
         canvas.setInputMethodRequests(inputMethodRequests());
         canvas.setOnInputMethodTextChanged(this::handleInputMethodTextChanged);
+
+        canvas.focusedProperty().addListener((_, _, n) -> {
         // After giving it some thought, I don't see any necessity to hide the caret.
-        // canvas.focusedProperty().addListener((_, _, n) -> {
         //     model().setCaretVisible(n);
         //     paint(); // TODO only caret draw
-        // });
+        });
         nameProperty.setValue(model.query(Query.modelName));
 
         paintPulse = new PaintPulse(this::paint);
@@ -208,6 +209,10 @@ public class EditorPane extends ContentPane {
     }
 
     private void handleMousePressed(MouseEvent e) {
+        if (model().isImeOn()) {
+            model().imeComposed("");
+            model().imeOff();
+        }
         if (e.getButton() == MouseButton.PRIMARY) {
             model().mousePressed(e.getX(), e.getY());
         }
@@ -291,11 +296,11 @@ public class EditorPane extends ContentPane {
     }
 
     private void handleInputMethodTextChanged(InputMethodEvent e) {
+        model().imeOn();
         if (!e.getCommitted().isEmpty()) {
             model().imeOff();
             execute(CommandKeys.of(Action.input(e.getCommitted())));
         } else if (!e.getComposed().isEmpty()) {
-            if (!model().isImeOn()) model().imeOn();
             model().imeComposed(e.getComposed().stream()
                     .map(InputMethodTextRun::getText)
                     .collect(Collectors.joining()));
