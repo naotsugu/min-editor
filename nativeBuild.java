@@ -65,8 +65,10 @@ Optional<Path> extract(Path path) {
         }
 
         ProcessBuilder pb = os.startsWith("win")
-            ? new ProcessBuilder("cmd.exe", "/c", "tar", "-xzf", path.toString(), "-C", dir.toString())
+            //? new ProcessBuilder("cmd.exe", "/c", "tar", "-xzf", path.toString(), "-C", dir.toString())
+            ? new ProcessBuilder("powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "Expand-Archive -Path '" + path.toString() + "' -DestinationPath '" + dir.toString() + "' -Force");
             : new ProcessBuilder("tar", "-xzf", path.toString(), "-C", dir.toString());
+        pb.redirectErrorStream(true);
         pb.inheritIO();
         Process process = pb.start();
         int exitCode = process.waitFor();
