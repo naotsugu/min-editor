@@ -15,8 +15,6 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.editor.platform.ColorScheme;
-
 /**
  * The application launcher.
  * This class is a wrapper for the actual JavaFX application launch.
@@ -29,10 +27,6 @@ public class AppLauncher {
      * @param args the arguments
      */
     public void launch(String[] args) {
-        if (System.getProperty("core.theme") == null) {
-            System.setProperty("core.theme", ColorScheme.platform().isDark() ? "dark" : "light");
-            // TODO use Platform.getPreferences().getColorScheme() in javafx
-        }
         App.launch(App.class, args);
     }
 

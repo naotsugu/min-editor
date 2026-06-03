@@ -46,8 +46,8 @@ public class LockFile {
 
     /**
      * Attempts to acquire an exclusive lock on a file to ensure single-instance application behavior.
-     * This method creates or opens the specified lock file, attempts to acquire a non-blocking lock,
-     * writes the current process ID to the file, and sets up a shutdown hook to release the lock and
+     * This method creates or opens the specified lock file, attempts to acquire a non-blocking lock, and
+     * writes the current process ID to the file. It sets up a shutdown hook to release the lock and
      * clean up the lock file upon application termination.
      * <ul>
      * - If the lock cannot be acquired, it attempts to activate the window of the process holding the lock by reading its PID

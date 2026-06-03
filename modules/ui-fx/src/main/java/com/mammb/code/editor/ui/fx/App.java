@@ -22,9 +22,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 import com.mammb.code.editor.platform.AppPaths;
+import com.mammb.code.editor.platform.ColorScheme;
 import com.mammb.code.editor.ui.base.AppContext;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
@@ -48,6 +50,11 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        if (System.getProperty("core.theme") == null) {
+            System.setProperty("core.theme",
+                Platform.getPreferences().getColorScheme().name().toLowerCase());
+        }
 
         var ctx = new FxAppContext(this);
 
