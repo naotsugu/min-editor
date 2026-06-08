@@ -316,7 +316,9 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var closeTab = new FxMenuItem("Close", CommandKeys.SC_W, _ -> close(pane));
             var copyPath = new FxMenuItem("Copy Path", null, _ ->
                 FxClipboard.instance.setPlainText(pane.nameProperty().get().canonical()));
-            label.setContextMenu(new FxContextMenu(false, closeTab, new SeparatorMenuItem(), copyPath));
+            var closeOtherTabs = new FxMenuItem("Close Other Tabs", null, _ -> { /* TODO */});
+
+            label.setContextMenu(new FxContextMenu(false, closeTab, closeOtherTabs, new SeparatorMenuItem(), copyPath));
         }
 
         private void handleFocused(ObservableValue<? extends Boolean> ob, Boolean o, Boolean focused) {
