@@ -292,6 +292,13 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 });
         }
 
+        public void closeOther(ContentPane pane) {
+            var tabs = tabPane.getTabs().stream()
+                .filter(t -> !Objects.equals(t.getContent(), pane)).toList();
+            tabPane.getTabs().removeAll(tabs);
+            tabs.forEach(tab -> Event.fireEvent(tab, new Event(Tab.CLOSED_EVENT)));
+        }
+
         private void selectOrOpen(Path path) {
             if (path == null) return;
             if (!selectExistingTab(path)) {
@@ -316,7 +323,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var closeTab = new FxMenuItem("Close", CommandKeys.SC_W, _ -> close(pane));
             var copyPath = new FxMenuItem("Copy Path", null, _ ->
                 FxClipboard.instance.setPlainText(pane.nameProperty().get().canonical()));
-            var closeOtherTabs = new FxMenuItem("Close Other Tabs", null, _ -> { /* TODO */});
+            var closeOtherTabs = new FxMenuItem("Close Other Tabs", null, _ -> closeOther(pane));
 
             label.setContextMenu(new FxContextMenu(false, closeTab, closeOtherTabs, new SeparatorMenuItem(), copyPath));
         }
