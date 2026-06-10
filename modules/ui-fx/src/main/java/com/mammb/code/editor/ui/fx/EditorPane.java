@@ -341,6 +341,10 @@ public class EditorPane extends ContentPane {
             case ToggleLayout _       -> model().apply(Action.toggleLayout());
             case ToLowerCase _        -> model().apply(Action.replace(EditingFunctions.toLower, true));
             case ToUpperCase _        -> model().apply(Action.replace(EditingFunctions.toUpper, true));
+            case ToSnakeCase _        -> model().apply(Action.replace(EditingFunctions.toSnakeCase, true));
+            case ToKebabCase _        -> model().apply(Action.replace(EditingFunctions.toKebabCase, true));
+            case ToCamelCase _        -> model().apply(Action.replace(EditingFunctions.toCamelCase, true));
+            case ToPascalCase _        -> model().apply(Action.replace(EditingFunctions.toPascalCase, true));
             case IndentParen _        -> model().apply(Action.replace(EditingFunctions.toIndentParen, false));
             case IndentCurlyBrace _   -> model().apply(Action.replace(EditingFunctions.toIndentCurlyBrace, false));
             case Calc _               -> model().apply(Action.replace(EditingFunctions.toCalc, false));

@@ -82,6 +82,14 @@ public sealed interface Command {
 
     record ToUpperCase() implements Command, RequireSelection {}
 
+    record ToSnakeCase() implements Command, RequireSelection {}
+
+    record ToKebabCase() implements Command, RequireSelection {}
+
+    record ToCamelCase() implements Command, RequireSelection {}
+
+    record ToPascalCase() implements Command, RequireSelection {}
+
     record IndentParen() implements Command, RequireSelection {}
 
     record IndentCurlyBrace() implements Command, RequireSelection {}
@@ -215,6 +223,10 @@ public sealed interface Command {
             case Class<?> c when c == Config.class -> "open current config";
             case Class<?> c when c == ToLowerCase.class -> "converts the selected text to lower case";
             case Class<?> c when c == ToUpperCase.class -> "converts the selected text to upper case";
+            case Class<?> c when c == ToSnakeCase.class -> "converts the selected text to snake case";
+            case Class<?> c when c == ToKebabCase.class -> "converts the selected text to kebab case";
+            case Class<?> c when c == ToCamelCase.class -> "converts the selected text to camel case";
+            case Class<?> c when c == ToPascalCase.class -> "converts the selected text to pascal case";
             case Class<?> c when c == IndentParen.class -> "indent by paren";
             case Class<?> c when c == IndentCurlyBrace.class -> "indent by curly brace";
             case Class<?> c when c == Sort.class -> "sort the selected lines";
