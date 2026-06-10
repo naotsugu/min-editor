@@ -54,6 +54,15 @@ public interface EditingFunctions {
     /** To upper case function. */
     Function<String, String> toUpper = text -> text == null ? "" : text.toUpperCase();
 
+    /** To snake case function. */
+    Function<String, String> toSnakeCase = text -> text == null ? "" : text.replaceAll("([a-z0-9])([A-Z])", "$1_$2").replaceAll("[-_\\s]+", "_").toLowerCase();
+    /** To kebab case function. */
+    Function<String, String> toKebabCase = text -> text == null ? "" : text.replaceAll("([a-z0-9])([A-Z])", "$1-$2").replaceAll("[-_\\s]+", "-").toLowerCase();
+    /** To camel case function. */
+    Function<String, String> toCamelCase = text -> text == null ? "" : Pattern.compile("[-_\\s]+(.)|^(.)").matcher(text.replaceAll("([a-z0-9])([A-Z])", "$1 $2").toLowerCase()).replaceAll(m -> m.group(1) != null ? m.group(1).toUpperCase() : m.group(2).toLowerCase());
+    /** To pascal case function. */
+    Function<String, String> toPascalCase = text -> text == null ? "" : Pattern.compile("[-_\\s]+(.)|^(.)").matcher(text.replaceAll("([a-z0-9])([A-Z])", "$1 $2").toLowerCase()).replaceAll(m -> (m.group(1) != null ? m.group(1) : m.group(2)).toUpperCase());
+
     /** To indent paren. */
     Function<String, String> toIndentParen = text -> StackIndents.indentify(text, '(', ')').toString();
     /** To indent curly brace. */
@@ -88,9 +97,9 @@ public interface EditingFunctions {
     /** hexToDec function. */
     Function<String, String> hexToDec = text -> dec(text.toLowerCase().startsWith("0x") ? text.substring(2) : text, 16);
     /** binToHex function. */
-    Function<String, String> binToHex = text -> hex(text.replaceAll(" ", ""), 2);
+    Function<String, String> binToHex = text -> hex(text.replace(" ", ""), 2);
     /** binToDec function. */
-    Function<String, String> binToDec = text -> dec(text.replaceAll(" ", ""), 2);
+    Function<String, String> binToDec = text -> dec(text.replace(" ", ""), 2);
 
     /** textToCodepoint function. */
     Function<String, String> textToCodepoint = EditingFunctions::textToCodepoint;
@@ -103,7 +112,7 @@ public interface EditingFunctions {
     /** binToDec function. */
     Function<String, String> lfToCrLf = text -> text == null ? "" : text.replaceAll("(?<!\r)\n", "\r\n");
     /** binToDec function. */
-    Function<String, String> crLfToLf = text -> text == null ? "" : text.replaceAll("\r\n", "\n");
+    Function<String, String> crLfToLf = text -> text == null ? "" : text.replace("\r\n", "\n");
 
     /** normalize ascii. */
     Function<String, String> normalizeAscii = Normalizer::fullToAscii;

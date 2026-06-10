@@ -26,6 +26,15 @@ import static org.junit.jupiter.api.Assertions.*;
 class EditingFunctionsTest {
 
     @Test
+    void xCase() {
+        var source = "my-mixed_StyleAPI_user123Name";
+        assertEquals("my_mixed_style_api_user123_name", EditingFunctions.toSnakeCase.apply(source));
+        assertEquals("my-mixed-style-api-user123-name", EditingFunctions.toKebabCase.apply(source));
+        assertEquals("MyMixedStyleApiUser123Name", EditingFunctions.toPascalCase.apply(source));
+        assertEquals("myMixedStyleApiUser123Name", EditingFunctions.toCamelCase.apply(source));
+    }
+
+    @Test
     void decToHex() {
         assertEquals("0x0", EditingFunctions.decToHex.apply("0"));
         assertEquals("0xf", EditingFunctions.decToHex.apply("15"));
