@@ -59,6 +59,7 @@ public class AppPane extends StackPane {
             new EditorPane(ctx).bindLater(Session.of(p)), panes);
 
         var mainPane = new BorderPane(tabContainer);
+        //mainPane.setLeft(new PathTreeView(ctx.getApp().getHostServices()));
         var notifyListener = new NotificationPane(this);
         ctx.notifier().addListener(notifyListener);
 

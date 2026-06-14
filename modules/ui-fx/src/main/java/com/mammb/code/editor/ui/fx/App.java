@@ -190,10 +190,13 @@ public class App extends Application {
           -fx-mark-highlight-color: derive(-fx-mark-color,20%);
           -fx-background-color:app-back;
           -fx-default-button: #2F65CA;
+          -fx-font-family: "Consolas";
+          -fx-font-size: 14px;
         }
-        .text-input, .label {
-          -fx-font: 14px "Consolas";
+        .text-input, .label, .tooltip {
+          -fx-font-size: 14px;
         }
+
         .text-input:focused {
           -fx-background-color: -fx-focus-color, -fx-control-inner-background;
         }
@@ -276,10 +279,6 @@ public class App extends Application {
           -fx-background-color: transparent;
           -fx-background-insets: 0;
           -fx-background-radius: 0;
-        }
-
-        .tooltip {
-          -fx-font: 13px "Consolas";
         }
 
         .hyperlink,

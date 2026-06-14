@@ -678,6 +678,7 @@ public class PathTreeView extends TreeView<Path> {
         var svg = new SVGPath();
         svg.setContent(d);
         svg.getStyleClass().add("icon");
+        svg.setStyle("-fx-fill: -fx-light-text-color;");
         return svg;
     }
 
