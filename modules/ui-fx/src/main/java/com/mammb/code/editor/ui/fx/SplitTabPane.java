@@ -16,6 +16,7 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Files;
+import com.mammb.code.editor.ui.base.Command;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -25,7 +26,9 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -220,6 +223,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         return list;
     }
 
+    // ------------------------------------------------------------------------
+
     /**
      * The DndTabPane.
      */
@@ -249,6 +254,18 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 headerArea.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 2) addNext(parent.defaultContentPaneFactory.apply(null));
                 });
+
+                headerArea.setOnContextMenuRequested(event -> {
+                    var newEditor = new FxMenuItem("New", null, false, _ ->
+                        addNext(parent.defaultContentPaneFactory.apply(null)));
+                    var fileTree = new FxMenuItem("File tree", null, false, _ ->
+                        parent.addLeft(new PathTreePane()));
+                    new FxContextMenu(true, newEditor,
+                        new SeparatorMenuItem(),
+                        fileTree).show(headerArea, event.getScreenX(), event.getScreenY());
+                    event.consume();
+                });
+
             }
         }
 

@@ -398,7 +398,7 @@ public class PathTreeView extends TreeView<Path> {
         }
 
         private ContextMenu buildContextMenu() {
-            ContextMenu menu = new ContextMenu();
+            var menu = new ContextMenu();
             TreeItem<Path> treeItem = getTreeItem();
             boolean isDirectory = Files.isDirectory(getItem());
             boolean isRoot = treeItem.getParent() == getTreeView().getRoot();
