@@ -269,7 +269,9 @@ public class App extends Application {
         .tab-label {
           -fx-font: 13px "Consolas";
         }
-
+        .split-pane > .split-pane-divider {
+            -fx-pref-width: 3px;
+        }
         .progress-bar > .bar {
           -fx-background-color: derive(-fx-accent, 50%);
           -fx-background-insets: 0;
