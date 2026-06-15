@@ -59,6 +59,7 @@ import java.util.stream.Stream;
  */
 public class PathTreeView extends TreeView<Path> {
 
+    /** The logger. */
     private static final System.Logger log = System.getLogger(PathTreeView.class.getName());
 
     private final List<Consumer<Path>> selectActions = new ArrayList<>();
