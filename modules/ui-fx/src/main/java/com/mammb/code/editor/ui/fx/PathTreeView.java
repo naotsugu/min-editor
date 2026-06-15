@@ -86,21 +86,19 @@ public class PathTreeView extends TreeView<Path> {
         setOnDragOver(event -> {
             if (event.getGestureSource() != this && event.getDragboard().hasFiles()) {
                 event.acceptTransferModes(TransferMode.COPY);
+                event.consume();
             }
-            event.consume();
         });
         setOnDragDropped(event -> {
             Dragboard db = event.getDragboard();
-            boolean success = false;
             if (db.hasFiles()) {
                 db.getFiles().stream()
                     .map(File::toPath)
                     .filter(Files::isDirectory)
                     .forEach(this::addRoot);
-                success = true;
+                event.setDropCompleted(true);
+                event.consume();
             }
-            event.setDropCompleted(success);
-            event.consume();
         });
     }
 
