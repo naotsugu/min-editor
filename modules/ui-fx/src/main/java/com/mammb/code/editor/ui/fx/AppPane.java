@@ -77,7 +77,7 @@ public class AppPane extends StackPane {
             if (tabContainer.canCloseAll()) {
                 ctx.config().clearSessions();
                 ctx.config().sessions(tabContainer.contentPanes().stream()
-                    .map(cp -> cp.close(true))
+                    .map(pane -> pane.close(true))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .toList());

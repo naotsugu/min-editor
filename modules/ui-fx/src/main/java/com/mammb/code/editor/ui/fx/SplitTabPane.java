@@ -239,15 +239,17 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             setOnDragExited(this::handleDragExited);
             setOnDragDone(this::handleDragDone);
             addNext(node);
-            runLater(() -> {
-                // double-click in the tab area to open a new tab
-                Node headerArea = tabPane.lookup(".tab-header-area");
-                if (headerArea != null) {
-                    headerArea.setOnMouseClicked(e -> {
-                        if (e.getClickCount() == 2) addNext(parent.defaultContentPaneFactory.apply(null));
-                    });
-                }
-            });
+            runLater(this::initTabHeaderAction);
+        }
+
+        private void initTabHeaderAction() {
+            // double-click in the tab area to open a new tab
+            Node headerArea = tabPane.lookup(".tab-header-area");
+            if (headerArea != null) {
+                headerArea.setOnMouseClicked(e -> {
+                    if (e.getClickCount() == 2) addNext(parent.defaultContentPaneFactory.apply(null));
+                });
+            }
         }
 
         @Override
