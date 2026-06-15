@@ -63,14 +63,12 @@ public class PathTreeView extends TreeView<Path> {
 
     private final List<Consumer<Path>> selectActions = new ArrayList<>();
     private final BooleanProperty compactFolders = new SimpleBooleanProperty(this, "compactFolders", true);
-    private final HostServices hostServices;
 
     /** the currently "cut" item, managed at the TreeView level to avoid static state. */
     private TreeItem<Path> cutItem = null;
 
-    public PathTreeView(HostServices hostServices, Path... roots) {
+    public PathTreeView(Path... roots) {
         super(new TreeItem<>());
-        this.hostServices = hostServices;
         setShowRoot(false);
         setEditable(true);
         for (Path root : roots) addRoot(root);
@@ -175,10 +173,6 @@ public class PathTreeView extends TreeView<Path> {
 
     public void setCutItem(TreeItem<Path> cutItem) {
         this.cutItem = cutItem;
-    }
-
-    public HostServices getHostServices() {
-        return hostServices;
     }
 
     // ------------------------------------------------------------------------
@@ -438,9 +432,6 @@ public class PathTreeView extends TreeView<Path> {
                 }
             }
 
-            menu.getItems().add(new SeparatorMenuItem());
-            menu.getItems().add(createMenuItem("Open in System", () -> fileOperationHandler.openInExplorer(treeItem)));
-
             return menu;
         }
 
@@ -629,10 +620,6 @@ public class PathTreeView extends TreeView<Path> {
 
         void removeRoot(TreeItem<Path> item) {
             treeView.getRoot().getChildren().remove(item);
-        }
-
-        void openInExplorer(TreeItem<Path> item) {
-            treeView.getHostServices().showDocument(item.getValue().toUri().toString());
         }
 
         private Path findUniquePath(Path parent, String baseName) {
