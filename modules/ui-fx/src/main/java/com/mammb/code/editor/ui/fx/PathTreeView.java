@@ -501,6 +501,7 @@ public class PathTreeView extends TreeView<Path> {
         void delete(TreeItem<Path> item) {
             Path path = item.getValue();
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.initOwner(treeView.getScene().getWindow());
             alert.setTitle("Delete Confirmation");
             alert.setHeaderText(null);
             alert.setGraphic(null);
@@ -650,6 +651,7 @@ public class PathTreeView extends TreeView<Path> {
 
         private void showError(String title, String message) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initOwner(treeView.getScene().getWindow());
             alert.setTitle(title);
             alert.setHeaderText(null);
             alert.setGraphic(null);
