@@ -129,10 +129,13 @@ public class CommandPalette extends Dialog<Command> {
         box.setPrefWidth(width);
         box.setStyle("""
             -fx-background-color: derive(-fx-control-inner-background,10%);
-            -fx-background-radius: 3;
+            -fx-background-radius: 4;
             -fx-padding: 0.5em;
             -fx-spacing: 2;
             -fx-alignment: CENTER;
+            -fx-border-radius: 4;
+            -fx-border-style: solid;
+            -fx-border-color: -fx-light-text-color;
             """);
         box.getChildren().addAll(Icons.terminal(), new Label(" "), commandLabel, textField);
         HBox.setHgrow(textField, Priority.ALWAYS);
