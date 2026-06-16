@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -122,7 +121,9 @@ public class PathTreeView extends TreeView<Path> {
         }
         PathTreeItem item = new PathTreeItem(path, isCompactFolders());
         getRoot().getChildren().add(item);
-        getRoot().getChildren().sort(Comparator.comparing(t -> t.getValue().getFileName().toString()));
+        getRoot().getChildren().sort(Comparator
+            .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
+            .thenComparing(t -> t.getValue().getFileName().toString()));
     }
 
     /**
@@ -219,7 +220,9 @@ public class PathTreeView extends TreeView<Path> {
             if (!Files.isDirectory(getValue())) return;
 
             try (Stream<Path> stream = Files.list(getValue())) {
-                stream.sorted(Comparator.comparing(p -> p.getFileName().toString()))
+                stream.sorted(Comparator
+                        .comparing((Path p) -> !Files.isDirectory(p))
+                        .thenComparing((p -> p.getFileName().toString())))
                     .forEach(path -> {
                         if (Files.isDirectory(path) && compact) {
                             super.getChildren().add(buildCompactTreeItem(path));
@@ -477,7 +480,9 @@ public class PathTreeView extends TreeView<Path> {
 
                 PathTreeItem newItem = new PathTreeItem(newPath, treeView.isCompactFolders());
                 parentItem.getChildren().add(newItem);
-                parentItem.getChildren().sort(Comparator.comparing(t -> t.getValue().getFileName().toString()));
+                parentItem.getChildren().sort(Comparator
+                    .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
+                    .thenComparing(t -> t.getValue().getFileName().toString()));
 
                 Platform.runLater(() -> {
                     treeView.getSelectionModel().select(newItem);
@@ -614,7 +619,9 @@ public class PathTreeView extends TreeView<Path> {
                     currentInsertionPoint = newSegmentItem;
                 }
             }
-            parent.getChildren().sort(Comparator.comparing(t -> t.getValue().getFileName().toString()));
+            parent.getChildren().sort(Comparator
+                .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
+                .thenComparing(t -> t.getValue().getFileName().toString()));
         }
 
         void removeRoot(TreeItem<Path> item) {
