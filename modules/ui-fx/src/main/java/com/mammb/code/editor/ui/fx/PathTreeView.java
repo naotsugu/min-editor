@@ -19,6 +19,8 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
@@ -419,7 +421,7 @@ public class PathTreeView extends TreeView<Path> {
                 menu.getItems().add(new FxMenuItem("Copy", null, false, _ ->
                     fileOperationHandler.copy(treeItem)));
                 menu.getItems().add(new FxMenuItem("Rename", null, false, _ ->
-                    getTreeView().edit(treeItem)));
+                    withCellEdit(() -> getTreeView().edit(treeItem))));
                 menu.getItems().add(new FxMenuItem("Delete", null, false, _ ->
                     fileOperationHandler.delete(treeItem)));
             }
@@ -430,9 +432,9 @@ public class PathTreeView extends TreeView<Path> {
                 menu.getItems().add(new SeparatorMenuItem());
 
                 menu.getItems().add(new FxMenuItem("New File", null, false, _ ->
-                    fileOperationHandler.createNew(treeItem, true)));
+                    withCellEdit(() -> fileOperationHandler.createNew(treeItem, true))));
                 menu.getItems().add(new FxMenuItem("New Directory", null, false, _ ->
-                    fileOperationHandler.createNew(treeItem, false)));
+                    withCellEdit(() -> fileOperationHandler.createNew(treeItem, false))));
 
                 menu.getItems().add(new SeparatorMenuItem());
                 menu.getItems().add(new FxMenuItem("Refresh", null, false, _ ->
@@ -444,6 +446,15 @@ public class PathTreeView extends TreeView<Path> {
             }
 
             return menu;
+        }
+
+        private void withCellEdit(Runnable runnable) {
+            try {
+                treeView.cellEditable = true;
+                runnable.run();;
+            } finally {
+                treeView.cellEditable = false;
+            }
         }
 
     }
