@@ -64,7 +64,8 @@ public class PathTreeView extends TreeView<Path> {
     private final List<Consumer<Path>> selectActions = new ArrayList<>();
     private final BooleanProperty compactFolders = new SimpleBooleanProperty(this, "compactFolders", true);
 
-    /** the currently "cut" item, managed at the TreeView level to avoid static state. */
+    private boolean cellEditable = false;
+    /** The currently "cut" item, managed at the TreeView level to avoid static state. */
     private TreeItem<Path> cutItem = null;
 
     public PathTreeView(Path... roots) {
@@ -319,15 +320,18 @@ public class PathTreeView extends TreeView<Path> {
      */
     static class PathTreeCell extends TreeCell<Path> {
 
-        private TextField textField;
+        private final PathTreeView treeView;
         private final FileOperationHandler fileOperationHandler;
+        private TextField textField;
 
         public PathTreeCell(PathTreeView treeView) {
+            this.treeView = treeView;
             this.fileOperationHandler = new FileOperationHandler(treeView);
         }
 
         @Override
         public void startEdit() {
+            if (!treeView.cellEditable) return;
             super.startEdit();
             if (getItem() == null) return;
 
