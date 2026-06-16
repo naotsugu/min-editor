@@ -405,47 +405,47 @@ public class PathTreeView extends TreeView<Path> {
         }
 
         private ContextMenu buildContextMenu() {
-            var menu = new ContextMenu();
+            var menu = new FxContextMenu(true);
             TreeItem<Path> treeItem = getTreeItem();
             boolean isDirectory = Files.isDirectory(getItem());
             boolean isRoot = treeItem.getParent() == getTreeView().getRoot();
 
             if (isRoot) {
-                menu.getItems().add(createMenuItem("Remove", () -> fileOperationHandler.removeRoot(treeItem)));
+                menu.getItems().add(new FxMenuItem("Remove", null, false, _ ->
+                    fileOperationHandler.removeRoot(treeItem)));
             } else {
-                menu.getItems().addAll(
-                    createMenuItem("Cut", () -> fileOperationHandler.cut(treeItem)),
-                    createMenuItem("Copy", () -> fileOperationHandler.copy(treeItem)),
-                    createMenuItem("Rename", () -> getTreeView().edit(treeItem)),
-                    createMenuItem("Delete", () -> fileOperationHandler.delete(treeItem))
-                );
+                menu.getItems().add(new FxMenuItem("Cut", null, false, _ ->
+                    fileOperationHandler.cut(treeItem)));
+                menu.getItems().add(new FxMenuItem("Copy", null, false, _ ->
+                    fileOperationHandler.copy(treeItem)));
+                menu.getItems().add(new FxMenuItem("Rename", null, false, _ ->
+                    getTreeView().edit(treeItem)));
+                menu.getItems().add(new FxMenuItem("Delete", null, false, _ ->
+                    fileOperationHandler.delete(treeItem)));
             }
 
             if (isDirectory) {
-                MenuItem pasteItem = createMenuItem("Paste", () -> fileOperationHandler.paste(treeItem));
-                pasteItem.setDisable(!Clipboard.getSystemClipboard().hasFiles());
+                menu.getItems().add(new FxMenuItem("Paste", null, !Clipboard.getSystemClipboard().hasFiles(), _ ->
+                    fileOperationHandler.paste(treeItem)));
+                menu.getItems().add(new SeparatorMenuItem());
+
+                menu.getItems().add(new FxMenuItem("New File", null, false, _ ->
+                    fileOperationHandler.createNew(treeItem, true)));
+                menu.getItems().add(new FxMenuItem("New Directory", null, false, _ ->
+                    fileOperationHandler.createNew(treeItem, false)));
 
                 menu.getItems().add(new SeparatorMenuItem());
-                menu.getItems().addAll(
-                    createMenuItem("New File", () -> fileOperationHandler.createNew(treeItem, true)),
-                    createMenuItem("New Directory", () -> fileOperationHandler.createNew(treeItem, false)),
-                    pasteItem
-                );
-                menu.getItems().add(new SeparatorMenuItem());
-                menu.getItems().add(createMenuItem("Refresh", () -> fileOperationHandler.refresh(treeItem)));
+                menu.getItems().add(new FxMenuItem("Refresh", null, false, _ ->
+                    fileOperationHandler.refresh(treeItem)));
                 if (treeItem instanceof CompactPathTreeItem) {
-                    menu.getItems().add(createMenuItem("Expand Directory", () -> fileOperationHandler.expandCompactDirectory((CompactPathTreeItem) treeItem)));
+                    menu.getItems().add(new FxMenuItem("Expand Directory", null, false, _ ->
+                        fileOperationHandler.expandCompactDirectory((CompactPathTreeItem) treeItem)));
                 }
             }
 
             return menu;
         }
 
-        private MenuItem createMenuItem(String text, Runnable action) {
-            MenuItem item = new MenuItem(text);
-            item.setOnAction(_ -> action.run());
-            return item;
-        }
     }
 
     /**
