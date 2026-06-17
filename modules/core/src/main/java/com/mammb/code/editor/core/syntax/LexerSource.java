@@ -24,8 +24,8 @@ import java.util.function.Predicate;
  */
 public class LexerSource {
 
-    private int row;
-    private String text;
+    private final int row;
+    private final String text;
     private int index = 0;
     private int peek = 0;
 

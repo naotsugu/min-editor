@@ -127,6 +127,7 @@ public interface Syntax {
             case "zig" -> new ZigSyntax();
             case "ruby" -> new RubySyntax();
             case "swift" -> new SwiftSyntax();
+            case "properties" -> new PropSyntax();
             case null, default -> new PassThrough(name);
         };
     }
