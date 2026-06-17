@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * The tsv editor model.
+ * The tsv syntax.
  * @author Naotsugu Kobayashi
  */
 public class TsvSyntax implements Syntax {
