@@ -24,6 +24,7 @@ import javafx.event.Event;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ContextMenu;
@@ -260,9 +261,15 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                         addNext(parent.defaultContentPaneFactory.apply(null)));
                     var fileTree = new FxMenuItem("File tree", null, false, _ ->
                         parent.addLeft(new PathTreePane()));
+                    var side = new FxMenuItem("Side Tab", null, tabPane.getSide() == Side.LEFT, _ ->
+                        tabPane.setSide(Side.LEFT));
+                    var top = new FxMenuItem("Top Tab", null, tabPane.getSide() == Side.TOP, _ ->
+                        tabPane.setSide(Side.TOP));
+
                     new FxContextMenu(true, newEditor,
                         new SeparatorMenuItem(),
-                        fileTree).show(headerArea, event.getScreenX(), event.getScreenY());
+                        fileTree,
+                        side, top).show(headerArea, event.getScreenX(), event.getScreenY());
                     event.consume();
                 });
 
