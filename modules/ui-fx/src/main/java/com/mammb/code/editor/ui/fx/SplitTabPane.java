@@ -261,15 +261,40 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                         addNext(parent.defaultContentPaneFactory.apply(null)));
                     var fileTree = new FxMenuItem("File tree", null, false, _ ->
                         parent.addLeft(new PathTreePane()));
-                    var side = new FxMenuItem("Side Tab", null, tabPane.getSide() == Side.LEFT, _ ->
-                        tabPane.setSide(Side.LEFT));
-                    var top = new FxMenuItem("Top Tab", null, tabPane.getSide() == Side.TOP, _ ->
-                        tabPane.setSide(Side.TOP));
-
+                    var compact = new FxMenuItem("Compact", null, false, _ -> {
+                        SplitTabPane stp = parent;
+                        while (stp != null && stp.pane.getDividerPositions().length == 0) {
+                            stp = stp.parent;
+                        }
+                        if (stp == null || stp.pane.getDividerPositions().length != 1) {
+                            return;
+                        }
+                        SplitPane splitPane = stp.pane;
+                        Node node1 = splitPane.getItems().get(0);
+                        Node node2 = splitPane.getItems().get(1);
+                        boolean horiz = splitPane.getOrientation() == Orientation.HORIZONTAL;
+                        double r = headerArea.getLayoutBounds().getHeight() / (horiz ? splitPane.getWidth() : splitPane.getHeight());
+                        if (node1 == parent) {
+                            tabPane.setSide(horiz ? Side.LEFT : Side.TOP);
+                            splitPane.setDividerPositions(r);
+                        } else if (node2 == parent) {
+                            tabPane.setSide(horiz ? Side.LEFT : Side.TOP);
+                            splitPane.setDividerPositions(1 - r);
+                        }
+                    });
+                    var expand = new FxMenuItem("Expand", null, false, _ -> {
+                        tabPane.setSide(Side.TOP);
+                        if (parent.parent == null) {
+                            parent.pane.setDividerPositions(0.5);
+                        } else {
+                            parent.parent.pane.setDividerPositions(0.5);
+                        }
+                    });
                     new FxContextMenu(true, newEditor,
                         new SeparatorMenuItem(),
                         fileTree,
-                        side, top).show(headerArea, event.getScreenX(), event.getScreenY());
+                        new SeparatorMenuItem(),
+                        compact, expand).show(headerArea, event.getScreenX(), event.getScreenY());
                     event.consume();
                 });
 
