@@ -127,6 +127,7 @@ public class CommandKeys {
     static final KeyCombination SC_F = new KeyCharacterCombination("f", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_P = new KeyCharacterCombination("p", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_R = new KeyCharacterCombination("r", KeyCombination.SHORTCUT_DOWN);
+    static final KeyCombination SC_T = new KeyCharacterCombination("t", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_W = new KeyCharacterCombination("w", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_L = new KeyCharacterCombination("l", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_DOT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);

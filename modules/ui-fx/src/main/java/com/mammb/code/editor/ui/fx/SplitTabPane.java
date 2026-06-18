@@ -233,6 +233,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private final TabPane tabPane = new TabPane();
         private final Rectangle marker = new Rectangle();
         private SplitTabPane parent;
+        private boolean tabCompacted;
         DndTabPane(SplitTabPane parent, ContentPane node) {
             this.parent = parent;
             getChildren().addAll(tabPane, marker);
@@ -253,11 +254,13 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             Node headerArea = tabPane.lookup(".tab-header-area");
             if (headerArea != null) {
                 headerArea.setOnMouseClicked(e -> {
-                    if (e.getClickCount() == 2) addNext(parent.defaultContentPaneFactory.apply(null));
+                    if (e.getClickCount() == 2) {
+                        addNext(parent.defaultContentPaneFactory.apply(null));
+                    }
                 });
 
                 headerArea.setOnContextMenuRequested(event -> {
-                    var newEditor = new FxMenuItem("New", null, false, _ ->
+                    var newEditor = new FxMenuItem("New", CommandKeys.SC_N, false, _ ->
                         addNext(parent.defaultContentPaneFactory.apply(null)));
                     var fileTree = new FxMenuItem("File tree", null, false, _ ->
                         parent.addLeft(new PathTreePane()));
@@ -277,13 +280,16 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                         if (node1 == parent) {
                             tabPane.setSide(horiz ? Side.LEFT : Side.TOP);
                             splitPane.setDividerPositions(r);
+                            tabCompacted = true;
                         } else if (node2 == parent) {
                             tabPane.setSide(horiz ? Side.LEFT : Side.TOP);
                             splitPane.setDividerPositions(1 - r);
+                            tabCompacted = true;
                         }
                     });
                     var expand = new FxMenuItem("Expand", null, false, _ -> {
                         tabPane.setSide(Side.TOP);
+                        tabCompacted = false;
                         if (parent.parent == null) {
                             parent.pane.setDividerPositions(0.5);
                         } else {
