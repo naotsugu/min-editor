@@ -71,6 +71,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     private static final Logger log = System.getLogger(SplitTabPane.class.getName());
 
     private static final AtomicReference<Tab> draggedTab = new AtomicReference<>();
+    private static final AtomicReference<Tab> latestTab = new AtomicReference<>();
     private static final AtomicReference<DndTabPane> activePane = new AtomicReference<>();
     private static final DataFormat tabMove = new DataFormat("SplitTabPane:tabMove");
 
@@ -241,6 +242,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             marker.setStroke(Color.DARKORANGE);
             marker.setManaged(false);
             tabPane.focusedProperty().addListener(this::handleFocused);
+            tabPane.getSelectionModel().selectedItemProperty().addListener((_, _, tab) -> latestTab.set(tab));
             setOnDragOver(this::handleDragOver);
             setOnDragDropped(this::handleDragDropped);
             setOnDragExited(this::handleDragExited);
@@ -250,61 +252,69 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
 
         private void initTabHeaderAction() {
-            // double-click in the tab area to open a new tab
             Node headerArea = tabPane.lookup(".tab-header-area");
-            if (headerArea != null) {
-                headerArea.setOnMouseClicked(e -> {
-                    if (e.getClickCount() == 2) {
-                        addNext(parent.defaultContentPaneFactory.apply(null));
+            if (headerArea == null) return;
+
+            headerArea.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2) {
+                    // double-click in the tab area to open a new tab
+                    addNext(parent.defaultContentPaneFactory.apply(null));
+                }
+            });
+
+            headerArea.setOnContextMenuRequested(event -> {
+                var newEditor = new FxMenuItem("New", CommandKeys.SC_N, false, _ ->
+                    addNext(parent.defaultContentPaneFactory.apply(null)));
+                var fileTree = new FxMenuItem("File tree", null, false, _ -> {
+                    var root = Path.of(System.getProperty("user.home"));
+                    if (latestTab.get().getContent() instanceof ContentPane cp) {
+                        var path = Path.of(cp.nameProperty().get().canonical());
+                        if (Files.exists(path)) {
+                            root = path.getParent();
+                        }
+                    }
+                    parent.addLeft(new PathTreePane(root));
+                });
+                var compact = new FxMenuItem("Compact", null, false, _ -> {
+                    SplitTabPane stp = parent;
+                    while (stp != null && stp.pane.getDividerPositions().length == 0) {
+                        stp = stp.parent;
+                    }
+                    if (stp == null || stp.pane.getDividerPositions().length != 1) {
+                        return;
+                    }
+                    SplitPane splitPane = stp.pane;
+                    Node node1 = splitPane.getItems().get(0);
+                    Node node2 = splitPane.getItems().get(1);
+                    boolean horiz = splitPane.getOrientation() == Orientation.HORIZONTAL;
+                    double r = headerArea.getLayoutBounds().getHeight() / (horiz ? splitPane.getWidth() : splitPane.getHeight());
+                    if (node1 == parent) {
+                        tabPane.setSide(horiz ? Side.LEFT : Side.TOP);
+                        splitPane.setDividerPositions(r);
+                        tabCompacted = true;
+                    } else if (node2 == parent) {
+                        tabPane.setSide(horiz ? Side.LEFT : Side.TOP);
+                        splitPane.setDividerPositions(1 - r);
+                        tabCompacted = true;
                     }
                 });
-
-                headerArea.setOnContextMenuRequested(event -> {
-                    var newEditor = new FxMenuItem("New", CommandKeys.SC_N, false, _ ->
-                        addNext(parent.defaultContentPaneFactory.apply(null)));
-                    var fileTree = new FxMenuItem("File tree", null, false, _ ->
-                        parent.addLeft(new PathTreePane()));
-                    var compact = new FxMenuItem("Compact", null, false, _ -> {
-                        SplitTabPane stp = parent;
-                        while (stp != null && stp.pane.getDividerPositions().length == 0) {
-                            stp = stp.parent;
-                        }
-                        if (stp == null || stp.pane.getDividerPositions().length != 1) {
-                            return;
-                        }
-                        SplitPane splitPane = stp.pane;
-                        Node node1 = splitPane.getItems().get(0);
-                        Node node2 = splitPane.getItems().get(1);
-                        boolean horiz = splitPane.getOrientation() == Orientation.HORIZONTAL;
-                        double r = headerArea.getLayoutBounds().getHeight() / (horiz ? splitPane.getWidth() : splitPane.getHeight());
-                        if (node1 == parent) {
-                            tabPane.setSide(horiz ? Side.LEFT : Side.TOP);
-                            splitPane.setDividerPositions(r);
-                            tabCompacted = true;
-                        } else if (node2 == parent) {
-                            tabPane.setSide(horiz ? Side.LEFT : Side.TOP);
-                            splitPane.setDividerPositions(1 - r);
-                            tabCompacted = true;
-                        }
-                    });
-                    var expand = new FxMenuItem("Expand", null, false, _ -> {
-                        tabPane.setSide(Side.TOP);
-                        tabCompacted = false;
-                        if (parent.parent == null) {
-                            parent.pane.setDividerPositions(0.5);
-                        } else {
-                            parent.parent.pane.setDividerPositions(0.5);
-                        }
-                    });
-                    new FxContextMenu(true, newEditor,
-                        new SeparatorMenuItem(),
-                        fileTree,
-                        new SeparatorMenuItem(),
-                        compact, expand).show(headerArea, event.getScreenX(), event.getScreenY());
-                    event.consume();
+                var expand = new FxMenuItem("Expand", null, false, _ -> {
+                    tabPane.setSide(Side.TOP);
+                    tabCompacted = false;
+                    if (parent.parent == null) {
+                        parent.pane.setDividerPositions(0.5);
+                    } else {
+                        parent.parent.pane.setDividerPositions(0.5);
+                    }
                 });
+                new FxContextMenu(true, newEditor,
+                    new SeparatorMenuItem(),
+                    fileTree,
+                    new SeparatorMenuItem(),
+                    compact, expand).show(headerArea, event.getScreenX(), event.getScreenY());
+                event.consume();
+            });
 
-            }
         }
 
         @Override

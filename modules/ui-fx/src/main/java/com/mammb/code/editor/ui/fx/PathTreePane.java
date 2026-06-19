@@ -19,6 +19,7 @@ import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Session;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -36,9 +37,12 @@ public class PathTreePane extends ContentPane {
     /** The file path property. */
     private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.of("Files", "Files", "Files"));
 
-
-    public PathTreePane() {
-        pathTreeView = new PathTreeView();
+    /**
+     * Constructor.
+     * @param roots the root path
+     */
+    public PathTreePane(Path... roots) {
+        pathTreeView = new PathTreeView(roots);
         getChildren().add(pathTreeView);
     }
 
