@@ -690,7 +690,7 @@ public class PathTreeView extends TreeView<Path> {
         }
 
         private void changeRootPath(TreeItem<Path> rootItem, Path targetPath, Path selectPath) {
-            // 1. Store the expansion state of the current root and its children
+            // store the expansion state of the current root and its children
             Map<Path, Boolean> expansionStates = new HashMap<>();
             if (rootItem instanceof PathTreeItem pathItem) {
                 pathItem.storeExpansionState(expansionStates);
@@ -698,7 +698,7 @@ public class PathTreeView extends TreeView<Path> {
             expansionStates.put(rootItem.getValue(), rootItem.isExpanded());
             expansionStates.put(targetPath, true); // Keep the target directory expanded
 
-            // 2. Check for duplicate or overlapping roots
+            // check for duplicate or overlapping roots
             List<TreeItem<Path>> otherRoots = new ArrayList<>(treeView.getRoot().getChildren());
             otherRoots.remove(rootItem);
 
@@ -707,10 +707,10 @@ public class PathTreeView extends TreeView<Path> {
             for (TreeItem<Path> other : otherRoots) {
                 Path existingPath = other.getValue();
                 if (targetPath.startsWith(existingPath)) {
-                    // The new target directory is already inside an existing root
+                    // the new target directory is already inside an existing root
                     duplicateOrSub = true;
                 } else if (existingPath.startsWith(targetPath)) {
-                    // An existing root is a subdirectory of the new target directory
+                    // an existing root is a subdirectory of the new target directory
                     toRemove.add(other);
                     if (other instanceof PathTreeItem pathItem) {
                         pathItem.storeExpansionState(expansionStates);
@@ -720,7 +720,7 @@ public class PathTreeView extends TreeView<Path> {
             }
 
             if (duplicateOrSub) {
-                // Remove the current root and restore expansion states on the containing root
+                // remove the current root and restore expansion states on the containing root
                 treeView.getRoot().getChildren().remove(rootItem);
                 for (TreeItem<Path> other : treeView.getRoot().getChildren()) {
                     if (other instanceof PathTreeItem pathItem && targetPath.startsWith(other.getValue())) {
@@ -730,10 +730,10 @@ public class PathTreeView extends TreeView<Path> {
                 return;
             }
 
-            // Remove nested roots since they will be covered by the target directory
+            // remove nested roots since they will be covered by the target directory
             treeView.getRoot().getChildren().removeAll(toRemove);
 
-            // 3. Replace the current root item with the target directory item
+            // replace the current root item with the target directory item
             PathTreeItem newItem = new PathTreeItem(targetPath, treeView.isCompactFolders());
             newItem.setExpanded(true); // Expand the new parent by default
 
@@ -744,37 +744,21 @@ public class PathTreeView extends TreeView<Path> {
                 treeView.getRoot().getChildren().add(newItem);
             }
 
-            // 4. Sort roots
+            // sort roots
             treeView.getRoot().getChildren().sort(Comparator
                 .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
                 .thenComparing(t -> t.getValue().getFileName().toString()));
 
-            // 5. Restore expansion states
+            // restore expansion states
             newItem.restoreExpansionState(expansionStates);
 
-            // 6. Select the target directory node under the new parent, or the new parent if not found
+            // select the target directory node under the new parent, or the new parent if not found
             treeView.getSelectionModel().clearSelection();
             TreeItem<Path> originalItemInNewRoot = newItem.getChildren().stream()
                 .filter(child -> child.getValue().equals(selectPath))
                 .findFirst()
                 .orElse(newItem);
             treeView.getSelectionModel().select(originalItemInNewRoot);
-        }
-
-        private Path findUniquePath(Path parent, String baseName) {
-            Path newPath = parent.resolve(baseName);
-            if (!Files.exists(newPath)) {
-                return newPath;
-            }
-            int i = 1;
-            while (true) {
-                String numberedName = baseName + " (" + i + ")";
-                newPath = parent.resolve(numberedName);
-                if (!Files.exists(newPath)) {
-                    return newPath;
-                }
-                i++;
-            }
         }
 
         private void showError(String title, String message) {
