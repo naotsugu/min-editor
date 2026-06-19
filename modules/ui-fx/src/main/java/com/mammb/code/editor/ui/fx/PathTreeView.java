@@ -27,6 +27,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -432,9 +433,9 @@ public class PathTreeView extends TreeView<Path> {
                 menu.getItems().add(new SeparatorMenuItem());
 
                 menu.getItems().add(new FxMenuItem("New File", null, false, _ ->
-                    withCellEdit(() -> fileOperationHandler.createNew(treeItem, true))));
+                    fileOperationHandler.createNew(treeItem, true)));
                 menu.getItems().add(new FxMenuItem("New Directory", null, false, _ ->
-                    withCellEdit(() -> fileOperationHandler.createNew(treeItem, false))));
+                    fileOperationHandler.createNew(treeItem, false)));
 
                 menu.getItems().add(new SeparatorMenuItem());
                 menu.getItems().add(new FxMenuItem("Refresh", null, false, _ ->
@@ -484,7 +485,26 @@ public class PathTreeView extends TreeView<Path> {
             Path parentPath = parentItem.getValue();
             if (!Files.isDirectory(parentPath)) return;
 
-            Path newPath = findUniquePath(parentPath, isFile ? "Untitled.txt" : "Untitled");
+            String defaultName = isFile ? "Untitled.txt" : "Untitled";
+            TextInputDialog dialog = new TextInputDialog(defaultName);
+            dialog.initOwner(treeView.getScene().getWindow());
+            dialog.setTitle(isFile ? "New File" : "New Directory");
+            dialog.setHeaderText(null);
+            dialog.setGraphic(null);
+            dialog.setContentText(isFile ? "File name:" : "Directory name:");
+
+            Optional<String> result = dialog.showAndWait();
+            if (result.isEmpty()) return;
+
+            String name = result.get().trim();
+            if (name.isEmpty()) return;
+
+            Path newPath = parentPath.resolve(name);
+            if (Files.exists(newPath)) {
+                showError("Already Exists", "A file or directory with that name already exists.");
+                return;
+            }
+
 
             try {
                 if (isFile) {
@@ -499,10 +519,7 @@ public class PathTreeView extends TreeView<Path> {
                     .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
                     .thenComparing(t -> t.getValue().getFileName().toString()));
 
-                Platform.runLater(() -> {
-                    treeView.getSelectionModel().select(newItem);
-                    treeView.edit(newItem);
-                });
+                Platform.runLater(() -> treeView.getSelectionModel().select(newItem));
 
             } catch (IOException e) {
                 showError("Creation Failed", "Could not create " + newPath.getFileName() + ": " + e.getMessage());
