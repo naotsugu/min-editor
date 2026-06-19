@@ -19,12 +19,9 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
@@ -268,13 +265,16 @@ public class PathTreeView extends TreeView<Path> {
             }
         }
 
-        /** Recursively stores the expansion state of this node and its children. */
+        /** Recursively stores the expansion state of this node and its children.
+         *  Uses super.getChildren() to avoid triggering lazy loading of unvisited nodes. */
         void storeExpansionState(Map<Path, Boolean> states) {
             if (!isLeaf()) {
                 states.put(getValue(), isExpanded());
-                for (TreeItem<Path> child : getChildren()) {
-                    if (child instanceof PathTreeItem pathChild) {
-                        pathChild.storeExpansionState(states);
+                if (loaded && isExpanded()) {
+                    for (TreeItem<Path> child : super.getChildren()) {
+                        if (child instanceof PathTreeItem pathChild) {
+                            pathChild.storeExpansionState(states);
+                        }
                     }
                 }
             }
@@ -284,10 +284,13 @@ public class PathTreeView extends TreeView<Path> {
         void restoreExpansionState(Map<Path, Boolean> states) {
             if (!isLeaf()) {
                 // restore state, defaulting to false if not found
-                setExpanded(states.getOrDefault(getValue(), false));
-                for (TreeItem<Path> child : getChildren()) {
-                    if (child instanceof PathTreeItem pathChild) {
-                        pathChild.restoreExpansionState(states);
+                boolean shouldExpand = states.getOrDefault(getValue(), false);
+                setExpanded(shouldExpand);
+                if (shouldExpand) {
+                    for (TreeItem<Path> child : getChildren()) {
+                        if (child instanceof PathTreeItem pathChild) {
+                            pathChild.restoreExpansionState(states);
+                        }
                     }
                 }
             }
@@ -414,6 +417,11 @@ public class PathTreeView extends TreeView<Path> {
             boolean isRoot = treeItem.getParent() == getTreeView().getRoot();
 
             if (isRoot) {
+                Path parent = getItem().getParent();
+                if (parent != null) {
+                    menu.getItems().add(new FxMenuItem("Move to Parent Directory", null, false, _ ->
+                        fileOperationHandler.moveToParent(treeItem)));
+                }
                 menu.getItems().add(new FxMenuItem("Remove", null, false, _ ->
                     fileOperationHandler.removeRoot(treeItem)));
             } else {
@@ -428,6 +436,10 @@ public class PathTreeView extends TreeView<Path> {
             }
 
             if (isDirectory) {
+                if (!isRoot) {
+                    menu.getItems().add(new FxMenuItem("Set as Root", null, false, _ ->
+                        fileOperationHandler.setAsRoot(treeItem)));
+                }
                 menu.getItems().add(new FxMenuItem("Paste", null, !Clipboard.getSystemClipboard().hasFiles(), _ ->
                     fileOperationHandler.paste(treeItem)));
                 menu.getItems().add(new SeparatorMenuItem());
@@ -463,7 +475,7 @@ public class PathTreeView extends TreeView<Path> {
     /**
      * Handles all file system operations, separating logic from the UI (PathTreeCell).
      */
-    private static class FileOperationHandler {
+    static class FileOperationHandler {
         private final PathTreeView treeView;
         private static final DataFormat DATA_FORMAT_CUT = new DataFormat("app/cut-operation");
 
@@ -504,7 +516,6 @@ public class PathTreeView extends TreeView<Path> {
                 showError("Already Exists", "A file or directory with that name already exists.");
                 return;
             }
-
 
             try {
                 if (isFile) {
@@ -659,6 +670,95 @@ public class PathTreeView extends TreeView<Path> {
 
         void removeRoot(TreeItem<Path> item) {
             treeView.getRoot().getChildren().remove(item);
+        }
+
+        void moveToParent(TreeItem<Path> item) {
+            Path currentPath = item.getValue();
+            Path parentPath = currentPath.getParent();
+            if (parentPath == null) return;
+            changeRootPath(item, parentPath, currentPath);
+        }
+
+        void setAsRoot(TreeItem<Path> item) {
+            Path targetPath = item.getValue();
+            TreeItem<Path> rootItem = item;
+            while (rootItem != null && rootItem.getParent() != treeView.getRoot()) {
+                rootItem = rootItem.getParent();
+            }
+            if (rootItem == null) return;
+            changeRootPath(rootItem, targetPath, targetPath);
+        }
+
+        private void changeRootPath(TreeItem<Path> rootItem, Path targetPath, Path selectPath) {
+            // 1. Store the expansion state of the current root and its children
+            Map<Path, Boolean> expansionStates = new HashMap<>();
+            if (rootItem instanceof PathTreeItem pathItem) {
+                pathItem.storeExpansionState(expansionStates);
+            }
+            expansionStates.put(rootItem.getValue(), rootItem.isExpanded());
+            expansionStates.put(targetPath, true); // Keep the target directory expanded
+
+            // 2. Check for duplicate or overlapping roots
+            List<TreeItem<Path>> otherRoots = new ArrayList<>(treeView.getRoot().getChildren());
+            otherRoots.remove(rootItem);
+
+            boolean duplicateOrSub = false;
+            List<TreeItem<Path>> toRemove = new ArrayList<>();
+            for (TreeItem<Path> other : otherRoots) {
+                Path existingPath = other.getValue();
+                if (targetPath.startsWith(existingPath)) {
+                    // The new target directory is already inside an existing root
+                    duplicateOrSub = true;
+                } else if (existingPath.startsWith(targetPath)) {
+                    // An existing root is a subdirectory of the new target directory
+                    toRemove.add(other);
+                    if (other instanceof PathTreeItem pathItem) {
+                        pathItem.storeExpansionState(expansionStates);
+                    }
+                    expansionStates.put(existingPath, other.isExpanded());
+                }
+            }
+
+            if (duplicateOrSub) {
+                // Remove the current root and restore expansion states on the containing root
+                treeView.getRoot().getChildren().remove(rootItem);
+                for (TreeItem<Path> other : treeView.getRoot().getChildren()) {
+                    if (other instanceof PathTreeItem pathItem && targetPath.startsWith(other.getValue())) {
+                        pathItem.restoreExpansionState(expansionStates);
+                    }
+                }
+                return;
+            }
+
+            // Remove nested roots since they will be covered by the target directory
+            treeView.getRoot().getChildren().removeAll(toRemove);
+
+            // 3. Replace the current root item with the target directory item
+            PathTreeItem newItem = new PathTreeItem(targetPath, treeView.isCompactFolders());
+            newItem.setExpanded(true); // Expand the new parent by default
+
+            int index = treeView.getRoot().getChildren().indexOf(rootItem);
+            if (index >= 0) {
+                treeView.getRoot().getChildren().set(index, newItem);
+            } else {
+                treeView.getRoot().getChildren().add(newItem);
+            }
+
+            // 4. Sort roots
+            treeView.getRoot().getChildren().sort(Comparator
+                .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
+                .thenComparing(t -> t.getValue().getFileName().toString()));
+
+            // 5. Restore expansion states
+            newItem.restoreExpansionState(expansionStates);
+
+            // 6. Select the target directory node under the new parent, or the new parent if not found
+            treeView.getSelectionModel().clearSelection();
+            TreeItem<Path> originalItemInNewRoot = newItem.getChildren().stream()
+                .filter(child -> child.getValue().equals(selectPath))
+                .findFirst()
+                .orElse(newItem);
+            treeView.getSelectionModel().select(originalItemInNewRoot);
         }
 
         private Path findUniquePath(Path parent, String baseName) {
