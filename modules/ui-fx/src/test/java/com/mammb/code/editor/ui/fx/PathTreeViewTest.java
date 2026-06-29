@@ -34,6 +34,10 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Naotsugu Kobayashi
  */
 class PathTreeViewTest {
+    @Test
+    void test() {
+
+    }
 
 //    @BeforeAll
 //    static void initJavaFX() throws InterruptedException {
