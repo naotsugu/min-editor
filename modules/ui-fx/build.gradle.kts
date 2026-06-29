@@ -7,3 +7,7 @@ dependencies {
     api(project(":ui-base"))
     implementation(project(":javafx"))
 }
+
+tasks.test {
+    systemProperty("java.awt.headless", "true")
+}
