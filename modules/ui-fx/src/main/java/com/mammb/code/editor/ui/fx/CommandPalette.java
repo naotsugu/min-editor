@@ -155,7 +155,7 @@ public class CommandPalette extends Dialog<Command> {
                 c == Command.FindNext.class ||
                 c == Command.FindPrev.class ||
                 c == Command.FindAll.class ||
-                c == Command.Select.class -> textField.setText(initText);
+                c == Command.Select.class -> textField.setText(initText + " false");
             case null, default -> { }
         }
     }
@@ -178,21 +178,23 @@ public class CommandPalette extends Dialog<Command> {
     }
 
     private void fireCommand() {
+        String text = textField.getText();
         if (cmdType == null) {
             setResult(new Command.Empty());
         } else {
             if (Command.RequireArgs.class.isAssignableFrom(cmdType)) {
                 String[] args;
                 if (Command.RequireArgs1.class.isAssignableFrom(cmdType)) {
-                    args = new String[] { textField.getText() };
+                    args = new String[] { text };
                 } else if (Command.RequireArgs2.class.isAssignableFrom(cmdType)) {
-                    int idx = textField.getText().lastIndexOf(" ");
+                    int idx = text.lastIndexOf(" ");
                     if (idx > 0) {
-                        args = new String[]{
-                            textField.getText().substring(0, idx),
-                            textField.getText().substring(Math.min(idx + 1, textField.getText().length()))};
+                        args = new String[] {
+                            text.substring(0, idx),
+                            text.substring(Math.min(idx + 1, text.length()))
+                        };
                     } else {
-                        args = new String[] { textField.getText() };
+                        args = new String[] { text };
                     }
                 } else {
                     throw new RuntimeException(cmdType.getName());
