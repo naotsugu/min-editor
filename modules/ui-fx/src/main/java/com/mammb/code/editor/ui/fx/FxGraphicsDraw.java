@@ -22,6 +22,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
+import javafx.stage.Screen;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,7 +39,10 @@ public class FxGraphicsDraw implements GraphicsDraw {
     /** The cache of color. */
     private final Map<Rgba, Color> colors = new HashMap<>();
 
+    private double outputScale = 1.0;
+
     private boolean faint = true;
+
 
     /**
      * Constructor.
@@ -51,7 +55,11 @@ public class FxGraphicsDraw implements GraphicsDraw {
         //this.gc.setFontSmoothingType(Objects.equals(gc.getFont().getName(), "MS Gothic")
         //    ? FontSmoothingType.GRAY : FontSmoothingType.LCD);
         this.gc.setFontSmoothingType(FontSmoothingType.GRAY);
-        this.faint = isFaint(font);
+        this.outputScale = Screen.getScreens().stream()
+            .mapToDouble(Screen::getOutputScaleX)
+            .filter(s -> s != 1.0).max().orElse(1.0);
+        this.faint = isFaint(font, outputScale);
+        System.out.println(outputScale);
     }
 
     @Override
@@ -119,7 +127,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
         if (size < 6) return;
         Font font = Font.font(old.getFamily(), size);
         gc.setFont(font);
-        faint = isFaint(font);
+        faint = isFaint(font, outputScale);
     }
 
     @Override
@@ -132,12 +140,15 @@ public class FxGraphicsDraw implements GraphicsDraw {
             a -> Color.rgb(a[0], a[1], a[2], (double) a[3] / (double) 255.0F)));
     }
 
-    private static boolean isFaint(Font font) {
+    private static boolean isFaint(Font font, double outputScale) {
         if (font.getSize() <= 20) {
             // fonts smaller than 20pt will generally appear fainted in JavaFx.
             // MS Gothic fonts of 20pt or smaller are bitmap fonts.
             var fontName = font.getName().toLowerCase();
-            return !Objects.equals(fontName, "ms gothic") && !fontName.contains("bold");
+            boolean hasBitmapStrike = Objects.equals(fontName, "ms gothic") || Objects.equals(fontName, "ms mincho");
+            return !(
+                (hasBitmapStrike && outputScale == 1.0) || fontName.contains("bold")
+            );
         }
         return false;
     }
