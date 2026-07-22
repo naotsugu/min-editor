@@ -4,10 +4,10 @@ plugins {
 
 rootProject.name = "min-editor"
 
-include("bootstrap", "core", "platform", "ui-base", "ui-fx" ) // , "ui-swing"
+include("bootstrap", "core", "platform", "ui-base", "ui-fx", "jfx-multi-tab" ) // , "ui-swing"
 
 // javaFX
-include("javafx", "javafx-peep", "javafx-original", )
+include("javafx", "javafx-peep", )
 
 // git submodule
 include(":piecetable")

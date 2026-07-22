@@ -1,5 +1,5 @@
 plugins {
-    java
+    `java-library`
     id("org.openjfx.javafxplugin") version "0.1.0"
 }
 
@@ -9,5 +9,6 @@ repositories {
 
 javafx {
     version = "26"
-    modules("javafx.web")
+    modules("javafx.controls")
+    configuration = "compileOnly"
 }
