@@ -15,13 +15,13 @@ val artifact = when {
     else -> throw Error("Unsupported OS: $os, ARCH: $arch")
 }
 
-val javafxBase: Configuration by configurations.creating
-val javafxGraphics: Configuration by configurations.creating
-val javafxControls: Configuration by configurations.creating
+val javafxBase: Configuration = configurations.create("javafxBase")
+val javafxGraphics: Configuration = configurations.create("javafxGraphics")
+val javafxControls: Configuration = configurations.create("javafxControls")
 
-val javafxBaseSources: Configuration by configurations.creating
-val javafxGraphicsSources: Configuration by configurations.creating
-val javafxControlsSources: Configuration by configurations.creating
+val javafxBaseSources: Configuration = configurations.create("javafxBaseSources")
+val javafxGraphicsSources: Configuration = configurations.create("javafxGraphicsSources")
+val javafxControlsSources: Configuration = configurations.create("javafxControlsSources")
 
 dependencies {
     javafxBase("org.openjfx:javafx-base:26:${artifact}")
