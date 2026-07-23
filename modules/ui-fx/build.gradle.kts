@@ -6,4 +6,5 @@ dependencies {
     implementation(project(":core"))
     api(project(":ui-base"))
     implementation(project(":javafx"))
+    implementation(project(":jfx-multi-tab"))
 }

@@ -24,5 +24,6 @@ module code.editor.ui.fx {
     requires code.editor.core;
     requires code.editor.ui.base;
     requires javafx.base;
+    requires com.mammb.code.jfx.multitab;
     exports com.mammb.code.editor.ui.fx;
 }
