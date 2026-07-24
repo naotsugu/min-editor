@@ -22,6 +22,7 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -52,10 +53,14 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         this.ctx = Objects.requireNonNull(ctx);
         this.parent = parent;
         this.label = new Label(content.shortNameProperty().getValue());
+        var tooltip = new Tooltip(content.fullNameProperty().getValue());
 
         setContent(content);
         setGraphic(label);
         setContextMenu(buildContextMenu());
+        setTooltip(tooltip);
+        content.shortNameProperty().addListener((_, _, value) -> label.setText(value));
+        content.fullNameProperty().addListener((_, _, value) -> tooltip.setText(value));
 
         setOnCloseRequest(this::handleCloseRequest);
         setOnClosed(this::handleClosed);
@@ -65,7 +70,9 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
     }
 
     private void handleCloseRequest(Event e) {
-        if (!content().closeRequest()) {
+        if (content().closeRequest()) {
+            content().close();
+        } else {
             e.consume();
         }
     }

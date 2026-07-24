@@ -16,54 +16,29 @@
 package com.mammb.code.jfx.multitab;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.StackPane;
-import java.nio.file.Path;
 
-public class ContentPane extends StackPane {
+/**
+ * The ContentPane.
+ * @author Naotsugu Kobayashi
+ */
+public abstract class ContentPane extends StackPane {
 
-    private final SimpleObjectProperty<String> shortNameProperty = new SimpleObjectProperty<>("");
-    private final SimpleObjectProperty<String> fullNameProperty = new SimpleObjectProperty<>("");
+    /**
+     * Focus the pane.
+     */
+    abstract public void focus();
 
-    private ContentPane(String shortName, String fullName) {
-        shortNameProperty.set(shortName);
-        fullNameProperty.set(fullName);
-    }
+    abstract public boolean canCloseQuiet();
 
-    public ContentPane(Path path) {
-        this(path.getFileName().toString(), path.toString());
-    }
+    abstract public boolean closeRequest();
 
-    public ContentPane(String string) {
-        if (string == null || string.isBlank()) {
-            shortNameProperty.set("Untitled");
-        } else {
-            String[] strip = string.split(System.getProperty("path.separator", ";"), 2);
-            shortNameProperty.set(strip[0]);
-            if (strip.length > 1) {
-                fullNameProperty.set(strip[1]);
-            }
-        }
-    }
+    abstract public void close();
 
-    public String asString() {
-        return shortNameProperty.get() + System.getProperty("path.separator", ";") + fullNameProperty.get();
-    }
+    abstract public String asString();
 
-    public boolean canClose() {
-        return true;
-    }
+    abstract public ReadOnlyObjectProperty<String> shortNameProperty();
 
-    public boolean closeRequest() {
-        return true;
-    }
-
-    public ReadOnlyObjectProperty<String> shortNameProperty() {
-        return shortNameProperty;
-    }
-
-    public ReadOnlyObjectProperty<String> fullNameProperty() {
-        return fullNameProperty;
-    }
+    abstract public ReadOnlyObjectProperty<String> fullNameProperty();
 
 }

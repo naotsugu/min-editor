@@ -52,12 +52,12 @@ public class PathTreePane extends ContentPane {
     }
 
     @Override
-    boolean needsCloseConfirmation() {
+    boolean canCloseQuiet() {
         return false;
     }
 
     @Override
-    boolean canClose() {
+    boolean closeRequest() {
         return true;
     }
 

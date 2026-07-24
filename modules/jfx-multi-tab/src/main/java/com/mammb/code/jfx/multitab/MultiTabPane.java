@@ -39,25 +39,18 @@ public class MultiTabPane extends StackPane {
     private final Context ctx;
 
     public MultiTabPane(Stage stage, String string,
-            Function<String, ? extends ContentPane> contentSupplier,
-            Function<Path, ? extends ContentPane> pathContentSupplier) {
+                        Function<String, ? extends ContentPane> contentSupplier,
+                        Function<Path, ? extends ContentPane> pathContentSupplier) {
 
         this.ctx = new Context(stage);
-
-        if  (contentSupplier != null)
-            ctx.contentSupplier(contentSupplier);
-        if (pathContentSupplier != null)
-            ctx.pathContentSupplier(pathContentSupplier);
+        this.ctx.contentSupplier(contentSupplier);
+        this.ctx.pathContentSupplier(pathContentSupplier);
 
         Node branchNode = (string != null && !string.isBlank())
             ? fromString(string)
             : new BranchNode(ctx, ctx.contentSupplier().apply(""));
 
         getChildren().add(branchNode);
-    }
-
-    public MultiTabPane(Stage stage) {
-        this(stage, "", null, null);
     }
 
     public String asString() {

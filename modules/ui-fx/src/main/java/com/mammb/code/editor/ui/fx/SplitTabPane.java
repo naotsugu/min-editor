@@ -16,7 +16,6 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Files;
-import com.mammb.code.editor.ui.base.Command;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -27,9 +26,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -166,9 +163,9 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     public boolean canCloseAll() {
         var tabs = tabAndPanes();
         for (TabAndPane tabAndPane : tabs) {
-            if (tabAndPane.pane().needsCloseConfirmation()) {
+            if (!tabAndPane.pane().canCloseQuiet()) {
                 tabAndPane.select();
-                if (!tabAndPane.pane.canClose()) {
+                if (!tabAndPane.pane.closeRequest()) {
                     return false;
                 }
             }
@@ -365,11 +362,11 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 .toList();
 
             for (Tab tab : tabs) {
-                if (tab.getContent() instanceof ContentPane contentPane && contentPane.needsCloseConfirmation()) {
+                if (tab.getContent() instanceof ContentPane contentPane && !contentPane.canCloseQuiet()) {
                     tabPane.requestFocus();
                     tabPane.getSelectionModel().select(tab);
                     contentPane.focus();
-                    if (!contentPane.canClose()) {
+                    if (!contentPane.closeRequest()) {
                         continue;
                     }
                 }
@@ -440,7 +437,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             if (maybeTab instanceof Tab tab) {
                 var maybeContentPane = tab.getContent();
                 if (maybeContentPane instanceof ContentPane contentPane) {
-                    if (contentPane.canClose()) {
+                    if (contentPane.closeRequest()) {
                         contentPane.close(true);
                     } else {
                         e.consume();

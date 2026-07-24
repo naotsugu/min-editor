@@ -456,7 +456,7 @@ public class EditorPane extends ContentPane {
     }
 
     private void openWithChooser() {
-        if (!canClose()) return;
+        if (!closeRequest()) return;
         FileChooser fc = new FileChooser();
         fc.setTitle("Select file...");
         if (model().query(Query.contentPath).isPresent()) {
@@ -559,16 +559,16 @@ public class EditorPane extends ContentPane {
     }
 
     private void handleCloseRequest() {
-        if (canClose()) TabContainer.find(this).close(this);
+        if (closeRequest()) TabContainer.find(this).close(this);
     }
 
     @Override
-    boolean needsCloseConfirmation() {
+    boolean canCloseQuiet() {
         return model().query(Query.modified) && model().query(Query.contentPath).isPresent();
     }
 
     @Override
-    boolean canClose() {
+    boolean closeRequest() {
         boolean canDiscard = true;
         if (model().query(Query.modified)) {
             var ret = FxDialog.confirmation(getScene().getWindow(),
@@ -580,6 +580,10 @@ public class EditorPane extends ContentPane {
         return canDiscard;
     }
 
+    void close() {
+        model.close();
+    }
+
     @Override
     Optional<Session> close(boolean force) {
         EditorModel model = model();
@@ -588,24 +592,24 @@ public class EditorPane extends ContentPane {
         var contentPath = model.query(Query.contentPath);
         if (contentPath.isPresent()) {
             context.closed(contentPath.get());
-            restorableSession = force || canClose()
+            restorableSession = force || closeRequest()
                 ? Optional.of(model.getSession())
                 : Optional.empty();
         } else {
             var session = model.stash();
             restorableSession = session.isEmpty() ? Optional.empty() : Optional.of(session);
         }
-        model.close();
+        close();
         if (force) paintPulse.stop();
         return restorableSession;
     }
 
     void forward() {
-        sessionHistory.forward().ifPresent(session -> { if (canClose()) open(session); });
+        sessionHistory.forward().ifPresent(session -> { if (closeRequest()) open(session); });
     }
 
     void backward() {
-        sessionHistory.backward().ifPresent(session -> { if (canClose()) open(session); });
+        sessionHistory.backward().ifPresent(session -> { if (closeRequest()) open(session); });
     }
 
     Optional<Session> session() {

@@ -20,7 +20,6 @@ import com.mammb.code.editor.core.Session;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.layout.StackPane;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * The ContentPane.
@@ -35,15 +34,18 @@ public abstract class ContentPane extends StackPane {
 
     /**
      * Check whether the pane needs close confirmation.
-     * @return {@code true}, if the pane needs close confirmation
+     * @return {@code false}, if the pane needs close confirmation
      */
-    abstract boolean needsCloseConfirmation();
+    abstract boolean canCloseQuiet();
 
     /**
      * Check whether the pane can be closed.
      * @return {@code true}, if the pane can be closed
      */
-    abstract boolean canClose();
+    abstract boolean closeRequest();
+
+
+    abstract void close();
 
     /**
      * Close the pane.
