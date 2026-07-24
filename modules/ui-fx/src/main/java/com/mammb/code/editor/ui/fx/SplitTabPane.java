@@ -75,20 +75,20 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
     private SplitPane pane = new SplitPane();
     private SplitTabPane parent = null;
 
-    private final Function<Path, ContentPane> defaultContentPaneFactory;
+    private final Function<Path, ContentStackPane> defaultContentPaneFactory;
 
-    private SplitTabPane(Function<Path, ContentPane> defaultContentPaneFactory) {
+    private SplitTabPane(Function<Path, ContentStackPane> defaultContentPaneFactory) {
         this.defaultContentPaneFactory = defaultContentPaneFactory;
         getChildren().add(pane);
     }
 
-    public SplitTabPane(Function<Path, ContentPane> defaultContentPaneFactory, ContentPane... panes) {
+    public SplitTabPane(Function<Path, ContentStackPane> defaultContentPaneFactory, ContentStackPane... panes) {
         this(defaultContentPaneFactory);
         DndTabPane dndTabPane = add(panes[0]);
         Arrays.stream(panes).skip(1).forEach(dndTabPane::addNext);
     }
 
-    private SplitTabPane(ContentPane node, SplitTabPane parent) {
+    private SplitTabPane(ContentStackPane node, SplitTabPane parent) {
         this(parent.defaultContentPaneFactory);
         add(node);
         this.parent = parent;
@@ -101,7 +101,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         node.parent(this);
     }
 
-    private DndTabPane add(ContentPane node) {
+    private DndTabPane add(ContentStackPane node) {
         pane.getItems().clear();
         DndTabPane dndTabPane = new DndTabPane(this, node);
         pane.getItems().add(dndTabPane);
@@ -123,19 +123,19 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             .forEach(h -> h.parent(this));
     }
 
-    DndTabPane addRight(ContentPane node) {
+    DndTabPane addRight(ContentStackPane node) {
         return add(node, Orientation.HORIZONTAL, true);
     }
-    private DndTabPane addLeft(ContentPane node) {
+    private DndTabPane addLeft(ContentStackPane node) {
         return add(node, Orientation.HORIZONTAL, false);
     }
-    private DndTabPane addTop(ContentPane node) {
+    private DndTabPane addTop(ContentStackPane node) {
         return add(node, Orientation.VERTICAL, false);
     }
-    private DndTabPane addBottom(ContentPane node) {
+    private DndTabPane addBottom(ContentStackPane node) {
         return add(node, Orientation.VERTICAL, true);
     }
-    private DndTabPane add(ContentPane node, Orientation orientation, boolean forward) {
+    private DndTabPane add(ContentStackPane node, Orientation orientation, boolean forward) {
         if (pane.getItems().isEmpty()) {
             return add(node);
         }
@@ -155,8 +155,8 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
 
     private List<TabAndPane> tabAndPanes() {
         return tabs(root()).stream()
-            .filter(tab -> tab.getContent() instanceof ContentPane)
-            .map(tab -> new TabAndPane(tab, tab.getTabPane(), (ContentPane) tab.getContent()))
+            .filter(tab -> tab.getContent() instanceof ContentStackPane)
+            .map(tab -> new TabAndPane(tab, tab.getTabPane(), (ContentStackPane) tab.getContent()))
             .toList();
     }
 
@@ -173,11 +173,11 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         return true;
     }
 
-    public List<ContentPane> contentPanes() {
+    public List<ContentStackPane> contentPanes() {
         return tabs(root()).stream()
             .map(Tab::getContent)
-            .filter(ContentPane.class::isInstance)
-            .map(ContentPane.class::cast)
+            .filter(ContentStackPane.class::isInstance)
+            .map(ContentStackPane.class::cast)
             .toList();
     }
 
@@ -191,7 +191,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         return parent;
     }
 
-    record TabAndPane(Tab tab, TabPane tabPane, ContentPane pane) {
+    record TabAndPane(Tab tab, TabPane tabPane, ContentStackPane pane) {
         void select() {
             if (tabPane != null) {
                 tabPane.requestFocus();
@@ -232,7 +232,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         private final Rectangle marker = new Rectangle();
         private SplitTabPane parent;
         private boolean tabCompacted;
-        DndTabPane(SplitTabPane parent, ContentPane node) {
+        DndTabPane(SplitTabPane parent, ContentStackPane node) {
             this.parent = parent;
             getChildren().addAll(tabPane, marker);
             marker.setFill(Color.TRANSPARENT);
@@ -264,13 +264,13 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     addNext(parent.defaultContentPaneFactory.apply(null)));
                 var fileTree = new FxMenuItem("File tree", null, false, _ -> {
                     var root = Path.of(System.getProperty("user.home"));
-                    if (latestTab.get().getContent() instanceof ContentPane cp) {
+                    if (latestTab.get().getContent() instanceof ContentStackPane cp) {
                         var path = Path.of(cp.nameProperty().get().canonical());
                         if (Files.exists(path)) {
                             root = path.getParent();
                         }
                     }
-                    parent.addLeft(new PathTreePane(root));
+//                    parent.addLeft(new PathTreePane(root));
                 });
                 var compact = new FxMenuItem("Compact", null, false, _ -> {
                     SplitTabPane stp = parent;
@@ -315,7 +315,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
 
         @Override
-        public void addNext(ContentPane pane) {
+        public void addNext(ContentStackPane pane) {
             var tab = new Tab();
             tab.setContent(pane);
             initTab(tab);
@@ -326,10 +326,10 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
 
         @Override
-        public void addRightPane(ContentPane pane) { addRight(pane, false); }
+        public void addRightPane(ContentStackPane pane) { addRight(pane, false); }
         @Override
-        public void addRightPaneWithFocus(ContentPane pane) { addRight(pane, true); }
-        private void addRight(ContentPane pane, boolean focus) {
+        public void addRightPaneWithFocus(ContentStackPane pane) { addRight(pane, true); }
+        private void addRight(ContentStackPane pane, boolean focus) {
             var tabPane = parent.addRight(pane);
             if (focus) runLater(tabPane::focus);
         }
@@ -347,7 +347,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             }
         }
 
-        public void close(ContentPane pane) {
+        public void close(ContentStackPane pane) {
             tabPane.getTabs().stream()
                 .filter(t -> Objects.equals(t.getContent(), pane)).findFirst()
                 .ifPresent(tab -> {
@@ -356,13 +356,13 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                 });
         }
 
-        public void closeOther(ContentPane pane) {
+        public void closeOther(ContentStackPane pane) {
             var tabs = tabPane.getTabs().stream()
                 .filter(t -> !Objects.equals(t.getContent(), pane))
                 .toList();
 
             for (Tab tab : tabs) {
-                if (tab.getContent() instanceof ContentPane contentPane && !contentPane.canCloseQuiet()) {
+                if (tab.getContent() instanceof ContentStackPane contentPane && !contentPane.canCloseQuiet()) {
                     tabPane.requestFocus();
                     tabPane.getSelectionModel().select(tab);
                     contentPane.focus();
@@ -383,7 +383,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
         }
 
         private void initTab(Tab tab) {
-            var pane = (ContentPane) tab.getContent();
+            var pane = (ContentStackPane) tab.getContent();
             var label = new Label(pane.nameProperty().get().contextual());
             label.setOnMouseClicked(Event::consume);
             tab.setGraphic(label);
@@ -417,14 +417,14 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             activePane.set(this);
             if (!tabPane.getTabs().isEmpty()) {
                 Tab tab = tabPane.getSelectionModel().getSelectedItem();
-                var contentPane = (ContentPane) tab.getContent();
+                var contentPane = (ContentStackPane) tab.getContent();
                 contentPane.focus();
             }
         }
 
         private void handleSelectedTabItem(ObservableValue<? extends Tab> ob, Tab o, Tab tab) {
             if (tab != null) {
-                ((ContentPane) tab.getContent()).focus();
+                ((ContentStackPane) tab.getContent()).focus();
             }
         }
 
@@ -436,7 +436,7 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
             var maybeTab = e.getTarget();
             if (maybeTab instanceof Tab tab) {
                 var maybeContentPane = tab.getContent();
-                if (maybeContentPane instanceof ContentPane contentPane) {
+                if (maybeContentPane instanceof ContentStackPane contentPane) {
                     if (contentPane.closeRequest()) {
                         contentPane.close(true);
                     } else {
@@ -554,22 +554,22 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     }
                     case RIGHT -> {
                         from.tabPane.getTabs().remove(dragged);
-                        var dndTabPane = parent.addRight((ContentPane) dragged.getContent());
+                        var dndTabPane = parent.addRight((ContentStackPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case LEFT -> {
                         from.tabPane.getTabs().remove(dragged);
-                        var dndTabPane = parent.addLeft((ContentPane) dragged.getContent());
+                        var dndTabPane = parent.addLeft((ContentStackPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case TOP -> {
                         from.tabPane.getTabs().remove(dragged);
-                        var dndTabPane = parent.addTop((ContentPane) dragged.getContent());
+                        var dndTabPane = parent.addTop((ContentStackPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case BOTTOM -> {
                         from.tabPane.getTabs().remove(dragged);
-                        var dndTabPane = parent.addBottom((ContentPane) dragged.getContent());
+                        var dndTabPane = parent.addBottom((ContentStackPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                 }
@@ -585,22 +585,22 @@ public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane
                     }
                     case RIGHT -> {
                         dragged.getTabPane().getTabs().remove(dragged);
-                        var dndTabPane = parent.addRight((ContentPane) dragged.getContent());
+                        var dndTabPane = parent.addRight((ContentStackPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case LEFT -> {
                         dragged.getTabPane().getTabs().remove(dragged);
-                        var dndTabPane = parent.addLeft((ContentPane) dragged.getContent());
+                        var dndTabPane = parent.addLeft((ContentStackPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case TOP -> {
                         dragged.getTabPane().getTabs().remove(dragged);
-                        var dndTabPane = parent.addTop((ContentPane) dragged.getContent());
+                        var dndTabPane = parent.addTop((ContentStackPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                     case BOTTOM -> {
                         dragged.getTabPane().getTabs().remove(dragged);
-                        var dndTabPane = parent.addBottom((ContentPane) dragged.getContent());
+                        var dndTabPane = parent.addBottom((ContentStackPane) dragged.getContent());
                         runLater(dndTabPane::focus);
                     }
                 }

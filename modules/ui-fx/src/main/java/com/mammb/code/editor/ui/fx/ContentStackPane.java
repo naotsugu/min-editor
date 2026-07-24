@@ -25,7 +25,7 @@ import java.util.Optional;
  * The ContentPane.
  * @author Naotsugu Kobayashi
  */
-public abstract class ContentPane extends StackPane {
+public abstract class ContentStackPane extends StackPane {
 
     /**
      * Focus the pane.

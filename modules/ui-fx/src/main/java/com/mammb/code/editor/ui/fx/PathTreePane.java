@@ -15,12 +15,10 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.editor.core.Name;
-import com.mammb.code.editor.core.Session;
+import com.mammb.code.jfx.multitab.ContentPane;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import java.nio.file.Path;
-import java.util.Optional;
 
 /**
  * The PathTreePane.
@@ -33,9 +31,10 @@ public class PathTreePane extends ContentPane {
 
     /** The pathTreeView. */
     private final PathTreeView pathTreeView;
-
-    /** The file path property. */
-    private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.of("Files", "Files", "Files"));
+    /** The short name property. */
+    private final SimpleObjectProperty<String> shortNameProperty = new SimpleObjectProperty<>("Files");
+    /** The full name property. */
+    private final SimpleObjectProperty<String> fullNameProperty = new SimpleObjectProperty<>("Files");
 
     /**
      * Constructor.
@@ -47,32 +46,36 @@ public class PathTreePane extends ContentPane {
     }
 
     @Override
-    void focus() {
-
+    public void focus() {
     }
 
     @Override
-    boolean canCloseQuiet() {
-        return false;
-    }
-
-    @Override
-    boolean closeRequest() {
+    public boolean canCloseQuiet() {
         return true;
     }
 
     @Override
-    Optional<Session> close(boolean force) {
-        return Optional.empty();
+    public boolean closeRequest() {
+        return true;
     }
 
     @Override
-    ReadOnlyObjectProperty<Name> nameProperty() {
-        return nameProperty;
+    public void close() {
     }
 
     @Override
-    void refreshIfNeeded() {
-
+    public String asString() {
+        return "";
     }
+
+    @Override
+    public ReadOnlyObjectProperty<String> shortNameProperty() {
+        return shortNameProperty;
+    }
+
+    @Override
+    public ReadOnlyObjectProperty<String> fullNameProperty() {
+        return fullNameProperty;
+    }
+
 }

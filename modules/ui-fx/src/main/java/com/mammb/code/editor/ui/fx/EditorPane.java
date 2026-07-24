@@ -32,6 +32,7 @@ import com.mammb.code.editor.ui.base.Command;
 import com.mammb.code.editor.ui.base.DrawImpl;
 import com.mammb.code.editor.ui.base.Command.*;
 import com.mammb.code.editor.ui.base.LruList;
+import com.mammb.code.jfx.multitab.ContentPane;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -106,8 +107,10 @@ public class EditorPane extends ContentPane {
     private final SessionHistory sessionHistory = new SessionHistory();
     /** The find command history. */
     private final LruList<FindCommand> findCommandHistory = new LruList<>(15);
-    /** The file path property. */
-    private final SimpleObjectProperty<Name> nameProperty = new SimpleObjectProperty<>(Name.EMPTY);
+    /** The short name property. */
+    private final SimpleObjectProperty<String> shortNameProperty = new SimpleObjectProperty<>("");
+    /** The full name property. */
+    private final SimpleObjectProperty<String> fullNameProperty = new SimpleObjectProperty<>("");
 
     /**
      * Constructor.
@@ -153,7 +156,7 @@ public class EditorPane extends ContentPane {
         //     model().setCaretVisible(n);
         //     paint(); // TODO only caret draw
         });
-        nameProperty.setValue(model.query(Query.modelName));
+        setName();
 
         paintPulse = new PaintPulse(this::paint);
         paintPulse.start();
@@ -369,12 +372,12 @@ public class EditorPane extends ContentPane {
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff _               -> TabContainer.find(this).addRightPane(diff(null, false));
-            case DiffFoldOff _        -> TabContainer.find(this).addRightPane(diff(null, true));
-            case DiffWith cmd         -> TabContainer.find(this).addRightPane(diff(cmd.path(), false));
-            case Duplicate _          -> TabContainer.find(this).addRightPaneWithFocus(duplicate());
-            case BinaryView _         -> TabContainer.find(this).addRightPane(binary());
-            case FoundFilterView cmd  -> TabContainer.find(this).addRightPaneWithFocus(foundFilter(cmd.contextSize()));
+            case Diff _               -> {}//TabContainer.find(this).addRightPane(diff(null, false));
+            case DiffFoldOff _        -> {}//TabContainer.find(this).addRightPane(diff(null, true));
+            case DiffWith cmd         -> {}//TabContainer.find(this).addRightPane(diff(cmd.path(), false));
+            case Duplicate _          -> {}//TabContainer.find(this).addRightPaneWithFocus(duplicate());
+            case BinaryView _         -> {}//TabContainer.find(this).addRightPane(binary());
+            case FoundFilterView cmd  -> {}//TabContainer.find(this).addRightPaneWithFocus(foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
@@ -437,7 +440,7 @@ public class EditorPane extends ContentPane {
         var model = model();
         model.paint(draw);
         floatBar.setText(stateTexts(model));
-        nameProperty.setValue(model.query(Query.modelName));
+        setName();
     }
 
     private static String[] stateTexts(EditorModel model) {
@@ -520,7 +523,7 @@ public class EditorPane extends ContentPane {
             ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, context)
             : model.with(session);
         model.setSize(getWidth(), getHeight());
-        nameProperty.setValue(model.query(Query.modelName));
+        setName();
         if (openInBackground) {
             Task<EditorModel> task = buildOpenTask(session);
             floatBar.handleProgress(task);
@@ -545,7 +548,7 @@ public class EditorPane extends ContentPane {
         task.setOnSucceeded(_ -> {
             model = task.getValue();
             model.setSize(getWidth(), getHeight());
-            nameProperty.setValue(model.query(Query.modelName));
+            setName();
             log.log(System.Logger.Level.INFO, "opened %,d rows in %,d ms"
                 .formatted(model.query(Query.rowSize), System.currentTimeMillis() - start));
         });
@@ -554,21 +557,21 @@ public class EditorPane extends ContentPane {
 
     private EditorPane openNewEdit() {
         var newEdit = new EditorPane(context);
-        TabContainer.find(this).addNext(newEdit);
+        //TabContainer.find(this).addNext(newEdit);
         return newEdit;
     }
 
     private void handleCloseRequest() {
-        if (closeRequest()) TabContainer.find(this).close(this);
+        //if (closeRequest()) TabContainer.find(this).close(this);
     }
 
     @Override
-    boolean canCloseQuiet() {
+    public boolean canCloseQuiet() {
         return model().query(Query.modified) && model().query(Query.contentPath).isPresent();
     }
 
     @Override
-    boolean closeRequest() {
+    public boolean closeRequest() {
         boolean canDiscard = true;
         if (model().query(Query.modified)) {
             var ret = FxDialog.confirmation(getScene().getWindow(),
@@ -580,11 +583,26 @@ public class EditorPane extends ContentPane {
         return canDiscard;
     }
 
-    void close() {
+    @Override
+    public void close() {
         model.close();
     }
 
     @Override
+    public String asString() {
+        return "";
+    }
+
+    @Override
+    public ReadOnlyObjectProperty<String> shortNameProperty() {
+        return shortNameProperty;
+    }
+
+    @Override
+    public ReadOnlyObjectProperty<String> fullNameProperty() {
+        return fullNameProperty;
+    }
+
     Optional<Session> close(boolean force) {
         EditorModel model = model();
         if (model == null) return Optional.empty();
@@ -638,7 +656,13 @@ public class EditorPane extends ContentPane {
         Path path = file.toPath();
         model().save(path);
         context.notifier().send("saved");
-        nameProperty.setValue(model().query(Query.modelName));
+        setName();
+    }
+
+    private void setName() {
+        var name = model().query(Query.modelName);
+        shortNameProperty.setValue(name.contextual());
+        fullNameProperty.setValue(name.canonical());
     }
 
     private void saveWith(Charset charset, String endingSymbol) {
@@ -690,14 +714,10 @@ public class EditorPane extends ContentPane {
         };
     }
 
-    @Override
-    public ReadOnlyObjectProperty<Name> nameProperty() { return nameProperty; }
-
     SessionHistory sessionHistory() { return sessionHistory; }
 
     private EditorModel model() { return model; }
 
-    @Override
     public void refreshIfNeeded() {
         var contentPath = model().query(Query.contentPath);
         if (contentPath.isPresent()) {

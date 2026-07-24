@@ -29,10 +29,21 @@ public abstract class ContentPane extends StackPane {
      */
     abstract public void focus();
 
+    /**
+     * Check whether this pane can be closed without confirmation.
+     * @return {@code true}, if this pane can be closed without confirmation
+     */
     abstract public boolean canCloseQuiet();
 
+    /**
+     * Check whether the pane can be closed.
+     * @return {@code true}, if the pane can be closed
+     */
     abstract public boolean closeRequest();
 
+    /**
+     * Close the pane.
+     */
     abstract public void close();
 
     abstract public String asString();

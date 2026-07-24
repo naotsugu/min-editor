@@ -35,22 +35,22 @@ public interface TabContainer {
      * Adds the specified ContentPane to the container in the next available position.
      * @param pane the ContentPane to be added to the container
      */
-    void addNext(ContentPane pane);
+    void addNext(ContentStackPane pane);
 
     /**
      * Adds the specified ContentPane to the right of the current TabContainer layout.
      * @param pane the ContentPane to be added to the right position in the container
      */
-    void addRightPane(ContentPane pane);
+    void addRightPane(ContentStackPane pane);
 
     /**
      * Adds the specified ContentPane to the right of the current TabContainer layout
      * and sets focus on it.
      * @param pane the ContentPane to be added and given focus in the right position of the container
      */
-    void addRightPaneWithFocus(ContentPane pane);
+    void addRightPaneWithFocus(ContentStackPane pane);
 
-    void close(ContentPane pane);
+    void close(ContentStackPane pane);
 
     /**
      * Searches for the nearest {@code TabContainer} instance in the hierarchy,
@@ -72,10 +72,10 @@ public interface TabContainer {
      */
     TabContainer EMPTY = new TabContainer() {
         @Override public boolean selectExistingTab(Path path) { return false; }
-        @Override public void addNext(ContentPane pane) { }
-        @Override public void addRightPane(ContentPane pane) { }
-        @Override public void addRightPaneWithFocus(ContentPane pane) { }
-        @Override public void close(ContentPane pane) { }
+        @Override public void addNext(ContentStackPane pane) { }
+        @Override public void addRightPane(ContentStackPane pane) { }
+        @Override public void addRightPaneWithFocus(ContentStackPane pane) { }
+        @Override public void close(ContentStackPane pane) { }
     };
 
 }
