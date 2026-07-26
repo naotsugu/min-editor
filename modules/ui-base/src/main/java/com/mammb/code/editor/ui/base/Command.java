@@ -72,8 +72,6 @@ public sealed interface Command {
 
     record ReloadWith(Charset charset) implements Command, RequireArgs1<Charset> {}
 
-    record TabClose() implements Command {}
-
     record Config() implements Command {}
 
     record Palette(Class<? extends Command> initial) implements Command, Hidden {}
@@ -219,7 +217,6 @@ public sealed interface Command {
             case Class<?> c when c == SaveWith.class -> "save with charset";
             case Class<?> c when c == New.class -> "open new tab";
             case Class<?> c when c == ReloadWith.class -> "reload content with charset";
-            case Class<?> c when c == TabClose.class -> "close current tab";
             case Class<?> c when c == Config.class -> "open current config";
             case Class<?> c when c == ToLowerCase.class -> "converts the selected text to lower case";
             case Class<?> c when c == ToUpperCase.class -> "converts the selected text to upper case";
@@ -286,7 +283,6 @@ public sealed interface Command {
             case Class<?> c when c == Save.class -> shortcut + " S";
             case Class<?> c when c == SaveAs.class -> shortcut + " Shift S";
             case Class<?> c when c == New.class -> shortcut + " N";
-            case Class<?> c when c == TabClose.class -> shortcut + " W";
             case Class<?> c when c == FindNext.class -> "F3";
             case Class<?> c when c == FindPrev.class -> shortcut + " F3";
             case Class<?> c when c == FindNextRegex.class -> "F3";

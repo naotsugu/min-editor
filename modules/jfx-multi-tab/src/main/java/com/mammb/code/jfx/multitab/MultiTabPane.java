@@ -36,21 +36,23 @@ import java.util.stream.Collectors;
 
 public class MultiTabPane extends StackPane {
 
-    private final Context ctx;
-
     public MultiTabPane(Stage stage, String string,
                         Function<String, ? extends ContentPane> contentSupplier,
                         Function<Path, ? extends ContentPane> pathContentSupplier) {
 
-        this.ctx = new Context(stage);
-        this.ctx.contentSupplier(contentSupplier);
-        this.ctx.pathContentSupplier(pathContentSupplier);
+        Context ctx = new Context(stage);
+        ctx.contentSupplier(contentSupplier);
+        ctx.pathContentSupplier(pathContentSupplier);
 
         Node branchNode = (string != null && !string.isBlank())
-            ? fromString(string)
+            ? fromString(ctx, string)
             : new BranchNode(ctx, ctx.contentSupplier().apply(""));
 
         getChildren().add(branchNode);
+    }
+
+    public MultiTabPane(Node node) {
+        getChildren().add(node);
     }
 
     public String asString() {
@@ -85,7 +87,7 @@ public class MultiTabPane extends StackPane {
         };
     }
 
-    private Node fromString(String str) {
+    private Node fromString(Context ctx, String str) {
 
         if (str.startsWith("{") && str.endsWith("}")) {
             str = str.substring(1, str.length() - 1); // remove '{' '}'
@@ -99,7 +101,7 @@ public class MultiTabPane extends StackPane {
             double[] dividerPositions = new double[] { div.isBlank() ? 0.5 : Double.parseDouble(div) };
             // children
             List<TreeNode> children = splitBranch(str.substring(divClose + 1)).stream()
-                .map(this::fromString)
+                .map(s -> fromString(ctx, s))
                 .filter(TreeNode.class::isInstance)
                 .map(TreeNode.class::cast)
                 .toList();

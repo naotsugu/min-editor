@@ -325,7 +325,6 @@ public class EditorPane extends ContentPane {
             case SaveWith cmd         -> saveWith(cmd.charset(), null);
             case New _                -> openNewEdit();
             case ReloadWith cmd       -> reload(cmd.charset());
-            case TabClose _           -> handleCloseRequest();
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> selectOrNewEdit(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
@@ -559,10 +558,6 @@ public class EditorPane extends ContentPane {
         var newEdit = new EditorPane(context);
         //TabContainer.find(this).addNext(newEdit);
         return newEdit;
-    }
-
-    private void handleCloseRequest() {
-        //if (closeRequest()) TabContainer.find(this).close(this);
     }
 
     @Override

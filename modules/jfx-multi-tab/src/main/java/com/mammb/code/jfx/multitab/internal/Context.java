@@ -101,7 +101,7 @@ public class Context {
         while (change.next()) {
             for (var removed : change.getRemoved()) {
                 if (removed instanceof Tab tab && tab.parent() != null && tab.parent().getScene() != null) {
-                    latestTab.put(tab.parent().getScene(), tab);
+                    latestTab.remove(tab.parent().getScene(), tab);
                 }
             }
         }

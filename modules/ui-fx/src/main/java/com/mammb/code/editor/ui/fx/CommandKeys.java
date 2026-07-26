@@ -72,7 +72,6 @@ public class CommandKeys {
         else if (SC_S.match(e)) return new Command.Save();
         else if (SC_SA.match(e)) return new Command.SaveAs();
         else if (SC_N.match(e)) return new Command.New();
-        else if (SC_W.match(e)) return new Command.TabClose();
         else if (SC_F.match(e)) return new Command.Palette(Command.FindAll.class);
         else if (SC_COMMA.match(e)) return new Command.Config();
         else if (SC_PLUS.match(e)) return new Command.ZoomIn();
@@ -128,7 +127,6 @@ public class CommandKeys {
     static final KeyCombination SC_P = new KeyCharacterCombination("p", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_R = new KeyCharacterCombination("r", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_T = new KeyCharacterCombination("t", KeyCombination.SHORTCUT_DOWN);
-    static final KeyCombination SC_W = new KeyCharacterCombination("w", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_L = new KeyCharacterCombination("l", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_DOT = new KeyCharacterCombination(".", KeyCombination.SHORTCUT_DOWN);
     static final KeyCombination SC_COMMA = new KeyCharacterCombination(",", KeyCombination.SHORTCUT_DOWN);
