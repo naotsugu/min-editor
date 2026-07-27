@@ -59,7 +59,6 @@ public class FxGraphicsDraw implements GraphicsDraw {
             .mapToDouble(Screen::getOutputScaleX)
             .filter(s -> s != 1.0).max().orElse(1.0);
         this.faint = isFaint(font, outputScale);
-        System.out.println(outputScale);
     }
 
     @Override

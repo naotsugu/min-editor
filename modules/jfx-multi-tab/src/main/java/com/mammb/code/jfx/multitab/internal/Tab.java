@@ -66,6 +66,7 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         setOnClosed(this::handleClosed);
         label.setOnDragDetected(this::handleTabDragDetected);
         label.setOnDragDone(this::handleDragDone);
+        label.setOnMouseClicked(Event::consume);
 
     }
 
