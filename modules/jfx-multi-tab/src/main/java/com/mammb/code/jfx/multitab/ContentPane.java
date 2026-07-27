@@ -15,7 +15,9 @@
  */
 package com.mammb.code.jfx.multitab;
 
+import com.mammb.code.jfx.multitab.internal.LeafNode;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -51,5 +53,14 @@ public abstract class ContentPane extends StackPane {
     abstract public ReadOnlyObjectProperty<String> shortNameProperty();
 
     abstract public ReadOnlyObjectProperty<String> fullNameProperty();
+
+    protected void add(ContentPane contentPane) {
+        for (Node node = getParent(); node != null; node = node.getParent()) {
+            if (node instanceof LeafNode leafNode) {
+                leafNode.addRight(contentPane);
+                return;
+            }
+        }
+    }
 
 }

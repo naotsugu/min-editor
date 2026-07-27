@@ -348,6 +348,10 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
         return tabPane.getTabs().remove(child);
     }
 
+    public void addRight(ContentPane contentPane) {
+        parent.add(contentPane, this, Side.RIGHT);
+    }
+
     /**
      * If the Pane layout is changed, adjust the position of the tab Pane.
      */
