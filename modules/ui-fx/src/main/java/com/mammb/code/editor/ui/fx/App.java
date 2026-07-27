@@ -250,25 +250,23 @@ public class App extends Application {
         }
 
         .tab-pane > .tab-header-area > .headers-region > .tab {
-          -fx-background-color: -fx-hover-base;
+           -fx-background-color: -fx-hover-base;
         }
-        .app-tab-pane-active > .tab-pane > .tab-header-area > .headers-region > .tab:selected {
+        .tab-pane > .tab-header-area > .headers-region > .tab:selected {
           -fx-background-color: derive(-fx-box-border, 30%);
           -fx-border-color: derive(app-text, -30%) transparent transparent transparent;
         }
-        .tab-pane > .tab-header-area > .headers-region > .tab:selected {
-          /* -fx-color: -fx-hover-base; */
-          -fx-color: app-base;
-          -fx-border-color: app-base;
+        .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected {
+          -fx-border-color: app-text transparent transparent transparent;
+        }
+        .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+          -fx-border-width: 0;
         }
         .tab-pane > .tab-header-area > .tab-header-background {
           -fx-background-color: derive(-fx-text-box-border, 30%);
         }
         .tab-pane > .tab-header-area {
           -fx-padding: 0;
-        }
-        .tab-label {
-          -fx-font: 13px "Consolas";
         }
         .split-pane > .split-pane-divider {
             -fx-pref-width: 3px;
