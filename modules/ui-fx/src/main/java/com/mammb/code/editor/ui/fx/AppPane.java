@@ -38,9 +38,11 @@ public class AppPane extends StackPane {
      * @param ctx the application context
      */
     public AppPane(Stage stage, Path path, FxAppContext ctx) {
+
         var tabContainer = new MultiTabPane(stage, "",
             string -> new EditorPane(ctx).bindLater(Session.empty()),
             (Path p) -> new EditorPane(ctx).bindLater(Session.of(p)));
+
         var mainPane = new BorderPane(tabContainer);
         var notifyListener = new NotificationPane(this);
         ctx.notifier().addListener(notifyListener);

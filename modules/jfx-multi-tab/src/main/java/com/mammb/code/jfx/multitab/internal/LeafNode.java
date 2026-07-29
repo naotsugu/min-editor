@@ -65,8 +65,10 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
     }
 
     private void initTabPane() {
+        tabPane.setFocusTraversable(false);
         tabPane.setRotateGraphic(true);
         tabPane.tabClosingPolicyProperty().set(TabPane.TabClosingPolicy.ALL_TABS);
+        tabPane.focusedProperty().addListener(this::handleTabPaneFocused);
         tabPane.getSelectionModel().selectedItemProperty().addListener(ctx::handleTabSelected);
         tabPane.getTabs().removeListener(ctx::handleTabRemoved);
         tabPane.layoutBoundsProperty().addListener(this::handleTabPaneLayoutBoundsChanged);
@@ -350,6 +352,12 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
 
     public void addRight(ContentPane contentPane) {
         parent.add(contentPane, this, Side.RIGHT);
+    }
+
+    private void handleTabPaneFocused(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
+        if (focused && tabPane.getSelectionModel().getSelectedItem().getContent() instanceof ContentPane contentPane) {
+            contentPane.focus();
+        }
     }
 
     /**

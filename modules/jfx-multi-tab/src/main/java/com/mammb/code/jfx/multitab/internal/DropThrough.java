@@ -42,7 +42,8 @@ class DropThrough extends Pane {
 
         this.ctx = Objects.requireNonNull(ctx);
 
-        // on Windows, transparent areas do not accept mouse events, so set it to semi-transparent
+        // on Windows, transparent areas do not accept mouse events,
+        // so set it to semi-transparent
         setStyle((File.separatorChar == '\\')
             ? "-fx-background-color: rgba(0, 0, 0, 0.01);"
             : "-fx-background-color: transparent;");
@@ -66,7 +67,8 @@ class DropThrough extends Pane {
         // stage.initOwner(owner); do not use
         stage.initModality(Modality.NONE);
         stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setTitle(ctx.stages().stream().map(Stage::getTitle).filter(Objects::nonNull).findFirst().orElse(""));
+        stage.setTitle(ctx.stages().stream().map(Stage::getTitle)
+            .filter(Objects::nonNull).findFirst().orElse(""));
         stage.setScene(scene);
         stage.setX(bounds.getMinX());
         stage.setY(bounds.getMinY());

@@ -16,6 +16,7 @@
 package com.mammb.code.jfx.multitab.internal;
 
 import com.mammb.code.jfx.multitab.ContentPane;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -93,6 +94,7 @@ public class Context {
 
     public void handleTabSelected(ObservableValue<? extends javafx.scene.control.Tab> observable, javafx.scene.control.Tab oldValue, javafx.scene.control.Tab newValue) {
         if (newValue instanceof Tab selected && selected.parent() != null && selected.parent().getScene() != null) {
+            Platform.runLater(() -> selected.content().focus());
             latestTab.put(selected.parent().getScene(), selected);
         }
     }
