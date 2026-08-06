@@ -54,7 +54,7 @@ public abstract class ContentPane extends StackPane {
 
     abstract public ReadOnlyObjectProperty<String> fullNameProperty();
 
-    protected void add(ContentPane contentPane) {
+    void add(ContentPane contentPane) {
         for (Node node = getParent(); node != null; node = node.getParent()) {
             if (node instanceof LeafNode leafNode) {
                 leafNode.addRight(contentPane);

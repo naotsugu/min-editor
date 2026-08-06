@@ -17,6 +17,10 @@ package com.mammb.code.jfx.multitab.internal;
 
 import javafx.scene.Node;
 
+/**
+ * The ChildOf.
+ * @author Naotsugu Kobayashi
+ */
 public interface ChildOf<P extends Node> {
 
     P parent();

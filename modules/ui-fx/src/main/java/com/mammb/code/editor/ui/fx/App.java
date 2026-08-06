@@ -21,14 +21,18 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.platform.AppPaths;
 import com.mammb.code.editor.platform.ColorScheme;
 import com.mammb.code.editor.ui.base.AppContext;
+import com.mammb.code.jfx.multitab.ContentPane;
+import com.mammb.code.jfx.multitab.TabContainers;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -48,6 +52,12 @@ public class App extends Application {
     /** The logger. */
     private static final System.Logger log = System.getLogger(App.class.getName());
 
+    private final FxAppContext ctx;
+
+    public App() {
+        this.ctx = new FxAppContext(this);
+    }
+
     @Override
     public void start(Stage stage) {
 
@@ -56,32 +66,19 @@ public class App extends Application {
                 Platform.getPreferences().getColorScheme().name().toLowerCase());
         }
 
-        var ctx = new FxAppContext(this);
-
         // if additional fonts are added, set them as the default font
         ctx.config().defaultFontName(
             loadFonts(AppPaths.applicationHomePath()).orElse(null));
 
-        double posX = ctx.config().windowPositionX();
-        double posY = ctx.config().windowPositionY();
-        if (posX >= 0 && posY >= 0 && Screen.getScreens().stream().anyMatch(screen ->
-            screen.getVisualBounds().contains(posX, posY))) {
-            // init window location
-            stage.setX(posX);
-            stage.setY(posY);
-        }
+        Scene scene = TabContainers.builder()
+            .stage(stage)
+            .toContent(this::toContent)
+            .toScene(this::toScene)
+            .pathToContent(this::pathToContent)
+            .resume(Path.of("./build/tab-resume.conf"), this::stringToContent)
+            .build();
 
-        double w = Math.max(ctx.config().windowWidth(), 91);
-        double h = Math.max(ctx.config().windowHeight(), 33);
-        var appPane = new AppPane(stage, paramPath(), ctx);
-        Scene scene = new Scene(appPane, w, h);
-
-        scene.getStylesheets().add(css);
         stage.setScene(scene);
-        stage.setTitle(AppVersion.appName);
-        stage.getIcons().add(new Image(
-            Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
-        buildConfigPropertyListener(stage, scene, ctx);
         stage.show();
 
         // -DidleGcDelayMillis=3000
@@ -91,17 +88,26 @@ public class App extends Application {
 
     }
 
-    /**
-     * Restores the window position and size from the config.
-     * @param stage the stage
-     * @param scene the scene
-     * @param ctx the application context
-     */
-    private void buildConfigPropertyListener(Stage stage, Scene scene, AppContext ctx) {
-        scene.heightProperty().addListener((_, _, h) -> ctx.config().windowHeight(h.doubleValue()));
-        scene.widthProperty().addListener((_, _, w) -> ctx.config().windowWidth(w.doubleValue()));
-        stage.xProperty().addListener((_, _, x) -> ctx.config().windowPositionX(x.doubleValue()));
-        stage.yProperty().addListener((_, _, y) -> ctx.config().windowPositionY(y.doubleValue()));
+    private ContentPane toContent() {
+        return new EditorPane(ctx).bindLater(Session.empty());
+    }
+
+    private ContentPane pathToContent(Path path) {
+        return new EditorPane(ctx).bindLater(Session.of(path));
+    }
+
+    private ContentPane stringToContent(String string) {
+        return new EditorPane(ctx).bindLater(Session.valueOf(string));
+    }
+
+    private Scene toScene(Stage stage, Pane tabContainerPane) {
+        Scene scene = new Scene(new AppPane(stage, tabContainerPane, ctx));
+        scene.getStylesheets().add(css);
+        stage.setScene(scene);
+        stage.setTitle(AppVersion.appName);
+        stage.getIcons().add(new Image(
+            Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
+        return scene;
     }
 
     /**

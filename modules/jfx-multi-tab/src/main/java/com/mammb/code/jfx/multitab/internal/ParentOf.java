@@ -17,6 +17,10 @@ package com.mammb.code.jfx.multitab.internal;
 
 import java.util.List;
 
+/**
+ * The ParentOf.
+ * @author Naotsugu Kobayashi
+ */
 public interface ParentOf<C> {
 
     List<C> children();

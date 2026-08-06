@@ -17,6 +17,10 @@ package com.mammb.code.jfx.multitab.internal;
 
 import javafx.scene.layout.StackPane;
 
+/**
+ * The TreeNode.
+ * @author Naotsugu Kobayashi
+ */
 public abstract class TreeNode extends StackPane implements ChildOf<BranchNode> {
     public abstract BranchNode parent();
     public abstract void parent(BranchNode parent);

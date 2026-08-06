@@ -371,12 +371,12 @@ public class EditorPane extends ContentPane {
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff _               -> add(diff(null, false));
-            case DiffFoldOff _        -> add(diff(null, true));
-            case DiffWith cmd         -> add(diff(cmd.path(), false));
-            case Duplicate _          -> add(duplicate());
-            case BinaryView _         -> add(binary());
-            case FoundFilterView cmd  -> add(foundFilter(cmd.contextSize()));
+            case Diff _               -> {}//add(diff(null, false));
+            case DiffFoldOff _        -> {}//add(diff(null, true));
+            case DiffWith cmd         -> {}//add(diff(cmd.path(), false));
+            case Duplicate _          -> {}//add(duplicate());
+            case BinaryView _         -> {}//add(binary());
+            case FoundFilterView cmd  -> {}//add(foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
@@ -394,8 +394,8 @@ public class EditorPane extends ContentPane {
         Runnable postFind = (action instanceof Action.WithAttr<?> withAttr &&
             withAttr.attr() instanceof Find.Spec) ? () -> {
                 int n = model.query(Query.foundCounts);
-                if (n > 1) context.notifier().send(n + " found.");
-                if (n == 0) context.notifier().send("not found.");
+                if (n > 1) context.notifier(getScene().getWindow()).send(n + " found.");
+                if (n == 0) context.notifier(getScene().getWindow()).send("not found.");
             } : () -> { };
 
         if (model().query(Query.size) < BACKGROUND_THRESHOLD) {
@@ -581,11 +581,19 @@ public class EditorPane extends ContentPane {
     @Override
     public void close() {
         model.close();
+        paintPulse.stop();
     }
 
     @Override
     public String asString() {
-        return "";
+        EditorModel model = model();
+        if (model == null) return "";
+        var contentPath = model.query(Query.contentPath);
+        if (contentPath.isPresent()) {
+            return model.getSession().asString();
+        } else {
+            return model.stash().asString();
+        }
     }
 
     @Override
@@ -613,7 +621,6 @@ public class EditorPane extends ContentPane {
             restorableSession = session.isEmpty() ? Optional.empty() : Optional.of(session);
         }
         close();
-        if (force) paintPulse.stop();
         return restorableSession;
     }
 
@@ -635,7 +642,7 @@ public class EditorPane extends ContentPane {
         // TODO saving large files runs in the background
         if (model().query(Query.contentPath).isPresent()) {
             model().save(model().query(Query.contentPath).get());
-            context.notifier().send("saved");
+            context.notifier(getScene().getWindow()).send("saved");
         } else {
             saveAs();
         }
@@ -650,7 +657,7 @@ public class EditorPane extends ContentPane {
         if (file == null) return;
         Path path = file.toPath();
         model().save(path);
-        context.notifier().send("saved");
+        context.notifier(getScene().getWindow()).send("saved");
         setName();
     }
 
@@ -665,7 +672,7 @@ public class EditorPane extends ContentPane {
             saveAs();
         }
         model().saveWith(charset, endingSymbol);
-        context.notifier().send("saved");
+        context.notifier(getScene().getWindow()).send("saved");
     }
 
     private void reload(Charset charset) {
@@ -720,7 +727,7 @@ public class EditorPane extends ContentPane {
             if (current != null && model().query(Query.lastModifiedTime)
                 .map(m -> m.compareTo(current) != 0).orElse(false)) {
                 reload(null);
-                context.notifier().send("reload", contentPath.get().getFileName().toString());
+                context.notifier(getScene().getWindow()).send("reload", contentPath.get().getFileName().toString());
             }
         }
     }

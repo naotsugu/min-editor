@@ -20,6 +20,10 @@ import javafx.geometry.Side;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * The DropMarker.
+ * @author Naotsugu Kobayashi
+ */
 public class DropMarker extends Rectangle {
 
     public DropMarker() {

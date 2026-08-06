@@ -38,6 +38,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * The LeafNode.
+ * @author Naotsugu Kobayashi
+ */
 public class LeafNode extends TreeNode implements ParentOf<Tab> {
 
     private static final System.Logger log = System.getLogger(LeafNode.class.getName());
@@ -73,7 +77,7 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
         tabPane.getTabs().removeListener(ctx::handleTabRemoved);
         tabPane.layoutBoundsProperty().addListener(this::handleTabPaneLayoutBoundsChanged);
         tabPane.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabPaneKeyPressed);
-        TabButton.install(tabPane, () -> new Tab(ctx, this, ctx.contentSupplier().apply("")));
+        TabButton.install(tabPane, () -> new Tab(ctx, this, ctx.createContentPane()));
         initTabHeaderArea();
     }
 
@@ -171,7 +175,8 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
             List<Path> paths = db.getFiles().stream()
                 .filter(File::exists).filter(File::canRead).map(File::toPath).toList();
             paths.stream()
-                .map(ctx.pathContentSupplier())
+                .filter(Objects::nonNull)
+                .map(ctx::createContentPane)
                 .map(contentPane -> new Tab(ctx, contentPane))
                 .forEach(tab -> addChildren(List.of(tab)));
             if (paths.isEmpty()) {
@@ -198,6 +203,10 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
             e.consume();
         });
         e.consume();
+    }
+
+    public void addRight(ContentPane contentPane) {
+        parent.add(contentPane, this, Side.RIGHT);
     }
 
     private void handleDragExited(DragEvent e) {
@@ -350,10 +359,6 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
         return tabPane.getTabs().remove(child);
     }
 
-    public void addRight(ContentPane contentPane) {
-        parent.add(contentPane, this, Side.RIGHT);
-    }
-
     private void handleTabPaneFocused(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
         if (focused && tabPane.getSelectionModel().getSelectedItem().getContent() instanceof ContentPane contentPane) {
             contentPane.focus();
@@ -385,7 +390,7 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
 
     private ContextMenu buildTabHeaderContextMenu() {
         MenuItem newTab = new MenuItem("New");
-        newTab.setOnAction(_ -> addChildren(List.of(new Tab(ctx, ctx.contentSupplier().apply("")))));
+        newTab.setOnAction(_ -> addChildren(List.of(new Tab(ctx, ctx.createContentPane()))));
         MenuItem closeAll = new MenuItem("Close All");
         closeAll.setOnAction(_ -> closeAll());
         MenuItem maximize = new MenuItem("Maximize");

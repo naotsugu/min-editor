@@ -16,7 +16,6 @@
 package com.mammb.code.jfx.multitab.internal;
 
 import com.mammb.code.jfx.multitab.ContentPane;
-import com.mammb.code.jfx.multitab.MultiTabPane;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.input.DragEvent;
@@ -33,6 +32,10 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The DropThrough.
+ * @author Naotsugu Kobayashi
+ */
 class DropThrough extends Pane {
 
     private final Stage stage;
@@ -42,8 +45,7 @@ class DropThrough extends Pane {
 
         this.ctx = Objects.requireNonNull(ctx);
 
-        // on Windows, transparent areas do not accept mouse events,
-        // so set it to semi-transparent
+        // on Windows, transparent areas do not accept mouse events, so set it to semi-transparent
         setStyle((File.separatorChar == '\\')
             ? "-fx-background-color: rgba(0, 0, 0, 0.01);"
             : "-fx-background-color: transparent;");
@@ -67,8 +69,7 @@ class DropThrough extends Pane {
         // stage.initOwner(owner); do not use
         stage.initModality(Modality.NONE);
         stage.initStyle(StageStyle.TRANSPARENT);
-        stage.setTitle(ctx.stages().stream().map(Stage::getTitle)
-            .filter(Objects::nonNull).findFirst().orElse(""));
+        stage.setTitle(ctx.stages().stream().map(Stage::getTitle).filter(Objects::nonNull).findFirst().orElse(""));
         stage.setScene(scene);
         stage.setX(bounds.getMinX());
         stage.setY(bounds.getMinY());
@@ -100,17 +101,11 @@ class DropThrough extends Pane {
         if (!db.hasContent(Tab.TAB_MOVE_FORMAT) || tab == null) return;
 
         ContentPane content = tab.content();
-        Scene oldScene = content.getScene();
-        Stage oldStage = (Stage) oldScene.getWindow();
 
         Stage nextStage = new Stage();
-        nextStage.setTitle(oldStage.getTitle());
-        nextStage.getIcons().addAll(oldStage.getIcons());
-
-        Scene scene = new Scene(new MultiTabPane(new BranchNode(ctx, content)));
-        scene.getStylesheets().addAll(oldScene.getStylesheets());
-        ctx.addStage(nextStage);
+        Scene scene = ctx.toScene(nextStage, new BranchNode(ctx, content));
         nextStage.setScene(scene);
+
         nextStage.setWidth(content.getWidth());
         nextStage.setHeight(content.getHeight());
         nextStage.setX(e.getScreenX() - content.getWidth() / 2);

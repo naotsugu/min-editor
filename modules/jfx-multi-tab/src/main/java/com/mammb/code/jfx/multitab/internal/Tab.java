@@ -35,6 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The Tab.
+ * @author Naotsugu Kobayashi
+ */
 public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
 
     static final DataFormat TAB_MOVE_FORMAT = new DataFormat(Tab.class.getSimpleName() + ":tabMove");
@@ -141,7 +145,7 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
 
     private ContextMenu buildContextMenu() {
         MenuItem newTab = new MenuItem("New");
-        newTab.setOnAction(_ -> parent.addChildren(List.of(new Tab(ctx, ctx.contentSupplier().apply("")))));
+        newTab.setOnAction(_ -> parent.addChildren(List.of(new Tab(ctx, ctx.createContentPane()))));
         MenuItem close = new MenuItem("Close");
         close.setOnAction(_-> requestClose());
         MenuItem closeOther = new MenuItem("Close Other");

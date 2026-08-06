@@ -24,7 +24,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The BranchNode.
+ * @author Naotsugu Kobayashi
+ */
 public class BranchNode extends TreeNode implements ParentOf<TreeNode> {
+
+    public static final String STYLE_CLASS = "tree-node-branch";
 
     private final SplitPane splitPane = new SplitPane();
     private final Context ctx;
@@ -34,6 +40,7 @@ public class BranchNode extends TreeNode implements ParentOf<TreeNode> {
     BranchNode(Context ctx, BranchNode parent) {
         this.ctx = Objects.requireNonNull(ctx);
         this.parent = parent;
+        getStyleClass().setAll(STYLE_CLASS);
         getChildren().add(splitPane);
     }
 
@@ -84,7 +91,7 @@ public class BranchNode extends TreeNode implements ParentOf<TreeNode> {
         List<TreeNode> children = children();
         if (isRoot() && children.isEmpty()) {
             if (ctx.stages().size() == 1) {
-                addChildren(List.of(new LeafNode(ctx, ctx.contentSupplier().apply(""))));
+                addChildren(List.of(new LeafNode(ctx, ctx.createContentPane())));
             } else {
                 ((Stage) getScene().getWindow()).close();
             }
@@ -187,7 +194,7 @@ public class BranchNode extends TreeNode implements ParentOf<TreeNode> {
     }
 
 
-    List<LeafNode> leaves() {
+    public List<LeafNode> leaves() {
         return children().stream()
             .map(c -> switch (c) {
                 case LeafNode leaf -> List.of(leaf);

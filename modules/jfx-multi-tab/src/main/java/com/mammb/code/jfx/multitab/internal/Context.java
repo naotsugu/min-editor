@@ -23,28 +23,41 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
+/**
+ * The Context.
+ * @author Naotsugu Kobayashi
+ */
 public class Context {
 
     // last -> front
     private final ObservableList<Stage> stages = FXCollections.observableArrayList();
     private final ObservableMap<Scene, Tab> latestTab = FXCollections.observableHashMap();
     private final AtomicReference<Tab> dragged = new AtomicReference<>();
-    private Function<String, ? extends ContentPane> contentSupplier;
-    private Function<Path, ? extends ContentPane> pathContentSupplier;
 
-    public Context(Stage stage) {
-        addStage(stage);
+    private final Supplier<? extends ContentPane> toContent;
+    private final Function<Path, ? extends ContentPane> pathToContent;
+    private final BiFunction<Stage, Pane, Scene> toScene;
+
+    public Context(
+            Supplier<? extends ContentPane> toContent,
+            Function<Path, ? extends ContentPane> pathToContent,
+            BiFunction<Stage, Pane, Scene> toScene) {
+        this.toContent = toContent;
+        this.pathToContent = pathToContent;
+        this.toScene = toScene;
     }
 
-    void addStage(Stage stage) {
+    public void addStage(Stage stage) {
         stages.add(stage);
         stage.focusedProperty().addListener((_, _, focused) -> {
             // sort by z-order
@@ -76,22 +89,6 @@ public class Context {
         dragged.set(null);
     }
 
-    public Function<String, ? extends ContentPane> contentSupplier() {
-        return contentSupplier;
-    }
-
-    public void contentSupplier(Function<String, ? extends ContentPane> function) {
-        this.contentSupplier = Objects.requireNonNull(function);
-    }
-
-    public Function<Path, ? extends ContentPane> pathContentSupplier() {
-        return pathContentSupplier;
-    }
-
-    public void pathContentSupplier(Function<Path, ? extends ContentPane> function) {
-        this.pathContentSupplier = Objects.requireNonNull(function);
-    }
-
     public void handleTabSelected(ObservableValue<? extends javafx.scene.control.Tab> observable, javafx.scene.control.Tab oldValue, javafx.scene.control.Tab newValue) {
         if (newValue instanceof Tab selected && selected.parent() != null && selected.parent().getScene() != null) {
             Platform.runLater(() -> selected.content().focus());
@@ -107,6 +104,22 @@ public class Context {
                 }
             }
         }
+    }
+
+    public ContentPane createContentPane() {
+        return createContentPane(null);
+    }
+
+    public <T> ContentPane createContentPane(T arg) {
+        return switch (arg) {
+            case Path path -> pathToContent.apply(path);
+            case null, default -> toContent.get();
+        };
+    }
+
+    public Scene toScene(Stage stage, BranchNode branchNode) {
+        addStage(stage);
+        return toScene.apply(stage, branchNode);
     }
 
 }

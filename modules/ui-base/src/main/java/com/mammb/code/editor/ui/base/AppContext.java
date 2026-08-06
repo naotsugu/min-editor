@@ -19,15 +19,18 @@ import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.platform.AppPaths;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The application context.
  * @author Naotsugu Kobayashi
  */
-public class AppContext extends Context.AbstractContext {
+public class AppContext extends Context.AbstractContext implements Context {
 
-    /** The notifier. */
-    private final Notifier notifier = new Notifier();
+    /** The notifiers. */
+    private final Map<Object, Notifier> notifiers = new HashMap<>();
+
 
     /**
      * Constructor.
@@ -43,6 +46,10 @@ public class AppContext extends Context.AbstractContext {
         return (AppConfig) super.config();
     }
 
+    public void addNotifyListener(Object key, NotifyListener listener) {
+        notifiers.computeIfAbsent(key, _ -> new Notifier()).addListener(listener);
+    }
+
     /**
      * Retrieves the {@code Notifier} instance associated with this context.
      * The {@code Notifier} allows event-driven communication by managing a list
@@ -50,8 +57,8 @@ public class AppContext extends Context.AbstractContext {
      *
      * @return the {@code Notifier} instance associated with this context
      */
-    public Notifier notifier() {
-        return notifier;
+    public Notifier notifier(Object key) {
+        return notifiers.get(key);
     }
 
     /**

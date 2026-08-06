@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.ui.base.AppContext;
 import javafx.application.Application;
 
@@ -22,7 +23,7 @@ import javafx.application.Application;
  * The application context.
  * @author Naotsugu Kobayashi
  */
-public class FxAppContext extends AppContext {
+public class FxAppContext extends AppContext implements Context {
 
     /** The application. */
     private final Application app;

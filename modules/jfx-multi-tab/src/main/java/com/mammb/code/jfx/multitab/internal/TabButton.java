@@ -23,6 +23,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.function.Supplier;
 
+/**
+ * The TabButton.
+ * @author Naotsugu Kobayashi
+ */
 class TabButton extends javafx.scene.control.Tab {
 
     private final Label label = new Label();
