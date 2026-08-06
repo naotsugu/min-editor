@@ -371,12 +371,12 @@ public class EditorPane extends ContentPane {
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff _               -> {}//add(diff(null, false));
-            case DiffFoldOff _        -> {}//add(diff(null, true));
-            case DiffWith cmd         -> {}//add(diff(cmd.path(), false));
-            case Duplicate _          -> {}//add(duplicate());
-            case BinaryView _         -> {}//add(binary());
-            case FoundFilterView cmd  -> {}//add(foundFilter(cmd.contextSize()));
+            case Diff _               -> add(diff(null, false));
+            case DiffFoldOff _        -> add(diff(null, true));
+            case DiffWith cmd         -> add(diff(cmd.path(), false));
+            case Duplicate _          -> add(duplicate());
+            case BinaryView _         -> add(binary());
+            case FoundFilterView cmd  -> add(foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));

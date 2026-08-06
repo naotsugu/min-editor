@@ -75,7 +75,7 @@ public class App extends Application {
             .toContent(this::toContent)
             .toScene(this::toScene)
             .pathToContent(this::pathToContent)
-            .resume(Path.of("./build/tab-resume.conf"), this::stringToContent)
+            .resume(AppPaths.applicationConfPath.resolve("resumes"), this::stringToContent)
             .build();
 
         stage.setScene(scene);
