@@ -15,11 +15,6 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Optional;
-import com.mammb.code.editor.core.Session;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -31,63 +26,17 @@ import javafx.stage.Stage;
  */
 public class AppPane extends StackPane {
 
+    /**
+     * Constructor.
+     * @param stage the stage
+     * @param pane the pane
+     * @param ctx the application context
+     */
     public AppPane(Stage stage, Pane pane, FxAppContext ctx) {
         var mainPane = new BorderPane(pane);
         var notifyListener = new NotificationPane(this);
         ctx.addNotifyListener(stage, notifyListener);
         getChildren().addAll(mainPane, notifyListener);
     }
-
-//    /**
-//     * Constructor.
-//     * @param stage the stage
-//     * @param path the path of content or {@code null}
-//     * @param ctx the application context
-//     */
-//    public AppPane(Stage stage, Path path, FxAppContext ctx) {
-//
-//        // restore sessions
-//        var sessions = new ArrayList<>(ctx.config().sessions());
-//        if (path != null && Files.exists(path)) {
-//            // add a command line args path as the session
-//            sessions.add(Session.of(path));
-//        }
-//        if (sessions.isEmpty()) {
-//            // fill the session if empty
-//            sessions.add(Session.empty());
-//        }
-//
-//        // restore sessions and create the container
-//        var panes = sessions.stream()
-//            .map(session -> new EditorPane(ctx).bindLater(session))
-//            .toArray(EditorPane[]::new);
-//
-//        var mainPane = new BorderPane(pane);
-//        //mainPane.setLeft(new PathTreeView(ctx.getApp().getHostServices()));
-//        var notifyListener = new NotificationPane(this);
-//        ctx.notifier().addListener(notifyListener);
-//
-//        getChildren().addAll(mainPane, notifyListener);
-//
-//        // when focus is gained, reload external changes to the content.
-//        stage.focusedProperty().addListener((_, _, focused) -> {
-//            if (focused) tabContainer.contentPanes()
-//                .forEach(ContentStackPane::refreshIfNeeded);
-//        });
-//
-//        // stage close action (save sessions)
-//        stage.setOnCloseRequest(e -> {
-//            e.consume();
-//            if (tabContainer.canCloseAll()) {
-//                ctx.config().clearSessions();
-//                ctx.config().sessions(tabContainer.contentPanes().stream()
-//                    .map(pane -> pane.close(true))
-//                    .filter(Optional::isPresent)
-//                    .map(Optional::get)
-//                    .toList());
-//                stage.close();
-//            }
-//        });
-//    }
 
 }
