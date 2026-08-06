@@ -22,6 +22,7 @@ import java.nio.file.Path;
  * The TabContainer.
  * @author Naotsugu Kobayashi
  */
+@Deprecated
 public interface TabContainer {
 
     /**

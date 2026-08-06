@@ -254,18 +254,12 @@ public class EditorPane extends ContentPane {
     }
 
     private void handleDragOver(DragEvent e) {
-        if (!new BoundingBox(20, 20, getWidth() - 40, getHeight() - 40).contains(e.getX(), e.getY())) {
-            return; // ignore drops to the edge
-        }
         if (e.getDragboard().hasFiles()) {
             e.acceptTransferModes(TransferMode.COPY);
         }
     }
 
     private void handleDragDropped(DragEvent e) {
-        if (!new BoundingBox(20, 20, getWidth() - 40, getHeight() - 40).contains(e.getX(), e.getY())) {
-            return; // ignore drops to the edge
-        }
         Dragboard board = e.getDragboard();
         if (board.hasFiles()) {
             var paths = board.getFiles().stream().map(File::toPath).toList();
@@ -556,7 +550,8 @@ public class EditorPane extends ContentPane {
 
     private EditorPane openNewEdit() {
         var newEdit = new EditorPane(context);
-        //TabContainer.find(this).addNext(newEdit);
+        // TODO add next
+        add(newEdit);
         return newEdit;
     }
 
@@ -581,7 +576,6 @@ public class EditorPane extends ContentPane {
     @Override
     public void close() {
         model.close();
-        paintPulse.stop();
     }
 
     @Override
@@ -606,6 +600,7 @@ public class EditorPane extends ContentPane {
         return fullNameProperty;
     }
 
+    @Deprecated
     Optional<Session> close(boolean force) {
         EditorModel model = model();
         if (model == null) return Optional.empty();
@@ -677,20 +672,6 @@ public class EditorPane extends ContentPane {
 
     private void reload(Charset charset) {
         model.reload(charset);
-    }
-
-    private EditorPane newEditStage() {
-        Stage current = (Stage) getScene().getWindow();
-        Stage stage = new Stage();
-        stage.setX(current.getX() + (current.isFullScreen() ? 0 : 15));
-        stage.setY(current.getY() + (current.isFullScreen() ? 0 : 15));
-        var editorPane = new EditorPane(context);
-        Scene scene = new Scene(editorPane, current.getWidth(), current.getHeight());
-        scene.getStylesheets().addAll(getScene().getStylesheets());
-        stage.setScene(scene);
-        stage.setTitle(AppVersion.appName);
-        stage.show();
-        return editorPane;
     }
 
     private InputMethodRequests inputMethodRequests() {

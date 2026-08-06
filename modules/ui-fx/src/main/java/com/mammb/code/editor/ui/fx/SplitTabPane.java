@@ -62,6 +62,7 @@ import static java.lang.System.Logger.Level.ERROR;
  * It is an ad hoc implementation and will be re-implemented
  * @author Naotsugu Kobayashi
  */
+@Deprecated
 public class SplitTabPane extends StackPane implements Hierarchical<SplitTabPane> {
 
     /** the logger. */

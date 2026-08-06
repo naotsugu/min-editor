@@ -45,39 +45,4 @@ public class AppConfig extends Config.AbstractConfig {
         Runtime.getRuntime().addShutdownHook(new Thread(this::save));
     }
 
-    /**
-     * Get the session list.
-     * @return the session list
-     */
-    public List<Session> sessions() {
-        return Arrays.stream(get("app.sessions", "").split(File.pathSeparator.repeat(2)))
-            .filter(Predicate.not(String::isBlank))
-            .map(Session::valueOf).toList();
-    }
-
-    /**
-     * Set the session list.
-     * @param sessions the session list
-     */
-    public void sessions(List<Session> sessions) {
-        put("app.sessions", sessions.stream().map(Session::asString)
-            .collect(Collectors.joining(File.pathSeparator.repeat(2))));
-    }
-
-    /**
-     * Clear sessions.
-     */
-    public void clearSessions() {
-        put("app.sessions", "");
-        try {
-            File[] files = stashPath().toFile().listFiles(File::isFile);
-            if (files == null) return;
-            for (File file : files) {
-                Files.deleteIfExists(file.toPath());
-            }
-        } catch (IOException ignore) {
-            log.log(System.Logger.Level.WARNING, ignore.getMessage(), ignore);
-        }
-    }
-
 }
