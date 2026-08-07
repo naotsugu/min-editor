@@ -151,20 +151,21 @@ public interface TabContainers {
     private static void handleStageCloseRequest(WindowEvent event) {
         if (event.getTarget() instanceof Stage stage) {
             Scene scene = stage.getScene();
-            if (scene != null) {
-                Node node = scene.getRoot().lookup("." + BranchNode.STYLE_CLASS);
-                if (node instanceof BranchNode branchNode) {
-                    List<ContentPane> contentPanes = branchNode.leaves().stream()
-                        .map(LeafNode::children)
-                        .flatMap(Collection::stream)
-                        .map(Tab::content)
-                        .filter(Predicate.not(ContentPane::canCloseQuiet))
-                        .toList();
-                    for (ContentPane contentPane : contentPanes) {
-                        if (!contentPane.closeRequest()) {
-                            event.consume();
-                            return;
-                        }
+            if (scene == null) {
+                return;
+            }
+            Node node = scene.getRoot().lookup("." + BranchNode.STYLE_CLASS);
+            if (node instanceof BranchNode branchNode) {
+                List<ContentPane> contentPanes = branchNode.leaves().stream()
+                    .map(LeafNode::children)
+                    .flatMap(Collection::stream)
+                    .map(Tab::content)
+                    .filter(Predicate.not(ContentPane::canCloseQuiet))
+                    .toList();
+                for (ContentPane contentPane : contentPanes) {
+                    if (!contentPane.closeRequest()) {
+                        event.consume();
+                        return;
                     }
                 }
             }

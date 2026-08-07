@@ -361,12 +361,12 @@ public class EditorPane extends ContentPane {
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff _               -> add(Side.RIGHT, diff(null, false));
-            case DiffFoldOff _        -> add(Side.RIGHT, diff(null, true));
-            case DiffWith cmd         -> add(Side.RIGHT, diff(cmd.path(), false));
-            case Duplicate _          -> add(Side.RIGHT, duplicate());
-            case BinaryView _         -> add(Side.RIGHT, binary());
-            case FoundFilterView cmd  -> add(foundFilter(cmd.contextSize()));
+            case Diff _               -> container().add(Side.RIGHT, diff(null, false));
+            case DiffFoldOff _        -> container().add(Side.RIGHT, diff(null, true));
+            case DiffWith cmd         -> container().add(Side.RIGHT, diff(cmd.path(), false));
+            case Duplicate _          -> container().add(Side.RIGHT, duplicate());
+            case BinaryView _         -> container().add(Side.RIGHT, binary());
+            case FoundFilterView cmd  -> container().add(foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
@@ -414,6 +414,14 @@ public class EditorPane extends ContentPane {
     @Override
     public void focus() {
         canvas.requestFocus();
+    }
+
+    @Override
+    public boolean matches(Object other) {
+        return switch (other) {
+            case Path path -> model().query(Query.contentPath).map(p -> p.equals(path)).orElse(false);
+            case null, default -> false;
+        };
     }
 
     private void inputText(Supplier<Object> supplier) {
@@ -478,7 +486,7 @@ public class EditorPane extends ContentPane {
     private void selectOrNewEdit(Path path) {
         if (path == null || !Files.exists(path)) return;
         if (context.isOpened(path)) {
-            // TODO select
+            container().select(path);
             return;
         }
         var newEdit = openNewEdit();
@@ -488,7 +496,7 @@ public class EditorPane extends ContentPane {
     private void selectOrOpen(Path path) {
         if (path == null || !Files.exists(path)) return;
         if (context.isOpened(path)) {
-            // TODO select
+            container().select(path);
             return;
         }
         openOrNewEdit(Session.of(path), false);
@@ -552,7 +560,7 @@ public class EditorPane extends ContentPane {
 
     private EditorPane openNewEdit() {
         var newEdit = new EditorPane(context);
-        add(newEdit);
+        container().add(newEdit);
         return newEdit;
     }
 

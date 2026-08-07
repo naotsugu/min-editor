@@ -26,6 +26,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
@@ -115,6 +116,16 @@ public class Context {
             case Path path -> pathToContent.apply(path);
             case null, default -> toContent.get();
         };
+    }
+
+    List<Tab> allTabs() {
+        return stages.stream()
+            .map(stage -> stage.getScene().getRoot().lookupAll("." + LeafNode.STYLE_CLASS))
+            .flatMap(Collection::stream)
+            .map(LeafNode.class::cast)
+            .map(LeafNode::children)
+            .flatMap(Collection::stream)
+            .toList();
     }
 
     public Scene toScene(Stage stage, BranchNode branchNode) {

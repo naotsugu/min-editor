@@ -106,6 +106,10 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         ctx.dragDone();
     }
 
+    void requestSelect() {
+        parent.requestSelect(this);
+    }
+
     void requestClose() {
         var req = new Event(Tab.TAB_CLOSE_REQUEST_EVENT);
         Event.fireEvent(this, req);

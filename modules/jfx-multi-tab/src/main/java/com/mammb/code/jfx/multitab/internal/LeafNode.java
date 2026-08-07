@@ -44,6 +44,8 @@ import java.util.Optional;
  */
 public class LeafNode extends TreeNode implements ParentOf<Tab> {
 
+    public static final String STYLE_CLASS = "tree-leaf-node";
+
     private static final System.Logger log = System.getLogger(LeafNode.class.getName());
 
     private final TabPane tabPane = new TabPane();
@@ -54,6 +56,7 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
     public LeafNode(Context ctx, ContentPane content) {
         this.ctx = Objects.requireNonNull(ctx);
         initTabPane();
+        getStyleClass().add(STYLE_CLASS);
         getChildren().addAll(tabPane, dropMarker);
         addChildren(Objects.isNull(content)
             ? List.of()
@@ -252,6 +255,11 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
         return getMinWidth() == getWidth() || getMinHeight() == getHeight();
     }
 
+    void requestSelect(Tab node) {
+        tabPane.getSelectionModel().select(node);
+        node.content().focus();
+    }
+
     @Override
     public BranchNode parent() {
         return parent;
@@ -260,6 +268,11 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
     @Override
     public void parent(BranchNode parent) {
         this.parent = parent;
+    }
+
+    @Override
+    Context context() {
+        return ctx;
     }
 
     private boolean dragOnTabHeader(DragEvent e) {

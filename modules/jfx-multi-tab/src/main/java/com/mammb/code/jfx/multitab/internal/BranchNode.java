@@ -123,6 +123,11 @@ public class BranchNode extends TreeNode implements ParentOf<TreeNode> {
     }
 
     @Override
+    Context context() {
+        return ctx;
+    }
+
+    @Override
     public List<TreeNode> children() {
         return splitPane.getItems().stream()
             .filter(TreeNode.class::isInstance)
