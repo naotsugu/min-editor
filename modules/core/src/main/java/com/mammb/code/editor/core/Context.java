@@ -51,6 +51,13 @@ public interface Context {
     void closed(Path path);
 
     /**
+     * Checks if the specified path is currently open.
+     * @param path The path to check.
+     * @return {@code true} if the path is open in the current context.
+     */
+    boolean isOpened(Path path);
+
+    /**
      * Push the recent path.
      * @param path the recent path
      */
@@ -110,6 +117,11 @@ public interface Context {
         @Override
         public void closed(Path path) {
             current.remove(path);
+        }
+
+        @Override
+        public boolean isOpened(Path path) {
+            return current.contains(path);
         }
 
         @Override
