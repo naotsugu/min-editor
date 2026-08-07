@@ -118,7 +118,7 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
 
         headerArea.setOnContextMenuRequested(event ->
             buildTabHeaderContextMenu()
-                .show(tabPane, event.getScreenX(), event.getScreenY()));
+                .show(getScene().getWindow(), event.getScreenX(), event.getScreenY()));
 
     }
 

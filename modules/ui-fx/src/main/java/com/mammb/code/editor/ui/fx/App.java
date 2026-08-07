@@ -294,6 +294,10 @@ public class App extends Application {
             -fx-text-fill: -fx-light-text-color;
             -fx-underline: true;
         }
+
+        .context-menu {
+            -fx-font-family: "System";
+        }
         """
             .replaceAll("app-base", Theme.current.baseColor().web()) // TODO theme vs config
             .replaceAll("app-text", Theme.current.fgColor().web())

@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.editor.core.Context;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
@@ -26,12 +25,6 @@ import javafx.scene.input.KeyCombination;
  * @author Naotsugu Kobayashi
  */
 public class FxMenuItem extends MenuItem {
-
-    /** The style. */
-    private static final String style = switch (Context.platform) {
-        case "windows" -> "-fx-font: normal 10pt System;";
-        default -> "-fx-font: normal 11pt System;";
-    };
 
     /**
      * Constructs a new FxMenuItem with the specified text, accelerator key combination,
@@ -51,7 +44,6 @@ public class FxMenuItem extends MenuItem {
         setAccelerator(accelerator);
         setOnAction(eventHandler);
         setDisable(disable);
-        setStyle(style);
     }
 
     /**
