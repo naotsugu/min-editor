@@ -20,14 +20,12 @@ import com.mammb.code.editor.core.EditorModel;
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Find;
 import com.mammb.code.editor.core.HoverOn;
-import com.mammb.code.editor.core.Name;
 import com.mammb.code.editor.core.Point;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Action;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.core.SessionHistory;
 import com.mammb.code.editor.core.editing.EditingFunctions;
-import com.mammb.code.editor.platform.AppVersion;
 import com.mammb.code.editor.ui.base.Command;
 import com.mammb.code.editor.ui.base.DrawImpl;
 import com.mammb.code.editor.ui.base.Command.*;
@@ -38,13 +36,12 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollBar;
@@ -63,7 +60,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import java.io.File;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -340,7 +336,7 @@ public class EditorPane extends ContentPane {
             case ToSnakeCase _        -> model().apply(Action.replace(EditingFunctions.toSnakeCase, true));
             case ToKebabCase _        -> model().apply(Action.replace(EditingFunctions.toKebabCase, true));
             case ToCamelCase _        -> model().apply(Action.replace(EditingFunctions.toCamelCase, true));
-            case ToPascalCase _        -> model().apply(Action.replace(EditingFunctions.toPascalCase, true));
+            case ToPascalCase _       -> model().apply(Action.replace(EditingFunctions.toPascalCase, true));
             case IndentParen _        -> model().apply(Action.replace(EditingFunctions.toIndentParen, false));
             case IndentCurlyBrace _   -> model().apply(Action.replace(EditingFunctions.toIndentCurlyBrace, false));
             case Calc _               -> model().apply(Action.replace(EditingFunctions.toCalc, false));
@@ -365,11 +361,11 @@ public class EditorPane extends ContentPane {
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
-            case Diff _               -> add(diff(null, false));
-            case DiffFoldOff _        -> add(diff(null, true));
-            case DiffWith cmd         -> add(diff(cmd.path(), false));
-            case Duplicate _          -> add(duplicate());
-            case BinaryView _         -> add(binary());
+            case Diff _               -> add(Side.RIGHT, diff(null, false));
+            case DiffFoldOff _        -> add(Side.RIGHT, diff(null, true));
+            case DiffWith cmd         -> add(Side.RIGHT, diff(cmd.path(), false));
+            case Duplicate _          -> add(Side.RIGHT, duplicate());
+            case BinaryView _         -> add(Side.RIGHT, binary());
             case FoundFilterView cmd  -> add(foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
@@ -550,7 +546,6 @@ public class EditorPane extends ContentPane {
 
     private EditorPane openNewEdit() {
         var newEdit = new EditorPane(context);
-        // TODO add next
         add(newEdit);
         return newEdit;
     }
