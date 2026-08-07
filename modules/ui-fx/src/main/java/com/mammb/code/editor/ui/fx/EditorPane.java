@@ -477,14 +477,20 @@ public class EditorPane extends ContentPane {
 
     private void selectOrNewEdit(Path path) {
         if (path == null || !Files.exists(path)) return;
-        if (TabContainer.find(this).selectExistingTab(path)) return;
+        if (context.isOpened(path)) {
+            // TODO select
+            return;
+        }
         var newEdit = openNewEdit();
         Platform.runLater(() -> newEdit.open(path));
     }
 
     private void selectOrOpen(Path path) {
         if (path == null || !Files.exists(path)) return;
-        if (TabContainer.find(this).selectExistingTab(path)) return;
+        if (context.isOpened(path)) {
+            // TODO select
+            return;
+        }
         openOrNewEdit(Session.of(path), false);
     }
 
