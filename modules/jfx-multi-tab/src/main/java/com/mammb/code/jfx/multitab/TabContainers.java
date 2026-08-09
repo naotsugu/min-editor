@@ -60,28 +60,32 @@ public interface TabContainers {
 
     record SceneBuilder(
             Stage stage,
+            boolean dupContentAllowed,
             Supplier<? extends ContentPane> toContent,
             Function<Path, ? extends ContentPane> pathToContent,
             Function<String, ? extends ContentPane> stringToContent,
             BiFunction<Stage, Pane, Scene> toScene,
             Path resumePath) {
         public SceneBuilder() {
-            this(null, null, null, null, null, null);
+            this(null, false, null, null, null, null, null);
         }
         public SceneBuilder stage(Stage stage) {
-            return new SceneBuilder(Objects.requireNonNull(stage), toContent, pathToContent, stringToContent, toScene, resumePath);
+            return new SceneBuilder(Objects.requireNonNull(stage), dupContentAllowed, toContent, pathToContent, stringToContent, toScene, resumePath);
         }
         public SceneBuilder toContent(Supplier<? extends ContentPane> toContent) {
-            return new SceneBuilder(stage, Objects.requireNonNull(toContent), pathToContent, stringToContent, toScene, resumePath);
+            return new SceneBuilder(stage, dupContentAllowed, Objects.requireNonNull(toContent), pathToContent, stringToContent, toScene, resumePath);
         }
         public SceneBuilder pathToContent(Function<Path, ? extends ContentPane> pathToContent) {
-            return new SceneBuilder(stage, toContent, Objects.requireNonNull(pathToContent), stringToContent, toScene, resumePath);
+            return new SceneBuilder(stage, dupContentAllowed, toContent, Objects.requireNonNull(pathToContent), stringToContent, toScene, resumePath);
         }
         public SceneBuilder toScene(BiFunction<Stage, Pane, Scene> toScene) {
-            return new SceneBuilder(stage, toContent, pathToContent, stringToContent, Objects.requireNonNull(toScene), resumePath);
+            return new SceneBuilder(stage, dupContentAllowed, toContent, pathToContent, stringToContent, Objects.requireNonNull(toScene), resumePath);
         }
         public SceneBuilder resume(Path resumePath, Function<String, ? extends ContentPane> stringToContent) {
-            return new SceneBuilder(stage, toContent, pathToContent, stringToContent, Objects.requireNonNull(toScene), resumePath);
+            return new SceneBuilder(stage, dupContentAllowed, toContent, pathToContent, stringToContent, Objects.requireNonNull(toScene), resumePath);
+        }
+        public SceneBuilder dupContentAllowed(boolean dupContentAllowed) {
+            return new SceneBuilder(stage, dupContentAllowed, toContent, pathToContent, stringToContent, Objects.requireNonNull(toScene), resumePath);
         }
         public Scene build() {
             var ctx = context();
@@ -91,6 +95,7 @@ public interface TabContainers {
         }
         private Context context() {
             return new Context(
+                dupContentAllowed,
                 Objects.requireNonNull(toContent),
                 (pathToContent != null) ? pathToContent : _ -> toContent.get(),
                 wrappedToScene(toScene, resumePath));
@@ -100,7 +105,8 @@ public interface TabContainers {
     private static BranchNode buildNode(Stage stage, Context ctx, Path resumePath,
             Function<String, ? extends ContentPane> stringToContent) {
         if (resumePath != null && stringToContent != null &&
-            Files.exists(resumePath) && Files.isRegularFile(resumePath) && Files.isReadable(resumePath)) {
+            Files.exists(resumePath) && Files.isRegularFile(resumePath) &&
+            Files.isReadable(resumePath)) {
             try {
                 var lines = Files.readAllLines(resumePath);
                 String[] split = lines.getFirst().split(",");
@@ -117,7 +123,6 @@ public interface TabContainers {
                 double h = Math.max(Double.parseDouble(split[3]), 30);
                 stage.setWidth(w);
                 stage.setHeight(h);
-
                 Pane pane = fromString(ctx, lines.get(1), stringToContent);
                 if (pane instanceof BranchNode branchNode) {
                     return branchNode;
@@ -154,14 +159,20 @@ public interface TabContainers {
             if (scene == null) {
                 return;
             }
-            Node node = scene.getRoot().lookup("." + BranchNode.STYLE_CLASS);
-            if (node instanceof BranchNode branchNode) {
+
+            if (scene.getRoot().lookup("." + BranchNode.STYLE_CLASS) instanceof BranchNode branchNode) {
+
+                Predicate<ContentPane> predicate = (Stage.getWindows().stream().filter(Window::isShowing).count() > 1)
+                    ? ContentPane::canCloseQuiet
+                    : ContentPane::canExitQuiet;
+
                 List<ContentPane> contentPanes = branchNode.leaves().stream()
                     .map(LeafNode::children)
                     .flatMap(Collection::stream)
                     .map(Tab::content)
-                    .filter(Predicate.not(ContentPane::canCloseQuiet))
+                    .filter(Predicate.not(predicate))
                     .toList();
+
                 for (ContentPane contentPane : contentPanes) {
                     if (!contentPane.closeRequest()) {
                         event.consume();

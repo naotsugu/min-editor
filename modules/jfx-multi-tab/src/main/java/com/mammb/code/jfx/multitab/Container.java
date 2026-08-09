@@ -16,12 +16,15 @@
 package com.mammb.code.jfx.multitab;
 
 import javafx.geometry.Side;
+import java.nio.file.Path;
 
 /**
  * The Container.
  * @author Naotsugu Kobayashi
  */
 public interface Container {
+
+    void add(Path path);
 
     void add(ContentPane contentPane);
 

@@ -4,6 +4,8 @@ import com.mammb.code.jfx.multitab.Container;
 import com.mammb.code.jfx.multitab.ContentPane;
 import javafx.geometry.Side;
 import javafx.scene.Node;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 public class ContainerImpl implements Container {
@@ -12,6 +14,12 @@ public class ContainerImpl implements Container {
 
     public ContainerImpl(ContentPane pane) {
         this.pane = pane;
+    }
+
+    @Override
+    public void add(Path path) {
+        if (path == null || !Files.exists(path) || !Files.isRegularFile(path) || !Files.isReadable(path)) return;
+        leafNode().ifPresent(leaf -> leaf.add(leaf.context().createContentPane(path)));
     }
 
     @Override
@@ -41,4 +49,3 @@ public class ContainerImpl implements Container {
         return Optional.empty();
     }
 }
-

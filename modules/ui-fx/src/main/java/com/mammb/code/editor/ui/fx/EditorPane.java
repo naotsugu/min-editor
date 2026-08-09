@@ -316,7 +316,7 @@ public class EditorPane extends ContentPane {
             case New _                -> openNewEdit();
             case ReloadWith cmd       -> reload(cmd.charset());
             case Palette cmd          -> showCommandPalette(cmd.initial());
-            case Open cmd             -> selectOrNewEdit(Path.of(cmd.path()));
+            case Open cmd             -> container().add(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
             case Config _             -> openNewEdit().open(Session.of(context.config().path()));
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
@@ -366,7 +366,7 @@ public class EditorPane extends ContentPane {
             case DiffWith cmd         -> container().add(Side.RIGHT, diff(cmd.path(), false));
             case Duplicate _          -> container().add(Side.RIGHT, duplicate());
             case BinaryView _         -> container().add(Side.RIGHT, binary());
-            case FoundFilterView cmd  -> container().add(foundFilter(cmd.contextSize()));
+            case FoundFilterView cmd  -> container().add(Side.RIGHT, foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
@@ -514,6 +514,12 @@ public class EditorPane extends ContentPane {
         }
     }
 
+    private EditorPane openNewEdit() {
+        var newEdit = new EditorPane(context);
+        container().add(newEdit);
+        return newEdit;
+    }
+
     private void open(Session session) {
 
         boolean openInBackground = Files.size(session.path()) > BACKGROUND_THRESHOLD;
@@ -558,15 +564,18 @@ public class EditorPane extends ContentPane {
         return task;
     }
 
-    private EditorPane openNewEdit() {
-        var newEdit = new EditorPane(context);
-        container().add(newEdit);
-        return newEdit;
+    @Override
+    public boolean canCloseQuiet() {
+        return !model().query(Query.modified);
     }
 
     @Override
-    public boolean canCloseQuiet() {
-        return model().query(Query.modified) && model().query(Query.contentPath).isPresent();
+    public boolean canExitQuiet() {
+        return needsStash() || canCloseQuiet();
+    }
+
+    private boolean needsStash() {
+        return model().query(Query.modified) && model().query(Query.contentPath).isEmpty();
     }
 
     @Override

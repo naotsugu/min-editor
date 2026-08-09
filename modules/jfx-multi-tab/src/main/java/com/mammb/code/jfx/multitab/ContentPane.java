@@ -42,9 +42,19 @@ public abstract class ContentPane extends StackPane {
 
     /**
      * Check whether this pane can be closed without confirmation.
+     * {@code false} if the target is automatically saved when the application exits.
      * @return {@code true}, if this pane can be closed without confirmation
      */
     abstract public boolean canCloseQuiet();
+
+    /**
+     * Check whether this pane can be closed exited confirmation.
+     * {@code true} if the target is automatically saved when the application exits.
+     * @return {@code true}, if this pane can be exited without confirmation
+     */
+    public boolean canExitQuiet() {
+        return canCloseQuiet();
+    }
 
     /**
      * Check whether the pane can be closed.

@@ -45,14 +45,18 @@ public class Context {
     private final ObservableMap<Scene, Tab> latestTab = FXCollections.observableHashMap();
     private final AtomicReference<Tab> dragged = new AtomicReference<>();
 
+    private final boolean duplicateContentAllowed;
+
     private final Supplier<? extends ContentPane> toContent;
     private final Function<Path, ? extends ContentPane> pathToContent;
     private final BiFunction<Stage, Pane, Scene> toScene;
 
     public Context(
+            boolean duplicateContentAllowed,
             Supplier<? extends ContentPane> toContent,
             Function<Path, ? extends ContentPane> pathToContent,
             BiFunction<Stage, Pane, Scene> toScene) {
+        this.duplicateContentAllowed = duplicateContentAllowed;
         this.toContent = toContent;
         this.pathToContent = pathToContent;
         this.toScene = toScene;
@@ -113,9 +117,28 @@ public class Context {
 
     public <T> ContentPane createContentPane(T arg) {
         return switch (arg) {
-            case Path path -> pathToContent.apply(path);
+            case Path path -> {
+                if (duplicateContentAllowed) {
+                    yield pathToContent.apply(path);
+                } else {
+                    var dup = allTabs().stream()
+                        .filter(tab -> tab.content().matches(arg))
+                        .toList();
+                    if (dup.isEmpty()) {
+                        yield pathToContent.apply(path);
+                    } else {
+                        dup.forEach(Tab::requestSelect);
+                        yield null;
+                    }
+                }
+            }
             case null, default -> toContent.get();
         };
+    }
+
+    public Scene toScene(Stage stage, BranchNode branchNode) {
+        addStage(stage);
+        return toScene.apply(stage, branchNode);
     }
 
     List<Tab> allTabs() {
@@ -126,11 +149,6 @@ public class Context {
             .map(LeafNode::children)
             .flatMap(Collection::stream)
             .toList();
-    }
-
-    public Scene toScene(Stage stage, BranchNode branchNode) {
-        addStage(stage);
-        return toScene.apply(stage, branchNode);
     }
 
 }
