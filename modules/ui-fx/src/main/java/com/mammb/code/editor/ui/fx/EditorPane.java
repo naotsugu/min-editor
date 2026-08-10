@@ -263,7 +263,7 @@ public class EditorPane extends ContentPane {
             if (path.isPresent()) {
                 e.setDropCompleted(true);
                 e.consume();
-                selectOrOpen(path.get());
+                openOn(path.get());
                 return;
             }
             var list = EditingFunctions.list.apply(paths);
@@ -313,12 +313,12 @@ public class EditorPane extends ContentPane {
             case SaveWithLF _         -> saveWith(null, "LF");
             case SaveWithCRLF _       -> saveWith(null, "CRLF");
             case SaveWith cmd         -> saveWith(cmd.charset(), null);
-            case New _                -> openNewEdit();
+            case New _                -> container().add();
             case ReloadWith cmd       -> reload(cmd.charset());
             case Palette cmd          -> showCommandPalette(cmd.initial());
-            case Open cmd             -> container().add(Path.of(cmd.path()));
+            case Open cmd             -> openOn(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
-            case Config _             -> openNewEdit().open(Session.of(context.config().path()));
+            case Config _             -> container().add(context.config().path());
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
             case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseInsensitive()));
             case FindAll cmd          -> apply(Action.findAll(cmd.str(), cmd.caseInsensitive()));
@@ -466,14 +466,19 @@ public class EditorPane extends ContentPane {
             fc.setInitialDirectory(Path.of(System.getProperty("user.home")).toFile());
         }
         File file = fc.showOpenDialog(getScene().getWindow());
-        if (file == null) return;
-        open(Session.of(file.toPath()));
+        if (Files.isReadableFile(file.toPath())) {
+            container().add(file.toPath());
+        }
     }
 
-    void open(Path path) {
-        Objects.requireNonNull(path);
+    private void openOn(Path path) {
         if (Files.isReadableFile(path)) {
-            open(Session.of(path));
+            if (model().query(Query.modified)) {
+                container().add(path);
+                return;
+            } else {
+                open(Session.of(path));
+            }
         } else if (Files.isReadableDirectory(path)) {
             String ls = String.join("\n", Files.listAbsolutePath(path));
             inputText(() -> ls.isBlank() ? path.toAbsolutePath() : ls);
@@ -481,43 +486,6 @@ public class EditorPane extends ContentPane {
             inputText(() -> path);
         }
         paintPulse.request();
-    }
-
-    private void selectOrNewEdit(Path path) {
-        if (path == null || !Files.exists(path)) return;
-        if (context.isOpened(path)) {
-            container().select(path);
-            return;
-        }
-        var newEdit = openNewEdit();
-        Platform.runLater(() -> newEdit.open(path));
-    }
-
-    private void selectOrOpen(Path path) {
-        if (path == null || !Files.exists(path)) return;
-        if (context.isOpened(path)) {
-            container().select(path);
-            return;
-        }
-        openOrNewEdit(Session.of(path), false);
-    }
-
-    private EditorPane openOrNewEdit(Session session, boolean forceNewEdit) {
-        if (forceNewEdit || model().query(Query.modified)) {
-            var newEdit = openNewEdit();
-            newEdit.open(session);
-            return newEdit;
-        } else {
-            open(session);
-            paintPulse.request();
-            return this;
-        }
-    }
-
-    private EditorPane openNewEdit() {
-        var newEdit = new EditorPane(context);
-        container().add(newEdit);
-        return newEdit;
     }
 
     private void open(Session session) {
@@ -766,9 +734,12 @@ public class EditorPane extends ContentPane {
     private void openFindInFiles() {
         var path = model().query(Query.contentPath).map(Path::getParent)
             .orElse(Path.of(System.getProperty("user.home")));
-        var fif = FindInFilesPane.of(path, r ->
-            openOrNewEdit(Session.of(r.path(), Math.max(0, r.line() - 5), r.line() - 1, r.col()), r.withShortcut())
-        );
+        var fif = FindInFilesPane.of(path, r -> {
+            var pane = (r.withShortcut() || model().query(Query.modified)) ? (EditorPane) container().add() : this;
+            var session = Session.of(r.path(), Math.max(0, r.line() - 5), r.line() - 1, r.col());
+            pane.open(session);
+            pane.paintPulse.request();
+        });
         fif.openWithWindow(getScene().getWindow());
     }
 
@@ -790,7 +761,7 @@ public class EditorPane extends ContentPane {
 
     void openRecent() {
         var window = getScene().getWindow();
-        SelectOneMenu.of(context.recents(), this::selectOrOpen)
+        SelectOneMenu.of(context.recents(), this::openOn)
             .show(window, window.getX(), window.getY() + 55);
     }
 

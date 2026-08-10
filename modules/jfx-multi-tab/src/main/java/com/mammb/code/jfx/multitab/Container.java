@@ -24,7 +24,9 @@ import java.nio.file.Path;
  */
 public interface Container {
 
-    void add(Path path);
+    ContentPane add();
+
+    ContentPane add(Path path);
 
     void add(ContentPane contentPane);
 

@@ -210,11 +210,13 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
     }
 
     public void add(ContentPane content) {
+        if (content == null) return;
         addChildren(List.of(new Tab(ctx, content)));
     }
 
-    public void add(ContentPane contentPane, Side side) {
-        parent.add(contentPane, this, side);
+    public void add(ContentPane content, Side side) {
+        if (content == null) return;
+        parent.add(content, this, side);
     }
 
     private void handleDragExited(DragEvent e) {
