@@ -21,6 +21,7 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -72,10 +73,10 @@ public class ContainerImpl implements Container {
     }
 
     @Override
-    public void select(Object matcher) {
+    public void select(ContentPane contentPane) {
         leafNode().ifPresent(leafNode ->
             leafNode.context().allTabs().stream()
-                .filter(tab -> tab.content().matches(matcher))
+                .filter(tab -> Objects.equals(tab.content(), contentPane))
                 .forEach(Tab::requestSelect));
     }
 

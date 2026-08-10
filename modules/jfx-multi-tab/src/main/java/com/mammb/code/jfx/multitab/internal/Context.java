@@ -94,7 +94,8 @@ public class Context {
         dragged.set(null);
     }
 
-    public void handleTabSelected(ObservableValue<? extends javafx.scene.control.Tab> observable, javafx.scene.control.Tab oldValue, javafx.scene.control.Tab newValue) {
+    public void handleTabSelected(ObservableValue<? extends javafx.scene.control.Tab> observable,
+            javafx.scene.control.Tab oldValue, javafx.scene.control.Tab newValue) {
         if (newValue instanceof Tab selected && selected.parent() != null && selected.parent().getScene() != null) {
             Platform.runLater(() -> selected.content().focus());
             latestTab.put(selected.parent().getScene(), selected);
