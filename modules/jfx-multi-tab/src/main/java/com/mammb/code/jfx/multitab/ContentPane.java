@@ -16,24 +16,14 @@
 package com.mammb.code.jfx.multitab;
 
 import com.mammb.code.jfx.multitab.internal.ContainerImpl;
-import com.mammb.code.jfx.multitab.internal.LeafNode;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.geometry.Side;
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-import java.util.Optional;
 
 /**
  * The ContentPane.
  * @author Naotsugu Kobayashi
  */
 public abstract class ContentPane extends StackPane {
-
-    public static final String STYLE_CLASS = "content-pane";
-
-    public ContentPane() {
-        getStyleClass().add(STYLE_CLASS);
-    }
 
     /**
      * Focus the pane.

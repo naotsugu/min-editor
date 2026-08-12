@@ -74,8 +74,7 @@ public class App extends Application {
             .stage(stage)
             .toContent(this::toContent)
             .toScene(this::toScene)
-            .pathToContent(this::pathToContent)
-            .resume(AppPaths.applicationConfPath.resolve("resumes"), this::stringToContent)
+            .resume(AppPaths.applicationConfPath.resolve("resumes"))
             .build();
 
         stage.setScene(scene);
@@ -88,16 +87,13 @@ public class App extends Application {
 
     }
 
-    private ContentPane toContent() {
-        return new EditorPane(ctx).bindLater(Session.empty());
-    }
-
-    private ContentPane pathToContent(Path path) {
-        return new EditorPane(ctx).bindLater(Session.of(path));
-    }
-
-    private ContentPane stringToContent(String string) {
-        return new EditorPane(ctx).bindLater(Session.valueOf(string));
+    private ContentPane toContent(Object arg) {
+        var session = switch (arg) {
+            case Path path -> Session.of(path);
+            case String string -> Session.valueOf(string);
+            case null, default -> Session.empty();
+        };
+        return new EditorPane(ctx).bindLater(session);
     }
 
     private Scene toScene(Stage stage, Pane tabContainerPane) {
@@ -255,6 +251,13 @@ public class App extends Application {
           -fx-padding:0;
         }
 
+        .tab-pane {
+            -fx-tab-min-height: 1.5em;
+            -fx-tab-max-height: 1.5em;
+        }
+        .tab .label {
+          -fx-font-size: 0.916667em;
+        }
         .tab-pane > .tab-header-area > .headers-region > .tab {
            -fx-background-color: -fx-hover-base;
         }

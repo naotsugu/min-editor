@@ -495,7 +495,7 @@ public class EditorPane extends ContentPane {
         // save previous session
         sessionHistory.push(model().getSession());
 
-        close(false);
+        close();
         model = openInBackground
             ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, context)
             : model.with(session);
@@ -584,25 +584,6 @@ public class EditorPane extends ContentPane {
     @Override
     public ReadOnlyObjectProperty<String> fullNameProperty() {
         return fullNameProperty;
-    }
-
-    @Deprecated
-    Optional<Session> close(boolean force) {
-        EditorModel model = model();
-        if (model == null) return Optional.empty();
-        Optional<Session> restorableSession;
-        var contentPath = model.query(Query.contentPath);
-        if (contentPath.isPresent()) {
-            context.closed(contentPath.get());
-            restorableSession = force || closeRequest()
-                ? Optional.of(model.getSession())
-                : Optional.empty();
-        } else {
-            var session = model.stash();
-            restorableSession = session.isEmpty() ? Optional.empty() : Optional.of(session);
-        }
-        close();
-        return restorableSession;
     }
 
     void forward() {

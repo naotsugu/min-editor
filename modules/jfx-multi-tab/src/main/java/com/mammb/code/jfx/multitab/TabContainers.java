@@ -42,7 +42,6 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -61,50 +60,44 @@ public interface TabContainers {
     record SceneBuilder(
             Stage stage,
             boolean dupContentAllowed,
-            Supplier<? extends ContentPane> toContent,
-            Function<Path, ? extends ContentPane> pathToContent,
-            Function<String, ? extends ContentPane> stringToContent,
+            Function<Object, ? extends ContentPane> toContent,
             BiFunction<Stage, Pane, Scene> toScene,
             Path resumePath) {
         public SceneBuilder() {
-            this(null, false, null, null, null, null, null);
+            this(null, false, null, null, null);
         }
         public SceneBuilder stage(Stage stage) {
-            return new SceneBuilder(Objects.requireNonNull(stage), dupContentAllowed, toContent, pathToContent, stringToContent, toScene, resumePath);
+            return new SceneBuilder(Objects.requireNonNull(stage), dupContentAllowed, toContent, toScene, resumePath);
         }
-        public SceneBuilder toContent(Supplier<? extends ContentPane> toContent) {
-            return new SceneBuilder(stage, dupContentAllowed, Objects.requireNonNull(toContent), pathToContent, stringToContent, toScene, resumePath);
-        }
-        public SceneBuilder pathToContent(Function<Path, ? extends ContentPane> pathToContent) {
-            return new SceneBuilder(stage, dupContentAllowed, toContent, Objects.requireNonNull(pathToContent), stringToContent, toScene, resumePath);
+        public SceneBuilder toContent(Function<Object, ? extends ContentPane> toContent) {
+            return new SceneBuilder(stage, dupContentAllowed, Objects.requireNonNull(toContent), toScene, resumePath);
         }
         public SceneBuilder toScene(BiFunction<Stage, Pane, Scene> toScene) {
-            return new SceneBuilder(stage, dupContentAllowed, toContent, pathToContent, stringToContent, Objects.requireNonNull(toScene), resumePath);
+            return new SceneBuilder(stage, dupContentAllowed, toContent, Objects.requireNonNull(toScene), resumePath);
         }
-        public SceneBuilder resume(Path resumePath, Function<String, ? extends ContentPane> stringToContent) {
-            return new SceneBuilder(stage, dupContentAllowed, toContent, pathToContent, stringToContent, Objects.requireNonNull(toScene), resumePath);
+        public SceneBuilder resume(Path resumePath) {
+            return new SceneBuilder(stage, dupContentAllowed, toContent, Objects.requireNonNull(toScene), resumePath);
         }
         public SceneBuilder dupContentAllowed(boolean dupContentAllowed) {
-            return new SceneBuilder(stage, dupContentAllowed, toContent, pathToContent, stringToContent, Objects.requireNonNull(toScene), resumePath);
+            return new SceneBuilder(stage, dupContentAllowed, toContent, Objects.requireNonNull(toScene), resumePath);
         }
         public Scene build() {
             var ctx = context();
             var st = (stage == null) ? new Stage() : stage;
-            var pane = buildNode(st, ctx, resumePath, stringToContent);
+            var pane = buildNode(st, ctx, resumePath, toContent);
             return ctx.toScene(st, pane);
         }
         private Context context() {
             return new Context(
                 dupContentAllowed,
                 Objects.requireNonNull(toContent),
-                (pathToContent != null) ? pathToContent : _ -> toContent.get(),
                 wrappedToScene(toScene, resumePath));
         }
     }
 
     private static BranchNode buildNode(Stage stage, Context ctx, Path resumePath,
-            Function<String, ? extends ContentPane> stringToContent) {
-        if (resumePath != null && stringToContent != null &&
+            Function<Object, ? extends ContentPane> toContent) {
+        if (resumePath != null && toContent != null &&
             Files.exists(resumePath) && Files.isRegularFile(resumePath) &&
             Files.isReadable(resumePath)) {
             try {
@@ -123,7 +116,7 @@ public interface TabContainers {
                 double h = Math.max(Double.parseDouble(split[3]), 30);
                 stage.setWidth(w);
                 stage.setHeight(h);
-                Pane pane = fromString(ctx, lines.get(1), stringToContent);
+                Pane pane = fromString(ctx, lines.get(1), toContent);
                 if (pane instanceof BranchNode branchNode) {
                     return branchNode;
                 }
@@ -239,7 +232,8 @@ public interface TabContainers {
         };
     }
 
-    private static Pane fromString(Context ctx, String str, Function<String, ? extends ContentPane> stringToContent) {
+    private static Pane fromString(Context ctx, String str,
+            Function<Object, ? extends ContentPane> toContent) {
 
         if (str.startsWith("{") && str.endsWith("}")) {
             str = str.substring(1, str.length() - 1); // remove '{' '}'
@@ -253,7 +247,7 @@ public interface TabContainers {
             double[] dividerPositions = new double[] { div.isBlank() ? 0.5 : Double.parseDouble(div) };
             // children
             List<TreeNode> children = splitBranch(str.substring(divClose + 1)).stream()
-                .map(s -> fromString(ctx, s, stringToContent))
+                .map(s -> fromString(ctx, s, toContent))
                 .filter(TreeNode.class::isInstance)
                 .map(TreeNode.class::cast)
                 .toList();
@@ -270,7 +264,7 @@ public interface TabContainers {
             String[] split = str.split(",");
             List<Tab> children = Arrays.stream(split)
                 .map(TabContainers::unescape)
-                .map(stringToContent)
+                .map(toContent)
                 .map(c -> new Tab(ctx, c))
                 .toList();
             // create LeafNode

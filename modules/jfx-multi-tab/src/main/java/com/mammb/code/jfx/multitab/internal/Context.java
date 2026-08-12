@@ -25,14 +25,12 @@ import javafx.collections.ObservableMap;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * The Context.
@@ -47,18 +45,15 @@ public class Context {
 
     private final boolean duplicateContentAllowed;
 
-    private final Supplier<? extends ContentPane> toContent;
-    private final Function<Path, ? extends ContentPane> pathToContent;
+    private final Function<Object, ? extends ContentPane> toContent;
     private final BiFunction<Stage, Pane, Scene> toScene;
 
     public Context(
             boolean duplicateContentAllowed,
-            Supplier<? extends ContentPane> toContent,
-            Function<Path, ? extends ContentPane> pathToContent,
+            Function<Object, ? extends ContentPane> toContent,
             BiFunction<Stage, Pane, Scene> toScene) {
         this.duplicateContentAllowed = duplicateContentAllowed;
         this.toContent = toContent;
-        this.pathToContent = pathToContent;
         this.toScene = toScene;
     }
 
@@ -116,25 +111,17 @@ public class Context {
         return createContentPane(null);
     }
 
-    public <T> ContentPane createContentPane(T arg) {
-        return switch (arg) {
-            case Path path -> {
-                if (duplicateContentAllowed) {
-                    yield pathToContent.apply(path);
-                } else {
-                    var dup = allTabs().stream()
-                        .filter(tab -> tab.content().matches(arg))
-                        .toList();
-                    if (dup.isEmpty()) {
-                        yield pathToContent.apply(path);
-                    } else {
-                        dup.forEach(Tab::requestSelect);
-                        yield null;
-                    }
-                }
+    public ContentPane createContentPane(Object arg) {
+        if (!duplicateContentAllowed && arg != null) {
+            var dup = allTabs().stream()
+                .filter(tab -> tab.content().matches(arg))
+                .toList();
+            if (!dup.isEmpty()) {
+                dup.getFirst().requestSelect();
+                return null;
             }
-            case null, default -> toContent.get();
-        };
+        }
+        return toContent.apply(arg);
     }
 
     public Scene toScene(Stage stage, BranchNode branchNode) {
