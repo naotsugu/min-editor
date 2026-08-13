@@ -21,6 +21,7 @@ import com.mammb.code.jfx.multitab.internal.LeafNode;
 import com.mammb.code.jfx.multitab.internal.ParentOf;
 import com.mammb.code.jfx.multitab.internal.Tab;
 import com.mammb.code.jfx.multitab.internal.TreeNode;
+import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -40,6 +41,7 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -59,45 +61,46 @@ public interface TabContainers {
 
     record SceneBuilder(
             Stage stage,
-            boolean dupContentAllowed,
             Function<Object, ? extends ContentPane> toContent,
             BiFunction<Stage, Pane, Scene> toScene,
-            Path resumePath) {
+            BiPredicate<Object, Container> onOpenRequest,
+            Path resumePath,
+            Function<String, ? extends ContentPane> resumeToContent) {
         public SceneBuilder() {
-            this(null, false, null, null, null);
+            this(null, null, null, null, null, null);
         }
         public SceneBuilder stage(Stage stage) {
-            return new SceneBuilder(Objects.requireNonNull(stage), dupContentAllowed, toContent, toScene, resumePath);
+            return new SceneBuilder(Objects.requireNonNull(stage), toContent, toScene, onOpenRequest, resumePath, resumeToContent);
         }
         public SceneBuilder toContent(Function<Object, ? extends ContentPane> toContent) {
-            return new SceneBuilder(stage, dupContentAllowed, Objects.requireNonNull(toContent), toScene, resumePath);
+            return new SceneBuilder(stage, Objects.requireNonNull(toContent), toScene, onOpenRequest, resumePath, resumeToContent);
         }
         public SceneBuilder toScene(BiFunction<Stage, Pane, Scene> toScene) {
-            return new SceneBuilder(stage, dupContentAllowed, toContent, Objects.requireNonNull(toScene), resumePath);
+            return new SceneBuilder(stage, toContent, Objects.requireNonNull(toScene), onOpenRequest, resumePath, resumeToContent);
         }
-        public SceneBuilder resume(Path resumePath) {
-            return new SceneBuilder(stage, dupContentAllowed, toContent, Objects.requireNonNull(toScene), resumePath);
+        public SceneBuilder onOpenRequest(BiPredicate<Object, Container> onOpenRequest) {
+            return new SceneBuilder(stage, Objects.requireNonNull(toContent), toScene, onOpenRequest, resumePath, resumeToContent);
         }
-        public SceneBuilder dupContentAllowed(boolean dupContentAllowed) {
-            return new SceneBuilder(stage, dupContentAllowed, toContent, Objects.requireNonNull(toScene), resumePath);
+        public SceneBuilder resume(Path resumePath, Function<String, ? extends ContentPane> resumeToContent) {
+            return new SceneBuilder(stage, toContent, Objects.requireNonNull(toScene), onOpenRequest, resumePath, resumeToContent);
         }
         public Scene build() {
             var ctx = context();
             var st = (stage == null) ? new Stage() : stage;
-            var pane = buildNode(st, ctx, resumePath, toContent);
+            var pane = buildNode(st, ctx, resumePath, resumeToContent);
             return ctx.toScene(st, pane);
         }
         private Context context() {
             return new Context(
-                dupContentAllowed,
                 Objects.requireNonNull(toContent),
-                wrappedToScene(toScene, resumePath));
+                wrappedToScene(toScene, resumePath),
+                (onOpenRequest == null) ? (_, _) -> false : onOpenRequest);
         }
     }
 
     private static BranchNode buildNode(Stage stage, Context ctx, Path resumePath,
-            Function<Object, ? extends ContentPane> toContent) {
-        if (resumePath != null && toContent != null &&
+            Function<String, ? extends ContentPane> resumeToContent) {
+        if (resumePath != null && resumeToContent != null &&
             Files.exists(resumePath) && Files.isRegularFile(resumePath) &&
             Files.isReadable(resumePath)) {
             try {
@@ -116,7 +119,7 @@ public interface TabContainers {
                 double h = Math.max(Double.parseDouble(split[3]), 30);
                 stage.setWidth(w);
                 stage.setHeight(h);
-                Pane pane = fromString(ctx, lines.get(1), toContent);
+                Pane pane = fromString(ctx, lines.get(1), resumeToContent);
                 if (pane instanceof BranchNode branchNode) {
                     return branchNode;
                 }
@@ -126,7 +129,7 @@ public interface TabContainers {
         }
         stage.setWidth(600);
         stage.setHeight(400);
-        return new BranchNode(ctx, ctx.createContentPane());
+        return new BranchNode(ctx, ctx.createEmptyContent());
     }
 
 
@@ -233,7 +236,7 @@ public interface TabContainers {
     }
 
     private static Pane fromString(Context ctx, String str,
-            Function<Object, ? extends ContentPane> toContent) {
+            Function<String, ? extends ContentPane> resumeToContent) {
 
         if (str.startsWith("{") && str.endsWith("}")) {
             str = str.substring(1, str.length() - 1); // remove '{' '}'
@@ -247,15 +250,15 @@ public interface TabContainers {
             double[] dividerPositions = new double[] { div.isBlank() ? 0.5 : Double.parseDouble(div) };
             // children
             List<TreeNode> children = splitBranch(str.substring(divClose + 1)).stream()
-                .map(s -> fromString(ctx, s, toContent))
+                .map(s -> fromString(ctx, s, resumeToContent))
                 .filter(TreeNode.class::isInstance)
                 .map(TreeNode.class::cast)
                 .toList();
             // create BranchNode
             var branchNode = new BranchNode(ctx);
             branchNode.orientation(orientation);
-            branchNode.dividerPositions(dividerPositions);
             branchNode.addChildren(children);
+            Platform.runLater(() -> branchNode.dividerPositions(dividerPositions));
             return branchNode;
 
         } else if (str.startsWith("[") && str.endsWith("]")) {
@@ -264,7 +267,7 @@ public interface TabContainers {
             String[] split = str.split(",");
             List<Tab> children = Arrays.stream(split)
                 .map(TabContainers::unescape)
-                .map(toContent)
+                .map(resumeToContent)
                 .map(c -> new Tab(ctx, c))
                 .toList();
             // create LeafNode

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.jfx.multitab.internal;
 
+import com.mammb.code.jfx.multitab.Container;
 import com.mammb.code.jfx.multitab.ContentPane;
 import javafx.event.Event;
 import javafx.scene.Node;
@@ -147,9 +148,13 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         this.parent = parent;
     }
 
+    public Container container() {
+        return content().container();
+    }
+
     private ContextMenu buildContextMenu() {
         MenuItem newTab = new MenuItem("New");
-        newTab.setOnAction(_ -> parent.addChildren(List.of(new Tab(ctx, ctx.createContentPane()))));
+        newTab.setOnAction(_ -> parent.addChildren(List.of(new Tab(ctx, ctx.createEmptyContent()))));
         MenuItem close = new MenuItem("Close");
         close.setOnAction(_-> requestClose());
         MenuItem closeOther = new MenuItem("Close Other");

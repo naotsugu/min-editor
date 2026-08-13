@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * The ContainerImpl.
@@ -43,7 +44,7 @@ public class ContainerImpl implements Container {
             return null;
         }
         var leaf = leafNode.get();
-        ContentPane contentPane = leaf.context().createContentPane();
+        ContentPane contentPane = leaf.context().createEmptyContent();
         leaf.add(contentPane);
         return contentPane;
     }
@@ -57,19 +58,19 @@ public class ContainerImpl implements Container {
             return null;
         }
         var leaf = leafNode.get();
-        ContentPane contentPane = leaf.context().createContentPane(path);
+        ContentPane contentPane = leaf.context().createContentPane(path, pane.container());
         leaf.add(contentPane);
         return contentPane;
     }
 
     @Override
-    public void add(ContentPane contentPane) {
-        leafNode().ifPresent(l -> l.add(contentPane));
+    public void add(Side side, ContentPane contentPane) {
+        leafNode().ifPresent(l -> l.add(contentPane, side));
     }
 
     @Override
-    public void add(Side side, ContentPane contentPane) {
-        leafNode().ifPresent(l -> l.add(contentPane, side));
+    public Optional<ContentPane> find(Predicate<ContentPane> predicate) {
+        return leafNode().flatMap(leaf -> leaf.context().find(predicate));
     }
 
     @Override

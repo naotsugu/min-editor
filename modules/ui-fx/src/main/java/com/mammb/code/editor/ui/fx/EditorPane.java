@@ -416,14 +416,6 @@ public class EditorPane extends ContentPane {
         canvas.requestFocus();
     }
 
-    @Override
-    public boolean matches(Object other) {
-        return switch (other) {
-            case Path path -> model().query(Query.contentPath).map(p -> p.equals(path)).orElse(false);
-            case null, default -> false;
-        };
-    }
-
     private void inputText(Supplier<Object> supplier) {
         try {
             Object obj = supplier.get();

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.jfx.multitab.internal;
 
+import com.mammb.code.jfx.multitab.Container;
 import com.mammb.code.jfx.multitab.ContentPane;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -27,8 +28,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -43,18 +46,17 @@ public class Context {
     private final ObservableMap<Scene, Tab> latestTab = FXCollections.observableHashMap();
     private final AtomicReference<Tab> dragged = new AtomicReference<>();
 
-    private final boolean duplicateContentAllowed;
-
     private final Function<Object, ? extends ContentPane> toContent;
+    private final BiPredicate<Object, Container> onOpenRequest;
     private final BiFunction<Stage, Pane, Scene> toScene;
 
     public Context(
-            boolean duplicateContentAllowed,
             Function<Object, ? extends ContentPane> toContent,
-            BiFunction<Stage, Pane, Scene> toScene) {
-        this.duplicateContentAllowed = duplicateContentAllowed;
+            BiFunction<Stage, Pane, Scene> toScene,
+            BiPredicate<Object, Container> onOpenRequest) {
         this.toContent = toContent;
         this.toScene = toScene;
+        this.onOpenRequest = onOpenRequest;
     }
 
     public void addStage(Stage stage) {
@@ -107,26 +109,27 @@ public class Context {
         }
     }
 
-    public ContentPane createContentPane() {
-        return createContentPane(null);
+    public ContentPane createEmptyContent() {
+        return toContent.apply(null);
     }
 
     public ContentPane createContentPane(Object arg) {
-        if (!duplicateContentAllowed && arg != null) {
-            var dup = allTabs().stream()
-                .filter(tab -> tab.content().matches(arg))
-                .toList();
-            if (!dup.isEmpty()) {
-                dup.getFirst().requestSelect();
-                return null;
-            }
-        }
+        return toContent.apply(arg);
+    }
+
+    public ContentPane createContentPane(Object arg, Container container) {
+        boolean consumed = onOpenRequest.test(arg, container);
+        if (consumed) return null;
         return toContent.apply(arg);
     }
 
     public Scene toScene(Stage stage, BranchNode branchNode) {
         addStage(stage);
         return toScene.apply(stage, branchNode);
+    }
+
+    Optional<ContentPane> find(Predicate<ContentPane> predicate) {
+        return allTabs().stream().map(Tab::content).filter(predicate).findFirst();
     }
 
     List<Tab> allTabs() {

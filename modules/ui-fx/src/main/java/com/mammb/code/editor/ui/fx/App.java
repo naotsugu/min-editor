@@ -21,10 +21,12 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.platform.AppPaths;
 import com.mammb.code.editor.platform.ColorScheme;
 import com.mammb.code.editor.ui.base.AppContext;
+import com.mammb.code.jfx.multitab.Container;
 import com.mammb.code.jfx.multitab.ContentPane;
 import com.mammb.code.jfx.multitab.TabContainers;
 import javafx.animation.PauseTransition;
@@ -74,7 +76,8 @@ public class App extends Application {
             .stage(stage)
             .toContent(this::toContent)
             .toScene(this::toScene)
-            .resume(AppPaths.applicationConfPath.resolve("resumes"))
+            .onOpenRequest(this::onOpenRequest)
+            .resume(AppPaths.applicationConfPath.resolve("resumes"), this::toContent)
             .build();
 
         stage.setScene(scene);
@@ -94,6 +97,23 @@ public class App extends Application {
             case null, default -> Session.empty();
         };
         return new EditorPane(ctx).bindLater(session);
+    }
+
+    private boolean onOpenRequest(Object arg, Container container) {
+        var found = container.find(contentPane -> {
+            if (contentPane instanceof EditorPane editorPane) {
+                return editorPane.query(Query.contentPath)
+                    .filter(contentPath -> Objects.equals(contentPath, arg)).isPresent();
+            } else {
+                return false;
+            }
+        });
+        if (found.isPresent()) {
+            container.select(found.get());
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private Scene toScene(Stage stage, Pane tabContainerPane) {
