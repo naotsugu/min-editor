@@ -24,8 +24,6 @@ import java.util.stream.Stream;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.platform.AppPaths;
-import com.mammb.code.editor.platform.ColorScheme;
-import com.mammb.code.editor.ui.base.AppContext;
 import com.mammb.code.jfx.multitab.Container;
 import com.mammb.code.jfx.multitab.ContentPane;
 import com.mammb.code.jfx.multitab.TabContainers;
@@ -35,8 +33,8 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import com.sun.javafx.tk.Toolkit;
 import com.mammb.code.editor.core.Theme;
@@ -113,16 +111,19 @@ public class App extends Application {
     }
 
     private Scene toScene(Stage stage, Pane tabContainerPane) {
-        Scene scene = new Scene(new AppPane(stage, tabContainerPane, ctx));
+
+        Scene scene = new Scene(new AppPane(stage, tabContainerPane, ctx), Color.TRANSPARENT);
         scene.getStylesheets().add(css);
         stage.setScene(scene);
         stage.setTitle(AppVersion.appName);
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
+
         if (System.getProperty("idleGcDelayMillis") != null) {
             // -DidleGcDelayMillis=3000
             bindGcTimer(stage, Double.parseDouble(System.getProperty("idleGcDelayMillis")));
         }
+
         return scene;
     }
 

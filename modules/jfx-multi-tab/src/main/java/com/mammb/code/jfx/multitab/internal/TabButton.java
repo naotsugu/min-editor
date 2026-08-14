@@ -78,7 +78,7 @@ class TabButton extends javafx.scene.control.Tab {
                 -fx-text-fill: transparent;
             }
             .add-tab-button-label {
-              -fx-padding: 2 5 2 5;
+              -fx-padding: 0.25em 0.333333em 0.25em 0.333333em;
               -fx-background-radius: 15px;
               -fx-border-radius: 15px;
             }

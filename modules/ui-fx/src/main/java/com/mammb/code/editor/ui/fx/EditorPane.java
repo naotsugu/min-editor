@@ -540,15 +540,17 @@ public class EditorPane extends ContentPane {
 
     @Override
     public boolean closeRequest() {
-        boolean canDiscard = true;
         if (model().query(Query.modified)) {
-            var ret = FxDialog.confirmation(getScene().getWindow(),
-                    "Are you sure you want to discard your changes?\n" +
-                    model().query(Query.modelName).plain() + " has been modified.")
-                .showAndWait();
-            canDiscard = ret.isPresent() && ret.get() == ButtonType.OK;
+            var dialog = new CloseConfirmDialog(getScene().getWindow(), model().query(Query.modelName).plain());
+            dialog.setOnSave(this::save);
+            var answer = dialog.showAndWait();
+            return switch (answer) {
+                case SAVE -> !model().query(Query.modified);
+                case DISCARD -> true;
+                case CANCEL -> false;
+            };
         }
-        return canDiscard;
+        return true;
     }
 
     @Override
