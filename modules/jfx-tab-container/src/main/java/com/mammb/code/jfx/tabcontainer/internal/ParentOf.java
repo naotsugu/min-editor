@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.jfx.multitab.internal;
+package com.mammb.code.jfx.tabcontainer.internal;
 
-import javafx.scene.Node;
+import java.util.List;
 
 /**
- * The ChildOf.
+ * The ParentOf.
  * @author Naotsugu Kobayashi
  */
-public interface ChildOf<P extends Node> {
+public interface ParentOf<C> {
 
-    P parent();
-    void parent(P parent);
-
-    default boolean isRoot() {
-        return parent() == null;
+    List<C> children();
+    void addChildren(List<C> children);
+    void addChild(int index, C child);
+    boolean removeChild(C child);
+    default int childCount() {
+        return children().size();
     }
 
 }

@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.jfx.multitab;
+package com.mammb.code.jfx.tabcontainer;
 
-import com.mammb.code.jfx.multitab.internal.BranchNode;
-import com.mammb.code.jfx.multitab.internal.Context;
-import com.mammb.code.jfx.multitab.internal.LeafNode;
-import com.mammb.code.jfx.multitab.internal.ParentOf;
-import com.mammb.code.jfx.multitab.internal.Tab;
-import com.mammb.code.jfx.multitab.internal.TreeNode;
+import com.mammb.code.jfx.tabcontainer.internal.BranchNode;
+import com.mammb.code.jfx.tabcontainer.internal.Context;
+import com.mammb.code.jfx.tabcontainer.internal.LeafNode;
+import com.mammb.code.jfx.tabcontainer.internal.ParentOf;
+import com.mammb.code.jfx.tabcontainer.internal.Tab;
+import com.mammb.code.jfx.tabcontainer.internal.TreeNode;
 import javafx.application.Platform;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;

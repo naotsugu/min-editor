@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.jfx.multitab.internal;
+package com.mammb.code.jfx.tabcontainer.internal;
 
-import com.mammb.code.jfx.multitab.ContentPane;
+import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.BoundingBox;

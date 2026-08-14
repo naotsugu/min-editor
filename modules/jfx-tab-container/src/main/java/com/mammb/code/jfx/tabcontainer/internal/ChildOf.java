@@ -13,27 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.jfx.multitab;
+package com.mammb.code.jfx.tabcontainer.internal;
 
-import javafx.geometry.Side;
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.function.Predicate;
+import javafx.scene.Node;
 
 /**
- * The Container.
+ * The ChildOf.
  * @author Naotsugu Kobayashi
  */
-public interface Container {
+public interface ChildOf<P extends Node> {
 
-    ContentPane add();
+    P parent();
+    void parent(P parent);
 
-    ContentPane add(Path path);
-
-    void add(Side side, ContentPane contentPane);
-
-    Optional<ContentPane> find(Predicate<ContentPane> predicate);
-
-    void select(ContentPane contentPane);
+    default boolean isRoot() {
+        return parent() == null;
+    }
 
 }

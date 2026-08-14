@@ -15,7 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import com.mammb.code.jfx.multitab.ContentPane;
+import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import java.nio.file.Path;

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.jfx.multitab.internal;
+package com.mammb.code.jfx.tabcontainer.internal;
 
-import com.mammb.code.jfx.multitab.Container;
-import com.mammb.code.jfx.multitab.ContentPane;
+import com.mammb.code.jfx.tabcontainer.Container;
+import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
@@ -59,11 +59,11 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         this.parent = parent;
         this.label = new Label(content.shortNameProperty().getValue());
         var tooltip = new Tooltip(content.fullNameProperty().getValue());
+        tooltip.textProperty().bind(content.fullNameProperty());
 
         setContent(content);
         setGraphic(label);
         setContextMenu(buildContextMenu());
-        setTooltip(tooltip);
         content.shortNameProperty().addListener((_, _, value) -> label.setText(value));
         content.fullNameProperty().addListener((_, _, value) -> tooltip.setText(value));
 
@@ -72,6 +72,7 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         label.setOnDragDetected(this::handleTabDragDetected);
         label.setOnDragDone(this::handleDragDone);
         label.setOnMouseClicked(Event::consume);
+        label.setTooltip(tooltip);
 
     }
 

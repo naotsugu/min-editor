@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mammb.code.jfx.multitab.internal;
+package com.mammb.code.jfx.tabcontainer.internal;
 
-import java.util.List;
+import javafx.scene.layout.StackPane;
 
 /**
- * The ParentOf.
+ * The TreeNode.
  * @author Naotsugu Kobayashi
  */
-public interface ParentOf<C> {
-
-    List<C> children();
-    void addChildren(List<C> children);
-    void addChild(int index, C child);
-    boolean removeChild(C child);
-    default int childCount() {
-        return children().size();
+public abstract class TreeNode extends StackPane implements ChildOf<BranchNode> {
+    public abstract BranchNode parent();
+    public abstract void parent(BranchNode parent);
+    public BranchNode root() {
+        return isRoot() ? (BranchNode) this : parent().root();
     }
-
+    abstract Context context();
 }
