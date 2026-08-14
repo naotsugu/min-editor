@@ -42,6 +42,7 @@ import com.sun.javafx.tk.Toolkit;
 import com.mammb.code.editor.core.Theme;
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.platform.AppVersion;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 /**
@@ -83,11 +84,6 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // -DidleGcDelayMillis=3000
-        if (System.getProperty("idleGcDelayMillis") != null) {
-            bindGcTimer(stage, Double.parseDouble(System.getProperty("idleGcDelayMillis")));
-        }
-
     }
 
     private ContentPane toContent(Object arg) {
@@ -123,6 +119,10 @@ public class App extends Application {
         stage.setTitle(AppVersion.appName);
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
+        if (System.getProperty("idleGcDelayMillis") != null) {
+            // -DidleGcDelayMillis=3000
+            bindGcTimer(stage, Double.parseDouble(System.getProperty("idleGcDelayMillis")));
+        }
         return scene;
     }
 
@@ -174,6 +174,8 @@ public class App extends Application {
         PauseTransition timer = new PauseTransition(Duration.millis(delayMillis));
         timer.setOnFinished(_ -> {
             Thread gcThread = new Thread(() -> {
+                if (Stage.getWindows().stream().anyMatch(Window::isFocused)) return;
+                if (stage.isFocused()) return;
                 long beforeTotal = Runtime.getRuntime().totalMemory();
                 long beforeFree = Runtime.getRuntime().freeMemory();
                 System.gc();
