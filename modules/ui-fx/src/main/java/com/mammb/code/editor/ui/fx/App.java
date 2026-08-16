@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.platform.AppPaths;
+import com.mammb.code.editor.ui.base.AppContext;
 import com.mammb.code.jfx.tabcontainer.Container;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
 import com.mammb.code.jfx.tabcontainer.TabContainers;
@@ -121,7 +122,7 @@ public class App extends Application {
 
         if (System.getProperty("idleGcDelayMillis") != null) {
             // -DidleGcDelayMillis=3000
-            bindGcTimer(stage, Double.parseDouble(System.getProperty("idleGcDelayMillis")));
+            bindGcTimer(stage, ctx, Double.parseDouble(System.getProperty("idleGcDelayMillis")));
         }
 
         return scene;
@@ -169,12 +170,13 @@ public class App extends Application {
      * when the stage regains focus.
      *
      * @param stage the stage to which the garbage collection timer is bound
+     * @param ctx the context
      * @param delayMillis the delay in milliseconds before garbage collection is triggered
      */
-    public static void bindGcTimer(Stage stage, double delayMillis) {
+    private static void bindGcTimer(Stage stage, AppContext ctx, double delayMillis) {
         PauseTransition timer = new PauseTransition(Duration.millis(delayMillis));
-        timer.setOnFinished(_ -> {
-            Thread gcThread = new Thread(() -> {
+        timer.setOnFinished(_ ->
+            ctx.spawn(() -> {
                 if (Stage.getWindows().stream().anyMatch(Window::isFocused)) return;
                 if (stage.isFocused()) return;
                 long beforeTotal = Runtime.getRuntime().totalMemory();
@@ -183,11 +185,8 @@ public class App extends Application {
                 log.log(System.Logger.Level.INFO, "GC: {0,number,#,###}/{1,number,#,###} -> {2,number,#,###}/{3,number,#,###}",
                     beforeFree, beforeTotal,
                     Runtime.getRuntime().freeMemory(), Runtime.getRuntime().totalMemory());
-            });
-            gcThread.setDaemon(true);
-            gcThread.setName("Idle-GC-Thread");
-            gcThread.start();
-        });
+            })
+        );
         stage.focusedProperty().addListener((_, _, focused) -> {
             if (focused) {
                 timer.stop();

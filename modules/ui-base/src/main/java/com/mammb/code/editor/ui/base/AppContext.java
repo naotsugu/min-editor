@@ -18,9 +18,13 @@ package com.mammb.code.editor.ui.base;
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.platform.AppPaths;
+import com.mammb.code.editor.platform.DomainSocket;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The application context.
@@ -28,9 +32,14 @@ import java.util.Map;
  */
 public class AppContext extends Context.AbstractContext implements Context {
 
+    /** The logger. */
+    private static final System.Logger log = System.getLogger(AppContext.class.getName());
+
     /** The notifiers. */
     private final Map<Object, Notifier> notifiers = new HashMap<>();
 
+    /** The executor service. */
+    private final ExecutorService executor = newExecutor();
 
     /**
      * Constructor.
@@ -38,7 +47,7 @@ public class AppContext extends Context.AbstractContext implements Context {
     public AppContext() {
         super(new AppConfig(AppPaths.applicationConfPath));
         load();
-        Runtime.getRuntime().addShutdownHook(new Thread(this::save));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::close));
     }
 
     @Override
@@ -103,6 +112,38 @@ public class AppContext extends Context.AbstractContext implements Context {
      */
     private static Path recentsConfPath() {
         return AppPaths.applicationConfPath.resolve("recents");
+    }
+
+    public void spawn(Runnable runnable) {
+        executor.submit(runnable);
+    }
+
+    /**
+     * Close this context.
+     */
+    private void close() {
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+                if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                    log.log(System.Logger.Level.WARNING, "executor did not terminate");
+                }
+            }
+        } catch (InterruptedException ie) {
+            log.log(System.Logger.Level.WARNING, "interrupted while waiting for executor to shutdown", ie);
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+        save();
+    }
+
+    private static ExecutorService newExecutor() {
+        return Executors.newCachedThreadPool(r -> {
+            Thread t = new Thread(r, "app-context-thread");
+            t.setDaemon(true);
+            return t;
+        });
     }
 
 }
