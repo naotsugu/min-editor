@@ -218,6 +218,7 @@ public class App extends Application {
           -fx-default-button: #2F65CA;
           -fx-font-family: "Consolas";
           -fx-font-size: 14px;
+          -fx-body-color: -fx-color;
         }
         .text-input, .label, .tooltip {
           -fx-font-size: 14px;
@@ -226,6 +227,7 @@ public class App extends Application {
         .text-input:focused {
           -fx-background-color: -fx-focus-color, -fx-control-inner-background;
         }
+
         .button {
           -fx-background-color: -fx-body-color;
         }

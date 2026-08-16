@@ -17,6 +17,7 @@ package com.mammb.code.editor.bootstrap;
 
 import java.util.Locale;
 import com.mammb.code.editor.platform.AppPaths;
+import com.mammb.code.editor.platform.DomainSocket;
 import com.mammb.code.editor.platform.LockFile;
 import com.mammb.code.editor.ui.fx.AppLauncher;
 

@@ -177,6 +177,8 @@ public interface Config {
         public void save() {
             try {
 
+                if (props.isEmpty()) return;
+
                 List<String> merged = new ArrayList<>();
 
                 for (String line : Files.readAllLines(propsPath)) {
