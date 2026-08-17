@@ -84,7 +84,7 @@ public class EditorPane extends ContentPane {
     private static final long BACKGROUND_THRESHOLD = 2_000_000;
 
     /** The context. */
-    private final FxAppContext context;
+    private final FxAppContext ctx;
     /** The canvas. */
     private final Canvas canvas;
     /** The draw. */
@@ -112,8 +112,8 @@ public class EditorPane extends ContentPane {
      */
     public EditorPane(FxAppContext ctx) {
 
-        context = ctx;
-        Font font = Font.font(context.config().fontName(), context.config().fontSize());
+        this.ctx = ctx;
+        Font font = Font.font(this.ctx.config().fontName(), this.ctx.config().fontSize());
 
         canvas = new Canvas();
         canvas.setManaged(false);
@@ -121,7 +121,7 @@ public class EditorPane extends ContentPane {
         canvas.setOnMouseMoved(this::handleMouseMoved);
 
         draw = new DrawImpl(new FxGraphicsDraw(canvas.getGraphicsContext2D(), font));
-        model = EditorModel.of(draw.fontMetrics(), scroll, context);
+        model = EditorModel.of(draw.fontMetrics(), scroll, this.ctx);
         scroll.vScroll().setOrientation(Orientation.VERTICAL);
         scroll.hScroll().setOrientation(Orientation.HORIZONTAL);
         StackPane.setAlignment(scroll.vScroll(), Pos.TOP_RIGHT);
@@ -316,7 +316,7 @@ public class EditorPane extends ContentPane {
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> openOn(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
-            case Config _             -> container().add(context.config().path());
+            case Config _             -> container().add(ctx.config().path());
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
             case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseInsensitive()));
             case FindAll cmd          -> apply(Action.findAll(cmd.str(), cmd.caseInsensitive()));
@@ -358,7 +358,7 @@ public class EditorPane extends ContentPane {
             case ZoomIn _             -> zoom( 1);
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
-            case Help _               -> FxDialog.about(getScene().getWindow(), context).showAndWait();
+            case Help _               -> FxDialog.about(getScene().getWindow(), ctx).showAndWait();
             case Diff _               -> container().add(Side.RIGHT, diff(null, false));
             case DiffFoldOff _        -> container().add(Side.RIGHT, diff(null, true));
             case DiffWith cmd         -> container().add(Side.RIGHT, diff(cmd.path(), false));
@@ -382,8 +382,8 @@ public class EditorPane extends ContentPane {
         Runnable postFind = (action instanceof Action.WithAttr<?> withAttr &&
             withAttr.attr() instanceof Find.Spec) ? () -> {
                 int n = model.query(Query.foundCounts);
-                if (n > 1) context.notifier(getScene().getWindow()).send(n + " found.");
-                if (n == 0) context.notifier(getScene().getWindow()).send("not found.");
+                if (n > 1) ctx.notifier(getScene().getWindow()).send(n + " found.");
+                if (n == 0) ctx.notifier(getScene().getWindow()).send("not found.");
             } : () -> { };
 
         if (model().query(Query.size) < BACKGROUND_THRESHOLD) {
@@ -487,16 +487,14 @@ public class EditorPane extends ContentPane {
 
         close();
         model = openInBackground
-            ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, context)
+            ? EditorModel.placeholderOf(session.path(), draw.fontMetrics(), scroll, ctx)
             : model.with(session);
         model.setSize(getWidth(), getHeight());
         setName();
         if (openInBackground) {
             Task<EditorModel> task = buildOpenTask(session);
             floatBar.handleProgress(task);
-            var thread = new Thread(task);
-            thread.setDaemon(true);
-            thread.start();
+            ctx.spawn(task);
         }
     }
 
@@ -508,7 +506,7 @@ public class EditorPane extends ContentPane {
             @Override
             protected EditorModel call() {
                 return EditorModel.of(session.path(),
-                    draw.fontMetrics(), scroll, context,
+                    draw.fontMetrics(), scroll, ctx,
                     n -> updateProgress(workDone.addAndGet(n), size));
             }
         };
@@ -596,7 +594,7 @@ public class EditorPane extends ContentPane {
         // TODO saving large files runs in the background
         if (model().query(Query.contentPath).isPresent()) {
             model().save(model().query(Query.contentPath).get());
-            context.notifier(getScene().getWindow()).send("saved");
+            ctx.notifier(getScene().getWindow()).send("saved");
         } else {
             saveAs();
         }
@@ -611,7 +609,7 @@ public class EditorPane extends ContentPane {
         if (file == null) return;
         Path path = file.toPath();
         model().save(path);
-        context.notifier(getScene().getWindow()).send("saved");
+        ctx.notifier(getScene().getWindow()).send("saved");
         setName();
     }
 
@@ -626,7 +624,7 @@ public class EditorPane extends ContentPane {
             saveAs();
         }
         model().saveWith(charset, endingSymbol);
-        context.notifier(getScene().getWindow()).send("saved");
+        ctx.notifier(getScene().getWindow()).send("saved");
     }
 
     private void reload(Charset charset) {
@@ -667,7 +665,7 @@ public class EditorPane extends ContentPane {
             if (current != null && model().query(Query.lastModifiedTime)
                 .map(m -> m.compareTo(current) != 0).orElse(false)) {
                 reload(null);
-                context.notifier(getScene().getWindow()).send("reload", contentPath.get().getFileName().toString());
+                ctx.notifier(getScene().getWindow()).send("reload", contentPath.get().getFileName().toString());
             }
         }
     }
@@ -695,7 +693,7 @@ public class EditorPane extends ContentPane {
     }
 
     private EditorPane foundFilter(int contextSize) {
-        var editorPane = new EditorPane(context)
+        var editorPane = new EditorPane(ctx)
             .with(model().getSession(Session.rowFilter(model().query(Query.foundRows), contextSize)));
         var lastCmd = findCommandHistory.peek();
         if (lastCmd != null) {
@@ -718,41 +716,41 @@ public class EditorPane extends ContentPane {
 
     private EditorPane diff(String pathString, boolean withoutFold) {
         Path path = (pathString == null || pathString.isBlank()) ? null : Path.of(pathString);
-        return new EditorPane(context)
+        return new EditorPane(ctx)
             .with(model().getSession(Session.diff(path, withoutFold)));
     }
 
     private EditorPane duplicate() {
-        return session().map(session -> new EditorPane(context)
+        return session().map(session -> new EditorPane(ctx)
             .with(session.asReadonly())).orElse(null);
     }
 
     private EditorPane binary() {
-        return new EditorPane(context)
+        return new EditorPane(ctx)
             .with(model().getSession(Session.binary(model().stash().altPath())));
     }
 
     void openRecent() {
         var window = getScene().getWindow();
-        SelectOneMenu.of(context.recents(), this::openOn)
+        SelectOneMenu.of(ctx.recents(), this::openOn)
             .show(window, window.getX(), window.getY() + 55);
     }
 
     private void openInFiler(Path path) {
         if (path != null && Files.isReadableDirectory(path.getParent())) {
-            context.getApp().getHostServices().showDocument(path.getParent().toUri().toString());
+            ctx.getApp().getHostServices().showDocument(path.getParent().toUri().toString());
         }
     }
 
     private void searchInBrowser(String query) {
         if (query == null || query.isBlank()) return;
-        context.getApp().getHostServices().showDocument("https://www.google.com/search?q="
+        ctx.getApp().getHostServices().showDocument("https://www.google.com/search?q="
             + URLEncoder.encode(query, StandardCharsets.UTF_8));
     }
 
     private void translateInBrowser(String text) {
         if (text == null || text.isBlank()) return;
-        context.getApp().getHostServices().showDocument("https://translate.google.com/?op=translate&text="
+        ctx.getApp().getHostServices().showDocument("https://translate.google.com/?op=translate&text="
             + URLEncoder.encode(text, StandardCharsets.UTF_8));
     }
 
