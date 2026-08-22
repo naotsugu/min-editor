@@ -56,10 +56,10 @@ import java.util.stream.Stream;
  * compact directory display, and inline editing.
  * @author Naotsugu Kobayashi
  */
-public class PathTreeView extends TreeView<Path> {
+public class PathTree extends TreeView<Path> {
 
     /** The logger. */
-    private static final System.Logger log = System.getLogger(PathTreeView.class.getName());
+    private static final System.Logger log = System.getLogger(PathTree.class.getName());
 
     private final List<Consumer<Path>> selectActions = new ArrayList<>();
     private final BooleanProperty compactFolders = new SimpleBooleanProperty(this, "compactFolders", true);
@@ -68,7 +68,7 @@ public class PathTreeView extends TreeView<Path> {
     /** The currently "cut" item, managed at the TreeView level to avoid static state. */
     private TreeItem<Path> cutItem = null;
 
-    public PathTreeView(Path... roots) {
+    public PathTree(Path... roots) {
         super(new TreeItem<>());
         setShowRoot(false);
         setEditable(true);
@@ -125,6 +125,10 @@ public class PathTreeView extends TreeView<Path> {
         getRoot().getChildren().sort(Comparator
             .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
             .thenComparing(t -> t.getValue().getFileName().toString()));
+    }
+
+    public List<Path> rootPaths() {
+        return getRoot().getChildren().stream().map(TreeItem::getValue).toList();
     }
 
     /**
@@ -326,11 +330,11 @@ public class PathTreeView extends TreeView<Path> {
      */
     static class PathTreeCell extends TreeCell<Path> {
 
-        private final PathTreeView treeView;
+        private final PathTree treeView;
         private final FileOperationHandler fileOperationHandler;
         private TextField textField;
 
-        public PathTreeCell(PathTreeView treeView) {
+        public PathTreeCell(PathTree treeView) {
             this.treeView = treeView;
             this.fileOperationHandler = new FileOperationHandler(treeView);
         }
@@ -376,7 +380,7 @@ public class PathTreeView extends TreeView<Path> {
 
             // apply or remove the 'cut' style class based on the global cut state
             getStyleClass().remove("cut");
-            if (getTreeItem() != null && getTreeItem() == ((PathTreeView) getTreeView()).getCutItem()) {
+            if (getTreeItem() != null && getTreeItem() == ((PathTree) getTreeView()).getCutItem()) {
                 getStyleClass().add("cut");
             }
 
@@ -476,10 +480,10 @@ public class PathTreeView extends TreeView<Path> {
      * Handles all file system operations, separating logic from the UI (PathTreeCell).
      */
     static class FileOperationHandler {
-        private final PathTreeView treeView;
+        private final PathTree treeView;
         private static final DataFormat DATA_FORMAT_CUT = new DataFormat("app/cut-operation");
 
-        FileOperationHandler(PathTreeView treeView) {
+        FileOperationHandler(PathTree treeView) {
             this.treeView = treeView;
         }
 
@@ -497,7 +501,7 @@ public class PathTreeView extends TreeView<Path> {
             Path parentPath = parentItem.getValue();
             if (!Files.isDirectory(parentPath)) return;
 
-            String defaultName = isFile ? "Untitled.txt" : "Untitled";
+            String defaultName = isFile ? "Untitled.md" : "Untitled";
             TextInputDialog dialog = new TextInputDialog(defaultName);
             dialog.initOwner(treeView.getScene().getWindow());
             dialog.setTitle(isFile ? "New File" : "New Directory");

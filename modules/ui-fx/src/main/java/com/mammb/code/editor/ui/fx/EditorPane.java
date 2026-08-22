@@ -364,7 +364,8 @@ public class EditorPane extends ContentPane {
             case DiffWith cmd         -> ctx.container().add(Side.RIGHT, diff(cmd.path(), false));
             case Duplicate _          -> ctx.container().add(Side.RIGHT, duplicate());
             case BinaryView _         -> ctx.container().add(Side.RIGHT, binary());
-            case FoundFilterView cmd  -> ctx.container().add(Side.RIGHT, foundFilter(cmd.contextSize()));
+            case PathTreeView _       -> ctx.container().add(Side.RIGHT, pathTree());
+            case FoundFilterView cmd  -> ctx.container().add(Side.LEFT, foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
@@ -731,6 +732,10 @@ public class EditorPane extends ContentPane {
     private EditorPane binary() {
         return new EditorPane(ctx)
             .with(model().getSession(Session.binary(model().stash().altPath())));
+    }
+
+    private ContentPane pathTree() {
+        return new PathTreePane(model().query(Query.contentPath).map(Path::getParent).orElse(Path.of(System.getProperty("user.home"))));
     }
 
     void openRecent() {

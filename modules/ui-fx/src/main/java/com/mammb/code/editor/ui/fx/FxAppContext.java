@@ -28,6 +28,8 @@ public class FxAppContext extends AppContext implements Context {
 
     /** The application. */
     private final Application app;
+    /** The container handle. */
+    private ContainerHandle containerHandle;
 
     /**
      * Constructor.
@@ -46,8 +48,12 @@ public class FxAppContext extends AppContext implements Context {
         return app;
     }
 
+    public void container(ContainerHandle container) {
+        this.containerHandle = container;
+    }
+
     public ContainerHandle container() {
-        return null;
+        return containerHandle;
     }
 
 }

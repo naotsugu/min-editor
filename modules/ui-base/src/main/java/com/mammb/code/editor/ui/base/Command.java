@@ -172,6 +172,8 @@ public sealed interface Command {
 
     record BinaryView() implements Command { }
 
+    record PathTreeView() implements Command { }
+
     record FoundFilterView(Integer contextSize) implements Command, RequireArgs1<Integer> { }
 
     record OpenInFiler() implements Command { }
@@ -266,6 +268,7 @@ public sealed interface Command {
             case Class<?> c when c == DiffWith.class -> "diff with the specified file";
             case Class<?> c when c == Duplicate.class -> "duplicate content as read-only";
             case Class<?> c when c == BinaryView.class -> "open the current content as a binary view";
+            case Class<?> c when c == PathTreeView.class -> "open the current directory path tree view";
             case Class<?> c when c == FoundFilterView.class -> "open the current found content as a found view";
             case Class<?> c when c == OpenInFiler.class -> which("open in the Finder", "open in the Explorer", "open in the FileManager");
             case Class<?> c when c == SearchInBrowser.class -> "search in the browser web";

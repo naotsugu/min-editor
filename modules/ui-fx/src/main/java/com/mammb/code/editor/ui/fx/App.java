@@ -75,6 +75,7 @@ public class App extends Application {
 
         var tabContainer = TabContainer.of(
             this::handleRequireContent, this::handleRequestContent, this::handleRequireStage);
+        ctx.container(tabContainer);
         var pane = tabContainer.resume(stage, Path.of("./build/tab-resume.conf"),
             str -> new EditorPane(ctx).bindLater(Session.valueOf(str)));
 

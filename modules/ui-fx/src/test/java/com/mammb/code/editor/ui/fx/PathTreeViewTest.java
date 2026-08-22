@@ -21,7 +21,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.CountDownLatch;
@@ -30,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit tests for {@link PathTreeView}.
+ * Unit tests for {@link PathTree}.
  * @author Naotsugu Kobayashi
  */
 class PathTreeViewTest {
@@ -80,9 +79,9 @@ class PathTreeViewTest {
         Path dir2 = Files.createDirectory(dir1.resolve("dir2"));
 
         runOnFxThread(() -> {
-            PathTreeView treeView = new PathTreeView(dir1);
+            PathTree treeView = new PathTree(dir1);
             treeView.setCompactFolders(false);
-            PathTreeView.FileOperationHandler handler = new PathTreeView.FileOperationHandler(treeView);
+            PathTree.FileOperationHandler handler = new PathTree.FileOperationHandler(treeView);
 
             // Fetch the root item (dir1)
             assertEquals(1, treeView.getRoot().getChildren().size());
@@ -136,9 +135,9 @@ class PathTreeViewTest {
 
         runOnFxThread(() -> {
             // Add both dir1 and dir3 as roots
-            PathTreeView treeView = new PathTreeView(dir1, dir3);
+            PathTree treeView = new PathTree(dir1, dir3);
             treeView.setCompactFolders(false);
-            PathTreeView.FileOperationHandler handler = new PathTreeView.FileOperationHandler(treeView);
+            PathTree.FileOperationHandler handler = new PathTree.FileOperationHandler(treeView);
 
             assertEquals(2, treeView.getRoot().getChildren().size());
 
@@ -191,9 +190,9 @@ class PathTreeViewTest {
         Path dir2 = Files.createDirectory(dir1.resolve("dir2"));
 
         runOnFxThread(() -> {
-            PathTreeView treeView = new PathTreeView(root);
+            PathTree treeView = new PathTree(root);
             treeView.setCompactFolders(false);
-            PathTreeView.FileOperationHandler handler = new PathTreeView.FileOperationHandler(treeView);
+            PathTree.FileOperationHandler handler = new PathTree.FileOperationHandler(treeView);
 
             // Expand root and dir1 to load dir2
             assertEquals(1, treeView.getRoot().getChildren().size());

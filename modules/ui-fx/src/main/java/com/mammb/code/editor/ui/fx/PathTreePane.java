@@ -30,7 +30,7 @@ public class PathTreePane extends ContentPane {
     private static final System.Logger log = System.getLogger(PathTreePane.class.getName());
 
     /** The pathTreeView. */
-    private final PathTreeView pathTreeView;
+    private final PathTree pathTree;
     /** The short name property. */
     private final SimpleObjectProperty<String> shortNameProperty = new SimpleObjectProperty<>("Files");
     /** The full name property. */
@@ -41,8 +41,8 @@ public class PathTreePane extends ContentPane {
      * @param roots the root path
      */
     public PathTreePane(Path... roots) {
-        pathTreeView = new PathTreeView(roots);
-        getChildren().add(pathTreeView);
+        pathTree = new PathTree(roots);
+        getChildren().add(pathTree);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class PathTreePane extends ContentPane {
 
     @Override
     public String asString() {
-        return "";
+        return "PathTreePane" + pathTree.rootPaths().toString();
     }
 
     @Override
