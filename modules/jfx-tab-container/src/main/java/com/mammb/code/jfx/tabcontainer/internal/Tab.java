@@ -15,7 +15,6 @@
  */
 package com.mammb.code.jfx.tabcontainer.internal;
 
-import com.mammb.code.jfx.tabcontainer.Container;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.event.Event;
 import javafx.scene.Node;
@@ -148,13 +147,9 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         this.parent = parent;
     }
 
-    public Container container() {
-        return content().container();
-    }
-
     private ContextMenu buildContextMenu() {
         MenuItem newTab = new MenuItem("New");
-        newTab.setOnAction(_ -> parent.addChildren(List.of(new Tab(ctx, ctx.createEmptyContent()))));
+        newTab.setOnAction(_ -> parent.addChildren(List.of(new Tab(ctx, ctx.handlers().requireContent()))));
         MenuItem close = new MenuItem("Close");
         close.setOnAction(_-> requestClose());
         MenuItem closeOther = new MenuItem("Close Other");

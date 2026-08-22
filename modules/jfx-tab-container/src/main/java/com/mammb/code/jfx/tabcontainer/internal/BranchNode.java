@@ -91,7 +91,7 @@ public class BranchNode extends TreeNode implements ParentOf<TreeNode> {
         List<TreeNode> children = children();
         if (isRoot() && children.isEmpty()) {
             if (ctx.stages().size() == 1) {
-                addChildren(List.of(new LeafNode(ctx, ctx.createEmptyContent())));
+                addChildren(List.of(new LeafNode(ctx, ctx.handlers().requireContent())));
             } else {
                 ((Stage) getScene().getWindow()).close();
             }

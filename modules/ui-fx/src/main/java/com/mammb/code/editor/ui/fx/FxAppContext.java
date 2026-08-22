@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Context;
 import com.mammb.code.editor.ui.base.AppContext;
+import com.mammb.code.jfx.tabcontainer.ContainerHandle;
 import javafx.application.Application;
 
 /**
@@ -43,6 +44,10 @@ public class FxAppContext extends AppContext implements Context {
      */
     public Application getApp() {
         return app;
+    }
+
+    public ContainerHandle container() {
+        return null;
     }
 
 }

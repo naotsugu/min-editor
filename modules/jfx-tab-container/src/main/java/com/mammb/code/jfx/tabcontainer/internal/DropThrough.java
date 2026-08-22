@@ -102,15 +102,12 @@ class DropThrough extends Pane {
 
         ContentPane content = tab.content();
 
-        Stage nextStage = new Stage();
-        Scene scene = ctx.toScene(nextStage, new BranchNode(ctx, content));
-        nextStage.setScene(scene);
-
-        nextStage.setWidth(content.getWidth());
-        nextStage.setHeight(content.getHeight());
-        nextStage.setX(e.getScreenX() - content.getWidth() / 2);
-        nextStage.setY(e.getScreenY() - content.getHeight() / 2);
-        nextStage.show();
+        Stage newStage = ctx.handlers().requireStage(new BranchNode(ctx, content));
+        newStage.setWidth(content.getWidth());
+        newStage.setHeight(content.getHeight());
+        newStage.setX(e.getScreenX() - content.getWidth() / 2);
+        newStage.setY(e.getScreenY() - content.getHeight() / 2);
+        newStage.show();
 
         e.setDropCompleted(true);
         e.consume();

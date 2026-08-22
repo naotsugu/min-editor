@@ -15,7 +15,6 @@
  */
 package com.mammb.code.jfx.tabcontainer.internal;
 
-import com.mammb.code.jfx.tabcontainer.Container;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -24,15 +23,11 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -41,22 +36,17 @@ import java.util.function.Predicate;
  */
 public class Context {
 
+    static final String TAB_SELECTED = "tab-container-selected";
+
     // last -> front
     private final ObservableList<Stage> stages = FXCollections.observableArrayList();
     private final ObservableMap<Scene, Tab> latestTab = FXCollections.observableHashMap();
     private final AtomicReference<Tab> dragged = new AtomicReference<>();
+    private final Handlers handlers;
 
-    private final Function<Object, ? extends ContentPane> toContent;
-    private final BiPredicate<Object, Container> onOpenRequest;
-    private final BiFunction<Stage, Pane, Scene> toScene;
-
-    public Context(
-            Function<Object, ? extends ContentPane> toContent,
-            BiFunction<Stage, Pane, Scene> toScene,
-            BiPredicate<Object, Container> onOpenRequest) {
-        this.toContent = toContent;
-        this.toScene = toScene;
-        this.onOpenRequest = onOpenRequest;
+    public Context(Handlers handlers) {
+        this.handlers = handlers;
+        handlers.addStageHandler(this::addStage);
     }
 
     public void addStage(Stage stage) {
@@ -94,8 +84,7 @@ public class Context {
     public void handleTabSelected(ObservableValue<? extends javafx.scene.control.Tab> observable,
             javafx.scene.control.Tab oldValue, javafx.scene.control.Tab newValue) {
         if (newValue instanceof Tab selected && selected.parent() != null && selected.parent().getScene() != null) {
-            Platform.runLater(() -> selected.content().focus());
-            latestTab.put(selected.parent().getScene(), selected);
+            focus(selected);
         }
     }
 
@@ -103,33 +92,43 @@ public class Context {
         while (change.next()) {
             for (var removed : change.getRemoved()) {
                 if (removed instanceof Tab tab && tab.parent() != null && tab.parent().getScene() != null) {
-                    latestTab.remove(tab.parent().getScene(), tab);
+                    unfocus(tab);
                 }
             }
         }
     }
 
-    public ContentPane createEmptyContent() {
-        return toContent.apply(null);
+    void focus(Tab tab) {
+        Platform.runLater(() -> tab.content().focus());
+        var key = tab.parent().getScene();
+        Optional.ofNullable(latestTab.get(key)).ifPresent(this::unfocus);
+        tab.getStyleClass().add(TAB_SELECTED);
+        latestTab.put(tab.parent().getScene(), tab);
     }
 
-    public ContentPane createContentPane(Object arg) {
-        return toContent.apply(arg);
+    void unfocus(Tab tab) {
+        tab.getStyleClass().remove(TAB_SELECTED);
     }
 
-    public ContentPane createContentPane(Object arg, Container container) {
-        boolean consumed = onOpenRequest.test(arg, container);
-        if (consumed) return null;
-        return toContent.apply(arg);
-    }
 
-    public Scene toScene(Stage stage, BranchNode branchNode) {
-        addStage(stage);
-        return toScene.apply(stage, branchNode);
+    Handlers handlers() {
+        return handlers;
     }
 
     Optional<ContentPane> find(Predicate<ContentPane> predicate) {
         return allTabs().stream().map(Tab::content).filter(predicate).findFirst();
+    }
+
+    Tab currentTab() {
+        Scene scene = stages.getLast().getScene();
+        var tab = latestTab.get(scene);
+        if (tab != null) {
+            return tab;
+        } else if (!latestTab.isEmpty()) {
+            return latestTab.values().stream().findFirst().get();
+        } else {
+            return allTabs().getLast();
+        }
     }
 
     List<Tab> allTabs() {

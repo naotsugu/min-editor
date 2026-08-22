@@ -18,6 +18,7 @@ package com.mammb.code.editor.ui.fx;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -25,9 +26,9 @@ import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.platform.AppPaths;
 import com.mammb.code.editor.ui.base.AppContext;
-import com.mammb.code.jfx.tabcontainer.Container;
+import com.mammb.code.jfx.tabcontainer.ContainerHandle;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
-import com.mammb.code.jfx.tabcontainer.TabContainers;
+import com.mammb.code.jfx.tabcontainer.TabContainer;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -72,48 +73,48 @@ public class App extends Application {
         ctx.config().defaultFontName(
             loadFonts(AppPaths.applicationHomePath()).orElse(null));
 
-        Scene scene = TabContainers.builder()
-            .stage(stage)
-            .toContent(this::toContent)
-            .toScene(this::toScene)
-            .onOpenRequest(this::onOpenRequest)
-            .resume(AppPaths.applicationConfPath.resolve("resumes"), this::toContent)
-            .build();
+        var tabContainer = TabContainer.of(
+            this::handleRequireContent, this::handleRequestContent, this::handleRequireStage);
+        var pane = tabContainer.resume(stage, Path.of("./build/tab-resume.conf"),
+            str -> new EditorPane(ctx).bindLater(Session.valueOf(str)));
 
-        stage.setScene(scene);
+        paramPaths().forEach(path ->
+            tabContainer.add(new EditorPane(ctx).bindLater(Session.of(path))));
+
+        intiStage(stage, pane);
         stage.show();
 
     }
 
-    private ContentPane toContent(Object arg) {
-        var session = switch (arg) {
-            case Path path -> Session.of(path);
-            case String string -> Session.valueOf(string);
-            case null, default -> Session.empty();
-        };
-        return new EditorPane(ctx).bindLater(session);
+    private ContentPane handleRequireContent() {
+        return new EditorPane(ctx).bindLater(Session.empty());
     }
 
-    private boolean onOpenRequest(Object arg, Container container) {
-        var found = container.find(contentPane -> {
+    private Stage handleRequireStage(Pane pane) {
+        return intiStage(new Stage(), pane);
+    }
+
+    private void handleRequestContent(Path path, ContainerHandle containerHandle) {
+        if (path == null) {
+            return;
+        }
+        var found = containerHandle.find(contentPane -> {
             if (contentPane instanceof EditorPane editorPane) {
                 return editorPane.query(Query.contentPath)
-                    .filter(contentPath -> Objects.equals(contentPath, arg)).isPresent();
+                    .filter(contentPath -> Objects.equals(contentPath, path)).isPresent();
             } else {
                 return false;
             }
         });
         if (found.isPresent()) {
-            container.select(found.get());
-            return true;
+            containerHandle.select(found.get());
         } else {
-            return false;
+            containerHandle.add(new EditorPane(ctx).bindLater(Session.of(path)));
         }
     }
 
-    private Scene toScene(Stage stage, Pane tabContainerPane) {
-
-        Scene scene = new Scene(new AppPane(stage, tabContainerPane, ctx), Color.TRANSPARENT);
+    private Stage intiStage(Stage stage, Pane pane) {
+        Scene scene = new Scene(new AppPane(stage, pane, ctx), Color.TRANSPARENT);
         scene.getStylesheets().add(css);
         stage.setScene(scene);
         stage.setTitle(AppVersion.appName);
@@ -124,20 +125,16 @@ public class App extends Application {
             // -DidleGcDelayMillis=3000
             bindGcTimer(stage, ctx, Double.parseDouble(System.getProperty("idleGcDelayMillis")));
         }
-
-        return scene;
+        return stage;
     }
 
     /**
      * Get the content path specified as a command line parameter.
-     * @return the content path or {@code null}
+     * @return the content path list
      */
-    private Path paramPath() {
-        Parameters params = getParameters();
-        if (params.getRaw().isEmpty()) return null;
-        Path path = Path.of(params.getRaw().getLast());
-        if (!Files.isReadableFile(path)) return null;
-        return path;
+    private List<Path> paramPaths() {
+        return getParameters().getUnnamed().stream()
+            .map(Path::of).filter(Files::exists).toList();
     }
 
     /**
@@ -179,12 +176,14 @@ public class App extends Application {
             ctx.spawn(() -> {
                 if (Stage.getWindows().stream().anyMatch(Window::isFocused)) return;
                 if (stage.isFocused()) return;
-                long beforeTotal = Runtime.getRuntime().totalMemory();
                 long beforeFree = Runtime.getRuntime().freeMemory();
+                long beforeTotal = Runtime.getRuntime().totalMemory();
                 System.gc();
+                long afterFree = Runtime.getRuntime().freeMemory();
+                long afterTotal = Runtime.getRuntime().totalMemory();
                 log.log(System.Logger.Level.INFO, "GC: {0,number,#,###}/{1,number,#,###} -> {2,number,#,###}/{3,number,#,###}",
-                    beforeFree, beforeTotal,
-                    Runtime.getRuntime().freeMemory(), Runtime.getRuntime().totalMemory());
+                    beforeTotal - beforeFree, beforeTotal,
+                    afterTotal - afterFree, afterTotal);
             })
         );
         stage.focusedProperty().addListener((_, _, focused) -> {
@@ -279,7 +278,7 @@ public class App extends Application {
             -fx-tab-min-height: 1.5em;
             -fx-tab-max-height: 1.5em;
         }
-        .tab .label {
+        .tab > .tab-label {
           -fx-font-size: 0.916667em;
         }
         .tab-pane > .tab-header-area > .headers-region > .tab {
@@ -289,7 +288,7 @@ public class App extends Application {
           -fx-background-color: derive(-fx-box-border, 30%);
           -fx-border-color: derive(app-text, -30%) transparent transparent transparent;
         }
-        .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected {
+        .tab-pane > .tab-header-area > .headers-region > .tab:selected.tab-container-selected {
           -fx-border-color: app-text transparent transparent transparent;
         }
         .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {

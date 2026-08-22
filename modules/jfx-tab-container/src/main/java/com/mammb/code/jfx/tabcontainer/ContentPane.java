@@ -15,7 +15,6 @@
  */
 package com.mammb.code.jfx.tabcontainer;
 
-import com.mammb.code.jfx.tabcontainer.internal.ContainerImpl;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.layout.StackPane;
 
@@ -62,9 +61,5 @@ public abstract class ContentPane extends StackPane {
     abstract public ReadOnlyObjectProperty<String> shortNameProperty();
 
     abstract public ReadOnlyObjectProperty<String> fullNameProperty();
-
-    public Container container() {
-        return new ContainerImpl(this);
-    }
 
 }

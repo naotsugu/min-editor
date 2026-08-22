@@ -80,7 +80,7 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
         tabPane.getTabs().removeListener(ctx::handleTabRemoved);
         tabPane.layoutBoundsProperty().addListener(this::handleTabPaneLayoutBoundsChanged);
         tabPane.addEventFilter(KeyEvent.KEY_PRESSED, this::handleTabPaneKeyPressed);
-        TabButton.install(tabPane, () -> new Tab(ctx, this, ctx.createEmptyContent()));
+        TabButton.install(tabPane, () -> add(ctx.handlers().requireContent()));
         initTabHeaderArea();
     }
 
@@ -177,8 +177,8 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
         if (e.getDragboard().hasFiles() && dragOnTabHeader) {
             List<Path> paths = db.getFiles().stream()
                 .filter(File::exists).filter(File::canRead).map(File::toPath).toList();
-            var container = children().getLast().container();
-            paths.forEach(container::add);
+            paths.forEach(path ->
+                ctx.handlers().requestContent(path, new TabContainerImpl(ctx)));
             if (paths.isEmpty()) {
                 e.setDropCompleted(true);
                 e.consume();
@@ -255,6 +255,7 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
     }
 
     void requestSelect(Tab node) {
+        tabPane.requestFocus();
         tabPane.getSelectionModel().select(node);
         node.content().focus();
     }
@@ -380,8 +381,8 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
     }
 
     private void handleTabPaneFocused(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean focused) {
-        if (focused && tabPane.getSelectionModel().getSelectedItem().getContent() instanceof ContentPane contentPane) {
-            contentPane.focus();
+        if (focused && tabPane.getSelectionModel().getSelectedItem() instanceof Tab tab) {
+            ctx.focus(tab);
         }
     }
 
@@ -410,7 +411,7 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
 
     private ContextMenu buildTabHeaderContextMenu() {
         MenuItem newTab = new MenuItem("New");
-        newTab.setOnAction(_ -> addChildren(List.of(new Tab(ctx, ctx.createEmptyContent()))));
+        newTab.setOnAction(_ -> add(ctx.handlers().requireContent()));
         MenuItem closeAll = new MenuItem("Close All");
         closeAll.setOnAction(_ -> closeAll());
         MenuItem maximize = new MenuItem("Maximize");

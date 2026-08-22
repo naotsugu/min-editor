@@ -311,12 +311,12 @@ public class EditorPane extends ContentPane {
             case SaveWithLF _         -> saveWith(null, "LF");
             case SaveWithCRLF _       -> saveWith(null, "CRLF");
             case SaveWith cmd         -> saveWith(cmd.charset(), null);
-            case New _                -> container().add();
+            case New _                -> ctx.container().add(new EditorPane(ctx).bindLater(Session.empty()));
             case ReloadWith cmd       -> reload(cmd.charset());
             case Palette cmd          -> showCommandPalette(cmd.initial());
             case Open cmd             -> openOn(Path.of(cmd.path()));
             case OpenRecent _         -> openRecent();
-            case Config _             -> container().add(ctx.config().path());
+            case Config _             -> ctx.container().add(new EditorPane(ctx).bindLater(Session.of(ctx.config().path())));
             case FindNext cmd         -> apply(Action.findNext(cmd.str(), cmd.caseInsensitive()));
             case FindPrev cmd         -> apply(Action.findPrev(cmd.str(), cmd.caseInsensitive()));
             case FindAll cmd          -> apply(Action.findAll(cmd.str(), cmd.caseInsensitive()));
@@ -359,12 +359,12 @@ public class EditorPane extends ContentPane {
             case ZoomOut _            -> zoom(-1);
             case ColorPick _          -> colorPick();
             case Help _               -> FxDialog.about(getScene().getWindow(), ctx).showAndWait();
-            case Diff _               -> container().add(Side.RIGHT, diff(null, false));
-            case DiffFoldOff _        -> container().add(Side.RIGHT, diff(null, true));
-            case DiffWith cmd         -> container().add(Side.RIGHT, diff(cmd.path(), false));
-            case Duplicate _          -> container().add(Side.RIGHT, duplicate());
-            case BinaryView _         -> container().add(Side.RIGHT, binary());
-            case FoundFilterView cmd  -> container().add(Side.RIGHT, foundFilter(cmd.contextSize()));
+            case Diff _               -> ctx.container().add(Side.RIGHT, diff(null, false));
+            case DiffFoldOff _        -> ctx.container().add(Side.RIGHT, diff(null, true));
+            case DiffWith cmd         -> ctx.container().add(Side.RIGHT, diff(cmd.path(), false));
+            case Duplicate _          -> ctx.container().add(Side.RIGHT, duplicate());
+            case BinaryView _         -> ctx.container().add(Side.RIGHT, binary());
+            case FoundFilterView cmd  -> ctx.container().add(Side.RIGHT, foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
             case TranslateInBrowser _ -> translateInBrowser(model().query(Query.selectedText));
@@ -457,14 +457,14 @@ public class EditorPane extends ContentPane {
         }
         File file = fc.showOpenDialog(getScene().getWindow());
         if (Files.isReadableFile(file.toPath())) {
-            container().add(file.toPath());
+            ctx.container().add(new EditorPane(ctx).bindLater(Session.of(file.toPath())));
         }
     }
 
     private void openOn(Path path) {
         if (Files.isReadableFile(path)) {
             if (model().query(Query.modified)) {
-                container().add(path);
+                ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)));
                 return;
             } else {
                 open(Session.of(path));
@@ -706,10 +706,13 @@ public class EditorPane extends ContentPane {
         var path = model().query(Query.contentPath).map(Path::getParent)
             .orElse(Path.of(System.getProperty("user.home")));
         var fif = FindInFilesPane.of(path, r -> {
-            var pane = (r.withShortcut() || model().query(Query.modified)) ? (EditorPane) container().add() : this;
             var session = Session.of(r.path(), Math.max(0, r.line() - 5), r.line() - 1, r.col());
-            pane.open(session);
-            pane.paintPulse.request();
+            if ((r.withShortcut() || model().query(Query.modified))) {
+                ctx.container().add(new EditorPane(ctx).bindLater(session));
+            } else {
+                open(session);
+                paintPulse.request();
+            }
         });
         fif.openWithWindow(getScene().getWindow());
     }

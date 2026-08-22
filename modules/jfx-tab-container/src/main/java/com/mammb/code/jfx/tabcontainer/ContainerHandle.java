@@ -16,19 +16,16 @@
 package com.mammb.code.jfx.tabcontainer;
 
 import javafx.geometry.Side;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * The Container.
+ * The ContainerHandle.
  * @author Naotsugu Kobayashi
  */
-public interface Container {
+public interface ContainerHandle {
 
-    ContentPane add();
-
-    ContentPane add(Path path);
+    void add(ContentPane contentPane);
 
     void add(Side side, ContentPane contentPane);
 
