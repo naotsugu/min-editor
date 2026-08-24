@@ -735,7 +735,8 @@ public class EditorPane extends ContentPane {
     }
 
     private ContentPane pathTree() {
-        return new PathTreePane(model().query(Query.contentPath).map(Path::getParent).orElse(Path.of(System.getProperty("user.home"))));
+        return new PathTreePane(ctx, model().query(Query.contentPath)
+            .map(Path::getParent).orElse(Path.of(System.getProperty("user.home"))));
     }
 
     void openRecent() {

@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.core.Session;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -33,6 +34,8 @@ public class PathTreePane extends ContentPane {
     /** The logger. */
     private static final System.Logger log = System.getLogger(PathTreePane.class.getName());
 
+    /** The context. */
+    private final FxAppContext ctx;
     /** The pathTreeView. */
     private final PathTree pathTree;
     /** The short name property. */
@@ -42,22 +45,33 @@ public class PathTreePane extends ContentPane {
 
     /**
      * Constructor.
+     * @param ctx the context
      * @param roots the root path
      */
-    public PathTreePane(Path... roots) {
+    public PathTreePane(FxAppContext ctx, Path... roots) {
         pathTree = new PathTree(roots);
         getChildren().add(pathTree);
+        pathTree.addSelectAction(path ->
+            ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)))
+        );
     }
 
-    public static PathTreePane fromString(String string) {
-        if (string == null || string.isBlank()) return new PathTreePane();
+    public static PathTreePane fromString(FxAppContext ctx, String string) {
+        if (string == null || string.isBlank()) return new PathTreePane(ctx);
         if (string.startsWith("PathTreePane[")) {
             string = string.substring("PathTreePane[".length(), string.length() - 1);
         } else if (string.startsWith("[")) {
             string = string.substring(1, string.length() - 1);
         }
-        return new PathTreePane(Arrays.stream(string.split(File.pathSeparator))
+        return new PathTreePane(ctx, Arrays.stream(string.split(File.pathSeparator))
             .map(Path::of).toArray(Path[]::new));
+    }
+
+    @Override
+    public String asString() {
+        return "PathTreePane" + pathTree.rootPaths().stream()
+            .map(Path::toAbsolutePath).map(Path::toString)
+            .collect(Collectors.joining(File.pathSeparator, "[", "]"));
     }
 
     @Override
@@ -78,12 +92,6 @@ public class PathTreePane extends ContentPane {
     public void close() {
     }
 
-    @Override
-    public String asString() {
-        return "PathTreePane" + pathTree.rootPaths().stream()
-            .map(Path::toAbsolutePath).map(Path::toString)
-            .collect(Collectors.joining(File.pathSeparator, "[", "]"));
-    }
 
     @Override
     public ReadOnlyObjectProperty<String> shortNameProperty() {
