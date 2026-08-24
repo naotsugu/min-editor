@@ -57,6 +57,7 @@ public class PathTreePane extends ContentPane {
                 ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)));
             }
         });
+        setPrefWidth(200);
         getChildren().add(pathTree);
     }
 

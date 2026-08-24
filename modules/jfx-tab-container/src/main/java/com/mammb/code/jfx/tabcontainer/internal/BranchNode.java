@@ -68,8 +68,14 @@ public class BranchNode extends TreeNode implements ParentOf<TreeNode> {
             int insIndex = (side == Side.RIGHT || side == Side.BOTTOM)
                 ? sourceIndex + 1
                 : sourceIndex;
+            double[] prevDivider = new double[] { prefDividerPositions };
+            double div = content.getPrefWidth() / getWidth();
+            if (div > 0 && div < 1) {
+                prevDivider[0] = (insIndex == sourceIndex) ? div : 1 - div;
+            }
             addChild(insIndex, new LeafNode(ctx, content));
             splitPane.setOrientation(orientation);
+            splitPane.setDividerPositions(prevDivider);
         } else {
             var prevDivider = splitPane.getDividerPositions();
             removeChild(source);

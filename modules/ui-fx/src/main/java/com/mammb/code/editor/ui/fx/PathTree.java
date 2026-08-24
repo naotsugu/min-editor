@@ -353,9 +353,10 @@ public class PathTree extends TreeView<Path> {
             this.fileOperationHandler = fileOperationHandler;
             setOnMouseClicked(e -> {
                 if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY && !isEmpty()) {
-                    e.consume();
+
                     treeView.doubleSelectActions.forEach(action ->
                         action.accept(getTreeItem().getValue()));
+                    e.consume();
                 }
             });
         }
