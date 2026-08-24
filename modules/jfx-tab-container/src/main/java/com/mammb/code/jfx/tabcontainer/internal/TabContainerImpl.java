@@ -44,12 +44,16 @@ public class TabContainerImpl implements TabContainer, ContainerHandle {
     public TabContainerImpl(
             RequireContent requireContent,
             RequestContent requestContent,
-            RequireStage requireStage) {
+            RequireStage requireStage,
+            MenuItemDecorator tabMenuDecorator,
+            MenuItemDecorator tabHeaderMenuDecorator) {
 
         var handlers = new Handlers(
             requireContent,
             requestContent,
-            requireStage);
+            requireStage,
+            tabMenuDecorator,
+            tabHeaderMenuDecorator);
 
         this(new Context(handlers));
     }

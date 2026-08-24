@@ -76,7 +76,8 @@ public class App extends Application {
         var tabContainer = TabContainer.of(
             this::handleRequireContent, this::handleRequestContent, this::handleRequireStage);
         ctx.container(tabContainer);
-        var pane = tabContainer.resume(stage, Path.of("./build/tab-resume.conf"),
+        var pane = tabContainer.resume(stage,
+            AppPaths.applicationConfPath.resolve("resumes"),
             str -> new EditorPane(ctx).bindLater(Session.valueOf(str)));
 
         paramPaths().forEach(path ->
@@ -195,7 +196,17 @@ public class App extends Application {
             }
         });
     }
-
+//.separator:horizontal .line {
+//    -fx-border-color: derive(-fx-base, 30%) transparent transparent transparent,
+//        -fx-shadow-highlight-color transparent transparent transparent;
+//    -fx-border-insets: 0, 1 0 0 0;
+//}
+//.separator:vertical .line {
+//    -fx-border-color: transparent transparent transparent -fx-shadow-highlight-color,
+//        transparent transparent transparent derive(-fx-base, 30%);
+//    -fx-border-width: 3, 1;
+//    -fx-border-insets: 0, 0 0 0 1;
+//}
     /** The app css. */
     private static final String css = String.join(",", "data:text/css;base64",
         Base64.getEncoder().encodeToString("""
@@ -324,6 +335,9 @@ public class App extends Application {
 
         .context-menu {
             -fx-font-family: "System";
+        }
+        .separator:horizontal .line {
+            -fx-border-color: derive(-fx-base, 30%) transparent transparent transparent;
         }
         """
             .replaceAll("app-base", Theme.current.baseColor().web()) // TODO theme vs config

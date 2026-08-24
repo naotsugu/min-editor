@@ -17,9 +17,8 @@ package com.mammb.code.jfx.tabcontainer.internal;
 
 import com.mammb.code.jfx.tabcontainer.ContainerHandle;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
-import com.mammb.code.jfx.tabcontainer.TabContainer.RequestContent;
-import com.mammb.code.jfx.tabcontainer.TabContainer.RequireContent;
-import com.mammb.code.jfx.tabcontainer.TabContainer.RequireStage;
+import com.mammb.code.jfx.tabcontainer.TabContainer.*;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.nio.file.Path;
@@ -37,15 +36,21 @@ public class Handlers {
     private final RequireContent requireContent;
     private final RequestContent requestContent;
     private final RequireStage requireStage;
+    private final MenuItemDecorator tabMenuDecorator;
+    private final MenuItemDecorator tabHeaderMenuDecorator;
     private final List<StageHandler> stageHandlers = new ArrayList<>();
 
     public Handlers(
         RequireContent requireContent,
         RequestContent requestContent,
-        RequireStage requireStage) {
+        RequireStage requireStage,
+        MenuItemDecorator tabMenuDecorator,
+        MenuItemDecorator tabHeaderMenuDecorator) {
         this.requireContent = Objects.requireNonNull(requireContent);
         this.requestContent = Objects.requireNonNull(requestContent);
         this.requireStage = Objects.requireNonNull(requireStage);
+        this.tabMenuDecorator = Objects.requireNonNull(tabMenuDecorator);
+        this.tabHeaderMenuDecorator = Objects.requireNonNull(tabHeaderMenuDecorator);
     }
 
     public ContentPane requireContent() {
@@ -60,6 +65,14 @@ public class Handlers {
         Stage stage = requireStage.stage(pane);
         stageHandlers.forEach(h -> h.apply(stage));
         return stage;
+    }
+
+    public MenuItem[] decorateTabMenu(MenuItem... items) {
+        return tabMenuDecorator.apply(items);
+    }
+
+    public MenuItem[] decorateTabHeaderMenu(MenuItem... items) {
+        return tabHeaderMenuDecorator.apply(items);
     }
 
     void addStageHandler(StageHandler stageHandler) {

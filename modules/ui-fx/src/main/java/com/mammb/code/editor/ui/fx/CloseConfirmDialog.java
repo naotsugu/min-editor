@@ -77,7 +77,7 @@ public class CloseConfirmDialog extends HBox {
         getStyleClass().add("close-confirm-dialog");
         setStyle("""
             -fx-border-style: solid;
-            -fx-border-color: derive(-fx-base, 30%);;
+            -fx-border-color: derive(-fx-base, 30%);
             -fx-border-width: 1;
             -fx-background-radius: 12px;
             -fx-border-radius: 12px;

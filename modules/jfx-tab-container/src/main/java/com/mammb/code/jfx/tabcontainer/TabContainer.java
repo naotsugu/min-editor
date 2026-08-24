@@ -16,6 +16,7 @@
 package com.mammb.code.jfx.tabcontainer;
 
 import com.mammb.code.jfx.tabcontainer.internal.TabContainerImpl;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.nio.file.Path;
@@ -30,17 +31,27 @@ public interface TabContainer extends ContainerHandle {
     interface RequireContent { ContentPane content(); }
     interface RequireStage { Stage stage(Pane pane); }
     interface RequestContent { void accept(Path path, ContainerHandle containerHandle); }
+    interface MenuItemDecorator { MenuItem[] apply(MenuItem... items); }
+
 
     static TabContainer of(
             RequireContent requireContent,
             RequestContent requestContent,
             RequireStage requireStage) {
-        return new TabContainerImpl(requireContent, requestContent, requireStage);
+        return new TabContainerImpl(requireContent, requestContent, requireStage, items -> items, items -> items);
+    }
+
+    static TabContainer of(
+        RequireContent requireContent,
+        RequestContent requestContent,
+        RequireStage requireStage,
+        MenuItemDecorator tabMenuDecorator,
+        MenuItemDecorator tabHeaderMenuDecorator) {
+        return new TabContainerImpl(requireContent, requestContent, requireStage, tabMenuDecorator, tabHeaderMenuDecorator);
     }
 
     Pane resume(Stage stage, Path path, Function<String, ? extends ContentPane> resumeToContent);
 
     Pane create(Stage stage);
-
 
 }

@@ -22,8 +22,10 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
@@ -33,6 +35,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.paint.Color;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -148,8 +151,10 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
     }
 
     private ContextMenu buildContextMenu() {
+
         MenuItem newTab = new MenuItem("New");
         newTab.setOnAction(_ -> parent.addChildren(List.of(new Tab(ctx, ctx.handlers().requireContent()))));
+
         MenuItem close = new MenuItem("Close");
         close.setOnAction(_-> requestClose());
         MenuItem closeOther = new MenuItem("Close Other");
@@ -160,7 +165,18 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         closeLeft.setOnAction(_ -> parent.closeLeft(this));
         MenuItem closeRight = new MenuItem("Close Right");
         closeRight.setOnAction(_ -> parent.closeRight(this));
-        return new ContextMenu(newTab, close, closeOther, closeAll, closeLeft, closeRight);
+
+        MenuItem copyName = new MenuItem("Copy Name");
+        copyName.setOnAction(_ -> Clipboard.getSystemClipboard()
+            .setContent(Map.of(DataFormat.PLAIN_TEXT, label.textProperty().get())));
+        MenuItem copyFullName = new MenuItem("Copy Full Name");
+        copyFullName.setOnAction(_ -> Clipboard.getSystemClipboard()
+            .setContent(Map.of(DataFormat.PLAIN_TEXT, label.getTooltip().textProperty().get())));
+
+        return new ContextMenu(ctx.handlers().decorateTabMenu(
+            newTab, new SeparatorMenuItem(),
+            close, closeOther, closeAll, closeLeft, closeRight, new SeparatorMenuItem(),
+            copyName, copyFullName));
     }
 
 }

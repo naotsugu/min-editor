@@ -420,7 +420,8 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
         MenuItem restore = new MenuItem("Restore");
         restore.setOnAction(_ -> parent().unmaximize());
         restore.setDisable(!parent.isMaximized(this));
-        return new ContextMenu(newTab, closeAll, maximize, restore);
+        return new ContextMenu(ctx.handlers().decorateTabHeaderMenu(
+            newTab, closeAll, maximize, restore));
     }
 
 }
