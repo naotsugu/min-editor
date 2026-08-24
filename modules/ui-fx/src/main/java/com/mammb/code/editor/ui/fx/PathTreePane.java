@@ -19,6 +19,10 @@ import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import java.nio.file.Path;
+import java.io.File;
+import java.util.Arrays;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * The PathTreePane.
@@ -45,6 +49,17 @@ public class PathTreePane extends ContentPane {
         getChildren().add(pathTree);
     }
 
+    public static PathTreePane fromString(String string) {
+        if (string == null || string.isBlank()) return new PathTreePane();
+        if (string.startsWith("PathTreePane[")) {
+            string = string.substring("PathTreePane[".length(), string.length() - 1);
+        } else if (string.startsWith("[")) {
+            string = string.substring(1, string.length() - 1);
+        }
+        return new PathTreePane(Arrays.stream(string.split(File.pathSeparator))
+            .map(Path::of).toArray(Path[]::new));
+    }
+
     @Override
     public void focus() {
     }
@@ -65,7 +80,9 @@ public class PathTreePane extends ContentPane {
 
     @Override
     public String asString() {
-        return "PathTreePane" + pathTree.rootPaths().toString();
+        return "PathTreePane" + pathTree.rootPaths().stream()
+            .map(Path::toAbsolutePath).map(Path::toString)
+            .collect(Collectors.joining(File.pathSeparator, "[", "]"));
     }
 
     @Override

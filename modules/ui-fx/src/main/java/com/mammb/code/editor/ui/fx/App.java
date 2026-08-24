@@ -78,7 +78,10 @@ public class App extends Application {
         ctx.container(tabContainer);
         var pane = tabContainer.resume(stage,
             AppPaths.applicationConfPath.resolve("resumes"),
-            str -> new EditorPane(ctx).bindLater(Session.valueOf(str)));
+            str -> (str != null  && str.startsWith("PathTreePane"))
+                ? PathTreePane.fromString(str)
+                : new EditorPane(ctx).bindLater(Session.valueOf(str))
+        );
 
         paramPaths().forEach(path ->
             tabContainer.add(new EditorPane(ctx).bindLater(Session.of(path))));
