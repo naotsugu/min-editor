@@ -79,7 +79,7 @@ public class App extends Application {
         var pane = tabContainer.resume(stage,
             AppPaths.applicationConfPath.resolve("resumes"),
             str -> (str != null  && str.startsWith("PathTreePane"))
-                ? PathTreePane.fromString(str)
+                ? PathTreePane.fromString(ctx, str)
                 : new EditorPane(ctx).bindLater(Session.valueOf(str))
         );
 

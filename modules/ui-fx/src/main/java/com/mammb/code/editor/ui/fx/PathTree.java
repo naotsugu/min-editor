@@ -33,6 +33,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.shape.SVGPath;
 import java.io.File;
@@ -62,6 +63,7 @@ public class PathTree extends TreeView<Path> {
     private static final System.Logger log = System.getLogger(PathTree.class.getName());
 
     private final List<Consumer<Path>> selectActions = new ArrayList<>();
+    private final List<Consumer<Path>> doubleSelectActions = new ArrayList<>();
     private final BooleanProperty compactFolders = new SimpleBooleanProperty(this, "compactFolders", true);
 
     private boolean cellEditable = false;
@@ -74,13 +76,21 @@ public class PathTree extends TreeView<Path> {
         setEditable(true);
         for (Path root : roots) addRoot(root);
 
-        setCellFactory(_ -> new PathTreeCell(this));
-        getSelectionModel().selectedItemProperty().addListener(
-            (_, _, item) -> {
-                if (item != null && item.getValue() != null && !selectActions.isEmpty()) {
+        var fileOperationHandler = new FileOperationHandler(this);
+        setCellFactory(_ -> new PathTreeCell(this, fileOperationHandler));
+        getSelectionModel().selectedItemProperty().addListener((_, _, item) -> {
+                if (item != null && item.getValue() != null) {
                     selectActions.forEach(action -> action.accept(item.getValue()));
                 }
             });
+        setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY) {
+                if (!getRoot().getChildren().isEmpty()) {
+                    fileOperationHandler.moveToParent(getRoot().getChildren().getFirst());
+                    e.consume();
+                }
+            }
+        });
         compactFolders.addListener((_, _, _) -> refreshAllRoots());
 
         // allow adding new roots by dropping directories onto the TreeView's empty space
@@ -170,6 +180,10 @@ public class PathTree extends TreeView<Path> {
 
     public void addSelectAction(Consumer<Path> action) {
         selectActions.add(action);
+    }
+
+    public void addDoubleSelectAction(Consumer<Path> action) {
+        doubleSelectActions.add(action);
     }
 
     public TreeItem<Path> getCutItem() {
@@ -334,9 +348,16 @@ public class PathTree extends TreeView<Path> {
         private final FileOperationHandler fileOperationHandler;
         private TextField textField;
 
-        public PathTreeCell(PathTree treeView) {
+        private PathTreeCell(PathTree treeView, FileOperationHandler fileOperationHandler) {
             this.treeView = treeView;
-            this.fileOperationHandler = new FileOperationHandler(treeView);
+            this.fileOperationHandler = fileOperationHandler;
+            setOnMouseClicked(e -> {
+                if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY && !isEmpty()) {
+                    e.consume();
+                    treeView.doubleSelectActions.forEach(action ->
+                        action.accept(getTreeItem().getValue()));
+                }
+            });
         }
 
         @Override

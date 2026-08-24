@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -49,11 +50,14 @@ public class PathTreePane extends ContentPane {
      * @param roots the root path
      */
     public PathTreePane(FxAppContext ctx, Path... roots) {
-        pathTree = new PathTree(roots);
+        this.ctx = ctx;
+        this.pathTree = new PathTree(roots);
+        this.pathTree.addDoubleSelectAction(path -> {
+            if (Files.isReadableFile(path)) {
+                ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)));
+            }
+        });
         getChildren().add(pathTree);
-        pathTree.addSelectAction(path ->
-            ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)))
-        );
     }
 
     public static PathTreePane fromString(FxAppContext ctx, String string) {
