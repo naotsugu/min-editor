@@ -17,7 +17,11 @@ package com.mammb.code.jfx.tabcontainer.internal;
 
 import com.mammb.code.jfx.tabcontainer.ContainerHandle;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
-import com.mammb.code.jfx.tabcontainer.TabContainer.*;
+import com.mammb.code.jfx.tabcontainer.TabContainer.RequestContent;
+import com.mammb.code.jfx.tabcontainer.TabContainer.RequireContent;
+import com.mammb.code.jfx.tabcontainer.TabContainer.RequireStage;
+import com.mammb.code.jfx.tabcontainer.TabContainer.TabHeaderMenuItemDecorator;
+import com.mammb.code.jfx.tabcontainer.TabContainer.TabMenuItemDecorator;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -33,19 +37,22 @@ import java.util.Objects;
 public class Handlers {
 
     interface StageHandler { void apply(Stage stage); }
+    private final ContainerHandle containerHandle;
     private final RequireContent requireContent;
     private final RequestContent requestContent;
     private final RequireStage requireStage;
-    private final MenuItemDecorator tabMenuDecorator;
-    private final MenuItemDecorator tabHeaderMenuDecorator;
+    private final TabMenuItemDecorator tabMenuDecorator;
+    private final TabHeaderMenuItemDecorator tabHeaderMenuDecorator;
     private final List<StageHandler> stageHandlers = new ArrayList<>();
 
     public Handlers(
-        RequireContent requireContent,
-        RequestContent requestContent,
-        RequireStage requireStage,
-        MenuItemDecorator tabMenuDecorator,
-        MenuItemDecorator tabHeaderMenuDecorator) {
+            ContainerHandle containerHandle,
+            RequireContent requireContent,
+            RequestContent requestContent,
+            RequireStage requireStage,
+            TabMenuItemDecorator tabMenuDecorator,
+            TabHeaderMenuItemDecorator tabHeaderMenuDecorator) {
+        this.containerHandle = Objects.requireNonNull(containerHandle);
         this.requireContent = Objects.requireNonNull(requireContent);
         this.requestContent = Objects.requireNonNull(requestContent);
         this.requireStage = Objects.requireNonNull(requireStage);
@@ -57,8 +64,8 @@ public class Handlers {
         return requireContent.content();
     }
 
-    public void requestContent(Path path, ContainerHandle container) {
-        requestContent.accept(path, container);
+    public void requestContent(Path path) {
+        requestContent.accept(containerHandle, path);
     }
 
     public Stage requireStage(Pane pane) {
@@ -67,12 +74,12 @@ public class Handlers {
         return stage;
     }
 
-    public MenuItem[] decorateTabMenu(MenuItem... items) {
-        return tabMenuDecorator.apply(items);
+    public MenuItem[] decorateTabMenu(ContentPane contentPane, MenuItem... items) {
+        return tabMenuDecorator.apply(contentPane, items);
     }
 
     public MenuItem[] decorateTabHeaderMenu(MenuItem... items) {
-        return tabHeaderMenuDecorator.apply(items);
+        return tabHeaderMenuDecorator.apply(containerHandle, items);
     }
 
     void addStageHandler(StageHandler stageHandler) {

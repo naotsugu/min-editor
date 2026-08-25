@@ -131,6 +131,7 @@ public class PathTree extends TreeView<Path> {
             }
         }
         PathTreeItem item = new PathTreeItem(path, isCompactFolders());
+        item.setExpanded(true);
         getRoot().getChildren().add(item);
         getRoot().getChildren().sort(Comparator
             .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
@@ -352,10 +353,13 @@ public class PathTree extends TreeView<Path> {
             this.treeView = treeView;
             this.fileOperationHandler = fileOperationHandler;
             setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY && !isEmpty()) {
-
-                    treeView.doubleSelectActions.forEach(action ->
-                        action.accept(getTreeItem().getValue()));
+                if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY &&
+                        !isEmpty() && getTreeItem() != null) {
+                    Path path = getTreeItem().getValue();
+                    if (Files.isDirectory(path)) {
+                        getTreeItem().setExpanded(!getTreeItem().isExpanded());
+                    }
+                    treeView.doubleSelectActions.forEach(action -> action.accept(path));
                     e.consume();
                 }
             });
@@ -402,7 +406,7 @@ public class PathTree extends TreeView<Path> {
 
             // apply or remove the 'cut' style class based on the global cut state
             getStyleClass().remove("cut");
-            if (getTreeItem() != null && getTreeItem() == ((PathTree) getTreeView()).getCutItem()) {
+            if (getTreeItem() != null && getTreeItem() == treeView.getCutItem()) {
                 getStyleClass().add("cut");
             }
 
@@ -418,7 +422,9 @@ public class PathTree extends TreeView<Path> {
                     setText(null);
                     setGraphic(textField);
                 } else {
-                    setText(getTreeItem() instanceof CompactPathTreeItem c ? c.getDisplayPath() : item.getFileName().toString());
+                    setText(getTreeItem() instanceof CompactPathTreeItem c
+                        ? c.getDisplayPath()
+                        : item.getFileName().toString());
                     setGraphic(Files.isDirectory(item) ? folder() : file());
                     setContextMenu(buildContextMenu());
                 }
@@ -440,7 +446,7 @@ public class PathTree extends TreeView<Path> {
             var menu = new FxContextMenu(true);
             TreeItem<Path> treeItem = getTreeItem();
             boolean isDirectory = Files.isDirectory(getItem());
-            boolean isRoot = treeItem.getParent() == getTreeView().getRoot();
+            boolean isRoot = treeItem.getParent() == treeView.getRoot();
 
             if (isRoot) {
                 Path parent = getItem().getParent();
@@ -456,7 +462,7 @@ public class PathTree extends TreeView<Path> {
                 menu.getItems().add(new FxMenuItem("Copy", null, false, _ ->
                     fileOperationHandler.copy(treeItem)));
                 menu.getItems().add(new FxMenuItem("Rename", null, false, _ ->
-                    withCellEdit(() -> getTreeView().edit(treeItem))));
+                    withCellEdit(() -> treeView.edit(treeItem))));
                 menu.getItems().add(new FxMenuItem("Delete", null, false, _ ->
                     fileOperationHandler.delete(treeItem)));
             }

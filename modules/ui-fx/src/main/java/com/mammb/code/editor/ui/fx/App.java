@@ -17,6 +17,8 @@ package com.mammb.code.editor.ui.fx;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +35,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -74,7 +77,9 @@ public class App extends Application {
             loadFonts(AppPaths.applicationHomePath()).orElse(null));
 
         var tabContainer = TabContainer.of(
-            this::handleRequireContent, this::handleRequestContent, this::handleRequireStage);
+            this::handleRequireContent, this::handleRequestContent, this::handleRequireStage,
+            this::handleTabMenu, (_, m) -> m);
+
         ctx.container(tabContainer);
         var pane = tabContainer.resume(stage,
             AppPaths.applicationConfPath.resolve("resumes"),
@@ -99,7 +104,7 @@ public class App extends Application {
         return intiStage(new Stage(), pane);
     }
 
-    private void handleRequestContent(Path path, ContainerHandle containerHandle) {
+    private void handleRequestContent(ContainerHandle containerHandle, Path path) {
         if (path == null) {
             return;
         }
@@ -116,6 +121,13 @@ public class App extends Application {
         } else {
             containerHandle.add(new EditorPane(ctx).bindLater(Session.of(path)));
         }
+    }
+
+    private MenuItem[] handleTabMenu(ContentPane contentPane, MenuItem... menuItems) {
+//        MenuItem[] items = Arrays.copyOf(menuItems, menuItems.length + 1);
+//        items[menuItems.length] = new MenuItem("test");
+//        return items;
+        return menuItems;
     }
 
     private Stage intiStage(Stage stage, Pane pane) {

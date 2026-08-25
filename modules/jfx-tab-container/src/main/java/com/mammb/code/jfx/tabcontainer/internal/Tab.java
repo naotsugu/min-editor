@@ -173,7 +173,7 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         copyFullName.setOnAction(_ -> Clipboard.getSystemClipboard()
             .setContent(Map.of(DataFormat.PLAIN_TEXT, label.getTooltip().textProperty().get())));
 
-        return new ContextMenu(ctx.handlers().decorateTabMenu(
+        return new ContextMenu(ctx.handlers().decorateTabMenu(content(),
             newTab, new SeparatorMenuItem(),
             close, closeOther, closeAll, closeLeft, closeRight, new SeparatorMenuItem(),
             copyName, copyFullName));

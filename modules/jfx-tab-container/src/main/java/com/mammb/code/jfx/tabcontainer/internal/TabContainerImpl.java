@@ -37,27 +37,21 @@ public class TabContainerImpl implements TabContainer, ContainerHandle {
 
     private final Context ctx;
 
-    TabContainerImpl(Context ctx) {
-        this.ctx = Objects.requireNonNull(ctx);
-    }
-
     public TabContainerImpl(
             RequireContent requireContent,
             RequestContent requestContent,
             RequireStage requireStage,
-            MenuItemDecorator tabMenuDecorator,
-            MenuItemDecorator tabHeaderMenuDecorator) {
+            TabMenuItemDecorator tabMenuDecorator,
+            TabHeaderMenuItemDecorator tabHeaderMenuDecorator) {
 
-        var handlers = new Handlers(
+        this.ctx = new Context(new Handlers(
+            this,
             requireContent,
             requestContent,
             requireStage,
             tabMenuDecorator,
-            tabHeaderMenuDecorator);
-
-        this(new Context(handlers));
+            tabHeaderMenuDecorator));
     }
-
 
     @Override
     public Pane resume(Stage stage, Path path, Function<String, ? extends ContentPane> resumeToContent) {
