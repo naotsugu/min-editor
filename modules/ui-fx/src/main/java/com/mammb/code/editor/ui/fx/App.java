@@ -36,6 +36,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -124,9 +125,14 @@ public class App extends Application {
     }
 
     private MenuItem[] handleTabMenu(ContentPane contentPane, MenuItem... menuItems) {
-//        MenuItem[] items = Arrays.copyOf(menuItems, menuItems.length + 1);
-//        items[menuItems.length] = new MenuItem("test");
-//        return items;
+        if (contentPane instanceof EditorPane editorPane) {
+            var treeView = new MenuItem("Open Tree View");
+            treeView.setOnAction(_ -> editorPane.addPathTreeView());
+            MenuItem[] items = Arrays.copyOf(menuItems, menuItems.length + 1);
+            items[menuItems.length - 1] = new SeparatorMenuItem();
+            items[menuItems.length] = treeView;
+            return items;
+        }
         return menuItems;
     }
 

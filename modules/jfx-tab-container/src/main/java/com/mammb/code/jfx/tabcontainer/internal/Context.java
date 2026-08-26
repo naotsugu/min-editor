@@ -27,7 +27,6 @@ import javafx.stage.Stage;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.SequencedSet;
 import java.util.Set;
@@ -39,6 +38,8 @@ import java.util.function.Predicate;
  * @author Naotsugu Kobayashi
  */
 public class Context {
+
+    private static final System.Logger log = System.getLogger(Context.class.getName());
 
     static final String TAB_SELECTED = "tab-container-selected";
 
@@ -95,20 +96,19 @@ public class Context {
         }
     }
 
-    public void handleTabAdded(ListChangeListener.Change<? extends javafx.scene.control.Tab> change) {
+    public void handleTabChanged(ListChangeListener.Change<? extends javafx.scene.control.Tab> change) {
         while (change.next()) {
             for (var added : change.getAddedSubList()) {
-                if (added instanceof Tab tab && tab.parent() != null && tab.parent().getScene() != null) {
-                    referOnLru(tab);
+                if (added instanceof Tab tab) {
+                    if (tab.parent() != null && tab.parent().getScene() != null) {
+                        referOnLru(tab);
+                    } else {
+                        log.log(System.Logger.Level.WARNING, "Tab " + tab.parent().getScene() + " has no scene");
+                    }
                 }
             }
-        }
-    }
-
-    public void handleTabRemoved(ListChangeListener.Change<? extends javafx.scene.control.Tab> change) {
-        while (change.next()) {
             for (var removed : change.getRemoved()) {
-                if (removed instanceof Tab tab && tab.parent() != null && tab.parent().getScene() != null) {
+                if (removed instanceof Tab tab) {
                     removeOnLru(tab);
                 }
             }
@@ -118,6 +118,11 @@ public class Context {
     void focus(Tab tab) {
         Platform.runLater(() -> tab.content().focus());
         referOnLru(tab);
+    }
+
+    Handlers handlers(LeafNode leafNode) {
+        focus(leafNode.selectedTab());
+        return handlers;
     }
 
     Handlers handlers() {
@@ -131,7 +136,7 @@ public class Context {
     Tab currentTab() {
         Stage stage = (Stage) stages.getLast().getScene().getWindow();
         SequencedSet<Tab> lru = lruTabs.get(stage);
-        return lruTabs.get(stage).getFirst();
+        return lru.getFirst();
     }
 
     List<Tab> allTabs() {
@@ -150,17 +155,16 @@ public class Context {
     }
 
     void removeOnLru(Tab tab) {
-        Stage stage = (Stage) tab.parent().getScene().getWindow();
-        SequencedSet<Tab> lru = lruTabs.get(stage);
-        if (Objects.equals(lru.getFirst(), tab)) {
-            lru.remove(tab);
-            if (!lru.isEmpty()) {
-                lru.getFirst().getStyleClass().add(TAB_SELECTED);
+        for (Stage stage : stages) {
+            if (lruTabs.get(stage).remove(tab)) {
+                if (tab.getStyleClass().contains(TAB_SELECTED)) {
+                    lruTabs.get(stages.getLast()).getFirst().getStyleClass().add(TAB_SELECTED);
+                }
+                break;
             }
-        } else {
-            lru.remove(tab);
         }
     }
+
     private void findAllTabs() {
         for (Stage stage : stages) {
             SequencedSet<Tab> lru = lruTabs.get(stage);

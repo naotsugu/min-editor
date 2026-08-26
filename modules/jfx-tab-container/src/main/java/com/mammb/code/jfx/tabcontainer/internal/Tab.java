@@ -66,7 +66,6 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
 
         setContent(content);
         setGraphic(label);
-        setContextMenu(buildContextMenu());
 
         setOnCloseRequest(this::handleCloseRequest);
         setOnClosed(this::handleClosed);
@@ -74,6 +73,14 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         label.setOnDragDone(this::handleDragDone);
         label.setOnMouseClicked(Event::consume);
         label.setTooltip(tooltip);
+
+        ContextMenu contextMenu = new ContextMenu();
+        contextMenu.getItems().add(new MenuItem("empty"));
+        setContextMenu(contextMenu);
+        contextMenu.setOnShowing(_ -> {
+            contextMenu.getItems().clear();
+            contextMenu.getItems().addAll(buildContextMenuItem());
+        });
 
     }
 
@@ -150,7 +157,7 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         this.parent = parent;
     }
 
-    private ContextMenu buildContextMenu() {
+    private List<MenuItem> buildContextMenuItem() {
 
         MenuItem newTab = new MenuItem("New");
         newTab.setOnAction(_ -> parent.addChildren(List.of(new Tab(ctx, ctx.handlers().requireContent()))));
@@ -173,7 +180,7 @@ public class Tab extends javafx.scene.control.Tab implements ChildOf<LeafNode> {
         copyFullName.setOnAction(_ -> Clipboard.getSystemClipboard()
             .setContent(Map.of(DataFormat.PLAIN_TEXT, label.getTooltip().textProperty().get())));
 
-        return new ContextMenu(ctx.handlers().decorateTabMenu(content(),
+        return List.of(ctx.handlers().decorateTabMenu(content(),
             newTab, new SeparatorMenuItem(),
             close, closeOther, closeAll, closeLeft, closeRight, new SeparatorMenuItem(),
             copyName, copyFullName));

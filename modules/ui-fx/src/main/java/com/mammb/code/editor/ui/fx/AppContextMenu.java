@@ -51,7 +51,7 @@ public class AppContextMenu extends FxContextMenu {
             editorPane.execute(new Command.ActionCommand(Action.copy(FxClipboard.instance))));
         var paste = new FxMenuItem("Paste", CommandKeys.SC_V, !textCopied, _ ->
             editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, false))));
-        var pasteAs = new FxMenuItem("Paste with context", CommandKeys.SC_SV, !textCopied, _ ->
+        var pasteAs = new FxMenuItem("Paste with Context", CommandKeys.SC_SV, !textCopied, _ ->
             editorPane.execute(new Command.ActionCommand(Action.paste(FxClipboard.instance, true))));
 
         var backward = new FxMenuItem("Backward", CommandKeys.SC_BW, !hasBackward, _->
@@ -59,9 +59,9 @@ public class AppContextMenu extends FxContextMenu {
         var forward = new FxMenuItem("Forward", CommandKeys.SC_FW, !hasForward, _ ->
             editorPane.execute(new Command.Forward()));
 
-        var searchInBrowser = new FxMenuItem("Search In Browser", null, !textSelected, _ ->
+        var searchInBrowser = new FxMenuItem("Search in Browser", null, !textSelected, _ ->
             editorPane.execute(new Command.SearchInBrowser()));
-        var translateInBrowser = new FxMenuItem("Translate In Browser", null, !textSelected, _ ->
+        var translateInBrowser = new FxMenuItem("Translate in Browser", null, !textSelected, _ ->
             editorPane.execute(new Command.TranslateInBrowser()));
 
         return new MenuItem[] {

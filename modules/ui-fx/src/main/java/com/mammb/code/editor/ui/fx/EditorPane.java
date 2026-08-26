@@ -772,4 +772,7 @@ public class EditorPane extends ContentPane {
         dialog.show();
     }
 
+    void addPathTreeView() {
+        ctx.container().add(Side.LEFT, pathTree());
+    }
 }
