@@ -364,7 +364,7 @@ public class EditorPane extends ContentPane {
             case DiffWith cmd         -> ctx.container().add(Side.RIGHT, diff(cmd.path(), false));
             case Duplicate _          -> ctx.container().add(Side.RIGHT, duplicate());
             case BinaryView _         -> ctx.container().add(Side.RIGHT, binary());
-            case PathTreeView _       -> ctx.container().add(Side.LEFT, pathTree());
+            case PathTreeView _       -> addPathTreeView();
             case FoundFilterView cmd  -> ctx.container().add(Side.RIGHT, foundFilter(cmd.contextSize()));
             case OpenInFiler _        -> openInFiler(model().query(Query.contentPath).orElse(null));
             case SearchInBrowser _    -> searchInBrowser(model().query(Query.selectedText));
@@ -775,4 +775,8 @@ public class EditorPane extends ContentPane {
     void addPathTreeView() {
         ctx.container().add(Side.LEFT, pathTree());
     }
+    void open(Path path) {
+        openOn(path);
+    }
+
 }

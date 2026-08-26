@@ -23,7 +23,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import java.nio.file.Path;
 import java.io.File;
 import java.util.Arrays;
-import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +53,9 @@ public class PathTreePane extends ContentPane {
         this.pathTree = new PathTree(roots);
         this.pathTree.addDoubleSelectAction(path -> {
             if (Files.isReadableFile(path)) {
-                ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)));
+                ctx.container().find(p -> p instanceof EditorPane)
+                    .map(EditorPane.class::cast)
+                    .ifPresent(editorPane -> editorPane.open(path));
             }
         });
         setPrefWidth(200);
