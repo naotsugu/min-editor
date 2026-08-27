@@ -83,14 +83,6 @@ public class PathTree extends TreeView<Path> {
                     selectActions.forEach(action -> action.accept(item.getValue()));
                 }
             });
-        setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY) {
-                if (!getRoot().getChildren().isEmpty()) {
-                    fileOperationHandler.moveToParent(getRoot().getChildren().getFirst());
-                    e.consume();
-                }
-            }
-        });
         compactFolders.addListener((_, _, _) -> refreshAllRoots());
 
         // allow adding new roots by dropping directories onto the TreeView's empty space
@@ -237,7 +229,7 @@ public class PathTree extends TreeView<Path> {
         }
 
         private void buildChildren() {
-            if (!Files.isDirectory(getValue())) return;
+            if (!Files.isDirectory(getValue()) || !Files.isReadable(getValue())) return;
 
             try (Stream<Path> stream = Files.list(getValue())) {
                 stream.sorted(Comparator
@@ -356,11 +348,10 @@ public class PathTree extends TreeView<Path> {
                 if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY &&
                         !isEmpty() && getTreeItem() != null) {
                     Path path = getTreeItem().getValue();
-                    if (Files.isDirectory(path)) {
-                        getTreeItem().setExpanded(!getTreeItem().isExpanded());
+                    if (Files.isRegularFile(path)) {
+                        treeView.doubleSelectActions.forEach(action -> action.accept(path));
+                        e.consume();
                     }
-                    treeView.doubleSelectActions.forEach(action -> action.accept(path));
-                    e.consume();
                 }
             });
         }
