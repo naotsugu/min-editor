@@ -132,6 +132,8 @@ public class App extends Application {
             items[menuItems.length - 1] = new SeparatorMenuItem();
             items[menuItems.length] = treeView;
             return items;
+        } else if (contentPane instanceof PathTreePane pathTreePane) {
+            return Arrays.copyOf(menuItems, menuItems.length - 3);
         }
         return menuItems;
     }
@@ -346,6 +348,9 @@ public class App extends Application {
 
         .context-menu {
             -fx-font-family: "System";
+            -fx-border-color: derive(-fx-base, 30%);
+            -fx-border-width: 1px;
+            -fx-border-radius: 8px;
         }
         .separator:horizontal .line {
             -fx-border-color: derive(-fx-base, 30%) transparent transparent transparent;
