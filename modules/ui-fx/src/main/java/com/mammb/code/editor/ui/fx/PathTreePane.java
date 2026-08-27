@@ -16,7 +16,6 @@
 package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Files;
-import com.mammb.code.editor.core.Session;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

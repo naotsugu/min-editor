@@ -483,6 +483,12 @@ public class PathTree extends TreeView<Path> {
                 }
             }
 
+            menu.getItems().add(new SeparatorMenuItem());
+            menu.getItems().add(new FxMenuItem("Copy Name", null, false, _ ->
+                Clipboard.getSystemClipboard().setContent(Map.of(DataFormat.PLAIN_TEXT, getItem().getFileName().toString()))));
+            menu.getItems().add(new FxMenuItem("Copy Path", null, false, _ ->
+                Clipboard.getSystemClipboard().setContent(Map.of(DataFormat.PLAIN_TEXT, getItem().toAbsolutePath().toString()))));
+
             return menu;
         }
 
