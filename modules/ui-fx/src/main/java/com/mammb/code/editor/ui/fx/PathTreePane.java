@@ -51,11 +51,11 @@ public class PathTreePane extends ContentPane {
     public PathTreePane(FxAppContext ctx, Path... roots) {
         this.ctx = ctx;
         this.pathTree = new PathTree(roots);
-        this.pathTree.addDoubleSelectAction(path -> {
+        this.pathTree.addDoubleSelectAction((path, isShortcutDown) -> {
             if (Files.isReadableFile(path)) {
                 ctx.container().find(p -> p instanceof EditorPane)
                     .map(EditorPane.class::cast)
-                    .ifPresent(editorPane -> editorPane.open(path));
+                    .ifPresent(editorPane -> editorPane.open(path, isShortcutDown));
             }
         });
         setPrefWidth(200);

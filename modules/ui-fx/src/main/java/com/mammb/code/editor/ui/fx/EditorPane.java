@@ -775,8 +775,13 @@ public class EditorPane extends ContentPane {
     void addPathTreeView() {
         ctx.container().add(Side.LEFT, pathTree());
     }
-    void open(Path path) {
-        openOn(path);
+
+    void open(Path path, boolean isShortcutDown) {
+        if (isShortcutDown) {
+            ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)));
+        } else {
+            openOn(path);
+        }
     }
 
 }

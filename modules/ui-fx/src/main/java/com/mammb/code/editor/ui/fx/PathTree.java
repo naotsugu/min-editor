@@ -32,6 +32,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
@@ -47,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,7 +65,7 @@ public class PathTree extends TreeView<Path> {
     private static final System.Logger log = System.getLogger(PathTree.class.getName());
 
     private final List<Consumer<Path>> selectActions = new ArrayList<>();
-    private final List<Consumer<Path>> doubleSelectActions = new ArrayList<>();
+    private final List<BiConsumer<Path, Boolean>> doubleSelectActions = new ArrayList<>();
     private final BooleanProperty compactFolders = new SimpleBooleanProperty(this, "compactFolders", true);
 
     private boolean cellEditable = false;
@@ -175,7 +177,7 @@ public class PathTree extends TreeView<Path> {
         selectActions.add(action);
     }
 
-    public void addDoubleSelectAction(Consumer<Path> action) {
+    public void addDoubleSelectAction(BiConsumer<Path, Boolean> action) {
         doubleSelectActions.add(action);
     }
 
@@ -349,7 +351,7 @@ public class PathTree extends TreeView<Path> {
                         !isEmpty() && getTreeItem() != null) {
                     Path path = getTreeItem().getValue();
                     if (Files.isRegularFile(path)) {
-                        treeView.doubleSelectActions.forEach(action -> action.accept(path));
+                        treeView.doubleSelectActions.forEach(action -> action.accept(path, e.isShortcutDown()));
                         e.consume();
                     }
                 }
