@@ -15,11 +15,8 @@
  */
 package com.mammb.code.editor.ui.fx;
 
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -38,7 +35,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -139,8 +138,15 @@ public class App extends Application {
     }
 
     private Stage intiStage(Stage stage, Pane pane) {
-        Scene scene = new Scene(new AppPane(stage, pane, ctx), Color.TRANSPARENT);
-        scene.getStylesheets().add(css);
+
+        var stackPane = new StackPane();
+        var mainPane = new BorderPane(pane);
+        var notifyListener = new NotificationPane(stackPane);
+        ctx.addNotifyListener(stage, notifyListener);
+        stackPane.getChildren().addAll(mainPane, notifyListener);
+
+        Scene scene = new Scene(stackPane, Color.TRANSPARENT);
+        AppCss.of(Theme.current).apply(scene);
         stage.setScene(scene);
         stage.setTitle(AppVersion.appName);
         stage.getIcons().add(new Image(
@@ -195,7 +201,7 @@ public class App extends Application {
      * @param ctx the context
      * @param delayMillis the delay in milliseconds before garbage collection is triggered
      */
-    private static void bindGcTimer(Stage stage, AppContext ctx, double delayMillis) {
+    static void bindGcTimer(Stage stage, AppContext ctx, double delayMillis) {
         PauseTransition timer = new PauseTransition(Duration.millis(delayMillis));
         timer.setOnFinished(_ ->
             ctx.spawn(() -> {
@@ -219,147 +225,5 @@ public class App extends Application {
             }
         });
     }
-
-    /** The app css. */
-    private static final String css = String.join(",", "data:text/css;base64",
-        Base64.getEncoder().encodeToString("""
-        .root {
-          -fx-base:app-base;
-          -fx-accent:app-accent;
-          -fx-background:-fx-base;
-          -fx-control-inner-background:app-back;
-          -fx-control-inner-background-alt: derive(-fx-control-inner-background,-2%);
-          -fx-focus-color: derive(-fx-control-inner-background,20%);
-          -fx-faint-focus-color: -fx-focus-color;
-          -fx-selection-bar-non-focused: derive(-fx-selection-bar, -50%);
-          -fx-light-text-color:app-text;
-          -fx-dark-text-color:app-text;
-          -fx-mid-text-color: #333;
-          -fx-mark-color: -fx-light-text-color;
-          -fx-mark-highlight-color: derive(-fx-mark-color,20%);
-          -fx-background-color:app-back;
-          -fx-default-button: #2F65CA;
-          -fx-font-family: "Consolas";
-          -fx-font-size: 14px;
-          -fx-body-color: -fx-color;
-        }
-        .text-input, .label, .tooltip {
-          -fx-font-size: 14px;
-        }
-
-        .text-input:focused {
-          -fx-background-color: -fx-focus-color, -fx-control-inner-background;
-        }
-
-        .button {
-          -fx-background-color: -fx-body-color;
-        }
-        .button:hover {
-          -fx-text-fill: white;
-        }
-
-        .app-command-palette-dialog-pane > .button-bar > .container {
-          -fx-padding: 0;
-        }
-        .menu-bar {
-          -fx-use-system-menu-bar:true;
-          -fx-background-color:derive(-fx-control-inner-background,20%);
-        }
-        .scroll-bar {
-          -fx-background-color: derive(-fx-box-border,30%)
-        }
-        .scroll-bar .thumb {
-          -fx-background-color :derive(app-text, -50%);
-          -fx-background-insets : 1.0, 0.0, 0.0;
-        }
-        .scroll-bar .thumb:hover {
-          -fx-background-color :derive(app-text, -30%);
-        }
-        .scroll-bar .increment-button,
-        .scroll-bar .decrement-button {
-          -fx-background-color:transparent;
-          -fx-background-radius:0;
-        }
-        .scroll-bar:vertical .decrement-button {
-          -fx-padding:0 10 0 0;
-        }
-        .scroll-bar:vertical .increment-button {
-          -fx-padding:0 0 10 0;
-        }
-        .scroll-bar:horizontal .decrement-button {
-          -fx-padding:0 0 10 0;
-        }
-        .scroll-bar:horizontal .increment-button {
-          -fx-padding:0 10 0 0;
-        }
-        .scroll-bar .increment-arrow,
-        .scroll-bar .decrement-arrow {
-          -fx-background-color:transparent;
-          -fx-shape:"";
-          -fx-padding:0;
-        }
-
-        .tab-pane {
-            -fx-tab-min-height: 1.5em;
-            -fx-tab-max-height: 1.5em;
-        }
-        .tab > .tab-label {
-          -fx-font-size: 0.916667em;
-        }
-        .tab-pane > .tab-header-area > .headers-region > .tab {
-           -fx-background-color: -fx-hover-base;
-        }
-        .tab-pane > .tab-header-area > .headers-region > .tab:selected {
-          -fx-background-color: derive(-fx-box-border, 30%);
-          -fx-border-color: derive(app-text, -30%) transparent transparent transparent;
-        }
-        .tab-pane > .tab-header-area > .headers-region > .tab:selected.tab-container-selected {
-          -fx-border-color: app-text transparent transparent transparent;
-        }
-        .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
-          -fx-border-width: 0;
-        }
-        .tab-pane > .tab-header-area > .tab-header-background {
-          -fx-background-color: derive(-fx-text-box-border, 30%);
-        }
-        .tab-pane > .tab-header-area {
-          -fx-padding: 0;
-        }
-        .split-pane > .split-pane-divider {
-            -fx-pref-width: 3px;
-        }
-        .progress-bar > .bar {
-          -fx-background-color: derive(-fx-accent, 50%);
-          -fx-background-insets: 0;
-          -fx-background-radius: 0;
-        }
-        .progress-bar > .track {
-          -fx-background-color: transparent;
-          -fx-background-insets: 0;
-          -fx-background-radius: 0;
-        }
-
-        .hyperlink,
-        .hyperlink:hover,
-        .hyperlink:hover:visited {
-            -fx-text-fill: -fx-light-text-color;
-            -fx-underline: true;
-        }
-
-        .context-menu {
-            -fx-font-family: "System";
-            -fx-border-color: derive(-fx-base, 30%);
-            -fx-border-width: 1px;
-            -fx-border-radius: 8px;
-        }
-        .separator:horizontal .line {
-            -fx-border-color: derive(-fx-base, 30%) transparent transparent transparent;
-        }
-        """
-            .replaceAll("app-base", Theme.current.baseColor().web()) // TODO theme vs config
-            .replaceAll("app-text", Theme.current.fgColor().web())
-            .replaceAll("app-back", Theme.current.baseColor().web())
-            .replaceAll("app-accent", Theme.current.paleHighlightColor().web())
-            .getBytes(StandardCharsets.UTF_8)));
 
 }
