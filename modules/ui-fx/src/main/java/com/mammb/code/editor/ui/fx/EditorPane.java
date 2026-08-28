@@ -778,6 +778,7 @@ public class EditorPane extends ContentPane {
 
     void open(Path path, boolean isShortcutDown) {
         if (isShortcutDown) {
+            ctx.container().select(this);
             ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)));
         } else {
             openOn(path);

@@ -101,9 +101,9 @@ public interface Config {
                 default -> "monospace";
             };
             defaultFontSize = switch (Context.platform) {
-                case "mac" -> 14;
-                case "windows" -> 15;
-                default -> 16;
+                case "mac" -> 13;
+                case "windows" -> 14;
+                default -> 12;
             };
         }
 
