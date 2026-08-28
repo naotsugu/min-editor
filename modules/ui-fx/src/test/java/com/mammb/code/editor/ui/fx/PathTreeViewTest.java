@@ -226,4 +226,40 @@ class PathTreeViewTest {
             assertEquals(newRootItem, treeView.getSelectionModel().getSelectedItem(), "New root (dir1) should be selected");
         });
     }
+
+    @Test
+    void testUnreadableFileDisabled(@TempDir Path tempDir) throws Exception {
+        Path readableFile = Files.createFile(tempDir.resolve("readable.txt"));
+        Path unreadableFile = Files.createFile(tempDir.resolve("unreadable.txt"));
+        boolean permissionChanged = unreadableFile.toFile().setReadable(false);
+
+        if (!permissionChanged || Files.isReadable(unreadableFile)) {
+            // Skip test if OS or environment does not enforce readable flag (e.g., running as root)
+            return;
+        }
+
+        runOnFxThread(() -> {
+            PathTree treeView = new PathTree(tempDir);
+            var cell = (PathTree.PathTreeCell) treeView.getCellFactory().call(treeView);
+
+            // Test readable file cell
+            TreeItem<Path> readableItem = new TreeItem<>(readableFile);
+            cell.updateTreeItem(readableItem);
+            cell.updateItem(readableFile, false);
+            assertFalse(cell.isDisable(), "Readable file cell should not be disabled");
+
+            // Test unreadable file cell
+            TreeItem<Path> unreadableItem = new TreeItem<>(unreadableFile);
+            cell.updateTreeItem(unreadableItem);
+            cell.updateItem(unreadableFile, false);
+            assertTrue(cell.isDisable(), "Unreadable file cell should be disabled");
+
+            // Test empty cell reset
+            cell.updateItem(null, true);
+            assertFalse(cell.isDisable(), "Empty cell should not be disabled");
+        });
+
+        // Cleanup permissions
+        unreadableFile.toFile().setReadable(true);
+    }
 }

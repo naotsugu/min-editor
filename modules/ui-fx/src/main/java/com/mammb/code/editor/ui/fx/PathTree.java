@@ -32,7 +32,6 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
@@ -43,10 +42,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -76,12 +77,12 @@ public class PathTree extends TreeView<Path> {
         super(new TreeItem<>());
         setShowRoot(false);
         setEditable(true);
-        for (Path root : roots) addRoot(root);
+        Arrays.stream(roots).forEach(this::addRoot);
 
         var fileOperationHandler = new FileOperationHandler(this);
         setCellFactory(_ -> new PathTreeCell(this, fileOperationHandler));
         getSelectionModel().selectedItemProperty().addListener((_, _, item) -> {
-                if (item != null && item.getValue() != null) {
+                if (item != null && item.getValue() != null && Files.isReadable(item.getValue())) {
                     selectActions.forEach(action -> action.accept(item.getValue()));
                 }
             });
@@ -234,7 +235,11 @@ public class PathTree extends TreeView<Path> {
             if (!Files.isDirectory(getValue()) || !Files.isReadable(getValue())) return;
 
             try (Stream<Path> stream = Files.list(getValue())) {
-                stream.sorted(Comparator
+                stream.filter(path -> {
+                        var fileName = path.getFileName().toString();
+                        return !Objects.equals(fileName, ".DS_Store") && !Objects.equals(fileName, "Thumbs.db");
+                    })
+                    .sorted(Comparator
                         .comparing((Path p) -> !Files.isDirectory(p))
                         .thenComparing((p -> p.getFileName().toString())))
                     .forEach(path -> {
@@ -257,7 +262,8 @@ public class PathTree extends TreeView<Path> {
             while (true) {
                 try (Stream<Path> stream = Files.list(current)) {
                     List<Path> children = stream.toList();
-                    if (children.size() == 1 && Files.isDirectory(children.getFirst())) {
+                    if (children.size() == 1 && Files.isDirectory(children.getFirst()) &&
+                            Files.isReadable(children.getFirst())) {
                         current = children.getFirst();
                         chain.add(current);
                     } else {
@@ -350,7 +356,7 @@ public class PathTree extends TreeView<Path> {
                 if (e.getClickCount() == 2 && e.getButton() == MouseButton.PRIMARY &&
                         !isEmpty() && getTreeItem() != null) {
                     Path path = getTreeItem().getValue();
-                    if (Files.isRegularFile(path)) {
+                    if (Files.isRegularFile(path) && Files.isReadable(path)) {
                         treeView.doubleSelectActions.forEach(action -> action.accept(path, e.isShortcutDown()));
                         e.consume();
                     }
@@ -360,9 +366,8 @@ public class PathTree extends TreeView<Path> {
 
         @Override
         public void startEdit() {
-            if (!treeView.cellEditable) return;
+            if (!treeView.cellEditable || getItem() == null || !Files.isReadable(getItem())) return;
             super.startEdit();
-            if (getItem() == null) return;
 
             if (textField == null) {
                 createTextField();
@@ -407,7 +412,10 @@ public class PathTree extends TreeView<Path> {
                 setText(null);
                 setGraphic(null);
                 setContextMenu(null);
+                setDisable(false);
             } else {
+                boolean readable = Files.isReadable(item);
+                setDisable(!readable);
                 if (isEditing()) {
                     if (textField != null) {
                         textField.setText(getItem().getFileName().toString());
@@ -419,7 +427,7 @@ public class PathTree extends TreeView<Path> {
                         ? c.getDisplayPath()
                         : item.getFileName().toString());
                     setGraphic(Files.isDirectory(item) ? folder() : file());
-                    setContextMenu(buildContextMenu());
+                    setContextMenu(readable ? buildContextMenu() : null);
                 }
             }
         }
@@ -485,9 +493,11 @@ public class PathTree extends TreeView<Path> {
 
             menu.getItems().add(new SeparatorMenuItem());
             menu.getItems().add(new FxMenuItem("Copy Name", null, false, _ ->
-                Clipboard.getSystemClipboard().setContent(Map.of(DataFormat.PLAIN_TEXT, getItem().getFileName().toString()))));
+                Clipboard.getSystemClipboard().setContent(
+                    Map.of(DataFormat.PLAIN_TEXT, getItem().getFileName().toString()))));
             menu.getItems().add(new FxMenuItem("Copy Path", null, false, _ ->
-                Clipboard.getSystemClipboard().setContent(Map.of(DataFormat.PLAIN_TEXT, getItem().toAbsolutePath().toString()))));
+                Clipboard.getSystemClipboard().setContent(
+                    Map.of(DataFormat.PLAIN_TEXT, getItem().toAbsolutePath().toString()))));
 
             return menu;
         }
