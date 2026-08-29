@@ -54,7 +54,7 @@ public class PathTreePane extends ContentPane {
         this.pathTree = new PathTree(roots);
         this.pathTree.addDoubleSelectAction((path, isShortcutDown) -> {
             if (Files.isReadableFile(path)) {
-                var found = ctx.container().find(contentPane -> {
+                var found = ctx.container().findFirst(contentPane -> {
                     if (contentPane instanceof EditorPane editorPane) {
                         return editorPane.query(Query.contentPath)
                             .filter(contentPath -> Objects.equals(contentPath, path)).isPresent();
@@ -65,7 +65,7 @@ public class PathTreePane extends ContentPane {
                 if (found.isPresent()) {
                     ctx.container().select(found.get());
                 } else {
-                    ctx.container().find(p -> p instanceof EditorPane)
+                    ctx.container().findFirst(p -> p instanceof EditorPane)
                         .map(EditorPane.class::cast)
                         .ifPresent(editorPane -> editorPane.open(path, isShortcutDown));
                 }

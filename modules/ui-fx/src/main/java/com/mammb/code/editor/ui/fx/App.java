@@ -112,7 +112,7 @@ public class App extends Application {
         if (path == null) {
             return;
         }
-        var found = containerHandle.find(contentPane -> {
+        var found = containerHandle.findFirst(contentPane -> {
             if (contentPane instanceof EditorPane editorPane) {
                 return editorPane.query(Query.contentPath)
                     .filter(contentPath -> Objects.equals(contentPath, path)).isPresent();
@@ -129,7 +129,7 @@ public class App extends Application {
 
     private MenuItem[] handleTabMenu(ContentPane contentPane, MenuItem... menuItems) {
         if (contentPane instanceof EditorPane editorPane) {
-            var treeView = new MenuItem("Open Tree View");
+            var treeView = new MenuItem("Open File Tree");
             treeView.setOnAction(_ -> editorPane.addPathTreeView());
             MenuItem[] items = Arrays.copyOf(menuItems, menuItems.length + 1);
             items[menuItems.length - 1] = new SeparatorMenuItem();
@@ -174,8 +174,8 @@ public class App extends Application {
      * @return the content path list
      */
     private List<Path> paramPaths() {
-        return getParameters().getUnnamed().stream()
-            .map(Path::of).filter(Files::exists).toList();
+        return getParameters().getUnnamed().stream().map(Path::of)
+            .filter(Files::exists).filter(Files::isReadableFile).toList();
     }
 
     /**

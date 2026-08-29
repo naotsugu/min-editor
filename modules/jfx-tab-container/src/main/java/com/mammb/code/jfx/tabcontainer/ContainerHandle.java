@@ -29,7 +29,7 @@ public interface ContainerHandle {
 
     void add(Side side, ContentPane contentPane);
 
-    Optional<ContentPane> find(Predicate<ContentPane> predicate);
+    Optional<ContentPane> findFirst(Predicate<ContentPane> predicate);
 
     void select(ContentPane contentPane);
 

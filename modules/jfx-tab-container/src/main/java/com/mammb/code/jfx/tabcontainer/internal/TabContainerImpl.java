@@ -85,7 +85,7 @@ public class TabContainerImpl implements TabContainer, ContainerHandle {
     }
 
     @Override
-    public Optional<ContentPane> find(Predicate<ContentPane> predicate) {
+    public Optional<ContentPane> findFirst(Predicate<ContentPane> predicate) {
         return ctx.find(predicate);
     }
 
