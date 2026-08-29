@@ -19,6 +19,7 @@ import javafx.geometry.Side;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * The ContainerHandle.
@@ -33,6 +34,10 @@ public interface ContainerHandle {
     Optional<ContentPane> findFirst(Predicate<ContentPane> predicate);
 
     List<ContentPane> find(Predicate<ContentPane> predicate);
+
+    default <T extends ContentPane> Stream<T> find(Class<T> clazz) {
+        return find(clazz::isInstance).stream().map(clazz::cast);
+    }
 
     void select(ContentPane contentPane);
 

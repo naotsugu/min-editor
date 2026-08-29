@@ -162,6 +162,7 @@ public class App extends Application {
         stage.getIcons().add(new Image(
             Objects.requireNonNull(App.class.getResourceAsStream("/icon.png"))));
 
+        bindRefreshOnFocused(stage, ctx.container());
         if (System.getProperty("idleGcDelayMillis") != null) {
             // -DidleGcDelayMillis=3000
             bindGcTimer(stage, ctx, Double.parseDouble(System.getProperty("idleGcDelayMillis")));
@@ -201,6 +202,21 @@ public class App extends Application {
             .map(Font::getName)
             .sorted().findFirst();
     }
+
+
+    /**
+     * when focus is gained, reload external changes to the content.
+     */
+    private void bindRefreshOnFocused(Stage stage, ContainerHandle containerHandle) {
+        stage.focusedProperty().addListener((_, _, focused) -> {
+            if (focused) {
+                containerHandle.find(EditorPane.class)
+                    .filter(p -> p.getParent().getScene().getWindow() == stage)
+                    .forEach(EditorPane::refreshIfNeeded);
+            }
+        });
+    }
+
 
     /**
      * Binds a garbage collection timer to the provided stage. The timer triggers
