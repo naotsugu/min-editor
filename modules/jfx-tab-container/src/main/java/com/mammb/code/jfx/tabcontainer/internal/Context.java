@@ -129,8 +129,12 @@ public class Context {
         return handlers;
     }
 
-    Optional<ContentPane> find(Predicate<ContentPane> predicate) {
+    Optional<ContentPane> findFirst(Predicate<ContentPane> predicate) {
         return allTabs().stream().map(Tab::content).filter(predicate).findFirst();
+    }
+
+    List<ContentPane> find(Predicate<ContentPane> predicate) {
+        return allTabs().stream().map(Tab::content).filter(predicate).toList();
     }
 
     Tab currentTab() {
