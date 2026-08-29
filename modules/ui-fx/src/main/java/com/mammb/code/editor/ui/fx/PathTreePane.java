@@ -17,13 +17,17 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Files;
 import com.mammb.code.editor.core.Query;
+import com.mammb.code.editor.core.Session;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.control.SplitPane;
 import java.nio.file.Path;
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -52,27 +56,30 @@ public class PathTreePane extends ContentPane {
     public PathTreePane(FxAppContext ctx, Path... roots) {
         this.ctx = ctx;
         this.pathTree = new PathTree(roots);
-        this.pathTree.addDoubleSelectAction((path, isShortcutDown) -> {
-            if (Files.isReadableFile(path)) {
-                var found = ctx.container().findFirst(contentPane -> {
-                    if (contentPane instanceof EditorPane editorPane) {
-                        return editorPane.query(Query.contentPath)
-                            .filter(contentPath -> Objects.equals(contentPath, path)).isPresent();
-                    } else {
-                        return false;
-                    }
-                });
-                if (found.isPresent()) {
-                    ctx.container().select(found.get());
-                } else {
-                    ctx.container().findFirst(p -> p instanceof EditorPane)
-                        .map(EditorPane.class::cast)
-                        .ifPresent(editorPane -> editorPane.open(path, isShortcutDown));
-                }
-            }
-        });
+        this.pathTree.addDoubleSelectAction(this::handleDoubleSelectAction);
         setPrefWidth(200);
         getChildren().add(pathTree);
+    }
+
+    private void handleDoubleSelectAction(Path path, boolean isShortcutDown) {
+        if (Files.isReadableFile(path)) {
+            List<EditorPane> panes = ctx.container()
+                .find(p -> p instanceof EditorPane).stream()
+                .map(EditorPane.class::cast).toList();
+            if (panes.isEmpty()) {
+                ctx.container().add(new EditorPane(ctx).bindLater(Session.of(path)));
+            }
+
+            var found = panes.stream()
+                .filter(p -> Objects.equals(p.query(Query.contentPath).orElse(null), path))
+                .findFirst();
+
+            if (found.isPresent()) {
+                ctx.container().select(found.get());
+            } else {
+                panes.getFirst().open(path, isShortcutDown);
+            }
+        }
     }
 
     public static PathTreePane fromString(FxAppContext ctx, String string) {
