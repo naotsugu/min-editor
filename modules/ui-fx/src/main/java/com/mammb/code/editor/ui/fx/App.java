@@ -58,8 +58,12 @@ public class App extends Application {
     /** The logger. */
     private static final System.Logger log = System.getLogger(App.class.getName());
 
+    /** The context. */
     private final FxAppContext ctx;
 
+    /**
+     * Constructor.
+     */
     public App() {
         this.ctx = new FxAppContext(this);
     }
@@ -77,16 +81,16 @@ public class App extends Application {
             loadFonts(AppPaths.applicationHomePath()).orElse(null));
 
         var tabContainer = TabContainer.of(
-            this::handleRequireContent, this::handleRequestContent, this::handleRequireStage,
-            this::handleTabMenu, (_, m) -> m);
-
-        ctx.container(tabContainer);
-        var pane = tabContainer.resume(stage,
-            AppPaths.applicationConfPath.resolve("resumes"),
-            str -> (str != null  && str.startsWith("PathTreePane"))
-                ? PathTreePane.fromString(ctx, str)
-                : new EditorPane(ctx).bindLater(Session.valueOf(str))
+            this::handleRequireContent,
+            this::handleRequestContent,
+            this::handleRequireStage,
+            this::handleTabMenu
         );
+        ctx.container(tabContainer);
+
+        Pane pane = tabContainer.resume(stage,
+            AppPaths.applicationConfPath.resolve("resumes"),
+            this::handleResume);
 
         paramPaths().forEach(path ->
             tabContainer.add(new EditorPane(ctx).bindLater(Session.of(path))));
@@ -131,10 +135,16 @@ public class App extends Application {
             items[menuItems.length - 1] = new SeparatorMenuItem();
             items[menuItems.length] = treeView;
             return items;
-        } else if (contentPane instanceof PathTreePane pathTreePane) {
+        } else if (contentPane instanceof PathTreePane) {
             return Arrays.copyOf(menuItems, menuItems.length - 3);
         }
         return menuItems;
+    }
+
+    private ContentPane handleResume(String str) {
+        return (str != null  && str.startsWith("PathTreePane"))
+            ? PathTreePane.fromString(ctx, str)
+            : new EditorPane(ctx).bindLater(Session.valueOf(str));
     }
 
     private Stage intiStage(Stage stage, Pane pane) {
@@ -201,7 +211,7 @@ public class App extends Application {
      * @param ctx the context
      * @param delayMillis the delay in milliseconds before garbage collection is triggered
      */
-    static void bindGcTimer(Stage stage, AppContext ctx, double delayMillis) {
+    private static void bindGcTimer(Stage stage, AppContext ctx, double delayMillis) {
         PauseTransition timer = new PauseTransition(Duration.millis(delayMillis));
         timer.setOnFinished(_ ->
             ctx.spawn(() -> {

@@ -33,6 +33,8 @@ public interface TabContainer extends ContainerHandle {
     interface RequestContent { void accept(ContainerHandle containerHandle, Path path); }
     interface TabMenuItemDecorator { MenuItem[] apply(ContentPane contentPane, MenuItem... items); }
     interface TabHeaderMenuItemDecorator { MenuItem[] apply(ContainerHandle containerHandle, MenuItem... items); }
+    interface ResumeContent { ContentPane apply(String string); }
+
 
     static TabContainer of(
             RequireContent requireContent,
@@ -50,6 +52,19 @@ public interface TabContainer extends ContainerHandle {
         RequireContent requireContent,
         RequestContent requestContent,
         RequireStage requireStage,
+        TabMenuItemDecorator tabMenuDecorator) {
+        return new TabContainerImpl(
+            requireContent,
+            requestContent,
+            requireStage,
+            tabMenuDecorator,
+            (_, items) -> items);
+    }
+
+    static TabContainer of(
+        RequireContent requireContent,
+        RequestContent requestContent,
+        RequireStage requireStage,
         TabMenuItemDecorator tabMenuDecorator,
         TabHeaderMenuItemDecorator tabHeaderMenuDecorator) {
         return new TabContainerImpl(
@@ -60,7 +75,7 @@ public interface TabContainer extends ContainerHandle {
             tabHeaderMenuDecorator);
     }
 
-    Pane resume(Stage stage, Path path, Function<String, ? extends ContentPane> resumeToContent);
+    Pane resume(Stage stage, Path path, ResumeContent resumeContent);
 
     Pane create(Stage stage);
 

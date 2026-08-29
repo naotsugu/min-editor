@@ -26,7 +26,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -54,13 +53,13 @@ public class TabContainerImpl implements TabContainer, ContainerHandle {
     }
 
     @Override
-    public Pane resume(Stage stage, Path path, Function<String, ? extends ContentPane> resumeToContent) {
+    public Pane resume(Stage stage, Path path, ResumeContent resumeContent) {
         var suspend = new Suspend(path);
         var suspendHandler = new SuspendHandler(suspend);
         suspendHandler.bind(stage);
         ctx.handlers().addStageHandler(suspendHandler::bind);
         ctx.addStage(stage);
-        var pane = new Resume(ctx, path).load(stage, resumeToContent);
+        var pane = new Resume(ctx, path).load(stage, resumeContent::apply);
         Platform.runLater(() -> select(null));
         return pane;
     }

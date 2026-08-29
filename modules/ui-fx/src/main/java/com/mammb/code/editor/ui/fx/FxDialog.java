@@ -64,7 +64,8 @@ public class FxDialog extends Dialog<ButtonType> {
 
         var link = new Hyperlink("Keyboard Shortcut");
         link.setOnAction(_ ->
-            ctx.getApp().getHostServices().showDocument("https://github.com/naotsugu/min-editor/blob/main/docs/keyboard-shortcut.md")
+            ctx.getApp().getHostServices().showDocument(
+                "https://github.com/naotsugu/min-editor/blob/main/docs/keyboard-shortcut.md")
         );
 
         var updateButton = new Button("Update And Restart");
@@ -80,16 +81,6 @@ public class FxDialog extends Dialog<ButtonType> {
         box.setAlignment(Pos.BASELINE_LEFT);
         dialog.getDialogPane().setContent(box);
         return dialog;
-    }
-
-    /**
-     * Create the confirmation dialog.
-     * @param owner the owner of the dialog
-     * @param text the text
-     * @return the confirmation dialog
-     */
-    public static FxDialog confirmation(Window owner, String text) {
-        return new FxDialog(owner, "Confirmation", text, ButtonType.CANCEL, ButtonType.OK);
     }
 
 }

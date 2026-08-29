@@ -156,8 +156,8 @@ public class FindInFilesPane extends BorderPane {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() throws Exception {
-                future.get();
-                return null;
+            future.get();
+            return null;
             }
         };
         task.setOnSucceeded(_ -> reset());

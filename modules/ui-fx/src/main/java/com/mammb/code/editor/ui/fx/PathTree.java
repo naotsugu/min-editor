@@ -22,6 +22,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
@@ -452,52 +453,77 @@ public class PathTree extends TreeView<Path> {
             if (isRoot) {
                 Path parent = getItem().getParent();
                 if (parent != null) {
-                    menu.getItems().add(new FxMenuItem("Move to Parent Directory", null, false, _ ->
-                        fileOperationHandler.moveToParent(treeItem)));
+                    var move = new MenuItem("Move to Parent Directory");
+                    move.setOnAction(_ -> fileOperationHandler.moveToParent(treeItem));
+                    menu.getItems().add(move);
                 }
-                menu.getItems().add(new FxMenuItem("Remove", null, false, _ ->
-                    fileOperationHandler.removeRoot(treeItem)));
+                var remove = new MenuItem("Remove");
+                remove.setOnAction(_ -> fileOperationHandler.removeRoot(treeItem));
+                menu.getItems().add(remove);
             } else {
-                menu.getItems().add(new FxMenuItem("Cut", null, false, _ ->
-                    fileOperationHandler.cut(treeItem)));
-                menu.getItems().add(new FxMenuItem("Copy", null, false, _ ->
-                    fileOperationHandler.copy(treeItem)));
-                menu.getItems().add(new FxMenuItem("Rename", null, false, _ ->
-                    withCellEdit(() -> treeView.edit(treeItem))));
-                menu.getItems().add(new FxMenuItem("Delete", null, false, _ ->
-                    fileOperationHandler.delete(treeItem)));
+                var cut = new MenuItem("Cut");
+                cut.setOnAction(_ -> fileOperationHandler.cut(treeItem));
+                menu.getItems().add(cut);
+
+                var copy = new MenuItem("Copy");
+                copy.setOnAction(_ -> fileOperationHandler.copy(treeItem));
+                menu.getItems().add(copy);
+
+                var rename = new MenuItem("Rename");
+                rename.setOnAction(_ -> withCellEdit(() -> treeView.edit(treeItem)));
+                menu.getItems().add(rename);
+
+                var delete = new MenuItem("Delete");
+                delete.setOnAction(_ -> fileOperationHandler.delete(treeItem));
+                menu.getItems().add(delete);
             }
 
             if (isDirectory) {
                 if (!isRoot) {
-                    menu.getItems().add(new FxMenuItem("Set as Root", null, false, _ ->
-                        fileOperationHandler.setAsRoot(treeItem)));
+                    var asRoot = new MenuItem("Set as Root");
+                    asRoot.setOnAction(_ -> fileOperationHandler.setAsRoot(treeItem));
+                    menu.getItems().add(asRoot);
                 }
-                menu.getItems().add(new FxMenuItem("Paste", null, !Clipboard.getSystemClipboard().hasFiles(), _ ->
-                    fileOperationHandler.paste(treeItem)));
-                menu.getItems().add(new SeparatorMenuItem());
 
-                menu.getItems().add(new FxMenuItem("New File", null, false, _ ->
-                    fileOperationHandler.createNew(treeItem, true)));
-                menu.getItems().add(new FxMenuItem("New Directory", null, false, _ ->
-                    fileOperationHandler.createNew(treeItem, false)));
+                var paste = new MenuItem("Paste");
+                paste.setDisable(!Clipboard.getSystemClipboard().hasFiles());
+                paste.setOnAction(_ -> fileOperationHandler.paste(treeItem));
+                menu.getItems().add(paste);
 
                 menu.getItems().add(new SeparatorMenuItem());
-                menu.getItems().add(new FxMenuItem("Refresh", null, false, _ ->
-                    fileOperationHandler.refresh(treeItem)));
+
+                var newFile = new MenuItem("New File");
+                newFile.setOnAction(_ -> fileOperationHandler.createNew(treeItem, true));
+                menu.getItems().add(newFile);
+
+                var newDir = new MenuItem("New Directory");
+                newDir.setOnAction(_ -> fileOperationHandler.createNew(treeItem, false));
+                menu.getItems().add(newDir);
+
+                menu.getItems().add(new SeparatorMenuItem());
+
+                var refresh = new MenuItem("Refresh");
+                refresh.setOnAction(_ -> fileOperationHandler.refresh(treeItem));
+                menu.getItems().add(refresh);
+
                 if (treeItem instanceof CompactPathTreeItem) {
-                    menu.getItems().add(new FxMenuItem("Expand Directory", null, false, _ ->
-                        fileOperationHandler.expandCompactDirectory((CompactPathTreeItem) treeItem)));
+                    var expand = new MenuItem("Expand Directory");
+                    expand.setOnAction(_ -> fileOperationHandler.expandCompactDirectory((CompactPathTreeItem) treeItem));
+                    menu.getItems().add(expand);
                 }
             }
 
             menu.getItems().add(new SeparatorMenuItem());
-            menu.getItems().add(new FxMenuItem("Copy Name", null, false, _ ->
-                Clipboard.getSystemClipboard().setContent(
-                    Map.of(DataFormat.PLAIN_TEXT, getItem().getFileName().toString()))));
-            menu.getItems().add(new FxMenuItem("Copy Path", null, false, _ ->
-                Clipboard.getSystemClipboard().setContent(
-                    Map.of(DataFormat.PLAIN_TEXT, getItem().toAbsolutePath().toString()))));
+
+            var copyName = new MenuItem("Copy Name");
+            copyName.setOnAction(_ -> Clipboard.getSystemClipboard().setContent(
+                    Map.of(DataFormat.PLAIN_TEXT, getItem().getFileName().toString())));
+            menu.getItems().add(copyName);
+
+            var copyPath = new MenuItem("Copy Path");
+            copyPath.setOnAction(_ ->Clipboard.getSystemClipboard().setContent(
+                    Map.of(DataFormat.PLAIN_TEXT, getItem().toAbsolutePath().toString())));
+            menu.getItems().add(copyPath);
 
             return menu;
         }

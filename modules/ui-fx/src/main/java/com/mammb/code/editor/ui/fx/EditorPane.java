@@ -396,8 +396,8 @@ public class EditorPane extends ContentPane {
         Task<Void> task = new Task<>() {
             @Override
             protected Void call() {
-                model().apply(action);
-                return null;
+            model().apply(action);
+            return null;
             }
         };
         task.setOnSucceeded(_ -> {
