@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 import com.mammb.code.editor.core.Query;
 import com.mammb.code.editor.core.Session;
 import com.mammb.code.editor.platform.AppPaths;
+import com.mammb.code.editor.platform.DomainSocket;
 import com.mammb.code.editor.ui.base.AppContext;
 import com.mammb.code.jfx.tabcontainer.ContainerHandle;
 import com.mammb.code.jfx.tabcontainer.ContentPane;
@@ -87,6 +88,7 @@ public class App extends Application {
             this::handleTabMenu
         );
         ctx.container(tabContainer);
+        bindDomainSocket(tabContainer);
 
         Pane pane = tabContainer.resume(stage,
             AppPaths.applicationConfPath.resolve("resumes"),
@@ -217,6 +219,23 @@ public class App extends Application {
         });
     }
 
+    private void bindDomainSocket(ContainerHandle containerHandle) {
+        // the Unix domain socket path
+        final Path socket = AppPaths.applicationConfPath.resolve("socket");
+        final DomainSocket ds = new DomainSocket(socket);
+        Runtime.getRuntime().addShutdownHook(new Thread(ds::close));
+        ds.addListener(msg -> {
+            var path = Path.of(msg);
+            if (Files.isReadableFile(path)) {
+                Platform.runLater(() -> handleRequestContent(containerHandle, path));
+            }
+        });
+        try {
+            ds.start();
+        } catch (Exception e) {
+            log.log(System.Logger.Level.WARNING, e.getMessage());
+        }
+    }
 
     /**
      * Binds a garbage collection timer to the provided stage. The timer triggers

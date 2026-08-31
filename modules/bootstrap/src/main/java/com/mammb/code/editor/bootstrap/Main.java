@@ -15,7 +15,6 @@
  */
 package com.mammb.code.editor.bootstrap;
 
-import java.nio.file.Path;
 import java.util.Locale;
 import com.mammb.code.editor.platform.AppPaths;
 import com.mammb.code.editor.platform.LockFile;
@@ -32,10 +31,6 @@ public class Main {
 
     /** The lock file. */
     private static final LockFile lockFile = new LockFile(AppPaths.applicationConfPath.resolve("lock"));
-
-    /** The Unix domain socket path. */
-    private static final Path socket = AppPaths.applicationConfPath.resolve("socket");
-
 
     /**
      * Launch application.
