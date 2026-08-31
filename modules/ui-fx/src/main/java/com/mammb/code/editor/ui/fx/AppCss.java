@@ -68,7 +68,7 @@ public class AppCss {
           -fx-background-color:app-back;
           -fx-default-button: #2F65CA;
           -fx-font-family: "Consolas";
-          -fx-font-size: 14px;
+          -fx-font-size: 13px;
           -fx-body-color: -fx-color;
         }
         """ .replaceAll("app-base", theme.baseColor().web()) // TODO theme vs config

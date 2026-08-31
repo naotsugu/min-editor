@@ -133,9 +133,9 @@ public class App extends Application {
         if (contentPane instanceof EditorPane editorPane) {
             var treeView = new MenuItem("Open File Tree");
             treeView.setOnAction(_ -> editorPane.addPathTreeView());
-            MenuItem[] items = Arrays.copyOf(menuItems, menuItems.length + 1);
-            items[menuItems.length - 1] = new SeparatorMenuItem();
-            items[menuItems.length] = treeView;
+            MenuItem[] items = Arrays.copyOf(menuItems, menuItems.length + 2);
+            items[items.length - 2] = new SeparatorMenuItem();
+            items[items.length - 1] = treeView;
             return items;
         } else if (contentPane instanceof PathTreePane) {
             return Arrays.copyOf(menuItems, menuItems.length - 3);

@@ -149,18 +149,28 @@ public class BranchNode extends TreeNode implements ParentOf<TreeNode> {
             child.parent(this);
             splitPane.getItems().add(child);
         }
+        setupResizableWithParent();
     }
 
     @Override
     public void addChild(int index, TreeNode child) {
         child.parent(this);
         splitPane.getItems().add(index, child);
+        setupResizableWithParent();
     }
 
     @Override
     public boolean removeChild(TreeNode child) {
         child.parent(null);
-        return splitPane.getItems().remove(child);
+        boolean removed = splitPane.getItems().remove(child);
+        setupResizableWithParent();
+        return removed;
+    }
+
+    private void setupResizableWithParent() {
+        if (splitPane.getItems().isEmpty()) return;
+        splitPane.getItems().forEach(node -> SplitPane.setResizableWithParent(node, false));
+        SplitPane.setResizableWithParent(splitPane.getItems().getLast(), true);
     }
 
     public Orientation orientation() {
