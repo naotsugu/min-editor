@@ -15,8 +15,12 @@
  */
 package com.mammb.code.editor.bootstrap;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Locale;
 import com.mammb.code.editor.platform.AppPaths;
+import com.mammb.code.editor.platform.DomainSocket;
 import com.mammb.code.editor.platform.LockFile;
 import com.mammb.code.editor.ui.fx.AppLauncher;
 
@@ -41,7 +45,10 @@ public class Main {
         try {
             lockFile.tryLock();
         } catch (Exception e) {
-            log.log(System.Logger.Level.ERROR, e);
+            log.log(System.Logger.Level.ERROR, e.getLocalizedMessage());
+            Arrays.stream(args).filter(arg -> Files.exists(Path.of(arg))).forEach(path ->
+                DomainSocket.sendMessage(AppPaths.applicationConfPath.resolve("socket"), path)
+            );
             System.exit(1);
         }
 

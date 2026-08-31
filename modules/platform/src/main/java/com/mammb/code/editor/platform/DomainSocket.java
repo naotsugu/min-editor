@@ -16,12 +16,15 @@
 package com.mammb.code.editor.platform;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.StandardProtocolFamily;
 import java.net.UnixDomainSocketAddress;
+import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -128,6 +131,19 @@ public class DomainSocket implements AutoCloseable {
             Files.deleteIfExists(socketPath);
         } catch (Exception e) {
             log.log(System.Logger.Level.ERROR, "could not delete socket at " + socketPath, e);
+        }
+    }
+
+    public static void sendMessage(Path path, String message) {
+        UnixDomainSocketAddress address = UnixDomainSocketAddress.of(path);
+        try (SocketChannel clientChannel = SocketChannel.open(StandardProtocolFamily.UNIX)) {
+            clientChannel.connect(address);
+            ByteBuffer buffer = ByteBuffer.wrap(message.getBytes(StandardCharsets.UTF_8));
+            while (buffer.hasRemaining()) {
+                clientChannel.write(buffer);
+            }
+        } catch (IOException e) {
+            log.log(System.Logger.Level.WARNING, "could not send message to " + path, e);
         }
     }
 
