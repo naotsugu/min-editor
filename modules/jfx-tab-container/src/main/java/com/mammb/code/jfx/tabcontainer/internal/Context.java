@@ -124,6 +124,11 @@ public class Context {
         referOnLru(tab);
     }
 
+    Handlers handlers(LeafNode leafNode) {
+        focus(leafNode.selectedTab());
+        return handlers;
+    }
+
     Handlers handlers() {
         return handlers;
     }

@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -34,6 +35,38 @@ public class AppConfig extends Config.AbstractConfig {
 
     /** The logger. */
     private static final System.Logger log = System.getLogger(AppConfig.class.getName());
+
+    /**
+     * Get the ui font name.
+     * @return the ui font name
+     */
+    public String uiFontName() {
+        return get("uiFontName", "Consolas");
+    }
+
+    /**
+     * Set the ui font name in the configuration.
+     * @param uiFontName the ui font name
+     */
+    public void uiFontName(String uiFontName) {
+        put("uiFontName", uiFontName);
+    }
+
+    /**
+     * Get the ui font size.
+     * @return the ui font size
+     */
+    public double uiFontSize() {
+        return Double.parseDouble(get("uiFontSize", "14"));
+    }
+
+    /**
+     * Set the ui font size in the configuration.
+     * @param uiFontSize the ui font size to be set
+     */
+    public void uiFontSize(double uiFontSize) {
+        put("uiFontSize", uiFontSize);
+    }
 
     /**
      * Constructs an instance of AppConfig that manages application configuration.

@@ -181,6 +181,7 @@ public class LeafNode extends TreeNode implements ParentOf<Tab> {
                 e.setDropCompleted(true);
                 e.consume();
             }
+            ctx.handlers(this);
             paths.forEach(path -> ctx.handlers().requestContent(path));
             return;
         }

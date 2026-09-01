@@ -17,6 +17,7 @@ package com.mammb.code.editor.ui.fx;
 
 import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Theme;
+import com.mammb.code.editor.ui.base.AppConfig;
 import javafx.scene.Scene;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -28,14 +29,14 @@ import java.util.Base64;
 public class AppCss {
 
     private final Theme theme;
-    private final Config config;
+    private final AppConfig config;
 
-    private AppCss(Theme theme, Config config) {
+    private AppCss(Theme theme, AppConfig config) {
         this.theme = theme;
         this.config = config;
     }
 
-    public static AppCss of(Theme theme, Config config) {
+    public static AppCss of(Theme theme, AppConfig config) {
         return new AppCss(theme, config);
     }
 
@@ -78,8 +79,8 @@ public class AppCss {
             .replaceAll("app-text", theme.fgColor().web())
             .replaceAll("app-back", theme.baseColor().web())
             .replaceAll("app-accent", theme.paleHighlightColor().web())
-            .replaceAll("app-font-name", "Consolas")
-            .replaceAll("app-font-size", "14px");
+            .replaceAll("app-font-name", config.uiFontName())
+            .replaceAll("app-font-size", config.uiFontSize() + "px");
     }
 
     private String textCss() {

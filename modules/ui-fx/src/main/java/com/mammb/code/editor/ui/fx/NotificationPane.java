@@ -97,7 +97,7 @@ public class NotificationPane extends VBox implements NotifyListener {
 
             var headlineText = new Text(headline);
             headlineText.setWrappingWidth(getColumnConstraints().get(1).getPrefWidth());
-            headlineText.setFont(Font.font("Consolas", FontWeight.BOLD, 13));
+            headlineText.setStyle("-fx-font-weight: bold;");
             headlineText.setFill(Color.web(Theme.current.fgColor().web()));
             setMargin(headlineText, new Insets(2, 0, 0, 0));
             setConstraints(headlineText, 1, 0);
@@ -120,7 +120,6 @@ public class NotificationPane extends VBox implements NotifyListener {
             if (description != null && !description.isBlank()) {
                 var descriptionText = new Text(description);
                 descriptionText.setWrappingWidth(getColumnConstraints().get(1).getPrefWidth());
-                descriptionText.setFont(Font.font("Consolas", FontWeight.NORMAL, 12));
                 descriptionText.setFill(Color.web(Theme.current.fgColor().web()));
                 setMargin(descriptionText, new Insets(0, 0, 16, 0));
                 setConstraints(descriptionText, 1, 1);
