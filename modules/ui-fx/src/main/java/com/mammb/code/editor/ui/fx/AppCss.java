@@ -15,6 +15,7 @@
  */
 package com.mammb.code.editor.ui.fx;
 
+import com.mammb.code.editor.core.Config;
 import com.mammb.code.editor.core.Theme;
 import javafx.scene.Scene;
 import java.nio.charset.StandardCharsets;
@@ -27,13 +28,15 @@ import java.util.Base64;
 public class AppCss {
 
     private final Theme theme;
+    private final Config config;
 
-    private AppCss(Theme theme) {
+    private AppCss(Theme theme, Config config) {
         this.theme = theme;
+        this.config = config;
     }
 
-    public static AppCss of(Theme theme) {
-        return new AppCss(theme);
+    public static AppCss of(Theme theme, Config config) {
+        return new AppCss(theme, config);
     }
 
     public void apply(Scene scene) {
@@ -67,14 +70,16 @@ public class AppCss {
           -fx-mark-highlight-color: derive(-fx-mark-color,20%);
           -fx-background-color:app-back;
           -fx-default-button: #2F65CA;
-          -fx-font-family: "Consolas";
-          -fx-font-size: 13px;
+          -fx-font-family: "app-font-name";
+          -fx-font-size: app-font-size;
           -fx-body-color: -fx-color;
         }
         """ .replaceAll("app-base", theme.baseColor().web()) // TODO theme vs config
             .replaceAll("app-text", theme.fgColor().web())
             .replaceAll("app-back", theme.baseColor().web())
-            .replaceAll("app-accent", theme.paleHighlightColor().web());
+            .replaceAll("app-accent", theme.paleHighlightColor().web())
+            .replaceAll("app-font-name", "Consolas")
+            .replaceAll("app-font-size", "14px");
     }
 
     private String textCss() {

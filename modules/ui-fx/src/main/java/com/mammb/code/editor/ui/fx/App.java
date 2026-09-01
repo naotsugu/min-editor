@@ -158,7 +158,7 @@ public class App extends Application {
         stackPane.getChildren().addAll(mainPane, notifyListener);
 
         Scene scene = new Scene(stackPane, Color.TRANSPARENT);
-        AppCss.of(Theme.current).apply(scene);
+        AppCss.of(Theme.current, ctx.config()).apply(scene);
         stage.setScene(scene);
         stage.setTitle(AppVersion.appName);
         stage.getIcons().add(new Image(
