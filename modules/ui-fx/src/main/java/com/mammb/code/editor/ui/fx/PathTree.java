@@ -511,6 +511,11 @@ public class PathTree extends TreeView<Path> {
                     expand.setOnAction(_ -> fileOperationHandler.expandCompactDirectory((CompactPathTreeItem) treeItem));
                     menu.getItems().add(expand);
                 }
+            } else {
+                var open = new MenuItem("Open");
+                open.setOnAction(_ ->
+                    treeView.doubleSelectActions.forEach(action -> action.accept(getItem(), true)));
+                menu.getItems().add(open);
             }
 
             menu.getItems().add(new SeparatorMenuItem());

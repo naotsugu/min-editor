@@ -44,9 +44,9 @@ public class PathTreePane extends ContentPane {
     /** The pathTreeView. */
     private final PathTree pathTree;
     /** The short name property. */
-    private final SimpleObjectProperty<String> shortNameProperty = new SimpleObjectProperty<>("Files");
+    private final SimpleObjectProperty<String> shortNameProperty = new SimpleObjectProperty<>("File Tree");
     /** The full name property. */
-    private final SimpleObjectProperty<String> fullNameProperty = new SimpleObjectProperty<>("Files");
+    private final SimpleObjectProperty<String> fullNameProperty = new SimpleObjectProperty<>("File Tree");
 
     /**
      * Constructor.
