@@ -59,7 +59,10 @@ class FindInFilesTest {
         Files.writeString(file2, "goodbye world\n");
 
         List<FindInFiles.Found> results = new ArrayList<>();
-        Future<?> future = FindInFiles.run(tempDir, "hello", results::addAll);
+        Future<?> future = FindInFiles.run(tempDir, "hello", found -> {
+            try { Thread.sleep(1000); } catch (InterruptedException ignore) { }
+            results.addAll(found);
+        });
 
         future.cancel(true);
 
