@@ -474,7 +474,7 @@ public class PathTree extends TreeView<Path> {
                 menu.getItems().add(rename);
 
                 var delete = new MenuItem("Delete");
-                delete.setOnAction(_ -> fileOperationHandler.delete(treeItem));
+                delete.setOnAction(_ -> handleDelete(treeItem));
                 menu.getItems().add(delete);
             }
 
@@ -531,6 +531,17 @@ public class PathTree extends TreeView<Path> {
             menu.getItems().add(copyPath);
 
             return menu;
+        }
+
+        private void handleDelete(TreeItem<Path> treeItem) {
+            Path path = treeItem.getValue();
+            var ret = FxDialog.confirmation(treeView.getScene().getWindow(),
+                "Are you sure you want to delete " + path.getFileName() + "?")
+                .showAndWait().orElse(null);
+            if (ret == null || ret != ButtonType.OK) {
+                return;
+            }
+            fileOperationHandler.delete(treeItem);
         }
 
         private void withCellEdit(Runnable runnable) {
@@ -611,29 +622,19 @@ public class PathTree extends TreeView<Path> {
 
         void delete(TreeItem<Path> item) {
             Path path = item.getValue();
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.initOwner(treeView.getScene().getWindow());
-            alert.setTitle("Delete Confirmation");
-            alert.setHeaderText(null);
-            alert.setGraphic(null);
-            alert.setContentText("Are you sure you want to delete " + path.getFileName() + "?");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                try {
-                    if (Files.isDirectory(path)) {
-                        try (Stream<Path> walk = Files.walk(path)) {
-                            walk.sorted(Comparator.reverseOrder()).forEach(p -> {
-                                try { Files.delete(p); } catch (IOException e) { /* ignore */ }
-                            });
-                        }
-                    } else {
-                        Files.delete(path);
+            try {
+                if (Files.isDirectory(path)) {
+                    try (Stream<Path> walk = Files.walk(path)) {
+                        walk.sorted(Comparator.reverseOrder()).forEach(p -> {
+                            try { Files.delete(p); } catch (IOException e) { /* ignore */ }
+                        });
                     }
-                    item.getParent().getChildren().remove(item);
-                } catch (IOException e) {
-                    showError("Delete Failed", "Could not delete " + path.getFileName() + ": " + e.getMessage());
+                } else {
+                    Files.delete(path);
                 }
+                item.getParent().getChildren().remove(item);
+            } catch (IOException e) {
+                showError("Delete Failed", "Could not delete " + path.getFileName() + ": " + e.getMessage());
             }
         }
 

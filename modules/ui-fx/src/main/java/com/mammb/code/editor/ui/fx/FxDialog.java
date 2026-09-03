@@ -83,4 +83,14 @@ public class FxDialog extends Dialog<ButtonType> {
         return dialog;
     }
 
+    /**
+     * Create the confirmation dialog.
+     * @param owner the owner of the dialog
+     * @param text the text
+     * @return the confirmation dialog
+     */
+    public static FxDialog confirmation(Window owner, String text) {
+        return new FxDialog(owner, "Confirmation", text, ButtonType.CANCEL, ButtonType.OK);
+    }
+
 }
