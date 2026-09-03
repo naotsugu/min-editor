@@ -534,9 +534,9 @@ public class PathTree extends TreeView<Path> {
         }
 
         private void handleDelete(TreeItem<Path> treeItem) {
-            Path path = treeItem.getValue();
-            var ret = FxDialog.confirmation(treeView.getScene().getWindow(),
-                "Are you sure you want to delete " + path.getFileName() + "?")
+            var ret = FxDialog.confirmation(
+                    treeView.getScene().getWindow(),
+                    "Are you sure you want to delete " + treeItem.getValue().getFileName() + "?")
                 .showAndWait().orElse(null);
             if (ret == null || ret != ButtonType.OK) {
                 return;
