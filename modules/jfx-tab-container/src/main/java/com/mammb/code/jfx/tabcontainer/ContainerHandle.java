@@ -31,6 +31,8 @@ public interface ContainerHandle {
 
     void add(Side side, ContentPane contentPane);
 
+    void closeForce(ContentPane contentPane);
+
     Optional<ContentPane> findFirst(Predicate<ContentPane> predicate);
 
     List<ContentPane> find(Predicate<ContentPane> predicate);

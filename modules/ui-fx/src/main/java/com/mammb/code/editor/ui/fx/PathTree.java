@@ -74,6 +74,8 @@ public class PathTree extends TreeView<Path> {
     /** The currently "cut" item, managed at the TreeView level to avoid static state. */
     private TreeItem<Path> cutItem = null;
 
+    private ApplyAction<TreeItem<Path>> deleteApplyAction = (e, c) -> { c.accept(e); return true; };
+
     public PathTree(Path... roots) {
         super(new TreeItem<>());
         setShowRoot(false);
@@ -181,6 +183,10 @@ public class PathTree extends TreeView<Path> {
 
     public void addDoubleSelectAction(BiConsumer<Path, Boolean> action) {
         doubleSelectActions.add(action);
+    }
+
+    public void setDeleteApplyAction(ApplyAction<TreeItem<Path>> applyAction) {
+        deleteApplyAction = applyAction;
     }
 
     public TreeItem<Path> getCutItem() {
@@ -526,7 +532,7 @@ public class PathTree extends TreeView<Path> {
             menu.getItems().add(copyName);
 
             var copyPath = new MenuItem("Copy Path");
-            copyPath.setOnAction(_ ->Clipboard.getSystemClipboard().setContent(
+            copyPath.setOnAction(_ -> Clipboard.getSystemClipboard().setContent(
                     Map.of(DataFormat.PLAIN_TEXT, getItem().toAbsolutePath().toString())));
             menu.getItems().add(copyPath);
 
@@ -538,10 +544,9 @@ public class PathTree extends TreeView<Path> {
                     treeView.getScene().getWindow(),
                     "Are you sure you want to delete " + treeItem.getValue().getFileName() + "?")
                 .showAndWait().orElse(null);
-            if (ret == null || ret != ButtonType.OK) {
-                return;
+            if (ret == ButtonType.OK) {
+                treeView.deleteApplyAction.apply(treeItem, fileOperationHandler::delete);
             }
-            fileOperationHandler.delete(treeItem);
         }
 
         private void withCellEdit(Runnable runnable) {
@@ -843,6 +848,10 @@ public class PathTree extends TreeView<Path> {
             alert.setContentText(message);
             alert.showAndWait();
         }
+    }
+
+    public interface ApplyAction<E> {
+        boolean apply(E value, Consumer<E> consumer);
     }
 
     // --- Static helper methods for graphics ---

@@ -85,6 +85,13 @@ public class TabContainerImpl implements TabContainer, ContainerHandle {
     }
 
     @Override
+    public void closeForce(ContentPane contentPane) {
+        var tabs = ctx.allTabs().stream().filter(tab -> Objects.equals(tab.content(), contentPane)).toList();
+        contentPane.close();
+        tabs.forEach(Tab::close);
+    }
+
+    @Override
     public Optional<ContentPane> findFirst(Predicate<ContentPane> predicate) {
         return ctx.findFirst(predicate);
     }

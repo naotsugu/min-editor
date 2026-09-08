@@ -22,12 +22,14 @@ import com.mammb.code.jfx.tabcontainer.ContentPane;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TreeItem;
 import java.nio.file.Path;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -57,6 +59,7 @@ public class PathTreePane extends ContentPane {
         this.ctx = ctx;
         this.pathTree = new PathTree(roots);
         this.pathTree.addDoubleSelectAction(this::handleDoubleSelectAction);
+        this.pathTree.setDeleteApplyAction(this::handleItemDeleteAction);
         setPrefWidth(200);
         getChildren().add(pathTree);
     }
@@ -80,6 +83,23 @@ public class PathTreePane extends ContentPane {
                 panes.getFirst().open(path, isShortcutDown);
             }
         }
+    }
+
+    private boolean handleItemDeleteAction(TreeItem<Path> item, Consumer<TreeItem<Path>> consumer) {
+        Path path = item.getValue();
+        if (Files.isReadableFile(path)) {
+            var panes = ctx.container().find(EditorPane.class)
+                .filter(pane -> Objects.equals(pane.query(Query.contentPath).orElse(null), path))
+                .toList();
+            panes.forEach(pane -> ctx.container().closeForce(pane));
+        } else if (Files.isReadableDirectory(path)) {
+            // TODO
+        } else {
+            return false;
+        }
+
+        consumer.accept(item);
+        return true;
     }
 
     public static PathTreePane fromString(FxAppContext ctx, String string) {
