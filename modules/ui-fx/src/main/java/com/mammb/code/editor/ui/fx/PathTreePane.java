@@ -93,11 +93,16 @@ public class PathTreePane extends ContentPane {
                 .toList();
             panes.forEach(pane -> ctx.container().closeForce(pane));
         } else if (Files.isReadableDirectory(path)) {
-            // TODO
+            var panes = ctx.container().find(EditorPane.class)
+                .filter(pane -> {
+                    Path p = pane.query(Query.contentPath).orElse(null);
+                    return (p != null && p.startsWith(path));
+                })
+                .toList();
+            panes.forEach(pane -> ctx.container().closeForce(pane));
         } else {
             return false;
         }
-
         consumer.accept(item);
         return true;
     }
