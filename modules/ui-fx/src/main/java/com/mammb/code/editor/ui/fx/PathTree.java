@@ -599,6 +599,13 @@ public class PathTree extends TreeView<Path> {
             String name = result.get().trim();
             if (name.isEmpty()) return;
 
+            createNew(parentItem, name, isFile);
+        }
+
+        void createNew(TreeItem<Path> parentItem, String name, boolean isFile) {
+            Path parentPath = parentItem.getValue();
+            if (!Files.isDirectory(parentPath)) return;
+
             Path newPath = parentPath.resolve(name);
             if (Files.exists(newPath)) {
                 showError("Already Exists", "A file or directory with that name already exists.");
@@ -606,19 +613,34 @@ public class PathTree extends TreeView<Path> {
             }
 
             try {
+                // Retrieve children first to trigger lazy loading before creating the file/directory on disk.
+                // Otherwise, lazy loading triggered by getChildren() would find the newly created file on disk
+                // and add it during buildChildren(), resulting in a duplicate when newItem is added.
+                ObservableList<TreeItem<Path>> children = parentItem.getChildren();
+
                 if (isFile) {
                     Files.createFile(newPath);
                 } else {
                     Files.createDirectory(newPath);
                 }
 
-                PathTreeItem newItem = new PathTreeItem(newPath, treeView.isCompactFolders());
-                parentItem.getChildren().add(newItem);
-                parentItem.getChildren().sort(Comparator
-                    .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
-                    .thenComparing(t -> t.getValue().getFileName().toString()));
+                TreeItem<Path> targetItem = children.stream()
+                    .filter(c -> Objects.equals(c.getValue(), newPath))
+                    .findFirst()
+                    .orElse(null);
 
-                Platform.runLater(() -> treeView.getSelectionModel().select(newItem));
+                if (targetItem == null) {
+                    PathTreeItem newItem = new PathTreeItem(newPath, treeView.isCompactFolders());
+                    children.add(newItem);
+                    children.sort(Comparator
+                        .comparing((TreeItem<Path> p) -> !Files.isDirectory(p.getValue()))
+                        .thenComparing(t -> t.getValue().getFileName().toString()));
+                    targetItem = newItem;
+                }
+
+                parentItem.setExpanded(true);
+                final TreeItem<Path> finalTargetItem = targetItem;
+                Platform.runLater(() -> treeView.getSelectionModel().select(finalTargetItem));
 
             } catch (IOException e) {
                 showError("Creation Failed", "Could not create " + newPath.getFileName() + ": " + e.getMessage());

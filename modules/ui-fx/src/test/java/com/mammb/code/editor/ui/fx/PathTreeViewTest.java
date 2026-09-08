@@ -262,4 +262,58 @@ class PathTreeViewTest {
         // Cleanup permissions
         unreadableFile.toFile().setReadable(true);
     }
+
+    @Test
+    void testCreateNewFileInNewlyCreatedDirectory(@TempDir Path tempDir) throws Exception {
+        runOnFxThread(() -> {
+            PathTree treeView = new PathTree(tempDir);
+            treeView.setCompactFolders(false);
+            PathTree.FileOperationHandler handler = new PathTree.FileOperationHandler(treeView);
+
+            assertEquals(1, treeView.getRoot().getChildren().size());
+            TreeItem<Path> rootItem = treeView.getRoot().getChildren().getFirst();
+
+            // 1. Create a new directory under root
+            handler.createNew(rootItem, "newDir", false);
+            assertEquals(1, rootItem.getChildren().size());
+            TreeItem<Path> newDirItem = rootItem.getChildren().getFirst();
+            assertEquals("newDir", newDirItem.getValue().getFileName().toString());
+
+            // 2. Create a new file under the newly created directory
+            handler.createNew(newDirItem, "newFile.txt", true);
+
+            // Should display exactly 1 file, not 2
+            assertEquals(1, newDirItem.getChildren().size(), "New directory should contain exactly one file");
+            assertEquals("newFile.txt", newDirItem.getChildren().getFirst().getValue().getFileName().toString());
+
+            // 3. Refreshing should keep exactly 1 file
+            handler.refresh(newDirItem);
+            assertEquals(1, newDirItem.getChildren().size(), "After refresh, should still contain exactly one file");
+            assertEquals("newFile.txt", newDirItem.getChildren().getFirst().getValue().getFileName().toString());
+        });
+    }
+
+    @Test
+    void testCreateNewDirectoryInNewlyCreatedDirectory(@TempDir Path tempDir) throws Exception {
+        runOnFxThread(() -> {
+            PathTree treeView = new PathTree(tempDir);
+            treeView.setCompactFolders(false);
+            PathTree.FileOperationHandler handler = new PathTree.FileOperationHandler(treeView);
+
+            assertEquals(1, treeView.getRoot().getChildren().size());
+            TreeItem<Path> rootItem = treeView.getRoot().getChildren().getFirst();
+
+            // 1. Create a new directory under root
+            handler.createNew(rootItem, "dirA", false);
+            assertEquals(1, rootItem.getChildren().size());
+            TreeItem<Path> dirAItem = rootItem.getChildren().getFirst();
+
+            // 2. Create another directory under dirA
+            handler.createNew(dirAItem, "dirB", false);
+
+            // Should display exactly 1 directory, not 2
+            assertEquals(1, dirAItem.getChildren().size(), "dirA should contain exactly one directory");
+            assertEquals("dirB", dirAItem.getChildren().getFirst().getValue().getFileName().toString());
+        });
+    }
 }
