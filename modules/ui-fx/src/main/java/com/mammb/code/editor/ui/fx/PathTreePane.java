@@ -110,6 +110,7 @@ public class PathTreePane extends ContentPane {
         consumer.accept(item);
         return true;
     }
+
     private boolean handleItemRenameAction(TreeItem<Path> item, String name, BiConsumer<TreeItem<Path>, String> consumer) {
         Path path = item.getValue();
         if (Files.isReadableFile(path)) {
@@ -120,7 +121,7 @@ public class PathTreePane extends ContentPane {
             panes.forEach(EditorPane::close);
             consumer.accept(item, name);
             Path newPath = path.getParent().resolve(Path.of(name));
-            panes.forEach(pane -> pane.open(Session.of(newPath)));
+            panes.forEach(pane -> pane.openOn(Session.of(newPath)));
         } else if (Files.isReadableDirectory(path)) {
             var panes = ctx.container().find(EditorPane.class)
                 .filter(pane -> {
@@ -131,12 +132,13 @@ public class PathTreePane extends ContentPane {
             List<Path> oldPaths = panes.stream().map(pane -> pane.query(Query.contentPath).orElse(null)).toList();
             Queue<Path> newPaths = oldPaths.stream().map(old -> {
                 Path sub = path.relativize(old);
-                Path newDir = old.getParent().resolve(Path.of(name));
+                Path newDir = path.getParent().resolve(Path.of(name));
                 return newDir.resolve(sub);
             }).collect(Collectors.toCollection(ArrayDeque::new));
             if (!panes.stream().allMatch(EditorPane::closeRequest)) return false;
             panes.forEach(EditorPane::close);
-            panes.forEach(pane -> pane.open(Session.of(newPaths.poll())));
+            consumer.accept(item, name);
+            panes.forEach(pane -> pane.openOn(Session.of(newPaths.poll())));
         } else {
             return false;
         }

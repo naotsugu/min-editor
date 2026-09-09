@@ -157,6 +157,21 @@ public interface Session {
             timestamp());
     }
 
+    default Session with(Path path) {
+        return record(
+            path,
+            lastModifiedTime(),
+            altPath(),
+            altName(),
+            charset(),
+            readonly(),
+            topLine(),
+            lineWidth(),
+            caretRow(),
+            caretCol(),
+            timestamp());
+    }
+
     /**
      * Get the session as a string.
      * @return session string
