@@ -56,6 +56,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * TODO rewrite
  * A high-featured TreeView for displaying and managing file system paths.
  * This component supports multiple roots, file operations (cut, copy, paste, rename, delete),
  * compact directory display, and inline editing.

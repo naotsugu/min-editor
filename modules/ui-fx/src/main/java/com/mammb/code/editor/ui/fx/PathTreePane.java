@@ -138,7 +138,7 @@ public class PathTreePane extends ContentPane {
             if (!panes.stream().allMatch(EditorPane::closeRequest)) return false;
             panes.forEach(EditorPane::close);
             consumer.accept(item, name);
-            panes.forEach(pane -> pane.openOn(Session.of(newPaths.poll())));
+            panes.forEach(pane -> pane.openOn(Session.of(newPaths.poll()))); // TODO reuse an old session
         } else {
             return false;
         }
