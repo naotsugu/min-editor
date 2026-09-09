@@ -74,7 +74,8 @@ public class PathTree extends TreeView<Path> {
     /** The currently "cut" item, managed at the TreeView level to avoid static state. */
     private TreeItem<Path> cutItem = null;
 
-    private ApplyAction<TreeItem<Path>> deleteApplyAction = (e, c) -> { c.accept(e); return true; };
+    private DeleteApply deleteApplyAction = (e, c) -> { c.accept(e); return true; };
+    private RenameApply renameApplyAction = (e1, e2, c) -> { c.accept(e1, e2); return true; };
 
     public PathTree(Path... roots) {
         super(new TreeItem<>());
@@ -185,8 +186,11 @@ public class PathTree extends TreeView<Path> {
         doubleSelectActions.add(action);
     }
 
-    public void setDeleteApplyAction(ApplyAction<TreeItem<Path>> applyAction) {
+    public void setDeleteApplyAction(DeleteApply applyAction) {
         deleteApplyAction = applyAction;
+    }
+    public void setRenameApplyAction(RenameApply applyAction) {
+        renameApplyAction = applyAction;
     }
 
     public TreeItem<Path> getCutItem() {
@@ -443,7 +447,10 @@ public class PathTree extends TreeView<Path> {
             textField = new TextField();
             textField.setOnKeyReleased(event -> {
                 if (event.getCode() == KeyCode.ENTER) {
-                    fileOperationHandler.rename(getTreeItem(), textField.getText());
+                    treeView.renameApplyAction.apply(
+                        getTreeItem(), textField.getText(),
+                        fileOperationHandler::rename
+                    );
                 } else if (event.getCode() == KeyCode.ESCAPE) {
                     cancelEdit();
                 }
@@ -552,7 +559,7 @@ public class PathTree extends TreeView<Path> {
         private void withCellEdit(Runnable runnable) {
             try {
                 treeView.cellEditable = true;
-                runnable.run();;
+                runnable.run();
             } finally {
                 treeView.cellEditable = false;
             }
@@ -872,8 +879,11 @@ public class PathTree extends TreeView<Path> {
         }
     }
 
-    public interface ApplyAction<E> {
-        boolean apply(E value, Consumer<E> consumer);
+    public interface DeleteApply {
+        boolean apply(TreeItem<Path> item, Consumer<TreeItem<Path>> consumer);
+    }
+    public interface RenameApply {
+        boolean apply(TreeItem<Path> item, String name, BiConsumer<TreeItem<Path>, String> consumer);
     }
 
     // --- Static helper methods for graphics ---

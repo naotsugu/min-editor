@@ -479,7 +479,7 @@ public class EditorPane extends ContentPane {
         paintPulse.request();
     }
 
-    private void open(Session session) {
+    void open(Session session) {
 
         boolean openInBackground = Files.size(session.path()) > BACKGROUND_THRESHOLD;
 

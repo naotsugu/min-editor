@@ -25,10 +25,13 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import java.nio.file.Path;
 import java.io.File;
+import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -60,6 +63,7 @@ public class PathTreePane extends ContentPane {
         this.pathTree = new PathTree(roots);
         this.pathTree.addDoubleSelectAction(this::handleDoubleSelectAction);
         this.pathTree.setDeleteApplyAction(this::handleItemDeleteAction);
+        this.pathTree.setRenameApplyAction(this::handleItemRenameAction);
         setPrefWidth(200);
         getChildren().add(pathTree);
     }
@@ -106,6 +110,39 @@ public class PathTreePane extends ContentPane {
         consumer.accept(item);
         return true;
     }
+    private boolean handleItemRenameAction(TreeItem<Path> item, String name, BiConsumer<TreeItem<Path>, String> consumer) {
+        Path path = item.getValue();
+        if (Files.isReadableFile(path)) {
+            var panes = ctx.container().find(EditorPane.class)
+                .filter(pane -> Objects.equals(pane.query(Query.contentPath).orElse(null), path))
+                .toList();
+            if (!panes.stream().allMatch(EditorPane::closeRequest)) return false;
+            panes.forEach(EditorPane::close);
+            consumer.accept(item, name);
+            Path newPath = path.getParent().resolve(Path.of(name));
+            panes.forEach(pane -> pane.open(Session.of(newPath)));
+        } else if (Files.isReadableDirectory(path)) {
+            var panes = ctx.container().find(EditorPane.class)
+                .filter(pane -> {
+                    Path p = pane.query(Query.contentPath).orElse(null);
+                    return (p != null && p.startsWith(path));
+                })
+                .toList();
+            List<Path> oldPaths = panes.stream().map(pane -> pane.query(Query.contentPath).orElse(null)).toList();
+            Queue<Path> newPaths = oldPaths.stream().map(old -> {
+                Path sub = path.relativize(old);
+                Path newDir = old.getParent().resolve(Path.of(name));
+                return newDir.resolve(sub);
+            }).collect(Collectors.toCollection(ArrayDeque::new));
+            if (!panes.stream().allMatch(EditorPane::closeRequest)) return false;
+            panes.forEach(EditorPane::close);
+            panes.forEach(pane -> pane.open(Session.of(newPaths.poll())));
+        } else {
+            return false;
+        }
+        return true;
+    }
+
 
     public static PathTreePane fromString(FxAppContext ctx, String string) {
         if (string == null || string.isBlank()) return new PathTreePane(ctx);
