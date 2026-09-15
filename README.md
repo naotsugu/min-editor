@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="https://github.com/naotsugu/min-editor/blob/main/docs/icon/128.png" alt="min-editor">
-  <h4>A minimal text editor <small>under development</small></h4>
+  <h3>A minimal text editor (under development)</h3>
 </div>
 
 - A minimal text editor, not an IDE.
