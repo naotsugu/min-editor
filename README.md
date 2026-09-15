@@ -2,9 +2,9 @@
 
 <p align="center">
   <img src="https://github.com/naotsugu/min-editor/blob/main/docs/icon/128.png" alt="min-editor">
+  <h4>A minimal text editor</h4>
+  <small>under development</small>
 </p>
-
-A minimal text editor, currently **under development**.
 
 - A minimal text editor, not an IDE.
 - Implemented with JavaFX, as it is one of the few languages with a standard multi-platform UI toolkit.
