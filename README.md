@@ -1,5 +1,9 @@
 # Min Editor
 
+<p align="center">
+  <img src="https://github.com/naotsugu/min-editor/blob/main/docs/icon/128.png" alt="min-editor">
+</p>
+
 A minimal text editor, currently **under development**.
 
 - A minimal text editor, not an IDE.

@@ -1,9 +1,11 @@
 
 ## How to create an icon file
 
-Edit the source image of the icon file `icon.png`.
+Edit the source image of the icon file `min-editor.fig`.
 
-Get the png2icons from [this](https://github.com/idesis-gmbh/png2icons/releases) and unzip.
+Export png images.
+
+Get the icons from [this](https://github.com/naotsugu/icons) and unzip.
 
 Grant execution privileges.
 
@@ -14,8 +16,7 @@ chmod 755 icons
 Generate icon files.
 
 ```shell
-./png2icons icon.png icon -icns
-./png2icons icon.png icon -ico
+./icons ./
 ```
 
 | OS      | icon file |

@@ -209,8 +209,8 @@ public interface EditorModel extends Query.Queryable {
     EditorModel with(Session session);
 
     /**
-     * Apply the action.
-     * @param action the action
+     * Apply the action command.
+     * @param action the action command
      */
     void apply(Action action);
 

@@ -59,8 +59,7 @@ public class CaretAlterGroupImpl implements CaretAlterGroup {
             if (result.grow) {
                 peer.add(result.caret);
             } else {
-                var r = peer.remove(result.caret);
-
+                peer.remove(result.caret);
             }
         }
     }
