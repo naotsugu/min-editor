@@ -80,10 +80,18 @@ public class LexerSource {
         return index < text.length();
     }
 
+    private boolean hasNextPeek() {
+        return index + peek < text.length();
+    }
+
     public Indexed peek() {
-        var ret = new Indexed(index + peek, text.charAt(index + peek), text.length());
-        peek++;
-        return ret;
+        if (hasNextPeek()) {
+            var ret = new Indexed(index + peek, text.charAt(index + peek), text.length());
+            peek++;
+            return ret;
+        } else {
+            return new Indexed(index + peek, (char) 0, text.length());
+        }
     }
 
     public LexerSource commitPeek() {
