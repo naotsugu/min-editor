@@ -65,13 +65,16 @@ public interface Text {
     }
 
     /**
-     * Checks whether all non-zero values in the advance array are uniform.
-     * The method iterates through the advance array to verify if all non-zero
-     * values are equal. If the array contains no non-zero values, the method
-     * returns {@code true}.
+     * Checks if individual character widths in this text are monospace.
+     * Tabs are considered variable width.
      * @return {@code true} if all non-zero advances are uniform, otherwise {@code false}
      */
     default boolean uniformity() {
+
+        if (value().indexOf('\t') >= 0) {
+            return false;
+        }
+
         double w = -1;
         for (double advance : advances()) {
             if (advance == 0.0) continue;

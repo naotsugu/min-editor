@@ -54,7 +54,7 @@ public class FxGraphicsDraw implements GraphicsDraw {
         this.gc.setFont(font);
         // this.gc.setFontSmoothingType(Objects.equals(gc.getFont().getName(), "MS Gothic")
         //    ? FontSmoothingType.GRAY : FontSmoothingType.LCD);
-        // this.gc.setFontSmoothingType(FontSmoothingType.GRAY);
+        this.gc.setFontSmoothingType(FontSmoothingType.GRAY);
         this.outputScale = Screen.getScreens().stream()
             .mapToDouble(Screen::getOutputScaleX)
             .filter(s -> s != 1.0).max().orElse(1.0);
