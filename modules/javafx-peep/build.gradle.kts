@@ -24,13 +24,13 @@ val javafxGraphicsSources: Configuration = configurations.create("javafxGraphics
 val javafxControlsSources: Configuration = configurations.create("javafxControlsSources")
 
 dependencies {
-    javafxBase("org.openjfx:javafx-base:26:${artifact}")
-    javafxGraphics("org.openjfx:javafx-graphics:26:${artifact}")
-    javafxControls("org.openjfx:javafx-controls:26:${artifact}")
+    javafxBase("org.openjfx:javafx-base:27:${artifact}")
+    javafxGraphics("org.openjfx:javafx-graphics:27:${artifact}")
+    javafxControls("org.openjfx:javafx-controls:27:${artifact}")
 
-    javafxBaseSources("org.openjfx:javafx-base:26:sources")
-    javafxGraphicsSources("org.openjfx:javafx-graphics:26:sources")
-    javafxControlsSources("org.openjfx:javafx-controls:26:sources")
+    javafxBaseSources("org.openjfx:javafx-base:27:sources")
+    javafxGraphicsSources("org.openjfx:javafx-graphics:27:sources")
+    javafxControlsSources("org.openjfx:javafx-controls:27:sources")
 }
 
 

@@ -14,7 +14,7 @@ java {
 }
 
 javafx {
-    version = "26"
+    version = "27"
     modules("javafx.controls")
     configuration = "compileOnly"
 }
