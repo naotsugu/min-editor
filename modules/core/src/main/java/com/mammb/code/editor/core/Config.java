@@ -126,6 +126,7 @@ public interface Config {
          */
         public void defaultFontName(String defaultFontName) {
             if (Objects.nonNull(defaultFontName) && !defaultFontName.isBlank()) {
+                log.log(System.Logger.Level.INFO, "default font name {0}", defaultFontName);
                 this.defaultFontName = defaultFontName;
             }
         }

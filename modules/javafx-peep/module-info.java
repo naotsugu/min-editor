@@ -1,7 +1,6 @@
 module javafx.graphics {
     requires java.desktop;
     requires java.xml;
-    requires jdk.unsupported;
 
     requires transitive javafx.base;
 
@@ -27,6 +26,7 @@ module javafx.graphics {
 
     exports com.sun.glass.ui to
         javafx.media;
+        //javafx.swing,
         //javafx.web;
     exports com.sun.glass.utils to
         javafx.media;
@@ -34,6 +34,7 @@ module javafx.graphics {
     exports com.sun.javafx.application to
         java.base,
         javafx.controls;
+        //javafx.swing,
         //javafx.web;
     exports com.sun.javafx.css to
         javafx.controls;
@@ -56,7 +57,10 @@ module javafx.graphics {
         javafx.controls;
     exports com.sun.javafx.scene to
         javafx.controls,
+        jfx.incubator.input,
+        jfx.incubator.richtext,
         javafx.media;
+        //javafx.swing,
         //javafx.web;
     exports com.sun.javafx.scene.input to
         javafx.controls;
@@ -67,12 +71,15 @@ module javafx.graphics {
         //javafx.web;
     exports com.sun.javafx.scene.text to
         code.editor.ui.fx,
-        javafx.controls;
+        javafx.controls,
+        jfx.incubator.richtext;
         //javafx.web;
     exports com.sun.javafx.scene.shape to
         javafx.controls;
     exports com.sun.javafx.scene.traversal to
-        javafx.controls;
+        javafx.controls,
+        jfx.incubator.input,
+        jfx.incubator.richtext;
         //javafx.web;
     exports com.sun.javafx.sg.prism to
         javafx.media;
@@ -89,6 +96,8 @@ module javafx.graphics {
         //javafx.web;
     exports com.sun.javafx.util to
         javafx.controls,
+        jfx.incubator.input,
+        jfx.incubator.richtext,
         javafx.media;
         //javafx.web;
     exports com.sun.prism to

@@ -22,7 +22,6 @@ tasks.named<Test>("test") {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(26)
-        vendor = JvmVendorSpec.ADOPTIUM
     }
 }
 
