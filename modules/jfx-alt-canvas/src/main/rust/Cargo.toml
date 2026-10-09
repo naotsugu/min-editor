@@ -1,0 +1,23 @@
+[package]
+name = "lib"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[build-dependencies]
+cbindgen = "0.29.4"
+
+[dependencies]
+vello = "0.11.0"
+pollster = "1.0.1"
+parley = "0.11.1"
+# skrifa = "0.44.0"
+
+[profile.dev.package."*"]
+debug = 0
+opt-level = 2
+
+[profile.release.package."*"]
+debug = 0
