@@ -86,6 +86,9 @@ public interface Config {
         /** The default font name. */
         private String defaultFontName;
 
+        /** The default monospace font name. */
+        private String defaultMonoFontName;
+
         /** The default font size. */
         private double defaultFontSize;
 
@@ -101,7 +104,7 @@ public interface Config {
                 default -> "monospace";
             };
             defaultFontSize = switch (Context.platform) {
-                case "mac" -> 12;
+                case "mac" -> 13;
                 case "windows" -> 14;
                 default -> 13;
             };
@@ -121,13 +124,36 @@ public interface Config {
         }
 
         /**
-         * Set the default font name.
-         * @param defaultFontName the default font name
+         * Set the default monospace font name.
+         * @param defaultFontName the default monospace font name
          */
         public void defaultFontName(String defaultFontName) {
             if (Objects.nonNull(defaultFontName) && !defaultFontName.isBlank()) {
                 log.log(System.Logger.Level.INFO, "default font name {0}", defaultFontName);
                 this.defaultFontName = defaultFontName;
+            }
+        }
+
+        public String monoFontName() {
+            return get("monoFontName", defaultMonoFontName);
+        }
+
+        /**
+         * Set the monospace font name.
+         * @param monoFontName the monospace font name
+         */
+        public void monoFontName(String monoFontName) {
+            put("monoFontName", monoFontName);
+        }
+
+        /**
+         * Set the default font name.
+         * @param defaultMonoFontName the default font name
+         */
+        public void defaultMonoFontName(String defaultMonoFontName) {
+            if (Objects.nonNull(defaultMonoFontName) && !defaultMonoFontName.isBlank()) {
+                log.log(System.Logger.Level.INFO, "default mono font name {0}", defaultMonoFontName);
+                this.defaultMonoFontName = defaultMonoFontName;
             }
         }
 
