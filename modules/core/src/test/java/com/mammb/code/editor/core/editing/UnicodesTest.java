@@ -25,6 +25,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * The test of {@link Unicodes}.
@@ -73,8 +74,8 @@ class UnicodesTest {
 
     @ParameterizedTest
     @NullSource
-    void nullInputThrowsNpe(CharSequence input) {
-        assertThrows(NullPointerException.class, () -> Unicodes.escape(input));
+    void nullInput(CharSequence input) {
+        assertEquals("", Unicodes.escape(input));
     }
 
     @Test

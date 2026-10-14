@@ -101,6 +101,11 @@ public interface EditingFunctions {
     /** binToDec function. */
     Function<String, String> binToDec = text -> dec(text.replace(" ", ""), 2);
 
+    /** unicodeEscape function. */
+    Function<String, String> unicodeEscape = Unicodes::escape;
+    /** unicodeUnescape function. */
+    Function<String, String> unicodeUnescape = Unicodes::unescape;
+
     /** textToCodepoint function. */
     Function<String, String> textToCodepoint = EditingFunctions::textToCodepoint;
     /** codepointToText function. */

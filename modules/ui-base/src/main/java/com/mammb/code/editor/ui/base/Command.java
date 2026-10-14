@@ -118,6 +118,10 @@ public sealed interface Command {
 
     record BinToDec() implements Command, RequireSelection {}
 
+    record UnicodeEscape() implements Command, RequireSelection {}
+
+    record UnicodeUnescape() implements Command, RequireSelection {}
+
     record ToggleCodepoint() implements Command, RequireSelection {}
 
     record NormalizeAscii() implements Command, RequireSelection {}
@@ -241,6 +245,8 @@ public sealed interface Command {
             case Class<?> c when c == HexToDec.class -> "converts the selected hexadecimal to decimal";
             case Class<?> c when c == BinToHex.class -> "converts the selected binary to hexadecimal";
             case Class<?> c when c == BinToDec.class -> "converts the selected binary to a decimal number";
+            case Class<?> c when c == UnicodeEscape.class -> "converts the selected text to unicode escape";
+            case Class<?> c when c == UnicodeUnescape.class -> "converts the selected text to unicode unescape";
             case Class<?> c when c == ToggleCodepoint.class -> "toggle the selected text to Unicode codepoint";
             case Class<?> c when c == NormalizeAscii.class -> "converts the selected text to the ascii text";
             case Class<?> c when c == AutoFill.class -> "converts the selected text with auto fill";

@@ -56,7 +56,9 @@ public class Unicodes {
      * @return the escaped text, containing printable ASCII characters only
      */
     public static String escape(CharSequence input) {
-        Objects.requireNonNull(input);
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
         var sb = new StringBuilder(input.length() * 2);
         for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
@@ -99,7 +101,9 @@ public class Unicodes {
      *         policy is {@link MalformedPolicy#THROW}
      */
     public static String unescape(String input, MalformedPolicy policy) {
-        Objects.requireNonNull(input);
+        if (input == null || input.isEmpty()) {
+            return "";
+        }
         Objects.requireNonNull(policy);
         int length = input.length();
         var sb = new StringBuilder(length);

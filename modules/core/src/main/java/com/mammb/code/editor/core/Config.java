@@ -111,8 +111,8 @@ public interface Config {
             };
             defaultFontName = defaultMonoFontName;
             defaultFontSize = switch (Context.platform) {
-                case "mac" -> 13;
-                case "windows" -> 14;
+                case "mac" -> 14;
+                case "windows" -> 16;
                 default -> 13;
             };
         }
