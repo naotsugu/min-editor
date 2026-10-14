@@ -100,7 +100,6 @@ public class FxGraphicsDraw implements GraphicsDraw {
             // here, we avoid the faint display by drawing the text twice.
             gc.fillText(text, x, y);
         }
-
     }
 
     @Override

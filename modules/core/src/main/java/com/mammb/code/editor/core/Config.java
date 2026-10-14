@@ -36,6 +36,12 @@ public interface Config {
     String fontName();
 
     /**
+     * Get the monospace font name.
+     * @return the monospace　font name
+     */
+    String monoFontName();
+
+    /**
      * The font size.
      * @return the font size
      */
@@ -98,11 +104,12 @@ public interface Config {
          */
         protected AbstractConfig(Path path) {
             propsPath = path;
-            defaultFontName = switch (Context.platform) {
+            defaultMonoFontName = switch (Context.platform) {
                 case "windows" -> "MS Gothic"; // MS Gothic | BIZ UDGothic Consolas
                 case "mac" -> "Monaco";        // Menlo | Monaco | SF Mono
                 default -> "monospace";
             };
+            defaultFontName = defaultMonoFontName;
             defaultFontSize = switch (Context.platform) {
                 case "mac" -> 13;
                 case "windows" -> 14;
@@ -134,6 +141,7 @@ public interface Config {
             }
         }
 
+        @Override
         public String monoFontName() {
             return get("monoFontName", defaultMonoFontName);
         }
