@@ -348,6 +348,12 @@ public class EditorPane extends ContentPane {
             case BinToDec _           -> model().apply(Action.replace(EditingFunctions.binToDec, true));
             case UnicodeEscape _      -> model().apply(Action.replace(EditingFunctions.unicodeEscape, true));
             case UnicodeUnescape _    -> model().apply(Action.replace(EditingFunctions.unicodeUnescape, true));
+            case Base64Encode _       -> model().apply(Action.replace(EditingFunctions.base64Encode, true));
+            case Base64Decode _       -> model().apply(Action.replace(EditingFunctions.base64Decode, true));
+            case Base64UrlEncode _    -> model().apply(Action.replace(EditingFunctions.base64UrlEncode, true));
+            case Base64UrlDecode _    -> model().apply(Action.replace(EditingFunctions.base64UrlDecode, true));
+            case Base64MimeEncode _   -> model().apply(Action.replace(EditingFunctions.base64MimeEncode, true));
+            case Base64MimeDecode _   -> model().apply(Action.replace(EditingFunctions.base64MimeDecode, true));
             case ToggleCodepoint _    -> model().apply(Action.replace(EditingFunctions.toggleCodepoint, true));
             case NormalizeAscii _     -> model().apply(Action.replace(EditingFunctions.normalizeAscii, true));
             case AutoFill _           -> model().apply(Action.replace(EditingFunctions.autoFill(model().query(Query.textAtCarets)), true));

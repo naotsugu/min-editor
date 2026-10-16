@@ -122,6 +122,18 @@ public sealed interface Command {
 
     record UnicodeUnescape() implements Command, RequireSelection {}
 
+    record Base64Encode() implements Command, RequireSelection {}
+
+    record Base64Decode() implements Command, RequireSelection {}
+
+    record Base64UrlEncode() implements Command, RequireSelection {}
+
+    record Base64UrlDecode() implements Command, RequireSelection {}
+
+    record Base64MimeEncode() implements Command, RequireSelection {}
+
+    record Base64MimeDecode() implements Command, RequireSelection {}
+
     record ToggleCodepoint() implements Command, RequireSelection {}
 
     record NormalizeAscii() implements Command, RequireSelection {}
@@ -247,6 +259,12 @@ public sealed interface Command {
             case Class<?> c when c == BinToDec.class -> "converts the selected binary to a decimal number";
             case Class<?> c when c == UnicodeEscape.class -> "converts the selected text to unicode escape";
             case Class<?> c when c == UnicodeUnescape.class -> "converts the selected text to unicode unescape";
+            case Class<?> c when c == Base64Encode.class -> "converts the selected text to base64 encode";
+            case Class<?> c when c == Base64Decode.class -> "converts the selected text to base64 decode";
+            case Class<?> c when c == Base64UrlEncode.class -> "converts the selected text to url base64 encode";
+            case Class<?> c when c == Base64UrlDecode.class -> "converts the selected text to url base64 decode";
+            case Class<?> c when c == Base64MimeEncode.class -> "converts the selected text to mime base64 encode";
+            case Class<?> c when c == Base64MimeDecode.class -> "converts the selected text to mime base64 decode";
             case Class<?> c when c == ToggleCodepoint.class -> "toggle the selected text to Unicode codepoint";
             case Class<?> c when c == NormalizeAscii.class -> "converts the selected text to the ascii text";
             case Class<?> c when c == AutoFill.class -> "converts the selected text with auto fill";
