@@ -25,8 +25,8 @@ public interface Theme {
 
     /** The dark theme. */
     Theme dark = new ThemeRecord(
-        new Rgba("#292929"),   // baseColor
-        new Rgba("#d8dde2"),   // fgColor
+        new Rgba("#1e1f22"),   // baseColor
+        new Rgba("#bcbec4"),   // fgColor
         new Rgba("#214283"),   // paleHighlightColor
         new Rgba("#FDE047"),   // cautionColor
         new Rgba("#80808088"), // faintColor

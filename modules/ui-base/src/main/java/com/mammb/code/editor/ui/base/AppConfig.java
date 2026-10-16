@@ -41,7 +41,7 @@ public class AppConfig extends Config.AbstractConfig {
      * @return the ui font name
      */
     public String uiFontName() {
-        return get("uiFontName", "Consolas");
+        return get("uiFontName", "sans-serif");
     }
 
     /**

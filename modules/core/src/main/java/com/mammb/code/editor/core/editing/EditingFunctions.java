@@ -106,6 +106,19 @@ public interface EditingFunctions {
     /** unicodeUnescape function. */
     Function<String, String> unicodeUnescape = Unicodes::unescape;
 
+    /** base64 encode function. */
+    Function<String, String> base64Encode = Base64s::encode;
+    /** base64 decode function. */
+    Function<String, String> base64Decode = Base64s::decode;
+    /** base64 url encode function. */
+    Function<String, String> base64UrlEncode = Base64s::urlEncode;
+    /** base64 url decode function. */
+    Function<String, String> base64UrlDecode = Base64s::urlDecode;
+    /** base64 mime encode function. */
+    Function<String, String> base64MimeEncode = Base64s::mimeEncode;
+    /** base64 mime decode function. */
+    Function<String, String> base64MimeDecode = Base64s::mimeDecode;
+
     /** textToCodepoint function. */
     Function<String, String> textToCodepoint = EditingFunctions::textToCodepoint;
     /** codepointToText function. */
