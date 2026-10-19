@@ -51,7 +51,7 @@ public class Base64s {
 
     public static String mimeDecode(CharSequence input) {
         byte[] decodedBytes = Base64.getMimeDecoder().decode(input.toString());
-        return new String(decodedBytes, StandardCharsets.UTF_8);        byte[] bytesToEncode = input.toString().getBytes(StandardCharsets.UTF_8);
+        return new String(decodedBytes, StandardCharsets.UTF_8);
     }
 
 }
