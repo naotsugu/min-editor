@@ -151,8 +151,8 @@ class UnescapeValid {
 
     @ParameterizedTest
     @NullSource
-    void nullInputThrowsNpe(String input) {
-        assertThrows(NullPointerException.class, () -> Unicodes.unescape(input));
+    void nullInputReturnEmpty(String input) {
+        assertEquals("", Unicodes.unescape(input, Unicodes.MalformedPolicy.THROW));
     }
 
     @Test
@@ -188,7 +188,7 @@ class UnescapeMalformed {
 
     @Test
     void defaultOverloadBehavesLikeThrowPolicy() {
-        assertThrows(IllegalArgumentException.class, () -> Unicodes.unescape("\\u00zz"));
+        assertThrows(IllegalArgumentException.class, () -> Unicodes.unescape("\\u00zz", Unicodes.MalformedPolicy.THROW));
     }
 
     @Test
