@@ -41,16 +41,6 @@ public class Updater {
 
     /**
      * Executes the update process by creating and running an update script based on the operating system.
-     * <ul>
-     *     <li>Generates a platform-specific update script using {@code writeScript()}.</li>
-     *     <li>Determines the appropriate command to execute the script depending on the OS
-     *         (PowerShell for Windows, Bash for others).</li>
-     *     <li>Redirects the process output to a log file and starts the process in the script's directory.</li>
-     *     <li>Terminates the application using {@code System.exit(0)} after starting the process.</li>
-     * </ul>
-     * If any exception occurs during the script generation or execution, a {@code RuntimeException}
-     * is thrown, wrapping the original exception.
-     *
      * @throws RuntimeException if an error occurs during the update script creation or execution
      */
     public static void run() {
@@ -250,6 +240,21 @@ public class Updater {
         } else {
             // min-editor/bin/min-editor
             return "bin/min-editor";
+        }
+    }
+
+    /**
+     * Checks whether files can really be created in the directory.
+     * {@code Files.isWritable()} may not reflect ACLs reliably, so a probe file is also created.
+     */
+    private static boolean isWritableDir(Path dir) {
+        if (!Files.isDirectory(dir) || !Files.isWritable(dir)) return false;
+        try {
+            var probe = Files.createTempFile(dir, ".update-check", ".tmp");
+            Files.deleteIfExists(probe);
+            return true;
+        } catch (IOException | SecurityException e) {
+            return false;
         }
     }
 
