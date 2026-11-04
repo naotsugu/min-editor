@@ -44,7 +44,8 @@ public class FindImpl implements Find {
         if (spec.isEmpty()) return List.of();
         List<PointLen> list = new ArrayList<>();
         sc.findAll(spec(spec), seg -> seg.value().stream()
-            .map(p -> PointLen.of(p.row(), p.col(), p.len())).forEach(list::add));
+            .map(p -> PointLen.of(p.row(), p.col(), p.len()))
+            .forEach(list::add));
         return list;
     }
 
