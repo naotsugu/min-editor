@@ -21,6 +21,14 @@
 - Handles large files efficiently
 - CSV/TSV layout mode
 - Various editing commands (Open the command palette with `⌘-P` or `Ctrl-P`)
+  - Case : `ToLowerCase` `ToUpperCase` `ToSnakeCase` `ToKebabCase` `ToCamelCase` `ToPascalCase`
+  - Number Bases : `DecToHex` `DecToBin` `HexToBin` `HexToDec` `BinToHex` `BinToDec`
+  - Encode/Decode : `UrlEncode` `UrlDecode` `Base64Encode` `Base64Decode` `Base64UrlEncode` `Base64UrlDecode` `Base64MimeEncode` `Base64MimeDecode` 
+  - Escape/Unescape : `UnicodeEscape` `UnicodeUnescape` 
+  - Lines : `Sort` `Unique` `GoTo` `AutoFill`
+  - Diff : `Diff` `DiffFoldOff` `DiffWith`
+  - Find/Select : `FindNext` `FindPrev` `FindAll` `FindNextRegex` `FindPrevRegex` `FindAllRegex` `FindInFiles` `Select` `SelectRegex`
+  - Others : `Calc` `ColorPick` `ToggleCodepoint` `NormalizeAscii` `Today` `Now` `Pwd` `Pwf`
 
 
 ## Installing
