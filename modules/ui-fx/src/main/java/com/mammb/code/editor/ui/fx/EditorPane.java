@@ -346,6 +346,8 @@ public class EditorPane extends ContentPane {
             case HexToDec _           -> model().apply(Action.replace(EditingFunctions.hexToDec, true));
             case BinToHex _           -> model().apply(Action.replace(EditingFunctions.binToHex, true));
             case BinToDec _           -> model().apply(Action.replace(EditingFunctions.binToDec, true));
+            case UrlEncode _          -> model().apply(Action.replace(EditingFunctions.urlEncode, true));
+            case UrlDecode _          -> model().apply(Action.replace(EditingFunctions.urlDecode, true));
             case UnicodeEscape _      -> model().apply(Action.replace(EditingFunctions.unicodeEscape, true));
             case UnicodeUnescape _    -> model().apply(Action.replace(EditingFunctions.unicodeUnescape, true));
             case Base64Encode _       -> model().apply(Action.replace(EditingFunctions.base64Encode, true));

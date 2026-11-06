@@ -16,6 +16,10 @@
 package com.mammb.code.editor.core.editing;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -105,6 +109,11 @@ public interface EditingFunctions {
     Function<String, String> unicodeEscape = Unicodes::escape;
     /** unicodeUnescape function. */
     Function<String, String> unicodeUnescape = Unicodes::unescape;
+
+    /** url encode function. */
+    Function<String, String> urlEncode = text -> text == null ? "" : URLEncoder.encode(text, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
+    /** url decode function. */
+    Function<String, String> urlDecode = text -> text == null ? "" : URLDecoder.decode(text, StandardCharsets.UTF_8);;
 
     /** base64 encode function. */
     Function<String, String> base64Encode = Base64s::encode;
