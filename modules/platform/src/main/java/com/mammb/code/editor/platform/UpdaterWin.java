@@ -23,7 +23,7 @@ import java.util.List;
  * The plain windows Updater.
  * @author Naotsugu Kobayashi
  */
-public class UpdaterWin implements Updater2 {
+public class UpdaterWin implements Updater {
 
     private static final String SCRIPT_NAME = "update.ps1";
 

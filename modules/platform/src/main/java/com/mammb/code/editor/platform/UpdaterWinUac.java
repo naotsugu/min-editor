@@ -24,7 +24,7 @@ import java.util.List;
  * The Windows UAC(User Account Control) Updater.
  * @author Naotsugu Kobayashi
  */
-public class UpdaterUac implements Updater2 {
+public class UpdaterWinUac implements Updater {
 
     @Override
     public void run() {

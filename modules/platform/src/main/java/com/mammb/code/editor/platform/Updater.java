@@ -22,90 +22,41 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 /**
  * The Updater.
  * @author Naotsugu Kobayashi
  */
-public class Updater {
+public interface Updater {
 
     /** The logger. */
-    private static final System.Logger log = System.getLogger(Updater.class.getName());
+    System.Logger log = System.getLogger(Updater.class.getName());
+
     /** The releases url. */
-    private static final String RELEASES_URL = "https://github.com/naotsugu/min-editor/releases/latest/";
+    String RELEASES_URL = "https://github.com/naotsugu/min-editor/releases/latest/";
     /** The download url. */
-    private static final String DOWNLOAD_URL = RELEASES_URL + "download/";
+    String DOWNLOAD_URL = RELEASES_URL + "download/";
     /** The update log file name. */
-    private static final String UPDATE_LOG = "update.log";
+    String UPDATE_LOG = "update.log";
+
+    static Updater of() {
+        var home = AppPaths.applicationHomePath();
+        if (OS.isWindows()) {
+            if (isWritableDir(home)) {
+                return new UpdaterWin();
+            } else {
+                return new UpdaterWinUac();
+            }
+        } else {
+            return new UpdaterNix();
+        }
+    }
 
     /**
      * Executes the update process by creating and running an update script based on the operating system.
      * @throws RuntimeException if an error occurs during the update script creation or execution
      */
-    public static void run() {
-
-        try {
-            var scriptPath = writeScript();
-            if (scriptPath == null) return;
-
-            var command = OS.isWindows() ? ps1Command() : shCommand();
-
-            ProcessBuilder pb = new ProcessBuilder(command);
-            pb.redirectErrorStream(true);
-            pb.directory(scriptPath.getParent().toFile());
-
-            var logFile = scriptPath.resolveSibling(UPDATE_LOG);
-            pb.redirectOutput(ProcessBuilder.Redirect.appendTo(logFile.toFile()));
-            //pb.redirectInput(ProcessBuilder.Redirect.DISCARD);
-            pb.start();
-
-            System.exit(0);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Writes a platform-specific update script to the application's home directory.
-     * The script is generated based on the current operating system: a PowerShell script
-     * for Windows or a Shell script for other operating systems.
-     * <p>
-     * The method performs the following steps:
-     * 1. Determines the application home path.
-     * 2. Creates the script name and content specific to the operating system.
-     * 3. Writes the script content to a file in the home directory.
-     * <p>
-     * If the application home path is null or an I/O error occurs during the script
-     * writing process, the method either returns null or throws a {@code RuntimeException}.
-     *
-     * @return the {@code Path} to the generated script file, or {@code null} if the
-     *         home path is not determined.
-     * @throws RuntimeException if an I/O error occurs while writing the script.
-     */
-    static Path writeScript() {
-        var homePath = AppPaths.applicationHomePath();
-        if (homePath == null) return null;
-        var scriptName = OS.isWindows() ? "update.ps1" : "update.sh";
-        var scriptBody = OS.isWindows() ? psScript() : shScript();
-        try {
-            var path = homePath.resolve(scriptName);
-            log.log(System.Logger.Level.INFO, "Writing update script to {0}", path);
-            Files.write(path, scriptBody.getBytes());
-            return path;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static List<String> ps1Command() {
-        return List.of("powershell.exe", "-ExecutionPolicy", "Bypass", "-File", "update.ps1");
-    }
-
-    private static List<String> shCommand() {
-        return List.of("/bin/bash", "update.sh");
-    }
+    void run();
 
     /**
      * Checks whether a newer version of the application is available by comparing
@@ -113,7 +64,7 @@ public class Updater {
      * application version.
      * @return {@code true} if a newer version is available, false otherwise
      */
-    public static boolean isUpdateAvailable() {
+    static boolean isUpdateAvailable() {
         return AppVersion.Version.of(getLatestReleasesVersion())
             .isNewerThan(AppVersion.val);
     }
@@ -147,100 +98,6 @@ public class Updater {
             log.log(System.Logger.Level.ERROR, e);
         }
         return "";
-    }
-
-
-    private static String shScript() {
-        return """
-        #!/bin/bash
-        cd "$(dirname "$0")"
-        set -e
-
-        echo "Downloading from $URL$ARCHIVE_FILE ..."
-        curl -s -L -o "$ARCHIVE_FILE" "$URL$ARCHIVE_FILE"
-        unzip -q -o "$ARCHIVE_FILE"
-
-        if [ -d "$EXPAND_ROOT" ]; then
-            shopt -s dotglob nullglob
-            cp -rf "$EXPAND_ROOT"/* .
-            rm -rf "$EXPAND_ROOT"
-        fi
-        rm -f "$ARCHIVE_FILE"
-
-        echo "Starting application..."
-        chmod +x "$APP_PATH"
-        nohup "./$APP_PATH" > /dev/null 2>&1 &
-        echo "Complete."
-
-        rm -f update.log > /dev/null 2>&1
-        exec rm -- "$0" > /dev/null 2>&1
-        """
-        .replaceAll("\\$URL", DOWNLOAD_URL)
-        .replaceAll("\\$ARCHIVE_FILE", archiveName()) // min-editor-mac-aarch64.zip | min-editor-mac.zip
-        .replaceAll("\\$EXPAND_ROOT", expandRoot())   // min-editor.app
-        .replaceAll("\\$APP_PATH", appPath());        // Contents/MacOS/min-editor
-    }
-
-    private static String psScript() {
-        return """
-        Set-Location -Path $PSScriptRoot
-        $ErrorActionPreference = "Stop"
-        $ProgressPreference = "SilentlyContinue"
-        try {
-            Write-Output "Downloading from $URL$ARCHIVE_FILE ..."
-            Invoke-WebRequest -Uri $URL$ARCHIVE_FILE -OutFile $ARCHIVE_FILE -UseBasicParsing
-            Expand-Archive -Path $ARCHIVE_FILE -DestinationPath . -Force
-            Copy-Item -Path "$EXPAND_ROOT/*" -Destination . -Recurse -Force
-
-            Remove-Item -Path $ARCHIVE_FILE -Force
-            Remove-Item -Path $EXPAND_ROOT -Recurse -Force
-
-            Write-Output "Starting application..."
-            Start-Process -FilePath $APP_PATH
-            Write-Output "Complete."
-        } catch {
-            Write-Error "Failed: $_"
-            exit 1
-        }
-        Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force *>$null
-        """
-        .replaceAll("\\$URL", DOWNLOAD_URL)
-        .replaceAll("\\$ARCHIVE_FILE", archiveName()) // min-editor-win.zip
-        .replaceAll("\\$EXPAND_ROOT", expandRoot())   // min-editor
-        .replaceAll("\\$APP_PATH", appPath());        // min-editor.exe
-    }
-
-    private static String archiveName() {
-        if (OS.isMac()) {
-            return OS.isArm64() ? "min-editor-mac-aarch64.zip" : "min-editor-mac.zip";
-        } else if (OS.isWindows()) {
-            return "min-editor-win.zip";
-        } else {
-            return OS.isArm64() ? "min-editor-linux-aarch64" : "min-editor-linux.zip";
-        }
-    }
-
-    private static String expandRoot() {
-        if (OS.isMac()) {
-            return "min-editor.app";
-        } else if (OS.isWindows()) {
-            return "min-editor";
-        } else {
-            return "min-editor";
-        }
-    }
-
-    private static String appPath() {
-        if (OS.isMac()) {
-            // min-editor.app/Contents/MacOS/min-editor
-            return "Contents/MacOS/min-editor";
-        } else if (OS.isWindows()) {
-            // min-editor/min-editor.exe
-            return "min-editor.exe";
-        } else {
-            // min-editor/bin/min-editor
-            return "bin/min-editor";
-        }
     }
 
     /**

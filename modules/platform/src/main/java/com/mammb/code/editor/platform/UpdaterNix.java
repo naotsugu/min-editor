@@ -23,7 +23,7 @@ import java.util.List;
  * The *nix Updater.
  * @author Naotsugu Kobayashi
  */
-public class UpdaterNix implements Updater2 {
+public class UpdaterNix implements Updater {
 
     private static final String SCRIPT_NAME = "update.sh";
 

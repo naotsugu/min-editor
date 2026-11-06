@@ -70,7 +70,7 @@ public class FxDialog extends Dialog<ButtonType> {
 
         var updateButton = new Button("Update And Restart");
         updateButton.setDisable(true);
-        updateButton.setOnAction(_ -> Updater.run());
+        updateButton.setOnAction(_ -> Updater.of().run());
         var thread = new Thread(() -> {
             if (Updater.isUpdateAvailable()) Platform.runLater(() -> updateButton.setDisable(false));
         });
