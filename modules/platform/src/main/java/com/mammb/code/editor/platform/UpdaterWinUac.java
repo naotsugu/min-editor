@@ -88,19 +88,26 @@ public class UpdaterWinUac implements Updater {
 
                 # Start through explorer.exe so that the application runs
                 # with the original (non-elevated) privileges.
-                Start-Process -FilePath explorer.exe -ArgumentList ('"' + (Join-Path $TargetDir $APP_PATH) + '"')
+                # Start-Process -FilePath explorer.exe -ArgumentList ('"' + (Join-Path $TargetDir $APP_PATH) + '"')
+                # Workaround: Launch via shortcut to avoid the title bar opening in Light Mode when started from explorer.exe.
+                $lnk = Join-Path $TargetDir 'min-editor-launch.lnk'
+                $sc = (New-Object -ComObject WScript.Shell).CreateShortcut($lnk)
+                $sc.TargetPath = Join-Path $TargetDir $APP_PATH
+                $sc.WorkingDirectory = $TargetDir
+                $sc.Save()
+                Start-Process -FilePath explorer.exe -ArgumentList ('"' + $lnk + '"')
             } catch {
                 $_ | Out-File -FilePath (Join-Path $TargetDir $UPDATE_LOG) -Append
                 exit 1
             }
             """
-            .replaceAll("\\$HOME_PATH", homePath.toAbsolutePath().toString().replace("'", "''"))
-            .replaceAll("\\$URL", DOWNLOAD_URL)
-            .replaceAll("\\$ARCHIVE_FILE", "min-editor-win.zip")
-            .replaceAll("\\$EXPAND_ROOT", "min-editor")
-            .replaceAll("\\$APP_PATH", "min-editor.exe")
-            .replaceAll("\\$UPDATE_LOG", UPDATE_LOG)
-            .replaceAll("\\$PID", "" + ProcessHandle.current().pid());
+            .replace("$HOME_PATH", homePath.toAbsolutePath().toString().replace("'", "''"))
+            .replace("$URL", DOWNLOAD_URL)
+            .replace("$ARCHIVE_FILE", "min-editor-win.zip")
+            .replace("$EXPAND_ROOT", "min-editor")
+            .replace("$APP_PATH", "min-editor.exe")
+            .replace("$UPDATE_LOG", UPDATE_LOG)
+            .replace("$PID", "" + ProcessHandle.current().pid());
     }
 
     /**

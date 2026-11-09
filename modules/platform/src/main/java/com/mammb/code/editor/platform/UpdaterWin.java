@@ -73,10 +73,10 @@ public class UpdaterWin implements Updater {
         }
         Remove-Item -LiteralPath $MyInvocation.MyCommand.Path -Force *>$null
         """
-        .replaceAll("\\$URL", DOWNLOAD_URL)
-        .replaceAll("\\$ARCHIVE_FILE", "min-editor-win.zip")
-        .replaceAll("\\$EXPAND_ROOT", "min-editor")
-        .replaceAll("\\$APP_PATH", "min-editor.exe");
+        .replace("$URL", DOWNLOAD_URL)
+        .replace("$ARCHIVE_FILE", "min-editor-win.zip")
+        .replace("$EXPAND_ROOT", "min-editor")
+        .replace("$APP_PATH", "min-editor.exe");
     }
 
 }

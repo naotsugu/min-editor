@@ -74,12 +74,12 @@ public class UpdaterNix implements Updater {
         rm -f update.log > /dev/null 2>&1
         exec rm -- "$0" > /dev/null 2>&1
         """
-        .replaceAll("\\$URL", DOWNLOAD_URL)
-        .replaceAll("\\$ARCHIVE_FILE", OS.isMac()
+        .replace("$URL", DOWNLOAD_URL)
+        .replace("$ARCHIVE_FILE", OS.isMac()
             ? OS.isArm64() ? "min-editor-mac-aarch64.zip" : "min-editor-mac.zip"
             : OS.isArm64() ? "min-editor-linux-aarch64" : "min-editor-linux.zip")
-        .replaceAll("\\$EXPAND_ROOT", OS.isMac() ? "min-editor.app" : "min-editor")
-        .replaceAll("\\$APP_PATH", OS.isMac() ? "Contents/MacOS/min-editor" : "bin/min-editor");
+        .replace("$EXPAND_ROOT", OS.isMac() ? "min-editor.app" : "min-editor")
+        .replace("$APP_PATH", OS.isMac() ? "Contents/MacOS/min-editor" : "bin/min-editor");
     }
 
 }

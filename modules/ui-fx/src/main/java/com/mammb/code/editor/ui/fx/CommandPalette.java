@@ -28,6 +28,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
@@ -68,21 +69,25 @@ public class CommandPalette extends Dialog<Command> {
 
     /**
      * Constructor.
-     * @param node the node
+     * @param ownerNode the owner node
      * @param init the initial command type
      * @param queryable the queryable
      */
-    public CommandPalette(Node node, Class<? extends Command> init, Query.Queryable queryable) {
+    public CommandPalette(
+            Node ownerNode,
+            Class<? extends Command> init,
+            Query.Queryable queryable) {
+
         super();
         this.box = new HBox();
         this.commandLabel = new Label();
         this.cmdType = init;
         this.textField = new AcTextField(this, queryable);
 
-        initOwner(node.getScene().getWindow());
+        initOwner(ownerNode.getScene().getWindow());
         initStyle(StageStyle.TRANSPARENT);
 
-        var bounds = node.localToScreen(node.getBoundsInLocal());
+        var bounds = ownerNode.localToScreen(ownerNode.getBoundsInLocal());
         var width = Math.max(bounds.getWidth() * 2 / 3, 450);
         setOnShowing(_ -> {
             setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
