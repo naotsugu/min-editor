@@ -75,17 +75,20 @@ public class UpdaterWinUac implements Updater {
             $TargetDir = '$HOME_PATH'
             $ErrorActionPreference = 'Stop'
             $ProgressPreference = 'SilentlyContinue'
+            $LogFile = Join-Path $TargetDir $UPDATE_LOG
             try {
-                # Wait for the running application to exit so that its files are unlocked.
+                "Wait for the running application to exit ..." | Out-File -FilePath $LogFile -Append
                 Wait-Process -Id $PID -Timeout 60 -ErrorAction SilentlyContinue
                 Set-Location -Path $TargetDir
 
+                "Downloading from $URL$ARCHIVE_FILE ..." | Out-File -FilePath $LogFile -Append
                 Invoke-WebRequest -Uri $URL$ARCHIVE_FILE -OutFile $ARCHIVE_FILE -UseBasicParsing
                 Expand-Archive -Path $ARCHIVE_FILE -DestinationPath . -Force
                 Copy-Item -Path (Join-Path $EXPAND_ROOT '*') -Destination . -Recurse -Force
                 Remove-Item -Path $ARCHIVE_FILE -Force
                 Remove-Item -Path $EXPAND_ROOT -Recurse -Force
 
+                "Starting application..." | Out-File -FilePath $LogFile -Append
                 # Start through explorer.exe so that the application runs
                 # with the original (non-elevated) privileges.
                 # Start-Process -FilePath explorer.exe -ArgumentList ('"' + (Join-Path $TargetDir $APP_PATH) + '"')
@@ -97,7 +100,7 @@ public class UpdaterWinUac implements Updater {
                 $sc.Save()
                 Start-Process -FilePath explorer.exe -ArgumentList ('"' + $lnk + '"')
             } catch {
-                $_ | Out-File -FilePath (Join-Path $TargetDir $UPDATE_LOG) -Append
+                $_ | Out-File -FilePath $LogFile -Append
                 exit 1
             }
             """
