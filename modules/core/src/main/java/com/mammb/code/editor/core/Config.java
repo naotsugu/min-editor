@@ -241,20 +241,6 @@ public interface Config {
             props.put(key, value.toString());
         }
 
-        /**
-         * Get the configuration directory for a platform.
-         * @return the configuration directory
-         */
-        public static Path configRoot() {
-            Path home = Path.of(System.getProperty("user.home"));
-            return switch (Context.platform) {
-                case "windows" -> home.resolve("AppData", "Local");
-                case "mac" -> home.resolve("Library", "Application Support");
-                case "linux" -> home.resolve(".config");
-                default -> home;
-            };
-        }
-
     }
 
 }
