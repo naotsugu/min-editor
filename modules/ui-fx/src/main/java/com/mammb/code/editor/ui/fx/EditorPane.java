@@ -609,8 +609,13 @@ public class EditorPane extends ContentPane {
     private void save() {
         // TODO saving large files runs in the background
         if (model().query(Query.contentPath).isPresent()) {
-            model().save(model().query(Query.contentPath).get());
-            ctx.notifier(getScene().getWindow()).send("saved");
+            Path path = model().query(Query.contentPath).get();
+            if (Files.isWritableFile(path)) {
+                model().save(path);
+                ctx.notifier(getScene().getWindow()).send("Saved");
+            } else {
+                ctx.notifier(getScene().getWindow()).send("Cannot write to the file");
+            }
         } else {
             saveAs();
         }
@@ -625,7 +630,7 @@ public class EditorPane extends ContentPane {
         if (file == null) return;
         Path path = file.toPath();
         model().save(path);
-        ctx.notifier(getScene().getWindow()).send("saved");
+        ctx.notifier(getScene().getWindow()).send("Saved");
         setName();
     }
 
@@ -640,7 +645,7 @@ public class EditorPane extends ContentPane {
             saveAs();
         }
         model().saveWith(charset, endingSymbol);
-        ctx.notifier(getScene().getWindow()).send("saved");
+        ctx.notifier(getScene().getWindow()).send("Saved");
     }
 
     private void reload(Charset charset) {
