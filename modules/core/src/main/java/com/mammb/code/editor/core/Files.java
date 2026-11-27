@@ -168,6 +168,10 @@ public interface Files {
         return java.nio.file.Files.isRegularFile(path) && java.nio.file.Files.isWritable(path);
     }
 
+    static boolean isWritableDirectory(Path path) {
+        return java.nio.file.Files.isDirectory(path) && java.nio.file.Files.isWritable(path);
+    }
+
     static Path write(Path path, byte[] bytes, OpenOption... options) {
         try {
             return java.nio.file.Files.write(path, bytes, options);
